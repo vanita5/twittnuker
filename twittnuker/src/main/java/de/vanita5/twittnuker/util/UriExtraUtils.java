@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.util;
 
 import android.net.Uri;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.Constants;
+
+import java.util.List;
 
 public class UriExtraUtils implements Constants {
 
@@ -40,9 +40,10 @@ public class UriExtraUtils implements Constants {
 
     public static String getExtra(List<String> extras, String key) {
         for (String extra : extras) {
-            final int i = extra.indexOf(key + "=");
+            final String prefix = key + "=";
+            final int i = extra.indexOf(prefix);
             if (i == 0) {
-                return extra.substring(i);
+                return extra.substring(prefix.length());
             }
         }
         return null;

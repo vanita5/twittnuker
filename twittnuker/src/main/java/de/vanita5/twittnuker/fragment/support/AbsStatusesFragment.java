@@ -61,10 +61,11 @@ import de.vanita5.twittnuker.util.imageloader.PauseRecyclerViewOnScrollListener;
 import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
 
-public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFragment<AbsStatusesAdapter<Data>>
+public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerViewFragment<AbsStatusesAdapter<Data>>
         implements LoaderCallbacks<Data>, StatusAdapterListener, KeyboardShortcutCallback {
 
     private final Object mStatusesBusCallback;
@@ -277,7 +278,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     }
 
     @Override
-    public void onMediaClick(StatusViewHolder holder, View view, ParcelableMedia media, int position) {
+    public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(position);
         if (status == null) return;
@@ -286,7 +287,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     }
 
     @Override
-    public void onStatusActionClick(StatusViewHolder holder, int id, int position) {
+    public void onStatusActionClick(IStatusViewHolder holder, int id, int position) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(position);
         if (status == null) return;
@@ -317,19 +318,19 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     }
 
     @Override
-    public void onStatusClick(StatusViewHolder holder, int position) {
+    public void onStatusClick(IStatusViewHolder holder, int position) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         Utils.openStatus(getActivity(), adapter.getStatus(position), null);
     }
 
     @Override
-    public boolean onStatusLongClick(StatusViewHolder holder, int position) {
+    public boolean onStatusLongClick(IStatusViewHolder holder, int position) {
         //TODO handle long click event
         return true;
     }
 
     @Override
-    public void onStatusMenuClick(StatusViewHolder holder, View menuView, int position) {
+    public void onStatusMenuClick(IStatusViewHolder holder, View menuView, int position) {
         if (mPopupMenu != null) {
             mPopupMenu.dismiss();
         }
@@ -346,7 +347,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentRecyclerViewFr
     }
 
     @Override
-    public void onUserProfileClick(StatusViewHolder holder, ParcelableStatus status, int position) {
+    public void onUserProfileClick(IStatusViewHolder holder, ParcelableStatus status, int position) {
         final FragmentActivity activity = getActivity();
         final View profileImageView = holder.getProfileImageView();
         final View profileTypeView = holder.getProfileTypeView();

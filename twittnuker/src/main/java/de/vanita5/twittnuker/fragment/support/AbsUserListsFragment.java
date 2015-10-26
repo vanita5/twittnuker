@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 
-abstract class AbsUserListsFragment<Data> extends AbsContentRecyclerViewFragment<AbsUserListsAdapter<Data>>
+abstract class AbsUserListsFragment<Data> extends AbsContentListRecyclerViewFragment<AbsUserListsAdapter<Data>>
         implements LoaderCallbacks<Data>, AbsUserListsAdapter.UserListAdapterListener, KeyboardShortcutCallback {
 
     private RecyclerViewNavigationHelper mNavigationHelper;

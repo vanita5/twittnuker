@@ -25,41 +25,32 @@ package de.vanita5.twittnuker.adapter;
 import android.content.Context;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
 import java.util.List;
 
-public class ParcelableStatusesAdapter extends AbsStatusesAdapter<List<ParcelableStatus>> {
+public abstract class AbsParcelableStatusesAdapter extends AbsStatusesAdapter<List<ParcelableStatus>> {
+    private List<ParcelableStatus> mData;
 
-	private List<ParcelableStatus> mData;
+    public AbsParcelableStatusesAdapter(Context context, boolean compact) {
+        super(context, compact);
+    }
 
-	public ParcelableStatusesAdapter(Context context, boolean compact) {
-		super(context, compact);
-        setHasStableIds(true);
-	}
-
-	@Override
+    @Override
     public boolean isGapItem(int position) {
         return getStatus(position).is_gap && position != getStatusesCount() - 1;
     }
 
     @Override
-	protected void bindStatus(StatusViewHolder holder, int position) {
-        holder.displayStatus(getStatus(position), isShowInReplyTo());
-	}
-
-	@Override
-	public ParcelableStatus getStatus(int position) {
+    public ParcelableStatus getStatus(int position) {
         if (position == getStatusesCount()) return null;
-		return mData.get(position);
-	}
-
-	@Override
-    public int getStatusesCount() {
-		if (mData == null) return 0;
-		return mData.size();
+        return mData.get(position);
     }
 
+    @Override
+    public int getStatusesCount() {
+        if (mData == null) return 0;
+        return mData.size();
+    }
 
     @Override
     public long getItemId(int position) {
@@ -74,14 +65,13 @@ public class ParcelableStatusesAdapter extends AbsStatusesAdapter<List<Parcelabl
     }
 
     @Override
-	public void setData(List<ParcelableStatus> data) {
-		mData = data;
-		notifyDataSetChanged();
-	}
+    public void setData(List<ParcelableStatus> data) {
+        mData = data;
+        notifyDataSetChanged();
+    }
 
     @Override
-	public List<ParcelableStatus> getData() {
-		return mData;
-	}
-
+    public List<ParcelableStatus> getData() {
+        return mData;
+    }
 }

@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.loader.support.ScheduledStatusesLoader;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 
 import java.util.List;
-public class ScheduledStatusesFragment extends AbsContentRecyclerViewFragment<ScheduledStatusesFragment.ScheduledStatusesAdapter>
+public class ScheduledStatusesFragment extends AbsContentListRecyclerViewFragment<ScheduledStatusesFragment.ScheduledStatusesAdapter>
         implements LoaderManager.LoaderCallbacks<List<ScheduledStatus>> {
 
     @Override

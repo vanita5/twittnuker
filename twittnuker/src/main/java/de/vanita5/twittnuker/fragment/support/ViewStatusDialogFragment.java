@@ -33,52 +33,53 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
+import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 public class ViewStatusDialogFragment extends BaseSupportDialogFragment {
 
     private DummyStatusHolderAdapter mAdapter;
-	private StatusViewHolder mHolder;
-	private View mStatusContainer;
+    private IStatusViewHolder mHolder;
+    private View mStatusContainer;
 
-	public ViewStatusDialogFragment() {
-		setStyle(STYLE_NO_TITLE, 0);
-	}
+    public ViewStatusDialogFragment() {
+        setStyle(STYLE_NO_TITLE, 0);
+    }
 
-	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup parent, final Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup parent, final Bundle savedInstanceState) {
         if (getShowsDialog()) {
-			return inflater.inflate(R.layout.dialog_scrollable_status, parent, false);
-		}
+            return inflater.inflate(R.layout.dialog_scrollable_status, parent, false);
+        }
         return inflater.inflate(R.layout.fragment_scrollable_status, parent, false);
     }
 
-	@Override
-	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		mStatusContainer = view.findViewById(R.id.status_container);
-	}
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mStatusContainer = view.findViewById(R.id.status_container);
+    }
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		final Bundle args = getArguments();
-		if (args == null || args.getParcelable(EXTRA_STATUS) == null) {
-			dismiss();
-			return;
-		}
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        final Bundle args = getArguments();
+        if (args == null || args.getParcelable(EXTRA_STATUS) == null) {
+            dismiss();
+            return;
+        }
         final View view = getView();
         if (view == null) throw new AssertionError();
-		final FragmentActivity activity = getActivity();
+        final FragmentActivity activity = getActivity();
         mAdapter = new DummyStatusHolderAdapter(activity);
         mHolder = new StatusViewHolder(mAdapter, getView());
-		final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
-		if (args.containsKey(EXTRA_SHOW_MEDIA_PREVIEW)) {
+        final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
+        if (args.containsKey(EXTRA_SHOW_MEDIA_PREVIEW)) {
             mAdapter.setMediaPreviewEnabled(args.getBoolean(EXTRA_SHOW_MEDIA_PREVIEW));
-		}
+        }
         mHolder.displayStatus(status, null, false, true);
-		mStatusContainer.findViewById(R.id.item_menu).setVisibility(View.GONE);
-		mStatusContainer.findViewById(R.id.action_buttons).setVisibility(View.GONE);
-	}
+        mStatusContainer.findViewById(R.id.item_menu).setVisibility(View.GONE);
+        mStatusContainer.findViewById(R.id.action_buttons).setVisibility(View.GONE);
+    }
 
 
 }

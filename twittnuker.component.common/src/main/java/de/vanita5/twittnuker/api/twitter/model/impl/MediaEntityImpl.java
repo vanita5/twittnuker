@@ -25,289 +25,281 @@ package de.vanita5.twittnuker.api.twitter.model.impl;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
-
-/**
- * Created by mariotaku on 15/3/31.
- */
 @JsonObject
 public class MediaEntityImpl implements MediaEntity {
-	@JsonField(name = "id")
-	long id;
+    @JsonField(name = "id")
+    long id;
 
-	@JsonField(name = "indices")
-	Indices indices;
+    @JsonField(name = "indices")
+    Indices indices;
 
-	@JsonField(name = "media_url")
-	String mediaUrl;
+    @JsonField(name = "media_url")
+    String mediaUrl;
 
-	@JsonField(name = "media_url_https")
-	String mediaUrlHttps;
-	@JsonField(name = "url")
-	String url;
-	@JsonField(name = "display_url")
-	String displayUrl;
-	@JsonField(name = "expanded_url")
-	String expandedUrl;
-	@JsonField(name = "type")
-	Type type;
-	@JsonField(name = "sizes")
-	HashMap<String, Size> sizes;
-	@JsonField(name = "source_status_id")
-	long sourceStatusId;
-	@JsonField(name = "source_user_id")
-	long sourceUserId;
-	@JsonField(name = "video_info")
-	VideoInfo videoInfo;
+    @JsonField(name = "media_url_https")
+    String mediaUrlHttps;
+    @JsonField(name = "url")
+    String url;
+    @JsonField(name = "display_url")
+    String displayUrl;
+    @JsonField(name = "expanded_url")
+    String expandedUrl;
+    @JsonField(name = "type")
+    Type type;
+    @JsonField(name = "sizes")
+    HashMap<String, Size> sizes;
+    @JsonField(name = "source_status_id")
+    long sourceStatusId;
+    @JsonField(name = "source_user_id")
+    long sourceUserId;
+    @JsonField(name = "video_info")
+    VideoInfo videoInfo;
+    @JsonField(name = "features")
+    HashMap<String, Feature> features;
 
-	@Override
-	public Map<String, Feature> getFeatures() {
-		return features;
-	}
+    @Override
+    public Map<String, Feature> getFeatures() {
+        return features;
+    }
 
-	@JsonField(name = "features")
-	HashMap<String, Feature> features;
+    @Override
+    public String toString() {
+        return "MediaEntityImpl{" +
+                "id=" + id +
+                ", indices=" + indices +
+                ", mediaUrl='" + mediaUrl + '\'' +
+                ", mediaUrlHttps='" + mediaUrlHttps + '\'' +
+                ", url='" + url + '\'' +
+                ", displayUrl='" + displayUrl + '\'' +
+                ", expandedUrl='" + expandedUrl + '\'' +
+                ", type=" + type +
+                ", sizes=" + sizes +
+                ", sourceStatusId=" + sourceStatusId +
+                ", sourceUserId=" + sourceUserId +
+                ", videoInfo=" + videoInfo +
+                ", features=" + features +
+                '}';
+    }
 
+    @Override
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
 
-	@JsonObject
-	public static class FeatureImpl implements Feature {
-		@JsonField(name = "faces")
-		Face[] faces;
+    @Override
+    public VideoInfo getVideoInfo() {
+        return videoInfo;
+    }
 
-		@Override
-		public String toString() {
-			return "FeatureImpl{" +
-					"faces=" + Arrays.toString(faces) +
-					'}';
-		}
+    @Override
+    public String getMediaUrlHttps() {
+        return mediaUrlHttps;
+    }
 
-		@JsonObject
-		public static class FaceImpl implements Face {
-			@JsonField(name = "x")
-			int x;
-			@JsonField(name = "y")
-			int y;
-			@JsonField(name = "h")
-			int height;
-			@JsonField(name = "w")
-			int width;
+    @Override
+    public String getExpandedUrl() {
+        return expandedUrl;
+    }
 
-			@Override
-			public int getX() {
-				return x;
-			}
+    @Override
+    public String getDisplayUrl() {
+        return displayUrl;
+    }
 
-			@Override
-			public int getY() {
-				return y;
-			}
+    @Override
+    public String getUrl() {
+        return url;
+    }
 
-			@Override
-			public String toString() {
-				return "FaceImpl{" +
-						"x=" + x +
-						", y=" + y +
-						", height=" + height +
-						", width=" + width +
-						'}';
-			}
+    @Override
+    public Type getType() {
+        return type;
+    }
 
-			@Override
-			public int getHeight() {
-				return height;
-			}
+    @Override
+    public Map<String, Size> getSizes() {
+        return sizes;
+    }
 
-			@Override
-			public int getWidth() {
-				return width;
-			}
-		}
+    @Override
+    public int getEnd() {
+        return indices.getEnd();
+    }
 
-	}
+    @Override
+    public int getStart() {
+        return indices.getStart();
+    }
 
-	@Override
-	public String toString() {
-		return "MediaEntityImpl{" +
-				"id=" + id +
-				", indices=" + indices +
-				", mediaUrl='" + mediaUrl + '\'' +
-				", mediaUrlHttps='" + mediaUrlHttps + '\'' +
-				", url='" + url + '\'' +
-				", displayUrl='" + displayUrl + '\'' +
-				", expandedUrl='" + expandedUrl + '\'' +
-				", type=" + type +
-				", sizes=" + sizes +
-				", sourceStatusId=" + sourceStatusId +
-				", sourceUserId=" + sourceUserId +
-				", videoInfo=" + videoInfo +
-				", features=" + features +
-				'}';
-	}
+    @Override
+    public long getId() {
+        return id;
+    }
 
-	@Override
-	public String getMediaUrl() {
-		return mediaUrl;
-	}
+    @JsonObject
+    public static class FeatureImpl implements Feature {
+        @JsonField(name = "faces")
+        Face[] faces;
 
-	@Override
-	public VideoInfo getVideoInfo() {
-		return videoInfo;
-	}
+        @Override
+        public String toString() {
+            return "FeatureImpl{" +
+                    "faces=" + Arrays.toString(faces) +
+                    '}';
+        }
 
-	@Override
-	public String getMediaUrlHttps() {
-		return mediaUrlHttps;
-	}
+        @JsonObject
+        public static class FaceImpl implements Face {
+            @JsonField(name = "x")
+            int x;
+            @JsonField(name = "y")
+            int y;
+            @JsonField(name = "h")
+            int height;
+            @JsonField(name = "w")
+            int width;
 
-	@Override
-	public String getExpandedUrl() {
-		return expandedUrl;
-	}
+            @Override
+            public int getX() {
+                return x;
+            }
 
-	@Override
-	public String getDisplayUrl() {
+            @Override
+            public int getY() {
+                return y;
+            }
 
-		return displayUrl;
-	}
+            @Override
+            public String toString() {
+                return "FaceImpl{" +
+                        "x=" + x +
+                        ", y=" + y +
+                        ", height=" + height +
+                        ", width=" + width +
+                        '}';
+            }
 
-	@Override
-	public String getUrl() {
+            @Override
+            public int getHeight() {
+                return height;
+            }
 
-		return url;
-	}
+            @Override
+            public int getWidth() {
+                return width;
+            }
+        }
 
-	@Override
-	public Type getType() {
+    }
 
-		return type;
-	}
+    @JsonObject
+    public static class VideoInfoImpl implements VideoInfo {
 
-	@Override
-	public Map<String, Size> getSizes() {
-		return sizes;
-	}
+        @JsonField(name = "duration")
+        long duration;
+        @JsonField(name = "variants")
+        Variant[] variants;
+        @JsonField(name = "aspect_ratio")
+        long[] aspectRatio;
 
-	@Override
-	public int getEnd() {
-		return indices.getEnd();
-	}
+        @Override
+        public Variant[] getVariants() {
+            return variants;
+        }
 
-	@Override
-	public int getStart() {
-		return indices.getStart();
-	}
+        @Override
+        public long[] getAspectRatio() {
+            return aspectRatio;
+        }
 
-	@Override
-	public long getId() {
-		return id;
-	}
+        @Override
+        public String toString() {
+            return "VideoInfoImpl{" +
+                    "duration=" + duration +
+                    ", variants=" + Arrays.toString(variants) +
+                    ", aspectRatio=" + Arrays.toString(aspectRatio) +
+                    '}';
+        }
 
-	@JsonObject
-	public static class VideoInfoImpl implements VideoInfo {
+        @Override
+        public long getDuration() {
+            return duration;
+        }
 
-		@JsonField(name = "duration")
-		long duration;
-		@JsonField(name = "variants")
-		Variant[] variants;
-		@JsonField(name = "aspect_ratio")
-		long[] aspectRatio;
+        @JsonObject
+        public static class VariantImpl implements Variant {
+            @JsonField(name = "bitrate")
+            long bitrate;
+            @JsonField(name = "content_type")
+            String contentType;
+            @JsonField(name = "url")
+            String url;
 
-		@Override
-		public Variant[] getVariants() {
-			return variants;
-		}
+            @Override
+            public String toString() {
+                return "VariantImpl{" +
+                        "bitrate=" + bitrate +
+                        ", contentType='" + contentType + '\'' +
+                        ", url='" + url + '\'' +
+                        '}';
+            }
 
-		@Override
-		public long[] getAspectRatio() {
-			return aspectRatio;
-		}
+            @Override
+            public String getContentType() {
+                return contentType;
+            }
 
-		@Override
-		public String toString() {
-			return "VideoInfoImpl{" +
-					"duration=" + duration +
-					", variants=" + Arrays.toString(variants) +
-					", aspectRatio=" + Arrays.toString(aspectRatio) +
-					'}';
-		}
+            @Override
+            public String getUrl() {
+                return url;
+            }
 
-		@Override
-		public long getDuration() {
-			return duration;
-		}
-
-		@JsonObject
-		public static class VariantImpl implements Variant {
-			@JsonField(name = "bitrate")
-			long bitrate;
-			@JsonField(name = "content_type")
-			String contentType;
-			@JsonField(name = "url")
-			String url;
-
-			@Override
-			public String toString() {
-				return "VariantImpl{" +
-						"bitrate=" + bitrate +
-						", contentType='" + contentType + '\'' +
-						", url='" + url + '\'' +
-						'}';
-			}
-
-			@Override
-			public String getContentType() {
-				return contentType;
-			}
-
-			@Override
-			public String getUrl() {
-				return url;
-			}
-
-			@Override
-			public long getBitrate() {
-				return bitrate;
-			}
-		}
-	}
+            @Override
+            public long getBitrate() {
+                return bitrate;
+            }
+        }
+    }
 
 
-	@JsonObject
-	public static class SizeImpl implements Size {
+    @JsonObject
+    public static class SizeImpl implements Size {
 
-		@JsonField(name = "width")
-		int width;
-		@JsonField(name = "height")
-		int height;
-		@JsonField(name = "resize")
-		String resize;
+        @JsonField(name = "w")
+        int width;
+        @JsonField(name = "h")
+        int height;
+        @JsonField(name = "resize")
+        String resize;
 
-		@Override
-		public String toString() {
-			return "SizeImpl{" +
-					"width=" + width +
-					", height=" + height +
-					", resize='" + resize + '\'' +
-					'}';
-		}
+        @Override
+        public String toString() {
+            return "SizeImpl{" +
+                    "width=" + width +
+                    ", height=" + height +
+                    ", resize='" + resize + '\'' +
+                    '}';
+        }
 
-		@Override
-		public int getHeight() {
-			return height;
-		}
+        @Override
+        public int getHeight() {
+            return height;
+        }
 
-		@Override
-		public String getResize() {
-			return resize;
-		}
+        @Override
+        public String getResize() {
+            return resize;
+        }
 
-		@Override
-		public int getWidth() {
-			return width;
-		}
-	}
+        @Override
+        public int getWidth() {
+            return width;
+        }
+    }
 }

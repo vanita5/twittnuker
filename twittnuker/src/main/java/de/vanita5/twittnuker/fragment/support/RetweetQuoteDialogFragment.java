@@ -45,19 +45,18 @@ import android.widget.EditText;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MenuUtils;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.view.ComposeMaterialEditText;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
+import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 
@@ -104,7 +103,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         @SuppressLint("InflateParams") final View view = inflater.inflate(R.layout.dialog_status_quote_retweet, null);
         final DummyStatusHolderAdapter adapter = new DummyStatusHolderAdapter(context);
         adapter.setShouldShowAccountsColor(true);
-        final StatusViewHolder holder = new StatusViewHolder(adapter, view.findViewById(R.id.item_content));
+        final IStatusViewHolder holder = new StatusViewHolder(adapter, view.findViewById(R.id.item_content));
         final ParcelableStatus status = getStatus();
 
         assert status != null;

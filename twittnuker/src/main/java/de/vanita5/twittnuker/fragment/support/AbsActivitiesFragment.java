@@ -47,7 +47,7 @@ import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 
-public abstract class AbsActivitiesFragment<Data> extends AbsContentRecyclerViewFragment<AbsActivitiesAdapter<Data>>
+public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecyclerViewFragment<AbsActivitiesAdapter<Data>>
         implements LoaderCallbacks<Data>, OnRefreshListener, DrawerCallback, RefreshScrollTopInterface,
         ActivityAdapterListener, KeyboardShortcutsHandler.KeyboardShortcutCallback {
 

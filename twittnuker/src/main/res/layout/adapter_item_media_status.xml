@@ -21,8 +21,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -38,14 +37,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <FrameLayout
+        <com.commonsware.cwac.layouts.AspectLockedFrameLayout
+            android:id="@+id/media_image_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <de.vanita5.twittnuker.view.MediaSizeImageView
+            <ImageView
                 android:id="@+id/media_image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/media"
                 android:scaleType="centerCrop"/>
 
             <ProgressBar
@@ -55,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/element_spacing_small"/>
-        </FrameLayout>
+        </com.commonsware.cwac.layouts.AspectLockedFrameLayout>
 
         <de.vanita5.twittnuker.view.ColorLabelRelativeLayout
             android:id="@+id/media_info_container"

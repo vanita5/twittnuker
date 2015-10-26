@@ -73,7 +73,7 @@ import java.util.Set;
 
 import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 
-public class DirectMessagesFragment extends AbsContentRecyclerViewFragment<MessageEntriesAdapter>
+public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<MessageEntriesAdapter>
         implements LoaderCallbacks<Cursor>, MessageEntriesAdapterListener, KeyboardShortcutCallback {
 
     // Listeners

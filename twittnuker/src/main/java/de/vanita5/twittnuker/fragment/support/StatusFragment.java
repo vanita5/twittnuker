@@ -126,6 +126,7 @@ import de.vanita5.twittnuker.view.TwitterCardContainer;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -318,7 +319,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     }
 
     @Override
-    public void onMediaClick(StatusViewHolder holder, View view, ParcelableMedia media, int position) {
+    public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position) {
         final ParcelableStatus status = mStatusAdapter.getStatus(position);
         if (status == null) return;
         final Bundle options = Utils.createMediaViewerActivityOption(view);
@@ -326,7 +327,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     }
 
     @Override
-    public void onStatusActionClick(StatusViewHolder holder, int id, int position) {
+    public void onStatusActionClick(IStatusViewHolder holder, int id, int position) {
         final ParcelableStatus status = mStatusAdapter.getStatus(position);
         if (status == null) return;
         switch (id) {
@@ -356,17 +357,17 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     }
 
     @Override
-    public void onStatusClick(StatusViewHolder holder, int position) {
+    public void onStatusClick(IStatusViewHolder holder, int position) {
         Utils.openStatus(getActivity(), mStatusAdapter.getStatus(position), null);
     }
 
     @Override
-    public boolean onStatusLongClick(StatusViewHolder holder, int position) {
+    public boolean onStatusLongClick(IStatusViewHolder holder, int position) {
         return false;
     }
 
     @Override
-    public void onStatusMenuClick(StatusViewHolder holder, View menuView, int position) {
+    public void onStatusMenuClick(IStatusViewHolder holder, View menuView, int position) {
         //TODO show status menu
         if (mPopupMenu != null) {
             mPopupMenu.dismiss();
@@ -383,7 +384,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     }
 
     @Override
-    public void onUserProfileClick(StatusViewHolder holder, ParcelableStatus status, int position) {
+    public void onUserProfileClick(IStatusViewHolder holder, ParcelableStatus status, int position) {
         final FragmentActivity activity = getActivity();
         final View profileImageView = holder.getProfileImageView();
         final View profileTypeView = holder.getProfileTypeView();
@@ -1098,7 +1099,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private static final int ITEM_IDX_REPLY_ERROR = 6;
         private static final int ITEM_IDX_SPACE = 7;
         private static final int ITEM_TYPES_SUM = 8;
-        private final Context mContext;
         private final StatusFragment mFragment;
         private final LayoutInflater mInflater;
         private final MediaLoadingHandler mMediaLoadingHandler;
@@ -1137,7 +1137,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             // There's always a space at the end of the list
             mItemCounts[ITEM_IDX_SPACE] = 1;
             mFragment = fragment;
-            mContext = context;
             mInflater = LayoutInflater.from(context);
             mMediaLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
             mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
@@ -1174,12 +1173,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 if (getItemId(i) == itemId) return i;
             }
             return RecyclerView.NO_POSITION;
-        }
-
-        @NonNull
-        @Override
-        public Context getContext() {
-            return mContext;
         }
 
         @Override
@@ -1418,7 +1411,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                     return new LoadIndicatorViewHolder(view);
                 }
                 case VIEW_TYPE_SPACE: {
-                    return new SpaceViewHolder(new Space(mContext));
+                    return new SpaceViewHolder(new Space(getContext()));
                 }
                 case VIEW_TYPE_REPLY_ERROR: {
                     final View view = mInflater.inflate(R.layout.adapter_item_status_error, parent,
@@ -1442,7 +1435,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 }
                 case VIEW_TYPE_LIST_STATUS: {
                     final ParcelableStatus status = getStatus(position);
-                    final StatusViewHolder statusHolder = (StatusViewHolder) holder;
+                    final IStatusViewHolder statusHolder = (IStatusViewHolder) holder;
                     // Display 'in reply to' for first item
                     // useful to indicate whether first tweet has reply or not
                     // We only display that indicator for first conversation item
@@ -1531,38 +1524,38 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         @Override
         public void onItemActionClick(ViewHolder holder, int id, int position) {
             if (mStatusAdapterListener != null) {
-                mStatusAdapterListener.onStatusActionClick((StatusViewHolder) holder, id, position);
+                mStatusAdapterListener.onStatusActionClick((IStatusViewHolder) holder, id, position);
             }
         }
 
         @Override
         public void onItemMenuClick(ViewHolder holder, View itemView, int position) {
             if (mStatusAdapterListener != null) {
-                mStatusAdapterListener.onStatusMenuClick((StatusViewHolder) holder, itemView, position);
+                mStatusAdapterListener.onStatusMenuClick((IStatusViewHolder) holder, itemView, position);
             }
         }
 
         @Override
-        public void onMediaClick(StatusViewHolder holder, View view, ParcelableMedia media, int position) {
+        public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position) {
             if (mStatusAdapterListener != null) {
                 mStatusAdapterListener.onMediaClick(holder, view, media, position);
             }
         }
 
         @Override
-        public final void onStatusClick(StatusViewHolder holder, int position) {
+        public final void onStatusClick(IStatusViewHolder holder, int position) {
             if (mStatusAdapterListener != null) {
                 mStatusAdapterListener.onStatusClick(holder, position);
             }
         }
 
         @Override
-        public boolean onStatusLongClick(StatusViewHolder holder, int position) {
+        public boolean onStatusLongClick(IStatusViewHolder holder, int position) {
             return false;
         }
 
         @Override
-        public void onUserProfileClick(StatusViewHolder holder, int position) {
+        public void onUserProfileClick(IStatusViewHolder holder, int position) {
             final Context context = getContext();
             final ParcelableStatus status = getStatus(position);
             final View profileImageView = holder.getProfileImageView();

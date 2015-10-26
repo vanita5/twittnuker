@@ -25,9 +25,9 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder.StatusClickListener;
+import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
-public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClickListener,
+public interface IStatusesAdapter<Data> extends IContentCardAdapter, IStatusViewHolder.StatusClickListener,
         IGapSupportedAdapter, ContentCardClickListener {
 
     int getLinkHighlightingStyle();
