@@ -12,17 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.StaggeredGridParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.loader.support.MediaTimelineLoader;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
+import de.vanita5.twittnuker.view.holder.GapViewHolder;
+import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 import java.util.List;
 
 public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<StaggeredGridParcelableStatusesAdapter, StaggeredGridLayoutManager>
-        implements LoaderCallbacks<List<ParcelableStatus>>, DrawerCallback {
+        implements LoaderCallbacks<List<ParcelableStatus>>, DrawerCallback, AbsStatusesAdapter.StatusAdapterListener {
 
 
     @Override
@@ -33,14 +38,16 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
 
     @Override
     public boolean isRefreshing() {
-        //TODO detect loader refreshing
-        return false;
+        final Loader<Object> loader = getLoaderManager().getLoader(0);
+        return loader != null && loader.isStarted();
     }
 
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        final AbsStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
+        adapter.setListener(this);
         final Bundle loaderArgs = new Bundle(getArguments());
         loaderArgs.putBoolean(EXTRA_FROM_USER, true);
         getLoaderManager().initLoader(0, loaderArgs, this);
@@ -141,5 +148,40 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
         final IStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
         final long maxId = adapter.getStatusId(adapter.getStatusesCount() - 1);
         getStatuses(maxId, -1);
+    }
+
+    @Override
+    public void onGapClick(GapViewHolder holder, int position) {
+
+    }
+
+    @Override
+    public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position) {
+
+    }
+
+    @Override
+    public void onStatusActionClick(IStatusViewHolder holder, int id, int position) {
+
+    }
+
+    @Override
+    public void onStatusClick(IStatusViewHolder holder, int position) {
+        Utils.openStatus(getContext(), getAdapter().getStatus(position), null);
+    }
+
+    @Override
+    public boolean onStatusLongClick(IStatusViewHolder holder, int position) {
+        return false;
+    }
+
+    @Override
+    public void onStatusMenuClick(IStatusViewHolder holder, View menuView, int position) {
+
+    }
+
+    @Override
+    public void onUserProfileClick(IStatusViewHolder holder, ParcelableStatus status, int position) {
+
     }
 }
