@@ -37,7 +37,6 @@ public class ListParcelableStatusesAdapter extends AbsParcelableStatusesAdapter 
 
     public ListParcelableStatusesAdapter(Context context, boolean compact) {
         super(context, compact);
-        setHasStableIds(true);
     }
 
     @Override

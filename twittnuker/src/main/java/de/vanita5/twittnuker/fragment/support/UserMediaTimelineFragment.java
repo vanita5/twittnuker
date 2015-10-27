@@ -38,8 +38,7 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
 
     @Override
     public boolean isRefreshing() {
-        final Loader<Object> loader = getLoaderManager().getLoader(0);
-        return loader != null && loader.isStarted();
+        return getLoaderManager().hasRunningLoaders();
     }
 
 
