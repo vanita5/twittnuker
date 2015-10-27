@@ -37,4 +37,4 @@ before_script:
   - "echo $JAVA_OPTS"
   - "export JAVA_OPTS=-Xmx2048m"
 
-script: ./gradlew svgToDrawable build --no-daemon
+script: ./gradlew build --no-daemon
