@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util.support;
 
+import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 
@@ -29,17 +30,17 @@ import de.vanita5.twittnuker.util.support.graphics.OutlineCompat;
 
 public class DrawableSupport {
 
-	public static void getOutline(Drawable drawable, OutlineCompat outlineCompat) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
-		DrawableSupportLollipop.getOutline(drawable, outlineCompat);
-	}
+    public static void getOutline(Drawable drawable, OutlineCompat outlineCompat) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+        DrawableSupportLollipop.getOutline(drawable, outlineCompat);
+    }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static class DrawableSupportLollipop {
 
-	private static class DrawableSupportLollipop {
-
-		public static void getOutline(Drawable drawable, OutlineCompat outlineCompat) {
-			drawable.getOutline(OutlineCompat.OutlineL.getWrapped(outlineCompat));
-		}
-	}
+        public static void getOutline(Drawable drawable, OutlineCompat outlineCompat) {
+            drawable.getOutline(OutlineCompat.OutlineL.getWrapped(outlineCompat));
+        }
+    }
 
 }

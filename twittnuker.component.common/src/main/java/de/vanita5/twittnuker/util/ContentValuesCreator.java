@@ -329,7 +329,6 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         values.put(Statuses.STATUS_ID, orig.getId());
         values.put(Statuses.STATUS_TIMESTAMP, orig.getCreatedAt().getTime());
 
-
         final Status status;
         if (orig.isRetweet()) {
             final Status retweetedStatus = orig.getRetweetedStatus();
