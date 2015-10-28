@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.util.LoganSquareWrapper;
+import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 import java.io.File;
@@ -62,7 +62,7 @@ public abstract class TwitterAPIActivitiesLoader extends ParcelableActivitiesLoa
                                       final long maxId, final List<ParcelableActivity> data, final String[] savedStatusesArgs,
                                       final int tabPosition) {
         super(context, data, tabPosition);
-		mContext = context;
+        mContext = context;
         mAccountIds = accountId;
         mSinceId = sinceId;
         mMaxId = maxId;
@@ -70,21 +70,21 @@ public abstract class TwitterAPIActivitiesLoader extends ParcelableActivitiesLoa
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public final List<ParcelableActivity> loadInBackground() {
         final File serializationFile = getSerializationFile();
         final List<ParcelableActivity> data = getData();
         if (isFirstLoad() && getTabPosition() >= 0 && serializationFile != null) {
             final List<ParcelableActivity> cached = getCachedData(serializationFile);
-			if (cached != null) {
+            if (cached != null) {
                 data.addAll(cached);
                 if (mComparator != null) {
                     Collections.sort(data, mComparator);
                 } else {
                     Collections.sort(data);
-			    }
+                }
                 return new CopyOnWriteArrayList<>(data);
-		    }
+            }
         }
         final List<Activity> activities;
         final boolean truncated;
@@ -116,7 +116,7 @@ public abstract class TwitterAPIActivitiesLoader extends ParcelableActivitiesLoa
         }
         final boolean insertGap = position.first > 0 && position.second > 0 && activities.size() > 1
                 && !data.isEmpty() && !truncated;
-    //        mHandler.post(CacheUsersStatusesTask.getRunnable(context, new StatusListResponse(mAccountIds, activities)));
+        //        mHandler.post(CacheUsersStatusesTask.getRunnable(context, new StatusListResponse(mAccountIds, activities)));
         for (final Activity activity : activities) {
             final long min = activity.getMinPosition(), max = activity.getMaxPosition();
             final boolean deleted = deleteActivity(data, max);
@@ -134,28 +134,28 @@ public abstract class TwitterAPIActivitiesLoader extends ParcelableActivitiesLoa
             Collections.sort(data, mComparator);
         } else {
             Collections.sort(data);
-		}
+        }
         saveCachedData(serializationFile, data);
         return new CopyOnWriteArrayList<>(data);
-	}
+    }
 
     public final void setComparator(Comparator<ParcelableActivity> comparator) {
         mComparator = comparator;
     }
 
-	protected abstract List<Activity> getActivities(Twitter twitter, Paging paging) throws TwitterException;
+    protected abstract List<Activity> getActivities(Twitter twitter, Paging paging) throws TwitterException;
 
     protected final Twitter getTwitter() {
         return TwitterAPIFactory.getTwitterInstance(mContext, mAccountIds, true, true);
-	}
+    }
 
     protected abstract boolean shouldFilterActivity(final SQLiteDatabase database, final ParcelableActivity activity);
-	
-	private List<ParcelableActivity> getCachedData(final File file) {
+
+    private List<ParcelableActivity> getCachedData(final File file) {
         if (file == null) return null;
-		try {
-            return LoganSquareWrapper.parseList(file, ParcelableActivity.class);
-		} catch (final IOException e) {
+        try {
+            return JsonSerializer.parseList(file, ParcelableActivity.class);
+        } catch (final IOException e) {
             if (BuildConfig.DEBUG) {
                 Log.w(LOGTAG, e);
             }
@@ -164,30 +164,30 @@ public abstract class TwitterAPIActivitiesLoader extends ParcelableActivitiesLoa
                 throw e;
             }
             Log.e(LOGTAG, "Error unserializing data", e);
-		}
-		return null;
-	}
+        }
+        return null;
+    }
 
-	private File getSerializationFile() {
+    private File getSerializationFile() {
         if (mSavedStatusesFileArgs == null) return null;
-		try {
-            return LoganSquareWrapper.getSerializationFile(mContext, mSavedStatusesFileArgs);
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+        try {
+            return JsonSerializer.getSerializationFile(mContext, mSavedStatusesFileArgs);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	private void saveCachedData(final File file, final List<ParcelableActivity> data) {
-		if (file == null || data == null) return;
+    private void saveCachedData(final File file, final List<ParcelableActivity> data) {
+        if (file == null || data == null) return;
         final SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         final int databaseItemLimit = prefs.getInt(KEY_DATABASE_ITEM_LIMIT, DEFAULT_DATABASE_ITEM_LIMIT);
-		try {
+        try {
             final List<ParcelableActivity> activities = data.subList(0, Math.min(databaseItemLimit, data.size()));
             LoganSquare.serialize(activities, new FileOutputStream(file), ParcelableActivity.class);
-		} catch (final IOException e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

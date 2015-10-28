@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -22,13 +22,18 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.IDsImpl;
+
 /**
  * A data interface representing array of numeric IDs.
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
+@Implementation(IDsImpl.class)
 public interface IDs extends TwitterResponse, CursorSupport {
 
-	long[] getIDs();
+    long[] getIDs();
 
 }

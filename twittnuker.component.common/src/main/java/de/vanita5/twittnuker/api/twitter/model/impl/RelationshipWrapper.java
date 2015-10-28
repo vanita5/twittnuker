@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -31,13 +31,13 @@ import de.vanita5.twittnuker.api.twitter.model.Relationship;
  * Created by mariotaku on 15/5/7.
  */
 @JsonObject
-public class RelationshipWrapper extends TwitterResponseImpl implements Wrapper<Relationship> {
+public class RelationshipWrapper extends TwitterResponseImpl implements TwitterModelWrapper<Relationship> {
 
-	@JsonField(name = "relationship")
-	RelationshipImpl relationship;
+    @JsonField(name = "relationship")
+    RelationshipImpl relationship;
 
-	@Override
-	public Relationship getWrapped(Object extra) {
-		return relationship;
-	}
+    @Override
+    public Relationship getWrapped(Object extra) {
+        return relationship;
+    }
 }

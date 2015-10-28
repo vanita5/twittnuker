@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -28,7 +28,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 
-import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
+import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
@@ -41,8 +41,8 @@ public class MentionsTimelineFragment extends CursorStatusesFragment {
 
     @NonNull
     @Override
-    protected ParcelableStatusesAdapter onCreateAdapter(Context context, boolean compact) {
-        final ParcelableStatusesAdapter adapter = super.onCreateAdapter(context, compact);
+    protected ListParcelableStatusesAdapter onCreateAdapter(Context context, boolean compact) {
+        final ListParcelableStatusesAdapter adapter = super.onCreateAdapter(context, compact);
         adapter.setShowInReplyTo(false);
         return adapter;
     }

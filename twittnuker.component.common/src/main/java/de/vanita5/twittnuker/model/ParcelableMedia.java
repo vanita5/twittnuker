@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -63,7 +63,7 @@ public class ParcelableMedia implements Parcelable {
     @MediaType
     public static final int TYPE_UNKNOWN = 0;
     @MediaType
-	public static final int TYPE_IMAGE = 1;
+    public static final int TYPE_IMAGE = 1;
     @MediaType
     public static final int TYPE_VIDEO = 2;
     @MediaType
@@ -81,7 +81,6 @@ public class ParcelableMedia implements Parcelable {
             return new ParcelableMedia[size];
         }
     };
-    @NonNull
     @JsonField(name = "media_url")
     public String media_url;
     @Nullable
@@ -137,7 +136,7 @@ public class ParcelableMedia implements Parcelable {
         start = in.readInt();
         end = in.readInt();
         //noinspection ResourceType
-		type = in.readInt();
+        type = in.readInt();
         width = in.readInt();
         height = in.readInt();
         video_info = in.readParcelable(VideoInfo.class.getClassLoader());
@@ -151,7 +150,7 @@ public class ParcelableMedia implements Parcelable {
         this.preview_url = preview_url;
         this.start = start;
         this.end = end;
-		this.type = type;
+        this.type = type;
         this.width = 0;
         this.height = 0;
     }
@@ -282,7 +281,8 @@ public class ParcelableMedia implements Parcelable {
     @Nullable
     private static ParcelableMedia[] fromCard(@Nullable CardEntity card, @Nullable UrlEntity[] entities) {
         if (card == null) return null;
-        if ("animated_gif".equals(card.getName())) {
+        final String name = card.getName();
+        if ("animated_gif".equals(name) || "player".equals(name)) {
             final BindingValue player_stream_url = card.getBindingValue("player_stream_url");
             if (!(player_stream_url instanceof StringValue))
                 return null;
@@ -326,7 +326,7 @@ public class ParcelableMedia implements Parcelable {
         dest.writeInt(width);
         dest.writeInt(height);
         dest.writeParcelable(video_info, flags);
-	}
+    }
 
     private static int getTypeInt(Type type) {
         switch (type) {
@@ -336,15 +336,15 @@ public class ParcelableMedia implements Parcelable {
                 return TYPE_VIDEO;
             case ANIMATED_GIF:
                 return TYPE_ANIMATED_GIF;
-		}
+        }
         return TYPE_UNKNOWN;
-	}
+    }
 
     @IntDef({TYPE_UNKNOWN, TYPE_IMAGE, TYPE_VIDEO, TYPE_ANIMATED_GIF, TYPE_CARD_ANIMATED_GIF})
     @Retention(RetentionPolicy.SOURCE)
     public @interface MediaType {
 
-	}
+    }
 
     @JsonObject
     public static class VideoInfo implements Parcelable {
@@ -395,15 +395,15 @@ public class ParcelableMedia implements Parcelable {
         @JsonObject
         public static class Variant implements Parcelable {
             public static final Parcelable.Creator<Variant> CREATOR = new Parcelable.Creator<Variant>() {
-        		@Override
+                @Override
                 public Variant createFromParcel(Parcel source) {
                     return new Variant(source);
-            	}
+                }
 
-            	@Override
+                @Override
                 public Variant[] newArray(int size) {
                     return new Variant[size];
-				}
+                }
             };
             @JsonField(name = "content_type")
             public String content_type;
@@ -459,9 +459,9 @@ public class ParcelableMedia implements Parcelable {
                 dest.writeLong(this.bitrate);
             }
 
-		}
+        }
 
-		@Override
+        @Override
         public int describeContents() {
             return 0;
         }
@@ -472,6 +472,6 @@ public class ParcelableMedia implements Parcelable {
             dest.writeLong(duration);
         }
 
-	}
+    }
 
 }

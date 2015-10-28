@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -37,6 +37,8 @@ import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import javax.inject.Inject;
 
 public abstract class BaseRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+
+    private final Context mContext;
     @Inject
     protected AsyncTwitterWrapper mTwitterWrapper;
     @Inject
@@ -49,12 +51,16 @@ public abstract class BaseRecyclerViewAdapter<VH extends RecyclerView.ViewHolder
     protected UserColorNameManager mUserColorNameManager;
     @Inject
     protected SharedPreferencesWrapper mPreferences;
-
     public BaseRecyclerViewAdapter(Context context) {
+        mContext = context;
         //noinspection unchecked
         DaggerGeneralComponent.builder()
                 .applicationModule(ApplicationModule.get(context))
                 .build()
                 .inject((BaseRecyclerViewAdapter<RecyclerView.ViewHolder>) this);
+    }
+
+    public final Context getContext() {
+        return mContext;
     }
 }

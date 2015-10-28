@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -24,13 +24,18 @@ package de.vanita5.twittnuker.util;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.JsonWriter;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mariotaku.restfu.Utils;
+
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.constant.IntentConstants;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -43,165 +48,177 @@ import static android.text.TextUtils.isEmpty;
 
 public final class ParseUtils {
 
-	public static String bundleToJSON(final Bundle args) {
-		final Set<String> keys = args.keySet();
-		final JSONObject json = new JSONObject();
-		for (final String key : keys) {
-			final Object value = args.get(key);
-			if (value == null) {
-				continue;
-			}
-			try {
-				if (value instanceof Boolean) {
-					json.put(key, args.getBoolean(key));
-				} else if (value instanceof Integer) {
-					json.put(key, args.getInt(key));
-				} else if (value instanceof Long) {
-					json.put(key, args.getLong(key));
-				} else if (value instanceof String) {
-					json.put(key, args.getString(key));
-				} else {
-					Log.w(TwittnukerConstants.LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
-				}
-			} catch (final JSONException e) {
-				e.printStackTrace();
-			}
-		}
-		return json.toString();
-	}
+    public static String bundleToJSON(final Bundle args) {
+        final Set<String> keys = args.keySet();
+        final StringWriter sw = new StringWriter();
+        final JsonWriter json = new JsonWriter(sw);
+        try {
+            json.beginObject();
+            for (final String key : keys) {
+                json.name(key);
+                final Object value = args.get(key);
+                if (value == null) {
+                    json.nullValue();
+                } else if (value instanceof Boolean) {
+                    json.value((Boolean) value);
+                } else if (value instanceof Integer) {
+                    json.value((Integer) value);
+                } else if (value instanceof Long) {
+                    json.value((Long) value);
+                } else if (value instanceof String) {
+                    json.value((String) value);
+                } else if (value instanceof Float) {
+                    json.value((Float) value);
+                } else if (value instanceof Double) {
+                    json.value((Double) value);
+                } else {
+                    Log.w(TwittnukerConstants.LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
+                }
+            }
+            json.endObject();
+            json.flush();
+            sw.flush();
+            return sw.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            Utils.closeSilently(json);
+        }
+    }
 
-	public static Bundle jsonToBundle(final String string) {
-		final Bundle bundle = new Bundle();
-		if (string == null) return bundle;
-		try {
-			final JSONObject json = new JSONObject(string);
-			final Iterator<?> it = json.keys();
-			while (it.hasNext()) {
-				final Object key_obj = it.next();
-				if (key_obj == null) {
-					continue;
-				}
-				final String key = key_obj.toString();
-				final Object value = json.get(key);
-				if (value instanceof Boolean) {
-					bundle.putBoolean(key, json.optBoolean(key));
-				} else if (value instanceof Integer) {
-					// Simple workaround for account_id
-					if (shouldPutLong(key)) {
-						bundle.putLong(key, json.optLong(key));
-					} else {
-						bundle.putInt(key, json.optInt(key));
-					}
-				} else if (value instanceof Long) {
-					bundle.putLong(key, json.optLong(key));
-				} else if (value instanceof String) {
-					bundle.putString(key, json.optString(key));
-				} else {
-					Log.w(TwittnukerConstants.LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
-				}
-			}
-		} catch (final JSONException e) {
-			e.printStackTrace();
-		} catch (final ClassCastException e) {
-			e.printStackTrace();
-		}
-		return bundle;
-	}
+    public static Bundle jsonToBundle(final String string) {
+        final Bundle bundle = new Bundle();
+        if (string == null) return bundle;
+        try {
+            final JSONObject json = new JSONObject(string);
+            final Iterator<?> it = json.keys();
+            while (it.hasNext()) {
+                final Object key_obj = it.next();
+                if (key_obj == null) {
+                    continue;
+                }
+                final String key = key_obj.toString();
+                final Object value = json.get(key);
+                if (value instanceof Boolean) {
+                    bundle.putBoolean(key, json.optBoolean(key));
+                } else if (value instanceof Integer) {
+                    // Simple workaround for account_id
+                    if (shouldPutLong(key)) {
+                        bundle.putLong(key, json.optLong(key));
+                    } else {
+                        bundle.putInt(key, json.optInt(key));
+                    }
+                } else if (value instanceof Long) {
+                    bundle.putLong(key, json.optLong(key));
+                } else if (value instanceof String) {
+                    bundle.putString(key, json.optString(key));
+                } else {
+                    Log.w(TwittnukerConstants.LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
+                }
+            }
+        } catch (final JSONException e) {
+            e.printStackTrace();
+        } catch (final ClassCastException e) {
+            e.printStackTrace();
+        }
+        return bundle;
+    }
 
-	public static double parseDouble(final String source) {
-		return parseDouble(source, -1);
-	}
+    public static double parseDouble(final String source) {
+        return parseDouble(source, -1);
+    }
 
-	public static double parseDouble(final String source, final double def) {
-		if (source == null) return def;
-		try {
-			return Double.parseDouble(source);
-		} catch (final NumberFormatException e) {
-			// Wrong number format? Ignore them.
-		}
-		return def;
-	}
+    public static double parseDouble(final String source, final double def) {
+        if (source == null) return def;
+        try {
+            return Double.parseDouble(source);
+        } catch (final NumberFormatException e) {
+            // Wrong number format? Ignore them.
+        }
+        return def;
+    }
 
-	public static float parseFloat(final String source) {
-		return parseFloat(source, -1);
-	}
+    public static float parseFloat(final String source) {
+        return parseFloat(source, -1);
+    }
 
-	public static float parseFloat(final String source, final float def) {
-		if (source == null) return def;
-		try {
-			return Float.parseFloat(source);
-		} catch (final NumberFormatException e) {
-			// Wrong number format? Ignore them.
-		}
-		return def;
-	}
+    public static float parseFloat(final String source, final float def) {
+        if (source == null) return def;
+        try {
+            return Float.parseFloat(source);
+        } catch (final NumberFormatException e) {
+            // Wrong number format? Ignore them.
+        }
+        return def;
+    }
 
-	public static int parseInt(final String source) {
-		return parseInt(source, -1);
-	}
+    public static int parseInt(final String source) {
+        return parseInt(source, -1);
+    }
 
-	public static int parseInt(final String source, final int def) {
-		if (source == null) return def;
-		try {
-			return Integer.valueOf(source);
-		} catch (final NumberFormatException e) {
-			// Wrong number format? Ignore them.
-		}
-		return def;
-	}
+    public static int parseInt(final String source, final int def) {
+        if (source == null) return def;
+        try {
+            return Integer.valueOf(source);
+        } catch (final NumberFormatException e) {
+            // Wrong number format? Ignore them.
+        }
+        return def;
+    }
 
-	public static long parseLong(final String source) {
-		return parseLong(source, -1);
-	}
+    public static long parseLong(final String source) {
+        return parseLong(source, -1);
+    }
 
-	public static long parseLong(final String source, final long def) {
-		if (source == null) return def;
-		try {
-			return Long.parseLong(source);
-		} catch (final NumberFormatException e) {
-			// Wrong number format? Ignore them.
-		}
-		return def;
-	}
+    public static long parseLong(final String source, final long def) {
+        if (source == null) return def;
+        try {
+            return Long.parseLong(source);
+        } catch (final NumberFormatException e) {
+            // Wrong number format? Ignore them.
+        }
+        return def;
+    }
 
     @Deprecated
     public static String parseString(final String object) {
         return object;
     }
 
-	public static String parseString(final Object object) {
-		return parseString(object, null);
-	}
+    public static String parseString(final Object object) {
+        return parseString(object, null);
+    }
 
-	public static String parseString(final Object object, final String def) {
-		if (object == null) return def;
-		return String.valueOf(object);
-	}
+    public static String parseString(final Object object, final String def) {
+        if (object == null) return def;
+        return String.valueOf(object);
+    }
 
-	public static URI parseURI(final String uriString) {
-		if (uriString == null) return null;
-		try {
-			return new URI(uriString);
-		} catch (final URISyntaxException e) {
-			// This should not happen.
-		}
-		return null;
-	}
+    public static URI parseURI(final String uriString) {
+        if (uriString == null) return null;
+        try {
+            return new URI(uriString);
+        } catch (final URISyntaxException e) {
+            // This should not happen.
+        }
+        return null;
+    }
 
-	public static URL parseURL(final String urlString) {
-		if (urlString == null) return null;
-		try {
-			return new URL(urlString);
-		} catch (final MalformedURLException e) {
-			// This should not happen.
-		}
-		return null;
-	}
+    public static URL parseURL(final String urlString) {
+        if (urlString == null) return null;
+        try {
+            return new URL(urlString);
+        } catch (final MalformedURLException e) {
+            // This should not happen.
+        }
+        return null;
+    }
 
-	private static boolean shouldPutLong(final String key) {
+    private static boolean shouldPutLong(final String key) {
         return IntentConstants.EXTRA_ACCOUNT_ID.equals(key) || IntentConstants.EXTRA_USER_ID.equals(key) || IntentConstants.EXTRA_STATUS_ID.equals(key)
                 || IntentConstants.EXTRA_LIST_ID.equals(key);
-	}
+    }
 
     public static String parsePrettyDecimal(double num, int decimalDigits) {
         String result = String.format(Locale.US, "%." + decimalDigits + "f", num);
@@ -222,4 +239,5 @@ public final class ParseUtils {
             return def;
         }
     }
+
 }

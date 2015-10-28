@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -22,45 +22,50 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.AccountSettingsImpl;
+
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.1.9
  */
+@Implementation(AccountSettingsImpl.class)
 public interface AccountSettings extends TwitterResponse {
-	/**
-	 * Returns the language used to render Twitter's UII for this user.
-	 * 
-	 * @return the language ISO 639-1 representation
-	 */
-	String getLanguage();
+    /**
+     * Returns the language used to render Twitter's UII for this user.
+     *
+     * @return the language ISO 639-1 representation
+     */
+    String getLanguage();
 
-	/**
-	 * Returns the timezone configured for this user.
-	 * 
-	 * @return the timezone (formated as a Rails TimeZone name)
-	 */
-	TimeZone getTimeZone();
+    /**
+     * Returns the timezone configured for this user.
+     *
+     * @return the timezone (formated as a Rails TimeZone name)
+     */
+    TimeZone getTimeZone();
 
-	/**
-	 * Return the user's trend locations
-	 * 
-	 * @return the user's trend locations
-	 */
-	Location[] getTrendLocations();
+    /**
+     * Return the user's trend locations
+     *
+     * @return the user's trend locations
+     */
+    Location[] getTrendLocations();
 
-	/**
-	 * Returns true if the wants to always access twitter using HTTPS.
-	 * 
-	 * @return true if the wants to always access twitter using HTTPS
-	 */
-	boolean isAlwaysUseHttps();
+    /**
+     * Returns true if the wants to always access twitter using HTTPS.
+     *
+     * @return true if the wants to always access twitter using HTTPS
+     */
+    boolean isAlwaysUseHttps();
 
 
-	/**
-	 * Return true if the user is enabling geo location
-	 * 
-	 * @return true if the user is enabling geo location
-	 */
-	boolean isGeoEnabled();
+    /**
+     * Return true if the user is enabling geo location
+     *
+     * @return true if the user is enabling geo location
+     */
+    boolean isGeoEnabled();
 
 }

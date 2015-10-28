@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -25,11 +25,11 @@ package de.vanita5.twittnuker.api.twitter.model.impl;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.util.TwitterConverter;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.api.twitter.util.TwitterConverter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,36 +38,36 @@ import java.util.ArrayList;
  * Created by mariotaku on 15/5/7.
  */
 @JsonObject
-public class PageableResponseListWrapper extends TwitterResponseImpl implements Wrapper<PageableResponseList<?>> {
+public class PageableResponseListWrapper extends TwitterResponseImpl implements TwitterModelWrapper<PageableResponseList<?>> {
 
-	@JsonField(name = "previous_cursor")
-	long previousCursor;
-	@JsonField(name = "next_cursor")
-	long nextCursor;
+    @JsonField(name = "previous_cursor")
+    long previousCursor;
+    @JsonField(name = "next_cursor")
+    long nextCursor;
 
-	@JsonField(name = "users")
-	ArrayList<User> users;
+    @JsonField(name = "users")
+    ArrayList<User> users;
 
-	@JsonField(name = "statuses")
-	ArrayList<Status> statuses;
+    @JsonField(name = "statuses")
+    ArrayList<Status> statuses;
 
     @JsonField(name = "lists")
     ArrayList<UserList> userLists;
 
-	@Override
-	public PageableResponseList<?> getWrapped(Object extra) {
-		final Type[] typeArgs = (Type[]) extra;
-		final Class<?> elementType = (Class<?>) typeArgs[0];
+    @Override
+    public PageableResponseList<?> getWrapped(Object extra) {
+        final Type[] typeArgs = (Type[]) extra;
+        final Class<?> elementType = (Class<?>) typeArgs[0];
         PageableResponseListImpl<?> list;
-		if (User.class.isAssignableFrom(elementType)) {
+        if (User.class.isAssignableFrom(elementType)) {
             list = new PageableResponseListImpl<>(users);
-		} else if (Status.class.isAssignableFrom(elementType)) {
+        } else if (Status.class.isAssignableFrom(elementType)) {
             list = new PageableResponseListImpl<>(statuses);
         } else if (UserList.class.isAssignableFrom(elementType)) {
             list = new PageableResponseListImpl<>(userLists);
         } else {
-			throw new TwitterConverter.UnsupportedTypeException(elementType);
-		}
+            throw new TwitterConverter.UnsupportedTypeException(elementType);
+        }
         list.previousCursor = previousCursor;
         list.nextCursor = nextCursor;
         return list;

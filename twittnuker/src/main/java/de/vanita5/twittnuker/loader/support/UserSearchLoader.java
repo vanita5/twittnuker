@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -24,25 +24,24 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.User;
-
 public class UserSearchLoader extends TwitterAPIUsersLoader {
 
-	private final String mQuery;
-	private final int mPage;
+    private final String mQuery;
+    private final int mPage;
 
     public UserSearchLoader(final Context context, final long accountId, final String query, final int page,
                             final List<ParcelableUser> data, boolean fromUser) {
         super(context, accountId, data, fromUser);
-		mQuery = query;
-		mPage = page;
+        mQuery = query;
+        mPage = page;
     }
 
     public int getPage() {
@@ -51,17 +50,17 @@ public class UserSearchLoader extends TwitterAPIUsersLoader {
 
     public String getQuery() {
         return mQuery;
-	}
+    }
 
-	@Override
-	public List<User> getUsers(final Twitter twitter) throws TwitterException {
-		if (twitter == null) return null;
+    @Override
+    public List<User> getUsers(final Twitter twitter) throws TwitterException {
+        if (twitter == null) return null;
         final Paging paging = new Paging();
         paging.page(mPage);
         return twitter.searchUsers(mQuery, paging);
-	}
+    }
 
-	protected long getUserPosition(final User user, final int index) {
-		return (mPage + 1) * 20 + index;
-	}
+    protected long getUserPosition(final User user, final int index) {
+        return (mPage + 1) * 20 + index;
+    }
 }

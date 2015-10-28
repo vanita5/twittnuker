@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -25,53 +25,53 @@ package de.vanita5.twittnuker.api.twitter.model.impl;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import java.util.Arrays;
-
 import de.vanita5.twittnuker.api.twitter.model.HashtagEntity;
 import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
+
+import java.util.Arrays;
 
 /**
  * Created by mariotaku on 15/3/31.
  */
 @JsonObject
 public class EntitiesImpl {
-	@JsonField(name = "hashtags")
-	HashtagEntity[] hashtags;
+    @JsonField(name = "hashtags")
+    HashtagEntityImpl[] hashtags;
 
-	@JsonField(name = "user_mentions")
-	UserMentionEntity[] userMentions;
+    @JsonField(name = "user_mentions")
+    UserMentionEntityImpl[] userMentions;
 
-	@JsonField(name = "urls")
-	UrlEntity[] urls;
+    @JsonField(name = "urls")
+    UrlEntityImpl[] urls;
 
-	@JsonField(name = "media")
-	MediaEntity[] media;
+    @JsonField(name = "media")
+    MediaEntityImpl[] media;
 
-	public HashtagEntity[] getHashtags() {
-		return hashtags;
-	}
+    public HashtagEntity[] getHashtags() {
+        return hashtags;
+    }
 
-	public UserMentionEntity[] getUserMentions() {
-		return userMentions;
-	}
+    public UserMentionEntity[] getUserMentions() {
+        return userMentions;
+    }
 
-	public UrlEntity[] getUrls() {
-		return urls;
-	}
+    public UrlEntity[] getUrls() {
+        return urls;
+    }
 
-	public MediaEntity[] getMedia() {
-		return media;
-	}
+    public MediaEntity[] getMedia() {
+        return media;
+    }
 
-	@Override
-	public String toString() {
-		return "EntitiesImpl{" +
-				"hashtags=" + Arrays.toString(hashtags) +
-				", userMentions=" + Arrays.toString(userMentions) +
-				", urls=" + Arrays.toString(urls) +
-				", media=" + Arrays.toString(media) +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "EntitiesImpl{" +
+                "hashtags=" + Arrays.toString(hashtags) +
+                ", userMentions=" + Arrays.toString(userMentions) +
+                ", urls=" + Arrays.toString(urls) +
+                ", media=" + Arrays.toString(media) +
+                '}';
+    }
 }

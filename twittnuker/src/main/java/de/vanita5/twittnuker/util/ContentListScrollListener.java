@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -23,10 +23,10 @@
 package de.vanita5.twittnuker.util;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
 
+import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter;
 
 public class ContentListScrollListener extends OnScrollListener {
@@ -44,7 +44,7 @@ public class ContentListScrollListener extends OnScrollListener {
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         if (mScrollState != RecyclerView.SCROLL_STATE_IDLE) {
-            notifyScrollStateChanged(recyclerView);
+            notifyScrollStateChanged();
         }
         mScrollState = newState;
     }
@@ -61,7 +61,7 @@ public class ContentListScrollListener extends OnScrollListener {
             mScrollSum = 0;
         }
         if (recyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
-            notifyScrollStateChanged(recyclerView);
+            notifyScrollStateChanged();
         }
     }
 
@@ -69,19 +69,26 @@ public class ContentListScrollListener extends OnScrollListener {
         mTouchSlop = touchSlop;
     }
 
-    private void notifyScrollStateChanged(RecyclerView recyclerView) {
+    private void notifyScrollStateChanged() {
         final Object adapter = mContentListSupport.getAdapter();
         if (!(adapter instanceof ILoadMoreSupportAdapter)) return;
         final ILoadMoreSupportAdapter loadMoreAdapter = (ILoadMoreSupportAdapter) adapter;
-        final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         if (!mContentListSupport.isRefreshing() && loadMoreAdapter.isLoadMoreSupported()
                 && !loadMoreAdapter.isLoadMoreIndicatorVisible()) {
-            if (layoutManager.findLastVisibleItemPosition() == layoutManager.getItemCount() - 1) {
+            if (reachedEnd()) {
                 mContentListSupport.onLoadMoreContents(false);
-            } else if (layoutManager.findFirstVisibleItemPosition() == 0) {
+            } else if (reachedStart()) {
                 mContentListSupport.onLoadMoreContents(true);
             }
         }
+    }
+
+    private boolean reachedStart() {
+        return ArrayUtils.contains(mContentListSupport.findFirstVisibleItemPositions(), 0);
+    }
+
+    private boolean reachedEnd() {
+        return ArrayUtils.contains(mContentListSupport.findLastVisibleItemPositions(), mContentListSupport.getItemCount() - 1);
     }
 
     public interface ContentListSupport {
@@ -94,5 +101,10 @@ public class ContentListScrollListener extends OnScrollListener {
 
         void setControlVisible(boolean visible);
 
+        int[] findLastVisibleItemPositions();
+
+        int[] findFirstVisibleItemPositions();
+
+        int getItemCount();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -22,116 +22,49 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import com.bluelinelabs.logansquare.JsonMapper;
 import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
 
+import org.mariotaku.library.logansquare.extension.LoganSquareWrapper;
 import de.vanita5.twittnuker.api.twitter.model.IDs;
-
+import org.mariotaku.library.logansquare.extension.annotation.Mapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by mariotaku on 15/5/10.
  */
+@Mapper(IDsImplMapper.class)
 public class IDsImpl extends TwitterResponseImpl implements IDs {
 
-    public static final TypeConverter<IDs> CONVERTER = new TypeConverter<IDs>() {
-        @Override
-        public IDs parse(JsonParser jsonParser) throws IOException {
-            return MAPPER.parse(jsonParser);
-        }
+    long previousCursor;
+    long nextCursor;
+    long[] ids;
 
-        @Override
-        public void serialize(IDs object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) {
-            throw new UnsupportedOperationException();
-        }
-    };
+    @Override
+    public long getNextCursor() {
+        return nextCursor;
+    }
 
-	public static final JsonMapper<IDs> MAPPER = new JsonMapper<IDs>() {
-		@SuppressWarnings("TryWithIdenticalCatches")
-		@Override
-		public IDs parse(JsonParser jsonParser) throws IOException {
-			IDsImpl instance = new IDsImpl();
-			if (jsonParser.getCurrentToken() == null) {
-				jsonParser.nextToken();
-			}
-			if (jsonParser.getCurrentToken() == JsonToken.START_ARRAY) {
-				parseIDsArray(instance, jsonParser);
-			} else if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
-				while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-					String fieldName = jsonParser.getCurrentName();
-					jsonParser.nextToken();
-					parseField(instance, fieldName, jsonParser);
-					jsonParser.skipChildren();
-				}
-			} else {
-				jsonParser.skipChildren();
-				return null;
-			}
-			return instance;
-		}
+    @Override
+    public long getPreviousCursor() {
+        return previousCursor;
+    }
 
-		@Override
-		public void serialize(IDs activity, JsonGenerator jsonGenerator, boolean writeStartAndEnd) {
-			throw new UnsupportedOperationException();
-		}
+    @Override
+    public boolean hasNext() {
+        return nextCursor != 0;
+    }
 
-		public void parseField(IDsImpl instance, String fieldName, JsonParser jsonParser) throws IOException {
-			if ("ids".equals(fieldName)) {
-				parseIDsArray(instance, jsonParser);
-			} else if ("previous_cursor".equals(fieldName)) {
-				instance.previousCursor = jsonParser.getValueAsLong();
-			} else if ("next_cursor".equals(fieldName)) {
-				instance.nextCursor = jsonParser.getValueAsLong();
-			}
-		}
+    @Override
+    public boolean hasPrevious() {
+        return previousCursor != 0;
+    }
 
-		private void parseIDsArray(IDsImpl instance, JsonParser jsonParser) throws IOException {
-			List<Long> collection1 = new ArrayList<>();
-			while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
-				collection1.add(jsonParser.getValueAsLong());
-			}
-			long[] array = new long[collection1.size()];
-			int i = 0;
-			for (long value : collection1) {
-				array[i++] = value;
-			}
-			instance.ids = array;
-		}
+    @Override
+    public long[] getIDs() {
+        return ids;
+    }
 
-	};
-
-	long previousCursor;
-	long nextCursor;
-	long[] ids;
-
-	@Override
-	public long getNextCursor() {
-		return nextCursor;
-	}
-
-	@Override
-	public long getPreviousCursor() {
-		return previousCursor;
-	}
-
-	@Override
-	public boolean hasNext() {
-		return nextCursor != 0;
-	}
-
-	@Override
-	public boolean hasPrevious() {
-		return previousCursor != 0;
-	}
-
-	@Override
-	public long[] getIDs() {
-		return ids;
-	}
 }

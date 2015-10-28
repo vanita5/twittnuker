@@ -2,7 +2,7 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
   ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -59,6 +59,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.NFC"/>
+    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 
     <!-- GCM Push -->
@@ -466,6 +467,17 @@
             android:label="@string/crop_image"
             android:theme="@style/Theme.Twidere.Dark.NoActionBar"
             android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".activity.DonationsActivity"
+            android:label="@string/donation"
+            android:theme="@style/Theme.Twidere.Dark.NoActionBar">
+            <intent-filter>
+                <action android:name="de.vanita5.twittnuker.activity.DonationsActivity"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
 
         <service
             android:name=".service.RefreshService"
@@ -494,7 +506,7 @@
             tools:ignore="ExportedContentProvider"/>
         <provider
             android:name=".provider.RecentSearchProvider"
-            android:authorities="de.vanita5.de.vanita5.twittnuker.provider.SearchRecentSuggestions"
+            android:authorities="de.vanita5.twittnuker.provider.SearchRecentSuggestions"
             tools:ignore="ExportedContentProvider"/>
 
         <receiver android:name=".receiver.ConnectivityStateReceiver">

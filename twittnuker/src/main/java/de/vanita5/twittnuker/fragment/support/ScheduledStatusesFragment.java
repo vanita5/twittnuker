@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.loader.support.ScheduledStatusesLoader;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 
 import java.util.List;
-public class ScheduledStatusesFragment extends AbsContentRecyclerViewFragment<ScheduledStatusesFragment.ScheduledStatusesAdapter>
+public class ScheduledStatusesFragment extends AbsContentListRecyclerViewFragment<ScheduledStatusesFragment.ScheduledStatusesAdapter>
         implements LoaderManager.LoaderCallbacks<List<ScheduledStatus>> {
 
     @Override

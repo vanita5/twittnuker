@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -40,10 +40,11 @@ import com.squareup.otto.Subscribe;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
-import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
+import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.loader.support.ObjectCursorLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -85,10 +86,10 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
 
     public abstract Uri getContentUri();
 
-	@Override
+    @Override
     protected Loader<List<ParcelableStatus>> onCreateStatusesLoader(final Context context,
-                                                 final Bundle args,
-                                                 final boolean fromUser) {
+                                                                    final Bundle args,
+                                                                    final boolean fromUser) {
         final Uri uri = getContentUri();
         final String table = getTableNameByUri(uri);
         final String sortOrder = getSortOrder();
@@ -116,7 +117,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
 
     protected class CursorStatusesBusCallback {
 
-		@Subscribe
+        @Subscribe
         public void notifyGetStatusesTaskChanged(GetStatusesTaskEvent event) {
             if (!event.uri.equals(getContentUri())) return;
             setRefreshing(event.running);
@@ -124,7 +125,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
                 setLoadMoreIndicatorVisible(false);
                 setRefreshEnabled(true);
             }
-		}
+        }
 
         @Subscribe
         public void notifyFavoriteCreated(FavoriteCreatedEvent event) {
@@ -207,9 +208,9 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
 
     @NonNull
     @Override
-    protected ParcelableStatusesAdapter onCreateAdapter(final Context context, final boolean compact) {
-        return new ParcelableStatusesAdapter(context, compact);
-	}
+    protected ListParcelableStatusesAdapter onCreateAdapter(final Context context, final boolean compact) {
+        return new ListParcelableStatusesAdapter(context, compact);
+    }
 
     @Override
     public void onLoaderReset(Loader<List<ParcelableStatus>> loader) {

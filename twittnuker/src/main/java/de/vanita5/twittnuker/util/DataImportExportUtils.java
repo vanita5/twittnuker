@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -29,6 +29,7 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.annotation.Preference;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
@@ -67,42 +68,42 @@ public class DataImportExportUtils implements Constants {
     public static final int FLAG_ALL = FLAG_PREFERENCES | FLAG_NICKNAMES | FLAG_USER_COLORS
             | FLAG_HOST_MAPPING | FLAG_KEYBOARD_SHORTCUTS | FLAG_FILTERS;
 
-	public static void exportData(final Context context, final File dst, final int flags) throws IOException {
-		if (dst == null) throw new FileNotFoundException();
-		dst.delete();
-		final FileOutputStream fos = new FileOutputStream(dst);
-		final ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(fos));
-		if (hasFlag(flags, FLAG_PREFERENCES)) {
+    public static void exportData(final Context context, final File dst, final int flags) throws IOException {
+        if (dst == null) throw new FileNotFoundException();
+        dst.delete();
+        final FileOutputStream fos = new FileOutputStream(dst);
+        final ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(fos));
+        if (hasFlag(flags, FLAG_PREFERENCES)) {
             exportSharedPreferencesData(zos, context, SHARED_PREFERENCES_NAME, ENTRY_PREFERENCES, new AnnotationProcessStrategy(SharedPreferenceConstants.class));
         }
-		if (hasFlag(flags, FLAG_USER_COLORS)) {
+        if (hasFlag(flags, FLAG_USER_COLORS)) {
             exportSharedPreferencesData(zos, context, USER_COLOR_PREFERENCES_NAME, ENTRY_USER_COLORS, ConvertToIntProcessStrategy.SINGLETON);
-		}
-		if (hasFlag(flags, FLAG_HOST_MAPPING)) {
+        }
+        if (hasFlag(flags, FLAG_HOST_MAPPING)) {
             exportSharedPreferencesData(zos, context, HOST_MAPPING_PREFERENCES_NAME, ENTRY_HOST_MAPPING, ConvertToStringProcessStrategy.SINGLETON);
-		}
+        }
         if (hasFlag(flags, FLAG_KEYBOARD_SHORTCUTS)) {
             exportSharedPreferencesData(zos, context, KEYBOARD_SHORTCUTS_PREFERENCES_NAME, ENTRY_KEYBOARD_SHORTCUTS, ConvertToStringProcessStrategy.SINGLETON);
         }
-		zos.finish();
-		zos.flush();
-		Utils.closeSilently(zos);
-		Utils.closeSilently(fos);
-	}
+        zos.finish();
+        zos.flush();
+        Utils.closeSilently(zos);
+        Utils.closeSilently(fos);
+    }
 
-	public static int getImportedSettingsFlags(final File src) throws IOException {
-		if (src == null) return 0;
-		final ZipFile zipFile = new ZipFile(src);
-		int flags = 0;
-		if (zipFile.getEntry(ENTRY_PREFERENCES) != null) {
-		    flags |= FLAG_PREFERENCES;
-		}
-		if (zipFile.getEntry(ENTRY_USER_COLORS) != null) {
-		    flags |= FLAG_USER_COLORS;
-		}
-		if (zipFile.getEntry(ENTRY_HOST_MAPPING) != null) {
-			flags |= FLAG_HOST_MAPPING;
-		}
+    public static int getImportedSettingsFlags(final File src) throws IOException {
+        if (src == null) return 0;
+        final ZipFile zipFile = new ZipFile(src);
+        int flags = 0;
+        if (zipFile.getEntry(ENTRY_PREFERENCES) != null) {
+            flags |= FLAG_PREFERENCES;
+        }
+        if (zipFile.getEntry(ENTRY_USER_COLORS) != null) {
+            flags |= FLAG_USER_COLORS;
+        }
+        if (zipFile.getEntry(ENTRY_HOST_MAPPING) != null) {
+            flags |= FLAG_HOST_MAPPING;
+        }
         if (zipFile.getEntry(ENTRY_KEYBOARD_SHORTCUTS) != null) {
             flags |= FLAG_KEYBOARD_SHORTCUTS;
         }
@@ -110,63 +111,63 @@ public class DataImportExportUtils implements Constants {
             flags |= FLAG_FILTERS;
         }
         zipFile.close();
-		return flags;
-	}
+        return flags;
+    }
 
     public static HashMap<String, Preference> getSupportedPreferencesMap(Class cls) {
         final Field[] fields = cls.getDeclaredFields();
         final HashMap<String, Preference> supportedPrefsMap = new HashMap<>();
-		for (final Field field : fields) {
-			final Preference annotation = field.getAnnotation(Preference.class);
-			if (Modifier.isStatic(field.getModifiers()) && CompareUtils.classEquals(field.getType(), String.class)
-					&& annotation != null && annotation.exportable() && annotation.type() != INVALID) {
-				try {
-					supportedPrefsMap.put((String) field.get(null), annotation);
+        for (final Field field : fields) {
+            final Preference annotation = field.getAnnotation(Preference.class);
+            if (Modifier.isStatic(field.getModifiers()) && CompareUtils.classEquals(field.getType(), String.class)
+                    && annotation != null && annotation.exportable() && annotation.type() != INVALID) {
+                try {
+                    supportedPrefsMap.put((String) field.get(null), annotation);
                 } catch (final IllegalAccessException | IllegalArgumentException e) {
                     Log.w(LOGTAG, e);
-				}
-			}
-		}
-		return supportedPrefsMap;
-	}
+                }
+            }
+        }
+        return supportedPrefsMap;
+    }
 
-	public static void importData(final Context context, final File src, final int flags) throws IOException {
-		if (src == null) throw new FileNotFoundException();
-		final ZipFile zipFile = new ZipFile(src);
-		if (hasFlag(flags, FLAG_PREFERENCES)) {
+    public static void importData(final Context context, final File src, final int flags) throws IOException {
+        if (src == null) throw new FileNotFoundException();
+        final ZipFile zipFile = new ZipFile(src);
+        if (hasFlag(flags, FLAG_PREFERENCES)) {
             importSharedPreferencesData(zipFile, context, SHARED_PREFERENCES_NAME, ENTRY_PREFERENCES, new AnnotationProcessStrategy(SharedPreferenceConstants.class));
         }
-		if (hasFlag(flags, FLAG_USER_COLORS)) {
+        if (hasFlag(flags, FLAG_USER_COLORS)) {
             importSharedPreferencesData(zipFile, context, USER_COLOR_PREFERENCES_NAME, ENTRY_USER_COLORS, ConvertToIntProcessStrategy.SINGLETON);
-		}
-		if (hasFlag(flags, FLAG_HOST_MAPPING)) {
+        }
+        if (hasFlag(flags, FLAG_HOST_MAPPING)) {
             importSharedPreferencesData(zipFile, context, HOST_MAPPING_PREFERENCES_NAME, ENTRY_HOST_MAPPING, ConvertToStringProcessStrategy.SINGLETON);
-		}
+        }
         if (hasFlag(flags, FLAG_KEYBOARD_SHORTCUTS)) {
             importSharedPreferencesData(zipFile, context, KEYBOARD_SHORTCUTS_PREFERENCES_NAME, ENTRY_KEYBOARD_SHORTCUTS, ConvertToStringProcessStrategy.SINGLETON);
         }
-        if (hasFlag(flags,FLAG_FILTERS)) {
+        if (hasFlag(flags, FLAG_FILTERS)) {
 
         }
         zipFile.close();
-	}
+    }
 
-	private static boolean hasFlag(final int flags, final int flag) {
-		return (flags & flag) != 0;
-	}
+    private static boolean hasFlag(final int flags, final int flag) {
+        return (flags & flag) != 0;
+    }
 
     private static void importSharedPreferencesData(@NonNull final ZipFile zipFile, @NonNull final Context context,
                                                     @NonNull final String preferencesName, @NonNull final String entryName,
                                                     @NonNull final ProcessStrategy strategy) throws IOException {
         final ZipEntry entry = zipFile.getEntry(entryName);
         if (entry == null) return;
-        final JSONObject json = LoganSquareWrapper.convertJSONObject(zipFile.getInputStream(entry));
+        final JSONObject json = JsonSerializer.convertJSONObject(zipFile.getInputStream(entry));
         final Iterator<String> keys = json.keys();
         final SharedPreferences preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = preferences.edit();
         while (keys.hasNext()) {
             strategy.importValue(json, keys.next(), editor);
-		}
+        }
         editor.apply();
     }
 
@@ -179,7 +180,7 @@ public class DataImportExportUtils implements Constants {
         final JSONObject json = new JSONObject();
         for (String key : map.keySet()) {
             strategy.exportValue(json, key, preferences);
-		}
+        }
         zos.write(json.toString().getBytes(Charset.defaultCharset()));
         zos.closeEntry();
     }
@@ -188,7 +189,7 @@ public class DataImportExportUtils implements Constants {
         boolean importValue(JSONObject json, String key, SharedPreferences.Editor editor);
 
         boolean exportValue(JSONObject json, String key, SharedPreferences preferences);
-	}
+    }
 
     private static final class ConvertToStringProcessStrategy implements ProcessStrategy {
 
@@ -299,6 +300,6 @@ public class DataImportExportUtils implements Constants {
             }
             return true;
         }
-	}
+    }
 
 }

@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -22,37 +22,16 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import com.bluelinelabs.logansquare.LoganSquare;
-import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-
+import org.mariotaku.library.logansquare.extension.annotation.Mapper;
 import org.mariotaku.restfu.http.ValueMap;
-
-import de.vanita5.twittnuker.api.twitter.model.impl.GeoPoint;
-
-import java.io.IOException;
 
 /**
  * A data class representing geo location.
  *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
+@Mapper(GeoLocationMapper.class)
 public class GeoLocation implements ValueMap {
-
-    public static final TypeConverter<GeoLocation> CONVERTER = new TypeConverter<GeoLocation>() {
-        @Override
-        public GeoLocation parse(JsonParser jsonParser) throws IOException {
-            final GeoPoint geoPoint = LoganSquare.mapperFor(GeoPoint.class).parse(jsonParser);
-            if (geoPoint == null) return null;
-            return geoPoint.getGeoLocation();
-        }
-
-        @Override
-        public void serialize(GeoLocation object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
-            throw new UnsupportedOperationException();
-        }
-    };
 
     double latitude;
     double longitude;

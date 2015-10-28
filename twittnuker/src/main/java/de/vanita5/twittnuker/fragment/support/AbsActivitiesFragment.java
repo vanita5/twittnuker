@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -47,7 +47,7 @@ import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 
-public abstract class AbsActivitiesFragment<Data> extends AbsContentRecyclerViewFragment<AbsActivitiesAdapter<Data>>
+public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecyclerViewFragment<AbsActivitiesAdapter<Data>>
         implements LoaderCallbacks<Data>, OnRefreshListener, DrawerCallback, RefreshScrollTopInterface,
         ActivityAdapterListener, KeyboardShortcutsHandler.KeyboardShortcutCallback {
 

@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -20,15 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
+package de.vanita5.twittnuker.api.twitter.model;
 
-import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
-
-/**
- * Created by mariotaku on 15/5/7.
- */
-public interface Wrapper<T> extends TwitterResponse {
-
-	T getWrapped(Object extra);
-
+public interface PrivateSearchResult {
 }

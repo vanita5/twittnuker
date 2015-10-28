@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.EnumClass;
+
 /**
  * Created by mariotaku on 15/7/5.
  */
@@ -40,6 +42,7 @@ public interface PrivateDirectMessages {
 
     interface UserEvents {
         String getCursor();
+
         long getLastSeenEventId();
     }
 
@@ -81,11 +84,13 @@ public interface PrivateDirectMessages {
             long getUserId();
         }
 
+        @EnumClass
         enum Type {
             ONE_TO_ONE, GROUP_DM
         }
     }
 
+    @EnumClass
     enum Status {
         HAS_MORE, AT_END
     }

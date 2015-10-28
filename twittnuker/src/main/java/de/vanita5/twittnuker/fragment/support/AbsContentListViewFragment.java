@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -246,5 +246,20 @@ public abstract class AbsContentListViewFragment<A extends ListAdapter> extends 
         // 64: SwipeRefreshLayout.DEFAULT_CIRCLE_TARGET
         final int swipeDistance = Math.round(64 * density);
         mSwipeRefreshLayout.setProgressViewOffset(false, swipeStart, swipeStart + swipeDistance);
+    }
+
+    @Override
+    public int[] findLastVisibleItemPositions() {
+        return new int[]{mListView.getLastVisiblePosition()};
+    }
+
+    @Override
+    public int[] findFirstVisibleItemPositions() {
+        return new int[]{mListView.getFirstVisiblePosition()};
+    }
+
+    @Override
+    public int getItemCount() {
+        return mListView.getCount();
     }
 }

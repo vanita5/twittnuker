@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -22,23 +22,28 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.SavedSearchImpl;
+
 import java.util.Date;
 
 /**
  * A data interface representing a Saved Search
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.0.8
  */
+@Implementation(SavedSearchImpl.class)
 public interface SavedSearch extends Comparable<SavedSearch>, TwitterResponse {
-	Date getCreatedAt();
+    Date getCreatedAt();
 
-	int getId();
+    int getId();
 
-	String getName();
+    String getName();
 
-	int getPosition();
+    int getPosition();
 
-	String getQuery();
+    String getQuery();
 
 }

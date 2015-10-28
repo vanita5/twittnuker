@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -58,6 +58,7 @@ import android.support.v4.util.LongSparseArray;
 import android.support.v7.internal.view.SupportMenuInflater;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.ActionMenuView.OnMenuItemClickListener;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.FixedLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -444,6 +445,16 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 mPreferences.edit().putBoolean(KEY_LINK_TO_QUOTED_TWEET, newValue).apply();
                 break;
             }
+            case R.id.add_hashtag: {
+                final int selectionEnd = mEditText.getSelectionEnd() + 1;
+                final String withHashtag =
+                        mEditText.getText().subSequence(0, mEditText.getSelectionEnd()) +
+                        "#" +
+                        mEditText.getText().subSequence(mEditText.getSelectionEnd(), mEditText.length());
+                mEditText.setText(withHashtag);
+                mEditText.setSelection(selectionEnd);
+                break;
+            }
             default: {
                 break;
             }
@@ -563,46 +574,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         linearLayoutManager.setStackFromEnd(true);
         mAccountSelector.setLayoutManager(linearLayoutManager);
         mAccountSelector.addItemDecoration(new SpacingItemDecoration(this));
-        mAccountSelector.setItemAnimator(new RecyclerView.ItemAnimator() {
-            @Override
-            public void runPendingAnimations() {
-
-            }
-
-            @Override
-            public boolean animateRemove(ViewHolder holder) {
-                return false;
-            }
-
-            @Override
-            public boolean animateAdd(ViewHolder holder) {
-                return false;
-            }
-
-            @Override
-            public boolean animateMove(ViewHolder holder, int fromX, int fromY, int toX, int toY) {
-                return false;
-            }
-
-            @Override
-            public boolean animateChange(ViewHolder oldHolder, ViewHolder newHolder, int fromLeft, int fromTop, int toLeft, int toTop) {
-                return false;
-            }
-
-            @Override
-            public void endAnimation(ViewHolder item) {
-            }
-
-            @Override
-            public void endAnimations() {
-
-            }
-
-            @Override
-            public boolean isRunning() {
-                return false;
-            }
-        });
+        mAccountSelector.setItemAnimator(new DefaultItemAnimator());
         mAccountsAdapter = new AccountIconsAdapter(this);
         mAccountSelector.setAdapter(mAccountsAdapter);
         mAccountsAdapter.setAccounts(ParcelableCredentials.getCredentialsArray(this, false, false));
@@ -1058,6 +1030,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         MenuUtils.setMenuItemAvailability(menu, R.id.media_menu, hasMedia);
         MenuUtils.setMenuItemAvailability(menu, R.id.toggle_sensitive, hasMedia);
         MenuUtils.setMenuItemAvailability(menu, R.id.link_to_quoted_status, isQuote());
+        MenuUtils.setMenuItemAvailability(menu, R.id.schedule, isScheduleSupported());
 
         MenuUtils.setMenuItemChecked(menu, R.id.toggle_sensitive, hasMedia && mIsPossiblySensitive);
         MenuUtils.setMenuItemChecked(menu, R.id.link_to_quoted_status, mPreferences.getBoolean(KEY_LINK_TO_QUOTED_TWEET));

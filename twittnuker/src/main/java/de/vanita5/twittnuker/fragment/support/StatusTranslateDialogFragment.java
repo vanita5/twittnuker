@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -47,42 +47,43 @@ import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
+import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 public class StatusTranslateDialogFragment extends BaseSupportDialogFragment implements
-		LoaderCallbacks<SingleResponse<TranslationResult>> {
+        LoaderCallbacks<SingleResponse<TranslationResult>> {
 
-    private StatusViewHolder mHolder;
+    private IStatusViewHolder mHolder;
 
     private View mProgress;
-	private TextView mMessageView;
-	private View mProgressContainer;
-	private View mStatusContainer;
+    private TextView mMessageView;
+    private View mProgressContainer;
+    private View mStatusContainer;
 
-	public StatusTranslateDialogFragment() {
-		setStyle(STYLE_NO_TITLE, 0);
-	}
+    public StatusTranslateDialogFragment() {
+        setStyle(STYLE_NO_TITLE, 0);
+    }
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		final Bundle args = getArguments();
-		if (args == null || args.getParcelable(EXTRA_STATUS) == null) {
-			dismiss();
-			return;
-		}
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        final Bundle args = getArguments();
+        if (args == null || args.getParcelable(EXTRA_STATUS) == null) {
+            dismiss();
+            return;
+        }
         DummyStatusHolderAdapter adapter = new DummyStatusHolderAdapter(getActivity());
         mHolder = new StatusViewHolder(adapter, mStatusContainer);
-		getLoaderManager().initLoader(0, args, this);
-	}
+        getLoaderManager().initLoader(0, args, this);
+    }
 
-	@Override
-	public Loader<SingleResponse<TranslationResult>> onCreateLoader(final int id, final Bundle args) {
-		final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
-		mStatusContainer.setVisibility(View.GONE);
-		mProgressContainer.setVisibility(View.VISIBLE);
+    @Override
+    public Loader<SingleResponse<TranslationResult>> onCreateLoader(final int id, final Bundle args) {
+        final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
+        mStatusContainer.setVisibility(View.GONE);
+        mProgressContainer.setVisibility(View.VISIBLE);
         mProgress.setVisibility(View.VISIBLE);
-		mMessageView.setVisibility(View.VISIBLE);
-		mMessageView.setText(R.string.please_wait);
+        mMessageView.setVisibility(View.VISIBLE);
+        mMessageView.setText(R.string.please_wait);
         final long statusId;
         if (status.is_retweet) {
             statusId = status.retweet_id;
@@ -90,101 +91,101 @@ public class StatusTranslateDialogFragment extends BaseSupportDialogFragment imp
             statusId = status.id;
         }
         return new TranslationResultLoader(getActivity(), status.account_id, statusId);
-	}
+    }
 
-	@Override
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-		mProgressContainer = view.findViewById(R.id.progress_container);
+        mProgressContainer = view.findViewById(R.id.progress_container);
         mProgress = mProgressContainer.findViewById(R.id.load_progress);
-		mMessageView = (TextView) mProgressContainer.findViewById(android.R.id.message);
-		mStatusContainer = view.findViewById(R.id.status_container);
-	}
+        mMessageView = (TextView) mProgressContainer.findViewById(android.R.id.message);
+        mStatusContainer = view.findViewById(R.id.status_container);
+    }
 
-	@Override
+    @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup parent, final Bundle savedInstanceState) {
         return inflater.inflate(R.layout.dialog_translate_status, parent, false);
     }
 
     @Override
-	public void onLoaderReset(final Loader<SingleResponse<TranslationResult>> loader) {
+    public void onLoaderReset(final Loader<SingleResponse<TranslationResult>> loader) {
 
-	}
+    }
 
-	@Override
-	public void onLoadFinished(final Loader<SingleResponse<TranslationResult>> loader,
-							   final SingleResponse<TranslationResult> data) {
-		final Bundle args = getArguments();
-		final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
-		if (status != null && data.getData() != null) {
-			displayTranslatedStatus(status, data.getData());
-			mStatusContainer.setVisibility(View.VISIBLE);
-			mProgressContainer.setVisibility(View.GONE);
-		} else {
-			mStatusContainer.setVisibility(View.GONE);
-			mProgressContainer.setVisibility(View.VISIBLE);
+    @Override
+    public void onLoadFinished(final Loader<SingleResponse<TranslationResult>> loader,
+                               final SingleResponse<TranslationResult> data) {
+        final Bundle args = getArguments();
+        final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
+        if (status != null && data.getData() != null) {
+            displayTranslatedStatus(status, data.getData());
+            mStatusContainer.setVisibility(View.VISIBLE);
+            mProgressContainer.setVisibility(View.GONE);
+        } else {
+            mStatusContainer.setVisibility(View.GONE);
+            mProgressContainer.setVisibility(View.VISIBLE);
             mProgress.setVisibility(View.GONE);
-			mMessageView.setVisibility(View.VISIBLE);
-			mMessageView.setText(Utils.getErrorMessage(getActivity(), data.getException()));
-		}
-	}
+            mMessageView.setVisibility(View.VISIBLE);
+            mMessageView.setText(Utils.getErrorMessage(getActivity(), data.getException()));
+        }
+    }
 
-	private void displayTranslatedStatus(final ParcelableStatus status, final TranslationResult translated) {
-		if (status == null || translated == null) return;
+    private void displayTranslatedStatus(final ParcelableStatus status, final TranslationResult translated) {
+        if (status == null || translated == null) return;
         mHolder.displayStatus(status, translated, false, true);
 
         mStatusContainer.findViewById(R.id.item_menu).setVisibility(View.GONE);
         mStatusContainer.findViewById(R.id.action_buttons).setVisibility(View.GONE);
         mStatusContainer.findViewById(R.id.reply_retweet_status).setVisibility(View.GONE);
-	}
+    }
 
-	public static void show(final FragmentManager fm, final ParcelableStatus status) {
-		final StatusTranslateDialogFragment df = new StatusTranslateDialogFragment();
-		final Bundle args = new Bundle();
-		args.putParcelable(EXTRA_STATUS, status);
-		df.setArguments(args);
-		df.show(fm, "translate_status");
-	}
+    public static void show(final FragmentManager fm, final ParcelableStatus status) {
+        final StatusTranslateDialogFragment df = new StatusTranslateDialogFragment();
+        final Bundle args = new Bundle();
+        args.putParcelable(EXTRA_STATUS, status);
+        df.setArguments(args);
+        df.show(fm, "translate_status");
+    }
 
-	public static final class TranslationResultLoader extends AsyncTaskLoader<SingleResponse<TranslationResult>> {
+    public static final class TranslationResultLoader extends AsyncTaskLoader<SingleResponse<TranslationResult>> {
 
-		private final long mAccountId;
-		private final long mStatusId;
+        private final long mAccountId;
+        private final long mStatusId;
 
-		public TranslationResultLoader(final Context context, final long accountId, final long statusId) {
-			super(context);
-			mAccountId = accountId;
-			mStatusId = statusId;
-		}
+        public TranslationResultLoader(final Context context, final long accountId, final long statusId) {
+            super(context);
+            mAccountId = accountId;
+            mStatusId = statusId;
+        }
 
-		@Override
-		public SingleResponse<TranslationResult> loadInBackground() {
-			final Context context = getContext();
+        @Override
+        public SingleResponse<TranslationResult> loadInBackground() {
+            final Context context = getContext();
             final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, mAccountId, false);
-			final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-			if (twitter == null) return SingleResponse.getInstance();
-			try {
-				final String prefDest = prefs.getString(KEY_TRANSLATION_DESTINATION, null);
-				final String dest;
-				if (TextUtils.isEmpty(prefDest)) {
-					dest = twitter.getAccountSettings().getLanguage();
-					final Editor editor = prefs.edit();
-					editor.putString(KEY_TRANSLATION_DESTINATION, dest);
-					editor.apply();
-				} else {
-					dest = prefDest;
-				}
-				return SingleResponse.getInstance(twitter.showTranslation(mStatusId, dest));
-			} catch (final TwitterException e) {
-				return SingleResponse.getInstance(e);
-			}
-		}
+            final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+            if (twitter == null) return SingleResponse.getInstance();
+            try {
+                final String prefDest = prefs.getString(KEY_TRANSLATION_DESTINATION, null);
+                final String dest;
+                if (TextUtils.isEmpty(prefDest)) {
+                    dest = twitter.getAccountSettings().getLanguage();
+                    final Editor editor = prefs.edit();
+                    editor.putString(KEY_TRANSLATION_DESTINATION, dest);
+                    editor.apply();
+                } else {
+                    dest = prefDest;
+                }
+                return SingleResponse.getInstance(twitter.showTranslation(mStatusId, dest));
+            } catch (final TwitterException e) {
+                return SingleResponse.getInstance(e);
+            }
+        }
 
-		@Override
-		protected void onStartLoading() {
-			forceLoad();
-		}
+        @Override
+        protected void onStartLoading() {
+            forceLoad();
+        }
 
-	}
+    }
 
 }

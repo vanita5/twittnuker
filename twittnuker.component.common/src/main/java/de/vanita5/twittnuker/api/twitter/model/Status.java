@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -22,153 +22,158 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.StatusImpl;
+
 import java.util.Date;
 
 /**
  * A data interface representing one single status of a user.
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
+@Implementation(StatusImpl.class)
 public interface Status extends Comparable<Status>, TwitterResponse, ExtendedEntitySupport {
 
-	/**
-	 * Returns an array of contributors, or null if no contributor is associated
-	 * with this status.
-	 * 
-	 * @since Twitter4J 2.2.3
-	 */
-	long[] getContributors();
+    /**
+     * Returns an array of contributors, or null if no contributor is associated
+     * with this status.
+     *
+     * @since Twitter4J 2.2.3
+     */
+    long[] getContributors();
 
     long getReplyCount();
 
     long getDescendentReplyCount();
 
-	/**
-	 * returns the created_at
-	 * 
-	 * @return the created_at
-	 */
-	Date getCreatedAt();
+    /**
+     * returns the created_at
+     *
+     * @return the created_at
+     */
+    Date getCreatedAt();
 
-	long getCurrentUserRetweet();
+    long getCurrentUserRetweet();
 
-	long getFavoriteCount();
+    long getFavoriteCount();
 
-	/**
-	 * Returns The location that this tweet refers to if available.
-	 * 
-	 * @return returns The location that this tweet refers to if available (can
-	 *         be null)
-	 */
-	GeoLocation getGeoLocation();
+    /**
+     * Returns The location that this tweet refers to if available.
+     *
+     * @return returns The location that this tweet refers to if available (can
+     * be null)
+     */
+    GeoLocation getGeoLocation();
 
-	/**
-	 * returns the status id of the tweet
-	 * 
-	 * @return the status id
-	 */
-	long getId();
+    /**
+     * returns the status id of the tweet
+     *
+     * @return the status id
+     */
+    long getId();
 
-	/**
-	 * Returns the in_reply_to_screen_name
-	 * 
-	 * @return the in_in_reply_to_screen_name
-	 * @since Twitter4J 2.0.4
-	 */
-	String getInReplyToScreenName();
+    /**
+     * Returns the in_reply_to_screen_name
+     *
+     * @return the in_in_reply_to_screen_name
+     * @since Twitter4J 2.0.4
+     */
+    String getInReplyToScreenName();
 
-	/**
-	 * Returns the in_reply_tostatus_id
-	 * 
-	 * @return the in_reply_tostatus_id
-	 */
-	long getInReplyToStatusId();
+    /**
+     * Returns the in_reply_tostatus_id
+     *
+     * @return the in_reply_tostatus_id
+     */
+    long getInReplyToStatusId();
 
-	/**
-	 * Returns the in_reply_user_id
-	 * 
-	 * @return the in_reply_tostatus_id
-	 * @since Twitter4J 1.0.4
-	 */
-	long getInReplyToUserId();
+    /**
+     * Returns the in_reply_user_id
+     *
+     * @return the in_reply_tostatus_id
+     * @since Twitter4J 1.0.4
+     */
+    long getInReplyToUserId();
 
-	/**
-	 * Returns the place associated with the Tweet.
-	 * 
-	 * @return The place associated with the Tweet
-	 */
-	Place getPlace();
+    /**
+     * Returns the place associated with the Tweet.
+     *
+     * @return The place associated with the Tweet
+     */
+    Place getPlace();
 
-	/**
-	 * Returns the number of times this tweet has been retweeted, or -1 when the
-	 * tweet was created before this feature was enabled.
-	 * 
-	 * @return the retweet count.
-	 */
-	long getRetweetCount();
+    /**
+     * Returns the number of times this tweet has been retweeted, or -1 when the
+     * tweet was created before this feature was enabled.
+     *
+     * @return the retweet count.
+     */
+    long getRetweetCount();
 
-	/**
-	 * @since Twitter4J 2.1.0
-	 */
-	Status getRetweetedStatus();
+    /**
+     * @since Twitter4J 2.1.0
+     */
+    Status getRetweetedStatus();
 
     Status getQuotedStatus();
 
-	/**
-	 * returns the source of the tweet
-	 * 
-	 * @return the source of the tweet
-	 */
-	String getSource();
+    /**
+     * returns the source of the tweet
+     *
+     * @return the source of the tweet
+     */
+    String getSource();
 
-	/**
-	 * returns the text
-	 * 
-	 * @return the text
-	 */
-	String getText();
+    /**
+     * returns the text
+     *
+     * @return the text
+     */
+    String getText();
 
-	/**
-	 * Return the user associated with the status.<br>
-	 * This can be null if the instance if from User.getStatus().
-	 * 
-	 * @return the user
-	 */
-	User getUser();
+    /**
+     * Return the user associated with the status.<br>
+     * This can be null if the instance if from User.getStatus().
+     *
+     * @return the user
+     */
+    User getUser();
 
-	/**
-	 * Test if the status is favorited
-	 * 
-	 * @return true if favorited
-	 * @since Twitter4J 1.0.4
-	 */
-	boolean isFavorited();
+    /**
+     * Test if the status is favorited
+     *
+     * @return true if favorited
+     * @since Twitter4J 1.0.4
+     */
+    boolean isFavorited();
 
-	boolean isPossiblySensitive();
+    boolean isPossiblySensitive();
 
-	/**
-	 * @since Twitter4J 2.0.10
-	 */
-	boolean isRetweet();
+    /**
+     * @since Twitter4J 2.0.10
+     */
+    boolean isRetweet();
 
     boolean isQuote();
 
-	/**
-	 * Returns true if the authenticating user has retweeted this tweet, or
-	 * false when the tweet was created before this feature was enabled.
-	 * 
-	 * @return whether the authenticating user has retweeted this tweet.
-	 * @since Twitter4J 2.1.4
-	 */
-	boolean isRetweetedByMe();
+    /**
+     * Returns true if the authenticating user has retweeted this tweet, or
+     * false when the tweet was created before this feature was enabled.
+     *
+     * @return whether the authenticating user has retweeted this tweet.
+     * @since Twitter4J 2.1.4
+     */
+    boolean isRetweetedByMe();
 
-	/**
-	 * Test if the status is truncated
-	 * 
-	 * @return true if truncated
-	 * @since Twitter4J 1.0.4
-	 */
-	boolean isTruncated();
+    /**
+     * Test if the status is truncated
+     *
+     * @return true if truncated
+     * @since Twitter4J 1.0.4
+     */
+    boolean isTruncated();
 
     CardEntity getCard();
 

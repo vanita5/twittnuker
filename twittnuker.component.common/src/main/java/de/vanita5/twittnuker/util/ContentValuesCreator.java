@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -328,7 +328,6 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         values.put(Statuses.ACCOUNT_ID, accountId);
         values.put(Statuses.STATUS_ID, orig.getId());
         values.put(Statuses.STATUS_TIMESTAMP, orig.getCreatedAt().getTime());
-
 
         final Status status;
         if (orig.isRetweet()) {

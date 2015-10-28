@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -241,11 +241,13 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
             mEditAddress.addTextChangedListener(this);
             mCheckExclude.setOnCheckedChangeListener(this);
             final Bundle args = getArguments();
-            mEditHost.setEnabled(!args.getBoolean(EXTRA_EDIT_MODE, false));
-            if (savedInstanceState == null) {
-                mEditHost.setText(args.getCharSequence(EXTRA_HOST));
-                mEditAddress.setText(args.getCharSequence(EXTRA_ADDRESS));
-                mCheckExclude.setChecked(args.getBoolean(EXTRA_EXCLUDED));
+            if (args != null) {
+                mEditHost.setEnabled(!args.getBoolean(EXTRA_EDIT_MODE, false));
+                if (savedInstanceState == null) {
+                    mEditHost.setText(args.getCharSequence(EXTRA_HOST));
+                    mEditAddress.setText(args.getCharSequence(EXTRA_ADDRESS));
+                    mCheckExclude.setChecked(args.getBoolean(EXTRA_EXCLUDED));
+                }
             }
             builder.setTitle(R.string.add_host_mapping);
             builder.setPositiveButton(android.R.string.ok, this);

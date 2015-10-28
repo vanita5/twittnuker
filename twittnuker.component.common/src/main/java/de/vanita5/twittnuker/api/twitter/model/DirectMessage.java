@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -22,35 +22,40 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.DirectMessageImpl;
+
 import java.util.Date;
 
 /**
  * A data interface representing sent/received direct message.
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
+@Implementation(DirectMessageImpl.class)
 public interface DirectMessage extends TwitterResponse, EntitySupport {
 
-	/**
-	 * @return created_at
-	 * @since Twitter4J 1.1.0
-	 */
-	Date getCreatedAt();
+    /**
+     * @return created_at
+     * @since Twitter4J 1.1.0
+     */
+    Date getCreatedAt();
 
-	long getId();
+    long getId();
 
-	User getRecipient();
+    User getRecipient();
 
-	long getRecipientId();
+    long getRecipientId();
 
-	String getRecipientScreenName();
+    String getRecipientScreenName();
 
-	User getSender();
+    User getSender();
 
-	long getSenderId();
+    long getSenderId();
 
-	String getSenderScreenName();
+    String getSenderScreenName();
 
-	String getText();
+    String getText();
 
 }

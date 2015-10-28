@@ -28,11 +28,11 @@ import org.mariotaku.restfu.http.Endpoint;
 import org.mariotaku.restfu.http.RestHttpResponse;
 import org.mariotaku.restfu.http.mime.TypedData;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.api.twitter.model.Warning;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterUserStream;
 import de.vanita5.twittnuker.api.twitter.UserStreamCallback;
@@ -88,6 +88,7 @@ public class StreamingService extends Service implements Constants {
             final String action = intent.getAction();
 
             if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) {
+                if (BuildConfig.DEBUG) Log.d(Constants.LOGTAG, "StreamingService: Received NETWORK_STATE_CHANGED_ACTION");
                 NetworkInfo wifi = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
 
                 if (wifi.isConnected() || mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) {
@@ -96,7 +97,7 @@ public class StreamingService extends Service implements Constants {
                     clearTwitterInstances();
                 }
             } else if (BROADCAST_REFRESH_STREAMING_SERVICE.equals(action)) {
-                clearTwitterInstances();
+//                clearTwitterInstances();
                 initStreaming();
             }
         }
@@ -129,6 +130,9 @@ public class StreamingService extends Service implements Constants {
         mPreferences = SharedPreferencesWrapper.getInstance(this, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mResolver = getContentResolver();
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (BuildConfig.DEBUG) {
+            Log.d(Constants.LOGTAG, "Stream service started.");
+        }
         mTwitterWrapper = ApplicationModule.get(this).getAsyncTwitterWrapper();
 
         IntentFilter filter = new IntentFilter();
@@ -145,6 +149,9 @@ public class StreamingService extends Service implements Constants {
         clearTwitterInstances();
         unregisterReceiver(mStateReceiver);
         mResolver.unregisterContentObserver(mAccountChangeObserver);
+        if (BuildConfig.DEBUG) {
+            Log.d(Constants.LOGTAG, "Stream service stopped.");
+        }
         super.onDestroy();
     }
 
@@ -173,17 +180,31 @@ public class StreamingService extends Service implements Constants {
 
     private boolean setTwitterInstances() {
         final List<ParcelableCredentials> accountsList = ParcelableAccount.getCredentialsList(this, true);
-        mAccountIds = new long[accountsList.size()];
-        clearTwitterInstances();
+        final long[] accountIds = new long[accountsList.size()];
+        for (int i = 0, j = accountIds.length; i < j; i++) {
+            accountIds[i] = accountsList.get(i).account_id;
+        }
+        if (BuildConfig.DEBUG) {
+            Log.d(Constants.LOGTAG, "Setting up twitter stream instances");
+        }
+        mAccountIds = accountIds;
+//        clearTwitterInstances();
         boolean result = false;
         for (int i = 0, j = accountsList.size(); i < j; i++) {
             final ParcelableCredentials account = accountsList.get(i);
+
+            if (mCallbacks.indexOfKey(account.account_id) >= 0) {
+                Log.d(Constants.LOGTAG, String.format("Stream Callback %d already exists!!!", account.account_id));
+                return false;
+            }
+
             final Endpoint endpoint = TwitterAPIFactory.getEndpoint(account, TwitterUserStream.class);
             final Authorization authorization = TwitterAPIFactory.getAuthorization(account);
             final TwitterUserStream twitter = TwitterAPIFactory.getInstance(this, endpoint, authorization, TwitterUserStream.class);
             final TwidereUserStreamCallback callback = new TwidereUserStreamCallback(this, account, mPreferences);
             refreshBefore(new long[]{account.account_id});
             mCallbacks.put(account.account_id, callback);
+            Log.d(Constants.LOGTAG, String.format("Stream %d starts...", account.account_id));
             new Thread() {
                 @Override
                 public void run() {
@@ -191,6 +212,10 @@ public class StreamingService extends Service implements Constants {
                     Log.d(Constants.LOGTAG, String.format("Stream %d disconnected", account.account_id));
                     mCallbacks.remove(account.account_id);
                     updateStreamState();
+                    try {
+                        Thread.sleep(60*1000*10);
+                    } catch (InterruptedException ignored) {}
+                    initStreaming();
                 }
             }.start();
             result |= true;
@@ -218,7 +243,7 @@ public class StreamingService extends Service implements Constants {
                     .setTicker(getString(R.string.streaming_service_running))
                     .setPriority(NotificationCompat.PRIORITY_MIN)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                    .setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT));
+                    .setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT));
             mNotificationManager.notify(NOTIFICATION_ID_STREAMING, builder.build());
         } else {
             mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);

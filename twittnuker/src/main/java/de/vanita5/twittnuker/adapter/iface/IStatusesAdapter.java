@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -25,9 +25,9 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder.StatusClickListener;
+import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
-public interface IStatusesAdapter<Data> extends IContentCardAdapter, StatusClickListener,
+public interface IStatusesAdapter<Data> extends IContentCardAdapter, IStatusViewHolder.StatusClickListener,
         IGapSupportedAdapter, ContentCardClickListener {
 
     int getLinkHighlightingStyle();

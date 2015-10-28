@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -22,12 +22,18 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.library.logansquare.extension.annotation.EnumClass;
+import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.MediaEntityImpl;
+
 import java.util.Map;
 
 
+@Implementation(MediaEntityImpl.class)
 public interface MediaEntity extends UrlEntity {
 
-	long getId();
+    long getId();
 
 
     Map<String, Feature> getFeatures();
@@ -43,6 +49,7 @@ public interface MediaEntity extends UrlEntity {
 
     Type getType();
 
+    @EnumClass
     enum Type {
         PHOTO, VIDEO, ANIMATED_GIF, UNKNOWN;
 
@@ -60,6 +67,7 @@ public interface MediaEntity extends UrlEntity {
 
     VideoInfo getVideoInfo();
 
+    @Implementation(MediaEntityImpl.VideoInfoImpl.class)
     interface VideoInfo {
 
         Variant[] getVariants();
@@ -68,6 +76,7 @@ public interface MediaEntity extends UrlEntity {
 
         long getDuration();
 
+        @Implementation(MediaEntityImpl.VideoInfoImpl.VariantImpl.class)
         interface Variant {
 
             String getContentType();
@@ -79,15 +88,16 @@ public interface MediaEntity extends UrlEntity {
 
     }
 
+    @Implementation(MediaEntityImpl.SizeImpl.class)
     interface Size {
         String THUMB = "thumb";
         String SMALL = "small";
         String MEDIUM = "medium";
         String LARGE = "large";
-		int FIT = 100;
-		int CROP = 101;
+        int FIT = 100;
+        int CROP = 101;
 
-		int getHeight();
+        int getHeight();
 
         String getResize();
 
@@ -97,8 +107,10 @@ public interface MediaEntity extends UrlEntity {
     /**
      * Created by mariotaku on 15/3/31.
      */
+    @Implementation(MediaEntityImpl.FeatureImpl.class)
     interface Feature {
 
+        @Implementation(MediaEntityImpl.FeatureImpl.FaceImpl.class)
         interface Face {
 
             int getX();
@@ -107,7 +119,7 @@ public interface MediaEntity extends UrlEntity {
 
             int getHeight();
 
-			int getWidth();
-		}
+            int getWidth();
+        }
     }
 }

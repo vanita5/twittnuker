@@ -1,7 +1,7 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
  * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
@@ -36,7 +36,6 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -53,7 +52,6 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
     public static final int ITEM_VIEW_TYPE_MESSAGE = 0;
     public static final int ITEM_VIEW_TYPE_LOAD_INDICATOR = 1;
 
-    private final Context mContext;
     private final LayoutInflater mInflater;
     private final int mTextSize;
     private final int mProfileImageStyle;
@@ -68,9 +66,7 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     public MessageEntriesAdapter(final Context context) {
         super(context);
-        mContext = context;
         mInflater = LayoutInflater.from(context);
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mProfileImageStyle = Utils.getProfileImageStyle(mPreferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
         mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
@@ -82,12 +78,6 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
                 updateReadState();
             }
         };
-    }
-
-    @NonNull
-    @Override
-    public Context getContext() {
-        return mContext;
     }
 
     @Override
