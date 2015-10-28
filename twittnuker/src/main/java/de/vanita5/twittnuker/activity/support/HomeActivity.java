@@ -75,7 +75,6 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggestionsFragment;
-import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
@@ -116,7 +115,6 @@ import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
-import static de.vanita5.twittnuker.util.Utils.isPushEnabled;
 import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
@@ -147,7 +145,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     private boolean isStreamingServiceRunning = false;
 
-    private boolean mPushEnabled;
     private Toolbar mActionBar;
 
     private OnSharedPreferenceChangeListener mReadStateChangeListener = new OnSharedPreferenceChangeListener() {
@@ -377,7 +374,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
         mHomeContent.setOnFitSystemWindowsListener(this);
         mPagerAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), mTabIndicator, mTabColumns);
-        mPushEnabled = isPushEnabled(this);
         mViewPager.setAdapter(mPagerAdapter);
 //        mViewPager.setOffscreenPageLimit(3);
         mTabIndicator.setViewPager(mViewPager);
@@ -433,14 +429,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mReadStateManager.registerOnSharedPreferenceChangeListener(mReadStateChangeListener);
         updateUnreadCount();
 
-        if (mPushEnabled != isPushEnabled(this) || mPushEnabled && !isPushRegistered()) {
-            mPushEnabled = isPushEnabled(this);
-            if (mPushEnabled) {
-                GCMHelper.registerIfNotAlreadyDone(this);
-            } else {
-                GCMHelper.unregisterGCM(this);
-            }
-        }
         if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
             startStreamingService();
         } else {
@@ -757,11 +745,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         for (int i = 0, j = mTabIndicator.getCount(); i < j; i++) {
             mTabIndicator.setBadge(i, 0);
         }
-    }
-
-    private boolean isPushRegistered() {
-        final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-        return preferences != null && preferences.getBoolean(KEY_PUSH_REGISTERED, false);
     }
 
     private void openAccountsDrawer() {

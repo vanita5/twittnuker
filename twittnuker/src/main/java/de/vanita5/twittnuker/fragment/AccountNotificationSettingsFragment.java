@@ -22,18 +22,11 @@
 
 package de.vanita5.twittnuker.fragment;
 
-import android.accounts.AccountManager;
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.preference.Preference;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.dialog.GoogleAccountDialog;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.task.GetGCMTokenTask;
-import de.vanita5.twittnuker.util.PushBackendHelper;
-
-import com.google.android.gms.auth.GoogleAuthUtil;
 
 public class AccountNotificationSettingsFragment extends BaseAccountPreferenceFragment {
 
@@ -46,16 +39,6 @@ public class AccountNotificationSettingsFragment extends BaseAccountPreferenceFr
 			preference.setDefaultValue(account.color);
 		}
 
-		if (PushBackendHelper.getSavedAccountName(getActivity()) == null) {
-			final android.accounts.Account[] accounts = AccountManager.get(getActivity())
-					.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
-			if (accounts.length == 1) {
-				new GetGCMTokenTask(getActivity(), accounts[0].name, PushBackendHelper.SCOPE).execute();
-			} else if (accounts.length > 1) {
-				DialogFragment dialog = new GoogleAccountDialog();
-				dialog.show(getFragmentManager(), "account_dialog");
-			}
-		}
 	}
 
 	@Override
