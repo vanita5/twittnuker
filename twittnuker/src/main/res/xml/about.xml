@@ -74,6 +74,13 @@
     <!--</PreferenceCategory>-->
     <PreferenceCategory android:title="@string/special_thanks_to">
         <Preference
+            android:summary="for the Twittnuker Launcher icon"
+            android:title="herrsch0r">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="twittnuker://user?user_id=254264302&amp;finish_only=true"/>
+        </Preference>
+        <Preference
             android:summary="for some logos"
             android:title="kinaudiz">
             <intent
