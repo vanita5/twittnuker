@@ -463,20 +463,86 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     }
 
 
-    private void addConversation(ParcelableStatus status, int position) {
-        mStatusAdapter.addConversation(status, position);
-    }
-
-    private StatusAdapter getAdapter() {
-        return mStatusAdapter;
-    }
-
     @Override
     public Loader<SingleResponse<ParcelableStatus>> onCreateLoader(final int id, final Bundle args) {
         final Bundle fragmentArgs = getArguments();
         final long accountId = fragmentArgs.getLong(EXTRA_ACCOUNT_ID, -1);
         final long statusId = fragmentArgs.getLong(EXTRA_STATUS_ID, -1);
         return new ParcelableStatusLoader(getActivity(), false, fragmentArgs, accountId, statusId);
+    }
+
+    @Override
+    public void onLoadFinished(final Loader<SingleResponse<ParcelableStatus>> loader,
+                               final SingleResponse<ParcelableStatus> data) {
+        if (data.hasData()) {
+            final Pair<Long, Integer> readPosition = saveReadPosition();
+            final ParcelableStatus status = data.getData();
+            final Bundle dataExtra = data.getExtras();
+            final ParcelableCredentials credentials = dataExtra.getParcelable(EXTRA_ACCOUNT);
+            if (mStatusAdapter.setStatus(status, credentials)) {
+                mStatusAdapter.setConversation(null);
+                mStatusAdapter.setReplies(null);
+                loadConversation(status);
+                loadReplies(status);
+
+                final int position = mStatusAdapter.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS);
+                if (position != RecyclerView.NO_POSITION) {
+                    mLayoutManager.scrollToPositionWithOffset(position, 0);
+                }
+
+            } else if (readPosition != null) {
+                restoreReadPosition(readPosition);
+            }
+            setState(STATE_LOADED);
+        } else {
+            //TODO show errors
+            setState(STATE_ERROR);
+        }
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onLoaderReset(final Loader<SingleResponse<ParcelableStatus>> loader) {
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_status, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuUtils.setMenuItemAvailability(menu, R.id.current_status, mStatusAdapter.getStatus() != null);
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.current_status: {
+                if (mStatusAdapter.getStatus() != null) {
+                    final int position = mStatusAdapter.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS);
+                    mRecyclerView.smoothScrollToPosition(position);
+                }
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setConversation(List<ParcelableStatus> data) {
+        final Pair<Long, Integer> readPosition = saveReadPosition();
+        mStatusAdapter.setConversation(data);
+        restoreReadPosition(readPosition);
+    }
+
+    private void addConversation(ParcelableStatus status, int position) {
+        mStatusAdapter.addConversation(status, position);
+    }
+
+    private StatusAdapter getAdapter() {
+        return mStatusAdapter;
     }
 
     private DividerItemDecoration getItemDecoration() {
@@ -536,67 +602,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         return new Pair<>(itemId, positionView != null ? positionView.getTop() : -1);
     }
 
-    @Override
-    public void onLoadFinished(final Loader<SingleResponse<ParcelableStatus>> loader,
-                               final SingleResponse<ParcelableStatus> data) {
-        if (data.hasData()) {
-            final Pair<Long, Integer> readPosition = saveReadPosition();
-            final ParcelableStatus status = data.getData();
-            final Bundle dataExtra = data.getExtras();
-            final ParcelableCredentials credentials = dataExtra.getParcelable(EXTRA_ACCOUNT);
-            if (mStatusAdapter.setStatus(status, credentials)) {
-                mStatusAdapter.setConversation(null);
-                mStatusAdapter.setReplies(null);
-                loadConversation(status);
-                loadReplies(status);
-
-                final int position = mStatusAdapter.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS);
-                if (position != RecyclerView.NO_POSITION) {
-                    mLayoutManager.scrollToPositionWithOffset(position, 0);
-                }
-
-            } else if (readPosition != null) {
-                restoreReadPosition(readPosition);
-            }
-            setState(STATE_LOADED);
-        } else {
-            //TODO show errors
-            setState(STATE_ERROR);
-        }
-        invalidateOptionsMenu();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.current_status: {
-                if (mStatusAdapter.getStatus() != null) {
-                    final int position = mStatusAdapter.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS);
-                    mRecyclerView.smoothScrollToPosition(position);
-                }
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        MenuUtils.setMenuItemAvailability(menu, R.id.current_status, mStatusAdapter.getStatus() != null);
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_status, menu);
-    }
-
-    private void setConversation(List<ParcelableStatus> data) {
-        final Pair<Long, Integer> readPosition = saveReadPosition();
-        mStatusAdapter.setConversation(data);
-        restoreReadPosition(readPosition);
-    }
-
     private void setReplies(List<ParcelableStatus> data) {
         final Pair<Long, Integer> readPosition = saveReadPosition();
         mStatusAdapter.setReplies(data);
@@ -610,12 +615,120 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         mErrorContainer.setVisibility(state == STATE_ERROR ? View.VISIBLE : View.GONE);
     }
 
-    @Override
-    public void onLoaderReset(final Loader<SingleResponse<ParcelableStatus>> loader) {
+    private void showConversationError(Exception exception) {
 
     }
 
-    private void showConversationError(Exception exception) {
+    public static final class LoadSensitiveImageConfirmDialogFragment extends BaseSupportDialogFragment implements
+            DialogInterface.OnClickListener {
+
+        @Override
+        public void onClick(final DialogInterface dialog, final int which) {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE: {
+                    final Fragment f = getParentFragment();
+                    if (f instanceof StatusFragment) {
+                        final StatusAdapter adapter = ((StatusFragment) f).getAdapter();
+                        adapter.setDetailMediaExpanded(true);
+                    }
+                    break;
+                }
+            }
+
+        }
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(final Bundle savedInstanceState) {
+            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+            builder.setTitle(android.R.string.dialog_alert_title);
+            builder.setMessage(R.string.sensitive_content_warning);
+            builder.setPositiveButton(android.R.string.ok, this);
+            builder.setNegativeButton(android.R.string.cancel, null);
+            return builder.create();
+        }
+    }
+
+    static class LoadConversationTask extends AsyncTask<ParcelableStatus, ParcelableStatus,
+            ListResponse<ParcelableStatus>> {
+
+        final Context context;
+        final StatusFragment fragment;
+
+        LoadConversationTask(final StatusFragment fragment) {
+            context = fragment.getActivity();
+            this.fragment = fragment;
+        }
+
+        @Override
+        protected ListResponse<ParcelableStatus> doInBackground(final ParcelableStatus... params) {
+            final ArrayList<ParcelableStatus> list = new ArrayList<>();
+            try {
+                ParcelableStatus status = params[0];
+                final long accountId = status.account_id;
+                if (Utils.isOfficialKeyAccount(context, accountId)) {
+                    final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId, true);
+                    while (status.in_reply_to_status_id > 0 && !isCancelled()) {
+                        final ParcelableStatus cached = Utils.findStatusInDatabases(context, accountId, status.in_reply_to_status_id);
+                        if (cached == null) break;
+                        status = cached;
+                        publishProgress(status);
+                        list.add(0, status);
+                    }
+                    final Paging paging = new Paging();
+                    paging.setMaxId(status.id);
+                    final List<ParcelableStatus> conversations = new ArrayList<>();
+                    for (de.vanita5.twittnuker.api.twitter.model.Status item : twitter.showConversation(status.id, paging)) {
+                        if (item.getId() < status.id) {
+                            final ParcelableStatus conversation = new ParcelableStatus(item, accountId, false);
+                            publishProgress(conversation);
+                            conversations.add(conversation);
+                        }
+                    }
+                    list.addAll(0, conversations);
+                } else {
+                    while (status.in_reply_to_status_id > 0 && !isCancelled()) {
+                        status = Utils.findStatus(context, accountId, status.in_reply_to_status_id);
+                        publishProgress(status);
+                        list.add(0, status);
+                    }
+                }
+            } catch (final TwitterException e) {
+                return ListResponse.getListInstance(e);
+            }
+            return ListResponse.getListInstance(list);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            fragment.getAdapter().setConversationsLoading(true);
+        }
+
+        @Override
+        protected void onPostExecute(final ListResponse<ParcelableStatus> data) {
+            final StatusAdapter adapter = fragment.getAdapter();
+            if (data.hasData()) {
+                fragment.setConversation(data.getData());
+            } else if (data.hasException()) {
+                fragment.showConversationError(data.getException());
+            } else {
+                Utils.showErrorMessage(context, context.getString(R.string.action_getting_status), data.getException(), true);
+            }
+            adapter.setConversationsLoading(false);
+        }
+
+        @Override
+        protected void onProgressUpdate(ParcelableStatus... values) {
+            for (ParcelableStatus status : values) {
+//                fragment.addConversation(status, 0);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+        }
 
     }
 
@@ -962,119 +1075,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
     }
 
-    static class LoadConversationTask extends AsyncTask<ParcelableStatus, ParcelableStatus,
-            ListResponse<ParcelableStatus>> {
-
-        final Context context;
-        final StatusFragment fragment;
-
-        LoadConversationTask(final StatusFragment fragment) {
-            context = fragment.getActivity();
-            this.fragment = fragment;
-        }
-
-        @Override
-        protected ListResponse<ParcelableStatus> doInBackground(final ParcelableStatus... params) {
-            final ArrayList<ParcelableStatus> list = new ArrayList<>();
-            try {
-                ParcelableStatus status = params[0];
-                final long accountId = status.account_id;
-                if (Utils.isOfficialKeyAccount(context, accountId)) {
-                    final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId, true);
-                    while (status.in_reply_to_status_id > 0 && !isCancelled()) {
-                        final ParcelableStatus cached = Utils.findStatusInDatabases(context, accountId, status.in_reply_to_status_id);
-                        if (cached == null) break;
-                        status = cached;
-                        publishProgress(status);
-                        list.add(0, status);
-                    }
-                    final Paging paging = new Paging();
-                    paging.setMaxId(status.id);
-                    final List<ParcelableStatus> conversations = new ArrayList<>();
-                    for (de.vanita5.twittnuker.api.twitter.model.Status item : twitter.showConversation(status.id, paging)) {
-                        if (item.getId() < status.id) {
-                            final ParcelableStatus conversation = new ParcelableStatus(item, accountId, false);
-                            publishProgress(conversation);
-                            conversations.add(conversation);
-                        }
-                    }
-                    list.addAll(0, conversations);
-                } else {
-                    while (status.in_reply_to_status_id > 0 && !isCancelled()) {
-                        status = Utils.findStatus(context, accountId, status.in_reply_to_status_id);
-                        publishProgress(status);
-                        list.add(0, status);
-                    }
-                }
-            } catch (final TwitterException e) {
-                return ListResponse.getListInstance(e);
-            }
-            return ListResponse.getListInstance(list);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            fragment.getAdapter().setConversationsLoading(true);
-        }
-
-        @Override
-        protected void onPostExecute(final ListResponse<ParcelableStatus> data) {
-            final StatusAdapter adapter = fragment.getAdapter();
-            if (data.hasData()) {
-                fragment.setConversation(data.getData());
-            } else if (data.hasException()) {
-                fragment.showConversationError(data.getException());
-            } else {
-                Utils.showErrorMessage(context, context.getString(R.string.action_getting_status), data.getException(), true);
-            }
-            adapter.setConversationsLoading(false);
-        }
-
-        @Override
-        protected void onProgressUpdate(ParcelableStatus... values) {
-            for (ParcelableStatus status : values) {
-//                fragment.addConversation(status, 0);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-        }
-
-    }
-
-    public static final class LoadSensitiveImageConfirmDialogFragment extends BaseSupportDialogFragment implements
-            DialogInterface.OnClickListener {
-
-        @Override
-        public void onClick(final DialogInterface dialog, final int which) {
-            switch (which) {
-                case DialogInterface.BUTTON_POSITIVE: {
-                    final Fragment f = getParentFragment();
-                    if (f instanceof StatusFragment) {
-                        final StatusAdapter adapter = ((StatusFragment) f).getAdapter();
-                        adapter.setDetailMediaExpanded(true);
-                    }
-                    break;
-                }
-            }
-
-        }
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(final Bundle savedInstanceState) {
-            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
-            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
-            builder.setTitle(android.R.string.dialog_alert_title);
-            builder.setMessage(R.string.sensitive_content_warning);
-            builder.setPositiveButton(android.R.string.ok, this);
-            builder.setNegativeButton(android.R.string.cancel, null);
-            return builder.create();
-        }
-    }
-
     private static class SpaceViewHolder extends ViewHolder {
 
         public SpaceViewHolder(View itemView) {
@@ -1125,6 +1125,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private List<ParcelableStatus> mConversation, mReplies;
         private StatusAdapterListener mStatusAdapterListener;
         private RecyclerView mRecyclerView;
+        private DetailStatusViewHolder mStatusViewHolder;
         private CharSequence mReplyError;
 
         public StatusAdapter(StatusFragment fragment, boolean compact) {
@@ -1330,6 +1331,22 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         }
 
         @Override
+        public void onViewDetachedFromWindow(ViewHolder holder) {
+            if (holder instanceof DetailStatusViewHolder) {
+                mStatusViewHolder = (DetailStatusViewHolder) holder;
+            }
+            super.onViewDetachedFromWindow(holder);
+        }
+
+        @Override
+        public void onViewAttachedToWindow(ViewHolder holder) {
+            if (holder == mStatusViewHolder) {
+                mStatusViewHolder = null;
+            }
+            super.onViewAttachedToWindow(holder);
+        }
+
+        @Override
         public boolean isLoadMoreIndicatorVisible() {
             return mLoadMoreIndicatorVisible;
         }
@@ -1361,6 +1378,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             switch (viewType) {
                 case VIEW_TYPE_DETAIL_STATUS: {
+                    if (mStatusViewHolder != null) {
+                        return mStatusViewHolder;
+                    }
                     final View view;
                     if (mIsCompact) {
                         view = mInflater.inflate(R.layout.header_status_compact, parent, false);
@@ -1552,9 +1572,13 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         public void setConversation(List<ParcelableStatus> conversation) {
             mConversation = conversation;
-            mItemCounts[ITEM_IDX_CONVERSATION] = conversation != null ? conversation.size() : 0;
-            notifyDataSetChanged();
+            setCount(ITEM_IDX_CONVERSATION, conversation != null ? conversation.size() : 0);
             updateItemDecoration();
+        }
+
+        private void setCount(int idx, int size) {
+            mItemCounts[idx] = size;
+            notifyDataSetChanged();
         }
 
         public void setEventListener(StatusAdapterListener listener) {
@@ -1563,24 +1587,21 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         public void setReplyError(CharSequence error) {
             mReplyError = error;
-            mItemCounts[ITEM_IDX_REPLY_ERROR] = error != null ? 1 : 0;
-            notifyDataSetChanged();
+            setCount(ITEM_IDX_REPLY_ERROR, error != null ? 1 : 0);
             updateItemDecoration();
         }
 
         public void setReplies(List<ParcelableStatus> replies) {
             mReplies = replies;
-            mItemCounts[ITEM_IDX_REPLY] = replies != null ? replies.size() : 0;
-            notifyDataSetChanged();
+            setCount(ITEM_IDX_REPLY, replies != null ? replies.size() : 0);
             updateItemDecoration();
         }
 
         public boolean setStatus(final ParcelableStatus status, final ParcelableCredentials credentials) {
             final ParcelableStatus old = mStatus;
             mStatus = status;
-            mItemCounts[ITEM_IDX_STATUS] = status != null ? 1 : 0;
             mStatusAccount = credentials;
-            notifyDataSetChanged();
+            setCount(ITEM_IDX_STATUS, status != null ? 1 : 0);
             updateItemDecoration();
             return !CompareUtils.objectEquals(old, status);
         }
@@ -1598,14 +1619,12 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         }
 
         public void setRepliesLoading(boolean loading) {
-            mItemCounts[ITEM_IDX_REPLY_LOAD_MORE] = loading ? 1 : 0;
-            notifyDataSetChanged();
+            setCount(ITEM_IDX_REPLY_LOAD_MORE, loading ? 1 : 0);
             updateItemDecoration();
         }
 
         public void setConversationsLoading(boolean loading) {
-            mItemCounts[ITEM_IDX_CONVERSATION_LOAD_MORE] = loading ? 1 : 0;
-            notifyDataSetChanged();
+            setCount(ITEM_IDX_CONVERSATION_LOAD_MORE, loading ? 1 : 0);
             updateItemDecoration();
         }
 

@@ -36,10 +36,8 @@ import com.nostra13.universalimageloader.utils.IoUtils;
 
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.BitmapUtils;
-import de.vanita5.twittnuker.util.Exif;
 import de.vanita5.twittnuker.util.ImageValidator;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.imageloader.AccountExtra;
 import de.vanita5.twittnuker.util.imageloader.AccountFullImageExtra;
 
 import java.io.File;
@@ -144,7 +142,7 @@ public class TileImageLoader extends AsyncTaskLoader<TileImageLoader.Result> {
         o.inJustDecodeBounds = false;
         o.inSampleSize = BitmapUtils.computeSampleSize(mFallbackSize / Math.max(width, height));
         final Bitmap bitmap = BitmapFactory.decodeFile(path, o);
-        return Result.getInstance(useDecoder, bitmap, o, Exif.getOrientation(file), file);
+        return Result.getInstance(useDecoder, bitmap, o, ImageValidator.getOrientation(file.getAbsolutePath()), file);
     }
 
     @Override
