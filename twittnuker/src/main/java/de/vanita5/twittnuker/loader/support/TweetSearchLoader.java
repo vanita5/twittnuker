@@ -41,14 +41,16 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 
     private final String mQuery;
     private final boolean mGapEnabled;
+    private final boolean mTwitterOptimizedSearches;
 
     public TweetSearchLoader(final Context context, final long accountId, final String query,
                              final long sinceId, final long maxId, final List<ParcelableStatus> data,
                              final String[] savedStatusesArgs, final int tabPosition, boolean fromUser,
-                             boolean makeGap) {
+                             boolean makeGap, boolean twitterOptimizedSearches) {
         super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
         mQuery = query;
         mGapEnabled = makeGap;
+        mTwitterOptimizedSearches = twitterOptimizedSearches;
     }
 
     @NonNull
@@ -60,7 +62,10 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
     }
 
     protected String processQuery(final String query) {
-        return String.format("%s", query);
+        if (mTwitterOptimizedSearches) {
+            return String.format("%s exclude:retweets", query);
+        }
+        return query;
     }
 
     @Override

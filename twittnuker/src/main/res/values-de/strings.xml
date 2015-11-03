@@ -707,6 +707,8 @@
     <string name="cant_load_all_replies_message">Kann nicht alle Antworten laden. &lt;a href=\"#dialog\";&gt;Warum?&lt;/a&gt;</string>
     <string name="cant_load_all_replies_explanation">Aufgrund Twitters Beschränkungen für Drittanbieter Apps hat Twittnuker keinen Zugriff auf Antworten eines Tweets. Es kann nicht garantiert werden, dass Twittnuker wirklich alle Antworten lädt.</string>
     <string name="current_status">Aktueller Tweet</string>
+    <string name="twitter_optimized_searches">Twitter optimierte Suchanfragen</string>
+    <string name="twitter_optimized_searches_summary">Erlaubt spezielle Suchbefehle um bspw. Retweets nicht anzuzeigen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

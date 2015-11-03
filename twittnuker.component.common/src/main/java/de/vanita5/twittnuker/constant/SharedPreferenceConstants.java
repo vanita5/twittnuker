@@ -324,6 +324,8 @@ public interface SharedPreferenceConstants {
     String KEY_BUG_REPORTS = "bug_reports";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_COMBINED_NOTIFICATIONS = "combined_notifications";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
+    String TWITTER_OPTIMIZED_SEARCHES = "twitter_optimized_searches";
 
     //GCM Push
     @Preference(type = STRING)

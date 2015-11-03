@@ -12,6 +12,19 @@
             android:key="media_uploader"
             android:summary="%s"
             android:title="@string/image_uploader" />
+
+        <!--<de.vanita5.twittnuker.preference.TimelineSyncPreference-->
+            <!--android:defaultValue=""-->
+            <!--android:enabled="false"-->
+            <!--android:key="timeline_sync_service"-->
+            <!--android:summary="%s"-->
+            <!--android:title="@string/timeline_sync_service"/>-->
+
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:defaultValue="true"
+            android:key="twitter_optimized_searches"
+            android:summary="@string/twitter_optimized_searches_summary"
+            android:title="@string/twitter_optimized_searches" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="category_content"
@@ -25,13 +38,6 @@
             app:max="200"
             app:min="10"
             app:step="5" />
-
-        <!--<de.vanita5.twittnuker.preference.TimelineSyncPreference-->
-        <!--android:enabled="false"-->
-        <!--android:defaultValue=""-->
-        <!--android:key="timeline_sync_service"-->
-        <!--android:summary="%s"-->
-        <!--android:title="@string/timeline_sync_service"/>-->
 
         <CheckBoxPreference
             android:defaultValue="true"

@@ -33,16 +33,16 @@ public class UserMentionsLoader extends TweetSearchLoader {
     public UserMentionsLoader(final Context context, final long accountId, final String screenName,
                               final long maxId, final long sinceId, final List<ParcelableStatus> data,
                               final String[] savedStatusesArgs, final int tabPosition, boolean fromUser,
-                              boolean makeGap) {
+                              boolean makeGap, boolean twitterOptimizedSearches) {
         super(context, accountId, screenName, sinceId, maxId, data, savedStatusesArgs, tabPosition,
-                fromUser, makeGap);
-	}
+                fromUser, makeGap, twitterOptimizedSearches);
+    }
 
-	@Override
-	protected String processQuery(final String query) {
-		if (query == null) return null;
-		final String screenName = query.startsWith("@") ? query : String.format("@%s", query);
-		return String.format("%s exclude:retweets", screenName);
-	}
+    @Override
+    protected String processQuery(final String query) {
+        if (query == null) return null;
+        final String screenName = query.startsWith("@") ? query : String.format("@%s", query);
+        return String.format("%s exclude:retweets", screenName);
+    }
 
 }
