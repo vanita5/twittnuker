@@ -24,75 +24,58 @@ package de.vanita5.twittnuker.view;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
-import android.text.InputType;
 import android.text.method.ArrowKeyMovementMethod;
 import android.util.AttributeSet;
 
-import com.rengwuxian.materialedittext.MaterialMultiAutoCompleteTextView;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
-import de.vanita5.twittnuker.util.widget.ScreenNameTokenizer;
+import de.vanita5.twittnuker.util.widget.StatusTextTokenizer;
 
 public class ComposeEditText extends AppCompatMultiAutoCompleteTextView {
 
-	private UserHashtagAutoCompleteAdapter mAdapter;
-	private long mAccountId;
+    private UserHashtagAutoCompleteAdapter mAdapter;
+    private long mAccountId;
 
-	public ComposeEditText(final Context context) {
-		this(context, null);
-	}
+    public ComposeEditText(final Context context) {
+        this(context, null);
+    }
 
-	public ComposeEditText(final Context context, final AttributeSet attrs) {
-		this(context, attrs, R.attr.autoCompleteTextViewStyle);
-	}
+    public ComposeEditText(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.autoCompleteTextViewStyle);
+    }
 
-	public ComposeEditText(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-		setTokenizer(new ScreenNameTokenizer());
-		setMovementMethod(ArrowKeyMovementMethod.getInstance());
-		setupComposeInputType();
-	}
+    public ComposeEditText(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+        setTokenizer(new StatusTextTokenizer());
+        setMovementMethod(ArrowKeyMovementMethod.getInstance());
+    }
 
-	private void setupComposeInputType() {
-		int rawInputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
-		rawInputType |= InputType.TYPE_TEXT_FLAG_MULTI_LINE;
-		setRawInputType(rawInputType);
-	}
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (!isInEditMode() && mAdapter == null) {
+            mAdapter = new UserHashtagAutoCompleteAdapter(this);
+        }
+        setAdapter(mAdapter);
+        updateAccountId();
+    }
 
-	@Override
-	protected void onAttachedToWindow() {
-		super.onAttachedToWindow();
-		if (!isInEditMode() && mAdapter == null) {
-			mAdapter = new UserHashtagAutoCompleteAdapter(this);
-		}
-		setAdapter(mAdapter);
-		updateAccountId();
-	}
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mAdapter != null) {
+            mAdapter.closeCursor();
+            mAdapter = null;
+        }
+    }
 
-	@Override
-	protected void onDetachedFromWindow() {
-		super.onDetachedFromWindow();
-		if (mAdapter != null) {
-			mAdapter.closeCursor();
-			mAdapter = null;
-		}
-	}
+    public void setAccountId(long accountId) {
+        mAccountId = accountId;
+        updateAccountId();
+    }
 
-	public void setAccountId(long accountId) {
-		mAccountId = accountId;
-		updateAccountId();
-	}
-
-	private void updateAccountId() {
-		if (mAdapter == null) return;
-		mAdapter.setAccountId(mAccountId);
-	}
-
-	@Override
-	protected void replaceText(final CharSequence text) {
-		super.replaceText(text);
-		append(" ");
-	}
-
+    private void updateAccountId() {
+        if (mAdapter == null) return;
+        mAdapter.setAccountId(mAccountId);
+    }
 }
