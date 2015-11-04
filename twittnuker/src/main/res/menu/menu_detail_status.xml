@@ -21,7 +21,7 @@
         app:showAsAction="always" />
     <item
         android:id="@id/love"
-        android:icon="@drawable/ic_action_pokeball"
+        android:icon="@drawable/ic_action_triforce"
         android:title="@string/love"
         app:showAsAction="always" />
     <item
