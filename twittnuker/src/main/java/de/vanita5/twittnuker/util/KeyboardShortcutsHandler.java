@@ -58,12 +58,12 @@ public class KeyboardShortcutsHandler implements Constants, KeyboardShortcutCons
 
     static {
         sActionLabelMap.put(ACTION_COMPOSE, R.string.compose);
-        sActionLabelMap.put(ACTION_SEARCH, android.R.string.search_go);
+        sActionLabelMap.put(ACTION_SEARCH, R.string.search);
         sActionLabelMap.put(ACTION_MESSAGE, R.string.new_direct_message);
         sActionLabelMap.put(ACTION_HOME_ACCOUNTS_DASHBOARD, R.string.open_accounts_dashboard);
         sActionLabelMap.put(ACTION_STATUS_REPLY, R.string.reply);
         sActionLabelMap.put(ACTION_STATUS_RETWEET, R.string.retweet);
-        sActionLabelMap.put(ACTION_STATUS_FAVORITE, R.string.favorite);
+        sActionLabelMap.put(ACTION_STATUS_FAVORITE, R.string.like);
         sActionLabelMap.put(ACTION_NAVIGATION_PREVIOUS, R.string.previous_item);
         sActionLabelMap.put(ACTION_NAVIGATION_NEXT, R.string.next_item);
         sActionLabelMap.put(ACTION_NAVIGATION_PAGE_DOWN, R.string.page_down);

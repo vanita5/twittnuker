@@ -54,6 +54,9 @@
     <string name="cancel_retweet">Cancel retweet</string>
     <string name="favorite">Favorite</string>
     <string name="unfavorite">Unfavorite</string>
+    <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter's favorite. -->
+    <string name="like">Like</string>
+    <string name="undo_like">Unlike</string>
     <string name="reply">Reply</string>
     <string name="share">Share</string>
     <string name="share_via_twittnuker" translateable="false">Twittnuker</string>
@@ -98,6 +101,7 @@
     <string name="retweeted_by_count">Retweeted by <xliff:g id="retweet_count">%d</xliff:g> users</string>
     <string name="users_retweeted_this">Users retweeted this</string>
     <string name="users_favorited_this">Users favorited this</string>
+    <string name="users_liked_this">Users liked this</string>
     <string name="reply_to">Reply to <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Quote <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, via <xliff:g id="source">%2$s</xliff:g></string>
@@ -130,6 +134,8 @@
     <string name="location">Location</string>
     <string name="url">URL</string>
     <string name="favorites">Favorites</string>
+    <!-- n. formerly Twitter's favorite, in the plural -->
+    <string name="likes">Likes</string>
     <string name="name">Name</string>
     <string name="refresh">Refresh</string>
     <string name="retry">Retry</string>
@@ -269,8 +275,12 @@
     <string name="activities_by_friends">Activities by friends</string>
     <string name="activity_about_me_favorite"><xliff:g id="user">%s</xliff:g> favorited your tweet.</string>
     <string name="activity_about_me_favorite_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited your tweet.</string>
+    <string name="activity_about_me_like"><xliff:g id="user">%s</xliff:g> liked your tweet.</string>
+    <string name="activity_about_me_like_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked your tweet.</string>
     <string name="activity_about_me_favorited_retweet"><xliff:g id="user">%s</xliff:g> favorited your retweet.</string>
     <string name="activity_about_me_favorited_retweet_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited your retweet.</string>
+    <string name="activity_about_me_liked_retweet"><xliff:g id="user">%s</xliff:g> liked your retweet.</string>
+    <string name="activity_about_me_liked_retweet_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked your retweet.</string>
     <string name="activity_about_me_follow"><xliff:g id="user">%s</xliff:g> is following you.</string>
     <string name="activity_about_me_follow_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> are following you.</string>
     <string name="activity_about_me_retweet"><xliff:g id="user">%s</xliff:g> retweeted your tweet.</string>
@@ -281,11 +291,15 @@
     <string name="activity_about_me_retweeted_mention_multi"><xliff:g id="user">%s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> retweeted a tweet mentioned you.</string>
     <string name="activity_about_me_favorited_mention"><xliff:g id="user">%s</xliff:g> favorited a tweet mentioned you.</string>
     <string name="activity_about_me_favorited_mention_multi"><xliff:g id="user">%s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited a tweet mentioned you.</string>
+    <string name="activity_about_me_liked_mention"><xliff:g id="user">%s</xliff:g> liked a tweet mentioning you.</string>
+    <string name="activity_about_me_liked_mention_multi"><xliff:g id="user">%s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked a tweet mentioning you.</string>
     <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> added you to list.</string>
     <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> added you to list <xliff:g id="list">%2$s</xliff:g>".</string>
     <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> added you to their lists.</string>
     <string name="activity_by_friends_favorite"><xliff:g id="user">%1$s</xliff:g> favorited <xliff:g id="target">%2$s</xliff:g>\'s tweet.</string>
     <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g> favorited <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%3$s</xliff:g>\'s tweet.</string>
+    <string name="activity_by_friends_like"><xliff:g id="user">%1$s</xliff:g> liked <xliff:g id="target">%2$s</xliff:g>\'s tweet.</string>
+    <string name="activity_by_friends_like_multi"><xliff:g id="user">%1$s</xliff:g> liked <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%3$s</xliff:g>\'s tweet.</string>
     <string name="activity_by_friends_follow"><xliff:g id="user">%1$s</xliff:g> is following <xliff:g id="target">%2$s</xliff:g>.</string>
     <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g> is following <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%3$s</xliff:g>.</string>
     <string name="activity_by_friends_retweet"><xliff:g id="user">%1$s</xliff:g> retweeted <xliff:g id="target">%2$s</xliff:g>\'s tweet.</string>
@@ -392,6 +406,8 @@
     <string name="status_deleted">Tweet deleted.</string>
     <string name="status_favorited">Tweet favorited.</string>
     <string name="status_unfavorited">Tweet unfavorited.</string>
+    <string name="status_liked">Liked tweet.</string>
+    <string name="status_unliked">Unliked tweet.</string>
     <string name="status_retweeted">Retweeted.</string>
     <string name="retweet_cancelled">Retweet cancelled.</string>
     <string name="direct_message_sent">Direct message sent.</string>
@@ -695,8 +711,10 @@
     <string name="hide_card_actions">Hide card actions</string>
     <string name="N_statuses_quantity_one"><xliff:g id="count">%d</xliff:g> tweet</string>
     <string name="N_statuses_quantity_other"><xliff:g id="count">%d</xliff:g> tweets</string>
-    <string name="N_favorites_quantity_one"><xliff:g id="count">%d</xliff:g> favorites</string>
+    <string name="N_favorites_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> favorite</string>
     <string name="N_favorites_quantity_other"><xliff:g id="count">%d</xliff:g> favorites</string>
+    <string name="N_likes_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> like</string>
+    <string name="N_likes_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> likes</string>
     <string name="drafts_hint_messages">Your unsent tweets will be saved here</string>
     <string name="keyboard_shortcuts">Keyboard shortcuts</string>
     <string name="keyboard_shortcut_hint">Press keys</string>
@@ -800,6 +818,7 @@
     <string name="read_from_bottom_summary_on"></string>
 
     <string name="love">Love</string>
+    <string name="undo_love">Undo Love</string>
     <string name="standard_notifications">Standard Notifications</string>
     <string name="push_notifications">Push Notificatons</string>
     <string name="enable_push_notifications">Enable Push Notificatons</string>
@@ -813,6 +832,8 @@
     <string name="notification_new_interactions">new interactions</string>
     <string name="notification_new_favorite">favorited</string>
     <string name="notification_new_favorite_single">Favorited</string>
+    <string name="notification_new_like">liked</string>
+    <string name="notification_new_like_single">Liked</string>
     <string name="notification_new_retweet">retweeted</string>
     <string name="notification_new_retweet_single">Retweeted</string>
     <string name="notification_new_follower">is now following you.</string>

@@ -93,6 +93,7 @@ dependencies {
     compile 'com.lnikkila:extendedtouchview:0.1.0'
     compile 'com.google.android.gms:play-services:8.1.0'
     compile 'com.google.dagger:dagger:2.0.1'
+    compile 'org.attoparser:attoparser:1.4.0.RELEASE'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.7'
     compile 'com.github.johnpersano:supertoasts:1.3.4.1@aar'

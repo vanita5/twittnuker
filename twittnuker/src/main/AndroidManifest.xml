@@ -163,6 +163,7 @@
             android:excludeFromRecents="true"
             android:label="@string/compose"
             android:launchMode="singleTop"
+            android:parentActivityName=".activity.support.HomeActivity"
             android:theme="@style/Theme.Twidere.Dark.Dialog"
             android:windowSoftInputMode="adjustResize">
             <intent-filter android:label="@string/compose">
@@ -230,6 +231,7 @@
             android:name=".activity.SettingsActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/settings"
+            android:parentActivityName=".activity.support.HomeActivity"
             android:theme="@style/Theme.Twidere.Dark"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -267,6 +269,7 @@
             android:theme="@style/Theme.Twidere.Light.NoDisplay"/>
         <activity
             android:name=".activity.support.LinkHandlerActivity"
+            android:parentActivityName=".activity.support.HomeActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:theme="@style/Theme.Twidere.Dark.DialogWhenLarge.NoActionBar"
             android:windowSoftInputMode="adjustResize">

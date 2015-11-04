@@ -99,6 +99,7 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.CompareUtils;
+import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
@@ -885,7 +886,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             }
             timeSourceView.setMovementMethod(LinkMovementMethod.getInstance());
 
-            textView.setText(Html.fromHtml(status.text_html));
+            textView.setText(HtmlSpanBuilder.fromHtml(status.text_html));
             linkify.applyAllLinks(textView, status.account_id, layoutPosition, status.is_possibly_sensitive);
             ThemeUtils.applyParagraphSpacing(textView, 1.1f);
 

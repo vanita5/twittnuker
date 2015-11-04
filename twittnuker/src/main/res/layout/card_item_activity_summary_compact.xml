@@ -125,7 +125,7 @@
         android:singleLine="false"
         android:textAppearance="?android:textAppearanceSmall"
         android:textColor="?android:textColorPrimary"
-        tools:text="Uucky and 15 others favorited your tweet."/>
+        tools:text="Uucky and 15 others liked your tweet."/>
 
     <de.vanita5.twittnuker.view.themed.ThemedTextView
         android:id="@+id/summary"

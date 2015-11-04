@@ -24,21 +24,21 @@ package de.vanita5.twittnuker.util;
 
 import android.support.annotation.NonNull;
 
-public class StringUtils {
-	public static boolean regionMatchesIgnoreCase(@NonNull final String string, final int thisStart,
-												  @NonNull final String match, final int start,
-												  final int length) {
-		return string.substring(thisStart, thisStart + length).equalsIgnoreCase(match.substring(start, start + length));
-	}
+public class TwidereStringUtils {
+    public static boolean regionMatchesIgnoreCase(@NonNull final String string, final int thisStart,
+                                                  @NonNull final String match, final int start,
+                                                  final int length) {
+        return string.substring(thisStart, thisStart + length).equalsIgnoreCase(match.substring(start, start + length));
+    }
 
 
-	public static boolean startsWithIgnoreCase(@NonNull String string, @NonNull String prefix) {
-		return startsWithIgnoreCase(string, prefix, 0);
-	}
+    public static boolean startsWithIgnoreCase(@NonNull String string, @NonNull String prefix) {
+        return startsWithIgnoreCase(string, prefix, 0);
+    }
 
-	public static boolean startsWithIgnoreCase(@NonNull String string, @NonNull String prefix,
-											   int start) {
+    public static boolean startsWithIgnoreCase(@NonNull String string, @NonNull String prefix,
+                                               int start) {
         if (prefix.length() > string.length()) return false;
-		return regionMatchesIgnoreCase(string, start, prefix, 0, prefix.length());
-	}
+        return regionMatchesIgnoreCase(string, start, prefix, 0, prefix.length());
+    }
 }
