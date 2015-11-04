@@ -34,34 +34,35 @@ import java.util.List;
 
 public class StatusesSearchFragment extends ParcelableStatusesFragment {
 
-	@Override
+    @Override
     protected Loader<List<ParcelableStatus>> onCreateStatusesLoader(final Context context,
-                                                                 final Bundle args,
-                                                                 final boolean fromUser) {
-		setRefreshing(true);
-		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		final long maxId = args.getLong(EXTRA_MAX_ID, -1);
-		final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
-		final String query = args.getString(EXTRA_QUERY);
-		final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
+                                                                    final Bundle args,
+                                                                    final boolean fromUser) {
+        setRefreshing(true);
+        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final long maxId = args.getLong(EXTRA_MAX_ID, -1);
+        final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
+        final String query = args.getString(EXTRA_QUERY);
+        final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
         final boolean makeGap = args.getBoolean(EXTRA_MAKE_GAP, true);
+        final boolean twitterOptimizedSearches = mPreferences.getBoolean(TWITTER_OPTIMIZED_SEARCHES);
         return new TweetSearchLoader(getActivity(), accountId, query, sinceId, maxId, getAdapterData(),
-                getSavedStatusesFileArgs(), tabPosition, fromUser, makeGap);
-	}
+                getSavedStatusesFileArgs(), tabPosition, fromUser, makeGap, twitterOptimizedSearches);
+    }
 
     @Override
     protected void fitSystemWindows(Rect insets) {
         super.fitSystemWindows(insets);
     }
 
-	@Override
-	protected String[] getSavedStatusesFileArgs() {
-		final Bundle args = getArguments();
-		if (args == null) return null;
-		final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		final String query = args.getString(EXTRA_QUERY);
-		return new String[]{AUTHORITY_SEARCH_TWEETS, "account" + account_id, "query" + query};
-	}
+    @Override
+    protected String[] getSavedStatusesFileArgs() {
+        final Bundle args = getArguments();
+        if (args == null) return null;
+        final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final String query = args.getString(EXTRA_QUERY);
+        return new String[]{AUTHORITY_SEARCH_TWEETS, "account" + account_id, "query" + query};
+    }
 
 
 }

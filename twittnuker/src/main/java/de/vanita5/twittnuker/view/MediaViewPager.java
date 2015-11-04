@@ -27,19 +27,19 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class MediaViewPager extends ViewPager {
+public class MediaViewPager extends ExtendedViewPager {
 
 
-	public MediaViewPager(Context context) {
-		this(context, null);
-	}
+    public MediaViewPager(Context context) {
+        this(context, null);
+    }
 
-	public MediaViewPager(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public MediaViewPager(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	@Override
-	protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
-		return super.canScroll(v, checkV, dx, x, y);
-	}
+    @Override
+    protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
+        return super.canScroll(v, checkV, dx, x, y);
+    }
 }

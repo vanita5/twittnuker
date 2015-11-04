@@ -234,7 +234,7 @@ public class NotificationHelper implements Constants {
                 break;
             }
             case NotificationContent.NOTIFICATION_TYPE_FAVORITE: {
-                contentText = mContext.getString(R.string.notification_new_favorite_single)
+                contentText = mContext.getString(R.string.notification_new_like_single)
                         + ": " + notification.getMessage();
                 ticker = contentText;
                 smallicon = R.drawable.ic_stat_favorite;
@@ -448,7 +448,7 @@ public class NotificationHelper implements Constants {
             return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_retweet) + ":</b> %s",
                     nameEscaped, textEscaped));
         } else if (NotificationContent.NOTIFICATION_TYPE_FAVORITE.equals(type)) {
-            return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_favorite) + ":</b> %s",
+            return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_like) + ":</b> %s",
                     nameEscaped, textEscaped));
         } else if (NotificationContent.NOTIFICATION_TYPE_FOLLOWER.equals(type)) {
             return Html.fromHtml(String.format("<b>%s</b> " + mContext.getString(R.string.notification_new_follower),

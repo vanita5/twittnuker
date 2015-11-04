@@ -45,7 +45,7 @@
         android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="?android:textColorSecondary"
-        tools:text="Retweeted by twittnuker"/>
+        tools:text="Retweeted by Hasi"/>
 
     <de.vanita5.twittnuker.view.ColorLabelRelativeLayout
         android:id="@+id/profile_container"
@@ -438,7 +438,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="@string/favorites"
+                android:text="@string/likes"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="?android:textColorSecondary"/>
         </LinearLayout>

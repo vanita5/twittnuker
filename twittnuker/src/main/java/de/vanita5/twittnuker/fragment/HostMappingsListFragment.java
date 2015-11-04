@@ -57,6 +57,7 @@ import org.apache.commons.lang3.StringUtils;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.util.Map;
@@ -73,12 +74,15 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
 
     private ListView mListView;
     private HostMappingAdapter mAdapter;
+    private SharedPreferencesWrapper mHostMapping;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-        mPreferences.registerOnSharedPreferenceChangeListener(this);
+        mHostMapping = SharedPreferencesWrapper.getInstance(getActivity(),
+                HOST_MAPPING_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mHostMapping.registerOnSharedPreferenceChangeListener(this);
         mAdapter = new HostMappingAdapter(getActivity());
         setListAdapter(mAdapter);
         mListView = getListView();
@@ -103,7 +107,7 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
     public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete: {
-                final SharedPreferences.Editor editor = mPreferences.edit();
+                final SharedPreferences.Editor editor = mHostMapping.edit();
                 final SparseBooleanArray array = mListView.getCheckedItemPositions();
                 if (array == null) return false;
                 for (int i = 0, size = array.size(); i < size; i++) {

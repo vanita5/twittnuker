@@ -60,7 +60,6 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.imageloader.PauseRecyclerViewOnScrollListener;
 import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
@@ -69,7 +68,6 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         implements LoaderCallbacks<Data>, StatusAdapterListener, KeyboardShortcutCallback {
 
     private final Object mStatusesBusCallback;
-    private SharedPreferences mPreferences;
     private PopupMenu mPopupMenu;
     private final OnScrollListener mOnScrollListener = new OnScrollListener() {
         @Override
@@ -100,11 +98,6 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
 
     protected AbsStatusesFragment() {
         mStatusesBusCallback = createMessageBusCallback();
-    }
-
-    public SharedPreferences getSharedPreferences() {
-        if (mPreferences != null) return mPreferences;
-        return mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
     public abstract boolean getStatuses(long[] accountIds, long[] maxIds, long[] sinceIds);
@@ -208,9 +201,8 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
     @Override
     public final void onLoadFinished(Loader<Data> loader, Data data) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
-        final SharedPreferences preferences = getSharedPreferences();
-        final boolean rememberPosition = preferences.getBoolean(KEY_REMEMBER_POSITION, false);
-        final boolean readFromBottom = preferences.getBoolean(KEY_READ_FROM_BOTTOM, true);
+        final boolean rememberPosition = mPreferences.getBoolean(KEY_REMEMBER_POSITION, false);
+        final boolean readFromBottom = mPreferences.getBoolean(KEY_READ_FROM_BOTTOM, true);
         final long lastReadId;
         final int lastVisiblePos, lastVisibleTop;
         final String tag = getCurrentReadPositionTag();

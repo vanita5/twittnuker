@@ -33,28 +33,30 @@ import java.util.List;
 
 public class UserMentionsFragment extends StatusesSearchFragment {
 
-	@Override
+    @Override
     protected Loader<List<ParcelableStatus>> onCreateStatusesLoader(final Context context,
-                                                                 final Bundle args,
-                                                                 final boolean fromUser) {
-		if (args == null) return null;
-		final String screenName = args.getString(EXTRA_SCREEN_NAME);
-		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		final long maxId = args.getLong(EXTRA_MAX_ID, -1);
-		final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
-		final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
+                                                                    final Bundle args,
+                                                                    final boolean fromUser) {
+        if (args == null) return null;
+        final String screenName = args.getString(EXTRA_SCREEN_NAME);
+        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final long maxId = args.getLong(EXTRA_MAX_ID, -1);
+        final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
+        final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
         final boolean makeGap = args.getBoolean(EXTRA_MAKE_GAP, true);
+        final boolean twitterOptimizedSearches = mPreferences.getBoolean(TWITTER_OPTIMIZED_SEARCHES);
         return new UserMentionsLoader(getActivity(), accountId, screenName, maxId, sinceId,
-                getAdapterData(), getSavedStatusesFileArgs(), tabPosition, fromUser, makeGap);
-	}
+                getAdapterData(), getSavedStatusesFileArgs(), tabPosition, fromUser, makeGap,
+                twitterOptimizedSearches);
+    }
 
-	@Override
-	protected String[] getSavedStatusesFileArgs() {
-		final Bundle args = getArguments();
-		if (args == null) return null;
-		final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		final String screen_name = args.getString(EXTRA_SCREEN_NAME);
-		return new String[] { AUTHORITY_USER_MENTIONS, "account" + account_id, "screen_name" + screen_name };
-	}
+    @Override
+    protected String[] getSavedStatusesFileArgs() {
+        final Bundle args = getArguments();
+        if (args == null) return null;
+        final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final String screen_name = args.getString(EXTRA_SCREEN_NAME);
+        return new String[]{AUTHORITY_USER_MENTIONS, "account" + account_id, "screen_name" + screen_name};
+    }
 
 }

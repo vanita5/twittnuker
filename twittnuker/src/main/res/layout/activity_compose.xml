@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
@@ -26,12 +25,12 @@
     android:id="@+id/compose_activity"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-	android:minWidth="@dimen/compose_min_width"
+    android:minWidth="@dimen/compose_min_width"
     android:orientation="vertical">
 
     <RelativeLayout
-		android:id="@+id/compose_content"
-		android:layout_width="match_parent"
+        android:id="@+id/compose_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
@@ -48,7 +47,7 @@
             android:alpha="0.2"
             android:numColumns="@integer/grid_column_image_preview"
             android:stretchMode="columnWidth"
-            tools:listitem="@layout/grid_item_image_preview"/>
+            tools:listitem="@layout/grid_item_image_preview" />
 
         <LinearLayout
             android:id="@+id/edit_text_container"
@@ -65,9 +64,10 @@
                 android:completionThreshold="1"
                 android:gravity="top"
                 android:hint="@string/status_hint"
+                android:inputType="text|textLongMessage|textAutoComplete|textMultiLine"
                 android:minLines="6"
                 android:padding="@dimen/element_spacing_normal"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical" />
 
             <LinearLayout
                 android:id="@+id/location_container"
@@ -87,7 +87,7 @@
                     android:layout_marginLeft="@dimen/element_spacing_normal"
                     android:layout_marginRight="@dimen/element_spacing_normal"
                     android:color="?android:textColorSecondary"
-                    android:src="@drawable/ic_action_location"/>
+                    android:src="@drawable/ic_action_location" />
 
                 <TextView
                     android:id="@+id/location_text"
@@ -117,7 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                android:overScrollMode="never"/>
+                android:overScrollMode="never" />
         </FrameLayout>
 
     </RelativeLayout>
@@ -132,6 +132,6 @@
         android:orientation="vertical"
         android:showDividers="beginning">
 
-        <include layout="@layout/activity_compose_bottombar"/>
+        <include layout="@layout/activity_compose_bottombar" />
     </LinearLayout>
 </LinearLayout>

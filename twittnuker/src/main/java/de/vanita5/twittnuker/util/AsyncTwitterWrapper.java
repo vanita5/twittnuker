@@ -914,7 +914,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 final ParcelableStatus status = result.getData();
 
                 bus.post(new FavoriteCreatedEvent(status));
-                Utils.showOkMessage(mContext, R.string.status_favorited, false);
+                Utils.showOkMessage(mContext, R.string.status_liked, false);
             } else {
                 Utils.showErrorMessage(mContext, R.string.action_favoriting, result.getException(), true);
             }
@@ -1542,7 +1542,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 final ParcelableStatus status = result.getData();
 
                 bus.post(new FavoriteDestroyedEvent(status));
-                Utils.showInfoMessage(mContext, R.string.status_unfavorited, false);
+                Utils.showInfoMessage(mContext, R.string.status_unliked, false);
             } else {
                 Utils.showErrorMessage(mContext, R.string.action_unfavoriting, result.getException(), true);
             }

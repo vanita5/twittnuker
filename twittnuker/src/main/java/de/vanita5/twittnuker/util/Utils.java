@@ -75,6 +75,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.util.LongSparseArray;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ActionProvider;
@@ -267,8 +268,8 @@ import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_A
 public final class Utils implements Constants {
 
     public static final Pattern PATTERN_XML_RESOURCE_IDENTIFIER = Pattern.compile("res/xml/([\\w_]+)\\.xml");
-
     public static final Pattern PATTERN_RESOURCE_IDENTIFIER = Pattern.compile("@([\\w_]+)/([\\w_]+)");
+
     private static final UriMatcher CONTENT_PROVIDER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
     private static final UriMatcher LINK_HANDLER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
     private static final UriMatcher HOME_TABS_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
@@ -1696,15 +1697,14 @@ public final class Utils implements Constants {
         return def;
     }
 
-    public static int getCardHighlightColor(final Resources res, final boolean isMention, final boolean isFavorite,
-                                            final boolean isRetweet) {
-        if (isMention) {
-            return res.getColor(R.color.highlight_reply);
-        } else if (isRetweet) {
-            return res.getColor(R.color.highlight_retweet);
-        } else if (isFavorite) {
-            return res.getColor(R.color.highlight_favorite);
-        }
+    public static int getCardHighlightColor(final Context context, final boolean isMention,
+                                            final boolean isFavorite, final boolean isRetweet) {
+        if (isMention)
+            return ContextCompat.getColor(context, R.color.highlight_reply);
+        else if (isRetweet)
+            return ContextCompat.getColor(context, R.color.highlight_retweet);
+        else if (isFavorite)
+            return ContextCompat.getColor(context, R.color.highlight_like);
         return Color.TRANSPARENT;
     }
 
@@ -3287,9 +3287,9 @@ public final class Utils implements Constants {
                                         final ParcelableCredentials account) {
         if (context == null || menu == null || status == null || account == null) return;
         final Resources resources = context.getResources();
-        final int retweetHighlight = resources.getColor(R.color.highlight_retweet);
-        final int favoriteHighlight = resources.getColor(R.color.highlight_favorite);
-        final int loveHighlight = resources.getColor(R.color.highlight_love);
+        final int retweetHighlight = ContextCompat.getColor(context, R.color.highlight_retweet);
+        final int likeHighlight = ContextCompat.getColor(context, R.color.highlight_like);
+        final int loveHighlight = ContextCompat.getColor(context, R.color.highlight_love);
         final boolean isMyRetweet = isMyRetweet(status);
         final MenuItem delete = menu.findItem(R.id.delete);
         if (delete != null) {
@@ -3302,12 +3302,13 @@ public final class Utils implements Constants {
         }
         final MenuItem favorite = menu.findItem(R.id.favorite);
         if (favorite != null) {
-            ActionIconDrawable.setMenuHighlight(favorite, new TwidereMenuInfo(status.is_favorite, favoriteHighlight));
-            favorite.setTitle(status.is_favorite ? R.string.unfavorite : R.string.favorite);
+            ActionIconDrawable.setMenuHighlight(favorite, new TwidereMenuInfo(status.is_favorite, likeHighlight));
+            favorite.setTitle(status.is_favorite ? R.string.undo_like : R.string.like);
         }
         final MenuItem love = menu.findItem(R.id.love);
         if (love != null) {
             ActionIconDrawable.setMenuHighlight(love, new TwidereMenuInfo(isMyRetweet && status.is_favorite, loveHighlight));
+            love.setTitle(isMyRetweet && status.is_favorite ? R.string.undo_love : R.string.love);
         }
         final MenuItem translate = menu.findItem(R.id.translate);
         if (translate != null) {

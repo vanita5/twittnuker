@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="AlwaysShowAction">
 
     <item
         android:id="@id/reply"
@@ -14,19 +16,19 @@
         app:showAsAction="always" />
     <item
         android:id="@id/favorite"
-        android:icon="@drawable/ic_action_star"
-        android:title="@string/favorite"
+        android:icon="@drawable/ic_action_heart"
+        android:title="@string/like"
         app:showAsAction="always" />
     <item
         android:id="@id/love"
-        android:icon="@drawable/ic_action_heart"
+        android:icon="@drawable/ic_action_triforce"
         android:title="@string/love"
         app:showAsAction="always" />
     <item
         android:id="@id/share"
-        android:actionProviderClass="de.vanita5.twittnuker.menu.SupportStatusShareProvider"
         android:icon="@drawable/ic_action_share"
         android:title="@string/share"
+        app:actionProviderClass="de.vanita5.twittnuker.menu.SupportStatusShareProvider"
         app:showAsAction="always" />
     <item
         android:id="@id/copy"
