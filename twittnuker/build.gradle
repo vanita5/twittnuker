@@ -12,8 +12,8 @@ android {
         applicationId "de.vanita5.twittnuker"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 19
-        versionName "0.7.5"
+        versionCode 20
+        versionName "0.7.6"
         //multiDexEnabled false
     }
     compileOptions {
