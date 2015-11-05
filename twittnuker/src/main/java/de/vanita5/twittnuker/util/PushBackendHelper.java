@@ -3,6 +3,7 @@ package de.vanita5.twittnuker.util;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.gms.auth.GoogleAuthException;
@@ -15,7 +16,6 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.gcm.backend.PushBackendServer;
 import retrofit.RestAdapter;
-import retrofit.RestAdapter.Builder;
 
 public class PushBackendHelper implements TwittnukerConstants {
 
@@ -39,7 +39,7 @@ public class PushBackendHelper implements TwittnukerConstants {
 
     public static String getSavedAccountName(final Context context) {
         return SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-				.getString(KEY_GOOGLE_ACCOUNT, null);
+                .getString(KEY_GOOGLE_ACCOUNT, null);
     }
 
     public static String getAuthToken(final Context context) {
@@ -53,7 +53,9 @@ public class PushBackendHelper implements TwittnukerConstants {
     /**
      * Only use this in a background thread
      */
+    @Nullable
     public static String getAuthToken(final Context context, final String accountName) {
+        if (accountName == null) return null;
         try {
             return "Bearer " + GoogleAuthUtil.getTokenWithNotification(context,
                     accountName, SCOPE, null, AUTHORITY, null);
