@@ -61,7 +61,7 @@
 }
 
 # Keep the BuildConfig
--keep class com.example.BuildConfig { *; }
+# -keep class com.example.BuildConfig { *; }
 
 # Otto http://square.github.io/otto/
 -keepclassmembers class ** {
@@ -81,8 +81,6 @@
 -keepclasseswithmembers class * {
     @retrofit.http.* <methods>;
 }
--keep class java.util.regex.Pattern { *; }
--keep class sun.misc.Unsafe { *; }
 -dontwarn java.nio.file.**
 -dontwarn sun.net.spi.**
 -dontwarn org.codehaus.mojo.**

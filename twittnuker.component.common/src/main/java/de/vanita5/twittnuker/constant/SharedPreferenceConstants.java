@@ -321,4 +321,8 @@ public interface SharedPreferenceConstants {
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String TWITTER_OPTIMIZED_SEARCHES = "twitter_optimized_searches";
 
+    //GCM
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    String GCM_TOKEN_SENT = "gcm_token_sent";
+
 }
