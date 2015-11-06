@@ -3506,23 +3506,6 @@ public final class Utils implements Constants {
         });
     }
 
-    /**
-     * Returns true if at least one account has Push enabled
-     *
-     * @return
-     */
-    public static boolean isPushEnabled(final Context context) {
-        final long[] accountIds = getAccountIds(context);
-        final AccountPreferences[] accountPrefs = AccountPreferences.getAccountPreferences(context, accountIds);
-
-        for (final AccountPreferences pref : accountPrefs) {
-            if (pref.isPushEnabled()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static void startStatusShareChooser(final Context context, final ParcelableStatus status) {
         final Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
