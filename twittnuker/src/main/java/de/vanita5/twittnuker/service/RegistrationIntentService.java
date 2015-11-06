@@ -87,12 +87,12 @@ public class RegistrationIntentService extends IntentService implements Constant
     }
 
     private void subscribeGlobal(final String token) {
-        GcmPubSub pubSub = GcmPubSub.getInstance(this);
-        try {
-            pubSub.subscribe(token, TOPIC, null);
-        } catch (IOException e) {
-            mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
-            Log.e(TAG, "Subscribing to backend server global topic failed.", e);
-        }
+//        GcmPubSub pubSub = GcmPubSub.getInstance(this);
+//        try {
+//            pubSub.subscribe(token, TOPIC, null);
+//        } catch (IOException e) {
+//            mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
+//            Log.e(TAG, "Subscribing to backend server global topic failed.", e);
+//        }
     }
 }
