@@ -486,9 +486,6 @@
             android:name=".service.RefreshService"
             android:label="@string/label_refresh_service"/>
         <service
-            android:name=".service.PushService"
-            android:label="@string/label_refresh_service"/>
-        <service
             android:name=".service.BackgroundOperationService"
             android:label="@string/label_background_operation_service"/>
         <service
@@ -545,21 +542,6 @@
             </intent-filter>
         </receiver>
         -->
-        <receiver
-            android:name="de.vanita5.twittnuker.receiver.GCMReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-
-                <!-- Receives the actual messages. -->
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <!-- Receives the registration id. -->
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
-
-                <category android:name="com.nononsenseapps.linksgcm"/>
-            </intent-filter>
-        </receiver>
         <receiver
             android:name=".receiver.NotificationActionReceiver">
             <intent-filter>
