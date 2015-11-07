@@ -822,7 +822,7 @@
     <string name="standard_notifications">Standard Notifications</string>
     <string name="push_notifications">Push Notificatons</string>
     <string name="enable_push_notifications">Enable Push Notificatons</string>
-    <string name="enable_push_notifications_summary">Use your own backend server for Push Notifications</string>
+    <string name="enable_push_notifications_summary">Receive pus notifications from given server</string>
     <string name="push_api_url">Push API URL</string>
     <string name="push_api_port">Push API Port</string>
     <string name="push_api_url_summary">The URL/IP to your backend server</string>
@@ -850,4 +850,7 @@
     <string name="donation_summary">Donate to the project (Flattr, PayPal)</string>
 
     <string name="refresh_on_start_workaround">Use "Refresh before streaming" instead</string>
+    <string name="push_status_connected">Connected</string>
+    <string name="push_status_disconnected">Not connected...</string>
+    <string name="push_status_title">Status</string>
 </resources>

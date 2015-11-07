@@ -323,6 +323,12 @@ public interface SharedPreferenceConstants {
 
     //GCM
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    String KEY_ENABLE_PUSH_NOTIFICATIONS = "enable_push_notifications";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String GCM_TOKEN_SENT = "gcm_token_sent";
+    @Preference(type = STRING)
+    String KEY_PUSH_NOTIFICATION_SERVER = "push_notification_server";
+    @Preference(type = STRING)
+    String KEY_PUSH_API_URL = "push_api_url";
 
 }

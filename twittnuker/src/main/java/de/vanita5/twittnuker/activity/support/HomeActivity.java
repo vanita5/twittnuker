@@ -446,8 +446,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mReadStateManager.registerOnSharedPreferenceChangeListener(mReadStateChangeListener);
         updateUnreadCount();
 
-        registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
-
         if (checkPlayServices(this) && !mPreferences.getBoolean(GCM_TOKEN_SENT, false)) {
             Intent gcmRegIntent = new Intent(this, RegistrationIntentService.class);
             startService(gcmRegIntent);
@@ -464,6 +462,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     protected void onResume() {
         super.onResume();
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONRESUME));
+        registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
         invalidateOptionsMenu();
         updateActionsButtonStyle();
         updateActionsButton();
