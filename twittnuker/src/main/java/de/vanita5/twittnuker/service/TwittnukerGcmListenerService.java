@@ -27,9 +27,25 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
+import de.vanita5.twittnuker.model.AccountPreferences;
+import de.vanita5.twittnuker.model.NotificationContent;
+import de.vanita5.twittnuker.util.NotificationHelper;
+
 public class TwittnukerGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "GcmListenerService";
+
+    private NotificationHelper mNotificationHelper;
+
+    public TwittnukerGcmListenerService() {
+        super();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mNotificationHelper = new NotificationHelper(this);
+    }
 
     /**
      * Called when message is received.
@@ -40,10 +56,29 @@ public class TwittnukerGcmListenerService extends GcmListenerService {
      */
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("message");
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + message);
+        String type = data.getString("type");
+        Log.d(TAG, "Push Notification " + type);
 
         //TODO show notification
+        long accountId = -1;
+        try {
+            accountId = Long.parseLong(data.getString("account"));
+        } catch (NumberFormatException e) {
+            Log.e(TAG, e.getMessage());
+            return;
+        }
+
+        AccountPreferences accountPreferences = new AccountPreferences(this, accountId);
+
+        NotificationContent content = new NotificationContent();
+        content.setAccountId(accountId);
+        content.setFromUser(data.getString("fromuser"));
+        content.setType(data.getString("type"));
+        content.setMessage(data.getString("msg"));
+        content.setTimestamp(System.currentTimeMillis());
+        content.setProfileImageUrl(data.getString("image"));
+
+        mNotificationHelper.cachePushNotification(content);
+        mNotificationHelper.buildNotificationByType(content, accountPreferences, false);
     }
 }
