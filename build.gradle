@@ -1,7 +1,11 @@
+apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'com.github.hierynomus.license'
+
 buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
 
     dependencies {
@@ -13,6 +17,7 @@ buildscript {
             // should be excluded to avoid conflict
             exclude group: 'xerces'
         }
+        classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.12.1'
     }
 }
 

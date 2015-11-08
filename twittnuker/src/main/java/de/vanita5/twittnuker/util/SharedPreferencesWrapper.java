@@ -37,11 +37,13 @@ import java.util.Set;
 
 public class SharedPreferencesWrapper implements Constants, SharedPreferences {
 
-	private final SharedPreferences mPreferences;
+    private final Context mContext;
+    private final SharedPreferences mPreferences;
     private final HashMap<String, Preference> mMap;
 
-    private SharedPreferencesWrapper(final SharedPreferences preferences, final Class<?> keysClass) {
-		mPreferences = preferences;
+    private SharedPreferencesWrapper(final Context context, SharedPreferences preferences, final Class<?> keysClass) {
+        mContext = context;
+        mPreferences = preferences;
         mMap = new HashMap<>();
         if (keysClass != null) {
             for (Field field : keysClass.getFields()) {
@@ -53,7 +55,7 @@ public class SharedPreferencesWrapper implements Constants, SharedPreferences {
                 }
             }
         }
-	}
+    }
 
     @Override
     public boolean contains(final String key) {
@@ -61,9 +63,9 @@ public class SharedPreferencesWrapper implements Constants, SharedPreferences {
     }
 
     @Override
-	public SharedPreferences.Editor edit() {
-		return mPreferences.edit();
-	}
+    public SharedPreferences.Editor edit() {
+        return mPreferences.edit();
+    }
 
     @Override
     public Map<String, ?> getAll() {
@@ -71,20 +73,26 @@ public class SharedPreferencesWrapper implements Constants, SharedPreferences {
     }
 
     @Override
-	public boolean getBoolean(final String key, final boolean defValue) {
-		try {
-			return mPreferences.getBoolean(key, defValue);
-		} catch (final ClassCastException e) {
+    public boolean getBoolean(final String key, final boolean defValue) {
+        try {
+            return mPreferences.getBoolean(key, defValue);
+        } catch (final ClassCastException e) {
             if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
-			mPreferences.edit().remove(key).apply();
-			return defValue;
-		}
-	}
+            mPreferences.edit().remove(key).apply();
+            return defValue;
+        }
+    }
 
     public boolean getBoolean(final String key) {
-        final Preference preference = mMap.get(key);
-        if (preference == null || !preference.hasDefault()) return getBoolean(key, false);
-        return getBoolean(key, preference.defaultBoolean());
+        return getBoolean(key, getDefaultBoolean(key));
+    }
+
+    private boolean getDefaultBoolean(String key) {
+        final Preference annotation = mMap.get(key);
+        if (annotation == null || !annotation.hasDefault()) return false;
+        final int resId = annotation.defaultResource();
+        if (resId != 0) return mContext.getResources().getBoolean(resId);
+        return annotation.defaultBoolean();
     }
 
     @Override
@@ -99,41 +107,41 @@ public class SharedPreferencesWrapper implements Constants, SharedPreferences {
     }
 
     @Override
-	public int getInt(final String key, final int defValue) {
-		try {
-			return mPreferences.getInt(key, defValue);
-		} catch (final ClassCastException e) {
+    public int getInt(final String key, final int defValue) {
+        try {
+            return mPreferences.getInt(key, defValue);
+        } catch (final ClassCastException e) {
             if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
-			mPreferences.edit().remove(key).apply();
-			return defValue;
-		}
-	}
+            mPreferences.edit().remove(key).apply();
+            return defValue;
+        }
+    }
 
     @Override
-	public long getLong(final String key, final long defValue) {
-		try {
-			return mPreferences.getLong(key, defValue);
-		} catch (final ClassCastException e) {
+    public long getLong(final String key, final long defValue) {
+        try {
+            return mPreferences.getLong(key, defValue);
+        } catch (final ClassCastException e) {
             if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
-			mPreferences.edit().remove(key).apply();
-			return defValue;
-		}
-	}
+            mPreferences.edit().remove(key).apply();
+            return defValue;
+        }
+    }
 
-	public SharedPreferences getSharedPreferences() {
-		return mPreferences;
-	}
+    public SharedPreferences getSharedPreferences() {
+        return mPreferences;
+    }
 
     @Override
-	public String getString(final String key, final String defValue) {
-		try {
-			return mPreferences.getString(key, defValue);
-		} catch (final ClassCastException e) {
+    public String getString(final String key, final String defValue) {
+        try {
+            return mPreferences.getString(key, defValue);
+        } catch (final ClassCastException e) {
             if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
-			mPreferences.edit().remove(key).apply();
-			return defValue;
-		}
-	}
+            mPreferences.edit().remove(key).apply();
+            return defValue;
+        }
+    }
 
     @Override
     public Set<String> getStringSet(final String key, final Set<String> defValue) {
@@ -156,15 +164,16 @@ public class SharedPreferencesWrapper implements Constants, SharedPreferences {
         mPreferences.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
-	public static SharedPreferencesWrapper getInstance(final Context context, final String name, final int mode) {
+    public static SharedPreferencesWrapper getInstance(final Context context, final String name, final int mode) {
         return getInstance(context, name, mode, null);
     }
 
     public static SharedPreferencesWrapper getInstance(final Context context, final String name, final int mode,
-            final Class<?> keysClass) {
-		final SharedPreferences prefs = context.getSharedPreferences(name, mode);
-		if (prefs == null) return null;
-        return new SharedPreferencesWrapper(prefs, keysClass);
-	}
+                                                       final Class<?> keysClass) {
+        final Context app = context.getApplicationContext();
+        final SharedPreferences prefs = app.getSharedPreferences(name, mode);
+        if (prefs == null) return null;
+        return new SharedPreferencesWrapper(app, prefs, keysClass);
+    }
 
 }

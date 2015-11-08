@@ -55,6 +55,8 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter, IStatusView
 
     boolean shouldShowAccountsColor();
 
+    boolean shouldUseStarsForLikes();
+
     MediaLoadingHandler getMediaLoadingHandler();
 
 }

@@ -173,7 +173,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final long statusId = args.getLong(EXTRA_STATUS_ID, -1);
             final long maxId = args.getLong(EXTRA_MAX_ID, -1);
             final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
-            final boolean twitterOptimizedSearches = mPreferences.getBoolean(TWITTER_OPTIMIZED_SEARCHES);
+            final boolean twitterOptimizedSearches = mPreferences.getBoolean(KEY_TWITTER_OPTIMIZED_SEARCHES);
 
             final StatusRepliesLoader loader = new StatusRepliesLoader(getActivity(), accountId,
                     screenName, statusId, maxId, sinceId, null, null, 0, true, twitterOptimizedSearches);
@@ -379,7 +379,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         popupMenu.setOnMenuItemClickListener(mOnStatusMenuItemClickListener);
         popupMenu.inflate(R.menu.action_status);
         final ParcelableStatus status = mStatusAdapter.getStatus(position);
-        Utils.setMenuForStatus(mStatusAdapter.getContext(), popupMenu.getMenu(), status);
+        Utils.setMenuForStatus(mStatusAdapter.getContext(), mPreferences, popupMenu.getMenu(), status);
         popupMenu.show();
         mPopupMenu = popupMenu;
         mSelectedStatus = status;
@@ -737,6 +737,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     private static class DetailStatusViewHolder extends ViewHolder implements OnClickListener,
             ActionMenuView.OnMenuItemClickListener {
 
+        private final StatusFragment fragment;
         private final StatusAdapter adapter;
 
         private final ActionMenuView menuBar;
@@ -750,23 +751,25 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final TextView retweetedByView;
         private final View repliesContainer, retweetsContainer, favoritesContainer;
         private final TextView repliesCountView, retweetsCountView, favoritesCountView;
-        private final TextView quoteOriginalLink;
 
+        private final TextView quoteOriginalLink;
         private final ColorLabelRelativeLayout profileContainer;
         private final View mediaPreviewContainer;
         private final View mediaPreviewLoad;
+
         private final CardMediaContainer mediaPreview;
-
         private final View quotedNameContainer;
-        private final ForegroundColorView quoteIndicator;
 
+        private final ForegroundColorView quoteIndicator;
         private final TextView locationView;
         private final TwitterCardContainer twitterCard;
         private final StatusLinkClickHandler linkClickHandler;
         private final TwidereLinkify linkify;
+        private final TextView favoritesLabel;
 
-        public DetailStatusViewHolder(StatusAdapter adapter, View itemView) {
+        public DetailStatusViewHolder(StatusFragment fragment, StatusAdapter adapter, View itemView) {
             super(itemView);
+            this.fragment = fragment;
             this.linkClickHandler = new StatusLinkClickHandler(adapter.getContext(), null);
             this.linkify = new TwidereLinkify(linkClickHandler, false);
             this.adapter = adapter;
@@ -791,6 +794,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             quoteOriginalLink = (TextView) itemView.findViewById(R.id.quote_original_link);
             profileContainer = (ColorLabelRelativeLayout) itemView.findViewById(R.id.profile_container);
             twitterCard = (TwitterCardContainer) itemView.findViewById(R.id.twitter_card);
+            favoritesLabel = (TextView) itemView.findViewById(R.id.favorites_label);
 
             quotedTextView = (TextView) itemView.findViewById(R.id.quoted_text);
             quotedNameView = (TextView) itemView.findViewById(R.id.quoted_name);
@@ -952,7 +956,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 twitterCard.setVisibility(View.GONE);
             }
 
-            Utils.setMenuForStatus(context, menuBar.getMenu(), status, adapter.getStatusAccount());
+            Utils.setMenuForStatus(context, fragment.mPreferences, menuBar.getMenu(), status,
+                    adapter.getStatusAccount());
 
             textView.setTextIsSelectable(true);
             quotedTextView.setTextIsSelectable(true);
@@ -1072,6 +1077,10 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
             quotedTextView.setCustomSelectionActionModeCallback(new StatusActionModeCallback(quotedTextView, activity));
             textView.setCustomSelectionActionModeCallback(new StatusActionModeCallback(textView, activity));
+
+            if (adapter.shouldUseStarsForLikes()) {
+                favoritesLabel.setText(R.string.favorites);
+            }
         }
 
 
@@ -1119,6 +1128,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final boolean mDisplayProfileImage;
         private final boolean mSensitiveContentEnabled;
         private final boolean mHideCardActions;
+        private final boolean mUseStarsForLikes;
         private boolean mLoadMoreSupported;
         private boolean mLoadMoreIndicatorVisible;
         private boolean mDetailMediaExpanded;
@@ -1152,6 +1162,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             mDisplayMediaPreview = mPreferences.getBoolean(KEY_MEDIA_PREVIEW, true);
             mSensitiveContentEnabled = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
             mHideCardActions = mPreferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false);
+            mUseStarsForLikes = mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false);
             if (compact) {
                 mCardLayoutResource = R.layout.card_item_status_compact;
             } else {
@@ -1287,6 +1298,11 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         }
 
         @Override
+        public boolean shouldUseStarsForLikes() {
+            return mUseStarsForLikes;
+        }
+
+        @Override
         public MediaLoadingHandler getMediaLoadingHandler() {
             return mMediaLoadingHandler;
         }
@@ -1393,7 +1409,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                         final CardView cardView = (CardView) view.findViewById(R.id.card);
                         cardView.setCardBackgroundColor(mCardBackgroundColor);
                     }
-                    return new DetailStatusViewHolder(this, view);
+                    return new DetailStatusViewHolder(mFragment, this, view);
                 }
                 case VIEW_TYPE_LIST_STATUS: {
                     final View view = mInflater.inflate(mCardLayoutResource, parent, false);

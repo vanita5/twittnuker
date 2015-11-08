@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.ReadStateManager;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
@@ -66,6 +67,8 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     protected ReadStateManager mReadStateManager;
     @Inject
     protected Bus mBus;
+    @Inject
+    protected SharedPreferencesWrapper mPreferences;
 
     // Registered listeners
     private ArrayList<ControlBarOffsetListener> mControlBarOffsetListeners = new ArrayList<>();

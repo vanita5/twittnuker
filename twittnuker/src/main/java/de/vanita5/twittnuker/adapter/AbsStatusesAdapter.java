@@ -47,7 +47,6 @@ import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
@@ -72,6 +71,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     private final boolean mDisplayProfileImage;
     private final boolean mSensitiveContentEnabled;
     private final boolean mHideCardActions;
+    private final boolean mUseStarsForLikes;
     private StatusAdapterListener mStatusAdapterListener;
     private boolean mShowInReplyTo;
     private boolean mShowAccountsColor;
@@ -91,6 +91,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
         mDisplayMediaPreview = mPreferences.getBoolean(KEY_MEDIA_PREVIEW, true);
         mSensitiveContentEnabled = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
         mHideCardActions = mPreferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false);
+        mUseStarsForLikes = mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false);
         mLinkify = new TwidereLinkify(new StatusAdapterLinkClickHandler<>(this));
         setShowInReplyTo(true);
     }
@@ -183,6 +184,11 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     @Override
     public boolean onStatusLongClick(IStatusViewHolder holder, int position) {
         return mStatusAdapterListener != null && mStatusAdapterListener.onStatusLongClick(holder, position);
+    }
+
+    @Override
+    public boolean shouldUseStarsForLikes() {
+        return mUseStarsForLikes;
     }
 
     @Override

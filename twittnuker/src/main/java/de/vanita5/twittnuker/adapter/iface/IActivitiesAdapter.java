@@ -31,11 +31,11 @@ import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 
 public interface IActivitiesAdapter<Data> extends IContentCardAdapter, IGapSupportedAdapter {
 
-	ParcelableActivity getActivity(int position);
+    ParcelableActivity getActivity(int position);
 
-	int getActivityCount();
+    int getActivityCount();
 
-	void setData(Data data);
+    void setData(Data data);
 
     @PreviewStyle
     int getMediaPreviewStyle();
@@ -43,6 +43,8 @@ public interface IActivitiesAdapter<Data> extends IContentCardAdapter, IGapSuppo
     @NonNull
     @Override
     MediaLoaderWrapper getMediaLoader();
+
+    boolean shouldUseStarsForLikes();
 
     MediaLoadingHandler getMediaLoadingHandler();
 }

@@ -40,57 +40,57 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapt
 
 public class CardPreviewPreference extends Preference implements Constants, OnSharedPreferenceChangeListener {
 
-	private final LayoutInflater mInflater;
-	private final SharedPreferences mPreferences;
-	private final TwidereLinkify mLinkify;
+    private final LayoutInflater mInflater;
+    private final SharedPreferences mPreferences;
+    private final TwidereLinkify mLinkify;
     private StatusViewHolder mHolder;
-	private boolean mCompactModeChanged;
+    private boolean mCompactModeChanged;
     private DummyStatusHolderAdapter mAdapter;
 
-	public CardPreviewPreference(final Context context) {
-		this(context, null);
-	}
+    public CardPreviewPreference(final Context context) {
+        this(context, null);
+    }
 
-	public CardPreviewPreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public CardPreviewPreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-	public CardPreviewPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-		mInflater = LayoutInflater.from(context);
-		mLinkify = new TwidereLinkify(null);
-		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mPreferences.registerOnSharedPreferenceChangeListener(this);
+    public CardPreviewPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+        mInflater = LayoutInflater.from(context);
+        mLinkify = new TwidereLinkify(null);
+        mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
         mAdapter = new DummyStatusHolderAdapter(context);
-	}
+    }
 
-	@Override
-	public View getView(final View convertView, final ViewGroup parent) {
-		if (mCompactModeChanged) return super.getView(null, parent);
-		return super.getView(convertView, parent);
-	}
+    @Override
+    public View getView(final View convertView, final ViewGroup parent) {
+        if (mCompactModeChanged) return super.getView(null, parent);
+        return super.getView(convertView, parent);
+    }
 
-	@Override
-	public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
-		if (mHolder == null) return;
-		if (KEY_COMPACT_CARDS.equals(key)) {
-			mCompactModeChanged = true;
-		}
+    @Override
+    public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
+        if (mHolder == null) return;
+        if (KEY_COMPACT_CARDS.equals(key)) {
+            mCompactModeChanged = true;
+        }
         mAdapter.updateOptions();
-		notifyChanged();
-	}
+        notifyChanged();
+    }
 
-	@Override
+    @Override
     protected void onBindView(@NonNull final View view) {
         if (mHolder == null) return;
-		mCompactModeChanged = false;
+        mCompactModeChanged = false;
         mHolder.setupViewOptions();
         mHolder.displaySampleStatus();
-		super.onBindView(view);
-	}
+        super.onBindView(view);
+    }
 
-	@Override
-	protected View onCreateView(final ViewGroup parent) {
+    @Override
+    protected View onCreateView(final ViewGroup parent) {
         final View statusView;
         if (mPreferences != null && mPreferences.getBoolean(KEY_COMPACT_CARDS, false)) {
             statusView = mInflater.inflate(R.layout.card_item_status_compact, parent, false);
@@ -99,6 +99,6 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
         }
         mHolder = new StatusViewHolder(mAdapter, statusView);
         return statusView;
-	}
+    }
 
 }

@@ -198,8 +198,13 @@ public class NotificationHelper implements Constants {
                                 getRetweetIntent(status));
 
                         //Like Intent
-                        builder.addAction(R.drawable.ic_action_heart, mContext.getString(R.string.like),
-                                getFavoriteIntent(status));
+                        if (mSharedPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
+                            builder.addAction(R.drawable.ic_action_star, mContext.getString(R.string.favorite),
+                                    getFavoriteIntent(status));
+                        } else {
+                            builder.addAction(R.drawable.ic_action_heart, mContext.getString(R.string.like),
+                                    getFavoriteIntent(status));
+                        }
                     }
                 }
                 break;
@@ -234,10 +239,16 @@ public class NotificationHelper implements Constants {
                 break;
             }
             case NotificationContent.NOTIFICATION_TYPE_FAVORITE: {
-                contentText = mContext.getString(R.string.notification_new_like_single)
-                        + ": " + notification.getMessage();
+                if (mSharedPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
+                    contentText = mContext.getString(R.string.notification_new_favorite_single)
+                            + ": " + notification.getMessage();
+                    smallicon = R.drawable.ic_stat_favorite;
+                } else {
+                    contentText = mContext.getString(R.string.notification_new_like_single)
+                            + ": " + notification.getMessage();
+                    smallicon = R.drawable.ic_stat_heart;
+                }
                 ticker = contentText;
-                smallicon = R.drawable.ic_stat_heart;
 
                 if (notificationCount == 1 && notification.getOriginalStatus() != null) {
                     final Uri.Builder uriBuilder = new Uri.Builder();
@@ -448,8 +459,13 @@ public class NotificationHelper implements Constants {
             return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_retweet) + ":</b> %s",
                     nameEscaped, textEscaped));
         } else if (NotificationContent.NOTIFICATION_TYPE_FAVORITE.equals(type)) {
-            return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_like) + ":</b> %s",
-                    nameEscaped, textEscaped));
+            if (mSharedPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
+                return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_favorite) + ":</b> %s",
+                        nameEscaped, textEscaped));
+            } else {
+                return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_like) + ":</b> %s",
+                        nameEscaped, textEscaped));
+            }
         } else if (NotificationContent.NOTIFICATION_TYPE_FOLLOWER.equals(type)) {
             return Html.fromHtml(String.format("<b>%s</b> " + mContext.getString(R.string.notification_new_follower),
                     nameEscaped));

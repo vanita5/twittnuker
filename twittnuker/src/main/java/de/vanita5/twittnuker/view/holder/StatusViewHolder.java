@@ -25,6 +25,8 @@ package de.vanita5.twittnuker.view.holder;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Html;
 import android.text.Spanned;
@@ -40,7 +42,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -54,6 +55,7 @@ import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.view.ActionIconThemedTextView;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.NameView;
@@ -85,7 +87,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
     private final TextView replyRetweetView;
     private final ShortTimeView timeView;
     private final CardMediaContainer mediaPreview;
-    private final TextView replyCountView, retweetCountView, favoriteCountView;
+    private final ActionIconThemedTextView replyCountView, retweetCountView, favoriteCountView;
     private final IColorLabelView itemContent;
     private final ForegroundColorView quoteIndicator;
     private final View actionButtons;
@@ -115,9 +117,9 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         itemMenu = itemView.findViewById(R.id.item_menu);
         actionButtons = itemView.findViewById(R.id.action_buttons);
 
-        replyCountView = (TextView) itemView.findViewById(R.id.reply_count);
-        retweetCountView = (TextView) itemView.findViewById(R.id.retweet_count);
-        favoriteCountView = (TextView) itemView.findViewById(R.id.favorite_count);
+        replyCountView = (ActionIconThemedTextView) itemView.findViewById(R.id.reply_count);
+        retweetCountView = (ActionIconThemedTextView) itemView.findViewById(R.id.retweet_count);
+        favoriteCountView = (ActionIconThemedTextView) itemView.findViewById(R.id.favorite_count);
 //TODO
 //        profileImageView.setSelectorColor(ThemeUtils.getUserHighlightColor(itemView.getContext()));
 
@@ -424,6 +426,13 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         final boolean nameFirst = adapter.isNameFirst();
         nameView.setNameFirst(nameFirst);
         quotedNameView.setNameFirst(nameFirst);
+
+        if (adapter.shouldUseStarsForLikes()) {
+            favoriteCountView.setActivatedColor(ContextCompat.getColor(adapter.getContext(),
+                    R.color.highlight_favorite));
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(favoriteCountView,
+                    R.drawable.ic_action_star, 0, 0, 0);
+        }
     }
 
     private void displayExtraTypeIcon(String cardName, ParcelableMedia[] media, ParcelableLocation location, String placeFullName, boolean sensitive) {
@@ -483,12 +492,12 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         private boolean hideCardActions;
         private boolean displayMediaPreview;
         private boolean shouldShowAccountsColor;
+        private boolean useStarsForLikes;
 
         public DummyStatusHolderAdapter(Context context) {
             DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
             this.context = context;
             preferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-            final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
             handler = new MediaLoadingHandler(R.id.media_preview_progress);
             linkify = new TwidereLinkify(null);
             updateOptions();
@@ -622,6 +631,15 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         }
 
         @Override
+        public boolean shouldUseStarsForLikes() {
+            return useStarsForLikes;
+        }
+
+        public void setUseStarsForLikes(boolean useStarsForLikes) {
+            this.useStarsForLikes = useStarsForLikes;
+        }
+
+        @Override
         public boolean shouldShowAccountsColor() {
             return shouldShowAccountsColor;
         }
@@ -681,6 +699,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             sensitiveContentEnabled = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, false);
             hideCardActions = preferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false);
             linkHighlightStyle = Utils.getLinkHighlightingStyleInt(preferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
+            useStarsForLikes = preferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false);
         }
     }
 }

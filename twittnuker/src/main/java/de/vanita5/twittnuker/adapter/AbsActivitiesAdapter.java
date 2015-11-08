@@ -75,9 +75,15 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     private final boolean mDisplayMediaPreview;
     private final boolean mNameFirst;
     private final boolean mDisplayProfileImage;
+    private final boolean mUseStarsForLikes;
     private final TwidereLinkify mLinkify;
     private final DummyStatusHolderAdapter mStatusAdapterDelegate;
     private ActivityAdapterListener mActivityAdapterListener;
+
+    @Override
+    public boolean shouldUseStarsForLikes() {
+        return mUseStarsForLikes;
+    }
 
     protected AbsActivitiesAdapter(final Context context, boolean compact) {
         super(context);
@@ -93,6 +99,7 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
         mLinkHighlightingStyle = Utils.getLinkHighlightingStyleInt(mPreferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
         mDisplayMediaPreview = mPreferences.getBoolean(KEY_MEDIA_PREVIEW, true);
+        mUseStarsForLikes = mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false);
         mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
         mLinkify = new TwidereLinkify(this);
         mStatusAdapterDelegate = new DummyStatusHolderAdapter(context);

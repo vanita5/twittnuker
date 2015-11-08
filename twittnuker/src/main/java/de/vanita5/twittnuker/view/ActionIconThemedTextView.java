@@ -27,6 +27,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
@@ -36,34 +37,44 @@ import de.vanita5.twittnuker.util.support.TextViewSupport;
 public class ActionIconThemedTextView extends AppCompatTextView {
 
     private final int mIconWidth, mIconHeight;
-    private int mColor, mDisabledColor, mActivatedColor;
+    @ColorInt
+    private int mColor;
+    @ColorInt
+    private int mDisabledColor;
+    @ColorInt
+    private int mActivatedColor;
 
-	public ActionIconThemedTextView(Context context) {
-		this(context, null);
-	}
+    public ActionIconThemedTextView(Context context) {
+        this(context, null);
+    }
 
-	public ActionIconThemedTextView(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public ActionIconThemedTextView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-	public ActionIconThemedTextView(Context context, AttributeSet attrs, int defStyleAttr) {
-		super(context, attrs, defStyleAttr);
-		final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IconActionButton);
+    public ActionIconThemedTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IconActionButton);
         mColor = a.getColor(R.styleable.IconActionButton_iabColor, 0);
         mDisabledColor = a.getColor(R.styleable.IconActionButton_iabDisabledColor, 0);
         mActivatedColor = a.getColor(R.styleable.IconActionButton_iabActivatedColor, 0);
         mIconWidth = a.getDimensionPixelSize(R.styleable.IconActionButton_iabIconWidth, 0);
         mIconHeight = a.getDimensionPixelSize(R.styleable.IconActionButton_iabIconHeight, 0);
-		a.recycle();
+        a.recycle();
         updateCompoundDrawables();
-	}
+    }
 
-	public int getActivatedColor() {
+    @ColorInt
+    public int getActivatedColor() {
         if (mActivatedColor != 0) return mActivatedColor;
         final ColorStateList colors = getLinkTextColors();
         if (colors != null) return colors.getDefaultColor();
         return getCurrentTextColor();
-	}
+    }
+
+    public void setActivatedColor(@ColorInt int color) {
+        this.mActivatedColor = color;
+    }
 
     @Override
     public void setCompoundDrawablesWithIntrinsicBounds(Drawable left, Drawable top, Drawable right, Drawable bottom) {
@@ -89,13 +100,19 @@ public class ActionIconThemedTextView extends AppCompatTextView {
         updateCompoundDrawables();
     }
 
-	public int getColor() {
+    @ColorInt
+    public int getColor() {
         if (mColor != 0) return mColor;
         final ColorStateList colors = getTextColors();
         if (colors != null) return colors.getDefaultColor();
         return getCurrentTextColor();
-	}
+    }
 
+    public void setColor(@ColorInt int color) {
+        this.mColor = color;
+    }
+
+    @ColorInt
     public int getDisabledColor() {
         if (mDisabledColor != 0) return mDisabledColor;
         final ColorStateList colors = getTextColors();
@@ -103,10 +120,14 @@ public class ActionIconThemedTextView extends AppCompatTextView {
         return getCurrentTextColor();
     }
 
-	@Override
-	public void setActivated(boolean activated) {
-		super.setActivated(activated);
-	}
+    public void setDisabledColor(@ColorInt int color) {
+        this.mDisabledColor = color;
+    }
+
+    @Override
+    public void setActivated(boolean activated) {
+        super.setActivated(activated);
+    }
 
     @Override
     protected void drawableStateChanged() {
@@ -123,20 +144,20 @@ public class ActionIconThemedTextView extends AppCompatTextView {
         if (drawables == null) return;
         for (Drawable d : drawables) {
             if (d == null) continue;
-			d.mutate();
-			final int color;
-			if (isActivated()) {
-				color = getActivatedColor();
-			} else if (isEnabled()) {
-				color = getColor();
-			} else {
-				color = getDisabledColor();
-			}
+            d.mutate();
+            final int color;
+            if (isActivated()) {
+                color = getActivatedColor();
+            } else if (isEnabled()) {
+                color = getColor();
+            } else {
+                color = getDisabledColor();
+            }
             if (mIconWidth > 0 && mIconHeight > 0) {
                 d.setBounds(0, 0, mIconWidth, mIconHeight);
             }
-			d.setColorFilter(color, Mode.SRC_ATOP);
-		}
-	}
+            d.setColorFilter(color, Mode.SRC_ATOP);
+        }
+    }
 
 }
