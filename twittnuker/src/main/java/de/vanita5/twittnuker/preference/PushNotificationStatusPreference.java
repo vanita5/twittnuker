@@ -68,11 +68,10 @@ public class PushNotificationStatusPreference extends Preference implements Twit
         final String currentToken = mPreferences.getString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null);
         if (!TextUtils.isEmpty(currentToken)) {
             PushBackendServer backend = new PushBackendServer(mContext);
-            if (backend.remove(currentToken)) {
-                mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
-                mPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply();
-                setSummary(R.string.push_status_disconnected);
-            }
+            backend.remove(currentToken);
+            mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
+            mPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply();
+            setSummary(R.string.push_status_disconnected);
         }
     }
 }
