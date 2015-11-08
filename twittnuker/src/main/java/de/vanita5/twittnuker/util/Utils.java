@@ -3308,6 +3308,13 @@ public final class Utils implements Constants {
         final MenuItem favorite = menu.findItem(R.id.favorite);
         if (favorite != null) {
             if (preferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
+                final Drawable oldIcon = favorite.getIcon();
+                if (oldIcon instanceof ActionIconDrawable) {
+                    final Drawable starIcon = ContextCompat.getDrawable(context, R.drawable.ic_action_star);
+                    favorite.setIcon(new ActionIconDrawable(starIcon, ((ActionIconDrawable) oldIcon).getDefaultColor()));
+                } else {
+                    favorite.setIcon(R.drawable.ic_action_star);
+                }
                 ActionIconDrawable.setMenuHighlight(favorite, new TwidereMenuInfo(status.is_favorite, favoriteHighlight));
                 favorite.setTitle(status.is_favorite ? R.string.unfavorite : R.string.favorite);
             } else {
