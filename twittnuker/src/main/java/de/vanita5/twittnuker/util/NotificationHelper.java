@@ -164,6 +164,7 @@ public class NotificationHelper implements Constants {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
         builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
         builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setColor(pref.getNotificationLightColor());
 
         switch (type) {
             case NotificationContent.NOTIFICATION_TYPE_MENTION: {
