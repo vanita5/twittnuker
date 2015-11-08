@@ -288,8 +288,7 @@ public class StreamingService extends Service implements Constants {
 
         private void createNotification(final String fromUser, final String type, final String msg,
                                         ParcelableStatus status, User sourceUser) {
-            if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATIONS, true)
-                    && !mPreferences.getBoolean(KEY_ENABLE_PUSH, false)) {
+            if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATIONS, true)) {
                 AccountPreferences pref = new AccountPreferences(context, account.account_id);
                 NotificationContent notification = new NotificationContent();
                 notification.setAccountId(account.account_id);

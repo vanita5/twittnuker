@@ -23,9 +23,11 @@
 package de.vanita5.twittnuker.activity.support;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.ContentObserver;
@@ -47,6 +49,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayoutTrojan;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -75,13 +78,13 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggestionsFragment;
-import de.vanita5.twittnuker.gcm.GCMHelper;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
+import de.vanita5.twittnuker.service.RegistrationIntentService;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
@@ -112,11 +115,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
+import static de.vanita5.twittnuker.util.Utils.checkPlayServices;
 import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
-import static de.vanita5.twittnuker.util.Utils.isPushEnabled;
 import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
@@ -135,6 +138,8 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     private SupportTabsAdapter mPagerAdapter;
 
+    private BroadcastReceiver mGCMRegistrationReceiver;
+
     private ExtendedViewPager mViewPager;
     private TabPagerIndicator mTabIndicator;
     private DrawerLayout mDrawerLayout;
@@ -147,7 +152,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     private boolean isStreamingServiceRunning = false;
 
-    private boolean mPushEnabled;
     private Toolbar mActionBar;
 
     private OnSharedPreferenceChangeListener mReadStateChangeListener = new OnSharedPreferenceChangeListener() {
@@ -373,11 +377,21 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
         int tabDisplayOptionInt = getTabDisplayOptionInt(this);
 
+        mGCMRegistrationReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (mPreferences.getBoolean(GCM_TOKEN_SENT, false)) {
+                    Toast.makeText(context, "Push Notifications activated", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Push Notifications failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
         mTabColumns = getResources().getInteger(R.integer.default_tab_columns);
 
         mHomeContent.setOnFitSystemWindowsListener(this);
         mPagerAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), mTabIndicator, mTabColumns);
-        mPushEnabled = isPushEnabled(this);
         mViewPager.setAdapter(mPagerAdapter);
 //        mViewPager.setOffscreenPageLimit(3);
         mTabIndicator.setViewPager(mViewPager);
@@ -433,18 +447,22 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mReadStateManager.registerOnSharedPreferenceChangeListener(mReadStateChangeListener);
         updateUnreadCount();
 
-        if (mPushEnabled != isPushEnabled(this) || mPushEnabled && !isPushRegistered()) {
-            mPushEnabled = isPushEnabled(this);
-            if (mPushEnabled) {
-                GCMHelper.registerIfNotAlreadyDone(this);
-            } else {
-                GCMHelper.unregisterGCM(this);
-            }
-        }
         if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
             startStreamingService();
         } else {
             stopStreamingService();
+        }
+        registerGCMIfNeeded();
+    }
+
+    private void registerGCMIfNeeded() {
+        if (!mPreferences.getBoolean(KEY_ENABLE_PUSH_NOTIFICATIONS, false)) return;
+        if (TextUtils.isEmpty(mPreferences.getString(KEY_PUSH_API_URL, null))) return;
+        if (mPreferences.getBoolean(GCM_TOKEN_SENT, false)) return;
+
+        if (checkPlayServices(this)) {
+            Intent gcmRegIntent = new Intent(this, RegistrationIntentService.class);
+            startService(gcmRegIntent);
         }
     }
 
@@ -452,6 +470,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     protected void onResume() {
         super.onResume();
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONRESUME));
+        registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
         invalidateOptionsMenu();
         updateActionsButtonStyle();
         updateActionsButton();
@@ -466,6 +485,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     @Override
     protected void onPause() {
+        unregisterReceiver(mGCMRegistrationReceiver);
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONPAUSE));
         super.onPause();
     }
@@ -757,11 +777,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         for (int i = 0, j = mTabIndicator.getCount(); i < j; i++) {
             mTabIndicator.setBadge(i, 0);
         }
-    }
-
-    private boolean isPushRegistered() {
-        final SharedPreferences preferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-        return preferences != null && preferences.getBoolean(KEY_PUSH_REGISTERED, false);
     }
 
     private void openAccountsDrawer() {

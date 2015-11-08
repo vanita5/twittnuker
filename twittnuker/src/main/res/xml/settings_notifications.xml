@@ -19,6 +19,23 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="cat_push_notifications"
+        android:title="@string/push_notifications">
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_push_notifications"
+            android:summary="@string/enable_push_notifications_summary"
+            android:title="@string/enable_push_notifications"/>
+        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
+            android:dialogTitle="@string/push_api_url"
+            android:key="push_api_url"
+            android:singleLine="true"
+            android:summary="@string/push_api_url_summary"
+            android:title="@string/push_api_url"/>
+        <de.vanita5.twittnuker.preference.PushNotificationStatusPreference/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="cat_notifications"
         android:title="@string/notifications">
 
@@ -41,28 +58,6 @@
             android:dependency="stream_notifications"
             android:summary="@string/pebble_notifications_summary"
             android:title="@string/pebble_notifications"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="cat_push"
-        android:title="@string/push_notifications">
-
-        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
-            android:dialogTitle="@string/push_api_url"
-            android:key="push_api_url"
-            android:singleLine="true"
-            android:summary="@string/push_api_url_summary"
-            android:title="@string/push_api_url"/>
-
-        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
-            android:dialogTitle="@string/push_api_port"
-            android:key="push_api_port"
-            android:inputType="number"
-            android:singleLine="true"
-            android:summary="@string/push_api_port_summary"
-            android:title="@string/push_api_port"/>
-
-        <!-- TODO Add Info/Help -->
     </PreferenceCategory>
 
 </PreferenceScreen>

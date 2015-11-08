@@ -1,6 +1,5 @@
 package de.vanita5.twittnuker.util;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,6 +12,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.text.Spanned;
@@ -33,7 +33,6 @@ import javax.inject.Inject;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -61,6 +60,7 @@ public class NotificationHelper implements Constants {
         mSharedPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
+    @Nullable
     private List<NotificationContent> getCachedNotifications(final long argAccountId) {
         Cursor c = null;
         List<NotificationContent> results = new ArrayList<NotificationContent>();
@@ -151,6 +151,7 @@ public class NotificationHelper implements Constants {
         final String type = notification.getType();
         final int notificationType = pref.getMentionsNotificationType();
         List<NotificationContent> pendingNotifications = getCachedNotifications(notification.getAccountId());
+        if (pendingNotifications == null) return;
         final int notificationCount = pendingNotifications.size();
 
         final ParcelableStatus status = notification.getOriginalStatus();
@@ -166,8 +167,7 @@ public class NotificationHelper implements Constants {
 
         switch (type) {
             case NotificationContent.NOTIFICATION_TYPE_MENTION: {
-                contentText = stripMentionText(notification.getMessage(),
-                        getAccountScreenName(mContext, notification.getAccountId()));
+                contentText = notification.getMessage();
                 ticker = notification.getMessage();
                 smallicon = R.drawable.ic_stat_mention;
 
@@ -197,8 +197,8 @@ public class NotificationHelper implements Constants {
                         builder.addAction(R.drawable.ic_action_retweet, mContext.getString(R.string.retweet),
                                 getRetweetIntent(status));
 
-                        //Favorite Intent
-                        builder.addAction(R.drawable.ic_action_star, mContext.getString(R.string.favorite),
+                        //Like Intent
+                        builder.addAction(R.drawable.ic_action_heart, mContext.getString(R.string.like),
                                 getFavoriteIntent(status));
                     }
                 }
@@ -237,7 +237,7 @@ public class NotificationHelper implements Constants {
                 contentText = mContext.getString(R.string.notification_new_like_single)
                         + ": " + notification.getMessage();
                 ticker = contentText;
-                smallicon = R.drawable.ic_stat_favorite;
+                smallicon = R.drawable.ic_stat_heart;
 
                 if (notificationCount == 1 && notification.getOriginalStatus() != null) {
                     final Uri.Builder uriBuilder = new Uri.Builder();

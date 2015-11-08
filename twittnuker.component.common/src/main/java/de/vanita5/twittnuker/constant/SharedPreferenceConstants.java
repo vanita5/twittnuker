@@ -192,12 +192,6 @@ public interface SharedPreferenceConstants {
     String KEY_MENTIONS_NOTIFICATION = "mentions_notification";
     @Preference(type = BOOLEAN)
     String KEY_DIRECT_MESSAGES_NOTIFICATION = "direct_messages_notification";
-    @Preference(type = BOOLEAN)
-    String KEY_MENTIONS_NOTIFICATION_PUSH = "mentions_notification_push";
-    @Preference(type = BOOLEAN)
-    String KEY_DIRECT_MESSAGES_NOTIFICATION_PUSH = "direct_messages_notification_push";
-    @Preference(type = BOOLEAN)
-    String KEY_NEW_FOLLOWERS_NOTIFICATION_PUSH = "followers_notification_push";
     @Preference(type = INT)
     String KEY_LOCAL_TRENDS_WOEID = "local_trends_woeid";
     String KEY_NOTIFICATION_RINGTONE = "notification_ringtone";
@@ -327,20 +321,16 @@ public interface SharedPreferenceConstants {
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String TWITTER_OPTIMIZED_SEARCHES = "twitter_optimized_searches";
 
-    //GCM Push
-    @Preference(type = STRING)
-    String KEY_GOOGLE_ACCOUNT = "key_google_account";
-    @Preference(type = STRING)
-    String KEY_REGID = "KEY_REGID";
-    @Preference(type = INT)
-    String KEY_APP_VERSION = "KEY_APP_VERSION";
-    @Preference(type = BOOLEAN)
-    String KEY_ENABLE_PUSH = "enable_push_notifications";
+    //GCM
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
-    String KEY_PUSH_REGISTERED = "push_registered";
+    String KEY_ENABLE_PUSH_NOTIFICATIONS = "enable_push_notifications";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    String GCM_TOKEN_SENT = "gcm_token_sent";
+    @Preference(type = STRING)
+    String GCM_CURRENT_TOKEN = "gcm_current_token";
+    @Preference(type = STRING)
+    String KEY_PUSH_NOTIFICATION_SERVER = "push_notification_server";
     @Preference(type = STRING)
     String KEY_PUSH_API_URL = "push_api_url";
-    @Preference(type = STRING)
-    String KEY_PUSH_API_PORT = "push_api_port";
 
 }

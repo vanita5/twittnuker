@@ -63,15 +63,8 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 
     <!-- GCM Push -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-    <uses-permission android:name="de.vanita5.twittnuker.permission.C2D_MESSAGE"/>
-
-    <permission
-        android:name="de.vanita5.twittnuker.permission.C2D_MESSAGE"
-        android:protectionLevel="signature"/>
 
     <application
         android:name=".app.TwittnukerApplication"
@@ -486,14 +479,29 @@
             android:name=".service.RefreshService"
             android:label="@string/label_refresh_service"/>
         <service
-            android:name=".service.PushService"
-            android:label="@string/label_refresh_service"/>
-        <service
             android:name=".service.BackgroundOperationService"
             android:label="@string/label_background_operation_service"/>
         <service
             android:name=".service.StreamingService"
             android:label="@string/label_streaming_service"/>
+        <service
+            android:name=".service.TwittnukerGcmListenerService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.TwittnukerInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.RegistrationIntentService"
+            android:exported="false">
+        </service>
 
         <provider
             android:name=".provider.TwidereDataProvider"
@@ -512,6 +520,15 @@
             android:authorities="de.vanita5.twittnuker.provider.SearchRecentSuggestions"
             tools:ignore="ExportedContentProvider"/>
 
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="de.vanita5.twittnuker" />
+            </intent-filter>
+        </receiver>
         <receiver android:name=".receiver.ConnectivityStateReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
@@ -545,21 +562,6 @@
             </intent-filter>
         </receiver>
         -->
-        <receiver
-            android:name="de.vanita5.twittnuker.receiver.GCMReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-
-                <!-- Receives the actual messages. -->
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <!-- Receives the registration id. -->
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
-
-                <category android:name="com.nononsenseapps.linksgcm"/>
-            </intent-filter>
-        </receiver>
         <receiver
             android:name=".receiver.NotificationActionReceiver">
             <intent-filter>

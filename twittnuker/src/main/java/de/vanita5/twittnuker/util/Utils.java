@@ -114,6 +114,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
 import org.mariotaku.restfu.RestAPIFactory;
@@ -3506,23 +3509,6 @@ public final class Utils implements Constants {
         });
     }
 
-    /**
-     * Returns true if at least one account has Push enabled
-     *
-     * @return
-     */
-    public static boolean isPushEnabled(final Context context) {
-        final long[] accountIds = getAccountIds(context);
-        final AccountPreferences[] accountPrefs = AccountPreferences.getAccountPreferences(context, accountIds);
-
-        for (final AccountPreferences pref : accountPrefs) {
-            if (pref.isPushEnabled()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static void startStatusShareChooser(final Context context, final ParcelableStatus status) {
         final Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
@@ -4032,5 +4018,20 @@ public final class Utils implements Constants {
             value = value / 1024;
         }
         return String.format("%.2f %s", value, fileSizeUnits[index]);
+    }
+
+    public static boolean checkPlayServices(final Activity activity) {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(activity);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(activity, resultCode, 9000)
+                        .show();
+            } else {
+                Log.i("PlayServices", "This device is not supported.");
+            }
+            return false;
+        }
+        return true;
     }
 }

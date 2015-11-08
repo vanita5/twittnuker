@@ -668,7 +668,7 @@
     <string name="N_favorites_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> Favoriten</string>
     <string name="N_likes_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> Like</string>
     <string name="N_likes_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> Likes</string>
-    <string name="drafts_hint_messages">Nicht gesendete Tweets werden hier gespeichert</string>
+    <string name="drafts_hint_messages">Keine Entwürfe</string>
     <string name="keyboard_shortcuts">Keyboard Shortcuts</string>
     <string name="keyboard_shortcut_hint">Tasten drücken</string>
     <string name="conflicts_with_name">Steht im Konflikt mit <xliff:g id="name">%s</xliff:g></string>
@@ -761,7 +761,7 @@
     <string name="standard_notifications">Standard Benachrichtigungen</string>
     <string name="push_notifications">Push Benachrichtigungen</string>
     <string name="enable_push_notifications">Push Benachrichtigungen aktivieren</string>
-    <string name="enable_push_notifications_summary">Push Notifications mit eigenem Server benutzen</string>
+    <string name="enable_push_notifications_summary">Push Notifications über angegebenen Server erhalten</string>
     <string name="push_api_url">Push API URL</string>
     <string name="push_api_port">Push API Port</string>
     <string name="push_api_url_summary">Die URL/IP-Adresse des Push Servers</string>
@@ -771,8 +771,8 @@
     <string name="notification_new_interactions">neue Interaktionen</string>
     <string name="notification_new_favorite">favorisiert</string>
     <string name="notification_new_favorite_single">Favorisiert</string>
-    <string name="notification_new_like">liked</string>
-    <string name="notification_new_like_single">Liked</string>
+    <string name="notification_new_like">gefällt das</string>
+    <string name="notification_new_like_single">Gefällt</string>
     <string name="notification_new_retweet">retweeted</string>
     <string name="notification_new_retweet_single">Retweeted</string>
     <string name="notification_new_follower">folgt dir jetzt.</string>
@@ -804,4 +804,8 @@
     <string name="appearance">Aussehen</string>
     <string name="function">Funktionen</string>
     <string name="replies">Antworten</string>
+    <string name="push_status_connected">Verbunden</string>
+    <string name="push_status_reconnect">Verbinde...</string>
+    <string name="push_status_disconnected">Nicht verbunden...</string>
+    <string name="push_status_title">Status</string>
 </resources>
