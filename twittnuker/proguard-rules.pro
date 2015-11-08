@@ -141,3 +141,13 @@
 -keep public class com.google.android.gms.* { public *; }
 -dontwarn com.google.android.gms.**
 -dontwarn com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+
+# retrofit
+-dontwarn com.squareup.okhttp.**
+
+-dontwarn rx.**
+-dontwarn retrofit.**
+-keep class retrofit.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit.http.* <methods>;
+}

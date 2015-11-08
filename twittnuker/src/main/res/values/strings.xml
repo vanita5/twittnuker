@@ -851,6 +851,7 @@
 
     <string name="refresh_on_start_workaround">Use "Refresh before streaming" instead</string>
     <string name="push_status_connected">Connected</string>
+    <string name="push_status_reconnect">Reconnecting...</string>
     <string name="push_status_disconnected">Not connected...</string>
     <string name="push_status_title">Status</string>
 </resources>

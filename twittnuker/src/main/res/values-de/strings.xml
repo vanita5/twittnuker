@@ -805,6 +805,7 @@
     <string name="function">Funktionen</string>
     <string name="replies">Antworten</string>
     <string name="push_status_connected">Verbunden</string>
+    <string name="push_status_reconnect">Verbinde...</string>
     <string name="push_status_disconnected">Nicht verbunden...</string>
     <string name="push_status_title">Status</string>
 </resources>

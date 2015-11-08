@@ -31,6 +31,7 @@ import com.google.android.gms.iid.InstanceIDListenerService;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
+import de.vanita5.twittnuker.push.PushBackendServer;
 
 public class TwittnukerInstanceIDListenerService extends InstanceIDListenerService {
 
@@ -48,13 +49,14 @@ public class TwittnukerInstanceIDListenerService extends InstanceIDListenerServi
 
         final String currentToken = sharedPreferences.getString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null);
         if (!TextUtils.isEmpty(currentToken)) {
-            //TODO notify backend to remove current token
+            PushBackendServer backend = new PushBackendServer(this);
+            if (backend.remove(currentToken)) {
+                sharedPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
+                sharedPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply();
+
+                Intent intent = new Intent(this, RegistrationIntentService.class);
+                startService(intent);
+            }
         }
-
-        sharedPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
-        sharedPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply();
-
-        Intent intent = new Intent(this, RegistrationIntentService.class);
-        startService(intent);
     }
 }

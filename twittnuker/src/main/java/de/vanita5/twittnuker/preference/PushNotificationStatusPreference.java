@@ -25,14 +25,17 @@ package de.vanita5.twittnuker.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.Preference;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
+import de.vanita5.twittnuker.push.PushBackendServer;
 
 public class PushNotificationStatusPreference extends Preference implements TwittnukerConstants {
 
+    private Context mContext;
     private SharedPreferences mPreferences;
 
     public PushNotificationStatusPreference(final Context context) {
@@ -46,6 +49,7 @@ public class PushNotificationStatusPreference extends Preference implements Twit
     public PushNotificationStatusPreference(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
+        mContext = context;
         mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 
         setTitle(R.string.push_status_title);
@@ -60,7 +64,15 @@ public class PushNotificationStatusPreference extends Preference implements Twit
     @Override
     protected void onClick() {
         super.onClick();
-        mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
-        mPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply();
+
+        final String currentToken = mPreferences.getString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null);
+        if (!TextUtils.isEmpty(currentToken)) {
+            PushBackendServer backend = new PushBackendServer(mContext);
+            if (backend.remove(currentToken)) {
+                mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
+                mPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply();
+                setSummary(R.string.push_status_disconnected);
+            }
+        }
     }
 }

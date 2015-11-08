@@ -34,6 +34,8 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
+import de.vanita5.twittnuker.push.PushBackendServer;
+import de.vanita5.twittnuker.util.Utils;
 
 public class RegistrationIntentService extends IntentService implements Constants {
 
@@ -72,14 +74,21 @@ public class RegistrationIntentService extends IntentService implements Constant
     }
 
     /**
-     * Send regitration token to backend server if available
+     * Send registration token to backend server if available
      *
      * @param token
      */
     private void sendRegistrationToServer(final String token) {
-        //TODO send to backend server
+        PushBackendServer backend = new PushBackendServer(this);
 
-        //TODO on success: remember backend received token
-        //mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, true).apply();
+        //We do this once for every account.
+        //The backend server only accepts our reg id if at least one account
+        //is configured server-side.
+        for (long userId : Utils.getAccountIds(this)) {
+            if (backend.register(String.valueOf(userId), token)) {
+                mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, true).apply();
+                break;
+            }
+        }
     }
 }
