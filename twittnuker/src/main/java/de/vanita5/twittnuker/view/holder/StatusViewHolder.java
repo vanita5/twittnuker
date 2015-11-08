@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -135,7 +136,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         nameView.setScreenName("@" + TWIDERE_PREVIEW_SCREEN_NAME);
         nameView.updateText();
         if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
-            textView.setText(Html.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
+            textView.setText(HtmlSpanBuilder.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
             adapter.getTwidereLinkify().applyAllLinks(textView, -1, -1, false, adapter.getLinkHighlightingStyle());
         } else {
             textView.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
@@ -197,7 +198,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
 
             if (adapter.getLinkHighlightingStyle() != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE
                     && !TextUtils.isEmpty(status.quoted_text_html)) {
-                final Spanned text = Html.fromHtml(status.quoted_text_html);
+                final Spanned text = HtmlSpanBuilder.fromHtml(status.quoted_text_html);
                 quotedTextView.setText(text);
                 linkify.applyAllLinks(quotedTextView, status.account_id, getLayoutPosition(),
                         status.is_possibly_sensitive, adapter.getLinkHighlightingStyle());
@@ -277,7 +278,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         } else if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
             textView.setText(status.text_unescaped);
         } else {
-            textView.setText(Html.fromHtml(status.text_html));
+            textView.setText(HtmlSpanBuilder.fromHtml(status.text_html));
             linkify.applyAllLinks(textView, status.account_id, getLayoutPosition(),
                     status.is_possibly_sensitive,
                     adapter.getLinkHighlightingStyle());

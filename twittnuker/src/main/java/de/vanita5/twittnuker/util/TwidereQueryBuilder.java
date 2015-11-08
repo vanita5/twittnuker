@@ -48,17 +48,17 @@ public class TwidereQueryBuilder {
     public static final class CachedUsersQueryBuilder {
 
         public static SQLSelectQuery withRelationship(final String[] projection,
-													  final String selection,
-													  final String sortOrder,
-													  final long accountId) {
+                                                      final String selection,
+                                                      final String sortOrder,
+                                                      final long accountId) {
             return withRelationship(Utils.getColumnsFromProjection(projection), selection,
                     sortOrder, accountId);
         }
 
         public static SQLSelectQuery withRelationship(final Selectable select,
                                                       final String selection,
-													  final String sortOrder,
-													  final long accountId) {
+                                                      final String sortOrder,
+                                                      final long accountId) {
             final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
             qb.select(select).from(new Tables(CachedUsers.TABLE_NAME));
             final Column relationshipsUserId = new Column(new Table(CachedRelationships.TABLE_NAME),
@@ -81,10 +81,8 @@ public class TwidereQueryBuilder {
             return qb.build();
         }
 
-        public static SQLSelectQuery withScore(final String[] projection,
-                                               final String selection,
-                                               final String sortOrder,
-                                               final long accountId) {
+        public static SQLSelectQuery withScore(final String[] projection, final String selection,
+                                               final String sortOrder, final long accountId, final int limit) {
             final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
             final Selectable select = Utils.getColumnsFromProjection(projection);
             final Column[] columns = new Column[CachedUsers.COLUMNS.length + 1];
@@ -109,6 +107,9 @@ public class TwidereQueryBuilder {
             if (sortOrder != null) {
                 qb.orderBy(new OrderBy(sortOrder));
             }
+            if (limit > 0) {
+                qb.limit(limit);
+            }
             return qb.build();
         }
 
@@ -123,64 +124,64 @@ public class TwidereQueryBuilder {
 
     }
 
-	public static final class ConversationQueryBuilder {
+    public static final class ConversationQueryBuilder {
 
         public static SQLSelectQuery buildByConversationId(final String[] projection, final long account_id,
-				final long conversationId, final String selection, final String sortOrder) {
-			final Selectable select = Utils.getColumnsFromProjection(projection);
-			final SQLSelectQuery.Builder qb = SQLQueryBuilder.select(select);
-			qb.from(new Tables(DirectMessages.TABLE_NAME));
+                                                           final long conversationId, final String selection, final String sortOrder) {
+            final Selectable select = Utils.getColumnsFromProjection(projection);
+            final SQLSelectQuery.Builder qb = SQLQueryBuilder.select(select);
+            qb.from(new Tables(DirectMessages.TABLE_NAME));
             final Expression accountIdWhere = Expression.equals(DirectMessages.ACCOUNT_ID, account_id);
             final Expression incomingWhere = Expression.and(Expression.notEquals(DirectMessages.IS_OUTGOING, 1),
                     Expression.equals(DirectMessages.SENDER_ID, conversationId));
             final Expression outgoingWhere = Expression.and(Expression.equals(DirectMessages.IS_OUTGOING, 1),
                     Expression.equals(DirectMessages.RECIPIENT_ID, conversationId));
             final Expression conversationWhere = Expression.or(incomingWhere, outgoingWhere);
-			if (selection != null) {
+            if (selection != null) {
                 qb.where(Expression.and(accountIdWhere, conversationWhere, new Expression(selection)));
-			} else {
+            } else {
                 qb.where(Expression.and(accountIdWhere, conversationWhere));
-			}
-			qb.orderBy(new OrderBy(sortOrder != null ? sortOrder : Conversation.DEFAULT_SORT_ORDER));
+            }
+            qb.orderBy(new OrderBy(sortOrder != null ? sortOrder : Conversation.DEFAULT_SORT_ORDER));
             return qb.build();
-		}
+        }
 
         public static SQLSelectQuery buildByScreenName(final String[] projection, final long account_id,
-				final String screen_name, final String selection, final String sortOrder) {
-			final Selectable select = Utils.getColumnsFromProjection(projection);
-			final SQLSelectQuery.Builder qb = SQLQueryBuilder.select(select);
-			qb.select(select);
-			qb.from(new Tables(DirectMessages.TABLE_NAME));
+                                                       final String screen_name, final String selection, final String sortOrder) {
+            final Selectable select = Utils.getColumnsFromProjection(projection);
+            final SQLSelectQuery.Builder qb = SQLQueryBuilder.select(select);
+            qb.select(select);
+            qb.from(new Tables(DirectMessages.TABLE_NAME));
             final Expression accountIdWhere = Expression.equals(DirectMessages.ACCOUNT_ID, account_id);
             final Expression incomingWhere = Expression.and(Expression.notEquals(DirectMessages.IS_OUTGOING, 1),
                     Expression.equals(new Column(DirectMessages.SENDER_SCREEN_NAME), screen_name));
             final Expression outgoingWhere = Expression.and(Expression.equals(DirectMessages.IS_OUTGOING, 1),
                     Expression.equals(new Column(DirectMessages.RECIPIENT_SCREEN_NAME), screen_name));
-			if (selection != null) {
+            if (selection != null) {
                 qb.where(Expression.and(accountIdWhere, incomingWhere, outgoingWhere, new Expression(selection)));
-			} else {
+            } else {
                 qb.where(Expression.and(accountIdWhere, incomingWhere, outgoingWhere));
-			}
-			qb.orderBy(new OrderBy(sortOrder != null ? sortOrder : Conversation.DEFAULT_SORT_ORDER));
+            }
+            qb.orderBy(new OrderBy(sortOrder != null ? sortOrder : Conversation.DEFAULT_SORT_ORDER));
             return qb.build();
-		}
+        }
 
-	}
+    }
 
-	public static class ConversationsEntryQueryBuilder {
+    public static class ConversationsEntryQueryBuilder {
 
-		public static SQLSelectQuery build() {
-			return build(null);
-		}
+        public static SQLSelectQuery build() {
+            return build(null);
+        }
 
-		public static SQLSelectQuery build(final String selection) {
-			final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
+        public static SQLSelectQuery build(final String selection) {
+            final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
             qb.select(new Columns(new Column(ConversationEntries._ID), new Column(ConversationEntries.MESSAGE_TIMESTAMP),
                     new Column(ConversationEntries.MESSAGE_ID), new Column(ConversationEntries.ACCOUNT_ID), new Column(
                     ConversationEntries.IS_OUTGOING), new Column(ConversationEntries.NAME), new Column(
-							ConversationEntries.SCREEN_NAME), new Column(ConversationEntries.PROFILE_IMAGE_URL),
-					new Column(ConversationEntries.TEXT_HTML), new Column(ConversationEntries.CONVERSATION_ID)));
-			final SQLSelectQuery.Builder entryIds = new SQLSelectQuery.Builder();
+                    ConversationEntries.SCREEN_NAME), new Column(ConversationEntries.PROFILE_IMAGE_URL),
+                    new Column(ConversationEntries.TEXT_HTML), new Column(ConversationEntries.CONVERSATION_ID)));
+            final SQLSelectQuery.Builder entryIds = new SQLSelectQuery.Builder();
             entryIds.select(new Columns(new Column(DirectMessages._ID),
                     new Column(DirectMessages.MESSAGE_TIMESTAMP),
                     new Column(DirectMessages.MESSAGE_ID),
@@ -191,8 +192,8 @@ public class TwidereQueryBuilder {
                     new Column(DirectMessages.SENDER_PROFILE_IMAGE_URL, ConversationEntries.PROFILE_IMAGE_URL),
                     new Column(DirectMessages.TEXT_HTML),
                     new Column(DirectMessages.SENDER_ID, ConversationEntries.CONVERSATION_ID)));
-			entryIds.from(new Tables(Inbox.TABLE_NAME));
-			entryIds.union();
+            entryIds.from(new Tables(Inbox.TABLE_NAME));
+            entryIds.union();
             entryIds.select(new Columns(new Column(DirectMessages._ID),
                     new Column(DirectMessages.MESSAGE_TIMESTAMP),
                     new Column(DirectMessages.MESSAGE_ID),
@@ -203,66 +204,66 @@ public class TwidereQueryBuilder {
                     new Column(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, ConversationEntries.PROFILE_IMAGE_URL),
                     new Column(DirectMessages.TEXT_HTML),
                     new Column(DirectMessages.RECIPIENT_ID, ConversationEntries.CONVERSATION_ID)));
-			entryIds.from(new Tables(Outbox.TABLE_NAME));
-			qb.from(entryIds.build());
-			final SQLSelectQuery.Builder recent_inbox_msg_ids = SQLQueryBuilder
-					.select(new Column("MAX(" + DirectMessages.MESSAGE_ID + ")")).from(new Tables(Inbox.TABLE_NAME))
-					.groupBy(new Column(DirectMessages.SENDER_ID));
-			final SQLSelectQuery.Builder recent_outbox_msg_ids = SQLQueryBuilder
-					.select(new Column("MAX(" + DirectMessages.MESSAGE_ID + ")")).from(new Tables(Outbox.TABLE_NAME))
-					.groupBy(new Column(DirectMessages.RECIPIENT_ID));
-			final SQLSelectQuery.Builder conversationIds = new SQLSelectQuery.Builder();
-			conversationIds.select(new Columns(new Column(DirectMessages.MESSAGE_ID), new Column(
-					DirectMessages.SENDER_ID, ConversationEntries.CONVERSATION_ID)));
-			conversationIds.from(new Tables(Inbox.TABLE_NAME));
+            entryIds.from(new Tables(Outbox.TABLE_NAME));
+            qb.from(entryIds.build());
+            final SQLSelectQuery.Builder recent_inbox_msg_ids = SQLQueryBuilder
+                    .select(new Column("MAX(" + DirectMessages.MESSAGE_ID + ")")).from(new Tables(Inbox.TABLE_NAME))
+                    .groupBy(new Column(DirectMessages.SENDER_ID));
+            final SQLSelectQuery.Builder recent_outbox_msg_ids = SQLQueryBuilder
+                    .select(new Column("MAX(" + DirectMessages.MESSAGE_ID + ")")).from(new Tables(Outbox.TABLE_NAME))
+                    .groupBy(new Column(DirectMessages.RECIPIENT_ID));
+            final SQLSelectQuery.Builder conversationIds = new SQLSelectQuery.Builder();
+            conversationIds.select(new Columns(new Column(DirectMessages.MESSAGE_ID), new Column(
+                    DirectMessages.SENDER_ID, ConversationEntries.CONVERSATION_ID)));
+            conversationIds.from(new Tables(Inbox.TABLE_NAME));
             conversationIds.where(Expression.in(new Column(DirectMessages.MESSAGE_ID), recent_inbox_msg_ids.build()));
-			conversationIds.union();
-			conversationIds.select(new Columns(new Column(DirectMessages.MESSAGE_ID), new Column(
-					DirectMessages.RECIPIENT_ID, ConversationEntries.CONVERSATION_ID)));
-			conversationIds.from(new Tables(Outbox.TABLE_NAME));
+            conversationIds.union();
+            conversationIds.select(new Columns(new Column(DirectMessages.MESSAGE_ID), new Column(
+                    DirectMessages.RECIPIENT_ID, ConversationEntries.CONVERSATION_ID)));
+            conversationIds.from(new Tables(Outbox.TABLE_NAME));
             conversationIds.where(Expression.in(new Column(DirectMessages.MESSAGE_ID), recent_outbox_msg_ids.build()));
-			final SQLSelectQuery.Builder groupedConversationIds = new SQLSelectQuery.Builder();
-			groupedConversationIds.select(new Column(DirectMessages.MESSAGE_ID));
-			groupedConversationIds.from(conversationIds.build());
-			groupedConversationIds.groupBy(new Column(ConversationEntries.CONVERSATION_ID));
+            final SQLSelectQuery.Builder groupedConversationIds = new SQLSelectQuery.Builder();
+            groupedConversationIds.select(new Column(DirectMessages.MESSAGE_ID));
+            groupedConversationIds.from(conversationIds.build());
+            groupedConversationIds.groupBy(new Column(ConversationEntries.CONVERSATION_ID));
             final Expression groupedWhere = Expression.in(new Column(DirectMessages.MESSAGE_ID), groupedConversationIds.build());
             final Expression where;
-			if (selection != null) {
+            if (selection != null) {
                 where = Expression.and(groupedWhere, new Expression(selection));
-			} else {
-				where = groupedWhere;
-			}
-			qb.where(where);
-			qb.groupBy(Utils.getColumnsFromProjection(ConversationEntries.CONVERSATION_ID, DirectMessages.ACCOUNT_ID));
-            qb.orderBy(new OrderBy(ConversationEntries.MESSAGE_TIMESTAMP ,false));
-			return qb.build();
-		}
+            } else {
+                where = groupedWhere;
+            }
+            qb.where(where);
+            qb.groupBy(Utils.getColumnsFromProjection(ConversationEntries.CONVERSATION_ID, DirectMessages.ACCOUNT_ID));
+            qb.orderBy(new OrderBy(ConversationEntries.MESSAGE_TIMESTAMP, false));
+            return qb.build();
+        }
 
-	}
+    }
 
-	public static final class DirectMessagesQueryBuilder {
+    public static final class DirectMessagesQueryBuilder {
 
         public static SQLSelectQuery build() {
-			return build(null, null, null);
-		}
+            return build(null, null, null);
+        }
 
         public static SQLSelectQuery build(final String[] projection, final String selection,
-				final String sortOrder) {
-			final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
-			final Selectable select = Utils.getColumnsFromProjection(projection);
-			qb.select(select).from(new Tables(DirectMessages.Inbox.TABLE_NAME));
-			if (selection != null) {
+                                           final String sortOrder) {
+            final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
+            final Selectable select = Utils.getColumnsFromProjection(projection);
+            qb.select(select).from(new Tables(DirectMessages.Inbox.TABLE_NAME));
+            if (selection != null) {
                 qb.where(new Expression(selection));
-			}
-			qb.union();
-			qb.select(select).from(new Tables(DirectMessages.Outbox.TABLE_NAME));
-			if (selection != null) {
+            }
+            qb.union();
+            qb.select(select).from(new Tables(DirectMessages.Outbox.TABLE_NAME));
+            if (selection != null) {
                 qb.where(new Expression(selection));
-			}
-			qb.orderBy(new OrderBy(sortOrder != null ? sortOrder : DirectMessages.DEFAULT_SORT_ORDER));
-			return qb.build();
-		}
+            }
+            qb.orderBy(new OrderBy(sortOrder != null ? sortOrder : DirectMessages.DEFAULT_SORT_ORDER));
+            return qb.build();
+        }
 
-	}
+    }
 
 }

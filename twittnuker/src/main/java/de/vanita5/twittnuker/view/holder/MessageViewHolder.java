@@ -38,6 +38,8 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.util.HtmlSpanBuilder;
+import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.StatusActionModeCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -86,8 +88,8 @@ public class MessageViewHolder extends ViewHolder implements OnMediaClickListene
 
         final long accountId = cursor.getLong(indices.account_id);
         final long timestamp = cursor.getLong(indices.message_timestamp);
-        final ParcelableMedia[] media = ParcelableMedia.fromSerializedJson(cursor.getString(indices.media));
-        textView.setText(Html.fromHtml(cursor.getString(indices.text)));
+        final ParcelableMedia[] media = JsonSerializer.parseArray(cursor.getString(indices.media), ParcelableMedia.class);
+        textView.setText(HtmlSpanBuilder.fromHtml(cursor.getString(indices.text)));
         linkify.applyAllLinks(textView, accountId, false);
         time.setText(Utils.formatToLongTimeString(context, timestamp));
         mediaContainer.setVisibility(media != null && media.length > 0 ? View.VISIBLE : View.GONE);

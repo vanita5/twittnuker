@@ -22,8 +22,10 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +38,7 @@ import org.attoparser.markup.html.elements.IHtmlElement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class HtmlSpanBuilder {
@@ -60,9 +63,19 @@ public class HtmlSpanBuilder {
     }
 
     private static Object createSpan(TagInfo info) {
-        switch (info.name) {
+        switch (info.name.toLowerCase(Locale.US)) {
             case "a": {
                 return new URLSpan(info.getAttribute("href"));
+            }
+            case "b":
+            case "strong": {
+                return new StyleSpan(Typeface.BOLD);
+            }
+            case "em":
+            case "cite":
+            case "dfn":
+            case "i": {
+                return new StyleSpan(Typeface.ITALIC);
             }
         }
         return null;

@@ -692,7 +692,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 
             @Override
             public void afterTextChanged(Editable s) {
-                Utils.removeLineBreaks(s);
+//                Utils.removeLineBreaks(s);
                 mQueryTextChanged = s.length() == 0;
             }
         });
@@ -715,7 +715,6 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 
             @Override
             public void afterTextChanged(final Editable s) {
-                Utils.removeLineBreaks(s);
                 mTextChanged = s.length() == 0;
             }
 

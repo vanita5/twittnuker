@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.provider;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentProvider;
@@ -34,6 +35,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteFullException;
@@ -41,7 +43,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
@@ -53,6 +54,7 @@ import android.support.v4.app.NotificationCompat.InboxStyle;
 import android.support.v4.util.LongSparseArray;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.util.Log;
 
@@ -64,8 +66,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.OnConflict;
+import org.mariotaku.sqliteqb.library.OrderBy;
 import org.mariotaku.sqliteqb.library.RawItemArray;
 import org.mariotaku.sqliteqb.library.RawSQLLang;
+import org.mariotaku.sqliteqb.library.SQLConstants;
+import org.mariotaku.sqliteqb.library.SQLFunctions;
 import org.mariotaku.sqliteqb.library.SQLQueryBuilder;
 import org.mariotaku.sqliteqb.library.SetValue;
 import org.mariotaku.sqliteqb.library.query.SQLInsertQuery;
@@ -92,8 +97,10 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
+import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.receiver.NotificationReceiver;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
@@ -126,6 +133,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -560,10 +569,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
         mHandler = new Handler(Looper.getMainLooper());
         mDatabaseWrapper = new SQLiteDatabaseWrapper(this);
+        mNotificationHelper = new NotificationHelper(context);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
         updatePreferences();
         mImagePreloader = new ImagePreloader(context, mMediaLoader);
-        mNotificationHelper = new NotificationHelper(context);
         // final GetWritableDatabaseTask task = new
         // GetWritableDatabaseTask(context, helper, mDatabaseWrapper);
         // task.executeTask();
@@ -672,7 +681,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 case VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE: {
                     final long accountId = ParseUtils.parseLong(uri.getLastPathSegment(), -1);
                     final SQLSelectQuery query = CachedUsersQueryBuilder.withScore(projection,
-                            selection, sortOrder, accountId);
+                            selection, sortOrder, accountId, 0);
                     final Cursor c = mDatabaseWrapper.rawQuery(query.getSQL(), selectionArgs);
                     setNotificationUri(c, CachedUsers.CONTENT_URI);
                     return c;
@@ -692,6 +701,12 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     setNotificationUri(c, getNotificationUri(tableId, uri));
                     return c;
                 }
+                case VIRTUAL_TABLE_ID_SUGGESTIONS_AUTO_COMPLETE: {
+                    return getAutoCompleteSuggestionsCursor(uri);
+                }
+                case VIRTUAL_TABLE_ID_SUGGESTIONS_SEARCH: {
+                    return getSearchSuggestionCursor(uri);
+                }
             }
             if (table == null) return null;
             final Cursor c = mDatabaseWrapper.query(table, projection, selection, selectionArgs, null, null, sortOrder);
@@ -700,6 +715,127 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         } catch (final SQLException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private static final Pattern PATTERN_SCREEN_NAME = Pattern.compile("(?i)[@\uFF20]?([a-z0-9_]{1,20})");
+
+    private Cursor getSearchSuggestionCursor(Uri uri) {
+        final String query = uri.getQueryParameter(QUERY_PARAM_QUERY);
+        final long accountId = ParseUtils.parseLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
+        if (query == null || accountId <= 0) return null;
+        final ContentResolver resolver = getContentResolver();
+        final boolean emptyQuery = TextUtils.isEmpty(query);
+        final String queryEscaped = query.replace("_", "^_");
+        final Cursor[] cursors;
+        final String[] historyProjection = {
+                new Column(SearchHistory._ID, Suggestions.Search._ID).getSQL(),
+                new Column("'" + Suggestions.Search.TYPE_SEARCH_HISTORY + "'", Suggestions.Search.TYPE).getSQL(),
+                new Column(SearchHistory.QUERY, Suggestions.Search.TITLE).getSQL(),
+                new Column(SQLConstants.NULL, Suggestions.Search.SUMMARY).getSQL(),
+                new Column(SQLConstants.NULL, Suggestions.Search.ICON).getSQL(),
+                new Column("0", Suggestions.Search.EXTRA_ID).getSQL(),
+                new Column(SQLConstants.NULL, Suggestions.Search.EXTRA).getSQL()
+        };
+        final Expression historySelection = Expression.likeRaw(new Column(SearchHistory.QUERY), "?||'%'", "^");
+        @SuppressLint("Recycle") final Cursor historyCursor = mDatabaseWrapper.query(true,
+                SearchHistory.TABLE_NAME, historyProjection, historySelection.getSQL(),
+                new String[]{queryEscaped}, null, null, SearchHistory.DEFAULT_SORT_ORDER,
+                TextUtils.isEmpty(query) ? "3" : "2");
+        if (emptyQuery) {
+            final String[] savedSearchesProjection = {
+                    new Column(SavedSearches._ID, Suggestions.Search._ID).getSQL(),
+                    new Column("'" + Suggestions.Search.TYPE_SAVED_SEARCH + "'", Suggestions.Search.TYPE).getSQL(),
+                    new Column(SavedSearches.QUERY, Suggestions.Search.TITLE).getSQL(),
+                    new Column(SQLConstants.NULL, Suggestions.Search.SUMMARY).getSQL(),
+                    new Column(SQLConstants.NULL, Suggestions.Search.ICON).getSQL(),
+                    new Column("0", Suggestions.Search.EXTRA_ID).getSQL(),
+                    new Column(SQLConstants.NULL, Suggestions.Search.EXTRA).getSQL()
+            };
+            final Expression savedSearchesWhere = Expression.equals(SavedSearches.ACCOUNT_ID, accountId);
+            @SuppressLint("Recycle") final Cursor savedSearchesCursor = mDatabaseWrapper.query(true,
+                    SavedSearches.TABLE_NAME, savedSearchesProjection, savedSearchesWhere.getSQL(),
+                    null, null, null, SavedSearches.DEFAULT_SORT_ORDER, null);
+            cursors = new Cursor[2];
+            cursors[1] = savedSearchesCursor;
+        } else {
+            final String[] usersProjection = {
+                    new Column(CachedUsers._ID, Suggestions.Search._ID).getSQL(),
+                    new Column("'" + Suggestions.Search.TYPE_USER + "'", Suggestions.Search.TYPE).getSQL(),
+                    new Column(CachedUsers.NAME, Suggestions.Search.TITLE).getSQL(),
+                    new Column(CachedUsers.SCREEN_NAME, Suggestions.Search.SUMMARY).getSQL(),
+                    new Column(CachedUsers.PROFILE_IMAGE_URL, Suggestions.Search.ICON).getSQL(),
+                    new Column(CachedUsers.USER_ID, Suggestions.Search.EXTRA_ID).getSQL(),
+                    new Column(SQLConstants.NULL, Suggestions.Search.EXTRA).getSQL()
+            };
+            final Expression usersSelection = Expression.or(
+                    Expression.likeRaw(new Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
+                    Expression.likeRaw(new Column(CachedUsers.NAME), "?||'%'", "^"));
+            final String[] selectionArgs = new String[]{queryEscaped, queryEscaped};
+            final String[] order = {CachedUsers.LAST_SEEN, "score", CachedUsers.SCREEN_NAME, CachedUsers.NAME};
+            final boolean[] ascending = {false, false, true, true};
+            final OrderBy orderBy = new OrderBy(order, ascending);
+
+            final SQLSelectQuery usersQuery = CachedUsersQueryBuilder.withScore(usersProjection,
+                    usersSelection.getSQL(), orderBy.getSQL(), accountId, 0);
+            @SuppressLint("Recycle") final Cursor usersCursor = mDatabaseWrapper.rawQuery(usersQuery.getSQL(), selectionArgs);
+            final Expression exactUserSelection = Expression.or(Expression.likeRaw(new Column(CachedUsers.SCREEN_NAME), "?", "^"));
+            final Cursor exactUserCursor = mDatabaseWrapper.query(CachedUsers.TABLE_NAME,
+                    new String[]{SQLFunctions.COUNT()}, exactUserSelection.getSQL(),
+                    new String[]{queryEscaped}, null, null, null, "1");
+            final boolean hasName = exactUserCursor.moveToPosition(0) && exactUserCursor.getInt(0) > 0;
+            exactUserCursor.close();
+            final MatrixCursor screenNameCursor = new MatrixCursor(Suggestions.Search.COLUMNS);
+            if (!hasName) {
+                final Matcher m = PATTERN_SCREEN_NAME.matcher(query);
+                if (m.matches()) {
+                    screenNameCursor.addRow(new Object[]{0, Suggestions.Search.TYPE_SCREEN_NAME,
+                            query, null, null, 0, null});
+                }
+            }
+            cursors = new Cursor[3];
+            cursors[1] = screenNameCursor;
+            cursors[2] = usersCursor;
+        }
+        cursors[0] = historyCursor;
+        return new MergeCursor(cursors);
+    }
+
+    private Cursor getAutoCompleteSuggestionsCursor(@NonNull Uri uri) {
+        final String query = uri.getQueryParameter(QUERY_PARAM_QUERY);
+        final String type = uri.getQueryParameter(QUERY_PARAM_TYPE);
+        final String accountId = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID);
+        if (query == null || type == null) return null;
+        final String queryEscaped = query.replace("_", "^_");
+        if (Suggestions.AutoComplete.TYPE_USERS.equals(type)) {
+            final Expression where = Expression.or(Expression.likeRaw(new Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
+                    Expression.likeRaw(new Column(CachedUsers.NAME), "?||'%'", "^"));
+            final String[] whereArgs = {queryEscaped, queryEscaped};
+            final String[] mappedProjection = {
+                    new Column(CachedUsers._ID, Suggestions._ID).getSQL(),
+                    new Column("'" + Suggestions.AutoComplete.TYPE_USERS + "'", Suggestions.TYPE).getSQL(),
+                    new Column(CachedUsers.NAME, Suggestions.TITLE).getSQL(),
+                    new Column(CachedUsers.SCREEN_NAME, Suggestions.SUMMARY).getSQL(),
+                    new Column(CachedUsers.USER_ID, Suggestions.EXTRA_ID).getSQL(),
+                    new Column(CachedUsers.PROFILE_IMAGE_URL, Suggestions.ICON).getSQL(),
+            };
+            return query(Uri.withAppendedPath(CachedUsers.CONTENT_URI_WITH_SCORE, accountId),
+                    mappedProjection, where.getSQL(), whereArgs, new OrderBy(new String[]{"score", CachedUsers.LAST_SEEN},
+                            new boolean[]{false, false}).getSQL());
+        } else if (Suggestions.AutoComplete.TYPE_HASHTAGS.equals(type)) {
+            final Expression where = Expression.likeRaw(new Column(CachedHashtags.NAME), "?||'%'", "^");
+            final String[] whereArgs = new String[]{queryEscaped};
+            final String[] mappedProjection = {
+                    new Column(CachedHashtags._ID, Suggestions._ID).getSQL(),
+                    new Column("'" + Suggestions.AutoComplete.TYPE_HASHTAGS + "'", Suggestions.TYPE).getSQL(),
+                    new Column(CachedHashtags.NAME, Suggestions.TITLE).getSQL(),
+                    new Column("NULL", Suggestions.SUMMARY).getSQL(),
+                    new Column("0", Suggestions.EXTRA_ID).getSQL(),
+                    new Column("NULL", Suggestions.ICON).getSQL(),
+            };
+            return query(CachedHashtags.CONTENT_URI, mappedProjection, where.getSQL(),
+                    whereArgs, null);
+        }
+        return null;
     }
 
     @Override
@@ -811,6 +947,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     private ParcelFileDescriptor getCacheFileFd(final String name) throws FileNotFoundException {
         if (name == null) return null;
         final Context context = getContext();
+        assert context != null;
         final File cacheDir = context.getCacheDir();
         final File file = new File(cacheDir, name);
         if (!file.exists()) return null;
@@ -820,6 +957,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     private ContentResolver getContentResolver() {
         if (mContentResolver != null) return mContentResolver;
         final Context context = getContext();
+        assert context != null;
         return mContentResolver = context.getContentResolver();
     }
 
@@ -841,6 +979,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     private NotificationManager getNotificationManager() {
         if (mNotificationManager != null) return mNotificationManager;
         final Context context = getContext();
+        assert context != null;
         return mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
@@ -882,7 +1021,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
     private void notifyUnreadCountChanged(final int position) {
-        final Context context = getContext();
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -1263,6 +1401,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
     private void showMessagesNotification(AccountPreferences pref, StringLongPair[] pairs, ContentValues[] valuesArray) {
+        final Context context = getContext();
+        assert context != null;
         final long accountId = pref.getAccountId();
         final long prevOldestId = mReadStateManager.getPosition(TAG_OLDEST_MESSAGES, String.valueOf(accountId));
         long oldestId = -1;
@@ -1272,7 +1412,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             if (messageId <= prevOldestId) return;
         }
         mReadStateManager.setPosition(TAG_OLDEST_MESSAGES, String.valueOf(accountId), oldestId, false);
-        final Context context = getContext();
         final Resources resources = context.getResources();
         final NotificationManager nm = getNotificationManager();
         final ArrayList<Expression> orExpressions = new ArrayList<>();
@@ -1425,33 +1564,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
     private void updatePreferences() {
         mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, false);
-    }
-
-    @SuppressWarnings("unused")
-    private static class GetWritableDatabaseTask extends AsyncTask<Object, Object, SQLiteDatabase> {
-        private final Context mContext;
-        private final SQLiteOpenHelper mHelper;
-        private final SQLiteDatabaseWrapper mWrapper;
-
-        GetWritableDatabaseTask(final Context context, final SQLiteOpenHelper helper,
-                                final SQLiteDatabaseWrapper wrapper) {
-            mContext = context;
-            mHelper = helper;
-            mWrapper = wrapper;
-        }
-
-        @Override
-        protected SQLiteDatabase doInBackground(final Object... params) {
-            return mHelper.getWritableDatabase();
-        }
-
-        @Override
-        protected void onPostExecute(final SQLiteDatabase result) {
-            mWrapper.setSQLiteDatabase(result);
-            if (result != null) {
-                mContext.sendBroadcast(new Intent(BROADCAST_DATABASE_READY));
-            }
-        }
     }
 
 }

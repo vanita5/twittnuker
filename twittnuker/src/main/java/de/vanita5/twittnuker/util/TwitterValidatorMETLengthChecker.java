@@ -28,15 +28,15 @@ import com.rengwuxian.materialedittext.validation.METLengthChecker;
 import com.twitter.Validator;
 
 public class TwitterValidatorMETLengthChecker extends METLengthChecker {
-	private Validator mValidator;
+    private final Validator mValidator;
 
-	public TwitterValidatorMETLengthChecker(@NonNull Validator validator) {
-		mValidator = validator;
-	}
+    public TwitterValidatorMETLengthChecker(@NonNull Validator validator) {
+        mValidator = validator;
+    }
 
-	@Override
-	public int getLength(CharSequence charSequence) {
-		return mValidator.getTweetLength(String.valueOf(charSequence));
-	}
+    @Override
+    public int getLength(CharSequence charSequence) {
+        return mValidator.getTweetLength(String.valueOf(charSequence));
+    }
 
 }

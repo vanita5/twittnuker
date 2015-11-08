@@ -66,6 +66,7 @@ import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileBannerImageTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
+import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -240,6 +241,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
         if (savedInstanceState != null && savedInstanceState.getParcelable(EXTRA_USER) != null) {
             final ParcelableUser user = savedInstanceState.getParcelable(EXTRA_USER);
+            assert user != null;
             displayUser(user);
             mEditName.setText(savedInstanceState.getString(EXTRA_NAME, user.name));
             mEditLocation.setText(savedInstanceState.getString(EXTRA_LOCATION, user.location));
@@ -434,7 +436,10 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
         private static final String DIALOG_FRAGMENT_TAG = "updating_user_profile";
         private final UserProfileEditorFragment mFragment;
+        private final FragmentActivity mActivity;
         private final Handler mHandler;
+
+        // Data fields
         private final long mAccountId;
         private final ParcelableUser mOriginal;
         private final String mName;
@@ -442,7 +447,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         private final String mLocation;
         private final String mDescription;
         private final int mLinkColor;
-        private final FragmentActivity mActivity;
+        private final int mBackgroundColor;
 
         public UpdateProfileTaskInternal(final UserProfileEditorFragment fragment,
                                          final long accountId, final ParcelableUser original,
@@ -459,6 +464,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             mLocation = location;
             mDescription = description;
             mLinkColor = linkColor;
+            mBackgroundColor = backgroundColor;
         }
 
         @Override
@@ -468,11 +474,12 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
                 User user = null;
                 if (isProfileChanged()) {
                     final ProfileUpdate profileUpdate = new ProfileUpdate();
-                    profileUpdate.name(mName);
+                    profileUpdate.name(HtmlEscapeHelper.escapeBasic(mName));
+                    profileUpdate.location(HtmlEscapeHelper.escapeBasic(mLocation));
+                    profileUpdate.description(HtmlEscapeHelper.escapeBasic(mDescription));
                     profileUpdate.url(mUrl);
-                    profileUpdate.location(mLocation);
-                    profileUpdate.description(mDescription);
                     profileUpdate.linkColor(mLinkColor);
+                    profileUpdate.backgroundColor(mBackgroundColor);
                     user = twitter.updateProfile(profileUpdate);
                 }
                 if (user == null) {
@@ -489,6 +496,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             final ParcelableUser orig = mOriginal;
             if (orig == null) return true;
             if (mLinkColor != orig.link_color) return true;
+            if (mBackgroundColor != orig.background_color) return true;
             if (!stringEquals(mName, orig.name)) return true;
             if (!stringEquals(mDescription, isEmpty(orig.description_expanded) ? orig.description_plain : orig.description_expanded))
                 return true;

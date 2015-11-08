@@ -54,7 +54,7 @@ public class ComposeEditText extends AppCompatMultiAutoCompleteTextView {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!isInEditMode() && mAdapter == null) {
-            mAdapter = new UserHashtagAutoCompleteAdapter(this);
+            mAdapter = new UserHashtagAutoCompleteAdapter(getContext());
         }
         setAdapter(mAdapter);
         updateAccountId();

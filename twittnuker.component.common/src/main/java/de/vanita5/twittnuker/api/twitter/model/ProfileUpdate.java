@@ -26,53 +26,59 @@ import org.mariotaku.restfu.http.SimpleValueMap;
 
 import java.util.Locale;
 
-/**
- * Created by mariotaku on 15/1/6.
- */
 public class ProfileUpdate extends SimpleValueMap {
 
-	public void setName(String name) {
-		put("name", name);
-	}
+    public void setName(String name) {
+        put("name", name);
+    }
 
-	public void setUrl(String url) {
-		put("url", url);
-	}
+    public void setUrl(String url) {
+        put("url", url);
+    }
 
-	public void setLocation(String location) {
-		put("location", location);
-	}
+    public void setLocation(String location) {
+        put("location", location);
+    }
 
-	public void setDescription(String description) {
-		put("description", description);
-	}
+    public void setDescription(String description) {
+        put("description", description);
+    }
 
-	public void setLinkColor(int profileLinkColor) {
+    public void setLinkColor(int profileLinkColor) {
         put("profile_link_color", String.format(Locale.ROOT, "%06X", 0xFFFFFF & profileLinkColor));
-	}
+    }
 
-	public ProfileUpdate name(String name) {
-		setName(name);
-		return this;
-	}
+    public void setBackgroundColor(int profileLinkColor) {
+        put("profile_background_color", String.format(Locale.ROOT, "%06X", 0xFFFFFF & profileLinkColor));
+    }
 
-	public ProfileUpdate url(String url) {
-		setUrl(url);
-		return this;
-	}
+    public ProfileUpdate name(String name) {
+        setName(name);
+        return this;
+    }
 
-	public ProfileUpdate location(String location) {
-		setLocation(location);
-		return this;
-	}
+    public ProfileUpdate url(String url) {
+        setUrl(url);
+        return this;
+    }
 
-	public ProfileUpdate description(String description) {
-		setDescription(description);
-		return this;
-	}
+    public ProfileUpdate location(String location) {
+        setLocation(location);
+        return this;
+    }
 
-	public ProfileUpdate linkColor(int linkColor) {
-		setLinkColor(linkColor);
-		return this;
-	}
+    public ProfileUpdate description(String description) {
+        setDescription(description);
+        return this;
+    }
+
+    public ProfileUpdate linkColor(int linkColor) {
+        setLinkColor(linkColor);
+        return this;
+    }
+
+    public ProfileUpdate backgroundColor(int linkColor) {
+        setBackgroundColor(linkColor);
+        return this;
+    }
 }
