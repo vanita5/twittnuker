@@ -97,11 +97,11 @@ public class PushBackendServer implements TwittnukerConstants {
     private interface PushServerAPI {
 
         @FormUrlEncoded
-        @POST("/register/")
+        @POST("register")
         Call<Status> register(@Field("token") String token, @Field("userId") String userId);
 
         @FormUrlEncoded
-        @POST("/remove")
+        @POST("remove")
         Call<Status> remove(@Field("token") String token);
     }
 
