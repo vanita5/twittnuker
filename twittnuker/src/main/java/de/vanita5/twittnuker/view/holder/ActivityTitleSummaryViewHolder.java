@@ -103,8 +103,15 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
                 break;
             }
             case Activity.ACTION_FAVORITE: {
-                activityTypeView.setImageResource(R.drawable.ic_activity_action_favorite);
-                activityTypeView.setColorFilter(ContextCompat.getColor(context, R.color.highlight_like), Mode.SRC_ATOP);
+
+                if (adapter.shouldUseStarsForLikes()) {
+                    activityTypeView.setImageResource(R.drawable.ic_activity_action_favorite);
+                    activityTypeView.setColorFilter(ContextCompat.getColor(context, R.color.highlight_favorite), Mode.SRC_ATOP);
+                } else {
+                    activityTypeView.setImageResource(R.drawable.ic_activity_action_like);
+                    activityTypeView.setColorFilter(ContextCompat.getColor(context, R.color.highlight_like), Mode.SRC_ATOP);
+                }
+
                 if (byFriends) {
                     if (adapter.shouldUseStarsForLikes()) {
                         titleView.setText(getTitleStringByFriends(R.string.activity_by_friends_favorite,
