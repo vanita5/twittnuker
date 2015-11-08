@@ -668,7 +668,7 @@
     <string name="N_favorites_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> Favoriten</string>
     <string name="N_likes_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> Like</string>
     <string name="N_likes_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> Likes</string>
-    <string name="drafts_hint_messages">Nicht gesendete Tweets werden hier gespeichert</string>
+    <string name="drafts_hint_messages">Keine Entwürfe</string>
     <string name="keyboard_shortcuts">Keyboard Shortcuts</string>
     <string name="keyboard_shortcut_hint">Tasten drücken</string>
     <string name="conflicts_with_name">Steht im Konflikt mit <xliff:g id="name">%s</xliff:g></string>
