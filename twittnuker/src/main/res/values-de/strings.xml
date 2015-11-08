@@ -771,8 +771,8 @@
     <string name="notification_new_interactions">neue Interaktionen</string>
     <string name="notification_new_favorite">favorisiert</string>
     <string name="notification_new_favorite_single">Favorisiert</string>
-    <string name="notification_new_like">liked</string>
-    <string name="notification_new_like_single">Liked</string>
+    <string name="notification_new_like">gefällt das</string>
+    <string name="notification_new_like_single">Gefällt</string>
     <string name="notification_new_retweet">retweeted</string>
     <string name="notification_new_retweet_single">Retweeted</string>
     <string name="notification_new_follower">folgt dir jetzt.</string>
