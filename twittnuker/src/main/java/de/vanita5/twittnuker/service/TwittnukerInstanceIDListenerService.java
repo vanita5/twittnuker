@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.service;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.iid.InstanceIDListenerService;
@@ -44,7 +45,14 @@ public class TwittnukerInstanceIDListenerService extends InstanceIDListenerServi
         Log.d("InstanceIDListener", "Refresh GMC Token");
 
         SharedPreferences sharedPreferences = getSharedPreferences(TwittnukerConstants.SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+
+        final String currentToken = sharedPreferences.getString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null);
+        if (!TextUtils.isEmpty(currentToken)) {
+            //TODO notify backend to remove current token
+        }
+
         sharedPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
+        sharedPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply();
 
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);

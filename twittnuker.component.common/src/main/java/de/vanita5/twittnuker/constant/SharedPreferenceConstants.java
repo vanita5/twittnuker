@@ -327,6 +327,8 @@ public interface SharedPreferenceConstants {
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String GCM_TOKEN_SENT = "gcm_token_sent";
     @Preference(type = STRING)
+    String GCM_CURRENT_TOKEN = "gcm_current_token";
+    @Preference(type = STRING)
     String KEY_PUSH_NOTIFICATION_SERVER = "push_notification_server";
     @Preference(type = STRING)
     String KEY_PUSH_API_URL = "push_api_url";

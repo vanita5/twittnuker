@@ -49,6 +49,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayoutTrojan;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -446,15 +447,22 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mReadStateManager.registerOnSharedPreferenceChangeListener(mReadStateChangeListener);
         updateUnreadCount();
 
-        if (checkPlayServices(this) && !mPreferences.getBoolean(GCM_TOKEN_SENT, false)) {
-            Intent gcmRegIntent = new Intent(this, RegistrationIntentService.class);
-            startService(gcmRegIntent);
-        }
-
         if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
             startStreamingService();
         } else {
             stopStreamingService();
+        }
+        registerGCMIfNeeded();
+    }
+
+    private void registerGCMIfNeeded() {
+        if (!mPreferences.getBoolean(KEY_ENABLE_PUSH_NOTIFICATIONS, false)) return;
+        if (TextUtils.isEmpty(mPreferences.getString(KEY_PUSH_API_URL, null))) return;
+        if (mPreferences.getBoolean(GCM_TOKEN_SENT, false)) return;
+
+        if (checkPlayServices(this)) {
+            Intent gcmRegIntent = new Intent(this, RegistrationIntentService.class);
+            startService(gcmRegIntent);
         }
     }
 

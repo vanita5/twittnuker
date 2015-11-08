@@ -27,11 +27,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-
-import java.io.IOException;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -43,7 +40,6 @@ public class RegistrationIntentService extends IntentService implements Constant
     private SharedPreferences mPreferences;
 
     private static final String TAG = "RegIntentService";
-    private static final String TOPIC = "/topics/global";
 
     public RegistrationIntentService() {
         super(TAG);
@@ -65,8 +61,9 @@ public class RegistrationIntentService extends IntentService implements Constant
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
             Log.d(TAG, "GCM Registration Token: " + token);
 
+            mPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, token).apply();
+
             sendRegistrationToServer(token);
-            subscribeGlobal(token);
         } catch (Exception e) {
             mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
             Log.e(TAG, "GCM Registration failed.", e);
@@ -83,16 +80,6 @@ public class RegistrationIntentService extends IntentService implements Constant
         //TODO send to backend server
 
         //TODO on success: remember backend received token
-        mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, true).apply();
-    }
-
-    private void subscribeGlobal(final String token) {
-//        GcmPubSub pubSub = GcmPubSub.getInstance(this);
-//        try {
-//            pubSub.subscribe(token, TOPIC, null);
-//        } catch (IOException e) {
-//            mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
-//            Log.e(TAG, "Subscribing to backend server global topic failed.", e);
-//        }
+        //mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, true).apply();
     }
 }

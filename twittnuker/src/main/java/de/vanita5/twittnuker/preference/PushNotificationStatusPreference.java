@@ -33,6 +33,8 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 
 public class PushNotificationStatusPreference extends Preference implements TwittnukerConstants {
 
+    private SharedPreferences mPreferences;
+
     public PushNotificationStatusPreference(final Context context) {
         this(context, null);
     }
@@ -44,14 +46,21 @@ public class PushNotificationStatusPreference extends Preference implements Twit
     public PushNotificationStatusPreference(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
 
+        mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+
         setTitle(R.string.push_status_title);
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-
-        if (sharedPreferences.getBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false)) {
+        if (mPreferences.getBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false)) {
             setSummary(R.string.push_status_connected);
         } else {
             setSummary(R.string.push_status_disconnected);
         }
+    }
+
+    @Override
+    protected void onClick() {
+        super.onClick();
+        mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
+        mPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply();
     }
 }
