@@ -167,8 +167,7 @@ public class NotificationHelper implements Constants {
 
         switch (type) {
             case NotificationContent.NOTIFICATION_TYPE_MENTION: {
-                contentText = stripMentionText(notification.getMessage(),
-                        getAccountScreenName(mContext, notification.getAccountId()));
+                contentText = notification.getMessage();
                 ticker = notification.getMessage();
                 smallicon = R.drawable.ic_stat_mention;
 
