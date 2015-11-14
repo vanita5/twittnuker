@@ -112,7 +112,12 @@ public class UserHashtagAutoCompleteAdapter extends SimpleCursorAdapter implemen
     @Override
     public CharSequence convertToString(final Cursor cursor) {
         if (isCursorClosed()) return null;
-        return cursor.getString(mSummaryIdx != -1 ? mSummaryIdx : mTitleIdx);
+//        return cursor.getString(mSummaryIdx != -1 ? mSummaryIdx : mTitleIdx);
+        if (Suggestions.AutoComplete.TYPE_USERS.equals(cursor.getString(mTypeIdx))) {
+            return "@" + cursor.getString(mSummaryIdx != -1 ? mSummaryIdx : mTitleIdx);
+        } else {
+            return "#" + cursor.getString(mTitleIdx);
+        }
     }
 
     public boolean isCursorClosed() {
