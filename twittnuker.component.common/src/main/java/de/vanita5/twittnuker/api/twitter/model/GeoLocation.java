@@ -30,7 +30,6 @@ import org.mariotaku.restfu.http.ValueMap;
  *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
-@Mapper(GeoLocationMapper.class)
 public class GeoLocation implements ValueMap {
 
     double latitude;

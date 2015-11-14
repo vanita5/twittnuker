@@ -33,95 +33,95 @@ import de.vanita5.twittnuker.api.twitter.model.Relationship;
 @JsonObject
 public class RelationshipImpl extends TwitterResponseImpl implements Relationship {
 
-	@JsonField(name = "source")
-	Source source;
-	@JsonField(name = "target")
-	Target target;
+    @JsonField(name = "source")
+    Source source;
+    @JsonField(name = "target")
+    Target target;
 
-	@Override
-	public boolean isSourceBlockingTarget() {
-		return source.blocking;
-	}
+    @Override
+    public boolean isSourceBlockingTarget() {
+        return source.blocking;
+    }
 
-	@Override
-	public boolean isTargetFollowingSource() {
-		return target.following;
-	}
+    @Override
+    public boolean isTargetFollowingSource() {
+        return target.following;
+    }
 
-	@Override
-	public boolean isTargetFollowedBySource() {
-		return target.followedBy;
-	}
+    @Override
+    public boolean isTargetFollowedBySource() {
+        return target.followedBy;
+    }
 
-	@Override
-	public boolean isSourceNotificationsEnabled() {
-		return false;
-	}
+    @Override
+    public boolean isSourceNotificationsEnabled() {
+        return false;
+    }
 
-	@Override
-	public boolean isSourceMutingTarget() {
-		return source.muting;
-	}
+    @Override
+    public boolean isSourceMutingTarget() {
+        return source.muting;
+    }
 
-	@Override
-	public boolean isSourceMarkedTargetAsSpam() {
-		return false;
-	}
+    @Override
+    public boolean isSourceMarkedTargetAsSpam() {
+        return false;
+    }
 
-	@Override
-	public boolean isSourceFollowingTarget() {
-		return source.following;
-	}
+    @Override
+    public boolean isSourceFollowingTarget() {
+        return source.following;
+    }
 
-	@Override
-	public boolean isSourceFollowedByTarget() {
-		return source.followedBy;
-	}
+    @Override
+    public boolean isSourceFollowedByTarget() {
+        return source.followedBy;
+    }
 
-	@Override
-	public boolean isSourceBlockedByTarget() {
-		return source.blockedBy;
-	}
+    @Override
+    public boolean isSourceBlockedByTarget() {
+        return source.blockedBy;
+    }
 
-	@Override
-	public String getTargetUserScreenName() {
-		return target.screenName;
-	}
+    @Override
+    public String getTargetUserScreenName() {
+        return target.screenName;
+    }
 
-	@Override
-	public long getTargetUserId() {
-		return target.id;
-	}
+    @Override
+    public long getTargetUserId() {
+        return target.id;
+    }
 
-	@Override
-	public String getSourceUserScreenName() {
-		return source.screenName;
-	}
+    @Override
+    public String getSourceUserScreenName() {
+        return source.screenName;
+    }
 
-	@Override
-	public long getSourceUserId() {
-		return source.id;
-	}
+    @Override
+    public long getSourceUserId() {
+        return source.id;
+    }
 
-	@Override
-	public boolean canSourceMediaTagTarget() {
+    @Override
+    public boolean canSourceMediaTagTarget() {
         return source.canMediaTag;
-	}
+    }
 
-	@Override
-	public boolean canSourceDMTarget() {
+    @Override
+    public boolean canSourceDMTarget() {
         return source.canDm;
-	}
+    }
 
-	@Override
-	public boolean isSourceRequestedFollowingTarget() {
-		return source.followingRequested;
-	}
+    @Override
+    public boolean isSourceRequestedFollowingTarget() {
+        return source.followingRequested;
+    }
 
-	@Override
-	public boolean isTargetRequestedFollowingSource() {
-		return target.followingRequested;
-	}
+    @Override
+    public boolean isTargetRequestedFollowingSource() {
+        return target.followingRequested;
+    }
 
     @Override
     public boolean isSourceWantRetweetsFromTarget() {
@@ -133,38 +133,38 @@ public class RelationshipImpl extends TwitterResponseImpl implements Relationshi
         return source.notificationsEnabled;
     }
 
-	@JsonObject
-	static class Target {
-		@JsonField(name = "id")
-		long id;
-		@JsonField(name = "screen_name")
-		public String screenName;
-		@JsonField(name = "following")
-		boolean following;
-		@JsonField(name = "followed_by")
-		boolean followedBy;
-		@JsonField(name = "following_requested")
-		boolean followingRequested;
-	}
+    @JsonObject
+    public static class Target {
+        @JsonField(name = "id")
+        long id;
+        @JsonField(name = "screen_name")
+        public String screenName;
+        @JsonField(name = "following")
+        boolean following;
+        @JsonField(name = "followed_by")
+        boolean followedBy;
+        @JsonField(name = "following_requested")
+        boolean followingRequested;
+    }
 
-	@JsonObject
-	static class Source {
-		@JsonField(name = "id")
-		long id;
-		@JsonField(name = "screen_name")
-		public String screenName;
-		@JsonField(name = "blocked_by")
-		boolean blockedBy;
-		@JsonField(name = "blocking")
-		boolean blocking;
-		@JsonField(name = "muting")
-		boolean muting;
-		@JsonField(name = "following")
-		boolean following;
-		@JsonField(name = "followed_by")
-		boolean followedBy;
-		@JsonField(name = "following_requested")
-		boolean followingRequested;
+    @JsonObject
+    public static class Source {
+        @JsonField(name = "id")
+        long id;
+        @JsonField(name = "screen_name")
+        public String screenName;
+        @JsonField(name = "blocked_by")
+        boolean blockedBy;
+        @JsonField(name = "blocking")
+        boolean blocking;
+        @JsonField(name = "muting")
+        boolean muting;
+        @JsonField(name = "following")
+        boolean following;
+        @JsonField(name = "followed_by")
+        boolean followedBy;
+        @JsonField(name = "following_requested")
+        boolean followingRequested;
         @JsonField(name = "want_retweets")
         boolean wantRetweets;
         @JsonField(name = "notifications_enabled")
@@ -173,5 +173,5 @@ public class RelationshipImpl extends TwitterResponseImpl implements Relationshi
         boolean canDm;
         @JsonField(name = "can_media_tag")
         boolean canMediaTag;
-	}
+    }
 }

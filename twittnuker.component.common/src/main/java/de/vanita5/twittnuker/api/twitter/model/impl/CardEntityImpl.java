@@ -74,7 +74,7 @@ public class CardEntityImpl implements CardEntity {
     }
 
     @JsonObject
-    static class ImageValueImpl implements ImageValue {
+    public static class ImageValueImpl implements ImageValue {
         @JsonField(name = "width")
         int width;
         @JsonField(name = "height")
@@ -99,7 +99,7 @@ public class CardEntityImpl implements CardEntity {
 
     }
 
-    static class BooleanValueImpl implements BooleanValue {
+    public static class BooleanValueImpl implements BooleanValue {
 
         public BooleanValueImpl(boolean value) {
             this.value = value;
@@ -113,7 +113,7 @@ public class CardEntityImpl implements CardEntity {
         }
     }
 
-    static class StringValueImpl implements StringValue {
+    public static class StringValueImpl implements StringValue {
         private final String value;
 
         public StringValueImpl(String value) {
@@ -127,7 +127,7 @@ public class CardEntityImpl implements CardEntity {
     }
 
     @JsonObject
-    static class UserValueImpl implements UserValue {
+    public static class UserValueImpl implements UserValue {
 
         @JsonField(name = "id")
         long userId;

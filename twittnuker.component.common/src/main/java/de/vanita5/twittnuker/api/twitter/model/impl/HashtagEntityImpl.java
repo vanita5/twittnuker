@@ -33,23 +33,23 @@ import de.vanita5.twittnuker.api.twitter.model.HashtagEntity;
 @JsonObject
 public class HashtagEntityImpl implements HashtagEntity {
 
-	@JsonField(name = "text")
-	String text;
-	@JsonField(name = "indices")
-	Indices indices;
+    @JsonField(name = "text")
+    String text;
+    @JsonField(name = "indices", typeConverter = IndicesConverter.class)
+    Indices indices;
 
-	@Override
-	public int getEnd() {
-		return indices.getEnd();
-	}
+    @Override
+    public int getEnd() {
+        return indices.getEnd();
+    }
 
-	@Override
-	public int getStart() {
-		return indices.getStart();
-	}
+    @Override
+    public int getStart() {
+        return indices.getStart();
+    }
 
-	@Override
-	public String getText() {
-		return text;
-	}
+    @Override
+    public String getText() {
+        return text;
+    }
 }
