@@ -275,10 +275,10 @@
     <string name="activities_by_friends">Activities by friends</string>
     <string name="activity_about_me_favorite"><xliff:g id="user">%s</xliff:g> favorited your tweet.</string>
     <string name="activity_about_me_favorite_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited your tweet.</string>
-    <string name="activity_about_me_like"><xliff:g id="user">%s</xliff:g> liked your tweet.</string>
-    <string name="activity_about_me_like_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked your tweet.</string>
     <string name="activity_about_me_favorited_retweet"><xliff:g id="user">%s</xliff:g> favorited your retweet.</string>
     <string name="activity_about_me_favorited_retweet_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited your retweet.</string>
+    <string name="activity_about_me_like"><xliff:g id="user">%s</xliff:g> liked your tweet.</string>
+    <string name="activity_about_me_like_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked your tweet.</string>
     <string name="activity_about_me_liked_retweet"><xliff:g id="user">%s</xliff:g> liked your retweet.</string>
     <string name="activity_about_me_liked_retweet_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked your retweet.</string>
     <string name="activity_about_me_follow"><xliff:g id="user">%s</xliff:g> is following you.</string>
@@ -779,6 +779,8 @@
     <string name="twitter_optimized_searches_summary">Use special search terms to improve search results (e.g. exclude retweets)</string>
     <string name="i_want_my_stars_back">I want my stars back!</string>
     <string name="i_want_my_stars_back_summary">Show favorite (stars) instead of like (hearts)</string>
+    <string name="copy_link">Copy link</string>
+    <string name="link_copied_to_clipboard">Link copied to clipboard</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

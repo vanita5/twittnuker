@@ -726,6 +726,8 @@
     <string name="current_status">Aktueller Tweet</string>
     <string name="twitter_optimized_searches">Twitter optimierte Suchanfragen</string>
     <string name="twitter_optimized_searches_summary">Erlaubt spezielle Suchbefehle um bspw. Retweets nicht anzuzeigen</string>
+    <string name="copy_link">Link kopieren</string>
+    <string name="link_copied_to_clipboard">Link kopiert</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

@@ -352,6 +352,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activity.CopyLinkActivity"
+            android:label="@string/copy_link"
+            android:theme="@style/Theme.Twidere.Dark.NoDisplay" />
+        <activity
             android:name=".activity.support.UserListSelectorActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/select_user_list"

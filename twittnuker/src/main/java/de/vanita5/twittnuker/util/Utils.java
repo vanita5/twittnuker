@@ -137,6 +137,7 @@ import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.CopyLinkActivity;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
@@ -200,6 +201,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -1130,7 +1132,7 @@ public final class Utils implements Constants {
     }
 
     public static String getStatusShareText(@NonNull final Context context, @NonNull final ParcelableStatus status) {
-        final Uri link = LinkCreator.getTwitterStatusLink(status.user_screen_name, status.id);
+        final Uri link = LinkCreator.getTwitterStatusLink(status);
         return context.getString(R.string.status_share_text_format_with_link,
                 status.text_plain, link.toString());
     }
@@ -1601,6 +1603,15 @@ public final class Utils implements Constants {
         final TextView textView = new TextView(context, null, android.R.attr.listSeparatorTextViewStyle);
         textView.setText(title);
         return textView;
+    }
+
+    public static boolean setLastSeen(Context context, ParcelableUserMention[] entities, long time) {
+        if (entities == null) return false;
+        boolean result = false;
+        for (ParcelableUserMention entity : entities) {
+            result |= setLastSeen(context, entity.id, time);
+        }
+        return result;
     }
 
     public static boolean setLastSeen(Context context, UserMentionEntity[] entities, long time) {
@@ -3339,9 +3350,18 @@ public final class Utils implements Constants {
             addIntentToMenu(context, shareSubMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
         } else {
             final Intent shareIntent = createStatusShareIntent(context, status);
-            shareItem.setIntent(Intent.createChooser(shareIntent, context.getString(R.string.share_status)));
+            final Intent chooserIntent = Intent.createChooser(shareIntent, context.getString(R.string.share_status));
+            addCopyLinkIntent(context, chooserIntent, LinkCreator.getTwitterStatusLink(status));
+            shareItem.setIntent(chooserIntent);
         }
 
+    }
+
+    public static void addCopyLinkIntent(Context context, Intent chooserIntent, Uri uri) {
+        final Intent copyLinkIntent = new Intent(context, CopyLinkActivity.class);
+        copyLinkIntent.setData(uri);
+        final Intent[] alternateIntents = {copyLinkIntent};
+        chooserIntent.putExtra(Intent.EXTRA_ALTERNATE_INTENTS, alternateIntents);
     }
 
     private static boolean isMyStatus(ParcelableStatus status) {

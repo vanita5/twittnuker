@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -47,35 +48,39 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.mobeta.android.dslv.DragSortCursorAdapter;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.SwipeDismissListViewTouchListener;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.view.ExtendedRelativeLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 
 import java.util.List;
 
+import jopt.csp.util.SortableIntList;
+
 public class QuickSearchBarActivity extends ThemedFragmentActivity implements OnClickListener,
         LoaderCallbacks<Cursor>, OnItemSelectedListener, OnItemClickListener,
-        OnFitSystemWindowsListener {
+        OnFitSystemWindowsListener, SwipeDismissListViewTouchListener.DismissCallbacks {
 
     private Spinner mAccountSpinner;
     private EditText mSearchQuery;
@@ -86,19 +91,24 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
     private Rect mSystemWindowsInsets = new Rect();
     private boolean mTextChanged;
 
+    @Override
+    public boolean canDismiss(int position) {
+        return mUsersSearchAdapter.getItemViewType(position) == SuggestionsAdapter.VIEW_TYPE_SEARCH_HISTORY;
+    }
+
+    @Override
     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-//        final long[] ids = new long[reverseSortedPositions.length];
-//        for (int i = 0, j = reverseSortedPositions.length; i < j; i++) {
-//            final int position = reverseSortedPositions[i];
-//            final SearchHistoryItem item = (SearchHistoryItem) mUsersSearchAdapter.getItem(position);
-//            mUsersSearchAdapter.removeItemAt(position);
-//            ids[i] = item.getCursorId();
-//        }
-//        final ContentResolver cr = getContentResolver();
-//        final Long[] idsObject = ArrayUtils.toObject(ids);
-//        ContentResolverUtils.bulkDelete(cr, SearchHistory.CONTENT_URI, SearchHistory._ID, idsObject,
-//                null, false);
-//        getSupportLoaderManager().restartLoader(0, null, this);
+        final Long[] ids = new Long[reverseSortedPositions.length];
+        for (int i = 0, j = reverseSortedPositions.length; i < j; i++) {
+            final int position = reverseSortedPositions[i];
+            final SuggestionItem item = mUsersSearchAdapter.getSuggestionItem(position);
+            ids[i] = item._id;
+        }
+        mUsersSearchAdapter.addRemovedPositions(reverseSortedPositions);
+        final ContentResolver cr = getContentResolver();
+        ContentResolverUtils.bulkDelete(cr, SearchHistory.CONTENT_URI, SearchHistory._ID, ids,
+                null, false);
+        getSupportLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -229,6 +239,10 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         mUsersSearchAdapter = new SuggestionsAdapter(this);
         mSuggestionsList.setAdapter(mUsersSearchAdapter);
         mSuggestionsList.setOnItemClickListener(this);
+
+        final SwipeDismissListViewTouchListener listener = new SwipeDismissListViewTouchListener(mSuggestionsList, this);
+        mSuggestionsList.setOnTouchListener(listener);
+        mSuggestionsList.setOnScrollListener(listener.makeScrollListener());
         mSearchSubmit.setOnClickListener(this);
 
         EditTextEnterHandler.attach(mSearchQuery, new EnterListener() {
@@ -301,16 +315,17 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 
 
         public final String title, summary;
-        private final long extra_id;
+        public final long _id, extra_id;
 
         public SuggestionItem(Cursor cursor, SuggestionsAdapter.Indices indices) {
+            _id = cursor.getLong(indices._id);
             title = cursor.getString(indices.title);
             summary = cursor.getString(indices.summary);
             extra_id = cursor.getLong(indices.extra_id);
         }
     }
 
-    public static class SuggestionsAdapter extends DragSortCursorAdapter implements OnClickListener {
+    public static class SuggestionsAdapter extends CursorAdapter implements OnClickListener {
 
         static final int VIEW_TYPE_SEARCH_HISTORY = 0;
         static final int VIEW_TYPE_SAVED_SEARCH = 1;
@@ -321,10 +336,12 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         private final MediaLoaderWrapper mImageLoader;
         private final UserColorNameManager mUserColorNameManager;
         private final QuickSearchBarActivity mActivity;
+        private final SortableIntList mRemovedPositions;
         private Indices mIndices;
 
         SuggestionsAdapter(QuickSearchBarActivity activity) {
             super(activity, null, 0);
+            mRemovedPositions = new SortableIntList();
             mActivity = activity;
             mImageLoader = activity.mImageLoader;
             mUserColorNameManager = activity.mUserColorNameManager;
@@ -332,13 +349,8 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         }
 
         @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            switch (getItemViewType(cursor.getPosition())) {
+            switch (getActualItemViewType(cursor.getPosition())) {
                 case VIEW_TYPE_SEARCH_HISTORY:
                 case VIEW_TYPE_SAVED_SEARCH: {
                     final View view = mInflater.inflate(R.layout.list_item_suggestion_search, parent, false);
@@ -358,13 +370,13 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         }
 
         public SuggestionItem getSuggestionItem(int position) {
-            final Cursor cursor = (Cursor) super.getItem(position);
+            final Cursor cursor = (Cursor) getItem(position);
             return new SuggestionItem(cursor, mIndices);
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            switch (getItemViewType(cursor.getPosition())) {
+            switch (getActualItemViewType(cursor.getPosition())) {
                 case VIEW_TYPE_SEARCH_HISTORY: {
                     final SearchViewHolder holder = (SearchViewHolder) view.getTag();
                     final String title = cursor.getString(mIndices.title);
@@ -383,7 +395,8 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
                 }
                 case VIEW_TYPE_USER_SUGGESTION_ITEM: {
                     final UserViewHolder holder = (UserViewHolder) view.getTag();
-                    holder.text1.setText(cursor.getString(mIndices.title));
+                    holder.text1.setText(
+                            cursor.getString(mIndices.title));
                     holder.text2.setVisibility(View.VISIBLE);
                     holder.text2.setText(String.format("@%s", cursor.getString(mIndices.summary)));
                     holder.icon.clearColorFilter();
@@ -404,7 +417,11 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 
         @Override
         public int getItemViewType(int position) {
-            final Cursor cursor = (Cursor) getItem(position);
+            return getActualItemViewType(getActualPosition(position));
+        }
+
+        public int getActualItemViewType(int position) {
+            final Cursor cursor = (Cursor) super.getItem(position);
             switch (cursor.getString(mIndices.type)) {
                 case Suggestions.Search.TYPE_SAVED_SEARCH: {
                     return VIEW_TYPE_SAVED_SEARCH;
@@ -444,7 +461,53 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
             } else {
                 mIndices = null;
             }
+            mRemovedPositions.clear();
             return super.swapCursor(newCursor);
+        }
+
+        @Override
+        public int getCount() {
+            if (mRemovedPositions == null) return super.getCount();
+            return super.getCount() - mRemovedPositions.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return super.getItem(getActualPosition(position));
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return super.getItemId(getActualPosition(position));
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return super.getView(getActualPosition(position), convertView, parent);
+        }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            return super.getDropDownView(getActualPosition(position), convertView, parent);
+        }
+
+        private int getActualPosition(int position) {
+            if (mRemovedPositions == null) return position;
+            int skipped = 0;
+            for (int i = 0, j = mRemovedPositions.size(); i < j; i++) {
+                if (position + skipped >= mRemovedPositions.get(i)) {
+                    skipped++;
+                }
+            }
+            return position + skipped;
+        }
+
+        public void addRemovedPositions(int[] positions) {
+            for (int position : positions) {
+                mRemovedPositions.add(getActualPosition(position));
+            }
+            mRemovedPositions.sort();
+            notifyDataSetChanged();
         }
 
         static class SearchViewHolder {
@@ -475,6 +538,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         }
 
         private static class Indices {
+            private final int _id;
             private final int type;
             private final int title;
             private final int summary;
@@ -482,6 +546,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
             private final int extra_id;
 
             public Indices(Cursor cursor) {
+                _id = cursor.getColumnIndex(Suggestions._ID);
                 type = cursor.getColumnIndex(Suggestions.TYPE);
                 title = cursor.getColumnIndex(Suggestions.TITLE);
                 summary = cursor.getColumnIndex(Suggestions.SUMMARY);

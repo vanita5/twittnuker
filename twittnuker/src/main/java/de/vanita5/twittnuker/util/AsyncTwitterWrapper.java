@@ -876,22 +876,18 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, account_id, true);
             if (twitter == null) return SingleResponse.getInstance();
             try {
-                final de.vanita5.twittnuker.api.twitter.model.Status status = twitter.createFavorite(status_id);
-                Utils.setLastSeen(mContext, status.getUserMentionEntities(), System.currentTimeMillis());
+                final ParcelableStatus status = new ParcelableStatus(twitter.createFavorite(status_id), account_id, false);
+                Utils.setLastSeen(mContext, status.mentions, System.currentTimeMillis());
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.IS_FAVORITE, true);
-                if (status.isRetweet()) {
-                    values.put(Statuses.FAVORITE_COUNT, status.getRetweetedStatus().getFavoriteCount());
-                } else {
-                    values.put(Statuses.FAVORITE_COUNT, status.getFavoriteCount());
-                }
+                values.put(Statuses.FAVORITE_COUNT, status.favorite_count);
                 final Expression where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, account_id),
                         Expression.or(Expression.equals(Statuses.STATUS_ID, status_id),
                                 Expression.equals(Statuses.RETWEET_ID, status_id)));
                 for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
                     mResolver.update(uri, values, where.getSQL(), null);
                 }
-                return SingleResponse.getInstance(new ParcelableStatus(status, account_id, false));
+                return SingleResponse.getInstance(status);
             } catch (final TwitterException e) {
                 Log.w(LOGTAG, e);
                 return SingleResponse.getInstance(e);
@@ -1509,20 +1505,17 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, account_id, true);
             if (twitter != null) {
                 try {
-                    final de.vanita5.twittnuker.api.twitter.model.Status status = twitter.destroyFavorite(status_id);
+                    final ParcelableStatus status = new ParcelableStatus(twitter.destroyFavorite(status_id), account_id, false);
                     final ContentValues values = new ContentValues();
                     values.put(Statuses.IS_FAVORITE, false);
-                    if (status.isRetweet()) {
-                        values.put(Statuses.FAVORITE_COUNT, status.getRetweetedStatus().getFavoriteCount());
-                    } else {
-                        values.put(Statuses.FAVORITE_COUNT, status.getFavoriteCount());
-                    }
+                    values.put(Statuses.FAVORITE_COUNT, status.favorite_count - 1);
                     final Expression where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, account_id),
-                            Expression.or(Expression.equals(Statuses.STATUS_ID, status_id), Expression.equals(Statuses.RETWEET_ID, status_id)));
+                            Expression.or(Expression.equals(Statuses.STATUS_ID, status_id),
+                                    Expression.equals(Statuses.RETWEET_ID, status_id)));
                     for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
                         mResolver.update(uri, values, where.getSQL(), null);
                     }
-                    return SingleResponse.getInstance(new ParcelableStatus(status, account_id, false));
+                    return SingleResponse.getInstance(status);
                 } catch (final TwitterException e) {
                     return SingleResponse.getInstance(e);
                 }
@@ -1721,6 +1714,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (status != null || exception.getErrorCode() == HttpResponseCode.NOT_FOUND) {
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.MY_RETWEET_ID, -1);
+                if (status != null) {
+                    values.put(Statuses.RETWEET_COUNT, status.retweet_count - 1);
+                }
                 for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
                     mResolver.delete(uri, Statuses.STATUS_ID + " = " + status_id, null);
                     mResolver.update(uri, values, Statuses.MY_RETWEET_ID + " = " + status_id, null);
@@ -2558,9 +2554,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 return SingleResponse.getInstance();
             }
             try {
-                final de.vanita5.twittnuker.api.twitter.model.Status status = twitter.retweetStatus(status_id);
-                Utils.setLastSeen(mContext, status.getUserMentionEntities(), System.currentTimeMillis());
-                return SingleResponse.getInstance(new ParcelableStatus(status, account_id, false));
+                final ParcelableStatus status = new ParcelableStatus(twitter.retweetStatus(status_id), account_id, false);
+                Utils.setLastSeen(mContext, status.mentions, System.currentTimeMillis());
+                return SingleResponse.getInstance(status);
             } catch (final TwitterException e) {
                 return SingleResponse.getInstance(e);
             }
@@ -2579,9 +2575,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
             mCreatingRetweetIds.remove(account_id, status_id);
             if (result.hasData()) {
-                final ContentValues values = new ContentValues();
                 final ParcelableStatus status = result.getData();
+                final ContentValues values = new ContentValues();
                 values.put(Statuses.MY_RETWEET_ID, status.id);
+                values.put(Statuses.RETWEET_COUNT, status.retweet_count);
                 final Expression where = Expression.or(
                         Expression.equals(Statuses.STATUS_ID, status_id),
                         Expression.equals(Statuses.RETWEET_ID, status_id)

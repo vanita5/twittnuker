@@ -58,7 +58,8 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapt
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
-        IActivitiesAdapter<Data>, IStatusViewHolder.StatusClickListener, OnLinkClickListener, ActivityTitleSummaryViewHolder.ActivityClickListener {
+        IActivitiesAdapter<Data>, IStatusViewHolder.StatusClickListener, OnLinkClickListener,
+        ActivityTitleSummaryViewHolder.ActivityClickListener {
 
     private static final int ITEM_VIEW_TYPE_STUB = 0;
     private static final int ITEM_VIEW_TYPE_GAP = 1;
@@ -75,15 +76,10 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     private final boolean mDisplayMediaPreview;
     private final boolean mNameFirst;
     private final boolean mDisplayProfileImage;
-    private final boolean mUseStarsForLikes;
+    private final boolean mShouldUseStarsForLikes;
     private final TwidereLinkify mLinkify;
     private final DummyStatusHolderAdapter mStatusAdapterDelegate;
     private ActivityAdapterListener mActivityAdapterListener;
-
-    @Override
-    public boolean shouldUseStarsForLikes() {
-        return mUseStarsForLikes;
-    }
 
     protected AbsActivitiesAdapter(final Context context, boolean compact) {
         super(context);
@@ -93,13 +89,13 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
         mInflater = LayoutInflater.from(context);
         mLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
+        mShouldUseStarsForLikes = mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false);
         mCompactCards = compact;
         mProfileImageStyle = Utils.getProfileImageStyle(mPreferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
         mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
         mLinkHighlightingStyle = Utils.getLinkHighlightingStyleInt(mPreferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
         mDisplayMediaPreview = mPreferences.getBoolean(KEY_MEDIA_PREVIEW, true);
-        mUseStarsForLikes = mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false);
         mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
         mLinkify = new TwidereLinkify(this);
         mStatusAdapterDelegate = new DummyStatusHolderAdapter(context);
@@ -180,6 +176,11 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     @Override
     public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position) {
 
+    }
+
+    @Override
+    public boolean shouldUseStarsForLikes() {
+        return mShouldUseStarsForLikes;
     }
 
     @Override

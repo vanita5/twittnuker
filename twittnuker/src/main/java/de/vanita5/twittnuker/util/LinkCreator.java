@@ -25,47 +25,48 @@ package de.vanita5.twittnuker.util;
 import android.net.Uri;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public class LinkCreator implements Constants {
 
-	private static final String AUTHORITY_TWITTER = "twitter.com";
+    private static final String AUTHORITY_TWITTER = "twitter.com";
 
     public static Uri getTwitterStatusLink(String screenName, long statusId) {
-		Uri.Builder builder = new Uri.Builder();
-		builder.scheme(SCHEME_HTTPS);
-		builder.authority(AUTHORITY_TWITTER);
-		builder.appendPath(screenName);
-		builder.appendPath("status");
-		builder.appendPath(String.valueOf(statusId));
-		return builder.build();
-	}
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_HTTPS);
+        builder.authority(AUTHORITY_TWITTER);
+        builder.appendPath(screenName);
+        builder.appendPath("status");
+        builder.appendPath(String.valueOf(statusId));
+        return builder.build();
+    }
 
-	public static Uri getTwidereStatusLink(long accountId, long statusId) {
-		final Uri.Builder builder = new Uri.Builder();
-		builder.scheme(SCHEME_TWITTNUKER);
-		builder.authority(AUTHORITY_STATUS);
-		if (accountId > 0) {
-			builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
-		}
-		builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
-		return builder.build();
-	}
+    public static Uri getTwidereStatusLink(long accountId, long statusId) {
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_STATUS);
+        if (accountId > 0) {
+            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+        }
+        builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
+        return builder.build();
+    }
 
-	public static Uri getTwidereUserLink(long accountId, long userId, String screenName) {
-		final Uri.Builder builder = new Uri.Builder();
-		builder.scheme(SCHEME_TWITTNUKER);
-		builder.authority(AUTHORITY_USER);
-		if (accountId > 0) {
-			builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
-		}
-		if (userId > 0) {
-			builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
-		}
-		if (screenName != null) {
-			builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
-		}
-		return builder.build();
-	}
+    public static Uri getTwidereUserLink(long accountId, long userId, String screenName) {
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_USER);
+        if (accountId > 0) {
+            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+        }
+        if (userId > 0) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
+        }
+        if (screenName != null) {
+            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
+        }
+        return builder.build();
+    }
 
     public static Uri getTwitterUserListLink(String userScreenName, String listName) {
         Uri.Builder builder = new Uri.Builder();
@@ -77,10 +78,14 @@ public class LinkCreator implements Constants {
     }
 
     public static Uri getTwitterUserLink(String screenName) {
-		Uri.Builder builder = new Uri.Builder();
-		builder.scheme(SCHEME_HTTPS);
-		builder.authority(AUTHORITY_TWITTER);
-		builder.appendPath(screenName);
-		return builder.build();
-	}
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_HTTPS);
+        builder.authority(AUTHORITY_TWITTER);
+        builder.appendPath(screenName);
+        return builder.build();
+    }
+
+    public static Uri getTwitterStatusLink(ParcelableStatus status) {
+        return getTwitterStatusLink(status.user_screen_name, status.id);
+    }
 }

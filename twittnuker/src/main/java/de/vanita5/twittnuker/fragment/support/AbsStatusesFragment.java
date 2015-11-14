@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
+import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -87,7 +88,9 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
             if (status == null) return false;
             if (item.getItemId() == R.id.share) {
                 final Intent shareIntent = Utils.createStatusShareIntent(getActivity(), status);
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_status)));
+                final Intent chooser = Intent.createChooser(shareIntent, getString(R.string.share_status));
+                Utils.addCopyLinkIntent(getContext(), chooser, LinkCreator.getTwitterStatusLink(status));
+                startActivity(chooser);
                 return true;
             }
             return Utils.handleMenuItemClick(getActivity(), AbsStatusesFragment.this,

@@ -20,24 +20,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package de.vanita5.twittnuker.activity;
 
-import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.util.MediaLoadingHandler;
-import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.Toast;
 
-public interface IActivitiesAdapter<Data> extends IContentCardAdapter, IGapSupportedAdapter {
+import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.ClipboardUtils;
 
-    ParcelableActivity getActivity(int position);
+public class CopyLinkActivity extends Activity implements Constants {
 
-    int getActivityCount();
-
-    void setData(Data data);
-
-    @PreviewStyle
-    int getMediaPreviewStyle();
-
-    boolean shouldUseStarsForLikes();
-
-    MediaLoadingHandler getMediaLoadingHandler();
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ClipboardUtils.setText(this, getIntent().getDataString());
+        Toast.makeText(this, R.string.link_copied_to_clipboard, Toast.LENGTH_SHORT).show();
+        finish();
+    }
 }

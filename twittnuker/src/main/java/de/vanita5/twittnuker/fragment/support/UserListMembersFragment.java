@@ -29,38 +29,38 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
-import de.vanita5.twittnuker.loader.support.UserListMembersLoader;
-import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.util.AsyncTaskUtils;
-
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
+import de.vanita5.twittnuker.loader.support.UserListMembersLoader;
+import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.util.AsyncTaskUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 public class UserListMembersFragment extends CursorSupportUsersListFragment {
 
-	private ParcelableUserList mUserList;
+    private ParcelableUserList mUserList;
 
-	private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
 
-		@Override
-		public void onReceive(final Context context, final Intent intent) {
-			if (getActivity() == null || !isAdded() || isDetached()) return;
-			final String action = intent.getAction();
-			if (BROADCAST_USER_LIST_MEMBERS_DELETED.equals(action)) {
-				final ParcelableUserList list = intent.getParcelableExtra(EXTRA_USER_LIST);
-				if (mUserList != null && list != null && list.id == mUserList.id) {
-					removeUsers(intent.getLongArrayExtra(EXTRA_USER_IDS));
-				}
-			}
-		}
-	};
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            if (getActivity() == null || !isAdded() || isDetached()) return;
+            final String action = intent.getAction();
+            if (BROADCAST_USER_LIST_MEMBERS_DELETED.equals(action)) {
+                final ParcelableUserList list = intent.getParcelableExtra(EXTRA_USER_LIST);
+                if (mUserList != null && list != null && list.id == mUserList.id) {
+                    removeUsers(intent.getLongArrayExtra(EXTRA_USER_IDS));
+                }
+            }
+        }
+    };
 
-	@Override
+    @Override
     public CursorSupportUsersLoader onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser) {
-		if (args == null) return null;
+        if (args == null) return null;
         final long listId = args.getLong(EXTRA_LIST_ID, -1);
         final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
         final long userId = args.getLong(EXTRA_USER_ID, -1);
@@ -68,47 +68,47 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment {
         final String listName = args.getString(EXTRA_LIST_NAME);
         return new UserListMembersLoader(context, accountId, listId, userId, screenName, listName,
                 getNextCursor(), getData(), fromUser);
-	}
+    }
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		final Bundle args = getArguments();
-		if (savedInstanceState != null) {
-			mUserList = savedInstanceState.getParcelable(EXTRA_USER_LIST);
-		} else if (args != null) {
-			mUserList = args.getParcelable(EXTRA_USER_LIST);
-		}
-		super.onActivityCreated(savedInstanceState);
-		if (mUserList == null && args != null) {
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        final Bundle args = getArguments();
+        if (savedInstanceState != null) {
+            mUserList = savedInstanceState.getParcelable(EXTRA_USER_LIST);
+        } else if (args != null) {
+            mUserList = args.getParcelable(EXTRA_USER_LIST);
+        }
+        super.onActivityCreated(savedInstanceState);
+        if (mUserList == null && args != null) {
             final long listId = args.getLong(EXTRA_LIST_ID, -1);
             final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
             final long userId = args.getLong(EXTRA_USER_ID, -1);
             final String screenName = args.getString(EXTRA_SCREEN_NAME);
             final String listName = args.getString(EXTRA_LIST_NAME);
             AsyncTaskUtils.executeTask(new GetUserListTask(accountId, listId, listName, userId, screenName));
-		}
-	}
+        }
+    }
 
-	@Override
-	public void onSaveInstanceState(final Bundle outState) {
-		outState.putParcelable(EXTRA_USER_LIST, mUserList);
-		super.onSaveInstanceState(outState);
-	}
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        outState.putParcelable(EXTRA_USER_LIST, mUserList);
+        super.onSaveInstanceState(outState);
+    }
 
-	@Override
-	public void onStart() {
-		super.onStart();
-		final IntentFilter filter = new IntentFilter(BROADCAST_USER_LIST_MEMBERS_DELETED);
-		registerReceiver(mStatusReceiver, filter);
-	}
+    @Override
+    public void onStart() {
+        super.onStart();
+        final IntentFilter filter = new IntentFilter(BROADCAST_USER_LIST_MEMBERS_DELETED);
+        registerReceiver(mStatusReceiver, filter);
+    }
 
-	@Override
-	public void onStop() {
-		unregisterReceiver(mStatusReceiver);
-		super.onStop();
-	}
+    @Override
+    public void onStop() {
+        unregisterReceiver(mStatusReceiver);
+        super.onStop();
+    }
 
-    private class GetUserListTask extends AsyncTask<Object, Object, ParcelableUserList> {
+    private class GetUserListTask extends AsyncTask<Object, Object, SingleResponse<ParcelableUserList>> {
 
         private final long accountId, userId;
         private final long listId;
@@ -121,33 +121,32 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment {
             this.listId = listId;
             this.screenName = screenName;
             this.listName = listName;
-		}
+        }
 
-		@Override
-		protected ParcelableUserList doInBackground(final Object... params) {
+        @Override
+        protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
             final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getActivity(), accountId, true);
-			if (twitter == null) return null;
-			try {
-				final UserList list;
+            if (twitter == null) return null;
+            try {
+                final UserList list;
                 if (listId > 0) {
                     list = twitter.showUserList(listId);
                 } else if (userId > 0) {
                     list = twitter.showUserList(listName, userId);
                 } else if (screenName != null) {
                     list = twitter.showUserList(listName, screenName);
-				} else
-					return null;
-                return new ParcelableUserList(list, accountId);
-			} catch (final TwitterException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
+                } else
+                    return null;
+                return SingleResponse.getInstance(new ParcelableUserList(list, accountId));
+            } catch (final TwitterException e) {
+                return SingleResponse.getInstance(e);
+            }
+        }
 
-		@Override
-		protected void onPostExecute(final ParcelableUserList result) {
-			if (mUserList != null) return;
-			mUserList = result;
-		}
-	}
+        @Override
+        protected void onPostExecute(final SingleResponse<ParcelableUserList> result) {
+            if (mUserList != null) return;
+            mUserList = result.getData();
+        }
+    }
 }
