@@ -79,6 +79,7 @@ import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ListUtils;
 import de.vanita5.twittnuker.util.MediaUploaderInterface;
+import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.StatusCodeMessageUtils;
 import de.vanita5.twittnuker.util.StatusShortenerInterface;
@@ -113,9 +114,10 @@ public class BackgroundOperationService extends IntentService implements Constan
     private Handler mHandler;
     private SharedPreferences mPreferences;
     private ContentResolver mResolver;
-    private NotificationManager mNotificationManager;
     @Inject
     AsyncTwitterWrapper mTwitter;
+    @Inject
+    NotificationManagerWrapper mNotificationManager;
 
     private MediaUploaderInterface mUploader;
     private StatusShortenerInterface mShortener;
@@ -135,7 +137,6 @@ public class BackgroundOperationService extends IntentService implements Constan
         mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
         mValidator = new TwidereValidator(this);
         mResolver = getContentResolver();
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         final String uploaderComponent = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
         final String shortenerComponent = mPreferences.getString(KEY_STATUS_SHORTENER, null);
         mUseUploader = !ServicePickerPreference.isNoneValue(uploaderComponent);
@@ -632,14 +633,14 @@ public class BackgroundOperationService extends IntentService implements Constan
 
     static class MessageMediaUploadListener implements ReadListener {
         private final Context context;
-        private final NotificationManager manager;
+        private final NotificationManagerWrapper manager;
 
         int percent;
 
         private final Builder builder;
         private final String message;
 
-        MessageMediaUploadListener(final Context context, final NotificationManager manager,
+        MessageMediaUploadListener(final Context context, final NotificationManagerWrapper manager,
                                    final NotificationCompat.Builder builder, final String message) {
             this.context = context;
             this.manager = manager;
@@ -676,14 +677,14 @@ public class BackgroundOperationService extends IntentService implements Constan
 
     static class StatusMediaUploadListener implements ReadListener {
         private final Context context;
-        private final NotificationManager manager;
+        private final NotificationManagerWrapper manager;
 
         int percent;
 
         private final Builder builder;
         private final ParcelableStatusUpdate statusUpdate;
 
-        StatusMediaUploadListener(final Context context, final NotificationManager manager,
+        StatusMediaUploadListener(final Context context, final NotificationManagerWrapper manager,
                                   final NotificationCompat.Builder builder, final ParcelableStatusUpdate statusUpdate) {
             this.context = context;
             this.manager = manager;

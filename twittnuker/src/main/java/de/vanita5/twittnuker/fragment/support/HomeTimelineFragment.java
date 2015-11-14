@@ -22,8 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 
@@ -73,10 +71,9 @@ public class HomeTimelineFragment extends CursorStatusesFragment {
         super.setUserVisibleHint(isVisibleToUser);
         final FragmentActivity activity = getActivity();
         if (isVisibleToUser && activity != null) {
-            final NotificationManager nm = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
             for (long accountId : getAccountIds()) {
                 final String tag = "home_" + accountId;
-                nm.cancel(tag, NOTIFICATION_ID_HOME_TIMELINE);
+                mNotificationManager.cancel(tag, NOTIFICATION_ID_HOME_TIMELINE);
             }
         }
     }

@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
@@ -81,6 +82,8 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     protected UserColorNameManager mUserColorNameManager;
     @Inject
     protected SharedPreferencesWrapper mPreferences;
+    @Inject
+    protected NotificationManagerWrapper mNotificationManager;
 
     public BaseSupportFragment() {
 

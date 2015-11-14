@@ -151,3 +151,5 @@
 -keepclasseswithmembers class * {
     @retrofit.http.* <methods>;
 }
+
+-dontwarn com.damnhandy.uri.template.jackson.datatype.**

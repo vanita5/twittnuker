@@ -21,8 +21,8 @@
  */
 package de.vanita5.twittnuker.api.twitter.auth;
 
-import android.util.Pair;
 
+import org.mariotaku.restfu.Pair;
 import org.mariotaku.restfu.Utils;
 import org.mariotaku.restfu.http.ValueMap;
 
@@ -43,38 +43,38 @@ public class OAuthToken implements ValueMap {
 
     public String getScreenName() {
         return screenName;
-	}
+    }
 
     public long getUserId() {
         return userId;
     }
 
-	public String getOauthTokenSecret() {
-		return oauthTokenSecret;
-	}
+    public String getOauthTokenSecret() {
+        return oauthTokenSecret;
+    }
 
-	public String getOauthToken() {
-		return oauthToken;
-	}
+    public String getOauthToken() {
+        return oauthToken;
+    }
 
-	public OAuthToken(String oauthToken, String oauthTokenSecret) {
-		this.oauthToken = oauthToken;
-		this.oauthTokenSecret = oauthTokenSecret;
-	}
+    public OAuthToken(String oauthToken, String oauthTokenSecret) {
+        this.oauthToken = oauthToken;
+        this.oauthTokenSecret = oauthTokenSecret;
+    }
 
-	public OAuthToken(String body, Charset charset) throws ParseException {
+    public OAuthToken(String body, Charset charset) throws ParseException {
         List<Pair<String, String>> params = new ArrayList<>();
-		Utils.parseGetParameters(body, params, charset.name());
+        Utils.parseGetParameters(body, params, charset.name());
         for (Pair<String, String> param : params) {
             switch (param.first) {
-				case "oauth_token": {
+                case "oauth_token": {
                     oauthToken = param.second;
-					break;
-				}
-				case "oauth_token_secret": {
+                    break;
+                }
+                case "oauth_token_secret": {
                     oauthTokenSecret = param.second;
-					break;
-				}
+                    break;
+                }
                 case "user_id": {
                     userId = Long.parseLong(param.second);
                     break;
@@ -83,17 +83,17 @@ public class OAuthToken implements ValueMap {
                     screenName = param.second;
                     break;
                 }
-			}
-		}
-		if (oauthToken == null || oauthTokenSecret == null) {
-			throw new ParseException("Unable to parse request token", -1);
-		}
-	}
+            }
+        }
+        if (oauthToken == null || oauthTokenSecret == null) {
+            throw new ParseException("Unable to parse request token", -1);
+        }
+    }
 
-	@Override
-	public boolean has(String key) {
-		return "oauth_token".equals(key) || "oauth_token_secret".equals(key);
-	}
+    @Override
+    public boolean has(String key) {
+        return "oauth_token".equals(key) || "oauth_token_secret".equals(key);
+    }
 
     @Override
     public String toString() {
@@ -105,15 +105,15 @@ public class OAuthToken implements ValueMap {
                 '}';
     }
 
-	@Override
-	public String get(String key) {
-		if ("oauth_token".equals(key)) {
-			return oauthToken;
-		} else if ("oauth_token_secret".equals(key)) {
-			return oauthTokenSecret;
-		}
-		return null;
-	}
+    @Override
+    public String get(String key) {
+        if ("oauth_token".equals(key)) {
+            return oauthToken;
+        } else if ("oauth_token_secret".equals(key)) {
+            return oauthTokenSecret;
+        }
+        return null;
+    }
 
     @Override
     public String[] keys() {

@@ -36,6 +36,7 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
 import org.mariotaku.restfu.http.RestHttpClient;
+import org.mariotaku.restfu.okhttp.OkHttpRestClient;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -46,13 +47,13 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
+import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.VideoLoader;
 import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
-import de.vanita5.twittnuker.util.net.OkHttpRestClient;
 import de.vanita5.twittnuker.util.net.TwidereNetwork;
 
 import dagger.Module;
@@ -77,6 +78,7 @@ public class ApplicationModule {
     private final MultiSelectManager multiSelectManager;
     private final UserColorNameManager userColorNameManager;
     private final KeyboardShortcutsHandler keyboardShortcutsHandler;
+    private final NotificationManagerWrapper notificationManagerWrapper;
 
     public ApplicationModule(TwittnukerApplication application) {
         if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
@@ -94,6 +96,7 @@ public class ApplicationModule {
         asyncTaskManager = AsyncTaskManager.getInstance();
         readStateManager = new ReadStateManager(application);
         network = new TwidereNetwork(application);
+        notificationManagerWrapper = new NotificationManagerWrapper(application);
 
 
         asyncTwitterWrapper = new AsyncTwitterWrapper(application, asyncTaskManager, sharedPreferences, bus);
@@ -128,6 +131,11 @@ public class ApplicationModule {
     @Provides
     public KeyboardShortcutsHandler getKeyboardShortcutsHandler() {
         return keyboardShortcutsHandler;
+    }
+
+    @Provides
+    public NotificationManagerWrapper getNotificationManagerWrapper() {
+        return notificationManagerWrapper;
     }
 
     @Provides

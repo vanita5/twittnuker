@@ -30,7 +30,6 @@ import android.net.SSLCertificateSocketFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.webkit.URLUtil;
 
 import com.squareup.okhttp.OkHttpClient;
@@ -39,6 +38,7 @@ import com.squareup.okhttp.internal.Network;
 
 import org.mariotaku.restfu.ExceptionFactory;
 import org.mariotaku.restfu.HttpRequestFactory;
+import org.mariotaku.restfu.Pair;
 import org.mariotaku.restfu.RequestInfoFactory;
 import org.mariotaku.restfu.RestAPIFactory;
 import org.mariotaku.restfu.RestMethodInfo;
@@ -53,6 +53,7 @@ import org.mariotaku.restfu.http.RestHttpRequest;
 import org.mariotaku.restfu.http.RestHttpResponse;
 import org.mariotaku.restfu.http.mime.StringTypedData;
 import org.mariotaku.restfu.http.mime.TypedData;
+import org.mariotaku.restfu.okhttp.OkHttpRestClient;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -69,7 +70,6 @@ import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.net.OkHttpRestClient;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -135,7 +135,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         final OkHttpClient client = new OkHttpClient();
         updateHttpClientConfiguration(prefs, client);
         Internal.instance.setNetwork(client, network);
-        return new OkHttpRestClient(context, client);
+        return new OkHttpRestClient(client);
     }
 
     public static void updateHttpClientConfiguration(final SharedPreferences prefs, final OkHttpClient client) {
@@ -281,12 +281,12 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         params.add(Pair.create(name, typedData));
     }
 
-    public static boolean verifyApiFormat(String format) {
+    public static boolean verifyApiFormat(@NonNull String format) {
         return URLUtil.isValidUrl(getApiBaseUrl(format, "test"));
     }
 
-    public static String getApiBaseUrl(String format, final String domain) {
-        if (format == null) return null;
+    @NonNull
+    public static String getApiBaseUrl(@NonNull String format, @Nullable final String domain) {
         final Matcher matcher = Pattern.compile("\\[(\\.?)DOMAIN(\\.?)\\]", Pattern.CASE_INSENSITIVE).matcher(format);
         if (!matcher.find()) {
             // For backward compatibility
@@ -363,7 +363,8 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         return getOAuthEndpoint(apiUrlFormat, "api", noVersionSuffix ? null : "1.1", sameOAuthSigningUrl);
     }
 
-    public static Endpoint getOAuthEndpoint(String apiUrlFormat, String domain, String versionSuffix, boolean sameOAuthSigningUrl) {
+    public static Endpoint getOAuthEndpoint(String apiUrlFormat, @Nullable String domain,
+                                            @Nullable String versionSuffix, boolean sameOAuthSigningUrl) {
         String endpointUrl, signEndpointUrl;
         endpointUrl = getApiUrl(apiUrlFormat, domain, versionSuffix);
         if (!sameOAuthSigningUrl) {

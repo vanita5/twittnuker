@@ -132,7 +132,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     private ParcelableAccount mSelectedAccountToSearch;
 
-    private SharedPreferences mPreferences;
 
     private MultiSelectEventHandler mMultiSelectHandler;
 
@@ -354,7 +353,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             finish();
             return;
         }
-        mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mMultiSelectHandler = new MultiSelectEventHandler(this);
         mMultiSelectHandler.dispatchOnCreate();
         if (!Utils.hasAccount(this)) {
@@ -753,7 +751,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             }
         }
         if (initialTab != -1 && mViewPager != null) {
-            // clearNotification(initial_tab);
         }
         final Intent extraIntent = intent.getParcelableExtra(EXTRA_EXTRA_INTENT);
         if (extraIntent != null && firstCreate) {

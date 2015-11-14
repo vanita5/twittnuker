@@ -22,9 +22,10 @@
 
 package de.vanita5.twittnuker.api.twitter.auth;
 
+import android.support.annotation.Nullable;
 import android.util.Base64;
-import android.util.Pair;
 
+import org.mariotaku.restfu.Pair;
 import org.mariotaku.restfu.RestRequestInfo;
 import org.mariotaku.restfu.Utils;
 import org.mariotaku.restfu.http.Authorization;
@@ -46,24 +47,24 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * Created by mariotaku on 15/2/4.
  */
-public class OAuthAuthorization implements Authorization,OAuthSupport {
+public class OAuthAuthorization implements Authorization, OAuthSupport {
 
-	private static final String DEFAULT_ENCODING = "UTF-8";
-	private static final String OAUTH_SIGNATURE_METHOD = "HMAC-SHA1";
-	private static final String OAUTH_VERSION = "1.0";
-	private final String consumerKey, consumerSecret;
-	private final OAuthToken oauthToken;
+    private static final String DEFAULT_ENCODING = "UTF-8";
+    private static final String OAUTH_SIGNATURE_METHOD = "HMAC-SHA1";
+    private static final String OAUTH_VERSION = "1.0";
+    private final String consumerKey, consumerSecret;
+    private final OAuthToken oauthToken;
     SecureRandom secureRandom = new SecureRandom();
 
-	public OAuthAuthorization(String consumerKey, String consumerSecret) {
-		this(consumerKey, consumerSecret, null);
-	}
+    public OAuthAuthorization(String consumerKey, String consumerSecret) {
+        this(consumerKey, consumerSecret, null);
+    }
 
-	public OAuthAuthorization(String consumerKey, String consumerSecret, OAuthToken oauthToken) {
-		this.consumerKey = consumerKey;
-		this.consumerSecret = consumerSecret;
-		this.oauthToken = oauthToken;
-	}
+    public OAuthAuthorization(String consumerKey, String consumerSecret, OAuthToken oauthToken) {
+        this.consumerKey = consumerKey;
+        this.consumerSecret = consumerSecret;
+        this.oauthToken = oauthToken;
+    }
 
     @Override
     public String getConsumerKey() {
@@ -80,78 +81,101 @@ public class OAuthAuthorization implements Authorization,OAuthSupport {
     }
 
     private String generateOAuthSignature(String method, String url,
-										  String oauthNonce, long timestamp,
-										  String oauthToken, String oauthTokenSecret,
-                                          List<Pair<String, String>> queries,
-                                          List<Pair<String, String>> forms) {
-		final List<String> encodeParams = new ArrayList<>();
-		encodeParams.add(encodeParameter("oauth_consumer_key", consumerKey));
-		encodeParams.add(encodeParameter("oauth_nonce", oauthNonce));
-		encodeParams.add(encodeParameter("oauth_signature_method", OAUTH_SIGNATURE_METHOD));
-		encodeParams.add(encodeParameter("oauth_timestamp", String.valueOf(timestamp)));
-		encodeParams.add(encodeParameter("oauth_version", OAUTH_VERSION));
-		if (oauthToken != null) {
-			encodeParams.add(encodeParameter("oauth_token", oauthToken));
-		}
-		if (queries != null) {
+                                          String oauthNonce, long timestamp,
+                                          String oauthToken, String oauthTokenSecret,
+                                          @Nullable List<Pair<String, String>> queries,
+                                          @Nullable List<Pair<String, String>> forms) {
+        final List<String> encodeParams = new ArrayList<>();
+        encodeParams.add(encodeParameter("oauth_consumer_key", consumerKey));
+        encodeParams.add(encodeParameter("oauth_nonce", oauthNonce));
+        encodeParams.add(encodeParameter("oauth_signature_method", OAUTH_SIGNATURE_METHOD));
+        encodeParams.add(encodeParameter("oauth_timestamp", String.valueOf(timestamp)));
+        encodeParams.add(encodeParameter("oauth_version", OAUTH_VERSION));
+        if (oauthToken != null) {
+            encodeParams.add(encodeParameter("oauth_token", oauthToken));
+        }
+        if (queries != null) {
             for (Pair<String, String> query : queries) {
                 encodeParams.add(encodeParameter(query.first, query.second));
-			}
-		}
-		if (forms != null) {
+            }
+        }
+        if (forms != null) {
             for (Pair<String, String> form : forms) {
                 encodeParams.add(encodeParameter(form.first, form.second));
-			}
-		}
-		Collections.sort(encodeParams);
-		final StringBuilder paramBuilder = new StringBuilder();
-		for (int i = 0, j = encodeParams.size(); i < j; i++) {
-			if (i != 0) {
-				paramBuilder.append('&');
-			}
-			paramBuilder.append(encodeParams.get(i));
-		}
-		final String signingKey;
-		if (oauthTokenSecret != null) {
-			signingKey = encode(consumerSecret) + '&' + encode(oauthTokenSecret);
-		} else {
-			signingKey = encode(consumerSecret) + '&';
-		}
-		try {
-			final Mac mac = Mac.getInstance("HmacSHA1");
-			SecretKeySpec secret = new SecretKeySpec(signingKey.getBytes(), mac.getAlgorithm());
-			mac.init(secret);
-			String urlNoQuery = url.indexOf('?') != -1 ? url.substring(0, url.indexOf('?')) : url;
+            }
+        }
+        Collections.sort(encodeParams);
+        final StringBuilder paramBuilder = new StringBuilder();
+        for (int i = 0, j = encodeParams.size(); i < j; i++) {
+            if (i != 0) {
+                paramBuilder.append('&');
+            }
+            paramBuilder.append(encodeParams.get(i));
+        }
+        final String signingKey;
+        if (oauthTokenSecret != null) {
+            signingKey = encode(consumerSecret) + '&' + encode(oauthTokenSecret);
+        } else {
+            signingKey = encode(consumerSecret) + '&';
+        }
+        try {
+            final Mac mac = Mac.getInstance("HmacSHA1");
+            SecretKeySpec secret = new SecretKeySpec(signingKey.getBytes(), mac.getAlgorithm());
+            mac.init(secret);
+            String urlNoQuery = url.indexOf('?') != -1 ? url.substring(0, url.indexOf('?')) : url;
             final String baseString = encode(method) + '&' + encode(urlNoQuery) + '&' + encode(paramBuilder.toString());
-			final byte[] signature = mac.doFinal(baseString.getBytes(DEFAULT_ENCODING));
+            final byte[] signature = mac.doFinal(baseString.getBytes(DEFAULT_ENCODING));
             return Base64.encodeToString(signature, Base64.NO_WRAP);
-		} catch (NoSuchAlgorithmException e) {
-			throw new UnsupportedOperationException(e);
-		} catch (InvalidKeyException | UnsupportedEncodingException e) {
-			throw new AssertionError(e);
-		}
-	}
+        } catch (NoSuchAlgorithmException e) {
+            throw new UnsupportedOperationException(e);
+        } catch (InvalidKeyException | UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
+    }
 
-	@Override
+    @Override
     public String getHeader(Endpoint endpoint, RestRequestInfo request) {
         if (!(endpoint instanceof OAuthEndpoint))
             throw new IllegalArgumentException("OAuthEndpoint required");
-		final OAuthEndpoint oauthEndpoint = (OAuthEndpoint) endpoint;
+        final Map<String, Object> extras = request.getExtras();
+        final String oauthToken, oauthTokenSecret;
+        if (this.oauthToken != null) {
+            oauthToken = this.oauthToken.getOauthToken();
+            oauthTokenSecret = this.oauthToken.getOauthTokenSecret();
+        } else {
+            oauthToken = (String) extras.get("oauth_token");
+            oauthTokenSecret = (String) extras.get("oauth_token_secret");
+        }
+        final OAuthEndpoint oauthEndpoint = (OAuthEndpoint) endpoint;
         final String method = request.getMethod();
-		final String url = Endpoint.constructUrl(oauthEndpoint.getSignUrl(), request);
-		final String oauthNonce = generateOAuthNonce();
-		final long timestamp = System.currentTimeMillis() / 1000;
-		final Map<String, Object> extras = request.getExtras();
-		final String oauthToken, oauthTokenSecret;
-		if (this.oauthToken != null) {
-			oauthToken = this.oauthToken.getOauthToken();
-			oauthTokenSecret = this.oauthToken.getOauthTokenSecret();
-		} else {
-			oauthToken = (String) extras.get("oauth_token");
-			oauthTokenSecret = (String) extras.get("oauth_token_secret");
-		}
-		final String oauthSignature = generateOAuthSignature(method, url, oauthNonce, timestamp, oauthToken,
-				oauthTokenSecret, request.getQueries(), request.getForms());
+        final String url = Endpoint.constructUrl(oauthEndpoint.getSignUrl(), request);
+        final List<Pair<String, String>> queries = request.getQueries();
+        final List<Pair<String, String>> forms = request.getForms();
+        final List<Pair<String, String>> encodeParams = generateOAuthParams(oauthToken, oauthTokenSecret,
+                method, url, queries, forms);
+        final StringBuilder headerBuilder = new StringBuilder();
+        headerBuilder.append("OAuth ");
+        for (int i = 0, j = encodeParams.size(); i < j; i++) {
+            if (i != 0) {
+                headerBuilder.append(", ");
+            }
+            final Pair<String, String> keyValuePair = encodeParams.get(i);
+            headerBuilder.append(keyValuePair.first);
+            headerBuilder.append("=\"");
+            headerBuilder.append(keyValuePair.second);
+            headerBuilder.append('\"');
+        }
+        return headerBuilder.toString();
+    }
+
+    public List<Pair<String, String>> generateOAuthParams(String oauthToken,
+                                                          String oauthTokenSecret, String method,
+                                                          String url, List<Pair<String, String>> queries,
+                                                          List<Pair<String, String>> forms) {
+        final String oauthNonce = generateOAuthNonce();
+        final long timestamp = System.currentTimeMillis() / 1000;
+        final String oauthSignature = generateOAuthSignature(method, url, oauthNonce, timestamp, oauthToken,
+                oauthTokenSecret, queries, forms);
         final List<Pair<String, String>> encodeParams = new ArrayList<>();
         encodeParams.add(Pair.create("oauth_consumer_key", consumerKey));
         encodeParams.add(Pair.create("oauth_nonce", oauthNonce));
@@ -159,47 +183,35 @@ public class OAuthAuthorization implements Authorization,OAuthSupport {
         encodeParams.add(Pair.create("oauth_signature_method", OAUTH_SIGNATURE_METHOD));
         encodeParams.add(Pair.create("oauth_timestamp", String.valueOf(timestamp)));
         encodeParams.add(Pair.create("oauth_version", OAUTH_VERSION));
-		if (oauthToken != null) {
+        if (oauthToken != null) {
             encodeParams.add(Pair.create("oauth_token", oauthToken));
-		}
+        }
         Collections.sort(encodeParams, new Comparator<Pair<String, String>>() {
             @Override
             public int compare(Pair<String, String> lhs, Pair<String, String> rhs) {
                 return lhs.first.compareTo(rhs.first);
             }
         });
-		final StringBuilder headerBuilder = new StringBuilder();
-		headerBuilder.append("OAuth ");
-		for (int i = 0, j = encodeParams.size(); i < j; i++) {
-			if (i != 0) {
-				headerBuilder.append(", ");
-			}
-            final Pair<String, String> keyValuePair = encodeParams.get(i);
-            headerBuilder.append(keyValuePair.first);
-			headerBuilder.append("=\"");
-            headerBuilder.append(keyValuePair.second);
-			headerBuilder.append('\"');
-		}
-		return headerBuilder.toString();
-	}
+        return encodeParams;
+    }
 
-	@Override
-	public boolean hasAuthorization() {
-		return true;
-	}
+    @Override
+    public boolean hasAuthorization() {
+        return true;
+    }
 
-	private String encodeParameter(String key, String value) {
-		return encode(key) + '=' + encode(value);
-	}
+    private String encodeParameter(String key, String value) {
+        return encode(key) + '=' + encode(value);
+    }
 
-	private static String encode(final String value) {
-		return Utils.encode(value, DEFAULT_ENCODING);
-	}
+    private static String encode(final String value) {
+        return Utils.encode(value, DEFAULT_ENCODING);
+    }
 
-	private String generateOAuthNonce() {
-		final byte[] input = new byte[32];
-		secureRandom.nextBytes(input);
+    private String generateOAuthNonce() {
+        final byte[] input = new byte[32];
+        secureRandom.nextBytes(input);
         return Base64.encodeToString(input, Base64.NO_WRAP).replaceAll("[^\\w\\d]", "");
-	}
+    }
 
 }

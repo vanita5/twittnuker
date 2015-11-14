@@ -40,6 +40,7 @@ import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
+import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -69,6 +70,8 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     protected Bus mBus;
     @Inject
     protected SharedPreferencesWrapper mPreferences;
+    @Inject
+    protected NotificationManagerWrapper mNotificationManager;
 
     // Registered listeners
     private ArrayList<ControlBarOffsetListener> mControlBarOffsetListeners = new ArrayList<>();
