@@ -32,48 +32,48 @@ import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
  */
 @JsonObject
 public class UserMentionEntityImpl implements UserMentionEntity {
-	@JsonField(name = "indices")
-	Indices indices;
-	@JsonField(name = "id")
-	long id;
-	@JsonField(name = "name")
-	String name;
-	@JsonField(name = "screen_name")
-	String screenName;
+    @JsonField(name = "indices", typeConverter = IndicesConverter.class)
+    Indices indices;
+    @JsonField(name = "id")
+    long id;
+    @JsonField(name = "name")
+    String name;
+    @JsonField(name = "screen_name")
+    String screenName;
 
-	@Override
-	public String toString() {
-		return "UserMentionEntityImpl{" +
-				"indices=" + indices +
-				", id=" + id +
-				", name='" + name + '\'' +
-				", screenName='" + screenName + '\'' +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "UserMentionEntityImpl{" +
+                "indices=" + indices +
+                ", id=" + id +
+                ", name='" + name + '\'' +
+                ", screenName='" + screenName + '\'' +
+                '}';
+    }
 
-	@Override
-	public int getEnd() {
-		return indices.getEnd();
-	}
+    @Override
+    public int getEnd() {
+        return indices.getEnd();
+    }
 
-	@Override
-	public long getId() {
-		return id;
-	}
+    @Override
+    public long getId() {
+        return id;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public String getScreenName() {
-		return screenName;
-	}
+    @Override
+    public String getScreenName() {
+        return screenName;
+    }
 
-	@Override
-	public int getStart() {
-		return indices.getStart();
-	}
+    @Override
+    public int getStart() {
+        return indices.getStart();
+    }
 
 }

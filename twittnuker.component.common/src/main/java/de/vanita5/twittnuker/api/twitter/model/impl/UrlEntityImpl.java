@@ -32,48 +32,48 @@ import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
  */
 @JsonObject
 public class UrlEntityImpl implements UrlEntity {
-	@JsonField(name = "indices")
-	Indices indices;
-	@JsonField(name = "display_url")
-	String displayUrl;
-	@JsonField(name = "expanded_url")
-	String expandedUrl;
+    @JsonField(name = "indices", typeConverter = IndicesConverter.class)
+    Indices indices;
+    @JsonField(name = "display_url")
+    String displayUrl;
+    @JsonField(name = "expanded_url")
+    String expandedUrl;
 
-	@JsonField(name = "url")
-	String url;
+    @JsonField(name = "url")
+    String url;
 
-	@Override
-	public String getDisplayUrl() {
-		return displayUrl;
-	}
+    @Override
+    public String getDisplayUrl() {
+        return displayUrl;
+    }
 
-	@Override
-	public String toString() {
-		return "UrlEntityImpl{" +
-				"indices=" + indices +
-				", displayUrl='" + displayUrl + '\'' +
-				", expandedUrl='" + expandedUrl + '\'' +
-				", url='" + url + '\'' +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "UrlEntityImpl{" +
+                "indices=" + indices +
+                ", displayUrl='" + displayUrl + '\'' +
+                ", expandedUrl='" + expandedUrl + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 
-	@Override
-	public int getEnd() {
-		return indices.getEnd();
-	}
+    @Override
+    public int getEnd() {
+        return indices.getEnd();
+    }
 
-	@Override
-	public int getStart() {
-		return indices.getStart();
-	}
+    @Override
+    public int getStart() {
+        return indices.getStart();
+    }
 
-	@Override
-	public String getExpandedUrl() {
-		return expandedUrl;
-	}
+    @Override
+    public String getExpandedUrl() {
+        return expandedUrl;
+    }
 
-	@Override
-	public String getUrl() {
-		return url;
-	}
+    @Override
+    public String getUrl() {
+        return url;
+    }
 }
