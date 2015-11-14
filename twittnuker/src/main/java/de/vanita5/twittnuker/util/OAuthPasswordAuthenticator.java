@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.squareup.okhttp.HttpUrl;
@@ -56,6 +57,7 @@ import de.vanita5.twittnuker.model.RequestType;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.CookieManager;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,8 +89,8 @@ public class OAuthPasswordAuthenticator implements Constants {
                 }
                 final String location = response.header("Location");
                 final Response.Builder builder = response.newBuilder();
-                if (!TextUtils.isEmpty(location)) {
-                    final HttpUrl originalLocation = HttpUrl.parse(location);
+                if (!TextUtils.isEmpty(location) && !endpoint.checkEndpoint(location)) {
+                    final HttpUrl originalLocation = HttpUrl.get(URI.create("https://api.twitter.com/").resolve(location));
                     final HttpUrl.Builder locationBuilder = HttpUrl.parse(endpoint.getUrl()).newBuilder();
                     for (String pathSegments : originalLocation.pathSegments()) {
                         locationBuilder.addPathSegment(pathSegments);
@@ -133,12 +135,14 @@ public class OAuthPasswordAuthenticator implements Constants {
                 throw new WrongUserPassException();
             }
             // Go to password verification flow
+            final String challengeType = authorizeResponseData.verification.challengeType;
+            final String loginVerification = loginVerificationCallback.getLoginVerification(challengeType);
             final AuthorizeRequestData verificationData = getVerificationData(authorizeResponseData,
-                    loginVerificationCallback.getLoginVerification());
+                    loginVerification);
             authorizeResponseData = getAuthorizeResponseData(requestToken,
                     verificationData, username, password);
             if (TextUtils.isEmpty(authorizeResponseData.oauthPin)) {
-                throw new VerificationCodeException();
+                throw new LoginVerificationException();
             }
             return oauth.getAccessToken(requestToken, authorizeResponseData.oauthPin);
         } catch (final IOException | NullPointerException | TwitterException e) {
@@ -147,7 +151,7 @@ public class OAuthPasswordAuthenticator implements Constants {
     }
 
     private AuthorizeRequestData getVerificationData(AuthorizeResponseData authorizeResponseData,
-                                                     String challengeResponse) throws IOException, VerificationCodeException {
+                                                     @Nullable String challengeResponse) throws IOException, LoginVerificationException {
         RestHttpResponse response = null;
         try {
             final AuthorizeRequestData data = new AuthorizeRequestData();
@@ -162,7 +166,9 @@ public class OAuthPasswordAuthenticator implements Constants {
             final ArrayList<Pair<String, String>> requestHeaders = new ArrayList<>();
             requestHeaders.add(Pair.create("User-Agent", userAgent));
 
-            params.add(Pair.create("challenge_response", challengeResponse));
+            if (!TextUtils.isEmpty(challengeResponse)) {
+                params.add(Pair.create("challenge_response", challengeResponse));
+            }
             final FormTypedBody authorizationResultBody = new FormTypedBody(params);
 
             final RestHttpRequest.Builder authorizeResultBuilder = new RestHttpRequest.Builder();
@@ -173,9 +179,12 @@ public class OAuthPasswordAuthenticator implements Constants {
             authorizeResultBuilder.extra(RequestType.API);
             response = client.execute(authorizeResultBuilder.build());
             parseAuthorizeRequestData(response, data);
+            if (TextUtils.isEmpty(data.authenticityToken)) {
+                throw new LoginVerificationException();
+            }
             return data;
         } catch (AttoParseException e) {
-            throw new VerificationCodeException();
+            throw new LoginVerificationException();
         } finally {
             Utils.closeSilently(response);
         }
@@ -443,7 +452,7 @@ public class OAuthPasswordAuthenticator implements Constants {
     }
 
     public interface LoginVerificationCallback {
-        String getLoginVerification();
+        String getLoginVerification(String challengeType);
     }
 
     public static class AuthenticationException extends Exception {
@@ -472,7 +481,7 @@ public class OAuthPasswordAuthenticator implements Constants {
 
     }
 
-    public static final class VerificationCodeException extends AuthenticationException {
+    public static final class LoginVerificationException extends AuthenticationException {
 
 
     }
