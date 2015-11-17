@@ -30,6 +30,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
@@ -178,10 +179,14 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_STATUS);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
-                    mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
-                    mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-                    mainActionIntent.putExtra(EXTRA_STATUS, status);
-                    mainActionIntent.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_MENTIONS_TIMELINE);
+                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
+                    mainActionIntent = new Intent(Intent.ACTION_VIEW);
+                    mainActionIntent.setPackage(BuildConfig.APPLICATION_ID);
+                    mainActionIntent.setData(uriBuilder.build());
 
                     //Reply Intent
                     final Intent replyIntent = new Intent(INTENT_ACTION_REPLY);
@@ -220,9 +225,14 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_STATUS);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
-                    mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
-                    mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-                    mainActionIntent.putExtra(EXTRA_STATUS, status);
+                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
+                    mainActionIntent = new Intent(Intent.ACTION_VIEW);
+                    mainActionIntent.setPackage(BuildConfig.APPLICATION_ID);
+                    mainActionIntent.setData(uriBuilder.build());
 
                     //Profile Intent
                     final Uri.Builder viewProfileBuilder = new Uri.Builder();
@@ -249,9 +259,14 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_QUOTE);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
-                    mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
-                    mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-                    mainActionIntent.putExtra(EXTRA_STATUS, status);
+                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_QUOTE);
+                    mainActionIntent = new Intent(Intent.ACTION_VIEW);
+                    mainActionIntent.setPackage(BuildConfig.APPLICATION_ID);
+                    mainActionIntent.setData(uriBuilder.build());
 
                     //Reply Intent
                     final Intent replyIntent = new Intent(INTENT_ACTION_REPLY);
@@ -296,9 +311,14 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_STATUS);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
-                    mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
-                    mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-                    mainActionIntent.putExtra(EXTRA_STATUS, status);
+                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
+                    mainActionIntent = new Intent(Intent.ACTION_VIEW);
+                    mainActionIntent.setPackage(BuildConfig.APPLICATION_ID);
+                    mainActionIntent.setData(uriBuilder.build());
 
                     //Profile Intent
                     if (notification.getSourceUser() != null) {
@@ -326,9 +346,14 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_USER);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(pref.getAccountId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, notification.getFromUser());
-                    mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
-                    mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-                    mainActionIntent.putExtra(EXTRA_ACCOUNT_ID, notification.getAccountId());
+//                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(pref.getAccountId()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_USER);
+                    mainActionIntent = new Intent(Intent.ACTION_VIEW);
+                    mainActionIntent.setPackage(BuildConfig.APPLICATION_ID);
+                    mainActionIntent.setData(uriBuilder.build());
                 }
                 break;
             }
@@ -343,9 +368,14 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalMessage().account_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(notification.getOriginalMessage().sender_id));
-                    mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
-                    mainActionIntent.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_DIRECT_MESSAGES);
-                    mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
+//                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(notification.getOriginalMessage().account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
+                    mainActionIntent = new Intent(Intent.ACTION_VIEW);
+                    mainActionIntent.setPackage(BuildConfig.APPLICATION_ID);
+                    mainActionIntent.setData(uriBuilder.build());
                 }
                 break;
             }
@@ -363,8 +393,7 @@ public class NotificationHelper implements Constants {
             mainActionIntent.setAction(Intent.ACTION_MAIN);
             mainActionIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         }
-        builder.setContentIntent(PendingIntent.getActivity(mContext, 0, mainActionIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT));
+        builder.setContentIntent(PendingIntent.getActivity(mContext, 0, mainActionIntent, 0));
 
         buildNotification(notification, pref, notificationType, notificationCount,
                 pendingNotifications, contentText, ticker, smallicon, rebuild, builder);

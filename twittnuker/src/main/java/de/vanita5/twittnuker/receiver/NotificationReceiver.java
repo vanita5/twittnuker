@@ -80,7 +80,9 @@ public class NotificationReceiver extends BroadcastReceiver implements Constants
             case AUTHORITY_DIRECT_MESSAGES: {
                 return TAB_TYPE_DIRECT_MESSAGES;
             }
+            default: {
+                return TAB_TYPE_HOME_TIMELINE;
+            }
         }
-        return null;
     }
 }
