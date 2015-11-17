@@ -172,15 +172,15 @@ public class NotificationHelper implements Constants {
                 ticker = notification.getMessage();
                 smallicon = R.drawable.ic_stat_mention;
 
-                if (notificationCount == 1 && notification.getOriginalStatus() != null) {
+                if (notificationCount == 1 && status != null) {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_STATUS);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
                     mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-                    mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+                    mainActionIntent.putExtra(EXTRA_STATUS, status);
                     mainActionIntent.putExtra(EXTRA_TAB_TYPE, TAB_TYPE_MENTIONS_TIMELINE);
 
                     //Reply Intent
@@ -188,24 +188,22 @@ public class NotificationHelper implements Constants {
                     replyIntent.setExtrasClassLoader(mContext.getClassLoader());
                     replyIntent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
                             notification.getAccountId()));
-                    replyIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+                    replyIntent.putExtra(EXTRA_STATUS, status);
                     replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     builder.addAction(R.drawable.ic_action_reply, mContext.getString(R.string.reply),
                             PendingIntent.getActivity(mContext, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
-                    if (status != null) {
-                        //Retweet Intent
-                        builder.addAction(R.drawable.ic_action_retweet, mContext.getString(R.string.retweet),
-                                getRetweetIntent(status));
+                    //Retweet Intent
+                    builder.addAction(R.drawable.ic_action_retweet, mContext.getString(R.string.retweet),
+                            getRetweetIntent(status));
 
-                        //Like Intent
-                        if (mSharedPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
-                            builder.addAction(R.drawable.ic_action_star, mContext.getString(R.string.favorite),
-                                    getFavoriteIntent(status));
-                        } else {
-                            builder.addAction(R.drawable.ic_action_heart, mContext.getString(R.string.like),
-                                    getFavoriteIntent(status));
-                        }
+                    //Like Intent
+                    if (mSharedPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
+                        builder.addAction(R.drawable.ic_action_star, mContext.getString(R.string.favorite),
+                                getFavoriteIntent(status));
+                    } else {
+                        builder.addAction(R.drawable.ic_action_heart, mContext.getString(R.string.like),
+                                getFavoriteIntent(status));
                     }
                 }
                 break;
@@ -216,26 +214,67 @@ public class NotificationHelper implements Constants {
                 ticker = contentText;
                 smallicon = R.drawable.ic_stat_retweet;
 
-                if (notificationCount == 1 && notification.getOriginalStatus() != null) {
+                if (notificationCount == 1 && status != null) {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_STATUS);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
                     mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-                    mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+                    mainActionIntent.putExtra(EXTRA_STATUS, status);
 
                     //Profile Intent
                     final Uri.Builder viewProfileBuilder = new Uri.Builder();
                     viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
                     viewProfileBuilder.authority(AUTHORITY_USER);
-                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
-                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(notification.getOriginalStatus().retweeted_by_user_id));
+                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
+                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(status.retweeted_by_user_id));
                     final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
                     viewProfileIntent.setPackage(TWITTNUKER_PACKAGE_NAME);
                     builder.addAction(R.drawable.ic_action_profile, mContext.getString(R.string.view_user_profile),
                             PendingIntent.getActivity(mContext, 0, viewProfileIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                }
+                break;
+            }
+            case NotificationContent.NOTIFICATION_TYPE_QUOTE: {
+                contentText = mContext.getString(R.string.notification_new_quote_single)
+                        + ": " + notification.getMessage();
+                ticker = contentText;
+                smallicon = R.drawable.ic_stat_quote;
+
+                if (notificationCount == 1 && status != null) {
+                    final Uri.Builder uriBuilder = new Uri.Builder();
+                    uriBuilder.scheme(SCHEME_TWITTNUKER);
+                    uriBuilder.authority(AUTHORITY_QUOTE);
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
+                    mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
+                    mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
+                    mainActionIntent.putExtra(EXTRA_STATUS, status);
+
+                    //Reply Intent
+                    final Intent replyIntent = new Intent(INTENT_ACTION_REPLY);
+                    replyIntent.setExtrasClassLoader(mContext.getClassLoader());
+                    replyIntent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
+                            notification.getAccountId()));
+                    replyIntent.putExtra(EXTRA_STATUS, status);
+                    replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    builder.addAction(R.drawable.ic_action_reply, mContext.getString(R.string.reply),
+                            PendingIntent.getActivity(mContext, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+
+                    //Retweet Intent
+                    builder.addAction(R.drawable.ic_action_retweet, mContext.getString(R.string.retweet),
+                            getRetweetIntent(status));
+
+                    //Like Intent
+                    if (mSharedPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
+                        builder.addAction(R.drawable.ic_action_star, mContext.getString(R.string.favorite),
+                                getFavoriteIntent(status));
+                    } else {
+                        builder.addAction(R.drawable.ic_action_heart, mContext.getString(R.string.like),
+                                getFavoriteIntent(status));
+                    }
                 }
                 break;
             }
@@ -251,22 +290,22 @@ public class NotificationHelper implements Constants {
                 }
                 ticker = contentText;
 
-                if (notificationCount == 1 && notification.getOriginalStatus() != null) {
+                if (notificationCount == 1 && status != null) {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_STATUS);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(notification.getOriginalStatus().id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     mainActionIntent = new Intent(Intent.ACTION_VIEW, uriBuilder.build());
                     mainActionIntent.setExtrasClassLoader(mContext.getClassLoader());
-                    mainActionIntent.putExtra(EXTRA_STATUS, notification.getOriginalStatus());
+                    mainActionIntent.putExtra(EXTRA_STATUS, status);
 
                     //Profile Intent
                     if (notification.getSourceUser() != null) {
                         final Uri.Builder viewProfileBuilder = new Uri.Builder();
                         viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
                         viewProfileBuilder.authority(AUTHORITY_USER);
-                        viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalStatus().account_id));
+                        viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
                         viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(notification.getSourceUser().getId()));
                         final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
                         viewProfileIntent.setPackage(TWITTNUKER_PACKAGE_NAME);
@@ -317,7 +356,7 @@ public class NotificationHelper implements Constants {
             default:
                 return;
         }
-        if (contentText == null && ticker == null) return;
+        if (contentText == null) return;
 
         if (mainActionIntent == null) {
             mainActionIntent = new Intent(mContext, HomeActivity.class);
@@ -472,6 +511,9 @@ public class NotificationHelper implements Constants {
                     nameEscaped));
         } else if (NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE.equals(type)) {
             return Html.fromHtml(String.format("<b>%s:</b>", mContext.getString(R.string.notification_new_direct_message)) + " " + textEscaped);
+        } else if (NotificationContent.NOTIFICATION_TYPE_QUOTE.equals(type)) {
+            return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_quote) + ":</b> %s",
+                    nameEscaped, textEscaped));
         }
         return null;
     }

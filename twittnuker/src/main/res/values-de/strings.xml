@@ -780,9 +780,11 @@
     <string name="notification_new_like">gefällt das</string>
     <string name="notification_new_like_single">Gefällt</string>
     <string name="notification_new_retweet">retweeted</string>
-    <string name="notification_new_retweet_single">Retweeted</string>
+    <string name="notification_new_retweet_single">Retweetet</string>
     <string name="notification_new_follower">folgt dir jetzt.</string>
     <string name="notification_new_direct_message">Direktnachricht</string>
+    <string name="notification_new_quote_single">Kommentar</string>
+    <string name="notification_new_quote">kommentiert</string>
 
     <string name="shortening">Tweet kürzen</string>
     <string name="error_hototin">...but I failed :(\nDer Tweet wurde zu den Entwürfen hinzugefügt.</string>

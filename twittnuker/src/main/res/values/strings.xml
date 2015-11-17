@@ -846,6 +846,8 @@
     <string name="notification_new_retweet_single">Retweeted</string>
     <string name="notification_new_follower">is now following you.</string>
     <string name="notification_new_direct_message">Direct message</string>
+    <string name="notification_new_quote_single">Comment</string>
+    <string name="notification_new_quote">comments</string>
 
     <string name="shortening">Shortening</string>
     <string name="error_hototin">...but I failed :(\nYour Tweet has not been send and saved to draft.</string>

@@ -8,113 +8,114 @@ import de.vanita5.twittnuker.api.twitter.model.User;
  */
 public class NotificationContent {
 
-	public static final String NOTIFICATION_TYPE_MENTION = "type_mention";
-	public static final String NOTIFICATION_TYPE_RETWEET = "type_retweet";
-	public static final String NOTIFICATION_TYPE_FOLLOWER = "type_new_follower";
-	public static final String NOTIFICATION_TYPE_FAVORITE = "type_favorite";
-	public static final String NOTIFICATION_TYPE_DIRECT_MESSAGE = "type_direct_message";
+    public static final String NOTIFICATION_TYPE_MENTION = "type_mention";
+    public static final String NOTIFICATION_TYPE_RETWEET = "type_retweet";
+    public static final String NOTIFICATION_TYPE_FOLLOWER = "type_new_follower";
+    public static final String NOTIFICATION_TYPE_FAVORITE = "type_favorite";
+    public static final String NOTIFICATION_TYPE_DIRECT_MESSAGE = "type_direct_message";
+    public static final String NOTIFICATION_TYPE_QUOTE = "type_quote";
 
-	public static final String NOTIFICATION_TYPE_ERROR_420 = "type_error_420";
+    public static final String NOTIFICATION_TYPE_ERROR_420 = "type_error_420";
 
-	private long accountId;
-	private long timestamp;
+    private long accountId;
+    private long timestamp;
 
-	private String fromUser;
-	private String message;
-	private String type;
-	private String profileImageUrl;
+    private String fromUser;
+    private String message;
+    private String type;
+    private String profileImageUrl;
 
-	private User sourceUser;
-	private ParcelableStatus originalStatus;
-	private ParcelableDirectMessage originalMessage;
+    private User sourceUser;
+    private ParcelableStatus originalStatus;
+    private ParcelableDirectMessage originalMessage;
 
-	public long getAccountId() {
-		return accountId;
-	}
+    public long getAccountId() {
+        return accountId;
+    }
 
-	public void setAccountId(long accountId) {
-		this.accountId = accountId;
-	}
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
+    }
 
-	public String getFromUser() {
-		return fromUser;
-	}
+    public String getFromUser() {
+        return fromUser;
+    }
 
-	public void setFromUser(String fromUser) {
-		this.fromUser = fromUser;
-	}
+    public void setFromUser(String fromUser) {
+        this.fromUser = fromUser;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public String getMessage() {
+        return message;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public long getTimestamp() {
-		return timestamp;
-	}
+    public long getTimestamp() {
+        return timestamp;
+    }
 
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
-	}
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 
-	public String getProfileImageUrl() {
-		return profileImageUrl;
-	}
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
 
-	public void setProfileImageUrl(String profileImageUrl) {
-		this.profileImageUrl = profileImageUrl;
-	}
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
 
-	public ParcelableStatus getOriginalStatus() {
-		return originalStatus;
-	}
+    public ParcelableStatus getOriginalStatus() {
+        return originalStatus;
+    }
 
-	public void setOriginalStatus(ParcelableStatus originalStatus) {
-		this.originalStatus = originalStatus;
-	}
+    public void setOriginalStatus(ParcelableStatus originalStatus) {
+        this.originalStatus = originalStatus;
+    }
 
-	public ParcelableDirectMessage getOriginalMessage() {
-		return originalMessage;
-	}
+    public ParcelableDirectMessage getOriginalMessage() {
+        return originalMessage;
+    }
 
-	public void setOriginalMessage(ParcelableDirectMessage originalMessage) {
-		this.originalMessage = originalMessage;
-	}
+    public void setOriginalMessage(ParcelableDirectMessage originalMessage) {
+        this.originalMessage = originalMessage;
+    }
 
-	public User getSourceUser() {
-		return sourceUser;
-	}
+    public User getSourceUser() {
+        return sourceUser;
+    }
 
-	public void setSourceUser(User sourceUser) {
-		this.sourceUser = sourceUser;
-	}
+    public void setSourceUser(User sourceUser) {
+        this.sourceUser = sourceUser;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (o == null) return false;
-		else if (!(o instanceof NotificationContent)) return false;
-		else if (this.accountId != ((NotificationContent) o).accountId)
-			return false;
-		else if (this.fromUser != null
-			&& !this.fromUser.equals(((NotificationContent) o).fromUser))
-			return false;
-		else if (this.message != null
-			&& !this.message.equals(((NotificationContent) o).message))
-			return false;
-		else if (this.type != null
-			&& !this.type.equals(((NotificationContent) o).type))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        else if (!(o instanceof NotificationContent)) return false;
+        else if (this.accountId != ((NotificationContent) o).accountId)
+            return false;
+        else if (this.fromUser != null
+                && !this.fromUser.equals(((NotificationContent) o).fromUser))
+            return false;
+        else if (this.message != null
+                && !this.message.equals(((NotificationContent) o).message))
+            return false;
+        else if (this.type != null
+                && !this.type.equals(((NotificationContent) o).type))
+            return false;
+        return true;
+    }
 }
