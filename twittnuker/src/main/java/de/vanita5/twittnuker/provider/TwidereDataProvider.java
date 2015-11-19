@@ -901,6 +901,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             ParcelableStatus status = (ParcelableStatus) o_status;
             notification = new NotificationContent();
             notification.setAccountId(status.account_id);
+            notification.setObjectId(String.valueOf(status.id));
+            notification.setObjectUserId(String.valueOf(status.user_id));
             notification.setFromUser(status.user_screen_name);
             notification.setType(type);
             notification.setMessage(status.text_unescaped);
@@ -911,6 +913,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             ParcelableDirectMessage dm = (ParcelableDirectMessage) o_status;
             notification = new NotificationContent();
             notification.setAccountId(dm.account_id);
+            notification.setObjectId(String.valueOf(dm.id));
+            notification.setObjectUserId(String.valueOf(dm.sender_id));
             notification.setFromUser(dm.sender_screen_name);
             notification.setType(type);
             notification.setMessage(dm.text_unescaped);

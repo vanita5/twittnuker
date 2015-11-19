@@ -72,6 +72,8 @@ public class TwittnukerGcmListenerService extends GcmListenerService {
 
         NotificationContent content = new NotificationContent();
         content.setAccountId(accountId);
+        content.setObjectId(data.getString("object_id"));
+        content.setObjectUserId(data.getString("object_user_id"));
         content.setFromUser(data.getString("fromuser"));
         content.setType(data.getString("type"));
         content.setMessage(data.getString("msg"));

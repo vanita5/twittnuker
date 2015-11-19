@@ -75,6 +75,8 @@ public class NotificationHelper implements Constants {
             if (c == null || c.getCount() == 0) return null;
             c.moveToFirst();
             final int idxAccountId = c.getColumnIndex(PushNotifications.ACCOUNT_ID);
+            final int idxObjectId = c.getColumnIndex(PushNotifications.OBJECT_ID);
+            final int idxObjectUserId = c.getColumnIndex(PushNotifications.OBJECT_USER_ID);
             final int idxMessage = c.getColumnIndex(PushNotifications.MESSAGE);
             final int idxTimestamp = c.getColumnIndex(PushNotifications.TIMESTAMP);
             final int idxFromUser = c.getColumnIndex(PushNotifications.FROM_USER);
@@ -83,6 +85,8 @@ public class NotificationHelper implements Constants {
             while (!c.isAfterLast()) {
                 NotificationContent notification = new NotificationContent();
                 notification.setAccountId(c.getLong(idxAccountId));
+                notification.setObjectId(c.getString(idxObjectId));
+                notification.setObjectUserId(c.getString(idxObjectUserId));
                 notification.setMessage(c.getString(idxMessage));
                 notification.setTimestamp(c.getLong(idxTimestamp));
                 notification.setFromUser(c.getString(idxFromUser));
@@ -102,6 +106,8 @@ public class NotificationHelper implements Constants {
         final ContentResolver resolver = mContext.getContentResolver();
         final ContentValues values = new ContentValues();
         values.put(PushNotifications.ACCOUNT_ID, notification.getAccountId());
+        values.put(PushNotifications.OBJECT_ID, notification.getObjectId());
+        values.put(PushNotifications.OBJECT_USER_ID, notification.getObjectUserId());
         values.put(PushNotifications.FROM_USER, notification.getFromUser());
         values.put(PushNotifications.MESSAGE, notification.getMessage());
         values.put(PushNotifications.NOTIFICATION_TYPE, notification.getType());
@@ -155,7 +161,7 @@ public class NotificationHelper implements Constants {
         if (pendingNotifications == null) return;
         final int notificationCount = pendingNotifications.size();
 
-        final ParcelableStatus status = notification.getOriginalStatus();
+        ParcelableStatus status = notification.getOriginalStatus();
 
         Intent mainActionIntent = null;
         String contentText = null;
@@ -173,14 +179,23 @@ public class NotificationHelper implements Constants {
                 ticker = notification.getMessage();
                 smallicon = R.drawable.ic_stat_mention;
 
-                if (notificationCount == 1 && status != null) {
+                if (notificationCount == 1) {
+                    if (status == null) {
+                        status = new ParcelableStatus();
+                        status.id = Long.parseLong(notification.getObjectId());
+                        status.user_id = Long.parseLong(notification.getObjectUserId());
+                        status.account_id = notification.getAccountId();
+                        status.user_screen_name = notification.getFromUser();
+                        status.is_retweet = false;
+                        status.text_plain = notification.getMessage();
+                    }
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_STATUS);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.account_id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
@@ -219,14 +234,24 @@ public class NotificationHelper implements Constants {
                 ticker = contentText;
                 smallicon = R.drawable.ic_stat_retweet;
 
-                if (notificationCount == 1 && status != null) {
+                if (notificationCount == 1) {
+                    if (status == null) {
+                        status = new ParcelableStatus();
+                        status.id = Long.parseLong(notification.getObjectId());
+                        status.user_id = Long.parseLong(notification.getObjectUserId());
+                        status.retweeted_by_user_id = Long.parseLong(notification.getObjectUserId());
+                        status.account_id = notification.getAccountId();
+                        status.user_screen_name = notification.getFromUser();
+                        status.is_retweet = false;
+                        status.text_plain = notification.getMessage();
+                    }
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_STATUS);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.account_id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.retweeted_by_user_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
@@ -253,14 +278,24 @@ public class NotificationHelper implements Constants {
                 ticker = contentText;
                 smallicon = R.drawable.ic_stat_quote;
 
-                if (notificationCount == 1 && status != null) {
+                if (notificationCount == 1) {
+                    if (status == null) {
+                        status = new ParcelableStatus();
+                        status.id = Long.parseLong(notification.getObjectId());
+                        status.user_id = Long.parseLong(notification.getObjectUserId());
+                        status.account_id = notification.getAccountId();
+                        status.user_screen_name = notification.getFromUser();
+                        status.is_retweet = false;
+                        status.is_favorite = false;
+                        status.text_plain = notification.getMessage();
+                    }
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_QUOTE);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.account_id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_QUOTE);
@@ -305,14 +340,20 @@ public class NotificationHelper implements Constants {
                 }
                 ticker = contentText;
 
-                if (notificationCount == 1 && status != null) {
+                if (notificationCount == 1) {
+                    if (status == null) {
+                        status = new ParcelableStatus();
+                        status.id = Long.parseLong(notification.getObjectId());
+                        status.user_id = Long.parseLong(notification.getObjectUserId());
+                        status.account_id = notification.getAccountId();
+                    }
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_STATUS);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.account_id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_id));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
@@ -340,14 +381,15 @@ public class NotificationHelper implements Constants {
                 ticker = contentText;
                 smallicon = R.drawable.ic_stat_follower;
 
-                if (notificationCount == 1 && notification.getSourceUser() != null) {
+                if (notificationCount == 1) {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_USER);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(pref.getAccountId()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getAccountId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, notification.getFromUser());
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, notification.getObjectUserId());
 //                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(pref.getAccountId()));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(notification.getObjectUserId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_USER);
@@ -362,14 +404,14 @@ public class NotificationHelper implements Constants {
                 ticker = contentText;
                 smallicon = R.drawable.ic_stat_direct_message;
 
-                if (notificationCount == 1 && notification.getOriginalMessage() != null) {
+                if (notificationCount == 1) {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getOriginalMessage().account_id));
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(notification.getOriginalMessage().sender_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getAccountId()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(notification.getObjectUserId()));
 //                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(notification.getOriginalMessage().account_id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(notification.getObjectUserId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
@@ -393,7 +435,7 @@ public class NotificationHelper implements Constants {
             mainActionIntent.setAction(Intent.ACTION_MAIN);
             mainActionIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         }
-        builder.setContentIntent(PendingIntent.getActivity(mContext, 0, mainActionIntent, 0));
+        builder.setContentIntent(PendingIntent.getActivity(mContext, 0, mainActionIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
         buildNotification(notification, pref, notificationType, notificationCount,
                 pendingNotifications, contentText, ticker, smallicon, rebuild, builder);

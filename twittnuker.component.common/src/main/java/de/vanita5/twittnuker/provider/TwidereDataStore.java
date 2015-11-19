@@ -1009,6 +1009,10 @@ public interface TwidereDataStore {
 
         String ACCOUNT_ID = "account_id";
 
+        String OBJECT_ID = "object_id";
+
+        String OBJECT_USER_ID = "object_user_id";
+
         String FROM_USER = "from_user";
 
         String MESSAGE = "message";
@@ -1017,13 +1021,13 @@ public interface TwidereDataStore {
 
         String TIMESTAMP = "timestamp";
 
-        String[] COLUMNS = {_ID, ACCOUNT_ID, FROM_USER, MESSAGE, NOTIFICATION_TYPE,
+        String[] COLUMNS = {_ID, ACCOUNT_ID, OBJECT_ID, OBJECT_USER_ID, FROM_USER, MESSAGE, NOTIFICATION_TYPE,
                 TIMESTAMP};
 
-        String[] MATRIX_COLUMNS = {ACCOUNT_ID, FROM_USER, MESSAGE, NOTIFICATION_TYPE,
+        String[] MATRIX_COLUMNS = {ACCOUNT_ID, OBJECT_ID, OBJECT_USER_ID, FROM_USER, MESSAGE, NOTIFICATION_TYPE,
                 TIMESTAMP};
 
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT, TYPE_TEXT_NOT_NULL,
+        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT_NOT_NULL,
                 TYPE_TEXT, TYPE_TEXT_NOT_NULL, TYPE_INT};
 
         String DEFAULT_SORT_ORDER = TIMESTAMP + " DESC";

@@ -20,6 +20,8 @@ public class NotificationContent {
     private long accountId;
     private long timestamp;
 
+    private String objectId;
+    private String objectUserId;
     private String fromUser;
     private String message;
     private String type;
@@ -101,21 +103,49 @@ public class NotificationContent {
         this.sourceUser = sourceUser;
     }
 
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        else if (!(o instanceof NotificationContent)) return false;
-        else if (this.accountId != ((NotificationContent) o).accountId)
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NotificationContent that = (NotificationContent) o;
+
+        if (accountId != that.accountId) return false;
+        if (objectId != null ? !objectId.equals(that.objectId) : that.objectId != null)
             return false;
-        else if (this.fromUser != null
-                && !this.fromUser.equals(((NotificationContent) o).fromUser))
+        if (objectUserId != null ? !objectUserId.equals(that.objectUserId) : that.objectUserId != null)
             return false;
-        else if (this.message != null
-                && !this.message.equals(((NotificationContent) o).message))
+        if (fromUser != null ? !fromUser.equals(that.fromUser) : that.fromUser != null)
             return false;
-        else if (this.type != null
-                && !this.type.equals(((NotificationContent) o).type))
-            return false;
-        return true;
+        if (message != null ? !message.equals(that.message) : that.message != null) return false;
+        return !(type != null ? !type.equals(that.type) : that.type != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (accountId ^ (accountId >>> 32));
+        result = 31 * result + (objectId != null ? objectId.hashCode() : 0);
+        result = 31 * result + (objectUserId != null ? objectUserId.hashCode() : 0);
+        result = 31 * result + (fromUser != null ? fromUser.hashCode() : 0);
+        result = 31 * result + (message != null ? message.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
+    }
+
+    public String getObjectUserId() {
+        return objectUserId;
+    }
+
+    public void setObjectUserId(String objectUserId) {
+        this.objectUserId = objectUserId;
     }
 }
