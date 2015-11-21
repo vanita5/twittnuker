@@ -1,6 +1,6 @@
 #Twittnuker - Android 4.0+ Twitter Client#
 
-[![Build Status](https://travis-ci.org/vanita5/twittnuker.svg?branch=master)](https://travis-ci.org/vanita5/twittnuker)
+[![Build Status](https://travis-ci.org/vanita5/twittnuker.svg?branch=f-droid)](https://travis-ci.org/vanita5/twittnuker)
 
 Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter Client for Android 4.0+ Smartphones with Android 5 (Lollipop) support, Android 6 (Marshmallow) support and Material design, based on the [Twidere Project](https://github.com/mariotaku/twidere).
 

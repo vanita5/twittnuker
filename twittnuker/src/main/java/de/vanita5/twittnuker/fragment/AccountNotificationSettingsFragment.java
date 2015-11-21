@@ -38,6 +38,7 @@ public class AccountNotificationSettingsFragment extends BaseAccountPreferenceFr
         if (preference != null && account != null) {
             preference.setDefaultValue(account.color);
         }
+
     }
 
     @Override
