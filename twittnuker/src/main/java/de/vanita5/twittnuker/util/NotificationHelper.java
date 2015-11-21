@@ -64,7 +64,7 @@ public class NotificationHelper implements Constants {
     @Nullable
     private List<NotificationContent> getCachedNotifications(final long argAccountId) {
         Cursor c = null;
-        List<NotificationContent> results = new ArrayList<NotificationContent>();
+        List<NotificationContent> results = new ArrayList<>();
         try {
             if (argAccountId <= 0) return null;
             final ContentResolver resolver = mContext.getContentResolver();
@@ -153,6 +153,37 @@ public class NotificationHelper implements Constants {
         }
     }
 
+    private ParcelableStatus getParcelableStatusDummy(NotificationContent notification,
+                                                      boolean is_retweet) {
+        ParcelableStatus status = new ParcelableStatus();
+        try {
+            status.id = Long.parseLong(notification.getObjectId());
+        } catch (NumberFormatException e) {
+            status.id = -1;
+        }
+        try {
+            status.user_id = Long.parseLong(notification.getObjectUserId());
+        } catch (NumberFormatException e) {
+            status.user_id = -1;
+        }
+        status.account_id = notification.getAccountId();
+        status.user_screen_name = notification.getFromUser();
+        status.is_retweet = is_retweet;
+        status.is_favorite = false;
+        status.text_plain = notification.getMessage();
+
+        if (is_retweet) {
+            try {
+                status.retweeted_by_user_id = Long.parseLong(notification.getObjectUserId());
+            } catch (NumberFormatException e) {
+                status.retweeted_by_user_id = -1;
+            }
+            status.retweeted_by_user_screen_name = notification.getFromUser();
+        }
+
+        return status;
+    }
+
     public void buildNotificationByType(final NotificationContent notification, final AccountPreferences pref,
                                         final boolean rebuild) {
         final String type = notification.getType();
@@ -181,13 +212,7 @@ public class NotificationHelper implements Constants {
 
                 if (notificationCount == 1) {
                     if (status == null) {
-                        status = new ParcelableStatus();
-                        status.id = Long.parseLong(notification.getObjectId());
-                        status.user_id = Long.parseLong(notification.getObjectUserId());
-                        status.account_id = notification.getAccountId();
-                        status.user_screen_name = notification.getFromUser();
-                        status.is_retweet = false;
-                        status.text_plain = notification.getMessage();
+                        status = getParcelableStatusDummy(notification, false);
                     }
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
@@ -236,14 +261,7 @@ public class NotificationHelper implements Constants {
 
                 if (notificationCount == 1) {
                     if (status == null) {
-                        status = new ParcelableStatus();
-                        status.id = Long.parseLong(notification.getObjectId());
-                        status.user_id = Long.parseLong(notification.getObjectUserId());
-                        status.retweeted_by_user_id = Long.parseLong(notification.getObjectUserId());
-                        status.account_id = notification.getAccountId();
-                        status.user_screen_name = notification.getFromUser();
-                        status.is_retweet = false;
-                        status.text_plain = notification.getMessage();
+                        status = getParcelableStatusDummy(notification, true);
                     }
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
@@ -280,14 +298,7 @@ public class NotificationHelper implements Constants {
 
                 if (notificationCount == 1) {
                     if (status == null) {
-                        status = new ParcelableStatus();
-                        status.id = Long.parseLong(notification.getObjectId());
-                        status.user_id = Long.parseLong(notification.getObjectUserId());
-                        status.account_id = notification.getAccountId();
-                        status.user_screen_name = notification.getFromUser();
-                        status.is_retweet = false;
-                        status.is_favorite = false;
-                        status.text_plain = notification.getMessage();
+                        status = getParcelableStatusDummy(notification, false);
                     }
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
@@ -342,10 +353,7 @@ public class NotificationHelper implements Constants {
 
                 if (notificationCount == 1) {
                     if (status == null) {
-                        status = new ParcelableStatus();
-                        status.id = Long.parseLong(notification.getObjectId());
-                        status.user_id = Long.parseLong(notification.getObjectUserId());
-                        status.account_id = notification.getAccountId();
+                        status = getParcelableStatusDummy(notification, false);
                     }
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
