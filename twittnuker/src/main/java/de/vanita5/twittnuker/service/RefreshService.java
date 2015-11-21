@@ -149,7 +149,6 @@ public class RefreshService extends Service implements Constants {
         super.onCreate();
         DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
         mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
         mPendingRefreshHomeTimelineIntent = PendingIntent.getBroadcast(this, 0, new Intent(
                 BROADCAST_REFRESH_HOME_TIMELINE), 0);
         mPendingRefreshMentionsIntent = PendingIntent.getBroadcast(this, 0, new Intent(BROADCAST_REFRESH_MENTIONS), 0);

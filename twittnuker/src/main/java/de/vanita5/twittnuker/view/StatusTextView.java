@@ -1,29 +1,48 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.Editable;
 import android.text.Spannable;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 import de.vanita5.twittnuker.text.SafeSpannableString;
 import de.vanita5.twittnuker.text.SafeSpannableStringBuilder;
+import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
-public class StatusTextView extends HandleSpanClickTextView {
+public class StatusTextView extends ThemedTextView {
 
-	public StatusTextView(final Context context) {
-        this(context, null);
-	}
+    public StatusTextView(final Context context) {
+        super(context);
+        init();
+    }
 
-	public StatusTextView(final Context context, final AttributeSet attrs) {
-        this(context, attrs, 0);
-	}
+    public StatusTextView(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
 
-	public StatusTextView(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
+    public StatusTextView(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+        init();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        // FIXME simple workaround to https://code.google.com/p/android/issues/detail?id=191430
+        // Android clears TextView when setText(), so setText before touch
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            final CharSequence text = getText();
+            setText(null);
+            setText(text);
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    private void init() {
         setEditableFactory(new SafeEditableFactory());
         setSpannableFactory(new SafeSpannableFactory());
-	}
+    }
 
     private class SafeEditableFactory extends Editable.Factory {
         @Override

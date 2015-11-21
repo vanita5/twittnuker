@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
@@ -48,7 +47,7 @@
         android:layout_marginLeft="@dimen/element_spacing_normal"
         android:layout_marginRight="@dimen/element_spacing_normal"
         android:layout_marginTop="@dimen/element_spacing_small"
-        android:contentDescription="@string/profile_image"/>
+        android:contentDescription="@string/profile_image" />
 
 
     <RelativeLayout
@@ -77,15 +76,15 @@
             android:layout_toStartOf="@id/time"
             android:orientation="horizontal">
 
-            <de.vanita5.twittnuker.view.HandleSpanClickTextView
+            <de.vanita5.twittnuker.view.TimelineContentTextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:textColor="?android:attr/textColorPrimary"
-                tools:text="Mariotaku Lee"/>
+                tools:text="Mariotaku Lee" />
 
-            <de.vanita5.twittnuker.view.HandleSpanClickTextView
+            <de.vanita5.twittnuker.view.TimelineContentTextView
                 android:id="@+id/screen_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,7 +92,7 @@
                 android:layout_marginStart="@dimen/element_spacing_small"
                 android:singleLine="true"
                 android:textColor="?android:attr/textColorPrimary"
-                tools:text="\@mariotaku"/>
+                tools:text="\@mariotaku" />
 
         </LinearLayout>
 
@@ -107,7 +106,7 @@
             android:gravity="center"
             android:singleLine="true"
             android:textColor="?android:attr/textColorSecondary"
-            tools:text="12:00"/>
+            tools:text="12:00" />
 
         <TextView
             android:id="@+id/text"
@@ -119,7 +118,7 @@
             android:layout_marginTop="@dimen/element_spacing_xsmall"
             android:singleLine="true"
             android:textColor="?android:attr/textColorSecondary"
-            tools:text="@string/sample_status_text"/>
+            tools:text="@string/sample_status_text" />
     </RelativeLayout>
 
 </de.vanita5.twittnuker.view.ColorLabelRelativeLayout>

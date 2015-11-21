@@ -148,7 +148,7 @@
 
             </LinearLayout>
 
-            <de.vanita5.twittnuker.view.HandleSpanClickTextView
+            <de.vanita5.twittnuker.view.TimelineContentTextView
                 android:id="@+id/text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -191,7 +191,7 @@
                 app:nv_secondaryTextColor="?android:textColorSecondary"
                 tools:visibility="visible"/>
 
-            <de.vanita5.twittnuker.view.HandleSpanClickTextView
+            <de.vanita5.twittnuker.view.TimelineContentTextView
                 android:id="@+id/quoted_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

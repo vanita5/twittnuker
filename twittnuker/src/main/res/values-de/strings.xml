@@ -726,6 +726,8 @@
     <string name="current_status">Aktueller Tweet</string>
     <string name="twitter_optimized_searches">Twitter optimierte Suchanfragen</string>
     <string name="twitter_optimized_searches_summary">Erlaubt spezielle Suchbefehle um bspw. Retweets nicht anzuzeigen</string>
+    <string name="i_want_my_stars_back">Ich will die Sterne zurück!</string>
+    <string name="i_want_my_stars_back_summary">Zeige Favoriten (★) anstelle von Likes (♥︎)</string>
     <string name="copy_link">Link kopieren</string>
     <string name="link_copied_to_clipboard">Link kopiert</string>
     <string name="login_verification">Login Verifizierung</string>

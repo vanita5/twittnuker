@@ -25,6 +25,7 @@ android {
 
     lintOptions {
         abortOnError false
+        lintConfig rootProject.file('lint.xml')
     }
 
     packagingOptions {

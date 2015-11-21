@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Twittnuker - Twitter client for Android
+  ~
+  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~
+  ~ This program incorporates a modified version of Twidere.
+  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <lint>
-    <issue id="ContentDescription">
-        <ignore path="res/layout/accounts_drawer_item_group.xml" />
-        <ignore path="res/layout/pull_to_refresh_header.xml" />
-    </issue>
-    <issue id="ExportedContentProvider">
-        <ignore path="AndroidManifest.xml" />
-    </issue>
-    <issue id="ExportedService">
-        <ignore path="AndroidManifest.xml" />
-    </issue>
+    <!-- Disable the given check in this project -->
     <issue id="MissingTranslation" severity="ignore" />
-    <issue id="NewApi" severity="ignore">
-        <ignore path="res/values/holo__styles.xml" />
-        <ignore path="res/values/popup__styles.xml" />
-        <ignore path="res/values/styles.xml" />
-        <ignore path="src/de/vanita5/twittnuker/activity/SettingsDetailsActivity.java" />
-    </issue>
-    <issue id="UseSparseArrays">
-        <ignore path="src/twitter4j/internal/json/MediaEntityJSONImpl.java" />
-    </issue>
-    <issue id="ViewConstructor">
-        <ignore path="src/com/handmark/pulltorefresh/library/internal/LoadingLayout.java" />
-    </issue>
+    <issue id="PluralsCandidate" severity="ignore" />
+
 </lint>

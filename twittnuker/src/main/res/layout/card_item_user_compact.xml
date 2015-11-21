@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
@@ -21,18 +20,17 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<de.vanita5.twittnuker.view.ColorLabelFrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorLabelFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_content"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
-	android:paddingBottom="@dimen/element_spacing_small"
-	android:paddingLeft="@dimen/element_spacing_normal"
-	android:paddingRight="@dimen/element_spacing_normal"
-	android:paddingTop="@dimen/element_spacing_small"
-	tools:context=".adapter.ParcelableUsersAdapter">
+    android:paddingBottom="@dimen/element_spacing_small"
+    android:paddingLeft="@dimen/element_spacing_normal"
+    android:paddingRight="@dimen/element_spacing_normal"
+    android:paddingTop="@dimen/element_spacing_small"
+    tools:context=".adapter.ParcelableUsersAdapter">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -54,7 +52,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginEnd="@dimen/element_spacing_normal"
             android:layout_marginRight="@dimen/element_spacing_normal"
-            android:contentDescription="@string/profile_image"/>
+            android:contentDescription="@string/profile_image" />
 
         <ImageView
             android:id="@+id/profile_type"
@@ -67,7 +65,7 @@
             android:layout_marginEnd="@dimen/element_spacing_minus_normal"
             android:layout_marginRight="@dimen/element_spacing_minus_normal"
             android:scaleType="centerInside"
-            tools:ignore="ContentDescription"/>
+            tools:ignore="ContentDescription" />
 
         <FrameLayout
             android:id="@+id/name_frame"
@@ -87,7 +85,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <de.vanita5.twittnuker.view.HandleSpanClickTextView
+                <de.vanita5.twittnuker.view.TimelineContentTextView
                     android:id="@+id/name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -95,9 +93,9 @@
                     android:singleLine="true"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="?android:attr/textColorPrimary"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
-                <de.vanita5.twittnuker.view.HandleSpanClickTextView
+                <de.vanita5.twittnuker.view.TimelineContentTextView
                     android:id="@+id/screen_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -105,7 +103,7 @@
                     android:paddingRight="4dp"
                     android:singleLine="true"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="?android:attr/textColorSecondary"/>
+                    android:textColor="?android:attr/textColorSecondary" />
             </LinearLayout>
         </FrameLayout>
 
@@ -118,7 +116,7 @@
             android:layout_below="@+id/name_frame"
             android:paddingTop="@dimen/element_spacing_small"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary"/>
+            android:textColor="?android:attr/textColorSecondary" />
 
         <de.vanita5.twittnuker.view.themed.ThemedTextView
             android:id="@+id/location"
@@ -132,7 +130,7 @@
             android:drawableStart="@drawable/ic_indicator_location"
             android:paddingTop="@dimen/element_spacing_small"
             android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <de.vanita5.twittnuker.view.themed.ThemedTextView
             android:id="@+id/url"
@@ -146,7 +144,7 @@
             android:drawableStart="@drawable/ic_indicator_web"
             android:paddingTop="@dimen/element_spacing_small"
             android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceSmall"/>
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -166,7 +164,7 @@
                 android:drawablePadding="@dimen/element_spacing_small"
                 android:drawableStart="@drawable/ic_indicator_twitter"
                 android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <de.vanita5.twittnuker.view.themed.ThemedTextView
                 android:id="@+id/followers_count"
@@ -177,7 +175,7 @@
                 android:drawablePadding="@dimen/element_spacing_small"
                 android:drawableStart="@drawable/ic_indicator_followers"
                 android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <de.vanita5.twittnuker.view.themed.ThemedTextView
                 android:id="@+id/friends_count"
@@ -188,7 +186,7 @@
                 android:drawablePadding="@dimen/element_spacing_small"
                 android:drawableStart="@drawable/ic_indicator_following"
                 android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
     </RelativeLayout>
 

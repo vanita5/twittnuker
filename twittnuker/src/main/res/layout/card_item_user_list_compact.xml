@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
@@ -21,22 +20,21 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<de.vanita5.twittnuker.view.ColorLabelFrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorLabelFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_content"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
     android:paddingBottom="@dimen/element_spacing_small"
     android:paddingLeft="@dimen/element_spacing_normal"
     android:paddingRight="@dimen/element_spacing_normal"
     android:paddingTop="@dimen/element_spacing_small"
-	tools:context=".adapter.ParcelableUsersAdapter">
+    tools:context=".adapter.ParcelableUsersAdapter">
 
     <RelativeLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:paddingBottom="@dimen/element_spacing_normal"
         android:paddingEnd="@dimen/item_menu_card_padding_compact"
         android:paddingLeft="@dimen/element_spacing_normal"
@@ -55,7 +53,7 @@
             android:layout_marginEnd="@dimen/element_spacing_normal"
             android:layout_marginRight="@dimen/element_spacing_normal"
             android:contentDescription="@string/profile_image"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter" />
 
 
         <LinearLayout
@@ -72,7 +70,7 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <de.vanita5.twittnuker.view.HandleSpanClickTextView
+            <de.vanita5.twittnuker.view.TimelineContentTextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -82,7 +80,7 @@
                 android:textStyle="bold"
                 tools:text="List" />
 
-            <de.vanita5.twittnuker.view.HandleSpanClickTextView
+            <de.vanita5.twittnuker.view.TimelineContentTextView
                 android:id="@+id/created_by"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,7 +99,7 @@
             android:layout_below="@id/name_container"
             android:paddingTop="@dimen/element_spacing_small"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:attr/textColorSecondary"/>
+            android:textColor="?android:attr/textColorSecondary" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -121,7 +119,7 @@
                 android:drawablePadding="4dp"
                 android:drawableStart="@drawable/ic_indicator_following"
                 android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <de.vanita5.twittnuker.view.themed.ThemedTextView
                 android:id="@+id/subscribers_count"
@@ -132,7 +130,7 @@
                 android:drawablePadding="4dp"
                 android:drawableStart="@drawable/ic_indicator_followers"
                 android:singleLine="true"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
     </RelativeLayout>
 
