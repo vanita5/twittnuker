@@ -30,10 +30,11 @@ import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.activity.support.ThemedFragmentActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
-import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.adapter.BaseArrayAdapter;
+import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
+import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
-import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
+import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.BaseFragment;
@@ -86,7 +87,9 @@ public interface GeneralComponent {
 
     void inject(AccountsAdapter object);
 
-    void inject(UserHashtagAutoCompleteAdapter object);
+    void inject(ComposeAutoCompleteAdapter object);
+
+    void inject(UserAutoCompleteAdapter object);
 
     void inject(AccountsSpinnerAdapter object);
 

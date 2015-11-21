@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
-import de.vanita5.twittnuker.view.ComposeMaterialEditText;
+import de.vanita5.twittnuker.view.ComposeEditText;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
@@ -124,7 +124,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         view.findViewById(R.id.action_buttons).setVisibility(View.GONE);
         view.findViewById(R.id.item_content).setFocusable(false);
         view.findViewById(R.id.comment_container).setVisibility(status.user_is_protected ? View.GONE : View.VISIBLE);
-        final ComposeMaterialEditText mEditComment = (ComposeMaterialEditText) view.findViewById(R.id.edit_comment);
+        final ComposeEditText mEditComment = (ComposeEditText) view.findViewById(R.id.edit_comment);
         mEditComment.setAccountId(status.account_id);
 
         final boolean sendByEnter = mPreferences.getBoolean(KEY_QUICK_SEND);

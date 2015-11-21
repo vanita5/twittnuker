@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <de.vanita5.twittnuker.view.ComposeMaterialEditText
+            <de.vanita5.twittnuker.view.ComposeEditText
                 android:id="@+id/edit_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                 android:visibility="visible">
 
                 <requestFocus />
-            </de.vanita5.twittnuker.view.ComposeMaterialEditText>
+            </de.vanita5.twittnuker.view.ComposeEditText>
 
         <de.vanita5.twittnuker.view.StatusTextCountView
             android:id="@+id/comment_text_count"

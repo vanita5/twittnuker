@@ -35,7 +35,7 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
+import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -45,7 +45,7 @@ public class AddUserListMemberDialogFragment extends BaseSupportDialogFragment i
 
     public static final String FRAGMENT_TAG = "add_user_list_member";
     private AutoCompleteTextView mEditText;
-    private UserHashtagAutoCompleteAdapter mUserAutoCompleteAdapter;
+    private ComposeAutoCompleteAdapter mUserAutoCompleteAdapter;
 
     @Override
     public void onClick(final DialogInterface dialog, final int which) {
@@ -74,7 +74,7 @@ public class AddUserListMemberDialogFragment extends BaseSupportDialogFragment i
         if (savedInstanceState != null) {
             mEditText.setText(savedInstanceState.getCharSequence(EXTRA_TEXT));
         }
-        mUserAutoCompleteAdapter = new UserHashtagAutoCompleteAdapter(wrapped);
+        mUserAutoCompleteAdapter = new ComposeAutoCompleteAdapter(wrapped);
         final Bundle args = getArguments();
         mUserAutoCompleteAdapter.setAccountId(args.getLong(EXTRA_ACCOUNT_ID));
         mEditText.setAdapter(mUserAutoCompleteAdapter);

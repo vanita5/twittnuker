@@ -62,8 +62,8 @@ import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
+import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter;
-import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
 import de.vanita5.twittnuker.fragment.support.AbsContentListViewFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -295,7 +295,7 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
                 if (auto_complete_type == AUTO_COMPLETE_TYPE_SOURCES) {
                     mUserAutoCompleteAdapter = new SourceAutoCompleteAdapter(activity);
                 } else {
-                    final UserHashtagAutoCompleteAdapter adapter = new UserHashtagAutoCompleteAdapter(activity);
+                    final ComposeAutoCompleteAdapter adapter = new ComposeAutoCompleteAdapter(activity);
                     adapter.setAccountId(Utils.getDefaultAccountId(activity));
                     mUserAutoCompleteAdapter = adapter;
                 }

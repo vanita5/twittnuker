@@ -41,7 +41,7 @@ import android.widget.ListView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
-import de.vanita5.twittnuker.adapter.UserHashtagAutoCompleteAdapter;
+import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
@@ -172,7 +172,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
                 getUserLists(mScreenName);
             }
         }
-        final UserHashtagAutoCompleteAdapter adapter = new UserHashtagAutoCompleteAdapter(this);
+        final UserAutoCompleteAdapter adapter = new UserAutoCompleteAdapter(this);
         adapter.setAccountId(getAccountId());
         mEditScreenName.setAdapter(adapter);
         mEditScreenName.setText(mScreenName);
