@@ -39,6 +39,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.support.IntentSupport;
 
 import java.util.List;
 
@@ -123,6 +124,7 @@ public class TwitterLinkHandlerActivity extends Activity implements Constants {
             }
             final String packageName = mPreferences.getString(KEY_FALLBACK_TWITTER_LINK_HANDLER, null);
             final Intent fallbackIntent = new Intent(Intent.ACTION_VIEW, uri);
+            IntentSupport.setSelector(intent, new Intent(Intent.ACTION_VIEW).addCategory(IntentSupport.CATEGORY_APP_BROWSER));
             fallbackIntent.setPackage(packageName);
             if (TextUtils.isEmpty(packageName) || packageManager.queryIntentActivities(fallbackIntent, 0).isEmpty()) {
                 final Intent pickIntent = new Intent(INTENT_ACTION_PICK_ACTIVITY);
