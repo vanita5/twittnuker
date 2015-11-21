@@ -20,16 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view;
+package android.support.v7.widget;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.support.v7.widget.ActionMenuPresenter;
-import android.support.v7.widget.ActionMenuView;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ImageView;
 
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -38,15 +37,15 @@ public class TwidereToolbar extends Toolbar {
 
     private int mItemColor;
 
-	public TwidereToolbar(Context context) {
+    public TwidereToolbar(Context context) {
         super(context);
-	}
+    }
 
-	public TwidereToolbar(Context context, AttributeSet attrs) {
+    public TwidereToolbar(Context context, AttributeSet attrs) {
         super(context, attrs);
-	}
+    }
 
-	public TwidereToolbar(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TwidereToolbar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -55,15 +54,23 @@ public class TwidereToolbar extends Toolbar {
         final Menu menu = super.getMenu();
         ThemeUtils.setActionBarOverflowColor(this, mItemColor);
         final ActionMenuView menuView = (ActionMenuView) Utils.findFieldOfTypes(this, Toolbar.class,
-				ActionMenuView.class);
+                ActionMenuView.class);
         if (menuView != null) {
             final ActionMenuPresenter presenter = (ActionMenuPresenter) Utils.findFieldOfTypes(menuView,
                     ActionMenuView.class, ActionMenuPresenter.class);
             if (presenter != null) {
-                ThemeUtils.setActionBarOverflowColor(presenter, mItemColor);
+                setActionBarOverflowColor(presenter, mItemColor);
             }
         }
         return menu;
+    }
+
+    public static void setActionBarOverflowColor(ActionMenuPresenter presenter, int itemColor) {
+        if (presenter == null) return;
+        final View view = (View) Utils.findFieldOfTypes(presenter, ActionMenuPresenter.class,
+                ActionMenuView.ActionMenuChildView.class, View.class);
+        if (!(view instanceof ImageView)) return;
+        ((ImageView) view).setColorFilter(itemColor, PorterDuff.Mode.SRC_ATOP);
     }
 
     @Override
@@ -77,5 +84,5 @@ public class TwidereToolbar extends Toolbar {
     public void setItemColor(int itemColor) {
         mItemColor = itemColor;
         setNavigationIcon(getNavigationIcon());
-	}
+    }
 }

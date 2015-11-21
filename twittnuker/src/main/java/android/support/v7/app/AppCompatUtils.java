@@ -20,14 +20,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package android.support.v7.internal.view;
+package android.support.v7.app;
 
-import android.support.v7.view.ActionMode;
+import android.support.v7.widget.DecorToolbar;
+import android.support.v7.widget.Toolbar;
 
-public class SupportActionModeWrapperTrojan {
+import de.vanita5.twittnuker.util.Utils;
 
-	public static ActionMode getWrappedObject(SupportActionModeWrapper wrapper) {
-		return wrapper.mWrappedObject;
-	}
+public class AppCompatUtils {
+
+    public static Toolbar findToolbarForActionBar(ActionBar actionBar) {
+        if (actionBar instanceof ToolbarActionBar) {
+            final Object decorToolbar = Utils.findFieldOfTypes(actionBar, ToolbarActionBar.class, DecorToolbar.class);
+            if (decorToolbar instanceof DecorToolbar) {
+                return (Toolbar) ((DecorToolbar) decorToolbar).getViewGroup();
+            }
+        }
+        return null;
+    }
 
 }

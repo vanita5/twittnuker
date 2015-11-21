@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.v7.internal.widget.ActionBarContainer;
+import android.support.v7.widget.ActionBarContainer;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;

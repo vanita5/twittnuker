@@ -62,7 +62,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.internal.widget.ActionBarContainer;
+import android.support.v7.widget.ActionBarContainer;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -146,7 +146,8 @@ import de.vanita5.twittnuker.view.ProfileBannerImageView;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
-import de.vanita5.twittnuker.view.TwidereToolbar;
+
+import android.support.v7.widget.TwidereToolbar;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import java.util.Calendar;
