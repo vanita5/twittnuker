@@ -46,11 +46,10 @@ import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionBarContainer;
 import android.support.v7.widget.ActionBarContextView;
 import android.support.v7.widget.ActionBarOverlayLayout;
-import android.support.v7.widget.ContentFrameLayout;
 import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.ContentFrameLayout;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
+import android.support.v7.widget.TwidereToolbar;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -64,7 +63,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.Constants;
@@ -73,12 +71,9 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.preference.ThemeBackgroundPreference;
-import de.vanita5.twittnuker.text.ParagraphSpacingSpan;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
-
-import android.support.v7.widget.TwidereToolbar;
 
 import java.lang.reflect.Field;
 
@@ -96,7 +91,7 @@ public class ThemeUtils implements Constants {
             android.R.attr.activityCloseExitAnimation};
 
     private ThemeUtils() {
-        throw new AssertionError();
+        throw new AssertionError("ThemeUtils should never be instantiated");
     }
 
 
@@ -141,22 +136,6 @@ public class ThemeUtils implements Constants {
                 applyColorFilterToMenuIcon(item.getSubMenu(), popupColor, popupColor, highlightColor, mode, excludedGroups);
             }
         }
-    }
-
-    public static void applyParagraphSpacing(TextView textView, float multiplier) {
-        final SpannableStringBuilder builder = SpannableStringBuilder.valueOf(textView.getText());
-        int prevLineBreak, currLineBreak = 0;
-        for (int i = 0, j = builder.length(); i < j; i++) {
-            if (builder.charAt(i) == '\n') {
-                prevLineBreak = currLineBreak;
-                currLineBreak = i;
-                if (currLineBreak > 0) {
-                    builder.setSpan(new ParagraphSpacingSpan(multiplier), prevLineBreak, currLineBreak,
-                            Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-                }
-            }
-        }
-        textView.setText(builder);
     }
 
     public static void applySupportActionModeColor(final android.support.v7.view.ActionMode modeCompat,
@@ -232,8 +211,14 @@ public class ThemeUtils implements Constants {
 
     @NonNull
     public static Drawable getActionBarBackground(final Context context, final int themeRes,
-                                                  final int actionBarColor, final String backgroundOption,
+                                                  int actionBarColor, final String backgroundOption,
                                                   final boolean outlineEnabled) {
+        if (!isDarkTheme(themeRes)) {
+        } else if (isSolidBackground(backgroundOption)) {
+            actionBarColor = Color.BLACK;
+        } else {
+            actionBarColor = context.getResources().getColor(R.color.background_color_action_bar_dark);
+        }
         return ActionBarColorDrawable.create(actionBarColor, outlineEnabled);
     }
 
@@ -748,15 +733,6 @@ public class ThemeUtils implements Constants {
         return d;
     }
 
-    public static Drawable getWindowContentOverlay(final Context context) {
-        final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.windowContentOverlay});
-        try {
-            return a.getDrawable(0);
-        } finally {
-            a.recycle();
-        }
-    }
-
     public static Drawable getWindowContentOverlay(final Context context, int themeRes) {
         @SuppressWarnings("ConstantConditions")
         final TypedArray a = context.obtainStyledAttributes(null, new int[]{android.R.attr.windowContentOverlay}, 0, themeRes);
@@ -1134,6 +1110,15 @@ public class ThemeUtils implements Constants {
         final ActionBarContextThemeWrapper actionBarContext = new ActionBarContextThemeWrapper(base, actionBarThemeId);
         actionBarContext.getTheme().setTo(actionBarTheme);
         return actionBarContext;
+    }
+
+    public static int getActionBarColor(Context context, int actionBarColor, int themeResId, String backgroundOption) {
+        if (!isDarkTheme(themeResId)) {
+            return actionBarColor;
+        } else if (isSolidBackground(backgroundOption)) {
+            return Color.BLACK;
+        }
+        return ContextCompat.getColor(context, R.color.background_color_action_bar_dark);
     }
 
     public static boolean isDarkTheme(final String name) {

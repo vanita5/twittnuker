@@ -67,7 +67,6 @@ import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
@@ -120,7 +119,7 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
         setHasOptionsMenu(true);
         mResolver = getContentResolver();
         final View view = getView();
-        if (view == null) throw new AssertionError();
+        assert view != null;
         final Context context = view.getContext();
         mAdapter = new CustomTabsAdapter(context);
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);

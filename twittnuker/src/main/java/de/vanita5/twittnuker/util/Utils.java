@@ -234,7 +234,6 @@ import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
-import de.vanita5.twittnuker.util.support.IntentSupport;
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView;
@@ -3391,7 +3390,7 @@ public final class Utils implements Constants {
     public static void showErrorMessage(final Context context, final CharSequence action,
                                         final CharSequence message, final boolean longMessage) {
         if (context == null) return;
-        showErrorMessage(context, getErrorMessage(context, message), longMessage);
+        showErrorMessage(context, getErrorMessage(context, action, message), longMessage);
     }
 
     public static void showErrorMessage(final Context context, final CharSequence action,
