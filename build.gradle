@@ -1,12 +1,15 @@
+import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.LibraryPlugin
+
 apply plugin: 'com.github.ben-manes.versions'
 
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
         mavenCentral()
         jcenter()
         maven { url 'https://plugins.gradle.org/m2/' }
     }
-
     dependencies {
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.11.3'
         classpath 'com.android.tools.build:gradle:1.5.0'
@@ -15,6 +18,8 @@ buildscript {
             // should be excluded to avoid conflict
             exclude group: 'xerces'
         }
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
     }
 }
 
@@ -22,12 +27,14 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url "https://jitpack.io" }
+        maven { url 'https://jitpack.io' }
     }
+
 }
 
 subprojects {
-    plugins.withId('com.android.library') {
+
+    plugins.withType(LibraryPlugin) {
         android {
             compileSdkVersion 23
             buildToolsVersion '23.0.1'
@@ -35,7 +42,6 @@ subprojects {
             lintOptions {
                 abortOnError false
                 lintConfig rootProject.file('lint.xml')
-
             }
 
             packagingOptions {
@@ -50,7 +56,9 @@ subprojects {
             }
         }
     }
-    plugins.withId('com.android.application') {
+
+    plugins.withType(AppPlugin) {
+
         android {
             compileSdkVersion 23
             buildToolsVersion '23.0.1'
@@ -58,8 +66,8 @@ subprojects {
             lintOptions {
                 abortOnError false
                 lintConfig rootProject.file('lint.xml')
-
             }
+
             packagingOptions {
                 exclude 'META-INF/DEPENDENCIES'
                 exclude 'META-INF/LICENSE'
@@ -72,4 +80,12 @@ subprojects {
             }
         }
     }
+}
+
+task clean(type: Delete) {
+    delete(rootProject.buildDir)
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.9'
 }
