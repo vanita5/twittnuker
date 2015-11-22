@@ -34,6 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IDsImplMapper extends JsonMapper<IDsImpl> {
+
+    public static final IDsImplMapper INSTANCE = new IDsImplMapper();
+
     @SuppressWarnings("TryWithIdenticalCatches")
     @Override
     public IDsImpl parse(JsonParser jsonParser) throws IOException {

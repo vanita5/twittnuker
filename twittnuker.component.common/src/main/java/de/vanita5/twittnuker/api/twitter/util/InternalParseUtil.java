@@ -23,52 +23,53 @@
 package de.vanita5.twittnuker.api.twitter.util;
 
 import org.mariotaku.restfu.http.RestHttpResponse;
+
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
 
 /**
  * A tiny parse utility class.
- * 
+ *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
 public final class InternalParseUtil {
 
-	private InternalParseUtil() {
-		// should never be instantiated
-		throw new AssertionError();
-	}
+    private InternalParseUtil() {
+        // should never be instantiated
+        throw new AssertionError("This class should never be instantiated");
+    }
 
     public static int toAccessLevel(final RestHttpResponse res) {
-		if (null == res) return -1;
+        if (null == res) return -1;
         final String xAccessLevel = res.getHeader("X-Access-Level");
-		int accessLevel;
-		if (null == xAccessLevel) {
-			accessLevel = TwitterResponse.NONE;
-		} else {
-			// https://dev.twitter.com/pages/application-permission-model-faq#how-do-we-know-what-the-access-level-of-a-user-token-is
-			switch (xAccessLevel.length()) {
-			// “read” (Read-only)
-				case 4:
-					accessLevel = TwitterResponse.READ;
-					break;
-				case 10:
-					// “read-write” (Read & Write)
-					accessLevel = TwitterResponse.READ_WRITE;
-					break;
-				case 25:
-					// “read-write-directmessages” (Read, Write, & Direct
-					// Message)
-					accessLevel = TwitterResponse.READ_WRITE_DIRECTMESSAGES;
-					break;
-				case 26:
-					// “read-write-privatemessages” (Read, Write, & Direct
-					// Message)
-					accessLevel = TwitterResponse.READ_WRITE_DIRECTMESSAGES;
-					break;
-				default:
-					accessLevel = TwitterResponse.NONE;
-					// unknown access level;
-			}
-		}
-		return accessLevel;
-	}
+        int accessLevel;
+        if (null == xAccessLevel) {
+            accessLevel = TwitterResponse.NONE;
+        } else {
+            // https://dev.twitter.com/pages/application-permission-model-faq#how-do-we-know-what-the-access-level-of-a-user-token-is
+            switch (xAccessLevel.length()) {
+                // “read” (Read-only)
+                case 4:
+                    accessLevel = TwitterResponse.READ;
+                    break;
+                case 10:
+                    // “read-write” (Read & Write)
+                    accessLevel = TwitterResponse.READ_WRITE;
+                    break;
+                case 25:
+                    // “read-write-directmessages” (Read, Write, & Direct
+                    // Message)
+                    accessLevel = TwitterResponse.READ_WRITE_DIRECTMESSAGES;
+                    break;
+                case 26:
+                    // “read-write-privatemessages” (Read, Write, & Direct
+                    // Message)
+                    accessLevel = TwitterResponse.READ_WRITE_DIRECTMESSAGES;
+                    break;
+                default:
+                    accessLevel = TwitterResponse.NONE;
+                    // unknown access level;
+            }
+        }
+        return accessLevel;
+    }
 }

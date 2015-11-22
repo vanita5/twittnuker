@@ -470,7 +470,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             } else {
                 te = TwitterConverter.parseTwitterException(response);
             }
-            te.setResponse(response);
+            te.setHttpResponse(response);
             return te;
         }
     }

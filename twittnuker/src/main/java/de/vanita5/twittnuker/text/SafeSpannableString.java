@@ -24,18 +24,20 @@ package de.vanita5.twittnuker.text;
 
 import android.text.SpannableString;
 
+import de.vanita5.twittnuker.util.CheckUtils;
+
 public class SafeSpannableString extends SpannableString {
 
-	public SafeSpannableString(CharSequence source) {
-		super(source);
-	}
+    public SafeSpannableString(CharSequence source) {
+        super(source);
+    }
 
-	@Override
-	public void setSpan(Object what, int start, int end, int flags) {
-		if (start < 0 || end < 0) {
-			// Silently ignore
-			return;
-		}
-		super.setSpan(what, start, end, flags);
-	}
+    @Override
+    public void setSpan(Object what, int start, int end, int flags) {
+        if (!CheckUtils.checkRange(this, start, end)) {
+            // Silently ignore
+            return;
+        }
+        super.setSpan(what, start, end, flags);
+    }
 }

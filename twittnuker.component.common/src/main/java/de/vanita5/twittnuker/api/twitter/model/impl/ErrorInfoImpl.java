@@ -33,18 +33,23 @@ import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
 @JsonObject
 public class ErrorInfoImpl implements ErrorInfo {
 
-	@JsonField(name = "code")
-	int code;
-	@JsonField(name = "message")
-	String message;
+    @JsonField(name = "code")
+    int code;
+    @JsonField(name = "message")
+    String message;
 
-	@Override
-	public int getCode() {
-		return code;
-	}
+    @Override
+    public int getCode() {
+        return code;
+    }
 
-	@Override
-	public String getMessage() {
-		return message;
-	}
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    @Override
+    public String getRequest() {
+        return null;
+    }
 }

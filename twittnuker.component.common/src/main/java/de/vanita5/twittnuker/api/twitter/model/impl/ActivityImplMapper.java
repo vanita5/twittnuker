@@ -28,15 +28,18 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
-import java.io.IOException;
-import java.text.ParseException;
-
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 public class ActivityImplMapper extends JsonMapper<ActivityImpl> {
+
+    public static final ActivityImplMapper INSTANCE = new ActivityImplMapper();
+
     @SuppressWarnings("TryWithIdenticalCatches")
     @Override
     public ActivityImpl parse(JsonParser jsonParser) throws IOException {

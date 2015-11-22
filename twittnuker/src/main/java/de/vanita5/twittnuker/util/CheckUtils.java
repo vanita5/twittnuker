@@ -20,22 +20,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.util;
 
-
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
-
-import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
+import android.support.annotation.Nullable;
 
 /**
- * Created by mariotaku on 15/5/7.
+ * Common tool to check strings, objects etc.
  */
-@Implementation(ErrorInfoImpl.class)
-public interface ErrorInfo {
+public class CheckUtils {
+    public static boolean checkRange(@Nullable final CharSequence text, int start, int end) {
+        if (text == null) return false;
 
-    int getCode();
+        if (end < start) {
+            return false;
+        }
 
-    String getMessage();
+        int len = text.length();
 
-    String getRequest();
+        if (start > len || end > len) {
+            return false;
+        }
+
+        if (start < 0 || end < 0) {
+            return false;
+        }
+        return true;
+    }
 }
