@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'androidsvgdrawable'
-apply from: rootProject.file('global.gradle')
 
 android {
     defaultConfig {

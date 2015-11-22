@@ -21,7 +21,6 @@
  */
 
 apply plugin: 'com.android.application'
-apply from: rootProject.file('global.gradle')
 
 android {
     defaultConfig {
