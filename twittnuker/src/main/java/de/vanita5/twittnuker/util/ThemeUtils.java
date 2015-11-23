@@ -65,6 +65,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.lang.reflect.Field;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -74,8 +77,6 @@ import de.vanita5.twittnuker.preference.ThemeBackgroundPreference;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
-
-import java.lang.reflect.Field;
 
 public class ThemeUtils implements Constants {
 
@@ -159,7 +160,7 @@ public class ThemeUtils implements Constants {
         if (!(contextView instanceof ActionBarContextView)) return;
         setActionBarContextViewBackground((ActionBarContextView) contextView, themeRes,
                 actionBarColor, backgroundOption, outlineEnabled);
-        }
+    }
 
     public static void setActionBarContextViewBackground(@NonNull ActionBarContextView contextView,
                                                          int themeRes, int actionBarColor,
@@ -733,6 +734,15 @@ public class ThemeUtils implements Constants {
         return d;
     }
 
+    public static Drawable getWindowContentOverlay(final Context context) {
+        final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.windowContentOverlay});
+        try {
+            return a.getDrawable(0);
+        } finally {
+            a.recycle();
+        }
+    }
+
     public static Drawable getWindowContentOverlay(final Context context, int themeRes) {
         @SuppressWarnings("ConstantConditions")
         final TypedArray a = context.obtainStyledAttributes(null, new int[]{android.R.attr.windowContentOverlay}, 0, themeRes);
@@ -826,7 +836,7 @@ public class ThemeUtils implements Constants {
     }
 
     public static void overrideActivityCloseAnimation(final Activity activity) {
-        TypedArray a = activity.obtainStyledAttributes(new int[] { android.R.attr.windowAnimationStyle });
+        TypedArray a = activity.obtainStyledAttributes(new int[]{android.R.attr.windowAnimationStyle});
         final int windowAnimationStyleResId = a.getResourceId(0, 0);
         a.recycle();
         // Now retrieve the resource ids of the actual animations used in the
@@ -841,7 +851,7 @@ public class ThemeUtils implements Constants {
 
     public static void overrideActivityOpenAnimation(final Activity activity) {
 
-        TypedArray a = activity.obtainStyledAttributes(new int[] { android.R.attr.windowAnimationStyle });
+        TypedArray a = activity.obtainStyledAttributes(new int[]{android.R.attr.windowAnimationStyle});
         final int windowAnimationStyleResId = a.getResourceId(0, 0);
         a.recycle();
         // Now retrieve the resource ids of the actual animations used in the

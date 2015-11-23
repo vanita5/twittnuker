@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:title="@string/theme">
+    android:title="@string/theme">
 
-	<PreferenceCategory
-		android:key="cat_theme_preview"
+    <PreferenceCategory
+        android:key="cat_theme_preview"
         android:order="11"
         android:title="@string/preview">
-		<de.vanita5.twittnuker.preference.ThemePreviewPreference
-            android:key="theme_preview"/>
-	</PreferenceCategory>
+        <de.vanita5.twittnuker.preference.ThemePreviewPreference android:key="theme_preview" />
+    </PreferenceCategory>
 
-	<de.vanita5.twittnuker.preference.DarkLightThemeTogglePreference
+    <de.vanita5.twittnuker.preference.DarkLightThemeTogglePreference
+        android:key="theme"
         android:order="21"
-		android:key="theme"
         android:title="@string/dark_theme">
         <extra
             android:name="notify_change"
             android:value="true" />
         <extra
             android:name="restart_activity"
-            android:value="true"/>
+            android:value="true" />
     </de.vanita5.twittnuker.preference.DarkLightThemeTogglePreference>
 
     <de.vanita5.twittnuker.preference.ColorPickerPreference
@@ -34,7 +32,7 @@
             android:value="true" />
         <extra
             android:name="restart_activity"
-            android:value="true"/>
+            android:value="true" />
     </de.vanita5.twittnuker.preference.ColorPickerPreference>
 
     <de.vanita5.twittnuker.preference.ColorPickerPreference
@@ -47,11 +45,11 @@
             android:value="true" />
         <extra
             android:name="restart_activity"
-            android:value="true"/>
+            android:value="true" />
     </de.vanita5.twittnuker.preference.ColorPickerPreference>
 
     <de.vanita5.twittnuker.preference.ThemeBackgroundPreference
-		android:defaultValue="default"
+        android:defaultValue="default"
         android:order="25"
         android:title="@string/background">
         <extra
@@ -59,7 +57,7 @@
             android:value="true" />
         <extra
             android:name="restart_activity"
-            android:value="true"/>
+            android:value="true" />
     </de.vanita5.twittnuker.preference.ThemeBackgroundPreference>
 
 </PreferenceScreen>
