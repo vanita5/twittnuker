@@ -37,7 +37,7 @@ import android.support.annotation.NonNull;
 
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
-import com.squareup.okhttp.internal.Network;
+import com.squareup.okhttp.Dns;
 
 import org.acra.annotation.ReportsCrashes;
 import de.vanita5.twittnuker.BuildConfig;
@@ -55,7 +55,7 @@ import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache;
 import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
-import de.vanita5.twittnuker.util.net.TwidereNetwork;
+import de.vanita5.twittnuker.util.net.TwidereDns;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,7 +74,6 @@ public class TwittnukerApplication extends Application implements Constants,
     private SharedPreferences mPreferences;
     private DiskCache mDiskCache, mFullDiskCache;
     private SQLiteOpenHelper mSQLiteOpenHelper;
-    private Network mNetwork;
     private SQLiteDatabase mDatabase;
 
     private ApplicationModule mApplicationModule;
@@ -97,11 +96,6 @@ public class TwittnukerApplication extends Application implements Constants,
 
     public Handler getHandler() {
         return mHandler;
-    }
-
-    public Network getNetwork() {
-        if (mNetwork != null) return mNetwork;
-        return mNetwork = new TwidereNetwork(this);
     }
 
     public void initKeyboardShortcuts() {

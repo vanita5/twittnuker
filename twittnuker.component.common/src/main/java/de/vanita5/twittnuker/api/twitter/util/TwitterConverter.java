@@ -33,6 +33,7 @@ import org.mariotaku.restfu.Utils;
 import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.RestHttpResponse;
 import org.mariotaku.restfu.http.mime.TypedData;
+
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
@@ -88,65 +89,65 @@ public class TwitterConverter implements Converter {
         try {
             return LoganSquareWrapper.parseList(stream, elementCls);
         } catch (JsonParseException e) {
-            throw new TwitterException("Malformed JSON Data", resp);
+            throw new TwitterException("Malformed JSON Data", e, resp);
         }
     }
 
-	@Override
+    @Override
     public Object convert(RestHttpResponse response, Type type) throws Exception {
-		final TypedData body = response.getBody();
+        final TypedData body = response.getBody();
         if (!response.isSuccessful()) {
             throw parseOrThrow(response, body.stream(), TwitterException.class);
         }
         final ContentType contentType = body.contentType();
-		final InputStream stream = body.stream();
+        final InputStream stream = body.stream();
         try {
-			if (type instanceof Class<?>) {
-				final Class<?> cls = (Class<?>) type;
+            if (type instanceof Class<?>) {
+                final Class<?> cls = (Class<?>) type;
                 final Class<?> wrapperCls = LoganSquareWrapper.getWrapperClass(cls);
-				if (wrapperCls != null) {
-					final TwitterModelWrapper<?> wrapper = (TwitterModelWrapper<?>) parseOrThrow(response, stream, wrapperCls);
-					wrapper.processResponseHeader(response);
-					return wrapper.getWrapped(null);
-				} else if (OAuthToken.class.isAssignableFrom(cls)) {
-					final ByteArrayOutputStream os = new ByteArrayOutputStream();
-					body.writeTo(os);
-					Charset charset = contentType != null ? contentType.getCharset() : null;
-					if (charset == null) {
-						charset = Charset.defaultCharset();
-					}
-					try {
-						return new OAuthToken(os.toString(charset.name()), charset);
-					} catch (ParseException e) {
-						throw new IOException(e);
-					}
+                if (wrapperCls != null) {
+                    final TwitterModelWrapper<?> wrapper = (TwitterModelWrapper<?>) parseOrThrow(response, stream, wrapperCls);
+                    wrapper.processResponseHeader(response);
+                    return wrapper.getWrapped(null);
+                } else if (OAuthToken.class.isAssignableFrom(cls)) {
+                    final ByteArrayOutputStream os = new ByteArrayOutputStream();
+                    body.writeTo(os);
+                    Charset charset = contentType != null ? contentType.getCharset() : null;
+                    if (charset == null) {
+                        charset = Charset.defaultCharset();
+                    }
+                    try {
+                        return new OAuthToken(os.toString(charset.name()), charset);
+                    } catch (ParseException e) {
+                        throw new IOException(e);
+                    }
                 } else if (ResponseCode.class.isAssignableFrom(cls)) {
                     return new ResponseCode(response);
-				}
-				final Object object = parseOrThrow(response, stream, cls);
-				checkResponse(cls, object, response);
-				if (object instanceof TwitterResponseImpl) {
-					((TwitterResponseImpl) object).processResponseHeader(response);
-				}
-				return object;
-			} else if (type instanceof ParameterizedType) {
-				final Type rawType = ((ParameterizedType) type).getRawType();
-				if (rawType instanceof Class<?>) {
-					final Class<?> rawClass = (Class<?>) rawType;
+                }
+                final Object object = parseOrThrow(response, stream, cls);
+                checkResponse(cls, object, response);
+                if (object instanceof TwitterResponseImpl) {
+                    ((TwitterResponseImpl) object).processResponseHeader(response);
+                }
+                return object;
+            } else if (type instanceof ParameterizedType) {
+                final Type rawType = ((ParameterizedType) type).getRawType();
+                if (rawType instanceof Class<?>) {
+                    final Class<?> rawClass = (Class<?>) rawType;
                     final Class<?> wrapperCls = LoganSquareWrapper.getWrapperClass(rawClass);
-					if (wrapperCls != null) {
-						final TwitterModelWrapper<?> wrapper = (TwitterModelWrapper<?>) parseOrThrow(response, stream, wrapperCls);
-						wrapper.processResponseHeader(response);
-						return wrapper.getWrapped(((ParameterizedType) type).getActualTypeArguments());
-					} else if (ResponseList.class.isAssignableFrom(rawClass)) {
-						final Type elementType = ((ParameterizedType) type).getActualTypeArguments()[0];
-						final ResponseListImpl<?> responseList = new ResponseListImpl<>(parseListOrThrow(response, stream, (Class<?>) elementType));
-						responseList.processResponseHeader(response);
-						return responseList;
-					}
-				}
-			}
-			throw new UnsupportedTypeException(type);
+                    if (wrapperCls != null) {
+                        final TwitterModelWrapper<?> wrapper = (TwitterModelWrapper<?>) parseOrThrow(response, stream, wrapperCls);
+                        wrapper.processResponseHeader(response);
+                        return wrapper.getWrapped(((ParameterizedType) type).getActualTypeArguments());
+                    } else if (ResponseList.class.isAssignableFrom(rawClass)) {
+                        final Type elementType = ((ParameterizedType) type).getActualTypeArguments()[0];
+                        final ResponseListImpl<?> responseList = new ResponseListImpl<>(parseListOrThrow(response, stream, (Class<?>) elementType));
+                        responseList.processResponseHeader(response);
+                        return responseList;
+                    }
+                }
+            }
+            throw new UnsupportedTypeException(type);
         } finally {
             Utils.closeSilently(stream);
         }
@@ -194,5 +195,5 @@ public class TwitterConverter implements Converter {
         public UnsupportedTypeException(Type type) {
             super("Unsupported type " + type);
         }
-	}
+    }
 }

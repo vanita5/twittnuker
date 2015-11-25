@@ -27,11 +27,10 @@ import android.support.annotation.NonNull;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
 
 import java.util.Date;
-
-import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 
 /**
  * Created by mariotaku on 15/5/7.
@@ -39,49 +38,49 @@ import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 @JsonObject
 public class SavedSearchImpl extends TwitterResponseImpl implements SavedSearch {
 
-	@Override
-	public int getId() {
-		return id;
-	}
+    @Override
+    public long getId() {
+        return id;
+    }
 
-	@Override
-	public Date getCreatedAt() {
-		return createdAt;
-	}
+    @Override
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public int getPosition() {
-		return position;
-	}
+    @Override
+    public int getPosition() {
+        return position;
+    }
 
-	@Override
-	public String getQuery() {
-		return query;
-	}
+    @Override
+    public String getQuery() {
+        return query;
+    }
 
-	@JsonField(name = "id")
-	int id;
+    @JsonField(name = "id")
+    long id;
 
-	@JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
-	Date createdAt;
+    @JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
+    Date createdAt;
 
-	@JsonField(name = "name")
-	String name;
+    @JsonField(name = "name")
+    String name;
 
-	@JsonField(name = "position")
-	int position;
+    @JsonField(name = "position")
+    int position;
 
-	@JsonField(name = "query")
-	String query;
+    @JsonField(name = "query")
+    String query;
 
-	@Override
-	public int compareTo(@NonNull SavedSearch another) {
-		return id - another.getId();
-	}
+    @Override
+    public int compareTo(@NonNull SavedSearch another) {
+        return (int) (id - another.getId());
+    }
 
 }

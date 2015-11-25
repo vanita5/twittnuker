@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.api.twitter.model;
 
 import org.mariotaku.library.logansquare.extension.annotation.Implementation;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.SavedSearchImpl;
-
 import java.util.Date;
+
+import de.vanita5.twittnuker.api.twitter.model.impl.SavedSearchImpl;
 
 /**
  * A data interface representing a Saved Search
@@ -38,7 +38,7 @@ import java.util.Date;
 public interface SavedSearch extends Comparable<SavedSearch>, TwitterResponse {
     Date getCreatedAt();
 
-    int getId();
+    long getId();
 
     String getName();
 

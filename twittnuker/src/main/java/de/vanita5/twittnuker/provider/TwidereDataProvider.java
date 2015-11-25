@@ -57,7 +57,7 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.okhttp.internal.Network;
+import com.squareup.okhttp.Dns;
 import com.squareup.otto.Bus;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -160,7 +160,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     @Inject
     SharedPreferencesWrapper mPreferences;
     @Inject
-    Network mNetwork;
+    Dns mNetwork;
     @Inject
     Bus mBus;
     @Inject
@@ -975,7 +975,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     private Cursor getDNSCursor(final String host) {
         final MatrixCursor c = new MatrixCursor(TwidereDataStore.DNS.MATRIX_COLUMNS);
         try {
-            final InetAddress[] addresses = mNetwork.resolveInetAddresses(host);
+            final List<InetAddress> addresses = mNetwork.lookup(host);
             for (InetAddress address : addresses) {
                 c.addRow(new String[]{host, address.getHostAddress()});
             }
