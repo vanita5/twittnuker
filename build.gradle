@@ -1,3 +1,5 @@
+import com.android.builder.signing.DefaultSigningConfig;
+
 apply plugin: 'com.github.ben-manes.versions'
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
@@ -32,6 +34,7 @@ allprojects {
 
 subprojects {
     afterEvaluate { project ->
+
         if (project.hasProperty('android')) {
             android {
                 compileSdkVersion 23
@@ -52,13 +55,17 @@ subprojects {
                     exclude 'META-INF/notice.txt'
                     exclude 'META-INF/ASL2.0'
                 }
+
+//                if (android.hasProperty('buildTypes') && project.plugins.hasPlugin('com.android.application')) {
+//                    android.buildTypes.each { buildType ->
+//                        setSigningConfig(signingConfigs.maybeCreate(buildType.name))
+//                        loadSigningConfig(signingConfig, rootProject.file('signing.properties'))
+//                    }
+//                }
             }
         }
 
-        if (project.plugins.hasPlugin('com.android.application')) {
-            android {
-            }
-        }
+
     }
 
 }
@@ -69,4 +76,13 @@ task clean(type: Delete) {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.9'
+}
+
+def loadSigningConfig(DefaultSigningConfig cfg, File file) {
+    Properties signingProp = new Properties()
+    signingProp.load(file.newDataInputStream())
+    cfg.setStoreFile(new File((String) signingProp.get('storeFile')))
+    cfg.setStorePassword((String) signingProp.get('storePassword'))
+    cfg.setKeyAlias((String) signingProp.get('keyAlias'))
+    cfg.setKeyPassword((String) signingProp.get('keyPassword'))
 }
