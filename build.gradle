@@ -56,12 +56,6 @@ subprojects {
                     exclude 'META-INF/ASL2.0'
                 }
 
-//                if (android.hasProperty('buildTypes') && project.plugins.hasPlugin('com.android.application')) {
-//                    android.buildTypes.each { buildType ->
-//                        setSigningConfig(signingConfigs.maybeCreate(buildType.name))
-//                        loadSigningConfig(signingConfig, rootProject.file('signing.properties'))
-//                    }
-//                }
             }
         }
 
