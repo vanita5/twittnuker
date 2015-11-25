@@ -106,4 +106,5 @@ public interface GeneralComponent {
     void inject(BaseFiltersFragment.FilteredUsersFragment.FilterUsersListAdapter object);
 
     void inject(AccountsDashboardFragment.OptionItemsAdapter object);
+
 }

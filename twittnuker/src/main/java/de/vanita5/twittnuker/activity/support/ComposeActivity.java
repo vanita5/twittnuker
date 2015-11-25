@@ -37,6 +37,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.location.Criteria;
@@ -65,6 +66,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ItemDecoration;
 import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.Spanned;
@@ -88,7 +90,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,8 +100,8 @@ import com.github.johnpersano.supertoasts.SuperToast.OnDismissListener;
 import com.nostra13.universalimageloader.utils.IoUtils;
 import com.twitter.Extractor;
 
-import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
@@ -123,7 +124,6 @@ import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
-import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -138,6 +138,7 @@ import de.vanita5.twittnuker.view.BadgeView;
 import de.vanita5.twittnuker.view.ComposeEditText;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.StatusTextCountView;
+import de.vanita5.twittnuker.view.helper.SimpleItemTouchHelperCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -171,7 +172,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private SupportMenuInflater mMenuInflater;
 
     // Views
-    private GridView mMediaPreviewGrid;
+    private RecyclerView mAttachedMediaPreview;
     private ActionMenuView mMenuBar;
     private ComposeEditText mEditText;
     private View mSendView;
@@ -203,6 +204,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private SetProgressVisibleRunnable mSetProgressVisibleRunnable;
     private boolean mFragmentResumed;
     private int mKeyMetaState;
+    private ItemTouchHelper mItemTouchHelper;
 
     @Override
     public int getThemeColor() {
@@ -482,7 +484,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     public void onContentChanged() {
         super.onContentChanged();
         mEditText = (ComposeEditText) findViewById(R.id.edit_text);
-        mMediaPreviewGrid = (GridView) findViewById(R.id.media_thumbnail_preview);
+        mAttachedMediaPreview = (RecyclerView) findViewById(R.id.attached_media_preview);
         mMenuBar = (ActionMenuView) findViewById(R.id.menu_bar);
         mSendView = findViewById(R.id.send);
         mSendTextCountView = (StatusTextCountView) mSendView.findViewById(R.id.status_text_count);
@@ -507,7 +509,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     public void removeAllMedia(final List<ParcelableMediaUpdate> list) {
         mMediaPreviewAdapter.removeAll(list);
-        updateMediaPreview();
     }
 
     public void saveToDrafts() {
@@ -579,8 +580,26 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         mAccountSelector.setAdapter(mAccountsAdapter);
         mAccountsAdapter.setAccounts(ParcelableCredentials.getCredentialsArray(this, false, false));
 
-        mMediaPreviewAdapter = new MediaPreviewAdapter(this);
-        mMediaPreviewGrid.setAdapter(mMediaPreviewAdapter);
+
+        mMediaPreviewAdapter = new MediaPreviewAdapter(this, new SimpleItemTouchHelperCallback.OnStartDragListener() {
+            @Override
+            public void onStartDrag(ViewHolder viewHolder) {
+                mItemTouchHelper.startDrag(viewHolder);
+            }
+        });
+        mItemTouchHelper = new ItemTouchHelper(new AttachedMediaItemTouchHelperCallback(mMediaPreviewAdapter));
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mAttachedMediaPreview.setLayoutManager(layoutManager);
+        mAttachedMediaPreview.setAdapter(mMediaPreviewAdapter);
+        mItemTouchHelper.attachToRecyclerView(mAttachedMediaPreview);
+        final int previewGridSpacing = getResources().getDimensionPixelSize(R.dimen.element_spacing_small);
+        mAttachedMediaPreview.addItemDecoration(new ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, State state) {
+                outRect.left = outRect.right = previewGridSpacing;
+            }
+        });
 
         final Intent intent = getIntent();
 
@@ -633,10 +652,11 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         mSendView.setOnLongClickListener(this);
         setMenu();
         updateLocationState();
-        updateMediaPreview();
         notifyAccountSelectionChanged();
 
         mTextChanged = false;
+
+        updateAttachedMediaView();
     }
 
     @Override
@@ -748,17 +768,23 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     private void addMedia(final ParcelableMediaUpdate media) {
         mMediaPreviewAdapter.add(media);
-        updateMediaPreview();
+        updateAttachedMediaView();
     }
+
 
     private void addMedia(final List<ParcelableMediaUpdate> media) {
         mMediaPreviewAdapter.addAll(media);
-        updateMediaPreview();
+        updateAttachedMediaView();
     }
 
     private void clearMedia() {
         mMediaPreviewAdapter.clear();
-        updateMediaPreview();
+        updateAttachedMediaView();
+    }
+
+    private void updateAttachedMediaView() {
+        mAttachedMediaPreview.setVisibility(hasMedia() ? View.VISIBLE : View.GONE);
+        setMenu();
     }
 
     private Uri createTempImageUri() {
@@ -878,7 +904,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         if (user == null || user.id <= 0) return false;
         final String my_screen_name = Utils.getAccountScreenName(this, user.account_id);
         if (TextUtils.isEmpty(my_screen_name)) return false;
-        mEditText.setText("@" + user.screen_name + " ");
+        mEditText.setText(String.format("@%s ", user.screen_name));
         final int selection_end = mEditText.length();
         mEditText.setSelection(selection_end);
         mAccountsAdapter.setSelectedAccountIds(user.account_id);
@@ -939,7 +965,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     }
 
     private boolean hasMedia() {
-        return !mMediaPreviewAdapter.isEmpty();
+        return mMediaPreviewAdapter.getItemCount() > 0;
     }
 
     private boolean isQuote() {
@@ -1083,30 +1109,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
     }
 
-    private static class SetProgressVisibleRunnable implements Runnable {
-
-        private final ComposeActivity activity;
-        private final boolean visible;
-
-        SetProgressVisibleRunnable(ComposeActivity activity, boolean visible) {
-            this.activity = activity;
-            this.visible = visible;
-        }
-
-        @Override
-        public void run() {
-            final FragmentManager fm = activity.getSupportFragmentManager();
-            final Fragment f = fm.findFragmentByTag(DISCARD_STATUS_DIALOG_FRAGMENT_TAG);
-            if (!visible && f instanceof DialogFragment) {
-                ((DialogFragment) f).dismiss();
-            } else if (visible) {
-                SupportProgressDialogFragment df = new SupportProgressDialogFragment();
-                df.show(fm, DISCARD_STATUS_DIALOG_FRAGMENT_TAG);
-                df.setCancelable(false);
-            }
-        }
-    }
-
     private void setRecentLocation(ParcelableLocation location) {
         if (location != null) {
             mLocationText.setText(location.getHumanReadableString(3));
@@ -1188,13 +1190,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
     }
 
-    private void updateMediaPreview() {
-        final int count = mMediaPreviewAdapter.getCount();
-        final Resources res = getResources();
-        final int maxColumns = res.getInteger(R.integer.grid_column_image_preview);
-        mMediaPreviewGrid.setNumColumns(MathUtils.clamp(count, maxColumns, 1));
-    }
-
     private void updateStatus() {
         if (isFinishing()) return;
         final boolean hasMedia = hasMedia();
@@ -1251,6 +1246,30 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 new String[]{FAKE_IMAGE_LINK}, textOrig) : textOrig + " " + FAKE_IMAGE_LINK : textOrig;
         final int validatedCount = text != null ? mValidator.getTweetLength(text) : 0;
         mSendTextCountView.setTextCount(validatedCount);
+    }
+
+    private static class SetProgressVisibleRunnable implements Runnable {
+
+        private final ComposeActivity activity;
+        private final boolean visible;
+
+        SetProgressVisibleRunnable(ComposeActivity activity, boolean visible) {
+            this.activity = activity;
+            this.visible = visible;
+        }
+
+        @Override
+        public void run() {
+            final FragmentManager fm = activity.getSupportFragmentManager();
+            final Fragment f = fm.findFragmentByTag(DISCARD_STATUS_DIALOG_FRAGMENT_TAG);
+            if (!visible && f instanceof DialogFragment) {
+                ((DialogFragment) f).dismiss();
+            } else if (visible) {
+                SupportProgressDialogFragment df = new SupportProgressDialogFragment();
+                df.show(fm, DISCARD_STATUS_DIALOG_FRAGMENT_TAG);
+                df.setCancelable(false);
+            }
+        }
     }
 
     static class AccountIconViewHolder extends ViewHolder implements OnClickListener {
@@ -1490,7 +1509,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
             if (mMedia == null) return false;
             try {
                 for (final ParcelableMediaUpdate media : mMedia) {
-                    if (media.uri == null) continue;
                     final Uri uri = Uri.parse(media.uri);
                     if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
                         final File file = new File(uri.getPath());
@@ -1532,7 +1550,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         @Override
         protected Object doInBackground(final Object... params) {
             for (final ParcelableMediaUpdate media : mActivity.getMediaList()) {
-                if (media.uri == null) continue;
                 final Uri uri = Uri.parse(media.uri);
                 if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
                     final File file = new File(uri.getPath());
@@ -1556,28 +1573,77 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
     }
 
-    private static class MediaPreviewAdapter extends DraggableArrayAdapter<ParcelableMediaUpdate> {
+    public static class MediaPreviewAdapter extends ArrayRecyclerAdapter<ParcelableMediaUpdate, MediaPreviewViewHolder>
+            implements SimpleItemTouchHelperCallback.ItemTouchHelperAdapter {
 
-        private final MediaLoaderWrapper mImageLoader;
+        private final LayoutInflater mInflater;
 
-        public MediaPreviewAdapter(final ComposeActivity activity) {
-            super(activity, R.layout.grid_item_media_editor);
-            mImageLoader = activity.mImageLoader;
+        private final SimpleItemTouchHelperCallback.OnStartDragListener mDragStartListener;
+
+        public MediaPreviewAdapter(final ComposeActivity activity, SimpleItemTouchHelperCallback.OnStartDragListener dragStartListener) {
+            super(activity);
+            mInflater = LayoutInflater.from(activity);
+            mDragStartListener = dragStartListener;
+        }
+
+        public void onStartDrag(ViewHolder viewHolder) {
+            mDragStartListener.onStartDrag(viewHolder);
         }
 
         public List<ParcelableMediaUpdate> getAsList() {
-            return Collections.unmodifiableList(getObjects());
+            return Collections.unmodifiableList(mData);
+        }
+
+
+        @Override
+        public void onBindViewHolder(MediaPreviewViewHolder holder, int position, ParcelableMediaUpdate item) {
+            final ParcelableMediaUpdate media = getItem(position);
+            holder.displayMedia(this, media);
         }
 
         @Override
-        public View getView(final int position, final View convertView, final ViewGroup parent) {
-            final View view = super.getView(position, convertView, parent);
-            final ParcelableMediaUpdate media = getItem(position);
-            final ImageView image = (ImageView) view.findViewById(R.id.image);
-            mImageLoader.displayPreviewImage(media.uri, image);
-            return view;
+        public MediaPreviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final View view = mInflater.inflate(R.layout.grid_item_media_editor, parent, false);
+            return new MediaPreviewViewHolder(this, view);
         }
 
+        @Override
+        public void onItemDismiss(int position) {
+            mData.remove(position);
+            notifyItemRemoved(position);
+
+            ((ComposeActivity) getContext()).updateAttachedMediaView();
+        }
+
+        @Override
+        public boolean onItemMove(int fromPosition, int toPosition) {
+            Collections.swap(mData, fromPosition, toPosition);
+            notifyItemMoved(fromPosition, toPosition);
+            return true;
+        }
+    }
+
+    static class MediaPreviewViewHolder extends ViewHolder implements OnLongClickListener {
+
+        private final ImageView image;
+        private final MediaPreviewAdapter adapter;
+
+        public MediaPreviewViewHolder(MediaPreviewAdapter adapter, View itemView) {
+            super(itemView);
+            this.adapter = adapter;
+            itemView.setOnLongClickListener(this);
+            image = (ImageView) itemView.findViewById(R.id.image);
+        }
+
+        public void displayMedia(MediaPreviewAdapter adapter, ParcelableMediaUpdate media) {
+            adapter.getMediaLoader().displayPreviewImage(media.uri, image);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            adapter.onStartDrag(this);
+            return true;
+        }
 
     }
 
@@ -1633,4 +1699,47 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
     }
 
+    public static class AttachedMediaItemTouchHelperCallback extends SimpleItemTouchHelperCallback {
+        public static final float ALPHA_FULL = 1.0f;
+
+        public AttachedMediaItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
+            super(adapter);
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return true;
+        }
+
+        @Override
+        public boolean isItemViewSwipeEnabled() {
+            return true;
+        }
+
+        @Override
+        public int getMovementFlags(RecyclerView recyclerView, ViewHolder viewHolder) {
+            // Set movement flags based on the layout manager
+            final int dragFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+            final int swipeFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            return makeMovementFlags(dragFlags, swipeFlags);
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                // Fade out the view as it is swiped out of the parent's bounds
+                final float alpha = ALPHA_FULL - Math.abs(dY) / (float) viewHolder.itemView.getHeight();
+                viewHolder.itemView.setAlpha(alpha);
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            } else {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        }
+
+        @Override
+        public void clearView(RecyclerView recyclerView, ViewHolder viewHolder) {
+            super.clearView(recyclerView, viewHolder);
+            viewHolder.itemView.setAlpha(ALPHA_FULL);
+        }
+    }
 }
