@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
@@ -49,50 +50,50 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
     public OnLinkClickHandler(@NonNull final Context context, @Nullable final MultiSelectManager manager) {
         this.context = context;
         this.manager = manager;
-	}
+    }
 
-	@Override
+    @Override
     public void onLinkClick(final String link, final String orig, final long accountId, long extraId, final int type,
                             final boolean sensitive, int start, int end) {
-		if (manager != null && manager.isActive()) return;
+        if (manager != null && manager.isActive()) return;
 
-		switch (type) {
-			case TwidereLinkify.LINK_TYPE_MENTION: {
+        switch (type) {
+            case TwidereLinkify.LINK_TYPE_MENTION: {
                 openUserProfile(context, accountId, -1, link, null);
-				break;
-			}
-			case TwidereLinkify.LINK_TYPE_HASHTAG: {
+                break;
+            }
+            case TwidereLinkify.LINK_TYPE_HASHTAG: {
                 openTweetSearch(context, accountId, "#" + link);
-				break;
-			}
-			case TwidereLinkify.LINK_TYPE_LINK: {
-				if (MediaPreviewUtils.isLinkSupported(link)) {
+                break;
+            }
+            case TwidereLinkify.LINK_TYPE_LINK: {
+                if (MediaPreviewUtils.isLinkSupported(link)) {
                     openMedia(accountId, extraId, sensitive, link, start, end);
-				} else {
-					openLink(link);
-				}
-				break;
-			}
-			case TwidereLinkify.LINK_TYPE_LIST: {
-				final String[] mentionList = link.split("/");
-				if (mentionList.length != 2) {
-					break;
-				}
+                } else {
+                    openLink(link);
+                }
+                break;
+            }
+            case TwidereLinkify.LINK_TYPE_LIST: {
+                final String[] mentionList = link.split("/");
+                if (mentionList.length != 2) {
+                    break;
+                }
                 openUserListDetails(context, accountId, -1, -1, mentionList[0], mentionList[1]);
-				break;
-			}
-			case TwidereLinkify.LINK_TYPE_CASHTAG: {
+                break;
+            }
+            case TwidereLinkify.LINK_TYPE_CASHTAG: {
                 openTweetSearch(context, accountId, link);
-				break;
-			}
-			case TwidereLinkify.LINK_TYPE_USER_ID: {
-                openUserProfile(context, accountId, ParseUtils.parseLong(link), null, null);
-				break;
-			}
-			case TwidereLinkify.LINK_TYPE_STATUS: {
-                openStatus(context, accountId, ParseUtils.parseLong(link));
-				break;
-			}
+                break;
+            }
+            case TwidereLinkify.LINK_TYPE_USER_ID: {
+                openUserProfile(context, accountId, NumberUtils.toLong(link, -1), null, null);
+                break;
+            }
+            case TwidereLinkify.LINK_TYPE_STATUS: {
+                openStatus(context, accountId, NumberUtils.toLong(link, -1));
+                break;
+            }
 //			case TwidereLinkify.LINK_TYPE_HOTOTIN: {
 ////				context.setProgressBarIndeterminateVisibility(true); //FIXME
 //				expandHototin(context, link);
@@ -103,28 +104,28 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 //				expandTwitLonger(context, link);
 //				break;
 //			}
-		}
-	}
+        }
+    }
 
     protected boolean isPrivateData() {
         return false;
-	}
+    }
 
     protected void openMedia(long accountId, long extraId, boolean sensitive, String link, int start, int end) {
         final ParcelableMedia[] media = {ParcelableMedia.newImage(link, link)};
         //TODO open media animation
         Bundle options = null;
         Utils.openMedia(context, accountId, sensitive, null, media, options);
-	}
+    }
 
-	protected void openLink(final String link) {
+    protected void openLink(final String link) {
         if (manager != null && manager.isActive()) return;
-		final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try {
             context.startActivity(intent);
         } catch (final ActivityNotFoundException e) {
             // TODO
         }
-	}
+    }
 }

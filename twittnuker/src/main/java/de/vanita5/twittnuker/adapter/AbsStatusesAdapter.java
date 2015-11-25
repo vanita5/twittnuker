@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -305,6 +306,16 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
         if (mShowAccountsColor == showAccountsColor) return;
         mShowAccountsColor = showAccountsColor;
         notifyDataSetChanged();
+    }
+
+
+    @Nullable
+    @Override
+    public ParcelableStatus findStatusById(long accountId, long statusId) {
+        for (int i = 0, j = getStatusesCount(); i < j; i++) {
+            if (accountId == getAccountId(i) && statusId == getStatusId(i)) return getStatus(i);
+        }
+        return null;
     }
 
     protected void bindStatus(IStatusViewHolder holder, int position) {

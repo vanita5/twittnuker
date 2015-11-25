@@ -102,5 +102,4 @@ public abstract class ParcelableActivitiesFragment extends AbsActivitiesFragment
 
     protected abstract String[] getSavedActivitiesFileArgs();
 
-
 }

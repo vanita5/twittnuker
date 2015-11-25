@@ -86,6 +86,7 @@ import android.widget.TextView;
 import com.meizu.flyme.reflect.StatusBarProxy;
 import com.squareup.otto.Subscribe;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
@@ -1283,7 +1284,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 break;
             }
             case TwidereLinkify.LINK_TYPE_STATUS: {
-                Utils.openStatus(getActivity(), accountId, ParseUtils.parseLong(link));
+                Utils.openStatus(getActivity(), accountId, NumberUtils.toLong(link, -1));
                 break;
             }
         }

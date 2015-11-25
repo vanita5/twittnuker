@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
+import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
 public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecyclerViewFragment<AbsActivitiesAdapter<Data>>
         implements LoaderCallbacks<Data>, OnRefreshListener, DrawerCallback, RefreshScrollTopInterface,
@@ -167,6 +168,16 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
 
     protected Object createMessageBusCallback() {
         return new StatusesBusCallback();
+    }
+
+    @Override
+    public void onStatusActionClick(StatusViewHolder holder, int id, int position) {
+
+    }
+
+    @Override
+    public void onStatusMenuClick(StatusViewHolder holder, View menuView, int position) {
+
     }
 
     protected final class StatusesBusCallback {

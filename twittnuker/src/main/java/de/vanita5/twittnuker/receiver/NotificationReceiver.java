@@ -29,10 +29,11 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.StringLongPair;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
+import de.vanita5.twittnuker.util.UriExtraUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
@@ -46,14 +47,22 @@ public class NotificationReceiver extends BroadcastReceiver implements Constants
                 final Uri uri = intent.getData();
                 if (uri == null) return;
                 final String type = uri.getQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE);
-                final long accountId = ParseUtils.parseLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
+                final long def4 = -1;
+                final long accountId = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), def4);
+                final long def3 = -1;
+                final long itemId = NumberUtils.toLong(UriExtraUtils.getExtra(uri, "item_id"), def3);
+                final long def2 = -1;
+                final long itemUserId = NumberUtils.toLong(UriExtraUtils.getExtra(uri, "item_user_id"), def2);
+                final long def1 = -1;
+                final long timestamp = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_TIMESTAMP), def1);
                 final ApplicationModule module = ApplicationModule.get(context);
                 final ReadStateManager manager = module.getReadStateManager();
                 final String paramReadPosition, paramReadPositions;
                 final String tag = getPositionTag(type);
                 if (tag != null && !TextUtils.isEmpty(paramReadPosition = uri.getQueryParameter(QUERY_PARAM_READ_POSITION))) {
+                    final long def = -1;
                     manager.setPosition(Utils.getReadPositionTagWithAccounts(tag, accountId),
-                            ParseUtils.parseLong(paramReadPosition, -1));
+                            NumberUtils.toLong(paramReadPosition, def));
                 } else if (!TextUtils.isEmpty(paramReadPositions = uri.getQueryParameter(QUERY_PARAM_READ_POSITIONS))) {
                     try {
                         final StringLongPair[] pairs = StringLongPair.valuesOf(paramReadPositions);

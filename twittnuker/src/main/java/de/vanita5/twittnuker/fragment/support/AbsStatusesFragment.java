@@ -63,8 +63,6 @@ import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
-import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
-
 public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerViewFragment<AbsStatusesAdapter<Data>>
         implements LoaderCallbacks<Data>, StatusAdapterListener, KeyboardShortcutCallback {
 
@@ -335,7 +333,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         popupMenu.setOnMenuItemClickListener(mOnStatusMenuItemClickListener);
         popupMenu.inflate(R.menu.action_status);
         final ParcelableStatus status = adapter.getStatus(position);
-        setMenuForStatus(adapter.getContext(), mPreferences, popupMenu.getMenu(), status);
+        Utils.setMenuForStatus(adapter.getContext(), mPreferences, popupMenu.getMenu(), status, mTwitterWrapper);
         popupMenu.show();
         mPopupMenu = popupMenu;
         mSelectedStatus = status;

@@ -27,6 +27,8 @@ import android.text.TextUtils;
 
 import com.twitter.Validator;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import de.vanita5.twittnuker.Constants;
 
 public class TwidereValidator implements Constants {
@@ -40,7 +42,7 @@ public class TwidereValidator implements Constants {
         mValidator = new Validator();
         if (prefs != null) {
             final String textLimit = prefs.getString(KEY_STATUS_TEXT_LIMIT, null);
-            mMaxTweetLength = ParseUtils.parseInt(textLimit, Validator.MAX_TWEET_LENGTH);
+            mMaxTweetLength = NumberUtils.toInt(textLimit, Validator.MAX_TWEET_LENGTH);
         } else {
             mMaxTweetLength = Validator.MAX_TWEET_LENGTH;
         }

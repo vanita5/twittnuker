@@ -32,6 +32,8 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.util.Log;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.AccountPreferences;
@@ -47,7 +49,6 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
-import static de.vanita5.twittnuker.util.ParseUtils.parseInt;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
@@ -226,7 +227,7 @@ public class RefreshService extends Service implements Constants {
 
     private long getRefreshInterval() {
         if (mPreferences == null) return 0;
-        final int prefValue = parseInt(mPreferences.getString(KEY_REFRESH_INTERVAL, DEFAULT_REFRESH_INTERVAL));
+        final int prefValue = NumberUtils.toInt(mPreferences.getString(KEY_REFRESH_INTERVAL, DEFAULT_REFRESH_INTERVAL), -1);
         return Math.max(prefValue, 3) * 60 * 1000;
     }
 

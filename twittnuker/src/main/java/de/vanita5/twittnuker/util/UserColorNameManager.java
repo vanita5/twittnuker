@@ -28,6 +28,8 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.support.v4.util.LongSparseArray;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -120,7 +122,8 @@ public class UserColorNameManager implements TwittnukerConstants {
 
         @Override
         public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-            final long userId = ParseUtils.parseLong(key, -1);
+            final long def = -1;
+            final long userId = NumberUtils.toLong(key, def);
             if (mListener != null) {
                 mListener.onUserColorChanged(userId, sharedPreferences.getInt(key, 0));
             }

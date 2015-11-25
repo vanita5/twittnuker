@@ -55,13 +55,13 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
+import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ParseUtils.parseString;
 import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
 
 public class UserListSelectorActivity extends BaseSupportDialogActivity implements OnClickListener, OnItemClickListener {
@@ -91,7 +91,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
     public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.screen_name_confirm: {
-                final String screen_name = parseString(mEditScreenName.getText());
+                final String screen_name = ParseUtils.parseString(mEditScreenName.getText());
                 if (isEmpty(screen_name)) return;
                 searchUser(screen_name);
                 break;
