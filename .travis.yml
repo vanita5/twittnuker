@@ -5,7 +5,7 @@ sudo: false
 env:
   global:
     MALLOC_ARENA_MAX=2
-#    JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
+    JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
     GRADLE_OPTS=-Xmx1024m -Dorg.gradle.parallel=false
 
 jdk:
