@@ -123,7 +123,6 @@ import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
 import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
-import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
 public class HomeActivity extends BaseAppCompatActivity implements OnClickListener, OnPageChangeListener,
         SupportFragmentCallback, OnLongClickListener {
@@ -545,7 +544,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     public boolean onLongClick(final View v) {
         switch (v.getId()) {
             case R.id.actions_button: {
-                showMenuItemToast(v, v.getContentDescription(), true);
+                Utils.showMenuItemToast(v, v.getContentDescription(), true);
                 return true;
             }
         }

@@ -38,6 +38,10 @@ addons:
     packages:
       - p7zip-full
 
+cache:
+  directories:
+    - $HOME/.local/opt
+
 before_script:
   - "echo $JAVA_OPTS"
   - "export JAVA_OPTS=-Xmx2048m"
