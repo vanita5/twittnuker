@@ -3,6 +3,7 @@ language: android
 sudo: false
 
 env:
+  - TRAVIS_BUILD=true
   global:
     MALLOC_ARENA_MAX=2
     JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
