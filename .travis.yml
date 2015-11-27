@@ -5,7 +5,8 @@ sudo: false
 env:
   global:
     MALLOC_ARENA_MAX=2
-    JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
+#    JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
+    GRADLE_OPTS=-Xmx1024m -Dorg.gradle.parallel=false
 
 jdk:
   - oraclejdk8
@@ -42,7 +43,7 @@ before_script:
   - "export JAVA_OPTS=-Xmx2048m"
 
 before_install:
-  - ./scripts/install_android_ndk.sh
+  - ./travis/scripts/install_android_ndk.sh
   - export PATH=$HOME/.local/bin:$PATH
 
-script: ./gradlew build --no-daemon
+script: ./gradlew build --no-daemon --stacktrace
