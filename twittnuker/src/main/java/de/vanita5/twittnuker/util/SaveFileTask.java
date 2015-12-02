@@ -67,7 +67,7 @@ public class SaveFileTask extends AsyncTask<Object, Object, File> implements Con
         final String extension = map.getExtensionFromMimeType(mimeType);
         if (extension == null) return null;
         final File pubDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        final File saveDir = new File(pubDir, "Twidere");
+        final File saveDir = new File(pubDir, "Twittnuker");
         return new SaveFileTask(activity, source, mimeType, saveDir);
     }
 
