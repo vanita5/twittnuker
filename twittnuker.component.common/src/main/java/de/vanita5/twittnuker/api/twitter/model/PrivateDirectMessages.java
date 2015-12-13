@@ -27,14 +27,6 @@ import android.support.annotation.Nullable;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.model.Entities;
-import de.vanita5.twittnuker.api.twitter.model.EntitySupport;
-import de.vanita5.twittnuker.api.twitter.model.HashtagEntity;
-import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
-import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
-import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
-
 import java.util.Map;
 
 @JsonObject
@@ -224,7 +216,13 @@ public class PrivateDirectMessages {
         }
 
         public enum Type {
-            ONE_TO_ONE, GROUP_DM
+            ONE_TO_ONE("one_to_one"), GROUP_DM("group_dm");
+
+            private final String literal;
+
+            Type(String literal) {
+                this.literal = literal;
+            }
         }
 
         @JsonObject
