@@ -32,40 +32,40 @@ import de.vanita5.twittnuker.api.twitter.model.TimeZone;
 @JsonObject
 public class AccountSettingsImpl extends TwitterResponseImpl implements AccountSettings {
 
-	@JsonField(name = "geo_enabled")
-	boolean geoEnabled;
-	@JsonField(name = "trend_location")
-	Location[] trendLocations;
-	@JsonField(name = "language")
-	String language;
-	@JsonField(name = "always_use_https")
-	boolean alwaysUseHttps;
-	@JsonField(name = "time_zone")
-	TimeZone timezone;
+    @JsonField(name = "geo_enabled")
+    boolean geoEnabled;
+    @JsonField(name = "trend_location")
+    LocationImpl[] trendLocations;
+    @JsonField(name = "language")
+    String language;
+    @JsonField(name = "always_use_https")
+    boolean alwaysUseHttps;
+    @JsonField(name = "time_zone")
+    TimeZoneImpl timezone;
 
-	@Override
-	public boolean isAlwaysUseHttps() {
-		return alwaysUseHttps;
-	}
+    @Override
+    public boolean isAlwaysUseHttps() {
+        return alwaysUseHttps;
+    }
 
-	@Override
-	public String getLanguage() {
-		return language;
-	}
+    @Override
+    public String getLanguage() {
+        return language;
+    }
 
-	@Override
-	public TimeZone getTimeZone() {
-		return timezone;
-	}
+    @Override
+    public TimeZone getTimeZone() {
+        return timezone;
+    }
 
-	@Override
-	public Location[] getTrendLocations() {
-		return trendLocations;
-	}
+    @Override
+    public Location[] getTrendLocations() {
+        return trendLocations;
+    }
 
-	@Override
-	public boolean isGeoEnabled() {
-		return geoEnabled;
-	}
+    @Override
+    public boolean isGeoEnabled() {
+        return geoEnabled;
+    }
 
 }

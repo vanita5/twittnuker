@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
 import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
+import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
 import de.vanita5.twittnuker.api.twitter.model.impl.RateLimitStatusJSONImpl;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
@@ -49,7 +50,7 @@ public class TwitterException extends Exception implements TwitterResponse, Http
 
     private static final long serialVersionUID = -2623309261327598087L;
     @JsonField(name = "errors")
-    ErrorInfo[] errors;
+    ErrorInfoImpl[] errors;
     @JsonField(name = "error")
     String errorMessage;
     @JsonField(name = "request")
