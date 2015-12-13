@@ -20,12 +20,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.api.twitter.model.impl.mapper.list;
 
-import org.mariotaku.library.logansquare.extension.annotation.Wrapper;
+import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.api.twitter.model.impl.ResponseListMapper;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.ScheduledStatusesListWrapper;
-
-@Wrapper(ScheduledStatusesListWrapper.class)
-public interface ScheduledStatusesList extends ResponseList<ScheduledStatus> {
+public class SavedSearchResponseListMapper extends ResponseListMapper<SavedSearch> {
+    public SavedSearchResponseListMapper() {
+        super(SavedSearch.class);
+    }
 }

@@ -54,7 +54,7 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.AccountChangedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
-import de.vanita5.twittnuker.util.message.GetStatusesTaskEvent;
+import de.vanita5.twittnuker.util.message.GetActivitiesTaskEvent;
 import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.util.message.StatusRetweetedEvent;
@@ -109,48 +109,7 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
 
     @Override
     protected Object createMessageBusCallback() {
-        return new CursorStatusesBusCallback();
-    }
-
-
-    protected class CursorStatusesBusCallback {
-
-        @Subscribe
-        public void notifyGetStatusesTaskChanged(GetStatusesTaskEvent event) {
-            if (!event.uri.equals(getContentUri())) return;
-            setRefreshing(event.running);
-            if (!event.running) {
-                setLoadMoreIndicatorVisible(false);
-                setRefreshEnabled(true);
-            }
-        }
-
-        @Subscribe
-        public void notifyFavoriteCreated(FavoriteCreatedEvent event) {
-        }
-
-        @Subscribe
-        public void notifyFavoriteDestroyed(FavoriteDestroyedEvent event) {
-        }
-
-        @Subscribe
-        public void notifyStatusDestroyed(StatusDestroyedEvent event) {
-        }
-
-        @Subscribe
-        public void notifyStatusListChanged(StatusListChangedEvent event) {
-            getAdapter().notifyDataSetChanged();
-        }
-
-        @Subscribe
-        public void notifyStatusRetweeted(StatusRetweetedEvent event) {
-        }
-
-        @Subscribe
-        public void notifyAccountChanged(AccountChangedEvent event) {
-
-        }
-
+        return new CursorActivitiesBusCallback();
     }
 
     @Override
@@ -225,7 +184,7 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
             public long[][] doLongOperation(Object o) throws InterruptedException {
                 final long[][] result = new long[3][];
                 result[0] = getAccountIds();
-                result[1] = getOldestStatusIds(result[0]);
+                result[1] = getOldestActivityIds(result[0]);
                 return result;
             }
 
@@ -244,7 +203,6 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
             public long[][] doLongOperation(Object o) throws InterruptedException {
                 final long[][] result = new long[3][];
                 result[0] = getAccountIds();
-                result[2] = getNewestStatusIds(result[0]);
                 return result;
             }
 
@@ -261,7 +219,7 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
         return buildStatusFilterWhereClause(table, null);
     }
 
-    protected long[] getNewestStatusIds(long[] accountIds) {
+    protected long[] getNewestActivityIds(long[] accountIds) {
         return DataStoreUtils.getActivityMaxPositionsFromDatabase(getActivity(), getContentUri(), accountIds);
     }
 
@@ -277,8 +235,8 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
         }
     }
 
-    protected long[] getOldestStatusIds(long[] accountIds) {
-        return DataStoreUtils.getOldestStatusIdsFromDatabase(getActivity(), getContentUri(), accountIds);
+    protected long[] getOldestActivityIds(long[] accountIds) {
+        return DataStoreUtils.getOldestActivityIdsFromDatabase(getActivity(), getContentUri(), accountIds);
     }
 
     protected abstract boolean isFilterEnabled();
@@ -292,4 +250,46 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
     private String getSortOrder() {
         return Activities.DEFAULT_SORT_ORDER;
     }
+
+
+    protected class CursorActivitiesBusCallback {
+
+        @Subscribe
+        public void notifyGetStatusesTaskChanged(GetActivitiesTaskEvent event) {
+            if (!event.uri.equals(getContentUri())) return;
+            setRefreshing(event.running);
+            if (!event.running) {
+                setLoadMoreIndicatorVisible(false);
+                setRefreshEnabled(true);
+            }
+        }
+
+        @Subscribe
+        public void notifyFavoriteCreated(FavoriteCreatedEvent event) {
+        }
+
+        @Subscribe
+        public void notifyFavoriteDestroyed(FavoriteDestroyedEvent event) {
+        }
+
+        @Subscribe
+        public void notifyStatusDestroyed(StatusDestroyedEvent event) {
+        }
+
+        @Subscribe
+        public void notifyStatusListChanged(StatusListChangedEvent event) {
+            getAdapter().notifyDataSetChanged();
+        }
+
+        @Subscribe
+        public void notifyStatusRetweeted(StatusRetweetedEvent event) {
+        }
+
+        @Subscribe
+        public void notifyAccountChanged(AccountChangedEvent event) {
+
+        }
+
+    }
+
 }

@@ -20,41 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
+package de.vanita5.twittnuker.util.message;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
+public class GetActivitiesTaskEvent {
 
-/**
- * Created by mariotaku on 15/5/7.
- */
-@JsonObject
-public abstract class PageableResponseListImpl<T> extends ResponseListImpl<T> implements PageableResponseList<T> {
+    @NonNull
+    public final Uri uri;
+    public final boolean running;
+    public final Exception exception;
 
-    @JsonField(name = "previous_cursor")
-    long previousCursor;
-    @JsonField(name = "next_cursor")
-    long nextCursor;
-
-    @Override
-    public long getNextCursor() {
-        return nextCursor;
-    }
-
-    @Override
-    public long getPreviousCursor() {
-        return previousCursor;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return nextCursor != 0;
-    }
-
-    @Override
-    public boolean hasPrevious() {
-        return previousCursor != 0;
+    public GetActivitiesTaskEvent(@NonNull Uri uri, boolean running, Exception exception) {
+        this.uri = uri;
+        this.running = running;
+        this.exception = exception;
     }
 }

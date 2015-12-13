@@ -22,35 +22,30 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import org.mariotaku.restfu.http.RestHttpResponse;
-import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import java.util.AbstractList;
+import de.vanita5.twittnuker.api.twitter.model.User;
+
+import java.util.ArrayList;
 
 /**
- * Created by mariotaku on 15/5/7.
+ * Created by mariotaku on 15/12/13.
  */
-public abstract class ResponseListImpl<T> extends AbstractList<T> implements ResponseList<T> {
+@JsonObject
+public class PagableUserListImpl extends PageableResponseListImpl<User> {
 
-    private int accessLevel;
-    private RateLimitStatus rateLimitStatus;
-
+    @JsonField(name = "users")
+    ArrayList<User> user;
 
     @Override
-    public final void processResponseHeader(RestHttpResponse resp) {
-        rateLimitStatus = RateLimitStatusJSONImpl.createFromResponseHeader(resp);
-        accessLevel = InternalParseUtil.toAccessLevel(resp);
+    public User get(int location) {
+        return user.get(location);
     }
 
     @Override
-    public final int getAccessLevel() {
-        return accessLevel;
-    }
-
-    @Override
-    public final RateLimitStatus getRateLimitStatus() {
-        return rateLimitStatus;
+    public int size() {
+        if (user == null) return 0;
+        return user.size();
     }
 }

@@ -20,24 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
+package de.vanita5.twittnuker.api.twitter.model.impl.mapper.list;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
+import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.api.twitter.model.impl.ResponseListMapper;
 
-import de.vanita5.twittnuker.api.twitter.model.Relationship;
-
-/**
- * Created by mariotaku on 15/5/7.
- */
-@JsonObject
-public class RelationshipWrapper extends TwitterResponseImpl implements TwitterModelWrapper<Relationship> {
-
-    @JsonField(name = "relationship")
-    RelationshipImpl relationship;
-
-    @Override
-    public Relationship getWrapped(Object extra) {
-        return relationship;
+public class DirectMessageResponseListMapper extends ResponseListMapper<DirectMessage> {
+    public DirectMessageResponseListMapper() {
+        super(DirectMessage.class);
     }
 }

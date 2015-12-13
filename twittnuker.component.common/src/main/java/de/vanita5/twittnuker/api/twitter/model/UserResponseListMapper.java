@@ -20,17 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
+package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.ModelWrapper;
+import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.api.twitter.model.impl.ResponseListMapper;
 
-import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
-
-/**
- * Created by mariotaku on 15/5/7.
- */
-public interface TwitterModelWrapper<T> extends ModelWrapper<T>, TwitterResponse {
-
-    T getWrapped(Object extra);
-
+public class UserResponseListMapper extends ResponseListMapper<User> {
+    public UserResponseListMapper() {
+        super(User.class);
+    }
 }

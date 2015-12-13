@@ -42,6 +42,8 @@ import android.view.View;
 
 import com.squareup.otto.Subscribe;
 
+import java.util.Arrays;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
@@ -322,7 +324,21 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
 
     @Override
     public void onActivityClick(ActivityTitleSummaryViewHolder holder, int position) {
-
+        final ParcelableActivity activity = getAdapter().getActivity(position);
+        if (activity == null) return;
+        switch (activity.action) {
+            case Activity.ACTION_FAVORITE:
+            case Activity.ACTION_FAVORITED_MEDIA_TAGGED:
+            case Activity.ACTION_FAVORITED_MENTION:
+            case Activity.ACTION_FAVORITED_RETWEET:
+            case Activity.ACTION_RETWEET:
+            case Activity.ACTION_RETWEETED_MEDIA_TAGGED:
+            case Activity.ACTION_RETWEETED_MENTION:
+            case Activity.ACTION_RETWEETED_RETWEET: {
+                Utils.openUsers(getActivity(), Arrays.asList(activity.sources));
+                break;
+            }
+        }
     }
 
     @Override

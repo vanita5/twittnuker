@@ -239,7 +239,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String SERVICE_COMMAND_GET_RECEIVED_DIRECT_MESSAGES = "get_received_direct_messages";
 
     String TAB_TYPE_HOME_TIMELINE = "home_timeline";
-    String TAB_TYPE_MENTIONS_TIMELINE = "mentions_timeline";
+    String TAB_TYPE_NOTIFICATIONS_TIMELINE = "notifications_timeline";
     String TAB_TYPE_TRENDS_SUGGESTIONS = "trends_suggestions";
     String TAB_TYPE_DIRECT_MESSAGES = "direct_messages";
     String TAB_TYPE_FAVORITES = "favorites";
@@ -252,7 +252,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
 
     int TAB_CODE_HOME_TIMELINE = 1;
-    int TAB_CODE_MENTIONS_TIMELINE = 2;
+    int TAB_CODE_NOTIFICATIONS_TIMELINE = 2;
     int TAB_CODE_DIRECT_MESSAGES = 4;
 
     int TWITTER_MAX_IMAGE_SIZE = 3145728;

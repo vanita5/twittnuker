@@ -20,41 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
+package de.vanita5.twittnuker.api.twitter.model.impl.mapper.list;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
+import de.vanita5.twittnuker.api.twitter.model.Location;
+import de.vanita5.twittnuker.api.twitter.model.impl.ResponseListMapper;
 
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
-
-/**
- * Created by mariotaku on 15/5/7.
- */
-@JsonObject
-public abstract class PageableResponseListImpl<T> extends ResponseListImpl<T> implements PageableResponseList<T> {
-
-    @JsonField(name = "previous_cursor")
-    long previousCursor;
-    @JsonField(name = "next_cursor")
-    long nextCursor;
-
-    @Override
-    public long getNextCursor() {
-        return nextCursor;
-    }
-
-    @Override
-    public long getPreviousCursor() {
-        return previousCursor;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return nextCursor != 0;
-    }
-
-    @Override
-    public boolean hasPrevious() {
-        return previousCursor != 0;
+public class LocationResponseListMapper extends ResponseListMapper<Location> {
+    public LocationResponseListMapper() {
+        super(Location.class);
     }
 }

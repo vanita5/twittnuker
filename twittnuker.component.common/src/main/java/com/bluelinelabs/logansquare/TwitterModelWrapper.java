@@ -20,41 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
+package com.bluelinelabs.logansquare;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
+import java.lang.reflect.Type;
 
 /**
- * Created by mariotaku on 15/5/7.
+ * Created by mariotaku on 15/12/13.
  */
-@JsonObject
-public abstract class PageableResponseListImpl<T> extends ResponseListImpl<T> implements PageableResponseList<T> {
+public class ParameterizedTypeTrojan {
 
-    @JsonField(name = "previous_cursor")
-    long previousCursor;
-    @JsonField(name = "next_cursor")
-    long nextCursor;
-
-    @Override
-    public long getNextCursor() {
-        return nextCursor;
+    public static <T> ParameterizedType<T> create(Type type) {
+        return new ParameterizedType.ConcreteParameterizedType<>(type);
     }
 
-    @Override
-    public long getPreviousCursor() {
-        return previousCursor;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return nextCursor != 0;
-    }
-
-    @Override
-    public boolean hasPrevious() {
-        return previousCursor != 0;
-    }
 }

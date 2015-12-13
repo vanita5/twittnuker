@@ -40,7 +40,6 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
-import de.vanita5.twittnuker.api.twitter.model.impl.StatusImpl;
 import de.vanita5.twittnuker.common.R;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.util.collection.LongSparseMap;
@@ -210,7 +209,7 @@ public class TwitterContentUtils {
                 // This set shouldn't be null here, add null check to make inspector happy.
                 if (orig == null) continue;
                 for (Status status : orig) {
-                    StatusImpl.setQuotedStatus(status, quoted);
+                    Status.setQuotedStatus(status, quoted);
                 }
             }
         }

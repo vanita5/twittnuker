@@ -71,8 +71,7 @@ public class TwidereLogger extends AbsLogger implements Constants {
     @Override
     protected void initImpl(final Application application) {
         // ACRA sets it self as DefaultUncaughtExceptionHandler, we hijack it to suppress some errors
-        final ACRAConfiguration conf = ACRA.getNewDefaultConfig(application);
-        ACRA.init(application, conf);
+        ACRA.init(application);
         // handler should be ACRA's ErrorReporter now
         final Thread.UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {

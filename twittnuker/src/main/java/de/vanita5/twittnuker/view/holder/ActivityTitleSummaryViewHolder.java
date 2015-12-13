@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.view.ActionIconView;
+import de.vanita5.twittnuker.view.BadgeView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import org.oshkimaadziig.george.androidutils.SpanFormatter;
@@ -60,7 +61,7 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
     private final TextView titleView;
     private final TextView summaryView;
     private final ViewGroup profileImagesContainer;
-    private final TextView profileImageMoreNumber;
+    private final BadgeView profileImageMoreNumber;
     private final ImageView[] profileImageViews;
     private ActivityClickListener activityClickListener;
 
@@ -81,7 +82,7 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
         profileImageViews[2] = (ImageView) itemView.findViewById(R.id.activity_profile_image_2);
         profileImageViews[3] = (ImageView) itemView.findViewById(R.id.activity_profile_image_3);
         profileImageViews[4] = (ImageView) itemView.findViewById(R.id.activity_profile_image_4);
-        profileImageMoreNumber = (TextView) itemView.findViewById(R.id.activity_profile_image_more_number);
+        profileImageMoreNumber = (BadgeView) itemView.findViewById(R.id.activity_profile_image_more_number);
     }
 
     public void displayActivity(ParcelableActivity activity, boolean byFriends) {
@@ -302,10 +303,9 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
             }
         }
         if (statuses.length > profileImageViews.length) {
-            final Context context = adapter.getContext();
             final int moreNumber = statuses.length - profileImageViews.length;
             profileImageMoreNumber.setVisibility(View.VISIBLE);
-            profileImageMoreNumber.setText(context.getString(R.string.and_more, moreNumber));
+            profileImageMoreNumber.setText(String.valueOf(moreNumber));
         } else {
             profileImageMoreNumber.setVisibility(View.GONE);
         }

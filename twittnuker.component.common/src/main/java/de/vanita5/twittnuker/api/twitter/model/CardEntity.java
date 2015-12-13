@@ -23,8 +23,6 @@
 package de.vanita5.twittnuker.api.twitter.model;
 
 import org.mariotaku.library.logansquare.extension.annotation.Implementation;
-import org.mariotaku.library.logansquare.extension.annotation.Wrapper;
-
 import de.vanita5.twittnuker.api.twitter.model.impl.CardEntityImpl;
 
 import java.util.Map;
@@ -45,7 +43,6 @@ public interface CardEntity {
 
     Map<String, BindingValue> getBindingValues();
 
-    @Wrapper(CardEntityImpl.BindingValueWrapper.class)
     interface BindingValue {
 
         String TYPE_STRING = "STRING";

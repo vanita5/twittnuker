@@ -64,6 +64,9 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     @JsonField(name = "action")
     @CursorField(value = Activities.ACTION)
     public int action;
+    @JsonField(name = "raw_action")
+    @CursorField(value = Activities.RAW_ACTION)
+    public String raw_action;
 
     @ParcelableThisPlease
     @JsonField(name = "sources")
@@ -106,6 +109,7 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
         this.account_id = accountId;
         timestamp = activity.getCreatedAt().getTime();
         action = activity.getAction().getActionId();
+        raw_action = activity.getRawAction();
         max_position = activity.getMaxPosition();
         min_position = activity.getMinPosition();
         sources = ParcelableUser.fromUsers(activity.getSources(), accountId);
@@ -126,6 +130,7 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
                 ", max_position=" + max_position +
                 ", min_position=" + min_position +
                 ", action=" + action +
+                ", raw_action='" + raw_action + '\'' +
                 ", sources=" + Arrays.toString(sources) +
                 ", target_users=" + Arrays.toString(target_users) +
                 ", target_statuses=" + Arrays.toString(target_statuses) +

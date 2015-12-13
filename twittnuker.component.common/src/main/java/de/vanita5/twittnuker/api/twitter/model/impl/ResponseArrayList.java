@@ -22,17 +22,20 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import org.mariotaku.restfu.http.RestHttpResponse;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
-import java.util.AbstractList;
+import java.util.ArrayList;
 
 /**
  * Created by mariotaku on 15/5/7.
  */
-public abstract class ResponseListImpl<T> extends AbstractList<T> implements ResponseList<T> {
+@JsonObject
+public class ResponseArrayList<T> extends ArrayList<T> implements ResponseList<T> {
 
     private int accessLevel;
     private RateLimitStatus rateLimitStatus;

@@ -58,9 +58,9 @@ import de.vanita5.twittnuker.fragment.BaseFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.support.ActivitiesAboutMeFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
-import de.vanita5.twittnuker.fragment.support.MentionsTimelineFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.preference.WizardPageHeaderPreference;
@@ -514,8 +514,9 @@ public class SettingsWizardActivity extends Activity implements Constants {
 
         private static final String FRAGMENT_TAG = "initial_settings_dialog";
 
-        private static final String[] DEFAULT_TAB_TYPES = {TAB_TYPE_HOME_TIMELINE, TAB_TYPE_MENTIONS_TIMELINE,
-                TAB_TYPE_DIRECT_MESSAGES, TAB_TYPE_TRENDS_SUGGESTIONS};
+        private static final String[] DEFAULT_TAB_TYPES = {TAB_TYPE_HOME_TIMELINE,
+                TAB_TYPE_NOTIFICATIONS_TIMELINE, TAB_TYPE_DIRECT_MESSAGES,
+                TAB_TYPE_TRENDS_SUGGESTIONS};
 
         private final SettingsWizardActivity mActivity;
 
@@ -583,7 +584,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
         private boolean wasConfigured(final List<SupportTabSpec> tabs) {
             for (final SupportTabSpec spec : tabs) {
                 if (classEquals(spec.cls, HomeTimelineFragment.class)
-                        || classEquals(spec.cls, MentionsTimelineFragment.class)
+                        || classEquals(spec.cls, ActivitiesAboutMeFragment.class)
                         || classEquals(spec.cls, DirectMessagesFragment.class)) return true;
             }
             return false;

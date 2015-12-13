@@ -22,50 +22,128 @@
 
 package de.vanita5.twittnuker.api.twitter.model.impl;
 
-import java.util.ArrayList;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import org.mariotaku.restfu.http.RestHttpResponse;
 import de.vanita5.twittnuker.api.twitter.model.QueryResult;
+import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
+
+import java.util.AbstractList;
+import java.util.ArrayList;
 
 /**
  * Created by mariotaku on 15/5/7.
  */
-public class QueryResultImpl extends ResponseListImpl<Status> implements QueryResult {
+@JsonObject
+public class QueryResultImpl extends AbstractList<Status> implements QueryResult {
 
-	private final QueryResultWrapper.SearchMetadata metadata;
+    @JsonField(name = "previous_cursor")
+    long previousCursor;
+    @JsonField(name = "next_cursor")
+    long nextCursor;
 
-	@Override
-	public double getCompletedIn() {
-		return metadata.completedIn;
-	}
+    @JsonField(name = "search_metadata")
+    SearchMetadata metadata;
 
-	@Override
-	public long getMaxId() {
-		return metadata.maxId;
-	}
+    @JsonField(name = "statuses")
+    ArrayList<Status> statuses;
 
-	@Override
-	public String getQuery() {
-		return metadata.query;
-	}
+    private int accessLevel;
+    private RateLimitStatus rateLimitStatus;
 
-	@Override
-	public int getResultsPerPage() {
-		return metadata.count;
-	}
+    @Override
+    public final void processResponseHeader(RestHttpResponse resp) {
+        rateLimitStatus = RateLimitStatusJSONImpl.createFromResponseHeader(resp);
+        accessLevel = InternalParseUtil.toAccessLevel(resp);
+    }
 
-	@Override
-	public long getSinceId() {
-		return metadata.sinceId;
-	}
+    @Override
+    public final int getAccessLevel() {
+        return accessLevel;
+    }
 
-	@Override
-	public String getWarning() {
-		return metadata.warning;
-	}
+    @Override
+    public final RateLimitStatus getRateLimitStatus() {
+        return rateLimitStatus;
+    }
 
-	public QueryResultImpl(ArrayList<Status> statuses, QueryResultWrapper.SearchMetadata metadata) {
-		addAll(statuses);
-		this.metadata = metadata;
-	}
+    @Override
+    public Status get(int index) {
+        return statuses.get(index);
+    }
+
+    @Override
+    public int size() {
+        return statuses.size();
+    }
+
+    @Override
+    public double getCompletedIn() {
+        return metadata.completedIn;
+    }
+
+    @Override
+    public long getMaxId() {
+        return metadata.maxId;
+    }
+
+    @Override
+    public String getQuery() {
+        return metadata.query;
+    }
+
+    @Override
+    public int getResultsPerPage() {
+        return metadata.count;
+    }
+
+    @Override
+    public long getNextCursor() {
+        return nextCursor;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return nextCursor != 0;
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return previousCursor != 0;
+    }
+
+    @Override
+    public long getPreviousCursor() {
+        return previousCursor;
+    }
+
+    @Override
+    public long getSinceId() {
+        return metadata.sinceId;
+    }
+
+    @Override
+    public String getWarning() {
+        return metadata.warning;
+    }
+
+    @JsonObject
+    public static class SearchMetadata {
+        @JsonField(name = "max_id")
+        long maxId;
+        @JsonField(name = "since_id")
+        long sinceId;
+        @JsonField(name = "count")
+        int count;
+        @JsonField(name = "completed_in")
+        double completedIn;
+        @JsonField(name = "query")
+        String query;
+        @JsonField(name = "warning")
+        String warning;
+    }
+
 }
