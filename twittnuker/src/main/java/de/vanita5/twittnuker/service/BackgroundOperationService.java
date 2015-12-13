@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.DraftItemCursorIndices;
 import de.vanita5.twittnuker.model.MediaUploadResult;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
@@ -225,11 +226,11 @@ public class BackgroundOperationService extends IntentService implements Constan
         final ContentResolver cr = getContentResolver();
         final Cursor c = cr.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.getSQL(), null, null);
         if (c == null) return;
-        final DraftItem.CursorIndices i = new DraftItem.CursorIndices(c);
+        final DraftItemCursorIndices i = new DraftItemCursorIndices(c);
         final DraftItem item;
         try {
             if (!c.moveToFirst()) return;
-            item = new DraftItem(c, i);
+            item = i.newObject(c);
         } finally {
             c.close();
         }
@@ -237,7 +238,7 @@ public class BackgroundOperationService extends IntentService implements Constan
         if (item.action_type == Drafts.ACTION_UPDATE_STATUS || item.action_type <= 0) {
             updateStatuses(new ParcelableStatusUpdate(this, item));
         } else if (item.action_type == Drafts.ACTION_SEND_DIRECT_MESSAGE) {
-            final long recipientId = item.action_extras.optLong(EXTRA_RECIPIENT_ID);
+            final long recipientId = item.action_extras != null ? item.action_extras.optLong(EXTRA_RECIPIENT_ID) : -1;
             if (item.account_ids == null || item.account_ids.length <= 0 || recipientId <= 0) {
                 return;
             }
@@ -452,9 +453,6 @@ public class BackgroundOperationService extends IntentService implements Constan
         if (statusUpdate.accounts.length == 0) return Collections.emptyList();
 
         try {
-//            if (mUseUploader && mUploader == null) throw new UploaderNotFoundException(this);
-//            if (mUseShortener && mShortener == null) throw new ShortenerNotFoundException(this);
-
             if (mUseUploader && mUploader == null) mUseUploader = false;
             if (mUseShortener && mShortener == null) mUseShortener = false;
 

@@ -155,7 +155,7 @@ public class NotificationHelper implements Constants {
 
     private ParcelableStatus getParcelableStatusDummy(NotificationContent notification,
                                                       boolean is_retweet) {
-        ParcelableStatus status = new ParcelableStatus();
+        ParcelableStatus status = new ParcelableStatus(null, notification.getAccountId(), false);
         try {
             status.id = Long.parseLong(notification.getObjectId());
         } catch (NumberFormatException e) {

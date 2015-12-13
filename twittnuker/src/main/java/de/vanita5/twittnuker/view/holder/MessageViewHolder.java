@@ -28,7 +28,7 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.text.Html;
+import android.text.Spanned;
 import android.text.method.ArrowKeyMovementMethod;
 import android.view.View;
 import android.widget.TextView;
@@ -36,7 +36,7 @@ import android.widget.TextView;
 import org.mariotaku.messagebubbleview.library.MessageBubbleView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
-import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
+import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.JsonSerializer;
@@ -81,16 +81,17 @@ public class MessageViewHolder extends ViewHolder implements OnMediaClickListene
         callback = new StatusActionModeCallback(textView, adapter.getContext());
     }
 
-    public void displayMessage(Cursor cursor, CursorIndices indices) {
+    public void displayMessage(Cursor cursor, ParcelableDirectMessageCursorIndices indices) {
         final Context context = adapter.getContext();
         final TwidereLinkify linkify = adapter.getLinkify();
         final MediaLoaderWrapper loader = adapter.getMediaLoader();
 
         final long accountId = cursor.getLong(indices.account_id);
-        final long timestamp = cursor.getLong(indices.message_timestamp);
-        final ParcelableMedia[] media = JsonSerializer.parseArray(cursor.getString(indices.media), ParcelableMedia.class);
-        textView.setText(HtmlSpanBuilder.fromHtml(cursor.getString(indices.text)));
-        linkify.applyAllLinks(textView, accountId, false);
+        final long timestamp = cursor.getLong(indices.timestamp);
+        final ParcelableMedia[] media = JsonSerializer.parseArray(cursor.getString(indices.media),
+                ParcelableMedia.class);
+        final Spanned text = HtmlSpanBuilder.fromHtml(cursor.getString(indices.text_html));
+        textView.setText(linkify.applyAllLinks(text, accountId, false));
         time.setText(Utils.formatToLongTimeString(context, timestamp));
         mediaContainer.setVisibility(media != null && media.length > 0 ? View.VISIBLE : View.GONE);
         mediaContainer.displayMedia(media, loader, accountId, true, this, adapter.getMediaLoadingHandler());

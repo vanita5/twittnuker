@@ -62,11 +62,11 @@ import android.widget.TextView;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.DraftItemCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
@@ -124,10 +124,10 @@ public class DraftsFragment extends BaseSupportFragment implements Constants, Lo
                 if (c == null || c.isClosed()) return false;
                 final SparseBooleanArray checked = mListView.getCheckedItemPositions();
                 final List<DraftItem> list = new ArrayList<>();
-                final DraftItem.CursorIndices indices = new DraftItem.CursorIndices(c);
+                final DraftItemCursorIndices indices = new DraftItemCursorIndices(c);
                 for (int i = 0, j = checked.size(); i < j; i++) {
                     if (checked.valueAt(i) && c.moveToPosition(checked.keyAt(i))) {
-                        list.add(new DraftItem(c, indices));
+                        list.add(indices.newObject(c));
                     }
                 }
                 if (sendDrafts(list)) {
@@ -179,7 +179,7 @@ public class DraftsFragment extends BaseSupportFragment implements Constants, Lo
     public void onItemClick(final AdapterView<?> view, final View child, final int position, final long id) {
         final Cursor c = mAdapter.getCursor();
         if (c == null || c.isClosed() || !c.moveToPosition(position)) return;
-        final DraftItem item = new DraftItem(c, new DraftItem.CursorIndices(c));
+        final DraftItem item = DraftItemCursorIndices.fromCursor(c);
         if (item.action_type == Drafts.ACTION_UPDATE_STATUS || item.action_type <= 0) {
             editDraft(item);
         }

@@ -32,6 +32,7 @@ import android.support.v7.widget.ActionMenuView;
 import android.text.Html;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.InflateException;
@@ -45,6 +46,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
@@ -164,8 +166,8 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
             screenNameView.setText("@" + TWIDERE_PREVIEW_SCREEN_NAME);
 
             if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
-                textView.setText(Html.fromHtml(TWIDERE_PREVIEW_TEXT_HTML));
-                linkify.applyAllLinks(textView, 0, false);
+                final Spanned text = HtmlSpanBuilder.fromHtml(TWIDERE_PREVIEW_TEXT_HTML);
+                textView.setText(linkify.applyAllLinks(text, 0, false));
             } else {
                 textView.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
             }

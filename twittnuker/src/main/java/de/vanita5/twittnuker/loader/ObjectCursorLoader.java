@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.loader.support;
+package de.vanita5.twittnuker.loader;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -29,7 +29,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.LoaderTrojan;
 
-import de.vanita5.twittnuker.model.ObjectCursor;
+import org.mariotaku.library.objectcursor.ObjectCursor;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -137,7 +137,7 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<List<T>> {
      * Starts an asynchronous load of the contacts list data. When the result is ready the callbacks
      * will be called on the UI thread. If a previous load has been completed and is still valid
      * the result may be passed to the callbacks immediately.
-     * <p>
+     * <p/>
      * Must be called from the UI thread
      */
     @Override

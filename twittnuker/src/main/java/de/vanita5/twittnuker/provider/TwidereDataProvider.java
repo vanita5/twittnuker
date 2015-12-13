@@ -82,9 +82,11 @@ import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.DraftItemCursorIndices;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.model.UnreadItem;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
@@ -174,11 +176,14 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
     private boolean mNameFirst;
 
-    private static PendingIntent getMarkReadDeleteIntent(Context context, String type, long accountId, long position) {
-        return getMarkReadDeleteIntent(context, type, accountId, position, -1, -1);
+    private static PendingIntent getMarkReadDeleteIntent(Context context, String type, long accountId,
+                                                         long position, boolean extraUserFollowing) {
+        return getMarkReadDeleteIntent(context, type, accountId, position, -1, -1, extraUserFollowing);
     }
 
-    private static PendingIntent getMarkReadDeleteIntent(Context context, String type, long accountId, long position, long extraId, long extraUserId) {
+    private static PendingIntent getMarkReadDeleteIntent(Context context, String type, long accountId,
+                                                         long position, long extraId, long extraUserId,
+                                                         boolean extraUserFollowing) {
         // Setup delete intent
         final Intent intent = new Intent(context, NotificationReceiver.class);
         intent.setAction(BROADCAST_NOTIFICATION_DELETED);
@@ -193,6 +198,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
         UriExtraUtils.addExtra(linkBuilder, "item_id", extraId);
         UriExtraUtils.addExtra(linkBuilder, "item_user_id", extraUserId);
+        UriExtraUtils.addExtra(linkBuilder, "item_user_following", extraUserFollowing);
         intent.setData(linkBuilder.build());
         return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
@@ -521,11 +527,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final Expression where = Expression.equals(Drafts._ID, draftId);
         final Cursor c = getContentResolver().query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.getSQL(), null, null);
         if (c == null) return -1;
-        final DraftItem.CursorIndices i = new DraftItem.CursorIndices(c);
+        final DraftItemCursorIndices i = new DraftItemCursorIndices(c);
         final DraftItem item;
         try {
             if (!c.moveToFirst()) return -1;
-            item = new DraftItem(c, i);
+            item = i.newObject(c);
         } finally {
             c.close();
         }
@@ -634,8 +640,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     if (segments.size() == 2) {
                         final int def = -1;
                         return getNotificationsCursor(NumberUtils.toInt(segments.get(1), def));
-                    }
-                    else
+                    } else
                         return getNotificationsCursor();
                 }
                 case VIRTUAL_TABLE_ID_UNREAD_COUNTS: {
@@ -643,8 +648,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     if (segments.size() == 2) {
                         final int def = -1;
                         return getUnreadCountsCursor(NumberUtils.toInt(segments.get(1), def));
-                    }
-                    else
+                    } else
                         return getUnreadCountsCursor();
                 }
                 case VIRTUAL_TABLE_ID_UNREAD_COUNTS_BY_TYPE: {
@@ -712,6 +716,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 }
                 case VIRTUAL_TABLE_ID_SUGGESTIONS_SEARCH: {
                     return getSearchSuggestionCursor(uri);
+                }
+                case VIRTUAL_TABLE_ID_EMPTY: {
+                    return new MatrixCursor(projection);
                 }
             }
             if (table == null) return null;
@@ -1165,7 +1172,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setContentText(notificationContent);
             builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
             builder.setContentIntent(getContentIntent(context, AUTHORITY_HOME, accountId));
-            builder.setDeleteIntent(getMarkReadDeleteIntent(context, AUTHORITY_HOME, accountId, statusId));
+            builder.setDeleteIntent(getMarkReadDeleteIntent(context, AUTHORITY_HOME, accountId,
+                    statusId, false));
             builder.setNumber(statusesCount);
             builder.setColor(pref.getNotificationLightColor());
             setNotificationPreferences(builder, pref, pref.getHomeTimelineNotificationType());
@@ -1230,7 +1238,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         if (statusCursor.getCount() == 0 || statusesCount == 0) return;
         final String accountName = Utils.getAccountName(context, accountId);
         final String accountScreenName = Utils.getAccountScreenName(context, accountId);
-        final ParcelableStatus.CursorIndices indices = new ParcelableStatus.CursorIndices(statusCursor);
+        final ParcelableStatusCursorIndices indices = new ParcelableStatusCursorIndices(statusCursor);
 
         final UserColorNameManager manager = mUserColorNameManager;
 
@@ -1241,8 +1249,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
         // Add rich notification and get latest tweet timestamp
         for (int i = 0, j = Math.min(statusCursor.getCount(), 5); statusCursor.moveToPosition(i) && i < j; i++) {
-            final long statusId = statusCursor.getLong(indices.status_id);
+            final long statusId = statusCursor.getLong(indices.id);
             final long userId = statusCursor.getLong(indices.user_id);
+            final boolean userFollowing = statusCursor.getShort(indices.user_is_following) == 1;
             final String text = statusCursor.getString(indices.text_unescaped);
             final NotificationCompat.BigTextStyle style = new NotificationCompat.BigTextStyle();
             builder.setTicker(text);
@@ -1254,10 +1263,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setContentText(text);
             builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
             builder.setContentIntent(getStatusContentIntent(context, AUTHORITY_MENTIONS, accountId,
-                    statusId, userId));
+                    statusId, userId, userFollowing));
             builder.setDeleteIntent(getMarkReadDeleteIntent(context, AUTHORITY_MENTIONS, accountId,
-                    statusId, statusId, userId));
-            builder.setWhen(statusCursor.getLong(indices.status_timestamp));
+                    statusId, statusId, userId, userFollowing));
+            builder.setWhen(statusCursor.getLong(indices.timestamp));
             builder.setStyle(style);
             style.bigText(text);
             style.setSummaryText(mNameFirst ? accountName : accountScreenName);
@@ -1298,6 +1307,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     idxStatusUserId = statusCursor.getColumnIndex(Statuses.USER_ID),
                     idxStatusUserName = statusCursor.getColumnIndex(Statuses.USER_NAME),
                     idxStatusUserScreenName = statusCursor.getColumnIndex(Statuses.USER_SCREEN_NAME),
+                    idxStatusUserFollowing = statusCursor.getColumnIndex(Statuses.IS_FOLLOWING),
                     idxUserName = userCursor.getColumnIndex(Statuses.USER_NAME),
                     idxUserScreenName = userCursor.getColumnIndex(Statuses.USER_SCREEN_NAME),
                     idxUserId = userCursor.getColumnIndex(Statuses.USER_ID);
@@ -1317,6 +1327,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
             // Add rich notification and get latest tweet timestamp
             long when = -1, statusId = -1;
+            boolean following = false;
             final InboxStyle style = new InboxStyle();
             for (int i = 0, j = Math.min(statusCursor.getCount(), 5); statusCursor.moveToPosition(i) && i < j; i++) {
                 if (when == -1) {
@@ -1324,6 +1335,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 }
                 if (statusId == -1) {
                     statusId = statusCursor.getLong(idxStatusId);
+                    following = statusCursor.getShort(idxStatusUserFollowing) == 1;
                 }
                 final SpannableStringBuilder sb = new SpannableStringBuilder();
                 sb.append(
@@ -1348,7 +1360,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setContentText(notificationContent);
             builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
             builder.setContentIntent(getContentIntent(context, AUTHORITY_MENTIONS, accountId));
-            builder.setDeleteIntent(getMarkReadDeleteIntent(context, AUTHORITY_MENTIONS, accountId, statusId));
+            builder.setDeleteIntent(getMarkReadDeleteIntent(context, AUTHORITY_MENTIONS, accountId,
+                    statusId, following));
             builder.setNumber(statusesCount);
             builder.setWhen(when);
             builder.setStyle(style);
@@ -1380,7 +1393,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
     private PendingIntent getStatusContentIntent(Context context, String type, long accountId,
-                                                 long statusId, long userId) {
+                                                 long statusId, long userId, boolean userFollowing) {
         // Setup click intent
         final Intent homeIntent = new Intent(Intent.ACTION_VIEW);
         homeIntent.setPackage(BuildConfig.APPLICATION_ID);
@@ -1391,6 +1404,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         homeLinkBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(statusId));
         UriExtraUtils.addExtra(homeLinkBuilder, "item_id", statusId);
         UriExtraUtils.addExtra(homeLinkBuilder, "item_user_id", userId);
+        UriExtraUtils.addExtra(homeLinkBuilder, "item_user_following", userFollowing);
         homeLinkBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
         homeLinkBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
         homeLinkBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, type);

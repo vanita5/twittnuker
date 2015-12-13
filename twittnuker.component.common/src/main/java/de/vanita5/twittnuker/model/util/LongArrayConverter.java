@@ -20,26 +20,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package de.vanita5.twittnuker.model.util;
 
-import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.util.MediaLoadingHandler;
-import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public interface IActivitiesAdapter<Data> extends IContentCardAdapter, IGapSupportedAdapter {
+import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
-    ParcelableActivity getActivity(int position);
+import java.lang.reflect.ParameterizedType;
 
-    int getActivityCount();
+public class LongArrayConverter implements CursorFieldConverter<long[]> {
+    @Override
+    public long[] parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
+        return TwidereArrayUtils.parseLongArray(cursor.getString(columnIndex), ',');
+    }
 
-    void setData(Data data);
-
-    @PreviewStyle
-    int getMediaPreviewStyle();
-
-    boolean shouldUseStarsForLikes();
-
-    MediaLoadingHandler getMediaLoadingHandler();
-
-    boolean isMediaPreviewEnabled();
+    @Override
+    public void writeField(ContentValues values, long[] object, String columnName, ParameterizedType fieldType) {
+        values.put(columnName, TwidereArrayUtils.toString(object, ',', false));
+    }
 }

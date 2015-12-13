@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
@@ -51,8 +52,8 @@ import javax.inject.Inject;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
-import static de.vanita5.twittnuker.util.Utils.getNewestMessageIdsFromDatabase;
-import static de.vanita5.twittnuker.util.Utils.getNewestStatusIdsFromDatabase;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getNewestMessageIdsFromDatabase;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getNewestStatusIdsFromDatabase;
 import static de.vanita5.twittnuker.util.Utils.hasAutoRefreshAccounts;
 import static de.vanita5.twittnuker.util.Utils.isBatteryOkay;
 import static de.vanita5.twittnuker.util.Utils.isNetworkAvailable;
@@ -90,7 +91,7 @@ public class RefreshService extends Service implements Constants {
                 final AccountPreferences[] accountPrefs = AccountPreferences.getAccountPreferences(context, accountIds);
                 if (BROADCAST_REFRESH_HOME_TIMELINE.equals(action)) {
                     final long[] refreshIds = getRefreshableIds(accountPrefs, new HomeRefreshableFilter());
-                    final long[] sinceIds = getNewestStatusIdsFromDatabase(context, Statuses.CONTENT_URI, refreshIds);
+                    final long[] sinceIds = DataStoreUtils.getNewestStatusIdsFromDatabase(context, Statuses.CONTENT_URI, refreshIds);
                     if (BuildConfig.DEBUG) {
                         Log.d(LOGTAG, String.format("Auto refreshing home for %s", Arrays.toString(refreshIds)));
                     }
@@ -99,7 +100,7 @@ public class RefreshService extends Service implements Constants {
                     }
                 } else if (BROADCAST_REFRESH_MENTIONS.equals(action)) {
                     final long[] refreshIds = getRefreshableIds(accountPrefs, new MentionsRefreshableFilter());
-                    final long[] sinceIds = getNewestStatusIdsFromDatabase(context, Mentions.CONTENT_URI, refreshIds);
+                    final long[] sinceIds = DataStoreUtils.getNewestStatusIdsFromDatabase(context, Mentions.CONTENT_URI, refreshIds);
                     if (BuildConfig.DEBUG) {
                         Log.d(LOGTAG, String.format("Auto refreshing mentions for %s", Arrays.toString(refreshIds)));
                     }
@@ -108,7 +109,7 @@ public class RefreshService extends Service implements Constants {
                     }
                 } else if (BROADCAST_REFRESH_DIRECT_MESSAGES.equals(action)) {
                     final long[] refreshIds = getRefreshableIds(accountPrefs, new MessagesRefreshableFilter());
-                    final long[] sinceIds = getNewestMessageIdsFromDatabase(context, DirectMessages.Inbox.CONTENT_URI,
+                    final long[] sinceIds = DataStoreUtils.getNewestMessageIdsFromDatabase(context, DirectMessages.Inbox.CONTENT_URI,
                             refreshIds);
                     if (BuildConfig.DEBUG) {
                         Log.d(LOGTAG, String.format("Auto refreshing messages for %s", Arrays.toString(refreshIds)));

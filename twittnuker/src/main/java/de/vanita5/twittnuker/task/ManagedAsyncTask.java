@@ -35,7 +35,6 @@ import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 import javax.inject.Inject;
 
-@Deprecated
 public abstract class ManagedAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> implements
         Constants {
 

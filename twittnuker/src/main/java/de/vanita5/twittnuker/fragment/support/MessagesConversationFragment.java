@@ -90,7 +90,7 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
+import de.vanita5.twittnuker.model.ParcelableUserCursorIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -856,10 +856,10 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
                 final Cursor c = context.getContentResolver().query(CachedUsers.CONTENT_URI,
                         CachedUsers.BASIC_COLUMNS, selection != null ? selection.getSQL() : null,
                         selectionArgs, orderBy.getSQL());
-                final CachedIndices i = new CachedIndices(c);
+                final ParcelableUserCursorIndices i = new ParcelableUserCursorIndices(c);
                 c.moveToFirst();
                 while (!c.isAfterLast()) {
-                    cachedList.add(new ParcelableUser(c, i, -1));
+                    cachedList.add(i.newObject(c));
                     c.moveToNext();
                 }
                 c.close();

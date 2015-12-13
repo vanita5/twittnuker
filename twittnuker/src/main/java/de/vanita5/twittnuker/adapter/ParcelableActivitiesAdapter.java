@@ -23,8 +23,6 @@
 package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.view.View;
 
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
@@ -59,19 +57,9 @@ public class ParcelableActivitiesAdapter extends AbsActivitiesAdapter<List<Parce
     }
 
     @Override
-    public void onItemActionClick(ViewHolder holder, int id, int position) {
-
-    }
-
-    @Override
     public int getActivityCount() {
         if (mData == null) return 0;
         return mData.size();
-    }
-
-    @Override
-    public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
-
     }
 
     @Override

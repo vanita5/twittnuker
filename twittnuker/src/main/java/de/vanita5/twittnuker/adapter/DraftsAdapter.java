@@ -32,7 +32,7 @@ import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.DraftItemCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
@@ -59,7 +59,7 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
     private final int mMediaPreviewStyle;
 
     private float mTextSize;
-    private DraftItem.CursorIndices mIndices;
+    private DraftItemCursorIndices mIndices;
 
     public DraftsAdapter(final Context context) {
         super(context, R.layout.list_item_draft, null, new String[0], new int[0], 0);
@@ -121,7 +121,7 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
     public Cursor swapCursor(final Cursor c) {
         final Cursor old = super.swapCursor(c);
         if (c != null) {
-            mIndices = new DraftItem.CursorIndices(c);
+            mIndices = new DraftItemCursorIndices(c);
         }
         return old;
     }

@@ -20,26 +20,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package de.vanita5.twittnuker.model.util;
 
-import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.util.MediaLoadingHandler;
-import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public interface IActivitiesAdapter<Data> extends IContentCardAdapter, IGapSupportedAdapter {
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
 
-    ParcelableActivity getActivity(int position);
+import java.lang.reflect.ParameterizedType;
 
-    int getActivityCount();
+public class JSONObjectConverter implements CursorFieldConverter<JSONObject> {
+    @Override
+    public JSONObject parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
+        try {
+            return new JSONObject(cursor.getString(columnIndex));
+        } catch (JSONException e) {
+            return null;
+        }
+    }
 
-    void setData(Data data);
-
-    @PreviewStyle
-    int getMediaPreviewStyle();
-
-    boolean shouldUseStarsForLikes();
-
-    MediaLoadingHandler getMediaLoadingHandler();
-
-    boolean isMediaPreviewEnabled();
+    @Override
+    public void writeField(ContentValues values, JSONObject object, String columnName, ParameterizedType fieldType) {
+        if (object != null) {
+            values.put(columnName, object.toString());
+        }
+    }
 }

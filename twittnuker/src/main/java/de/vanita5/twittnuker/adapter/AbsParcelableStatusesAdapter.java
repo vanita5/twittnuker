@@ -24,9 +24,11 @@ package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v7.widget.RecyclerView;
 
-import de.vanita5.twittnuker.model.ObjectCursor;
+import org.mariotaku.library.objectcursor.ObjectCursor;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 
 import java.util.List;
 
@@ -57,27 +59,32 @@ public abstract class AbsParcelableStatusesAdapter extends AbsStatusesAdapter<Li
 
     @Override
     public long getItemId(int position) {
-        if (position == getStatusesCount()) return position;
+        if (position == getStatusesCount()) return RecyclerView.NO_ID;
+        if (mData instanceof ObjectCursor) {
+            final Cursor cursor = ((ObjectCursor) mData).getCursor(position);
+            final ParcelableStatusCursorIndices indices = (ParcelableStatusCursorIndices) ((ObjectCursor) mData).getIndices();
+            return cursor.getLong(indices._id);
+        }
         return mData.get(position).hashCode();
     }
 
     @Override
     public long getStatusId(int position) {
-        if (position == getStatusesCount()) return -1;
+        if (position == getStatusesCount()) return RecyclerView.NO_ID;
         if (mData instanceof ObjectCursor) {
             final Cursor cursor = ((ObjectCursor) mData).getCursor(position);
-            final ParcelableStatus.CursorIndices indices = (ParcelableStatus.CursorIndices) ((ObjectCursor) mData).getIndices();
-            return cursor.getLong(indices.status_id);
+            final ParcelableStatusCursorIndices indices = (ParcelableStatusCursorIndices) ((ObjectCursor) mData).getIndices();
+            return cursor.getLong(indices.id);
         }
         return mData.get(position).id;
     }
 
     @Override
     public long getAccountId(int position) {
-        if (position == getStatusesCount()) return -1;
+        if (position == getStatusesCount()) return RecyclerView.NO_ID;
         if (mData instanceof ObjectCursor) {
             final Cursor cursor = ((ObjectCursor) mData).getCursor(position);
-            final ParcelableStatus.CursorIndices indices = (ParcelableStatus.CursorIndices) ((ObjectCursor) mData).getIndices();
+            final ParcelableStatusCursorIndices indices = (ParcelableStatusCursorIndices) ((ObjectCursor) mData).getIndices();
             return cursor.getLong(indices.account_id);
         }
         return mData.get(position).account_id;

@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.model;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -31,9 +33,11 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
+import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
 import de.vanita5.twittnuker.util.ParseUtils;
 
-import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
+import java.lang.reflect.ParameterizedType;
 
 @JsonObject
 public class ParcelableLocation implements Parcelable {
@@ -186,5 +190,17 @@ public class ParcelableLocation implements Parcelable {
 
     public static String toString(double latitude, double longitude) {
         return latitude + "," + longitude;
+    }
+
+    public static class Converter implements CursorFieldConverter<ParcelableLocation> {
+        @Override
+        public ParcelableLocation parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
+            return ParcelableLocation.fromString(cursor.getString(columnIndex));
+        }
+
+        @Override
+        public void writeField(ContentValues values, ParcelableLocation object, String columnName, ParameterizedType fieldType) {
+            values.put(columnName, ParcelableLocation.toString(object));
+        }
     }
 }

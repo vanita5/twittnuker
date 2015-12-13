@@ -20,26 +20,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package de.vanita5.twittnuker.model.util;
 
-import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.util.MediaLoadingHandler;
-import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
+import android.os.Parcel;
 
-public interface IActivitiesAdapter<Data> extends IContentCardAdapter, IGapSupportedAdapter {
+import com.hannesdorfmann.parcelableplease.ParcelBagger;
 
-    ParcelableActivity getActivity(int position);
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    int getActivityCount();
+public class JSONParcelBagger implements ParcelBagger<JSONObject> {
+    @Override
+    public void write(JSONObject value, Parcel out, int flags) {
+        if (value != null) {
+            out.writeString(value.toString());
+        } else {
+            out.writeString(null);
+        }
+    }
 
-    void setData(Data data);
-
-    @PreviewStyle
-    int getMediaPreviewStyle();
-
-    boolean shouldUseStarsForLikes();
-
-    MediaLoadingHandler getMediaLoadingHandler();
-
-    boolean isMediaPreviewEnabled();
+    @Override
+    public JSONObject read(Parcel in) {
+        final String s = in.readString();
+        if (s != null) {
+            try {
+                return new JSONObject(s);
+            } catch (JSONException e) {
+                return null;
+            }
+        }
+        return null;
+    }
 }
