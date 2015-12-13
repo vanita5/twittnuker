@@ -24,6 +24,8 @@ package de.vanita5.twittnuker.api.twitter.model;
 
 import android.support.annotation.NonNull;
 
+import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
+
 import de.vanita5.twittnuker.util.AbsLogger;
 
 import java.text.SimpleDateFormat;
@@ -237,6 +239,20 @@ public class Activity extends TwitterResponseObject implements TwitterResponse, 
 
         public int getActionId() {
             return actionId;
+        }
+
+        public static class Converter extends StringBasedTypeConverter<Action> {
+
+            @Override
+            public Action getFromString(String string) {
+                return Action.parse(string);
+            }
+
+            @Override
+            public String convertToString(Action object) {
+                //TODO use better literal
+                return object.name().toLowerCase(Locale.US);
+            }
         }
     }
 }
