@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.Mapper;
 import org.mariotaku.restfu.http.ValueMap;
 
 /**

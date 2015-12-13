@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
+package de.vanita5.twittnuker.api.twitter.model;
 
 import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -28,6 +28,8 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
 import java.io.IOException;
+
+import de.vanita5.twittnuker.api.twitter.model.Indices;
 
 public class IndicesConverter implements TypeConverter<Indices> {
     @Override

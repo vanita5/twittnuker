@@ -62,8 +62,6 @@ import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
-import de.vanita5.twittnuker.api.twitter.model.impl.ActivityImpl;
-import de.vanita5.twittnuker.api.twitter.model.impl.ResponseArrayList;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -99,6 +97,7 @@ import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
 import de.vanita5.twittnuker.util.message.FriendshipUserUpdatedEvent;
+import de.vanita5.twittnuker.util.message.GetActivitiesTaskEvent;
 import de.vanita5.twittnuker.util.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.util.message.GetStatusesTaskEvent;
 import de.vanita5.twittnuker.util.message.ProfileUpdatedEvent;
@@ -545,9 +544,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 if (Utils.isOfficialKeyAccount(getContext(), accountId)) {
                     return twitter.getActivitiesAboutMe(paging);
                 }
-                final ResponseList<Activity> activities = new ResponseArrayList<Activity>();
+                final ResponseList<Activity> activities = new ResponseList<Activity>();
                 for (de.vanita5.twittnuker.api.twitter.model.Status status : twitter.getMentionsTimeline(paging)) {
-                    activities.add(ActivityImpl.fromMention(accountId, status));
+                    activities.add(Activity.fromMention(accountId, status));
                 }
                 return activities;
             }

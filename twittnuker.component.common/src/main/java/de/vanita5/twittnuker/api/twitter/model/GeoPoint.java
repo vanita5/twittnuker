@@ -20,19 +20,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
+package de.vanita5.twittnuker.api.twitter.model;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.model.StatusDeletionNotice;
+import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
 
 /**
- * Created by mariotaku on 15/5/26.
+ * Created by mariotaku on 15/5/7.
  */
 @JsonObject
-public class StatusDeletionNoticeImpl implements StatusDeletionNotice {
-	@Override
-	public long getStatusId() {
-		return 0;
-	}
+public class GeoPoint {
+
+    private volatile GeoLocation geoLocation;
+
+    @JsonField(name = "coordinates")
+    double[] coordinates;
+
+    @JsonField(name = "type")
+    String type;
+
+    public GeoLocation getGeoLocation() {
+        if (coordinates == null) return null;
+        if (geoLocation != null) return geoLocation;
+        return geoLocation = new GeoLocation(coordinates[0], coordinates[1]);
+    }
+
 }

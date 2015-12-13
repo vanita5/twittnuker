@@ -22,36 +22,72 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.EnumClass;
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.ScheduledStatusImpl;
+import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
 
 import java.util.Date;
 
-@Implementation(ScheduledStatusImpl.class)
-public interface ScheduledStatus {
+@JsonObject
+public class ScheduledStatus {
 
-    long getUserId();
+    @JsonField(name = "updated_at", typeConverter = TwitterDateConverter.class)
+    Date updatedAt;
+    @JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
+    Date createdAt;
+    @JsonField(name = "execute_at", typeConverter = TwitterDateConverter.class)
+    Date executeAt;
+    @JsonField(name = "text")
+    String text;
+    @JsonField(name = "media_ids")
+    long[] mediaIds;
+    @JsonField(name = "id")
+    long id;
+    @JsonField(name = "possiblySensitive")
+    boolean possiblySensitive;
+    @JsonField(name = "user_id")
+    long userId;
+    @JsonField(name = "state")
+    State state;
 
-    boolean isPossiblySensitive();
+    public long getUserId() {
+        return userId;
+    }
 
-    long getId();
+    public boolean isPossiblySensitive() {
+        return possiblySensitive;
+    }
 
-    long[] getMediaIds();
+    public long getId() {
+        return id;
+    }
 
-    Date getUpdatedAt();
+    public long[] getMediaIds() {
+        return mediaIds;
+    }
 
-    Date getCreatedAt();
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
 
-    Date getExecuteAt();
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
-    String getText();
+    public Date getExecuteAt() {
+        return executeAt;
+    }
 
-    State getState();
+    public String getText() {
+        return text;
+    }
 
-    @EnumClass
-    enum State {
+    public State getState() {
+        return state;
+    }
+
+    public enum State {
         SCHEDULED("scheduled"), FAILED("failed"), CANCELED("canceled");
 
         private final String value;

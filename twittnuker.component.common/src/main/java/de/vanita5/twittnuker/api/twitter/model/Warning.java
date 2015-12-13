@@ -22,13 +22,13 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.WarningImpl;
+import de.vanita5.twittnuker.api.twitter.model.Warning;
 
 /**
  * Created by mariotaku on 15/5/26.
  */
-@Implementation(WarningImpl.class)
-public interface Warning {
+@JsonObject
+public class Warning {
 }

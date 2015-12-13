@@ -20,52 +20,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
+package de.vanita5.twittnuker.api.twitter.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
+import de.vanita5.twittnuker.api.twitter.model.Entities;
+import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 
 /**
- * Created by mariotaku on 15/5/7.
+ * Created by mariotaku on 15/3/31.
  */
 @JsonObject
-public class TranslationResultImpl extends TwitterResponseImpl implements TranslationResult {
+public class UserEntities {
 
-	@JsonField(name = "id")
-	long id;
-	@JsonField(name = "lang")
-	String lang;
-	@JsonField(name = "translated_lang")
-	String translatedLang;
-	@JsonField(name = "translation_type")
-	String translationType;
-	@JsonField(name = "text")
-	String text;
+    @JsonField(name = "url")
+    Entities url;
 
-	@Override
-	public long getId() {
-		return id;
-	}
+    @JsonField(name = "description")
+    Entities description;
 
-	@Override
-	public String getLang() {
-		return lang;
-	}
+    public UrlEntity[] getDescriptionEntities() {
+        if (description == null) return null;
+        return description.getUrls();
+    }
 
-	@Override
-	public String getText() {
-		return text;
-	}
+    public UrlEntity[] getUrlEntities() {
+        if (url == null) return null;
+        return url.getUrls();
+    }
 
-	@Override
-	public String getTranslatedLang() {
-		return translatedLang;
-	}
-
-	@Override
-	public String getTranslationType() {
-		return translationType;
-	}
+    @Override
+    public String toString() {
+        return "UserEntities{" +
+                "url=" + url +
+                ", description=" + description +
+                '}';
+    }
 }

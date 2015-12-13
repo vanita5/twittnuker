@@ -20,13 +20,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl.mapper.list;
+package de.vanita5.twittnuker.api.twitter.model;
 
-import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.api.twitter.model.impl.ResponseListMapper;
+/**
+ * Created by mariotaku on 15/3/31.
+ */
+public class Indices {
 
-public class DirectMessageResponseListMapper extends ResponseListMapper<DirectMessage> {
-    public DirectMessageResponseListMapper() {
-        super(DirectMessage.class);
+    private int start, end;
+
+    public int getEnd() {
+        return end;
     }
+
+    public int getStart() {
+        return start;
+    }
+
+    public Indices(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    @Override
+    public String toString() {
+        return "Index{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
+    }
+
 }

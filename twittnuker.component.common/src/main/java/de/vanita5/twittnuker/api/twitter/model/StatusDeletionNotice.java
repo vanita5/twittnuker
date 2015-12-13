@@ -22,14 +22,14 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
-
-import de.vanita5.twittnuker.api.twitter.model.impl.StatusDeletionNoticeImpl;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 /**
  * Created by mariotaku on 15/5/26.
  */
-@Implementation(StatusDeletionNoticeImpl.class)
-public interface StatusDeletionNotice {
-    long getStatusId();
+@JsonObject
+public class StatusDeletionNotice {
+    public long getStatusId() {
+        return 0;
+    }
 }

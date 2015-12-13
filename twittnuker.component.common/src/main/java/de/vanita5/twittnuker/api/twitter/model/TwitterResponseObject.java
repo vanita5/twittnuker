@@ -20,36 +20,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
+package de.vanita5.twittnuker.api.twitter.model;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
+import org.mariotaku.restfu.http.RestHttpResponse;
 
-import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
+import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
+import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
+import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
 /**
  * Created by mariotaku on 15/5/7.
  */
-@JsonObject
-public class ErrorInfoImpl implements ErrorInfo {
+public class TwitterResponseObject implements TwitterResponse {
 
-    @JsonField(name = "code")
-    int code;
-    @JsonField(name = "message")
-    String message;
+    private int accessLevel;
+    private RateLimitStatus rateLimitStatus;
 
     @Override
-    public int getCode() {
-        return code;
+    public final void processResponseHeader(RestHttpResponse resp) {
+        rateLimitStatus = RateLimitStatus.createFromResponseHeader(resp);
+        accessLevel = InternalParseUtil.toAccessLevel(resp);
     }
 
     @Override
-    public String getMessage() {
-        return message;
+    public final int getAccessLevel() {
+        return accessLevel;
     }
 
     @Override
-    public String getRequest() {
-        return null;
+    public final RateLimitStatus getRateLimitStatus() {
+        return rateLimitStatus;
     }
 }

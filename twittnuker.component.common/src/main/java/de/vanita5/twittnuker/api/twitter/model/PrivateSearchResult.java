@@ -22,5 +22,5 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-public interface PrivateSearchResult {
+public class PrivateSearchResult {
 }

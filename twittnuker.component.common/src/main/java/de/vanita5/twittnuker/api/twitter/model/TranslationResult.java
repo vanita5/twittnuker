@@ -22,21 +22,40 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.TranslationResultImpl;
+@JsonObject
+public class TranslationResult extends TwitterResponseObject implements TwitterResponse {
 
-@Implementation(TranslationResultImpl.class)
-public interface TranslationResult extends TwitterResponse {
+    @JsonField(name = "id")
+    long id;
+    @JsonField(name = "lang")
+    String lang;
+    @JsonField(name = "translated_lang")
+    String translatedLang;
+    @JsonField(name = "translation_type")
+    String translationType;
+    @JsonField(name = "text")
+    String text;
 
-    public long getId();
+    public long getId() {
+        return id;
+    }
 
-    public String getLang();
+    public String getLang() {
+        return lang;
+    }
 
-    public String getText();
+    public String getText() {
+        return text;
+    }
 
-    public String getTranslatedLang();
+    public String getTranslatedLang() {
+        return translatedLang;
+    }
 
-    public String getTranslationType();
-
+    public String getTranslationType() {
+        return translationType;
+    }
 }

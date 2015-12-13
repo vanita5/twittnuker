@@ -20,50 +20,53 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
+package de.vanita5.twittnuker.api.twitter.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.mariotaku.restfu.http.RestHttpResponse;
-import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.ScheduledStatus;
+import java.util.Arrays;
 
-import java.util.AbstractList;
-import java.util.List;
-
+/**
+ * Created by mariotaku on 15/3/31.
+ */
 @JsonObject
-public class ScheduledStatusesListImpl extends AbstractList<ScheduledStatus> implements ResponseList<ScheduledStatus> {
+public class Entities {
+    @JsonField(name = "hashtags")
+    HashtagEntity[] hashtags;
 
-    @JsonField(name = "results")
-    List<ScheduledStatus> list;
+    @JsonField(name = "user_mentions")
+    UserMentionEntity[] userMentions;
 
-    TwitterResponseImpl response = new TwitterResponseImpl();
+    @JsonField(name = "urls")
+    UrlEntity[] urls;
 
-    @Override
-    public void processResponseHeader(RestHttpResponse resp) {
-        response.processResponseHeader(resp);
+    @JsonField(name = "media")
+    MediaEntity[] media;
+
+    public de.vanita5.twittnuker.api.twitter.model.HashtagEntity[] getHashtags() {
+        return hashtags;
+    }
+
+    public de.vanita5.twittnuker.api.twitter.model.UserMentionEntity[] getUserMentions() {
+        return userMentions;
+    }
+
+    public UrlEntity[] getUrls() {
+        return urls;
+    }
+
+    public MediaEntity[] getMedia() {
+        return media;
     }
 
     @Override
-    public ScheduledStatus get(int location) {
-        return list.get(location);
+    public String toString() {
+        return "Entities{" +
+                "hashtags=" + Arrays.toString(hashtags) +
+                ", userMentions=" + Arrays.toString(userMentions) +
+                ", urls=" + Arrays.toString(urls) +
+                ", media=" + Arrays.toString(media) +
+                '}';
     }
-
-    @Override
-    public int size() {
-        return list.size();
-    }
-
-    @Override
-    public int getAccessLevel() {
-        return response.getAccessLevel();
-    }
-
-    @Override
-    public RateLimitStatus getRateLimitStatus() {
-        return response.getRateLimitStatus();
-    }
-
 }

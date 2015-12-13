@@ -20,67 +20,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model.impl;
-
-import android.support.annotation.NonNull;
+package de.vanita5.twittnuker.api.twitter.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
-import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
+import org.mariotaku.restfu.http.RestHttpResponse;
+import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
+import de.vanita5.twittnuker.api.twitter.model.ScheduledStatus;
+import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
+import de.vanita5.twittnuker.api.twitter.model.TwitterResponseObject;
 
-import java.util.Date;
+import java.util.AbstractList;
+import java.util.List;
 
-/**
- * Created by mariotaku on 15/5/7.
- */
 @JsonObject
-public class SavedSearchImpl extends TwitterResponseImpl implements SavedSearch {
+public class ScheduledStatusesList extends AbstractList<ScheduledStatus> implements TwitterResponse {
+
+    @JsonField(name = "results")
+    List<ScheduledStatus> list;
+
+    TwitterResponseObject response = new TwitterResponseObject();
 
     @Override
-    public long getId() {
-        return id;
+    public void processResponseHeader(RestHttpResponse resp) {
+        response.processResponseHeader(resp);
     }
 
     @Override
-    public Date getCreatedAt() {
-        return createdAt;
+    public ScheduledStatus get(int location) {
+        return list.get(location);
     }
 
     @Override
-    public String getName() {
-        return name;
+    public int size() {
+        return list.size();
     }
 
     @Override
-    public int getPosition() {
-        return position;
+    public int getAccessLevel() {
+        return response.getAccessLevel();
     }
 
     @Override
-    public String getQuery() {
-        return query;
-    }
-
-    @JsonField(name = "id")
-    long id;
-
-    @JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
-    Date createdAt;
-
-    @JsonField(name = "name")
-    String name;
-
-    @JsonField(name = "position")
-    int position;
-
-    @JsonField(name = "query")
-    String query;
-
-    @Override
-    public int compareTo(@NonNull SavedSearch another) {
-        return (int) (id - another.getId());
+    public RateLimitStatus getRateLimitStatus() {
+        return response.getRateLimitStatus();
     }
 
 }

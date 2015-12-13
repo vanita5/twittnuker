@@ -22,22 +22,56 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.ParameterizedImplementation;
-import org.mariotaku.library.logansquare.extension.annotation.TypeImplementation;
-import de.vanita5.twittnuker.api.twitter.model.impl.PagableStatusListImpl;
-import de.vanita5.twittnuker.api.twitter.model.impl.PagableUserListImpl;
-import de.vanita5.twittnuker.api.twitter.model.impl.PagableUserListListImpl;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
+import org.mariotaku.restfu.http.RestHttpResponse;
+import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
+
+import java.util.ArrayList;
 
 /**
- * ResponseList with cursor support.
- *
- * @author Yusuke Yamamoto - yusuke at mac.com
+ * Created by mariotaku on 15/5/7.
  */
-@ParameterizedImplementation({
-        @TypeImplementation(parameter = Status.class, implementation = PagableStatusListImpl.class),
-        @TypeImplementation(parameter = User.class, implementation = PagableUserListImpl.class),
-        @TypeImplementation(parameter = UserList.class, implementation = PagableUserListListImpl.class)
-})
-public interface PageableResponseList<T > extends ResponseList<T>, CursorSupport {
+@JsonObject
+public class PageableResponseList<T> extends ArrayList<T> implements TwitterResponse, CursorSupport {
 
+    private int accessLevel;
+    private RateLimitStatus rateLimitStatus;
+
+
+    @Override
+    public final void processResponseHeader(RestHttpResponse resp) {
+        rateLimitStatus = RateLimitStatus.createFromResponseHeader(resp);
+        accessLevel = InternalParseUtil.toAccessLevel(resp);
+    }
+
+    @Override
+    public final int getAccessLevel() {
+        return accessLevel;
+    }
+
+    @Override
+    public final RateLimitStatus getRateLimitStatus() {
+        return rateLimitStatus;
+    }
+
+    @Override
+    public long getNextCursor() {
+        return 0;
+    }
+
+    @Override
+    public long getPreviousCursor() {
+        return 0;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return getNextCursor() != 0;
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return getPreviousCursor() != 0;
+    }
 }
