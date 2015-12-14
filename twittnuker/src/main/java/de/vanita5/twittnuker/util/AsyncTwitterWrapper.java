@@ -62,7 +62,6 @@ import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableActivity;
@@ -92,7 +91,6 @@ import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.util.collection.LongSparseMap;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
 import de.vanita5.twittnuker.util.message.FriendshipUpdatedEvent;
@@ -120,6 +118,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     private final SharedPreferencesWrapper mPreferences;
     private final ContentResolver mResolver;
     private final Bus mBus;
+    private final UserColorNameManager mUserColorNameManager;
 
     private int mGetHomeTimelineTaskId, mGetMentionsTaskId;
     private int mGetReceivedDirectMessagesTaskId, mGetSentDirectMessagesTaskId;
@@ -132,12 +131,15 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
     private CopyOnWriteArraySet<Long> mSendingDraftIds = new CopyOnWriteArraySet<>();
 
-    public AsyncTwitterWrapper(final Context context, final AsyncTaskManager manager, final SharedPreferencesWrapper preferences, final Bus bus) {
+    public AsyncTwitterWrapper(final Context context, final AsyncTaskManager manager,
+                               final SharedPreferencesWrapper preferences, final Bus bus,
+                               final UserColorNameManager userColorNameManager) {
         mContext = context;
         mAsyncTaskManager = manager;
         mPreferences = preferences;
         mResolver = context.getContentResolver();
         mBus = bus;
+        mUserColorNameManager = userColorNameManager;
     }
 
     public int acceptFriendshipAsync(final long accountId, final long userId) {
@@ -295,13 +297,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         return mGetLocalTrendsTaskId = mAsyncTaskManager.add(task, true);
     }
 
-    public boolean getMentionsTimelineAsync(final long[] accountIds, final long[] max_ids, final long[] since_ids) {
-        mAsyncTaskManager.cancel(mGetMentionsTaskId);
-        final GetMentionsTask task = new GetMentionsTask(accountIds, max_ids, since_ids);
-        mGetMentionsTaskId = mAsyncTaskManager.add(task, true);
-        return true;
-    }
-
     public int getReceivedDirectMessagesAsync(final long[] accountIds, final long[] max_ids, final long[] since_ids) {
         mAsyncTaskManager.cancel(mGetReceivedDirectMessagesTaskId);
         final GetReceivedDirectMessagesTask task = new GetReceivedDirectMessagesTask(accountIds, max_ids, since_ids);
@@ -423,7 +418,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             protected void onPostExecute(Object[] result) {
                 getHomeTimelineAsync(accountIds, null, (long[]) result[0]);
                 if (Boolean.TRUE.equals(result[1])) {
-                    getMentionsTimelineAsync(accountIds, null, (long[]) result[2]);
                     getActivitiesAboutMeAsync(accountIds, null, null);
                 }
                 if (Boolean.TRUE.equals(result[3])) {
@@ -537,7 +531,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     }
 
     public void getActivitiesAboutMeAsync(long[] accountIds, long[] maxIds, long[] sinceIds) {
-        mAsyncTaskManager.add(new GetActivitiesTask(this, accountIds, maxIds, sinceIds) {
+        mAsyncTaskManager.add(new GetActivitiesTask(this, TASK_TAG_GET_MENTIONS, accountIds, maxIds, sinceIds) {
 
             @Override
             protected ResponseList<Activity> getActivities(long accountId, Twitter twitter, Paging paging) throws TwitterException {
@@ -559,7 +553,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     }
 
     public void getActivitiesByFriendsAsync(long[] accountIds, long[] maxIds, long[] sinceIds) {
-        mAsyncTaskManager.add(new GetActivitiesTask(this, accountIds, maxIds, sinceIds) {
+        mAsyncTaskManager.add(new GetActivitiesTask(this, "get_activities_by_friends", accountIds, maxIds, sinceIds) {
 
             @Override
             protected ResponseList<Activity> getActivities(long accountId, Twitter twitter, Paging paging) throws TwitterException {
@@ -580,8 +574,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         private final long[] maxIds;
         private final long[] sinceIds;
 
-        public GetActivitiesTask(AsyncTwitterWrapper twitterWrapper, long[] accountIds, long[] maxIds, long[] sinceIds) {
-            super(twitterWrapper.getContext(), "get_activities");
+        public GetActivitiesTask(AsyncTwitterWrapper twitterWrapper, String tag, long[] accountIds, long[] maxIds, long[] sinceIds) {
+            super(twitterWrapper.getContext(), tag);
             this.twitterWrapper = twitterWrapper;
             this.accountIds = accountIds;
             this.maxIds = maxIds;
@@ -826,11 +820,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected void onPostExecute(final SingleResponse<User> result) {
             if (result.hasData()) {
                 final User user = result.getData();
-                final TwittnukerApplication application = TwittnukerApplication.getInstance(mContext);
-                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.accepted_users_follow_request,
-                        manager.getDisplayName(user, nameFirst, true));
+                        mUserColorNameManager.getDisplayName(user, nameFirst, true));
                 Utils.showOkMessage(mContext, message, false);
             } else {
                 Utils.showErrorMessage(mContext, R.string.action_accepting_follow_request,
@@ -881,9 +873,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 final String message;
                 if (users.length == 1) {
                     final ParcelableUser user = users[0];
-                    final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                     final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
-                    final String displayName = manager.getDisplayName(user.id, user.name, user.screen_name, nameFirst, false);
+                    final String displayName = mUserColorNameManager.getDisplayName(user.id, user.name,
+                            user.screen_name, nameFirst, false);
                     message = mContext.getString(R.string.added_user_to_list, displayName, result.getData().name);
                 } else {
                     final Resources res = mContext.getResources();
@@ -971,10 +963,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
             if (result.hasData()) {
-                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.blocked_user,
-                        manager.getDisplayName(result.getData(), nameFirst, true));
+                        mUserColorNameManager.getDisplayName(result.getData(), nameFirst, true));
                 Utils.showInfoMessage(mContext, message, false);
 
 
@@ -1088,14 +1079,13 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (result.hasData()) {
                 final ParcelableUser user = result.getData();
                 final String message;
-                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 if (user.is_protected) {
                     message = mContext.getString(R.string.sent_follow_request_to_user,
-                            manager.getDisplayName(user, nameFirst, true));
+                            mUserColorNameManager.getDisplayName(user, nameFirst, true));
                 } else {
                     message = mContext.getString(R.string.followed_user,
-                            manager.getDisplayName(user, nameFirst, true));
+                            mUserColorNameManager.getDisplayName(user, nameFirst, true));
                 }
                 Utils.showOkMessage(mContext, message, false);
 
@@ -1203,10 +1193,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
             if (result.hasData()) {
-                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.muted_user,
-                        manager.getDisplayName(result.getData(), nameFirst, true));
+                        mUserColorNameManager.getDisplayName(result.getData(), nameFirst, true));
                 Utils.showInfoMessage(mContext, message, false);
 
 
@@ -1388,10 +1377,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (succeed) {
                 if (users.length == 1) {
                     final ParcelableUser user = users[0];
-                    final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                     final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
-                    final String displayName = manager.getDisplayName(user.id, user.name, user.screen_name, nameFirst, false);
-                    message = mContext.getString(R.string.deleted_user_from_list, displayName, result.getData().name);
+                    final String displayName = mUserColorNameManager.getDisplayName(user.id,
+                            user.name, user.screen_name, nameFirst, false);
+                    message = mContext.getString(R.string.deleted_user_from_list, displayName,
+                            result.getData().name);
                 } else {
                     final Resources res = mContext.getResources();
                     message = res.getQuantityString(R.plurals.deleted_N_users_from_list, users.length, users.length,
@@ -1446,10 +1436,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected void onPostExecute(final SingleResponse<User> result) {
             if (result.hasData()) {
                 final User user = result.getData();
-                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.denied_users_follow_request,
-                        manager.getDisplayName(user, nameFirst, true));
+                        mUserColorNameManager.getDisplayName(user, nameFirst, true));
                 Utils.showOkMessage(mContext, message, false);
             } else {
                 Utils.showErrorMessage(mContext, R.string.action_denying_follow_request, result.getException(), false);
@@ -1490,10 +1479,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
             if (result.hasData()) {
-                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.unblocked_user,
-                        manager.getDisplayName(result.getData(), nameFirst, true));
+                        mUserColorNameManager.getDisplayName(result.getData(), nameFirst, true));
                 Utils.showInfoMessage(mContext, message, false);
 
 
@@ -1729,10 +1717,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
             if (result.hasData()) {
-                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.unfollowed_user,
-                        manager.getDisplayName(result.getData(), nameFirst, true));
+                        mUserColorNameManager.getDisplayName(result.getData(), nameFirst, true));
                 Utils.showInfoMessage(mContext, message, false);
                 bus.post(new FriendshipUserUpdatedEvent(result.getData()));
             } else {
@@ -1771,10 +1758,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
             if (result.hasData()) {
-                final UserColorNameManager manager = ApplicationModule.get(mContext).getUserColorNameManager();
                 final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
                 final String message = mContext.getString(R.string.unmuted_user,
-                        manager.getDisplayName(result.getData(), nameFirst, true));
+                        mUserColorNameManager.getDisplayName(result.getData(), nameFirst, true));
                 Utils.showInfoMessage(mContext, message, false);
 
 
@@ -2135,41 +2121,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             mAsyncTaskManager.add(new StoreLocalTrendsTask(result), true);
             super.onPostExecute(result);
 
-        }
-
-    }
-
-    class GetMentionsTask extends GetStatusesTask {
-
-        public GetMentionsTask(final long[] account_ids, final long[] max_ids, final long[] since_ids) {
-            super(account_ids, max_ids, since_ids, TASK_TAG_GET_MENTIONS);
-        }
-
-
-        @Override
-        public ResponseList<de.vanita5.twittnuker.api.twitter.model.Status> getStatuses(final Twitter twitter, final Paging paging)
-                throws TwitterException {
-            return twitter.getMentionsTimeline(paging);
-        }
-
-        @NonNull
-        @Override
-        protected Uri getDatabaseUri() {
-            return Mentions.CONTENT_URI;
-        }
-
-        @Override
-        protected void onPostExecute(final List<StatusListResponse> result) {
-            super.onPostExecute(result);
-            mGetMentionsTaskId = -1;
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-            final Intent intent = new Intent(BROADCAST_RESCHEDULE_MENTIONS_REFRESHING);
-            mContext.sendBroadcast(intent);
-            super.onPreExecute();
         }
 
     }

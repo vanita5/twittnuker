@@ -43,9 +43,9 @@ import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
+import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
@@ -55,7 +55,7 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapt
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
-        IActivitiesAdapter<Data>, IStatusViewHolder.StatusClickListener, OnLinkClickListener,
+        IActivitiesAdapter<Data>, IStatusViewHolder.StatusClickListener,
         ActivityTitleSummaryViewHolder.ActivityClickListener {
 
     public static final int ITEM_VIEW_TYPE_STUB = 0;
@@ -81,7 +81,7 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
         mInflater = LayoutInflater.from(context);
         mLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         mCompactCards = compact;
-        mLinkify = new TwidereLinkify(this);
+        mLinkify = new TwidereLinkify(new OnLinkClickHandler(context, null));
         mStatusAdapterDelegate.updateOptions();
     }
 
@@ -142,7 +142,9 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
 
     @Override
     public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position) {
-
+        if (mActivityAdapterListener != null) {
+            mActivityAdapterListener.onMediaClick(holder, view, media, position);
+        }
     }
 
     @Override
@@ -193,13 +195,13 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
             }
             case ITEM_VIEW_TYPE_TITLE_SUMMARY: {
                 final View view;
-                if (mCompactCards) {
+//                if (mCompactCards) {
                     view = mInflater.inflate(R.layout.card_item_activity_summary_compact, parent, false);
-                } else {
-                    view = mInflater.inflate(R.layout.card_item_activity_summary, parent, false);
-                    final CardView cardView = (CardView) view.findViewById(R.id.card);
-                    cardView.setCardBackgroundColor(mCardBackgroundColor);
-                }
+//                } else {
+//                    view = mInflater.inflate(R.layout.card_item_activity_summary, parent, false);
+//                    final CardView cardView = (CardView) view.findViewById(R.id.card);
+//                    cardView.setCardBackgroundColor(mCardBackgroundColor);
+//                }
                 final ActivityTitleSummaryViewHolder holder = new ActivityTitleSummaryViewHolder(this, view);
                 holder.setOnClickListeners();
                 holder.setTextSize(getTextSize());
@@ -323,11 +325,6 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
         }
     }
 
-    @Override
-    public void onLinkClick(String link, String orig, long accountId, long extraId, int type, boolean sensitive, int start, int end) {
-
-    }
-
     public void setListener(ActivityAdapterListener listener) {
         mActivityAdapterListener = listener;
     }
@@ -356,7 +353,10 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
 
         void onStatusMenuClick(IStatusViewHolder holder, View menuView, int position);
 
+        void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position);
+
         void onStatusClick(IStatusViewHolder holder, int position);
+
     }
 
     private static class StubViewHolder extends ViewHolder {

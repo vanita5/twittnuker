@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 
@@ -41,22 +42,22 @@ public class ActivitiesAboutMeFragment extends CursorActivitiesFragment {
 
     @Override
     protected int getNotificationType() {
-        return 0;
+        return NOTIFICATION_ID_MENTIONS_TIMELINE;
     }
 
     @Override
     protected boolean isFilterEnabled() {
-        return false;
+        return true;
     }
 
     @Override
     protected void updateRefreshState() {
-
+        setRefreshing(mTwitterWrapper.isMentionsTimelineRefreshing());
     }
 
     @Override
     public boolean isRefreshing() {
-        return false;
+        return mTwitterWrapper.isMentionsTimelineRefreshing();
     }
 
 }

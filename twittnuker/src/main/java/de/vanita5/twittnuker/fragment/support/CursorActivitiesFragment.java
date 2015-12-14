@@ -61,7 +61,6 @@ import de.vanita5.twittnuker.util.message.StatusRetweetedEvent;
 
 import java.util.List;
 
-import static de.vanita5.twittnuker.util.Utils.buildStatusFilterWhereClause;
 import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
 
 public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<List<ParcelableActivity>> {
@@ -216,7 +215,7 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
 
     protected Expression getFiltersWhere(String table) {
         if (!isFilterEnabled()) return null;
-        return buildStatusFilterWhereClause(table, null);
+        return Utils.buildActivityFilterWhereClause(table, null);
     }
 
     protected long[] getNewestActivityIds(long[] accountIds) {
