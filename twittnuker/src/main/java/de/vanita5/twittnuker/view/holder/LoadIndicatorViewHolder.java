@@ -25,8 +25,17 @@ package de.vanita5.twittnuker.view.holder;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import de.vanita5.twittnuker.R;
+
 public class LoadIndicatorViewHolder extends RecyclerView.ViewHolder {
-	public LoadIndicatorViewHolder(View view) {
-		super(view);
-	}
+    private final View loadProgress;
+
+    public LoadIndicatorViewHolder(View view) {
+        super(view);
+        loadProgress = view.findViewById(R.id.load_progress);
+    }
+
+    public void setLoadProgressVisible(boolean visible) {
+        loadProgress.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
 }

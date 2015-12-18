@@ -20,16 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
-
 import android.app.Application;
+
 import com.squareup.okhttp.OkHttpClient;
 
 public class DebugModeUtils {
 
-	public static void initForHttpClient(final OkHttpClient client) {
-	}
+    public static void initForHttpClient(final OkHttpClient client) {
+        // No-op
+    }
 
-	public static void initForApplication(final Application application) {
-	}
+
+    public static void initForApplication(final Application application) {
+        // No-op
+    }
+
+    public static void watchReferenceLeak(final Object object) {
+        // No-op
+    }
 }

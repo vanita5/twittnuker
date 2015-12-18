@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
-import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri;
 import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
 
 public class TrendsSuggestionsFragment extends AbsContentListViewFragment<TrendsAdapter>

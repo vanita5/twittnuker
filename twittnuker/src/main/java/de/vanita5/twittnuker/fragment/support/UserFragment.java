@@ -120,6 +120,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
@@ -261,11 +262,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         } else if (relationship != null) {
             mFollowButton.setEnabled(!relationship.isSourceBlockedByTarget());
             if (relationship.isSourceBlockedByTarget()) {
-                mPagesErrorContainer.setVisibility(View.VISIBLE);
-                final String displayName = mUserColorNameManager.getDisplayName(user, mNameFirst, true);
-                mPagesErrorText.setText(getString(R.string.blocked_by_user_summary, displayName));
-                mPagesErrorIcon.setImageResource(R.drawable.ic_info_error_generic);
-                mPagesContent.setVisibility(View.GONE);
+                mPagesErrorContainer.setVisibility(View.GONE);
+                mPagesErrorText.setText(null);
+                mPagesContent.setVisibility(View.VISIBLE);
             } else if (!relationship.isSourceFollowingTarget() && user.is_protected) {
                 mPagesErrorContainer.setVisibility(View.VISIBLE);
                 final String displayName = mUserColorNameManager.getDisplayName(user, mNameFirst, true);
@@ -974,7 +973,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 final Intent intent = new Intent(INTENT_ACTION_SELECT_USER_LIST);
                 intent.setClass(getActivity(), UserListSelectorActivity.class);
                 intent.putExtra(EXTRA_ACCOUNT_ID, user.account_id);
-                intent.putExtra(EXTRA_SCREEN_NAME, Utils.getAccountScreenName(getActivity(), user.account_id));
+                intent.putExtra(EXTRA_SCREEN_NAME, DataStoreUtils.getAccountScreenName(getActivity(), user.account_id));
                 startActivityForResult(intent, REQUEST_ADD_TO_LIST);
                 break;
             }

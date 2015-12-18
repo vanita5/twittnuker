@@ -98,7 +98,6 @@ import de.vanita5.twittnuker.util.TwidereActionModeForChildListener;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
 import de.vanita5.twittnuker.util.view.ConsumerKeySecretValidator;
@@ -107,7 +106,7 @@ import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createAccount;
-import static de.vanita5.twittnuker.util.Utils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getActivatedAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;

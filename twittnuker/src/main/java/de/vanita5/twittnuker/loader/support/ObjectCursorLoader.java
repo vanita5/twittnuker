@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.loader;
+package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 import android.database.Cursor;

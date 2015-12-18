@@ -62,7 +62,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
 
 public class UserListSelectorActivity extends BaseSupportDialogActivity implements OnClickListener, OnItemClickListener {
 

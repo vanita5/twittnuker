@@ -94,6 +94,7 @@ import de.vanita5.twittnuker.menu.support.AccountToggleProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.CompareUtils;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.ListViewUtils;
@@ -159,7 +160,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         if (mAccountActionProvider != null) {
             return mAccountActionProvider.getActivatedAccountIds();
         }
-        return Utils.getActivatedAccountIds(getActivity());
+        return DataStoreUtils.getActivatedAccountIds(getActivity());
     }
 
     @Override

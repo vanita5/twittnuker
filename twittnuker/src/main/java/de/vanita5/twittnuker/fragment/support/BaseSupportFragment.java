@@ -48,6 +48,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
@@ -198,6 +199,12 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
         final LayoutInflaterFactory delegate = FragmentManagerTrojan.getLayoutInflaterFactory(getChildFragmentManager());
         LayoutInflaterCompat.setFactory(inflater, new ThemedLayoutInflaterFactory((IThemedActivity) activity, delegate));
         return inflater;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DebugModeUtils.watchReferenceLeak(this);
     }
 
     public Context getThemedContext() {

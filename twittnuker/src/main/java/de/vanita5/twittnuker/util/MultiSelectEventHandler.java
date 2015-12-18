@@ -55,7 +55,7 @@ import java.util.TreeSet;
 
 import javax.inject.Inject;
 
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenNames;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenNames;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
@@ -111,7 +111,7 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
                 final Extractor extractor = new Extractor();
                 final Intent intent = new Intent(INTENT_ACTION_REPLY_MULTIPLE);
                 final Bundle bundle = new Bundle();
-                final String[] accountScreenNames = getAccountScreenNames(mActivity);
+                final String[] accountScreenNames = DataStoreUtils.getAccountScreenNames(mActivity);
                 final Collection<String> allMentions = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
                 for (final Object object : selectedItems) {
                     if (object instanceof ParcelableStatus) {

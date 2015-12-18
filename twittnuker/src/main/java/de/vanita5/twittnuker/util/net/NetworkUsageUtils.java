@@ -37,7 +37,7 @@ import com.squareup.okhttp.ResponseBody;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
-import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.ConnectivityUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -59,7 +59,7 @@ public class NetworkUsageUtils implements Constants {
 
         public NetworkUsageInterceptor(Context context) {
             this.context = context;
-            setNetworkType(Utils.getActiveNetworkType(context));
+            setNetworkType(ConnectivityUtils.getActiveNetworkType(context));
         }
 
         @Override

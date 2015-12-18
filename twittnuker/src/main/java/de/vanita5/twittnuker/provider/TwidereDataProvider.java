@@ -106,6 +106,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.receiver.NotificationReceiver;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.DatabaseQueryUtils;
 import de.vanita5.twittnuker.util.ImagePreloader;
 import de.vanita5.twittnuker.util.MediaPreviewUtils;
@@ -144,8 +145,8 @@ import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
 import static de.vanita5.twittnuker.util.Utils.clearAccountName;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
-import static de.vanita5.twittnuker.util.Utils.getTableId;
-import static de.vanita5.twittnuker.util.Utils.getTableNameById;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getTableId;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getTableNameById;
 import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 
 public final class TwidereDataProvider extends ContentProvider implements Constants, OnSharedPreferenceChangeListener,
@@ -1124,7 +1125,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final NotificationManagerWrapper nm = mNotificationManager;
         final Expression selection = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
                 Expression.greaterThan(Statuses.STATUS_ID, position));
-        final String filteredSelection = Utils.buildStatusFilterWhereClause(Statuses.TABLE_NAME,
+        final String filteredSelection = DataStoreUtils.buildStatusFilterWhereClause(Statuses.TABLE_NAME,
                 selection).getSQL();
         final String[] userProjection = {Statuses.USER_ID, Statuses.USER_NAME, Statuses.USER_SCREEN_NAME};
         final String[] statusProjection = {Statuses.STATUS_ID};
@@ -1206,7 +1207,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
         final int itemsLimit = 5;
 
-        final String filteredSelection = Utils.buildStatusFilterWhereClause(Mentions.TABLE_NAME,
+        final String filteredSelection = DataStoreUtils.buildStatusFilterWhereClause(Mentions.TABLE_NAME,
                 selection).getSQL();
         final String[] statusProjection = {Statuses.STATUS_ID, Statuses.USER_ID, Statuses.USER_NAME, Statuses.USER_SCREEN_NAME,
                 Statuses.TEXT_UNESCAPED, Statuses.STATUS_TIMESTAMP};
@@ -1237,7 +1238,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         //noinspection TryFinallyCanBeTryWithResources
         if (statusCursor.getCount() == 0 || statusesCount == 0) return;
         final String accountName = Utils.getAccountName(context, accountId);
-        final String accountScreenName = Utils.getAccountScreenName(context, accountId);
+        final String accountScreenName = DataStoreUtils.getAccountScreenName(context, accountId);
         final ParcelableStatusCursorIndices indices = new ParcelableStatusCursorIndices(statusCursor);
 
         final UserColorNameManager manager = mUserColorNameManager;
@@ -1300,7 +1301,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     Mentions.TABLE_NAME, filteredSelection, null, Statuses.USER_ID, null, null);
             if (statusesCount == 0 || usersCount == 0) return;
             final String accountName = Utils.getAccountName(context, accountId);
-            final String accountScreenName = Utils.getAccountScreenName(context, accountId);
+            final String accountScreenName = DataStoreUtils.getAccountScreenName(context, accountId);
             final int idxStatusText = statusCursor.getColumnIndex(Statuses.TEXT_UNESCAPED),
                     idxStatusId = statusCursor.getColumnIndex(Statuses.STATUS_ID),
                     idxStatusTimestamp = statusCursor.getColumnIndex(Statuses.STATUS_TIMESTAMP),
@@ -1486,7 +1487,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             final int messagesCount = messageCursor.getCount();
             if (messagesCount == 0 || usersCount == 0) return;
             final String accountName = Utils.getAccountName(context, accountId);
-            final String accountScreenName = Utils.getAccountScreenName(context, accountId);
+            final String accountScreenName = DataStoreUtils.getAccountScreenName(context, accountId);
             final int idxMessageText = messageCursor.getColumnIndex(DirectMessages.TEXT_UNESCAPED),
                     idxMessageTimestamp = messageCursor.getColumnIndex(DirectMessages.MESSAGE_TIMESTAMP),
                     idxMessageId = messageCursor.getColumnIndex(DirectMessages.MESSAGE_ID),

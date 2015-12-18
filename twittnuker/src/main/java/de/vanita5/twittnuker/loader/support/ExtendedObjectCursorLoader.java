@@ -25,15 +25,10 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.net.Uri;
 
-import de.vanita5.twittnuker.loader.ObjectCursorLoader;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import org.mariotaku.library.objectcursor.ObjectCursor;
 
 public class ExtendedObjectCursorLoader<E> extends ObjectCursorLoader<E> implements IExtendedLoader {
-
-    public ExtendedObjectCursorLoader(Context context, Class<? extends ObjectCursor.CursorIndices<E>> indicesClass) {
-        super(context, indicesClass);
-    }
 
     public ExtendedObjectCursorLoader(Context context, Class<? extends ObjectCursor.CursorIndices<E>> indicesClass,
                                       Uri uri, String[] projection, String selection, String[] selectionArgs,

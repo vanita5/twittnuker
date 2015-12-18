@@ -27,6 +27,7 @@ import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.Endpoint;
 import org.mariotaku.restfu.http.RestHttpResponse;
 import org.mariotaku.restfu.http.mime.TypedData;
+import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
@@ -47,11 +48,13 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
@@ -112,7 +115,7 @@ public class StreamingService extends Service implements Constants {
 
         @Override
         public void onChange(final boolean selfChange, final Uri uri) {
-            if (!TwidereArrayUtils.contentMatch(mAccountIds, Utils.getActivatedAccountIds(StreamingService.this))) {
+            if (!TwidereArrayUtils.contentMatch(mAccountIds, DataStoreUtils.getActivatedAccountIds(StreamingService.this))) {
                 initStreaming();
             }
         }
@@ -329,11 +332,9 @@ public class StreamingService extends Service implements Constants {
 
         @Override
         public void onDeletionNotice(final StatusDeletionNotice statusDeletionNotice) {
-            final long status_id = statusDeletionNotice.getStatusId();
-            final String where = Statuses.STATUS_ID + " = " + status_id;
-            for (final Uri uri : STATUSES_URIS) {
-                resolver.delete(uri, where, null);
-            }
+            final long statusId = statusDeletionNotice.getStatusId();
+            resolver.delete(Statuses.CONTENT_URI, Expression.equals(Statuses.STATUS_ID, statusId).getSQL(), null);
+            resolver.delete(Activities.AboutMe.CONTENT_URI, Expression.equals(Activities.AboutMe.STATUS_ID, statusId).getSQL(), null);
         }
 
         @Override
@@ -427,9 +428,7 @@ public class StreamingService extends Service implements Constants {
                     + upToStatusId;
             final ContentValues values = new ContentValues();
             values.putNull(Statuses.LOCATION);
-            for (final Uri uri : STATUSES_URIS) {
-                resolver.update(uri, values, where, null);
-            }
+            resolver.update(Statuses.CONTENT_URI, values, where, null);
         }
 
         @Override

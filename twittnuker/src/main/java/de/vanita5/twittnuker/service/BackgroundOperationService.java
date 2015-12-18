@@ -78,7 +78,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.ListUtils;
+import de.vanita5.twittnuker.util.TwidereListUtils;
 import de.vanita5.twittnuker.util.MediaUploaderInterface;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.StatusCodeMessageUtils;
@@ -331,7 +331,7 @@ public class BackgroundOperationService extends IntentService implements Constan
             boolean failed = false;
             Exception exception = null;
             final Expression where = Expression.equals(Drafts._ID, draftId);
-            final List<Long> failedAccountIds = ListUtils.fromArray(ParcelableAccount.getAccountIds(item.accounts));
+            final List<Long> failedAccountIds = TwidereListUtils.fromArray(ParcelableAccount.getAccountIds(item.accounts));
 
             for (final SingleResponse<ParcelableStatus> response : result) {
                 final ParcelableStatus data = response.getData();
@@ -355,7 +355,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                     showErrorMessage(getString(R.string.status_is_duplicate), false);
                 } else {
                     final ContentValues accountIdsValues = new ContentValues();
-                    accountIdsValues.put(Drafts.ACCOUNT_IDS, ListUtils.toString(failedAccountIds, ',', false));
+                    accountIdsValues.put(Drafts.ACCOUNT_IDS, TwidereListUtils.toString(failedAccountIds, ',', false));
                     mResolver.update(Drafts.CONTENT_URI, accountIdsValues, where.getSQL(), null);
                     showErrorMessage(R.string.action_updating_status, exception, true);
                     final ContentValues notifValues = new ContentValues();

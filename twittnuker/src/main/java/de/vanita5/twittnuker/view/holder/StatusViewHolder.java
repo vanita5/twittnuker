@@ -40,7 +40,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -149,12 +148,12 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
 
     @Override
     public void displayStatus(final ParcelableStatus status, final boolean displayInReplyTo) {
-        displayStatus(status, null, displayInReplyTo, true);
+        displayStatus(status, displayInReplyTo, true);
     }
 
     @Override
-    public void displayStatus(@NonNull final ParcelableStatus status, @Nullable final TranslationResult translation,
-                              final boolean displayInReplyTo, final boolean shouldDisplayExtraType) {
+    public void displayStatus(@NonNull final ParcelableStatus status, final boolean displayInReplyTo,
+                              final boolean shouldDisplayExtraType) {
         final MediaLoaderWrapper loader = adapter.getMediaLoader();
         final AsyncTwitterWrapper twitter = adapter.getTwitterWrapper();
         final TwidereLinkify linkify = adapter.getTwidereLinkify();
@@ -270,9 +269,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         } else {
             mediaPreview.setVisibility(View.GONE);
         }
-        if (translation != null) {
-            textView.setText(translation.getText());
-        } else if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+        if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
             textView.setText(status.text_unescaped);
         } else {
             final Spanned text = HtmlSpanBuilder.fromHtml(status.text_html);

@@ -28,6 +28,7 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
 
 import java.io.IOException;
@@ -116,11 +117,10 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
 
     @JsonField(name = "possibly_sensitive")
     boolean possiblySensitive;
-    private Status mThat;
 
     public static void setQuotedStatus(Status status, Status quoted) {
-        if (!(status instanceof Status)) return;
-        ((Status) status).quotedStatus = quoted;
+        if (status == null) return;
+        status.quotedStatus = quoted;
     }
 
 
@@ -288,7 +288,6 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
 
 
     public int compareTo(@NonNull final Status that) {
-        mThat = that;
         final long delta = id - that.getId();
         if (delta < Integer.MIN_VALUE)
             return Integer.MIN_VALUE;
@@ -408,6 +407,10 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
     @OnJsonParseComplete
     void onJsonParseComplete() throws IOException {
         if (id <= 0 || text == null) throw new IOException("Malformed Status object");
+    }
+
+    public String getLang() {
+        return lang;
     }
 
     @JsonObject

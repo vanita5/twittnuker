@@ -20,10 +20,11 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/card_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
@@ -182,6 +183,38 @@
         tools:text="@string/sample_status_text"
         tools:visibility="visible"/>
 
+    <LinearLayout
+        android:id="@+id/translate_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <de.vanita5.twittnuker.view.ActionIconThemedTextView
+            android:id="@+id/translate_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackground"
+            android:drawableLeft="@drawable/ic_indicator_web"
+            android:drawablePadding="4dp"
+            android:drawableStart="@drawable/ic_indicator_web"
+            android:gravity="center_vertical"
+            android:padding="@dimen/element_spacing_normal"
+            android:singleLine="true"
+            android:text="@string/unknown_language"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="?android:textColorSecondary"/>
+
+        <TextView
+            android:id="@+id/translate_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/element_spacing_normal"
+            android:visibility="gone"
+            tools:text="@string/sample_status_text"/>
+    </LinearLayout>
+
     <de.vanita5.twittnuker.view.ForegroundColorView
         android:id="@+id/quote_indicator"
         android:layout_width="@dimen/element_spacing_small"
@@ -198,7 +231,7 @@
         android:id="@+id/quoted_name_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/text"
+        android:layout_below="@+id/translate_container"
         android:layout_toEndOf="@+id/quote_indicator"
         android:layout_toRightOf="@+id/quote_indicator"
         android:background="?selectableItemBackground"
@@ -435,11 +468,11 @@
                 tools:text="255"/>
 
             <de.vanita5.twittnuker.view.themed.ThemedTextView
+                android:id="@+id/favorites_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="@string/likes"
-                android:id="@+id/favorites_label"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="?android:textColorSecondary"/>
         </LinearLayout>
