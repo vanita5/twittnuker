@@ -608,7 +608,7 @@
     <string name="N_media_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g>  медійних файлів</string>
     <string name="delete_drafts_confirm">Видалити обрані чернетки?</string>
     <string name="extra_configurations">Додаткові налаштування</string>
-    <string name="click_item_to_config">Оберіть елемент для налаштування</string>
+    <string name="click_item_to_configure">Оберіть елемент для налаштування</string>
     <string name="dark_drawer">Темне вислизаюче меню</string>
     <string name="retweets_of_me">Ретвіти мене</string>
     <string name="from_gallery">З галереї</string>

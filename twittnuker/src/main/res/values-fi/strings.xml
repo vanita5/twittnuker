@@ -608,7 +608,7 @@
     <string name="N_media_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g> media</string>
     <string name="delete_drafts_confirm">Poistetaanko valittu luonnos?</string>
     <string name="extra_configurations">Lisäasetukset</string>
-    <string name="click_item_to_config">Määritä napauttamalla</string>
+    <string name="click_item_to_configure">Määritä napauttamalla</string>
     <string name="dark_drawer">Tumma vetolaatikko</string>
     <string name="retweets_of_me">Twiittieni uudelleentwiittaukset</string>
     <string name="from_gallery">Galleriasta</string>

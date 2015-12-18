@@ -18,7 +18,7 @@
     <string name="signing_oauth_base_url">Signierende OAuth Basis URL</string>
     <string name="signing_rest_base_url">Signierende REST Basis URL</string>
     <string name="api_url_format">API URL Format</string>
-    <string name="same_oauth_signing_url">Benutze die selbe URL für die OAuth Authentifizierung</string>
+    <string name="same_oauth_signing_url">Benutze die selbe URL für die OAuth Anmeldung</string>
     <string name="auth_type">Authentifizierungtyp</string>
     <string name="oauth">OAuth</string>
     <string name="xauth">xAuth</string>
@@ -41,7 +41,9 @@
     <string name="select_account">Account auswählen</string>
     <string name="username">Benutzername</string>
     <string name="password">Passwort</string>
+    <!--<string name="label_data_provider">Twittnuker Datenbankanbieter</string>-->
     <string name="label_refresh_service">Dienst aktualisieren</string>
+    <string name="label_streaming_service">Streaming Service</string>
     <string name="label_background_operation_service">Hintergrunddienst</string>
     <string name="open_in_browser">Im Browser öffnen</string>
     <string name="tap_to_load_more">Weitere Tweets laden</string>
@@ -217,6 +219,7 @@
     <string name="new_user_list">Neue Liste</string>
     <string name="is_public">Öffentlich</string>
     <string name="send_direct_message">Direktnachricht</string>
+    <!--<string name="extensions">Erweiterungen</string>-->
     <string name="uninstall">Deinstallieren</string>
     <string name="saved_searches">Gespeicherte Suchen</string>
     <string name="tabs">Tabs</string>
@@ -237,13 +240,16 @@
     <string name="home_refresh">Zu aktualisierende Timelines</string>
     <string name="home_refresh_summary">Timelines, die bei einem Refresh aktualisiert werden sollen</string>
     <string name="error_message_image_upload_failed">Bild-Upload schlug fehl.</string>
-    <string name="tweet_shortener">Tweet-Verkürzungsdienst</string>
+    <!--<string name="error_message_image_uploader_not_found">Bilderdienst nicht gefunden, möglicherweise wurde er deinstalliert.</string>-->
+    <!--<string name="image_upload_format">Tweet-Format mit Bild</string>-->
+    <!--<string name="image_upload_format_summary">\"[LINK]\" = Bild link\n\"[TEXT]\" = Text inhalt\n(Nur mit Erweiterung)</string>-->
     <string name="status_shortener">Tweet-Verkürzungsdienst</string>
     <string name="status_shortener_default">Nicht kürzen (Senden abbrechen)</string>
     <string name="error_message_status_too_long">Der Tweet ist zu lang.</string>
     <string name="error_message_message_too_long">Die Nachricht ist zu lang.</string>
     <string name="error_message_no_content">Kein Inhalt</string>
     <string name="error_message_tweet_shorten_failed">Tweet-Verkürzung schlug fehl.</string>
+    <!--<string name="error_message_tweet_shortener_not_found">Tweet-Verkürzungsdienst nicht gefunden. Vielleicht wurde er deinstalliert.</string>-->
     <string name="multimedia_contents">Multimedia Inhalt</string>
     <string name="show_absolute_time">Zeit anzeigen</string>
     <string name="show_absolute_time_summary">Zeitpunkt der Veröffentlichung von Tweets anzeigen statt vergangener Zeitspanne</string>
@@ -267,12 +273,12 @@
     <string name="activities_by_friends">Aktivitäten von Freunden</string>
     <string name="activity_about_me_favorite"><xliff:g id="user">%s</xliff:g> hat deinen Tweet favorisiert.</string>
     <string name="activity_about_me_favorite_multi"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> haben deinen Tweet favorisiert.</string>
-    <string name="activity_about_me_like"><xliff:g id="user">%s</xliff:g> gefällt dein Tweet.</string>
-    <string name="activity_about_me_like_multi"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> gefällt dein Tweet.</string>
     <string name="activity_about_me_favorited_retweet"><xliff:g id="user">%s</xliff:g> hat deinen Retweet favorisiert.</string>
     <string name="activity_about_me_favorited_retweet_multi"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> haben deinen Retweet favorisiert.</string>
+    <string name="activity_about_me_like"><xliff:g id="user">%s</xliff:g> gefällt dein Tweet.</string>
+    <string name="activity_about_me_like_multi"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> gefällt dein Tweet.</string>
     <string name="activity_about_me_liked_retweet"><xliff:g id="user">%s</xliff:g> gefällt dein Retweet.</string>
-    <string name="activity_about_me_liked_retweet_multi"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> gefäkkt dein Retweet.</string>
+    <string name="activity_about_me_liked_retweet_multi"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> gefällt dein Retweet.</string>
     <string name="activity_about_me_follow"><xliff:g id="user">%s</xliff:g> folgt dir.</string>
     <string name="activity_about_me_follow_multi"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> folgen dir.</string>
     <string name="activity_about_me_retweet"><xliff:g id="user">%s</xliff:g> hat deinen Tweet retweetet.</string>
@@ -282,7 +288,8 @@
     <string name="activity_about_me_retweeted_mention"><xliff:g id="user">%s</xliff:g> hat einen Tweet retweetet in dem du erwähnt wurdest.</string>
     <string name="activity_about_me_retweeted_mention_multi"><xliff:g id="user">%s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> haben einen Tweet retweetet in dem du erwähnt wurdest.</string>
     <string name="activity_about_me_favorited_mention"><xliff:g id="user">%s</xliff:g> hat einen Tweet favorisiert in dem du erwähnt wurdest.</string>
-    <string name="activity_about_me_favorited_mention_multi"><xliff:g id="user">%s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> haben einen Tweet favorisiert in dem du erwähnt wurdest.</string><string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> hat Dich zur Liste hinzugefügt.</string>
+    <string name="activity_about_me_favorited_mention_multi"><xliff:g id="user">%s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> haben einen Tweet favorisiert in dem du erwähnt wurdest.</string>
+    <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> hat Dich zur Liste hinzugefügt.</string>
     <string name="activity_about_me_liked_mention"><xliff:g id="user">%s</xliff:g> gefällt ein Tweet, in dem du erwähnt wurdest.</string>
     <string name="activity_about_me_liked_mention_multi"><xliff:g id="user">%s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> gefällt ein Tweet, in dem du erwähnt wurdest.</string>
     <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> hat Dich zur Liste <xliff:g id="list">%2$s</xliff:g> hinzugefügt.</string>
@@ -366,7 +373,18 @@
     <string name="small">Klein</string>
     <string name="and_more">und <xliff:g id="count">%d</xliff:g> weitere</string>
     <string name="clear_search_history">Suchbegriffe löschen</string>
+    <!--<string name="permission_description_none">Keine Erlaubnis notwendig</string>-->
+    <!--<string name="permission_description_refresh">Zeit zwischen Aktualisierungen (auch für Direct Messages)</string>-->
+    <!--<string name="permission_description_read">Tweet und zwischengespeicherter Inhalt wird gelesen</string>-->
+    <!--<string name="permission_description_write">In Datenbank schreiben, Status aktualisieren</string>-->
+    <!--<string name="permission_description_direct_messages">Lesen/Schreiben/Senden von Direct Messages</string>-->
+    <!--<string name="permission_description_accounts">Account-Informationen lesen</string>-->
+    <!--<string name="permission_description_preferences">Einstellungen einlesen</string>-->
+    <!--<string name="permissions_request">Bitte um Berechtigung</string>-->
+    <!--<string name="permissions_request_message">Die Anwendung erfordert folgende Berechtigungen</string>-->
+    <!--<string name="accept_permission_request">Akzeptieren</string>-->
     <string name="no_thanks">Nein, danke</string>
+    <!--<string name="revoke_permissions">Berechtigungen entziehen</string>-->
     <string name="fast_scroll_thumb">Schnelles scrollen</string>
     <string name="indicate_my_status">Kennzeichne deine Tweets</string>
     <string name="default_ringtone">Standard Klingelton</string>
@@ -407,7 +425,7 @@
     <string name="search_name_saved">Suche \"<xliff:g id="name">%s</xliff:g>\" gespeichert.</string>
     <string name="search_deleted">Suche gelöscht.</string>
     <string name="search_name_deleted">Suche \"<xliff:g id="name">%s</xliff:g>\" gelöscht.</string>
-    <string name="import_from">Importiere aus&#8230;</string>
+    <string name="import_from">Importiere aus…</string>
     <string name="link_to_quoted_status">Zitierten Tweet verlinken</string>
     <string name="quote_original_status">Tweet zitieren</string>
     <string name="followed_user">Folge <xliff:g id="user">%s</xliff:g>.</string>
@@ -423,15 +441,15 @@
     <string name="updated_list_details">Listendetails für \"<xliff:g id="list">%s</xliff:g>\" aktualisiert.</string>
     <string name="subscribed_to_list">Liste \"<xliff:g id="list">%s</xliff:g>\" abonniert.</string>
     <string name="unsubscribed_from_list">Listenabonnement von \"<xliff:g id="list">%s</xliff:g>\" entfernt.</string>
-    <string name="added_N_users_to_list_quantity_one"><xliff:g id="items">%1$d</xliff:g> Benutzer zur Liste \"<xliff:g id="list">%2$s</xliff:g>\" hinzugefügt.</string>
-    <string name="added_N_users_to_list_quantity_other"><xliff:g id="items">%1$d</xliff:g> Benutzer zur Liste \"<xliff:g id="list">%2$s</xliff:g>\" hinzugefügt.</string>
+    <string name="added_N_users_to_list_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="items">%1$d</xliff:g> Benutzer zur Liste \"<xliff:g id="list">%2$s</xliff:g>\" hinzugefügt.</string>
+    <string name="added_N_users_to_list_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%1$d</xliff:g> Benutzer zur Liste \"<xliff:g id="list">%2$s</xliff:g>\" hinzugefügt.</string>
     <string name="added_user_to_list"><xliff:g id="user">%1$s</xliff:g> zur Liste \"<xliff:g id="list">%2$s</xliff:g>\" hinzugefügt.</string>
     <string name="deleted_user_from_list"><xliff:g id="user">%1$s</xliff:g> von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernt.</string>
-    <string name="deleted_N_users_from_list_quantity_one"><xliff:g id="items">%1$d</xliff:g> Benutzer von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernt.</string>
-    <string name="deleted_N_users_from_list_quantity_other"><xliff:g id="items">%1$d</xliff:g> Benutzer von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernt.</string>
+    <string name="deleted_N_users_from_list_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="items">%1$d</xliff:g> Benutzer von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernt.</string>
+    <string name="deleted_N_users_from_list_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%1$d</xliff:g> Benutzer von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernt.</string>
     <string name="delete_user_from_list_confirm"><xliff:g id="user">%1$s</xliff:g> von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernen?</string>
-    <string name="delete_N_users_from_list_confirm_quantity_one"><xliff:g id="items">%1$d</xliff:g> Benutzer von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernen?</string>
-    <string name="delete_N_users_from_list_confirm_quantity_other"><xliff:g id="items">%1$d</xliff:g> Benutzer von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernen?</string>
+    <string name="delete_N_users_from_list_confirm_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="items">%1$d</xliff:g> Benutzer von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernen?</string>
+    <string name="delete_N_users_from_list_confirm_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%1$d</xliff:g> Benutzer von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernen?</string>
     <string name="subscribe">Abonnieren</string>
     <string name="unsubscribe">Abbestellen</string>
     <string name="background_toast_notification">Hintergrundbenachrichtigung</string>
@@ -442,8 +460,8 @@
     <string name="no_close_after_status_updated_summary">Lässt die Eingabemaske nach dem Senden eines Tweets geöffnet</string>
     <string name="status_saved_to_draft">Tweet zu den Entwürfen hinzugefügt.</string>
     <string name="default_account">Standard</string>
-    <string name="created_at_with_N_tweets_per_day_quantity_one"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> Tweet pro Tag)</string>
-    <string name="created_at_with_N_tweets_per_day_quantity_other"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> Tweets pro Tag)</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> Tweet pro Tag)</string>
+    <string name="created_at_with_N_tweets_per_day_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="created_at">%1$s</xliff:g> (<xliff:g id="daily_tweet">%2$d</xliff:g> Tweets pro Tag)</string>
     <string name="empty_content">Leerer Inhalt</string>
     <string name="fast_image_loading">Schnelleres Bilder laden</string>
     <string name="fast_image_loading_summary">Aktivieren um Bilder schneller zu laden, deaktiveren falls einige Bilder nicht angezeigt werden können</string>
@@ -542,12 +560,12 @@
     <string name="view_replies">Antworten ansehen</string>
     <string name="compact_cards">Kompakt anzeigen</string>
     <string name="compact_cards_summary">Mehr Tweets auf dem Bildschirm</string>
-    <string name="N_new_statuses_quantity_one"><xliff:g id="items">%d</xliff:g> neuer Tweet</string>
-    <string name="N_new_statuses_quantity_other"><xliff:g id="items">%d</xliff:g> neue Tweets</string>
-    <string name="N_new_mentions_quantity_one"><xliff:g id="items">%d</xliff:g> neue Erwähnung</string>
-    <string name="N_new_mentions_quantity_other"><xliff:g id="items">%d</xliff:g> neue Erwähnungen</string>
-    <string name="N_new_messages_quantity_one"><xliff:g id="items">%d</xliff:g> neue Unterhaltung</string>
-    <string name="N_new_messages_quantity_other"><xliff:g id="items">%d</xliff:g> neue Unterhaltungen</string>
+    <string name="N_new_statuses_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g> neuer Tweet</string>
+    <string name="N_new_statuses_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g> neue Tweets</string>
+    <string name="N_new_mentions_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g> neue Erwähnung</string>
+    <string name="N_new_mentions_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g> neue Erwähnungen</string>
+    <string name="N_new_messages_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g> neue Unterhaltung</string>
+    <string name="N_new_messages_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g> neue Unterhaltungen</string>
     <string name="status_share_subject_format_with_time">Tweet von <xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>) um <xliff:g id="time">%3$s</xliff:g></string>
     <string name="status_share_text_format_with_link"><xliff:g id="text">%1$s</xliff:g>\n\n<xliff:g id="link">%2$s</xliff:g></string>
     <string name="share_subject_format"><xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), um <xliff:g id="time">%3$s</xliff:g></string>
@@ -576,8 +594,9 @@
     <string name="denied_users_follow_request"><xliff:g id="user">%s</xliff:g>s Folgeanfrage abgelehnt.</string>
     <string name="import_settings">Einstellungen importieren</string>
     <string name="export_settings">Einstellungen exportieren</string>
-    <string name="export_settings_type_dialog_title">Einstellungen exportieren&#8230;</string>
-    <string name="import_settings_type_dialog_title">Einstellungen importieren&#8230;</string>
+    <string name="export_settings_type_dialog_title">Einstellungen exportieren…</string>
+    <string name="import_settings_type_dialog_title">Einstellungen importieren…</string>
+    <!--<string name="nicknames">Spitznamen</string>-->
     <string name="user_colors">Benutzer-Farbschema</string>
     <string name="import_export">Importieren/Exportieren</string>
     <string name="theme_background_alpha">Theme Hintergrund Transparenz</string>
@@ -601,8 +620,8 @@
     <string name="following_only">Nur Freunde</string>
     <string name="following_only_summary">Zeigt nur Notifications von Benutzern an, denen du folgst</string>
     <string name="new_direct_message">Neue Direktnachricht</string>
-    <string name="N_media_quantity_one"><xliff:g id="items">%d</xliff:g> Medien</string>
-    <string name="N_media_quantity_other"><xliff:g id="items">%d</xliff:g> Medien</string>
+    <string name="N_media_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g> Medien</string>
+    <string name="N_media_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g> Medien</string>
     <string name="from_camera">Von der Kamera</string>
     <string name="excluded">Ausgeschlossen</string>
     <string name="api_url_format_help">[DOMAIN]: API Domain.\nBeispiel: https://[DOMAIN].twitter.com/ wird ersetzt durch https://api.twitter.com/.</string>
@@ -740,7 +759,7 @@
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
     <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
     <string name="link_to_quoted_status_summary">Fügt beim Zitieren den Link zum originalen Tweet hinzu</string>
-    <string name="click_item_to_config">Account zum Konfigurieren auswählen</string>
+    <string name="click_item_to_configure">Account zum Konfigurieren auswählen</string>
     <string name="dark_drawer">Dunkles Sliding Menu</string>
     <string name="retweets_of_me">Meine Retweets</string>
 
@@ -799,7 +818,6 @@
     <string name="compose_now_summary">Neuen Tweet über die Google Now Verknüpfung schreiben (Lange die Home Taste drücken)</string>
     <string name="compose_now_action">Aktion bei der Verknüpfung</string>
     <string name="inverse_selection">Auswahl invertieren</string>
-    <string name="label_streaming_service">Streaming Service</string>
     <string name="no_version_suffix">API Version nicht anhängen</string>
     <string name="pebble_notifications_summary">Notifications an Pebble weiterleiten</string>
     <string name="project_name">Twittnuker Projekt</string>

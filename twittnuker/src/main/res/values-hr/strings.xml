@@ -368,6 +368,7 @@
     <string name="no_thanks">Ne, hvala</string>
     <!--<string name="revoke_permissions">Uskrati dopuštenja</string>-->
     <string name="fast_scroll_thumb">Palac za brzo pomicanje</string>
+  <string name="indicate_my_status">Naznačite svoje tweetove</string>
     <string name="default_ringtone">Zadani zvuk zvona</string>
     <string name="phishing_link_warning">Upozorenje o phishing linkovima</string>
     <string name="phishing_link_warning_summary">Upozorava vas kada pokušavate otvoriti mogući phishing link u izrvanoj poruci.</string>
@@ -607,7 +608,7 @@
     <string name="N_media_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g> medijskih datoteka</string>
     <string name="delete_drafts_confirm">Obrisati odabrane skice?</string>
     <string name="extra_configurations">Dodatne postavke</string>
-    <string name="click_item_to_config">Dodirnite stavku za postavljanje</string>
+    <string name="click_item_to_configure">Dodirnite stavku za postavljanje</string>
     <string name="dark_drawer">Tamna ladica</string>
     <string name="retweets_of_me">Moji rewteetovi</string>
     <string name="from_gallery">Iz galerije</string>

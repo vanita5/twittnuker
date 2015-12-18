@@ -614,7 +614,7 @@
     <string name="N_media_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g> 미디어</string>
     <string name="delete_drafts_confirm">선택된 보관된 트윗을 지울까요?</string>
     <string name="extra_configurations">추가 설정</string>
-    <string name="click_item_to_config">설정할 항목을 클릭하세요.</string>
+    <string name="click_item_to_configure">설정할 항목을 클릭하세요.</string>
     <string name="dark_drawer">어두운 드로어</string>
     <string name="retweets_of_me">리트윗된 내 트윗</string>
     <string name="from_gallery">갤러리로부터</string>

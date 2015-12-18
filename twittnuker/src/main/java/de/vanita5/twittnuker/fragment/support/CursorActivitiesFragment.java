@@ -52,7 +52,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.DataStoreUtils;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.AccountChangedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;

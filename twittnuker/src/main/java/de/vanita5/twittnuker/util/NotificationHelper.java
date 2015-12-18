@@ -42,9 +42,9 @@ import de.vanita5.twittnuker.receiver.NotificationActionReceiver;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
 import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
-import static de.vanita5.twittnuker.util.Utils.isOnWifi;
+import static de.vanita5.twittnuker.util.ConnectivityUtils.isOnWifi;
 
 public class NotificationHelper implements Constants {
 
