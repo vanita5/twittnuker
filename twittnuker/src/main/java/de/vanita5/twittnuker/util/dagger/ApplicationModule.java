@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ExternalThemeManager;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
@@ -79,6 +80,7 @@ public class ApplicationModule {
     private final UserColorNameManager userColorNameManager;
     private final KeyboardShortcutsHandler keyboardShortcutsHandler;
     private final NotificationManagerWrapper notificationManagerWrapper;
+    private final ExternalThemeManager externalThemeManager;
 
     public ApplicationModule(TwittnukerApplication application) {
         if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
@@ -109,6 +111,7 @@ public class ApplicationModule {
         keyboardShortcutsHandler = new KeyboardShortcutsHandler(application);
         asyncTwitterWrapper = new AsyncTwitterWrapper(application, asyncTaskManager,
                 sharedPreferences, bus, userColorNameManager);
+        externalThemeManager = new ExternalThemeManager(application);
     }
 
     public static ApplicationModule get(@NonNull Context context) {
@@ -135,6 +138,12 @@ public class ApplicationModule {
     }
 
     @Provides
+    public ExternalThemeManager getExternalThemeManager() {
+        return externalThemeManager;
+    }
+
+    @Provides
+
     public NotificationManagerWrapper getNotificationManagerWrapper() {
         return notificationManagerWrapper;
     }

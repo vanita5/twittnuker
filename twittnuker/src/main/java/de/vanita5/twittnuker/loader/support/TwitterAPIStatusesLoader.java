@@ -200,9 +200,8 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         try {
             return JsonSerializer.getSerializationFile(mContext, mSavedStatusesFileArgs);
         } catch (final IOException e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     private void saveCachedData(final File file, final List<ParcelableStatus> data) {
@@ -213,7 +212,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
             final List<ParcelableStatus> statuses = data.subList(0, Math.min(databaseItemLimit, data.size()));
             LoganSquare.serialize(statuses, new FileOutputStream(file), ParcelableStatus.class);
         } catch (final IOException e) {
-            e.printStackTrace();
+            // Ignore
         }
     }
 

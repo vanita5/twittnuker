@@ -27,6 +27,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
@@ -162,9 +163,9 @@ public class DataExportActivity extends ThemedFragmentActivity implements DataEx
                 DataImportExportUtils.exportData(mActivity, file, mFlags);
                 return true;
             } catch (final IOException e) {
-                e.printStackTrace();
+                Log.w(LOGTAG, e);
+                return false;
             }
-            return false;
         }
 
         @Override

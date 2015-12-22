@@ -449,6 +449,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                 updateTextCount();
                 break;
             }
+            /*
             case R.id.view: {
                 if (mInReplyToStatus == null) return false;
                 final DialogFragment fragment = new ViewStatusDialogFragment();
@@ -458,6 +459,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                 fragment.show(getSupportFragmentManager(), "view_status");
                 break;
             }
+            */
             case R.id.link_to_quoted_status: {
                 final boolean newValue = !item.isChecked();
                 item.setChecked(newValue);
@@ -1075,7 +1077,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
          */
         MenuUtils.setMenuItemAvailability(menu, R.id.take_photo, true); //always
         MenuUtils.setMenuItemAvailability(menu, R.id.add_image, true); //always
-        MenuUtils.setMenuItemAvailability(menu, R.id.view, hasInReplyTo);
+        //MenuUtils.setMenuItemAvailability(menu, R.id.view, hasInReplyTo);
         MenuUtils.setMenuItemAvailability(menu, R.id.media_menu, hasMedia);
         MenuUtils.setMenuItemAvailability(menu, R.id.toggle_sensitive, hasMedia);
         MenuUtils.setMenuItemAvailability(menu, R.id.link_to_quoted_status, isQuote());

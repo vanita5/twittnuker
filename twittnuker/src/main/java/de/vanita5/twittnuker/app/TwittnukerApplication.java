@@ -37,7 +37,6 @@ import android.support.annotation.NonNull;
 
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
-import com.squareup.okhttp.Dns;
 
 import org.acra.annotation.ReportsCrashes;
 import de.vanita5.twittnuker.BuildConfig;
@@ -45,17 +44,16 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.AssistLauncherActivity;
 import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
-import de.vanita5.twittnuker.util.AbsLogger;
+import de.vanita5.twittnuker.util.BugReporter;
 import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
-import de.vanita5.twittnuker.util.TwidereLogger;
+import de.vanita5.twittnuker.util.TwidereBugReporter;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache;
 import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
-import de.vanita5.twittnuker.util.net.TwidereDns;
 
 import java.io.File;
 import java.io.IOException;
@@ -153,8 +151,8 @@ public class TwittnukerApplication extends Application implements Constants,
     private void initBugReport() {
         final SharedPreferences preferences = getSharedPreferences();
         if (!preferences.getBoolean(KEY_BUG_REPORTS, true)) return;
-        AbsLogger.setImplementation(new TwidereLogger());
-        AbsLogger.init(this);
+        BugReporter.setImplementation(new TwidereBugReporter());
+        BugReporter.init(this);
     }
 
     private SharedPreferences getSharedPreferences() {

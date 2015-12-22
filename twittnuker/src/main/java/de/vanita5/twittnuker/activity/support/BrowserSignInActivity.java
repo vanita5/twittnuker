@@ -32,6 +32,7 @@ import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -102,6 +103,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressLint("AddJavascriptInterface")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -137,7 +139,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity {
             OAuthPasswordAuthenticator.readOAuthPINFromHtml(new StringReader(html), data);
             return data.oauthPin;
         } catch (final AttoParseException | IOException e) {
-            e.printStackTrace();
+            Log.w(LOGTAG, e);
         }
         return null;
     }
@@ -175,6 +177,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity {
             super.onLoadResource(view, url);
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public void onReceivedError(final WebView view, final int errorCode, final String description,
                                     final String failingUrl) {
@@ -248,7 +251,7 @@ public class BrowserSignInActivity extends BaseSupportDialogActivity {
                 final TwitterOAuth twitter = TwitterAPIFactory.getInstance(mActivity, endpoint, auth, TwitterOAuth.class);
                 return twitter.getRequestToken(OAUTH_CALLBACK_OOB);
             } catch (final Exception e) {
-                e.printStackTrace();
+                Log.w(LOGTAG, e);
             }
             return null;
         }

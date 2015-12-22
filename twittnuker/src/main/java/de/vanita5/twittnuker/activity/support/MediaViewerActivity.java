@@ -662,7 +662,7 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
 
         @Override
         public void onCompletion(MediaPlayer mp) {
-            mMediaPlayer = null;
+            updatePlayerState();
 //            mVideoViewProgress.removeCallbacks(mVideoProgressRunnable);
 //            mVideoViewProgress.setVisibility(View.GONE);
         }
@@ -802,17 +802,19 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
             switch (media.type) {
                 case ParcelableMedia.TYPE_VIDEO:
                 case ParcelableMedia.TYPE_ANIMATED_GIF: {
-                    if (media.video_info == null) return null;
+                    if (media.video_info == null) {
+                        return Pair.create(media.media_url, null);
+                    }
                     for (String supportedType : SUPPORTED_VIDEO_TYPES) {
                         for (Variant variant : media.video_info.variants) {
                             if (supportedType.equalsIgnoreCase(variant.content_type))
-                                return new Pair<>(variant.url, variant.content_type);
+                                return Pair.create(variant.url, variant.content_type);
                         }
                     }
                     return null;
                 }
                 case ParcelableMedia.TYPE_CARD_ANIMATED_GIF: {
-                    return new Pair<>(media.media_url, "video/mp4");
+                    return Pair.create(media.media_url, "video/mp4");
                 }
                 default: {
                     return null;
@@ -832,7 +834,10 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
             final Pair<String, String> urlAndType = mVideoUrlAndType;
             final boolean hasVideo = file != null && file.exists() && urlAndType != null;
             if (!hasVideo) return;
-            final String mimeType = urlAndType.second;
+            String mimeType = urlAndType.second;
+            if (mimeType == null) {
+                mimeType = "video/mp4";
+            }
             final MimeTypeMap map = MimeTypeMap.getSingleton();
             final String extension = map.getExtensionFromMimeType(mimeType);
             if (extension == null) return;

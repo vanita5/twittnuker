@@ -24,38 +24,40 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
+import android.util.Log;
 
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
-
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
+
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
 
 public class SavedSearchesLoader extends AsyncTaskLoader<ResponseList<SavedSearch>> {
 
-	private final long mAccountId;
+    private final long mAccountId;
 
-	public SavedSearchesLoader(final Context context, final long account_id) {
-		super(context);
-		mAccountId = account_id;
-	}
+    public SavedSearchesLoader(final Context context, final long account_id) {
+        super(context);
+        mAccountId = account_id;
+    }
 
-	@Override
-	public ResponseList<SavedSearch> loadInBackground() {
-		final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, false);
-		if (twitter == null) return null;
-		try {
-			return twitter.getSavedSearches();
-		} catch (final TwitterException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    @Override
+    public ResponseList<SavedSearch> loadInBackground() {
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, false);
+        if (twitter == null) return null;
+        try {
+            return twitter.getSavedSearches();
+        } catch (final TwitterException e) {
+            Log.w(LOGTAG, e);
+        }
+        return null;
+    }
 
-	@Override
-	public void onStartLoading() {
-		forceLoad();
-	}
+    @Override
+    public void onStartLoading() {
+        forceLoad();
+    }
 
 }

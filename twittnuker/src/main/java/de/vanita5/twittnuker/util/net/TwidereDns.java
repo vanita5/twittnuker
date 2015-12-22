@@ -30,6 +30,7 @@ import android.util.LruCache;
 
 import com.squareup.okhttp.Dns;
 
+import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -98,7 +99,7 @@ public class TwidereDns implements Constants, Dns {
             final String mappedAddr = mHostMapping.getString(host, null);
             if (mappedAddr != null) {
                 final InetAddress[] hostAddr = fromAddressString(originalHost, mappedAddr);
-                mHostCache.put(originalHost, hostAddr);
+                putCache(originalHost, hostAddr);
                 if (BuildConfig.DEBUG) {
                     Log.d(RESOLVER_LOGTAG, "Got mapped " + Arrays.toString(hostAddr));
                 }
@@ -107,7 +108,7 @@ public class TwidereDns implements Constants, Dns {
         }
         try {
             final InetAddress[] hostAddr = mResolver.resolve(host);
-            mHostCache.put(originalHost, hostAddr);
+            putCache(originalHost, hostAddr);
             if (BuildConfig.DEBUG) {
                 Log.d(RESOLVER_LOGTAG, "Got hosts " + Arrays.toString(hostAddr));
             }
@@ -118,7 +119,7 @@ public class TwidereDns implements Constants, Dns {
         final String customMappedHost = findHost(host);
         if (customMappedHost != null) {
             final InetAddress[] hostAddr = fromAddressString(originalHost, customMappedHost);
-            mHostCache.put(originalHost, hostAddr);
+            putCache(originalHost, hostAddr);
             if (BuildConfig.DEBUG) {
                 Log.d(RESOLVER_LOGTAG, "Got mapped address " + customMappedHost + " for host " + host);
             }
@@ -149,7 +150,7 @@ public class TwidereDns implements Constants, Dns {
             }
             if (!resolvedAddresses.isEmpty()) {
                 final InetAddress[] hostAddr = resolvedAddresses.toArray(new InetAddress[resolvedAddresses.size()]);
-                mHostCache.put(originalHost, hostAddr);
+                putCache(originalHost, hostAddr);
                 if (BuildConfig.DEBUG) {
                     Log.d(RESOLVER_LOGTAG, "Resolved " + Arrays.toString(hostAddr));
                 }
@@ -166,8 +167,13 @@ public class TwidereDns implements Constants, Dns {
             Log.w(RESOLVER_LOGTAG, "Resolve address " + host + " failed, using original host");
         }
         final InetAddress[] defaultAddresses = InetAddress.getAllByName(host);
-        mHostCache.put(host, defaultAddresses);
+        putCache(host, defaultAddresses);
         return defaultAddresses;
+    }
+
+    private void putCache(String host, InetAddress[] addresses) {
+        if (ArrayUtils.isEmpty(addresses) || ArrayUtils.contains(addresses, null)) return;
+        mHostCache.put(host, addresses);
     }
 
     private InetAddress[] fromAddressString(String host, String address) throws UnknownHostException {

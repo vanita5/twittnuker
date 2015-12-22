@@ -71,6 +71,7 @@ import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.net.NetworkUsageUtils;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -136,6 +137,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         final OkHttpClient client = new OkHttpClient();
         updateHttpClientConfiguration(prefs, client);
         client.setDns(dns);
+        NetworkUsageUtils.initForHttpClient(context, client);
         return new OkHttpRestClient(client);
     }
 

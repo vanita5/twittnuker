@@ -51,6 +51,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -724,10 +725,10 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
                 }
                 return authOAuth();
             } catch (final TwitterException e) {
-                e.printStackTrace();
+                Log.w(LOGTAG, e);
                 return new SignInResponse(false, false, e);
             } catch (final AuthenticationException e) {
-                e.printStackTrace();
+                Log.w(LOGTAG, e);
                 return new SignInResponse(false, false, e);
             }
         }

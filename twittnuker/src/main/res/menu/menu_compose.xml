@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <item
+    <!-- <item
         android:id="@id/view"
         android:icon="@drawable/ic_action_reply"
         android:title="@string/original_status"
         android:visible="false"
         app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
+        tools:ignore="AlwaysShowAction" /> -->
     <item
         android:id="@+id/add_hashtag"
         android:icon="@drawable/ic_action_hashtag"

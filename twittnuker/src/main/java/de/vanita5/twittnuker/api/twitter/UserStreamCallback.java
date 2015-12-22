@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.Warning;
 import de.vanita5.twittnuker.api.twitter.util.CRLFLineReader;
 import de.vanita5.twittnuker.api.twitter.util.JSONObjectType;
-import de.vanita5.twittnuker.util.AbsLogger;
+import de.vanita5.twittnuker.util.BugReporter;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -79,7 +79,7 @@ public abstract class UserStreamCallback implements RawCallback {
                         try {
                             onStatus(LoganSquare.mapperFor(Status.class).parse(rootNode.traverse()));
                         } catch (NullPointerException e) {
-                            AbsLogger.error("Streaming NPE -- " + e.getMessage(), e);
+                            BugReporter.error("Streaming NPE -- " + e.getMessage(), e);
                         }
                         break;
                     }

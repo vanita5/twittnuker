@@ -22,6 +22,13 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import com.bluelinelabs.logansquare.LoganSquare;
+import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+
+import java.io.IOException;
+
 /**
  * Created by mariotaku on 15/5/10.
  */
@@ -55,4 +62,18 @@ public class IDs extends TwitterResponseObject implements TwitterResponse, Curso
         return ids;
     }
 
+    public static class Converter implements TypeConverter<IDs> {
+        @Override
+        public IDs parse(JsonParser jsonParser) throws IOException {
+            return LoganSquare.mapperFor(IDs.class).parse(jsonParser);
+        }
+
+        @Override
+        public void serialize(IDs object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
+            if (writeFieldNameForObject) {
+                jsonGenerator.writeFieldName(fieldName);
+            }
+            LoganSquare.mapperFor(IDs.class).serialize(object, jsonGenerator, true);
+        }
+    }
 }

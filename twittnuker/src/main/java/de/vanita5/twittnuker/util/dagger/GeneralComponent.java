@@ -48,6 +48,7 @@ import de.vanita5.twittnuker.provider.TwidereDataProvider;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
+import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
@@ -107,4 +108,5 @@ public interface GeneralComponent {
 
     void inject(AccountsDashboardFragment.OptionItemsAdapter object);
 
+    void inject(EmojiSpannableFactory object);
 }

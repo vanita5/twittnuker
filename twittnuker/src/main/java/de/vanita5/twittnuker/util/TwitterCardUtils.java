@@ -28,6 +28,7 @@ import android.support.v4.app.Fragment;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
 import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity.ParcelableBindingValue;
 
@@ -41,6 +42,7 @@ public class TwitterCardUtils {
 
     @Nullable
     public static Fragment createCardFragment(ParcelableCardEntity card) {
+        if (card.name == null) return null;
         if (CARD_NAME_PLAYER.equals(card.name)) {
             final Fragment playerFragment = sFactory.createPlayerFragment(card);
             if (playerFragment != null) return playerFragment;
@@ -53,6 +55,8 @@ public class TwitterCardUtils {
             final Fragment playerFragment = sFactory.createAnimatedGifFragment(card);
             if (playerFragment != null) return playerFragment;
             return TwitterCardFragmentFactory.createGenericPlayerFragment(card);
+        } else if (CardPollFragment.isPoll(card.name)) {
+            return TwitterCardFragmentFactory.createCardPollFragment(card);
         }
         return null;
     }
@@ -80,6 +84,9 @@ public class TwitterCardUtils {
             case CARD_NAME_AUDIO: {
                 return true;
             }
+        }
+        if (CardPollFragment.isPoll(card.name)) {
+            return true;
         }
         return false;
     }

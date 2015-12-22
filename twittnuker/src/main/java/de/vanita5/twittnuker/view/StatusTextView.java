@@ -1,15 +1,13 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import de.vanita5.twittnuker.text.SafeSpannableString;
-import de.vanita5.twittnuker.text.SafeSpannableStringBuilder;
+import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
+import de.vanita5.twittnuker.text.util.SafeEditableFactory;
 import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
 public class StatusTextView extends ThemedTextView {
@@ -43,7 +41,7 @@ public class StatusTextView extends ThemedTextView {
 
     private void init() {
         setEditableFactory(new SafeEditableFactory());
-        setSpannableFactory(new SafeSpannableFactory());
+        setSpannableFactory(new EmojiSpannableFactory(this));
     }
 
     @Override
@@ -51,17 +49,4 @@ public class StatusTextView extends ThemedTextView {
         return LinkMovementMethod.getInstance();
     }
 
-    private class SafeEditableFactory extends Editable.Factory {
-        @Override
-        public Editable newEditable(CharSequence source) {
-            return new SafeSpannableStringBuilder(source);
-        }
-    }
-
-    private class SafeSpannableFactory extends Spannable.Factory {
-        @Override
-        public Spannable newSpannable(CharSequence source) {
-            return new SafeSpannableString(source);
-        }
-    }
 }

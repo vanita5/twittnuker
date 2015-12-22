@@ -34,17 +34,17 @@ import java.util.List;
 
 public abstract class ServicePickerPreference extends AutoInvalidateListPreference {
 
-	private final PackageManager mPackageManager;
+    private final PackageManager mPackageManager;
 
-	public ServicePickerPreference(final Context context) {
-		this(context, null);
-	}
+    public ServicePickerPreference(final Context context) {
+        this(context, null);
+    }
 
-	public ServicePickerPreference(final Context context, final AttributeSet attrs) {
-		super(context, attrs);
-		mPackageManager = context.getPackageManager();
-		init();
-	}
+    public ServicePickerPreference(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        mPackageManager = context.getPackageManager();
+        init();
+    }
 
     @Override
     public CharSequence getSummary() {
@@ -52,25 +52,25 @@ public abstract class ServicePickerPreference extends AutoInvalidateListPreferen
         return super.getSummary();
     }
 
-	protected abstract String getIntentAction();
+    protected abstract String getIntentAction();
 
-	protected abstract String getNoneEntry();
+    protected abstract String getNoneEntry();
 
-	private void init() {
-		final Intent queryIntent = new Intent(getIntentAction());
-		final List<ResolveInfo> infoList = mPackageManager.queryIntentServices(queryIntent, 0);
-		final int infoListSize = infoList.size();
-		final CharSequence[] entries = new CharSequence[infoListSize + 1], values = new CharSequence[infoListSize + 1];
-		entries[0] = getNoneEntry();
-		values[0] = "";
-		for (int i = 0; i < infoListSize; i++) {
-			final ResolveInfo info = infoList.get(i);
-			entries[i + 1] = info.loadLabel(mPackageManager);
-			values[i + 1] = new ComponentName(info.serviceInfo.packageName, info.serviceInfo.name).flattenToString();
-		}
-		setEntries(entries);
-		setEntryValues(values);
-	}
+    private void init() {
+        final Intent queryIntent = new Intent(getIntentAction());
+        final List<ResolveInfo> infoList = mPackageManager.queryIntentServices(queryIntent, 0);
+        final int infoListSize = infoList.size();
+        final CharSequence[] entries = new CharSequence[infoListSize + 1], values = new CharSequence[infoListSize + 1];
+        entries[0] = getNoneEntry();
+        values[0] = "";
+        for (int i = 0; i < infoListSize; i++) {
+            final ResolveInfo info = infoList.get(i);
+            entries[i + 1] = info.loadLabel(mPackageManager);
+            values[i + 1] = new ComponentName(info.serviceInfo.packageName, info.serviceInfo.name).flattenToString();
+        }
+        setEntries(entries);
+        setEntryValues(values);
+    }
 
     public static boolean isNoneValue(final String value) {
         return TextUtils.isEmpty(value) || "none".equals(value);

@@ -229,6 +229,7 @@ public interface IntentConstants {
     String EXTRA_MAKE_GAP = "make_gap";
     String EXTRA_QUOTE_ORIGINAL_STATUS = "quote_original_status";
     String EXTRA_KEY = "key";
+    String EXTRA_CARD = "card";
 
     /* Twittnuker */
     String EXTRA_HOTOTIN_EXPANDED_TEXT = "hototin_expanded_text";

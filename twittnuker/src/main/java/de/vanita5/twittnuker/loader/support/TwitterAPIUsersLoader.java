@@ -23,53 +23,54 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
-
-import de.vanita5.twittnuker.model.ParcelableUser;
-
-import java.util.Collections;
-import java.util.List;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
-import static de.vanita5.twittnuker.util.TwitterAPIFactory.getTwitterInstance;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
 
-	private final long mAccountId;
+    private final long mAccountId;
 
-	private final Context mContext;
+    private final Context mContext;
 
     public TwitterAPIUsersLoader(final Context context, final long accountId, final List<ParcelableUser> data, boolean fromUser) {
         super(context, data, fromUser);
-		mContext = context;
+        mContext = context;
         mAccountId = accountId;
-	}
+    }
 
-	@Override
-	public List<ParcelableUser> loadInBackground() {
-		final List<ParcelableUser> data = getData();
-		final List<User> users;
-		try {
-            users = getUsers(TwitterAPIFactory.getTwitterInstance(mContext, mAccountId, true));
-			if (users == null) return data;
-		} catch (final TwitterException e) {
-			e.printStackTrace();
-			return data;
-		}
-		int pos = data.size();
-		for (final User user : users) {
-			if (hasId(user.getId())) {
-				continue;
-			}
-			data.add(new ParcelableUser(user, mAccountId, pos));
-			pos++;
-		}
-		Collections.sort(data);
-		return data;
-	}
+    @Override
+    public List<ParcelableUser> loadInBackground() {
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountId, true);
+        if (twitter == null) return null;
+        final List<ParcelableUser> data = getData();
+        final List<User> users;
+        try {
+            users = getUsers(twitter);
+            if (users == null) return data;
+        } catch (final TwitterException e) {
+            Log.w(LOGTAG, e);
+            return data;
+        }
+        int pos = data.size();
+        for (final User user : users) {
+            if (hasId(user.getId())) {
+                continue;
+            }
+            data.add(new ParcelableUser(user, mAccountId, pos));
+            pos++;
+        }
+        Collections.sort(data);
+        return data;
+    }
 
-	protected abstract List<User> getUsers(Twitter twitter) throws TwitterException;
+    protected abstract List<User> getUsers(@NonNull Twitter twitter) throws TwitterException;
 }

@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 import de.vanita5.twittnuker.IStatusShortener;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
@@ -35,35 +36,35 @@ import de.vanita5.twittnuker.model.StatusShortenResult;
 
 public final class StatusShortenerInterface extends AbsServiceInterface<IStatusShortener> implements IStatusShortener {
 
-	protected StatusShortenerInterface(Context context, String shortenerName) {
-		super(context, shortenerName);
-	}
+    protected StatusShortenerInterface(Context context, String shortenerName) {
+        super(context, shortenerName);
+    }
 
-	@Override
-	protected IStatusShortener onServiceConnected(ComponentName service, IBinder obj) {
-		return IStatusShortener.Stub.asInterface(obj);
-	}
+    @Override
+    protected IStatusShortener onServiceConnected(ComponentName service, IBinder obj) {
+        return IStatusShortener.Stub.asInterface(obj);
+    }
 
-	@Override
-	public StatusShortenResult shorten(final ParcelableStatusUpdate status, final String overrideStatusText)
-			throws RemoteException {
-		final IStatusShortener iface = getInterface();
-		if (iface == null) return null;
-		try {
-			return iface.shorten(status, overrideStatusText);
-		} catch (final RemoteException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    @Override
+    public StatusShortenResult shorten(final ParcelableStatusUpdate status, final String overrideStatusText)
+            throws RemoteException {
+        final IStatusShortener iface = getInterface();
+        if (iface == null) return null;
+        try {
+            return iface.shorten(status, overrideStatusText);
+        } catch (final RemoteException e) {
+            Log.w(LOGTAG, e);
+        }
+        return null;
+    }
 
-	public static StatusShortenerInterface getInstance(final Application application, final String shortener_name) {
-		if (shortener_name == null) return null;
-		final Intent intent = new Intent(INTENT_ACTION_EXTENSION_SHORTEN_STATUS);
-		final ComponentName component = ComponentName.unflattenFromString(shortener_name);
-		intent.setComponent(component);
-		if (application.getPackageManager().queryIntentServices(intent, 0).size() != 1) return null;
-		return new StatusShortenerInterface(application, shortener_name);
-	}
+    public static StatusShortenerInterface getInstance(final Application application, final String shortener_name) {
+        if (shortener_name == null) return null;
+        final Intent intent = new Intent(INTENT_ACTION_EXTENSION_SHORTEN_STATUS);
+        final ComponentName component = ComponentName.unflattenFromString(shortener_name);
+        intent.setComponent(component);
+        if (application.getPackageManager().queryIntentServices(intent, 0).size() != 1) return null;
+        return new StatusShortenerInterface(application, shortener_name);
+    }
 
 }

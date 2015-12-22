@@ -30,40 +30,45 @@ import de.vanita5.twittnuker.util.support.ViewSupport;
 
 public class TwitterCardContainer extends FrameLayout {
 
-	private int mCardWidth, mCardHeight;
+    private int mCardWidth, mCardHeight;
 
-	public TwitterCardContainer(Context context) {
-		super(context);
-	}
+    public TwitterCardContainer(Context context) {
+        super(context);
+    }
 
-	public TwitterCardContainer(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public TwitterCardContainer(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public TwitterCardContainer(Context context, AttributeSet attrs, int defStyleAttr) {
-		super(context, attrs, defStyleAttr);
-	}
+    public TwitterCardContainer(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
 
-	public void setCardSize(int width, int height) {
-		mCardWidth = width;
-		mCardHeight = height;
-		if (!ViewSupport.isInLayout(this)) {
-			requestLayout();
-		}
-	}
+    public void setCardSize(int width, int height) {
+        mCardWidth = width;
+        mCardHeight = height;
+        if (!ViewSupport.isInLayout(this)) {
+            requestLayout();
+        }
+    }
 
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		final int measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
-		final int measuredHeight = MeasureSpec.getSize(heightMeasureSpec);
-		final int height;
-		if (mCardWidth != 0 && mCardHeight != 0) {
-			height = Math.round(measuredWidth * (mCardHeight / (float) mCardWidth));
-		} else {
-			height = measuredHeight;
-		}
-		final int newWidthMeasureSpec = MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY);
-		final int newHeightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
-		super.onMeasure(newWidthMeasureSpec, newHeightMeasureSpec);
-	}
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
+        final int measuredHeight = MeasureSpec.getSize(heightMeasureSpec);
+        final int height;
+        if (mCardWidth != 0 && mCardHeight != 0) {
+            height = Math.round(measuredWidth * (mCardHeight / (float) mCardWidth));
+        } else {
+            height = measuredHeight;
+        }
+        final int newWidthMeasureSpec = MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY);
+        final int newHeightMeasureSpec;
+        if (height != 0) {
+            newHeightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        } else {
+            newHeightMeasureSpec = heightMeasureSpec;
+        }
+        super.onMeasure(newWidthMeasureSpec, newHeightMeasureSpec);
+    }
 }
