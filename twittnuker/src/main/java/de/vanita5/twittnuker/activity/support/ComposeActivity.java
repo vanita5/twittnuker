@@ -104,6 +104,7 @@ import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.support.ViewStatusDialogFragment;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -448,7 +449,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                 updateTextCount();
                 break;
             }
-            /*
+
             case R.id.view: {
                 if (mInReplyToStatus == null) return false;
                 final DialogFragment fragment = new ViewStatusDialogFragment();
@@ -458,7 +459,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                 fragment.show(getSupportFragmentManager(), "view_status");
                 break;
             }
-            */
+
             case R.id.link_to_quoted_status: {
                 final boolean newValue = !item.isChecked();
                 item.setChecked(newValue);
@@ -1082,7 +1083,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
          */
         MenuUtils.setMenuItemAvailability(menu, R.id.take_photo, true); //always
         MenuUtils.setMenuItemAvailability(menu, R.id.add_image, true); //always
-        //MenuUtils.setMenuItemAvailability(menu, R.id.view, hasInReplyTo);
+        MenuUtils.setMenuItemAvailability(menu, R.id.view, hasInReplyTo);
         MenuUtils.setMenuItemAvailability(menu, R.id.media_menu, hasMedia);
         MenuUtils.setMenuItemAvailability(menu, R.id.toggle_sensitive, hasMedia);
         MenuUtils.setMenuItemAvailability(menu, R.id.link_to_quoted_status, isQuote());
