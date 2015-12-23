@@ -754,6 +754,8 @@
     <string name="login_verification_push_hint">Warte auf die Verifizierungsanfrage von der Twitter App und bestätige sie, um dich einzuloggen.</string>
     <string name="login_verification_failed">Login Verifizierung fehlgeschlagen.</string>
     <string name="saved_searches_already_saved_hint">Du hast diese Suche schon gespeichert</string>
+    <string name="system_default">Systemstandard</string>
+    <string name="emoji_support">Emoji Support</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

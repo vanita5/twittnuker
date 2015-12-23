@@ -6,6 +6,7 @@ import android.text.method.MovementMethod;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import de.vanita5.twittnuker.text.util.EmojiEditableFactory;
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
 import de.vanita5.twittnuker.text.util.SafeEditableFactory;
 import de.vanita5.twittnuker.view.themed.ThemedTextView;
@@ -40,7 +41,7 @@ public class StatusTextView extends ThemedTextView {
     }
 
     private void init() {
-        setEditableFactory(new SafeEditableFactory());
+        setEditableFactory(new EmojiEditableFactory(this));
         setSpannableFactory(new EmojiSpannableFactory(this));
     }
 

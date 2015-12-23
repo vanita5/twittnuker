@@ -72,10 +72,9 @@ import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.CharacterStyle;
 import android.text.style.ImageSpan;
-import android.text.style.MetricAffectingSpan;
-import android.text.style.URLSpan;
+import android.text.style.SuggestionSpan;
+import android.text.style.UpdateAppearance;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.ActionMode.Callback;
@@ -105,7 +104,6 @@ import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
-import de.vanita5.twittnuker.fragment.support.ViewStatusDialogFragment;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -119,6 +117,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.text.MarkForDeleteSpan;
+import de.vanita5.twittnuker.text.style.EmojiSpan;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
@@ -720,12 +719,16 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                 updateTextCount();
                 if (s instanceof Spannable && count == 1 && before == 0) {
                     final ImageSpan[] imageSpans = ((Spannable) s).getSpans(start, start + count, ImageSpan.class);
-                    if (imageSpans.length == 1) {
-                        final Intent intent = ThemedImagePickerActivity.withThemed(ComposeActivity.this)
-                                .getImage(Uri.parse(imageSpans[0].getSource())).build();
-                        startActivityForResult(intent, REQUEST_PICK_IMAGE);
+                    List<String> imageSources = new ArrayList<>();
+                    for (ImageSpan imageSpan : imageSpans) {
+                        imageSources.add(imageSpan.getSource());
                         ((Spannable) s).setSpan(new MarkForDeleteSpan(), start, start + count,
                                 Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
+                    if (!imageSources.isEmpty()) {
+                        final Intent intent = ThemedImagePickerActivity.withThemed(ComposeActivity.this)
+                                .getImage(Uri.parse(imageSources.get(0))).build();
+                        startActivityForResult(intent, REQUEST_PICK_IMAGE);
                     }
                 }
             }
@@ -738,13 +741,15 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                     s.delete(s.getSpanStart(delete), s.getSpanEnd(delete));
                     s.removeSpan(delete);
                 }
-                for (Object span : s.getSpans(0, s.length(), CharacterStyle.class)) {
-                    if (span instanceof URLSpan) {
-                        s.removeSpan(span);
-                    } else if (span instanceof MetricAffectingSpan) {
-                        s.removeSpan(span);
-                    }
+                for (Object span : s.getSpans(0, s.length(), UpdateAppearance.class)) {
+                    trimSpans(s, span);
                 }
+            }
+
+            private void trimSpans(Editable s, Object span) {
+                if (span instanceof EmojiSpan) return;
+                if (span instanceof SuggestionSpan) return;
+                s.removeSpan(span);
             }
         });
         mEditText.setCustomSelectionActionModeCallback(this);

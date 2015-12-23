@@ -60,4 +60,13 @@
             android:value="true" />
     </de.vanita5.twittnuker.preference.ThemeBackgroundPreference>
 
+    <de.vanita5.twittnuker.preference.EmojiSupportPreference
+        android:key="emoji_support"
+        android:order="26"
+        android:title="@string/emoji_support">
+        <extra
+            android:name="notify_change"
+            android:value="true"/>
+    </de.vanita5.twittnuker.preference.EmojiSupportPreference>
+
 </PreferenceScreen>

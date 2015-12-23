@@ -29,7 +29,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <meta-data
+            android:name="de.vanita5.twittnuker.extension.emoji"
+            android:value="true"/>
+        <meta-data
+            android:name="de.vanita5.twittnuker.extension.emoji.mipmap"
+            android:value="false"/>
 
+        <activity android:name=".AboutActivity">
+            <intent-filter>
+                <action android:name="de.vanita5.twittnuker.EMOJI_SUPPORT_ABOUT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

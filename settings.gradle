@@ -17,6 +17,8 @@ include 'services:webservice'
 */
 
 rootProject.name = 'twittnuker'
-include ':twittnuker', ':twittnuker.extension.emoji.noto', ':twittnuker.extension.emoji.noto'
+include ':twittnuker'
 include ':twittnuker.component.common'
+include ':twittnuker.extension.emoji.noto'
+include ':twittnuker.extension.emoji.apple'
 //include ':twittnuker.launcher.compose'
