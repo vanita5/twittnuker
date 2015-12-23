@@ -24,6 +24,8 @@ package de.vanita5.twittnuker.util;
 
 import android.support.annotation.NonNull;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 public final class CodePointArray {
 
     private final int[] codePoints;
@@ -66,5 +68,9 @@ public final class CodePointArray {
             sb.appendCodePoint(codePoints[i]);
         }
         return sb.toString();
+    }
+
+    public int[] subarray(int start, int end) {
+        return ArrayUtils.subarray(codePoints, start, end);
     }
 }
