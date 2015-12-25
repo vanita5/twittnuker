@@ -155,7 +155,7 @@ public class NotificationHelper implements Constants {
 
     private ParcelableStatus getParcelableStatusDummy(NotificationContent notification,
                                                       boolean is_retweet) {
-        ParcelableStatus status = new ParcelableStatus(null, notification.getAccountId(), false);
+        ParcelableStatus status = new ParcelableStatus();
         try {
             status.id = Long.parseLong(notification.getObjectId());
         } catch (NumberFormatException e) {
@@ -168,9 +168,12 @@ public class NotificationHelper implements Constants {
         }
         status.account_id = notification.getAccountId();
         status.user_screen_name = notification.getFromUser();
+        status.user_profile_image_url = notification.getProfileImageUrl();
         status.is_retweet = is_retweet;
         status.is_favorite = false;
         status.text_plain = notification.getMessage();
+        status.text_html = notification.getMessage();
+        status.timestamp = notification.getTimestamp();
 
         if (is_retweet) {
             try {

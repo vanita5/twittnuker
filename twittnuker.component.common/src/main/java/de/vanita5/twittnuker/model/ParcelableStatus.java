@@ -316,7 +316,7 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     };
 
 
-    ParcelableStatus() {
+    public ParcelableStatus() {
     }
 
     public ParcelableStatus(final Status orig, final long account_id, final boolean is_gap) {

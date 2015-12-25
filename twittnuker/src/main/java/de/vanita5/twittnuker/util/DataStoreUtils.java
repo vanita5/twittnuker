@@ -637,6 +637,8 @@ public class DataStoreUtils implements Constants {
                 return CachedTrends.Local.TABLE_NAME;
             case TwittnukerConstants.TABLE_ID_TABS:
                 return Tabs.TABLE_NAME;
+            case TwittnukerConstants.TABLE_ID_PUSH_NOTIFICATIONS:
+                return PushNotifications.TABLE_NAME;
             case TwittnukerConstants.TABLE_ID_CACHED_STATUSES:
                 return CachedStatuses.TABLE_NAME;
             case TwittnukerConstants.TABLE_ID_CACHED_USERS:
