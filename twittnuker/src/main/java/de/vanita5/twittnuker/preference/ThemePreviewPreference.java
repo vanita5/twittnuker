@@ -114,7 +114,6 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
         final View statusContentView = view.findViewById(R.id.theme_preview_status_content);
         final TextView retweetsCountView = (TextView) view.findViewById(R.id.retweets_count);
         final TextView favoritesCountView = (TextView) view.findViewById(R.id.favorites_count);
-        final TextView replyCountsView = (TextView) view.findViewById(R.id.replies_count);
         final CardView cardView = (CardView) view.findViewById(R.id.card);
 
         final int defaultTextSize = getDefaultTextSize(context);
@@ -181,9 +180,9 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
         if (favoritesCountView != null) {
             favoritesCountView.setText("4");
         }
-        if (replyCountsView != null) {
-            replyCountsView.setText("1");
-        }
+//        if (replyCountsView != null) {
+//            replyCountsView.setText("1");
+//        }
     }
 
     private static class DummyTouchInterceptor implements TouchInterceptor {

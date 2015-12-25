@@ -419,6 +419,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     @Override
     public Uri insert(@NonNull final Uri uri, final ContentValues values) {
         try {
+
+
             return insertInternal(uri, values);
         } catch (final SQLException e) {
             if (handleSQLException(e)) {

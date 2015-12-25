@@ -128,9 +128,7 @@ import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.OrderBy;
 import org.mariotaku.sqliteqb.library.RawItemArray;
 import org.mariotaku.sqliteqb.library.SQLFunctions;
-import org.mariotaku.sqliteqb.library.SQLQueryBuilder;
 import org.mariotaku.sqliteqb.library.Selectable;
-import org.mariotaku.sqliteqb.library.Table;
 import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 
@@ -207,31 +205,14 @@ import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
-import de.vanita5.twittnuker.provider.TwidereDataStore.CacheFiles;
-import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
-import de.vanita5.twittnuker.provider.TwidereDataStore.CachedImages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
-import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TwidereDataStore.DNS;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters.Users;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
-import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
-import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
-import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
-import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
-import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
@@ -246,7 +227,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -2711,7 +2691,7 @@ public final class Utils implements Constants {
         } else if (twitter.isDestroyingStatus(status.account_id, status.id)) {
             isMyRetweet = false;
         } else {
-            isMyRetweet = isMyRetweet(status);
+            isMyRetweet = status.retweeted || isMyRetweet(status);
         }
         final MenuItem delete = menu.findItem(R.id.delete);
         if (delete != null) {

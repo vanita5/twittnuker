@@ -25,11 +25,14 @@ package de.vanita5.twittnuker.fragment.support;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.nfc.NdefMessage;
@@ -46,6 +49,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManagerTrojan;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.ActionMenuView;
@@ -79,25 +83,35 @@ import android.widget.TextView;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.mariotaku.sqliteqb.library.Expression;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter.StatusAdapterListener;
+import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.loader.support.ParcelableStatusLoader;
 import de.vanita5.twittnuker.loader.support.StatusRepliesLoader;
 import de.vanita5.twittnuker.model.ListResponse;
+import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
+import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.CompareUtils;
@@ -145,6 +159,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     // Constants
     private static final int LOADER_ID_DETAIL_STATUS = 1;
     private static final int LOADER_ID_STATUS_REPLIES = 2;
+    private static final int LOADER_ID_STATUS_ACTIVITY = 3;
     private static final int STATE_LOADED = 1;
     private static final int STATE_LOADING = 2;
     private static final int STATE_ERROR = 3;
@@ -167,6 +182,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
     // Data fields
     private boolean mRepliesLoaderInitialized;
+    private boolean mActivityLoaderInitialized;
     private ParcelableStatus mSelectedStatus;
 
     // Listeners
@@ -225,6 +241,25 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         @Override
         public void onLoaderReset(Loader<List<ParcelableStatus>> loader) {
+
+        }
+    };
+    private LoaderCallbacks<StatusActivity> mStatusActivityLoaderCallback = new LoaderCallbacks<StatusActivity>() {
+        @Override
+        public Loader<StatusActivity> onCreateLoader(int id, Bundle args) {
+            final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+            final long statusId = args.getLong(EXTRA_STATUS_ID, -1);
+            return new StatusActivitySummaryLoader(getActivity(), accountId, statusId);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<StatusActivity> loader, StatusActivity data) {
+            mStatusAdapter.updateItemDecoration();
+            mStatusAdapter.setStatusActivity(data);
+        }
+
+        @Override
+        public void onLoaderReset(Loader<StatusActivity> loader) {
 
         }
     };
@@ -494,6 +529,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 mStatusAdapter.setReplies(null);
                 loadConversation(status);
                 loadReplies(status);
+                loadActivity(status);
 
                 final int position = mStatusAdapter.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS);
                 if (position != RecyclerView.NO_POSITION) {
@@ -583,6 +619,20 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         }
         getLoaderManager().initLoader(LOADER_ID_STATUS_REPLIES, args, mRepliesLoaderCallback);
         mRepliesLoaderInitialized = true;
+    }
+
+
+    private void loadActivity(ParcelableStatus status) {
+        if (status == null) return;
+        final Bundle args = new Bundle();
+        args.putLong(EXTRA_ACCOUNT_ID, status.account_id);
+        args.putLong(EXTRA_STATUS_ID, status.is_retweet ? status.retweet_id : status.id);
+        if (mActivityLoaderInitialized) {
+            getLoaderManager().restartLoader(LOADER_ID_STATUS_ACTIVITY, args, mStatusActivityLoaderCallback);
+            return;
+        }
+        getLoaderManager().initLoader(LOADER_ID_STATUS_ACTIVITY, args, mStatusActivityLoaderCallback);
+        mActivityLoaderInitialized = true;
     }
 
     private void loadTranslation(@Nullable ParcelableStatus status) {
@@ -854,8 +904,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final ImageView profileTypeView;
         private final TextView timeSourceView;
         private final TextView retweetedByView;
-        private final View repliesContainer, retweetsContainer, favoritesContainer;
-        private final TextView repliesCountView, retweetsCountView, favoritesCountView;
+        private final View retweetsContainer, favoritesContainer;
+        private final TextView retweetsCountView, favoritesCountView;
+        private final View countsContainer;
 
         private final TextView quoteOriginalLink;
         private final ColorLabelRelativeLayout profileContainer;
@@ -871,9 +922,10 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final TwitterCardContainer twitterCard;
         private final StatusLinkClickHandler linkClickHandler;
         private final TwidereLinkify linkify;
-        private final TextView favoritesLabel;
+        private final TextView retweetsLabel, favoritesLabel;
         private final View translateContainer;
         private final TextView translateResultView;
+        private final RecyclerView interactUsersView;
 
         public DetailStatusViewHolder(StatusAdapter adapter, View itemView) {
             super(itemView);
@@ -888,10 +940,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             profileTypeView = (ImageView) itemView.findViewById(R.id.profile_type);
             timeSourceView = (TextView) itemView.findViewById(R.id.time_source);
             retweetedByView = (TextView) itemView.findViewById(R.id.retweeted_by);
-            repliesContainer = itemView.findViewById(R.id.replies_container);
             retweetsContainer = itemView.findViewById(R.id.retweets_container);
             favoritesContainer = itemView.findViewById(R.id.favorites_container);
-            repliesCountView = (TextView) itemView.findViewById(R.id.replies_count);
             retweetsCountView = (TextView) itemView.findViewById(R.id.retweets_count);
             favoritesCountView = (TextView) itemView.findViewById(R.id.favorites_count);
             mediaPreviewContainer = itemView.findViewById(R.id.media_preview_container);
@@ -901,7 +951,10 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             quoteOriginalLink = (TextView) itemView.findViewById(R.id.quote_original_link);
             profileContainer = (ColorLabelRelativeLayout) itemView.findViewById(R.id.profile_container);
             twitterCard = (TwitterCardContainer) itemView.findViewById(R.id.twitter_card);
+            retweetsLabel = (TextView) itemView.findViewById(R.id.retweets_label);
             favoritesLabel = (TextView) itemView.findViewById(R.id.favorites_label);
+
+            countsContainer = itemView.findViewById(R.id.counts_container);
 
             quotedTextView = (TextView) itemView.findViewById(R.id.quoted_text);
             quotedNameView = (TextView) itemView.findViewById(R.id.quoted_name);
@@ -912,12 +965,14 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             translateContainer = itemView.findViewById(R.id.translate_container);
             translateResultView = (TextView) itemView.findViewById(R.id.translate_result);
 
-            setIsRecyclable(false);
+            interactUsersView = (RecyclerView) itemView.findViewById(R.id.interact_users);
+
             initViews();
         }
 
         public void displayStatus(@Nullable final ParcelableCredentials account,
                                   @Nullable final ParcelableStatus status,
+                                  @Nullable final StatusActivity statusActivity,
                                   @Nullable final TranslationResult translation) {
             if (account == null || status == null) return;
             final StatusFragment fragment = adapter.getFragment();
@@ -1020,13 +1075,33 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 locationView.setText(null);
             }
 
-            retweetsContainer.setVisibility(!status.user_is_protected ? View.VISIBLE : View.GONE);
-            repliesContainer.setVisibility(status.reply_count < 0 ? View.GONE : View.VISIBLE);
-            favoritesContainer.setVisibility(status.favorite_count < 0 ? View.GONE : View.VISIBLE);
+            final long retweetCount, favoriteCount;
+            if (statusActivity != null) {
+                retweetCount = statusActivity.getRetweetCount();
+                favoriteCount = statusActivity.getFavoriteCount();
+            } else {
+                retweetCount = status.retweet_count;
+                favoriteCount = status.favorite_count;
+            }
+
+            retweetsContainer.setVisibility(!status.user_is_protected && retweetCount > 0 ? View.VISIBLE : View.GONE);
+            favoritesContainer.setVisibility(favoriteCount > 0 ? View.VISIBLE : View.GONE);
+
+            if (retweetsContainer.getVisibility() == View.VISIBLE || favoritesContainer.getVisibility() == View.VISIBLE) {
+                countsContainer.setVisibility(View.VISIBLE);
+            } else {
+                countsContainer.setVisibility(View.GONE);
+            }
+
             final Locale locale = context.getResources().getConfiguration().locale;
-            repliesCountView.setText(Utils.getLocalizedNumber(locale, status.reply_count));
-            retweetsCountView.setText(Utils.getLocalizedNumber(locale, status.retweet_count));
-            favoritesCountView.setText(Utils.getLocalizedNumber(locale, status.favorite_count));
+
+            retweetsCountView.setText(Utils.getLocalizedNumber(locale, retweetCount));
+            favoritesCountView.setText(Utils.getLocalizedNumber(locale, favoriteCount));
+            final UserProfileImagesAdapter interactUsersAdapter = (UserProfileImagesAdapter) interactUsersView.getAdapter();
+            interactUsersAdapter.clear();
+            if (statusActivity != null && statusActivity.retweeters != null) {
+                interactUsersAdapter.addAll(statusActivity.retweeters);
+            }
 
             final ParcelableMedia[] media = Utils.getPrimaryMedia(status);
 
@@ -1215,10 +1290,26 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             translateLabelView.setTextSize(defaultTextSize * 0.85f);
             translateResultView.setTextSize(defaultTextSize * 1.05f);
 
+            retweetsCountView.setTextSize(defaultTextSize * 1.25f);
+            favoritesCountView.setTextSize(defaultTextSize * 1.25f);
+
+            retweetsLabel.setTextSize(defaultTextSize * 0.85f);
+            favoritesLabel.setTextSize(defaultTextSize * 0.85f);
+
             mediaPreview.setStyle(adapter.getMediaPreviewStyle());
 
             quotedTextView.setCustomSelectionActionModeCallback(new StatusActionModeCallback(quotedTextView, activity));
             textView.setCustomSelectionActionModeCallback(new StatusActionModeCallback(textView, activity));
+
+            final LinearLayoutManager layoutManager = new LinearLayoutManager(adapter.getContext());
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            interactUsersView.setLayoutManager(layoutManager);
+
+            if (adapter.isProfileImageEnabled()) {
+                interactUsersView.setAdapter(new UserProfileImagesAdapter(adapter.getContext()));
+            } else {
+                interactUsersView.setAdapter(null);
+            }
 
             if (adapter.shouldUseStarsForLikes()) {
                 favoritesLabel.setText(R.string.favorites);
@@ -1226,6 +1317,40 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         }
 
 
+        private static class UserProfileImagesAdapter extends ArrayRecyclerAdapter<ParcelableUser, ViewHolder> {
+            private final LayoutInflater mInflater;
+
+            public UserProfileImagesAdapter(Context context) {
+                super(context);
+                mInflater = LayoutInflater.from(context);
+            }
+
+            @Override
+            public void onBindViewHolder(ViewHolder holder, int position, ParcelableUser item) {
+                ((ProfileImageViewHolder) holder).displayUser(item);
+            }
+
+            @Override
+            public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new ProfileImageViewHolder(this, mInflater.inflate(R.layout.adapter_item_status_interact_user, parent, false));
+            }
+
+            static class ProfileImageViewHolder extends ViewHolder {
+
+                private final UserProfileImagesAdapter adapter;
+                private final ImageView profileImageView;
+
+                public ProfileImageViewHolder(UserProfileImagesAdapter adapter, View itemView) {
+                    super(itemView);
+                    profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
+                    this.adapter = adapter;
+                }
+
+                public void displayUser(ParcelableUser item) {
+                    adapter.getMediaLoader().displayProfileImage(profileImageView, item.profile_image_url);
+                }
+            }
+        }
     }
 
     private static class SpaceViewHolder extends ViewHolder {
@@ -1275,14 +1400,16 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private boolean mLoadMoreSupported;
         private boolean mLoadMoreIndicatorVisible;
         private boolean mDetailMediaExpanded;
+
         private ParcelableStatus mStatus;
+        private TranslationResult mTranslationResult;
+        private StatusActivity mStatusActivity;
         private ParcelableCredentials mStatusAccount;
         private List<ParcelableStatus> mConversation, mReplies;
         private StatusAdapterListener mStatusAdapterListener;
         private RecyclerView mRecyclerView;
         private CharSequence mReplyError, mConversationError;
         private boolean mRepliesLoading, mConversationsLoading;
-        private TranslationResult mTranslationResult;
 
         public StatusAdapter(StatusFragment fragment, boolean compact) {
             super(fragment.getContext());
@@ -1577,7 +1704,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 case VIEW_TYPE_DETAIL_STATUS: {
                     final ParcelableStatus status = getStatus(position);
                     final DetailStatusViewHolder detailHolder = (DetailStatusViewHolder) holder;
-                    detailHolder.displayStatus(getStatusAccount(), status, getTranslationResult());
+                    detailHolder.displayStatus(getStatusAccount(), status, mStatusActivity,
+                            getTranslationResult());
                     break;
                 }
                 case VIEW_TYPE_LIST_STATUS: {
@@ -1822,6 +1950,11 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return RecyclerView.NO_POSITION;
         }
 
+        public void setStatusActivity(StatusActivity activity) {
+            mStatusActivity = activity;
+            notifyDataSetChanged();
+        }
+
         public static class StatusErrorItemViewHolder extends ViewHolder {
             private final TextView textView;
 
@@ -1881,4 +2014,121 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
     }
 
+    public static class StatusActivitySummaryLoader extends AsyncTaskLoader<StatusActivity> {
+        private final long mAccountId;
+        private final long mStatusId;
+
+        public StatusActivitySummaryLoader(Context context, long accountId, long statusId) {
+            super(context);
+            mAccountId = accountId;
+            mStatusId = statusId;
+        }
+
+        @Override
+        public StatusActivity loadInBackground() {
+            final Context context = getContext();
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, mAccountId, true);
+            final Paging paging = new Paging();
+            final StatusActivity activitySummary = new StatusActivity();
+            final List<ParcelableUser> retweeters = new ArrayList<>();
+            try {
+                for (Status status : twitter.getRetweets(mStatusId, paging)) {
+                    retweeters.add(new ParcelableUser(status.getUser(), mAccountId));
+                }
+                activitySummary.setRetweeters(retweeters);
+                final ContentValues statusValues = new ContentValues();
+                final Status status = twitter.showStatus(mStatusId);
+                activitySummary.setFavoriteCount(status.getFavoriteCount());
+                activitySummary.setRetweetCount(status.getRetweetCount());
+                activitySummary.setReplyCount(status.getReplyCount());
+
+                statusValues.put(Statuses.REPLY_COUNT, activitySummary.replyCount);
+                statusValues.put(Statuses.FAVORITE_COUNT, activitySummary.favoriteCount);
+                statusValues.put(Statuses.RETWEET_COUNT, activitySummary.retweetCount);
+
+                final ContentResolver cr = context.getContentResolver();
+                final Expression statusWhere = Expression.or(
+                        Expression.equals(Statuses.STATUS_ID, mStatusId),
+                        Expression.equals(Statuses.RETWEET_ID, mStatusId)
+                );
+                cr.update(Statuses.CONTENT_URI, statusValues, statusWhere.getSQL(), null);
+                final Expression activityWhere = Expression.or(
+                        Expression.equals(Activities.STATUS_ID, mStatusId),
+                        Expression.equals(Activities.STATUS_RETWEET_ID, mStatusId)
+                );
+
+                final Cursor activityCursor = cr.query(Activities.AboutMe.CONTENT_URI,
+                        Activities.COLUMNS, activityWhere.getSQL(), null, null);
+                assert activityCursor != null;
+                try {
+                    activityCursor.moveToFirst();
+                    ParcelableActivityCursorIndices ci = new ParcelableActivityCursorIndices(activityCursor);
+                    while (!activityCursor.isAfterLast()) {
+                        final ParcelableActivity activity = ci.newObject(activityCursor);
+                        ParcelableStatus activityStatus = ParcelableActivity.getActivityStatus(activity);
+                        if (activityStatus != null) {
+                            activityStatus.favorite_count = activitySummary.favoriteCount;
+                            activityStatus.reply_count = activitySummary.replyCount;
+                            activityStatus.retweet_count = activitySummary.retweetCount;
+                        }
+                        cr.update(Activities.AboutMe.CONTENT_URI, ParcelableActivityValuesCreator.create(activity),
+                                Expression.equals(Activities._ID, activity._id).getSQL(), null);
+                        activityCursor.moveToNext();
+                    }
+                } finally {
+                    activityCursor.close();
+                }
+                return activitySummary;
+            } catch (TwitterException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onStartLoading() {
+            forceLoad();
+        }
+    }
+
+    public static class StatusActivity {
+
+        List<ParcelableUser> retweeters;
+
+        long favoriteCount;
+        long replyCount = -1;
+        long retweetCount;
+
+        public List<ParcelableUser> getRetweeters() {
+            return retweeters;
+        }
+
+        public void setRetweeters(List<ParcelableUser> retweeters) {
+            this.retweeters = retweeters;
+        }
+
+        public long getFavoriteCount() {
+            return favoriteCount;
+        }
+
+        public void setFavoriteCount(long favoriteCount) {
+            this.favoriteCount = favoriteCount;
+        }
+
+        public long getReplyCount() {
+            return replyCount;
+        }
+
+        public void setReplyCount(long repliersCount) {
+            this.replyCount = repliersCount;
+        }
+
+        public long getRetweetCount() {
+            return retweetCount;
+        }
+
+        public void setRetweetCount(long retweetCount) {
+            this.retweetCount = retweetCount;
+        }
+
+    }
 }
