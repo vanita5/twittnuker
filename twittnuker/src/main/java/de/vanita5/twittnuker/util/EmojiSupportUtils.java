@@ -26,10 +26,20 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.Spanned;
+import android.widget.TextView;
 
 import de.vanita5.twittnuker.text.style.EmojiSpan;
+import de.vanita5.twittnuker.text.util.EmojiEditableFactory;
+import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
 
 public class EmojiSupportUtils {
+
+    public static void initForTextView(TextView textView) {
+        if (textView.isInEditMode()) return;
+        textView.setSpannableFactory(new EmojiSpannableFactory(textView));
+        textView.setEditableFactory(new EmojiEditableFactory(textView));
+    }
+
     public static void applyEmoji(ExternalThemeManager manager, @NonNull Spannable text) {
         applyEmoji(manager, text, 0, text.length());
     }

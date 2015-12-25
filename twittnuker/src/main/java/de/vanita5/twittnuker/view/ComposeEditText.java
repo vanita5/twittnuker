@@ -36,8 +36,7 @@ import android.widget.AdapterView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
-import de.vanita5.twittnuker.text.util.EmojiEditableFactory;
-import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
+import de.vanita5.twittnuker.util.EmojiSupportUtils;
 import de.vanita5.twittnuker.util.widget.StatusTextTokenizer;
 import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView;
 
@@ -56,8 +55,7 @@ public class ComposeEditText extends AppCompatMultiAutoCompleteTextView implemen
 
     public ComposeEditText(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
-        setEditableFactory(new EmojiEditableFactory(this));
-        setSpannableFactory(new EmojiSpannableFactory(this));
+        EmojiSupportUtils.initForTextView(this);
         setTokenizer(new StatusTextTokenizer());
         setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
