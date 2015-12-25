@@ -1242,7 +1242,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private static final int VIEW_TYPE_CONVERSATION_LOAD_INDICATOR = 2;
         private static final int VIEW_TYPE_REPLIES_LOAD_INDICATOR = 3;
         private static final int VIEW_TYPE_REPLY_ERROR = 4;
-        private static final int VIEW_TYPE_SPACE = 5;
+        private static final int VIEW_TYPE_CONVERSATION_ERROR = 5;
+        private static final int VIEW_TYPE_SPACE = 6;
         private static final int ITEM_IDX_CONVERSATION_ERROR = 0;
         private static final int ITEM_IDX_CONVERSATION_LOAD_MORE = 1;
         private static final int ITEM_IDX_CONVERSATION = 2;
@@ -1279,7 +1280,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private List<ParcelableStatus> mConversation, mReplies;
         private StatusAdapterListener mStatusAdapterListener;
         private RecyclerView mRecyclerView;
-        private CharSequence mReplyError;
+        private CharSequence mReplyError, mConversationError;
         private boolean mRepliesLoading, mConversationsLoading;
         private TranslationResult mTranslationResult;
 
@@ -1594,6 +1595,11 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                     errorHolder.showError(mReplyError);
                     break;
                 }
+                case VIEW_TYPE_CONVERSATION_ERROR: {
+                    final StatusErrorItemViewHolder errorHolder = (StatusErrorItemViewHolder) holder;
+                    errorHolder.showError(mReplyError);
+                    break;
+                }
                 case VIEW_TYPE_CONVERSATION_LOAD_INDICATOR: {
                     LoadIndicatorViewHolder indicatorHolder = ((LoadIndicatorViewHolder) holder);
                     indicatorHolder.setLoadProgressVisible(mConversationsLoading);
@@ -1639,6 +1645,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 	return VIEW_TYPE_SPACE;
                 case ITEM_IDX_REPLY_ERROR:
                     return VIEW_TYPE_REPLY_ERROR;
+                case ITEM_IDX_CONVERSATION_ERROR:
+                    return VIEW_TYPE_CONVERSATION_ERROR;
             }
             throw new IllegalStateException();
         }
@@ -1760,6 +1768,12 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             updateItemDecoration();
         }
 
+        public void setConversationError(CharSequence error) {
+            mConversationError = error;
+            setCount(ITEM_IDX_CONVERSATION_ERROR, error != null ? 1 : 0);
+            updateItemDecoration();
+        }
+
         public void setReplies(List<ParcelableStatus> replies) {
             mReplies = replies;
             setCount(ITEM_IDX_REPLY, replies != null ? replies.size() : 0);
@@ -1836,7 +1850,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         @Override
         public int getDecoratedMeasuredHeight(View child) {
-            final int height = super.getDecoratedMeasuredHeight(child);
             int heightBeforeSpace = 0;
             if (getItemViewType(child) == StatusAdapter.VIEW_TYPE_SPACE) {
                 for (int i = 0, j = getChildCount(); i < j; i++) {
@@ -1856,7 +1869,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                     return Math.max(0, spaceHeight);
                 }
             }
-            return height;
+            return super.getDecoratedMeasuredHeight(child);
         }
 
         @Override

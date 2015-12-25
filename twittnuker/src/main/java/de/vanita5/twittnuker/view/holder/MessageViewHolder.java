@@ -29,7 +29,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Spanned;
-import android.text.method.ArrowKeyMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 
@@ -41,7 +40,6 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.StatusActionModeCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -58,7 +56,6 @@ public class MessageViewHolder extends ViewHolder implements OnMediaClickListene
     protected final MessageConversationAdapter adapter;
 
     private final int textColorPrimary, textColorPrimaryInverse, textColorSecondary, textColorSecondaryInverse;
-    private final StatusActionModeCallback callback;
 
 
     public MessageViewHolder(final MessageConversationAdapter adapter, final View itemView) {
@@ -78,7 +75,6 @@ public class MessageViewHolder extends ViewHolder implements OnMediaClickListene
         time = (TextView) itemView.findViewById(R.id.time);
         mediaContainer = (CardMediaContainer) itemView.findViewById(R.id.media_preview_container);
         mediaContainer.setStyle(adapter.getMediaPreviewStyle());
-        callback = new StatusActionModeCallback(textView, adapter.getContext());
     }
 
     public void displayMessage(Cursor cursor, ParcelableDirectMessageCursorIndices indices) {
@@ -95,10 +91,6 @@ public class MessageViewHolder extends ViewHolder implements OnMediaClickListene
         time.setText(Utils.formatToLongTimeString(context, timestamp));
         mediaContainer.setVisibility(media != null && media.length > 0 ? View.VISIBLE : View.GONE);
         mediaContainer.displayMedia(media, loader, accountId, true, this, adapter.getMediaLoadingHandler());
-
-        textView.setTextIsSelectable(true);
-        textView.setMovementMethod(ArrowKeyMovementMethod.getInstance());
-        textView.setCustomSelectionActionModeCallback(callback);
     }
 
     @Override

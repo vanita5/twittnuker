@@ -34,69 +34,71 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
+import java.lang.ref.WeakReference;
+
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
 import static de.vanita5.twittnuker.util.Utils.formatSameDayTime;
 
 public class ShortTimeView extends ThemedTextView implements Constants, OnSharedPreferenceChangeListener {
 
-	private static final long TICKER_DURATION = 5000L;
+    private static final long TICKER_DURATION = 5000L;
 
-	private final Runnable mTicker;
+    private final Runnable mTicker;
     private final SharedPreferences mPreferences;
-	private boolean mShowAbsoluteTime;
-	private long mTime;
+    private boolean mShowAbsoluteTime;
+    private long mTime;
 
-	public ShortTimeView(final Context context) {
-		this(context, null);
-	}
+    public ShortTimeView(final Context context) {
+        this(context, null);
+    }
 
-	public ShortTimeView(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.textViewStyle);
-	}
+    public ShortTimeView(final Context context, final AttributeSet attrs) {
+        this(context, attrs, android.R.attr.textViewStyle);
+    }
 
-	public ShortTimeView(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-		mTicker = new TickerRunnable(this);
+    public ShortTimeView(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+        mTicker = new TickerRunnable(this);
         if (!isInEditMode()) {
-			mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+            mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         } else {
             mPreferences = null;
         }
-		if (mPreferences != null) {
-			mPreferences.registerOnSharedPreferenceChangeListener(this);
-		}
-		updateTimeDisplayOption();
-	}
+        if (mPreferences != null) {
+            mPreferences.registerOnSharedPreferenceChangeListener(this);
+        }
+        updateTimeDisplayOption();
+    }
 
-	@Override
-	public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-		if (KEY_SHOW_ABSOLUTE_TIME.equals(key)) {
-			updateTimeDisplayOption();
-			invalidateTime();
-		}
-	}
+    @Override
+    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+        if (KEY_SHOW_ABSOLUTE_TIME.equals(key)) {
+            updateTimeDisplayOption();
+            invalidateTime();
+        }
+    }
 
-	public void setTime(final long time) {
-		mTime = time;
-		invalidateTime();
-	}
+    public void setTime(final long time) {
+        mTime = time;
+        invalidateTime();
+    }
 
-	@Override
-	protected void onAttachedToWindow() {
-		super.onAttachedToWindow();
-		post(mTicker);
-	}
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        post(mTicker);
+    }
 
-	@Override
-	protected void onDetachedFromWindow() {
-		removeCallbacks(mTicker);
-		super.onDetachedFromWindow();
-	}
+    @Override
+    protected void onDetachedFromWindow() {
+        removeCallbacks(mTicker);
+        super.onDetachedFromWindow();
+    }
 
-	private void invalidateTime() {
-		if (mShowAbsoluteTime) {
-			setText(formatSameDayTime(getContext(), mTime));
-		} else {
+    private void invalidateTime() {
+        if (mShowAbsoluteTime) {
+            setText(formatSameDayTime(getContext(), mTime));
+        } else {
             final long current = System.currentTimeMillis();
             if (Math.abs(current - mTime) > 60 * 1000) {
                 setText(getRelativeTimeSpanString(mTime, System.currentTimeMillis(),
@@ -104,31 +106,33 @@ public class ShortTimeView extends ThemedTextView implements Constants, OnShared
             } else {
                 setText(R.string.just_now);
             }
-		}
-	}
+        }
+    }
 
-	private void updateTimeDisplayOption() {
-		if (mPreferences == null) return;
-		mShowAbsoluteTime = mPreferences.getBoolean(KEY_SHOW_ABSOLUTE_TIME, false);
-	}
+    private void updateTimeDisplayOption() {
+        if (mPreferences == null) return;
+        mShowAbsoluteTime = mPreferences.getBoolean(KEY_SHOW_ABSOLUTE_TIME, false);
+    }
 
-	private static class TickerRunnable implements Runnable {
+    private static class TickerRunnable implements Runnable {
 
-		private final ShortTimeView mTextView;
+        private final WeakReference<ShortTimeView> mViewRef;
 
-		private TickerRunnable(final ShortTimeView view) {
-			mTextView = view;
-		}
+        private TickerRunnable(final ShortTimeView view) {
+            mViewRef = new WeakReference<>(view);
+        }
 
-		@Override
-		public void run() {
-			final Handler handler = mTextView.getHandler();
-			if (handler == null) return;
-			mTextView.invalidateTime();
-			final long now = SystemClock.uptimeMillis();
-			final long next = now + TICKER_DURATION - now % TICKER_DURATION;
-			handler.postAtTime(this, next);
-		}
-	}
+        @Override
+        public void run() {
+            final ShortTimeView view = mViewRef.get();
+            if (view == null) return;
+            final Handler handler = view.getHandler();
+            if (handler == null) return;
+            view.invalidateTime();
+            final long now = SystemClock.uptimeMillis();
+            final long next = now + TICKER_DURATION - now % TICKER_DURATION;
+            handler.postAtTime(this, next);
+        }
+    }
 
 }

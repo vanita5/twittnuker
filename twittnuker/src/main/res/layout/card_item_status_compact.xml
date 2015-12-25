@@ -20,10 +20,10 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<de.vanita5.twittnuker.view.ColorLabelFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorLabelFrameLayout android:id="@+id/item_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:background="?cardItemBackgroundColor">
@@ -160,7 +160,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="?android:attr/textColorPrimary"
                 android:visibility="visible"
-                app:nv_primaryTextStyle="bold"
                 tools:text="@string/sample_status_text"
                 tools:visibility="visible"/>
 

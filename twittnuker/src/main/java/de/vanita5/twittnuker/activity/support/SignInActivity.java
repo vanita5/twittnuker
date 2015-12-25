@@ -69,7 +69,6 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import org.mariotaku.restfu.http.Authorization;
 import org.mariotaku.restfu.http.Endpoint;
 import org.mariotaku.sqliteqb.library.Expression;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -104,6 +103,8 @@ import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
 import de.vanita5.twittnuker.util.view.ConsumerKeySecretValidator;
 import de.vanita5.twittnuker.view.TintedStatusNativeActionModeAwareLayout;
 import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
+
+import java.lang.ref.WeakReference;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createAccount;
@@ -581,14 +582,15 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
 
     public static abstract class AbstractSignInTask extends AsyncTask<Object, Runnable, SignInResponse> {
 
-        protected final SignInActivity activity;
+        protected final WeakReference<SignInActivity> activityRef;
 
         public AbstractSignInTask(final SignInActivity activity) {
-            this.activity = activity;
+            this.activityRef = new WeakReference<>(activity);
         }
 
         @Override
         protected void onPostExecute(final SignInResponse result) {
+            final SignInActivity activity = activityRef.get();
             if (activity != null) {
                 activity.onSignInResult(result);
             }
@@ -596,6 +598,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
 
         @Override
         protected void onPreExecute() {
+            final SignInActivity activity = activityRef.get();
             if (activity != null) {
                 activity.onSignInStart();
             }
@@ -734,6 +737,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         }
 
         private SignInResponse authBasic() throws TwitterException {
+            final SignInActivity activity = activityRef.get();
+            if (activity == null) return new SignInResponse(false, false, null);
             final String versionSuffix = noVersionSuffix ? null : "1.1";
             final Endpoint endpoint = new Endpoint(TwitterAPIFactory.getApiUrl(apiUrlFormat, "api", versionSuffix));
             final Authorization auth = new BasicAuthorization(username, password);
@@ -748,6 +753,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         }
 
         private SignInResponse authOAuth() throws AuthenticationException, TwitterException {
+            final SignInActivity activity = activityRef.get();
+            if (activity == null) return new SignInResponse(false, false, null);
             Endpoint endpoint = TwitterAPIFactory.getOAuthEndpoint(apiUrlFormat, "api", null, sameOAuthSigningUrl);
             OAuthAuthorization auth = new OAuthAuthorization(consumerKey.getOauthToken(), consumerKey.getOauthTokenSecret());
             final TwitterOAuth oauth = TwitterAPIFactory.getInstance(activity, endpoint, auth, TwitterOAuth.class);
@@ -766,6 +773,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         }
 
         private SignInResponse authTwipOMode() throws TwitterException {
+            final SignInActivity activity = activityRef.get();
+            if (activity == null) return new SignInResponse(false, false, null);
             final String versionSuffix = noVersionSuffix ? null : "1.1";
             final Endpoint endpoint = new Endpoint(TwitterAPIFactory.getApiUrl(apiUrlFormat, "api", versionSuffix));
             final Authorization auth = new EmptyAuthorization();
@@ -778,6 +787,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         }
 
         private SignInResponse authxAuth() throws TwitterException {
+            final SignInActivity activity = activityRef.get();
+            if (activity == null) return new SignInResponse(false, false, null);
             Endpoint endpoint = TwitterAPIFactory.getOAuthEndpoint(apiUrlFormat, "api", null, sameOAuthSigningUrl);
             OAuthAuthorization auth = new OAuthAuthorization(consumerKey.getOauthToken(), consumerKey.getOauthTokenSecret());
             final TwitterOAuth oauth = TwitterAPIFactory.getInstance(activity, endpoint, auth, TwitterOAuth.class);
@@ -804,6 +815,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
                 publishProgress(new Runnable() {
                     @Override
                     public void run() {
+                        final SignInActivity activity = activityRef.get();
+                        if (activity == null) return;
                         activity.dismissDialogFragment(FRAGMENT_TAG_SIGN_IN_PROGRESS);
                     }
                 });
@@ -811,6 +824,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
                 publishProgress(new Runnable() {
                     @Override
                     public void run() {
+                        final SignInActivity activity = activityRef.get();
+                        if (activity == null) return;
                         activity.postAfterFragmentResumed(new Runnable() {
                             @Override
                             public void run() {
@@ -834,6 +849,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
                 publishProgress(new Runnable() {
                     @Override
                     public void run() {
+                        final SignInActivity activity = activityRef.get();
+                        if (activity == null) return;
                         activity.showSignInProgressDialog();
                     }
                 });
