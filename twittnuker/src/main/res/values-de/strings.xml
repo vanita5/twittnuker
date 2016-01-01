@@ -687,6 +687,8 @@
     <string name="N_favorites_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> Favoriten</string>
     <string name="N_likes_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> Like</string>
     <string name="N_likes_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> Likes</string>
+    <string name="N_votes_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> Stimme</string>
+    <string name="N_votes_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> Stimmen</string>
     <string name="drafts_hint_messages">Keine Entwürfe</string>
     <string name="keyboard_shortcuts">Keyboard Shortcuts</string>
     <string name="keyboard_shortcut_hint">Tasten drücken</string>
@@ -756,6 +758,9 @@
     <string name="saved_searches_already_saved_hint">Du hast diese Suche schon gespeichert</string>
     <string name="system_default">Systemstandard</string>
     <string name="emoji_support">Emoji Support</string>
+    <string name="open_poll_in_official_app">Umfrage in der offiziellen Twitter App öffnen</string>
+    <string name="vote">Abstimmen</string>
+    <string name="poll_summary_format"><xliff:g id="poll_count">%s</xliff:g> · <xliff:g id="poll_time_left">%s</xliff:g></string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
