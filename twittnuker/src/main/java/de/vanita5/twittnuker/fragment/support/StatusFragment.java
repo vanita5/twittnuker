@@ -123,6 +123,7 @@ import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MenuUtils;
+import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Nullables;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
@@ -927,11 +928,11 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final TextView translateResultView;
         private final RecyclerView interactUsersView;
 
-        public DetailStatusViewHolder(StatusAdapter adapter, View itemView) {
+        public DetailStatusViewHolder(final StatusAdapter adapter, View itemView) {
             super(itemView);
-            this.linkClickHandler = new StatusLinkClickHandler(adapter.getContext(), null);
-            this.linkify = new TwidereLinkify(linkClickHandler);
             this.adapter = adapter;
+            this.linkClickHandler = new DetailStatusLinkClickHandler(adapter.getContext(), null, adapter);
+            this.linkify = new TwidereLinkify(linkClickHandler);
             menuBar = (ActionMenuView) itemView.findViewById(R.id.menu_bar);
             nameView = (TextView) itemView.findViewById(R.id.name);
             screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
@@ -1308,7 +1309,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             interactUsersView.setLayoutManager(layoutManager);
 
             if (adapter.isProfileImageEnabled()) {
-                interactUsersView.setAdapter(new UserProfileImagesAdapter(adapter.getContext()));
+                interactUsersView.setAdapter(new UserProfileImagesAdapter(fragment, adapter.getContext()));
             } else {
                 interactUsersView.setAdapter(null);
             }
@@ -1321,9 +1322,11 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         private static class UserProfileImagesAdapter extends ArrayRecyclerAdapter<ParcelableUser, ViewHolder> {
             private final LayoutInflater mInflater;
+            private final StatusFragment mFragment;
 
-            public UserProfileImagesAdapter(Context context) {
+            public UserProfileImagesAdapter(StatusFragment fragment, Context context) {
                 super(context);
+                mFragment = fragment;
                 mInflater = LayoutInflater.from(context);
             }
 
@@ -1337,7 +1340,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 return new ProfileImageViewHolder(this, mInflater.inflate(R.layout.adapter_item_status_interact_user, parent, false));
             }
 
-            static class ProfileImageViewHolder extends ViewHolder {
+            static class ProfileImageViewHolder extends ViewHolder implements OnClickListener {
 
                 private final UserProfileImagesAdapter adapter;
                 private final ImageView profileImageView;
@@ -1345,14 +1348,52 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 public ProfileImageViewHolder(UserProfileImagesAdapter adapter, View itemView) {
                     super(itemView);
                     profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
+                    itemView.setOnClickListener(this);
                     this.adapter = adapter;
                 }
 
                 public void displayUser(ParcelableUser item) {
                     adapter.getMediaLoader().displayProfileImage(profileImageView, item.profile_image_url);
+
+                }
+
+                @Override
+                public void onClick(View v) {
+                    adapter.notifyItemClick(getLayoutPosition());
                 }
             }
+
+            private void notifyItemClick(int position) {
+                mFragment.onUserClick(getItem(position));
+            }
         }
+
+        private static class DetailStatusLinkClickHandler extends StatusLinkClickHandler {
+            private final StatusAdapter adapter;
+
+            public DetailStatusLinkClickHandler(Context context, MultiSelectManager manager, StatusAdapter adapter) {
+                super(context, manager);
+                this.adapter = adapter;
+            }
+
+            @Override
+            public void onLinkClick(String link, String orig, long accountId, long extraId, int type, boolean sensitive, int start, int end) {
+                final ParcelableStatus status = adapter.getStatus();
+                if (status.media != null) {
+                    for (final ParcelableMedia media : status.media) {
+                        if (media.start == start && media.end == end) {
+                            adapter.setDetailMediaExpanded(true);
+                            return;
+                        }
+                    }
+                }
+                super.onLinkClick(link, orig, accountId, extraId, type, sensitive, start, end);
+            }
+        }
+    }
+
+    private void onUserClick(ParcelableUser user) {
+        Utils.openUserProfile(getContext(), user, null);
     }
 
     private static class SpaceViewHolder extends ViewHolder {
