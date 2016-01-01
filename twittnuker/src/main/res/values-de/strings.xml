@@ -759,7 +759,8 @@
     <string name="system_default">Systemstandard</string>
     <string name="emoji_support">Emoji Support</string>
     <string name="open_poll_in_official_app">Umfrage in der offiziellen Twitter App öffnen</string>
-    <string name="vote">Abstimmen</string>
+    <string name="action_vote">Abstimmen</string>
+    <string name="label_poll">Umfrage</string>
     <string name="poll_summary_format"><xliff:g id="poll_count">%s</xliff:g> · <xliff:g id="poll_time_left">%s</xliff:g></string>
 
     <!-- Twittnuker -->
