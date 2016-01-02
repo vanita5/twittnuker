@@ -52,8 +52,7 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.ActionIconThemedTextView;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.ForegroundColorView;
@@ -497,7 +496,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         }
 
         public DummyStatusHolderAdapter(Context context, TwidereLinkify linkify) {
-            DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
+            GeneralComponentHelper.build(context).inject(this);
             this.context = context;
             preferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
             handler = new MediaLoadingHandler(R.id.media_preview_progress);

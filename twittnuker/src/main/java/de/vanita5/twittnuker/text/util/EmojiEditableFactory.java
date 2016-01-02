@@ -29,8 +29,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.util.EmojiSupportUtils;
 import de.vanita5.twittnuker.util.ExternalThemeManager;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
 
@@ -40,7 +39,7 @@ public class EmojiEditableFactory extends SafeEditableFactory {
     ExternalThemeManager externalThemeManager;
 
     public EmojiEditableFactory(TextView textView) {
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(textView.getContext())).build().inject(this);
+        GeneralComponentHelper.build(textView.getContext()).inject(this);
     }
 
     @Override

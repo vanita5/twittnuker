@@ -45,7 +45,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -68,18 +67,19 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 
     private final Context mContext;
     private final SharedPreferencesWrapper mPreferences;
-    private final String mUserAgent;
     private final RestHttpClient mClient;
+
+    private final String mUserAgent;
+
     private final String mTwitterProfileImageSize;
 
-    public TwidereImageDownloader(final Context context, final RestHttpClient client) {
+    public TwidereImageDownloader(final Context context, SharedPreferencesWrapper preferences, RestHttpClient client) {
         super(context);
         mContext = context;
-        mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME,
-                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
+        mPreferences = preferences;
+        mClient = client;
         mTwitterProfileImageSize = context.getString(R.string.profile_image_size);
         mUserAgent = UserAgentUtils.getDefaultUserAgentString(context);
-        mClient = client;
         reloadConnectivitySettings();
     }
 

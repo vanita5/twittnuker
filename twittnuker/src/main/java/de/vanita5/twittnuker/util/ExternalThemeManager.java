@@ -28,15 +28,17 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.LruCache;
 
-import java.util.Locale;
-
 import de.vanita5.twittnuker.Constants;
 
+import java.util.Locale;
+
+import javax.inject.Singleton;
+
+@Singleton
 public class ExternalThemeManager implements Constants {
     private final Application application;
     private final SharedPreferencesWrapper preferences;

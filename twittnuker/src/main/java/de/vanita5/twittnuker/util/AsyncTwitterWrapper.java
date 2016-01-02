@@ -113,9 +113,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class AsyncTwitterWrapper extends TwitterWrapper {
 
     private final Context mContext;
+    private final ContentResolver mResolver;
+
     private final AsyncTaskManager mAsyncTaskManager;
     private final SharedPreferencesWrapper mPreferences;
-    private final ContentResolver mResolver;
     private final Bus mBus;
     private final UserColorNameManager mUserColorNameManager;
 
@@ -130,15 +131,13 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
     private CopyOnWriteArraySet<Long> mSendingDraftIds = new CopyOnWriteArraySet<>();
 
-    public AsyncTwitterWrapper(final Context context, final AsyncTaskManager manager,
-                               final SharedPreferencesWrapper preferences, final Bus bus,
-                               final UserColorNameManager userColorNameManager) {
+    public AsyncTwitterWrapper(Context context, UserColorNameManager userColorNameManager, Bus bus, SharedPreferencesWrapper preferences, AsyncTaskManager asyncTaskManager) {
         mContext = context;
-        mAsyncTaskManager = manager;
-        mPreferences = preferences;
         mResolver = context.getContentResolver();
-        mBus = bus;
         mUserColorNameManager = userColorNameManager;
+        mBus = bus;
+        mPreferences = preferences;
+        mAsyncTaskManager = asyncTaskManager;
     }
 
     public int acceptFriendshipAsync(final long accountId, final long userId) {

@@ -37,8 +37,7 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.holder.AccountViewHolder;
 
 import javax.inject.Inject;
@@ -67,7 +66,7 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
     public AccountsAdapter(final Context context) {
         super(context, R.layout.list_item_account, null, new String[]{Accounts.NAME},
                 new int[]{android.R.id.text1}, 0);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
+        GeneralComponentHelper.build(context).inject(this);
     }
 
     public ParcelableAccount getAccount(int position) {

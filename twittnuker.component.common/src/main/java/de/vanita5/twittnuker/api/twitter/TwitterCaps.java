@@ -26,24 +26,26 @@ import android.support.annotation.NonNull;
 
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Body;
 import org.mariotaku.restfu.annotation.param.Form;
 import org.mariotaku.restfu.annotation.param.Query;
-
+import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.model.CardDataMap;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
+import de.vanita5.twittnuker.api.twitter.model.CardResponse;
 import de.vanita5.twittnuker.api.twitter.model.CreateCardData;
 import de.vanita5.twittnuker.api.twitter.model.CreateCardResult;
+import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
 
 public interface TwitterCaps {
 
     @GET("/v2/capi/passthrough/1")
-    CardEntity getCard(@NonNull @Query("twitter:string:card_uri") String cardUri,
-                       @NonNull @Query("twitter:string:cards_platform") String cardsPlatform,
-                       @NonNull @Query("twitter:string:response_card_name") String responseCardName)
+    CardResponse getPassThrough(@Query CardDataMap params)
             throws TwitterException;
 
-    @GET("/v2/capi/passthrough/1")
-    CardEntity sendPassThrough(@Form CardDataMap data) throws TwitterException;
+    @POST("/v2/capi/passthrough/1")
+    @Body(BodyType.FORM)
+    CardResponse sendPassThrough(@Form CardDataMap params) throws TwitterException;
 
     @POST("/v2/cards/create.json")
     CreateCardResult createCard(@Form("card_data") CreateCardData cardData) throws TwitterException;

@@ -37,7 +37,6 @@ import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
-import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
@@ -45,8 +44,7 @@ import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 
 import java.util.ArrayList;
@@ -63,8 +61,6 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     // Utility classes
     @Inject
     protected KeyboardShortcutsHandler mKeyboardShortcutsHandler;
-    @Inject
-    protected ActivityTracker mActivityTracker;
     @Inject
     protected AsyncTwitterWrapper mTwitterWrapper;
     @Inject
@@ -178,7 +174,7 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
+        GeneralComponentHelper.build(this).inject(this);
     }
 
 

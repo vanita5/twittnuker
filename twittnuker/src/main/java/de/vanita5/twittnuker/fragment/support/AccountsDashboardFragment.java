@@ -105,8 +105,7 @@ import de.vanita5.twittnuker.util.TransitionUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.ShapedImageView;
 
 import java.util.ArrayList;
@@ -907,7 +906,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 
         OptionItemsAdapter(final Context context) {
             super(context, R.layout.list_item_dashboard_menu);
-            DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
+            GeneralComponentHelper.build(context).inject(this);
             mActionIconColor = ThemeUtils.getThemeForegroundColor(context);
         }
 

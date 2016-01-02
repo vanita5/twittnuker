@@ -35,7 +35,6 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
 import java.util.Map;
 import java.util.Set;
@@ -56,10 +55,6 @@ public class UserColorNameManager implements TwittnukerConstants {
 
         final SharedPreferences prefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
         prefs.registerOnSharedPreferenceChangeListener(new OnColorPreferenceChangeListener(listener));
-    }
-
-    public static UserColorNameManager getInstance(Context context) {
-        return ApplicationModule.get(context).getUserColorNameManager();
     }
 
     public void clearUserColor(final long userId) {

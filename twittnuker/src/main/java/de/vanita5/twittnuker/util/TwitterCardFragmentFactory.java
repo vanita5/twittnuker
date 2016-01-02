@@ -26,9 +26,9 @@ import android.support.v4.app.Fragment;
 
 import de.vanita5.twittnuker.fragment.support.card.CardBrowserFragment;
 import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
+import de.vanita5.twittnuker.model.ParcelableBindingValue;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity.ParcelableBindingValue;
+import de.vanita5.twittnuker.model.ParcelableCardEntity;
 
 import de.vanita5.twittnuker.api.twitter.model.CardEntity.BindingValue;
 

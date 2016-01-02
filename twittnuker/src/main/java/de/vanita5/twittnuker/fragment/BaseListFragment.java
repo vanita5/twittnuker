@@ -26,7 +26,6 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -38,11 +37,9 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
 
@@ -56,10 +53,11 @@ public class BaseListFragment extends ListFragment implements Constants, OnScrol
     private boolean mIsInstanceStateSaved;
     private boolean mReachedBottom, mNotReachedBottomBefore = true;
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(activity)).build().inject(this);
+        GeneralComponentHelper.build(activity).inject(this);
     }
 
     public final TwittnukerApplication getApplication() {

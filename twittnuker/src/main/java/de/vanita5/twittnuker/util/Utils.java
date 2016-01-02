@@ -3025,8 +3025,9 @@ public final class Utils implements Constants {
         return pm.getDrawable(info.packageName, info.metaData.getInt(key), info.applicationInfo);
     }
 
-    public static boolean handleMenuItemClick(Context context, Fragment fragment, FragmentManager fm, AsyncTwitterWrapper twitter, ParcelableStatus status, MenuItem item) {
-        final UserColorNameManager colorNameManager = UserColorNameManager.getInstance(context);
+    public static boolean handleMenuItemClick(Context context, Fragment fragment, FragmentManager fm,
+                                              UserColorNameManager colorNameManager, AsyncTwitterWrapper twitter,
+                                              ParcelableStatus status, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.copy: {
                 if (ClipboardUtils.setText(context, status.text_plain)) {

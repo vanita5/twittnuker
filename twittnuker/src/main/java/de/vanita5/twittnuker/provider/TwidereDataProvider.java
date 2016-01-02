@@ -123,8 +123,7 @@ import de.vanita5.twittnuker.util.UriExtraUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
 
 import java.io.File;
@@ -141,12 +140,12 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import static de.vanita5.twittnuker.util.DataStoreUtils.getTableId;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getTableNameById;
 import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
 import static de.vanita5.twittnuker.util.Utils.clearAccountName;
 import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
-import static de.vanita5.twittnuker.util.DataStoreUtils.getTableId;
-import static de.vanita5.twittnuker.util.DataStoreUtils.getTableNameById;
 import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 
 public final class TwidereDataProvider extends ContentProvider implements Constants, OnSharedPreferenceChangeListener,
@@ -419,8 +418,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     @Override
     public Uri insert(@NonNull final Uri uri, final ContentValues values) {
         try {
-
-
             return insertInternal(uri, values);
         } catch (final SQLException e) {
             if (handleSQLException(e)) {
@@ -575,7 +572,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     public boolean onCreate() {
         final Context context = getContext();
         assert context != null;
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
+        GeneralComponentHelper.build(context).inject(this);
         mHandler = new Handler(Looper.getMainLooper());
         mDatabaseWrapper = new SQLiteDatabaseWrapper(this);
         mNotificationHelper = new NotificationHelper(context);

@@ -36,8 +36,11 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.imageloader.AccountExtra;
 import de.vanita5.twittnuker.util.imageloader.OvalBitmapDisplayer;
 
+import javax.inject.Singleton;
+
 import static de.vanita5.twittnuker.util.Utils.getBestBannerUrl;
 
+@Singleton
 public class MediaLoaderWrapper implements Constants {
 
     private final ImageLoader mImageLoader;
@@ -45,11 +48,9 @@ public class MediaLoaderWrapper implements Constants {
     private final DisplayImageOptions mDashboardProfileImageDisplayOptions;
     private final DisplayImageOptions mOvalProfileImageDisplayOptions;
     private final DisplayImageOptions mImageDisplayOptions, mBannerDisplayOptions;
-    private final VideoLoader mVideoLoader;
 
-    public MediaLoaderWrapper(final ImageLoader imageLoader, VideoLoader videoLoader) {
-        mImageLoader = imageLoader;
-        mVideoLoader = videoLoader;
+    public MediaLoaderWrapper(final ImageLoader loader) {
+        mImageLoader = loader;
         final DisplayImageOptions.Builder profileOptsBuilder = new DisplayImageOptions.Builder();
         profileOptsBuilder.cacheInMemory(true);
         profileOptsBuilder.cacheOnDisk(true);

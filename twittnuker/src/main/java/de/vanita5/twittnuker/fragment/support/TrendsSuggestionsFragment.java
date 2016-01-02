@@ -49,14 +49,12 @@ import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
 public class TrendsSuggestionsFragment extends AbsContentListViewFragment<TrendsAdapter>
         implements LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
-    private SharedPreferences mPreferences;
 
 
     private long mAccountId;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
-        mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         super.onActivityCreated(savedInstanceState);
         mAccountId = getDefaultAccountId(getActivity());
         getListView().setOnItemClickListener(this);

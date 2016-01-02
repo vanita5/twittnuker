@@ -48,8 +48,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 
 import javax.inject.Inject;
@@ -158,7 +157,7 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
             StrictModeUtils.detectAllThreadPolicy();
         }
         super.onCreate(savedInstanceState);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
+        GeneralComponentHelper.build(this).inject(this);
     }
 
     @Override

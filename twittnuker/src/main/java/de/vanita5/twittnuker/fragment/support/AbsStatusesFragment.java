@@ -92,7 +92,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
                 return true;
             }
             return Utils.handleMenuItemClick(getActivity(), AbsStatusesFragment.this,
-                    getFragmentManager(), mTwitterWrapper, status, item);
+                    getFragmentManager(), mUserColorNameManager, mTwitterWrapper, status, item);
         }
     };
     private OnScrollListener mPauseOnScrollListener;

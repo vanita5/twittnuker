@@ -32,8 +32,7 @@ import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
 
@@ -56,10 +55,7 @@ public abstract class BaseRecyclerViewAdapter<VH extends RecyclerView.ViewHolder
     public BaseRecyclerViewAdapter(Context context) {
         mContext = context;
         //noinspection unchecked
-        DaggerGeneralComponent.builder()
-                .applicationModule(ApplicationModule.get(context))
-                .build()
-                .inject((BaseRecyclerViewAdapter<RecyclerView.ViewHolder>) this);
+        GeneralComponentHelper.build(context).inject((BaseRecyclerViewAdapter<RecyclerView.ViewHolder>) this);
     }
 
     @NonNull

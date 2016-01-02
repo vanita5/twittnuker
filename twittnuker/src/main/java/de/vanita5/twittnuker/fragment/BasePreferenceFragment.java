@@ -29,8 +29,7 @@ import android.preference.PreferenceFragment;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.UserColorNameManager;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
 
@@ -45,7 +44,7 @@ public class BasePreferenceFragment extends PreferenceFragment implements Consta
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(activity)).build().inject(this);
+        GeneralComponentHelper.build(activity).inject(this);
     }
 
     @Override

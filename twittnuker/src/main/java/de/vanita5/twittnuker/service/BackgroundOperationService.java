@@ -78,16 +78,15 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.TwidereListUtils;
 import de.vanita5.twittnuker.util.MediaUploaderInterface;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.StatusCodeMessageUtils;
 import de.vanita5.twittnuker.util.StatusShortenerInterface;
+import de.vanita5.twittnuker.util.TwidereListUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener;
 
@@ -131,7 +130,7 @@ public class BackgroundOperationService extends IntentService implements Constan
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
+        GeneralComponentHelper.build(this).inject(this);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
         mHandler = new Handler();
         mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);

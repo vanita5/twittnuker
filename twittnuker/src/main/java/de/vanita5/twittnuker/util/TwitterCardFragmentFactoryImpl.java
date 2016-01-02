@@ -30,8 +30,8 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity.ParcelableBindingValue;
+import de.vanita5.twittnuker.model.ParcelableBindingValue;
+import de.vanita5.twittnuker.model.ParcelableCardEntity;
 
 public final class TwitterCardFragmentFactoryImpl extends TwitterCardFragmentFactory {
 

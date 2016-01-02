@@ -34,8 +34,7 @@ import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import java.util.Collection;
 
@@ -65,7 +64,7 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter
     public BaseArrayAdapter(final Context context, final int layoutRes, final Collection<? extends T> collection) {
         super(context, layoutRes, collection);
         //noinspection unchecked
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject((BaseArrayAdapter<Object>) this);
+        GeneralComponentHelper.build(context).inject((BaseArrayAdapter<Object>) this);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
         mLinkify = new TwidereLinkify(new OnLinkClickHandler(context, mMultiSelectManager));
         mColorPrefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);

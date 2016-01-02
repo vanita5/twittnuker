@@ -37,19 +37,22 @@ import com.nostra13.universalimageloader.utils.IoUtils;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ImageValidator;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.imageloader.AccountFullImageExtra;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.inject.Inject;
+
 public class TileImageLoader extends AsyncTaskLoader<TileImageLoader.Result> {
 
     private final Uri mUri;
     private final Handler mHandler;
     private final DownloadListener mListener;
-    private final ImageDownloader mDownloader;
+    @Inject
+    ImageDownloader mDownloader;
     private final DiskCache mDiskCache;
 
     private final float mFallbackSize;
@@ -57,12 +60,12 @@ public class TileImageLoader extends AsyncTaskLoader<TileImageLoader.Result> {
 
     public TileImageLoader(final Context context, final DownloadListener listener, final long accountId, final Uri uri) {
         super(context);
+        GeneralComponentHelper.build(context).inject(this);
         mHandler = new Handler();
         mAccountId = accountId;
         mUri = uri;
         mListener = listener;
         final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mDownloader = ApplicationModule.get(context).getImageDownloader();
         mDiskCache = app.getFullDiskCache();
         final Resources res = context.getResources();
         final DisplayMetrics dm = res.getDisplayMetrics();

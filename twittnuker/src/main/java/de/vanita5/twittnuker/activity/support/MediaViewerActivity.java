@@ -92,7 +92,7 @@ import de.vanita5.twittnuker.util.PermissionUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwitterCardFragmentFactory;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.VideoLoader.VideoLoadingListener;
+import de.vanita5.twittnuker.util.VideoLoadingListener;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -707,7 +707,8 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
             Pair<String, String> urlAndType = getBestVideoUrlAndType(getMedia());
             if (urlAndType == null || urlAndType.first == null) return;
             mVideoUrlAndType = urlAndType;
-            mVideoLoader.loadVideo(urlAndType.first, forceReload, this);
+//            mHttpProxyCacheServer.getProxyUrl()
+//            mVideoLoader.loadVideo(urlAndType.first, forceReload, this);
         }
 
         @Override
@@ -1005,7 +1006,8 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
             super.onPrepareOptionsMenu(menu);
             final File file = mVideoFile;
             final Pair<String, String> linkAndType = mVideoUrlAndType;
-            final boolean isLoading = linkAndType != null && mVideoLoader.isLoading(linkAndType.first);
+//            final boolean isLoading = linkAndType != null && mVideoLoader.isLoading(linkAndType.first);
+            final boolean isLoading = linkAndType != null;
             final boolean hasVideo = file != null && file.exists() && linkAndType != null && mMediaPlayerError == 0;
             MenuUtils.setMenuItemAvailability(menu, R.id.refresh, !hasVideo && !isLoading);
             MenuUtils.setMenuItemAvailability(menu, R.id.share, hasVideo && !isLoading);

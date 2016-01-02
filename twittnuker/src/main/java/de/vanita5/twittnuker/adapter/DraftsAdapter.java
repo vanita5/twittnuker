@@ -41,8 +41,7 @@ import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.holder.DraftViewHolder;
 
 import javax.inject.Inject;
@@ -63,7 +62,7 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
 
     public DraftsAdapter(final Context context) {
         super(context, R.layout.list_item_draft, null, new String[0], new int[0], 0);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
+        GeneralComponentHelper.build(context).inject(this);
         mMediaLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
     }

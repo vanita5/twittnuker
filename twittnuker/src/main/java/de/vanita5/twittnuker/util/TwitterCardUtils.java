@@ -27,8 +27,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
+import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
 
 public class TwitterCardUtils {
 
@@ -54,7 +54,7 @@ public class TwitterCardUtils {
             final Fragment playerFragment = sFactory.createAnimatedGifFragment(card);
             if (playerFragment != null) return playerFragment;
             return TwitterCardFragmentFactory.createGenericPlayerFragment(card);
-        } else if (CardPollFragment.isPoll(card.name)) {
+        } else if (CardPollFragment.isPoll(card)) {
             return TwitterCardFragmentFactory.createCardPollFragment(status);
         }
         return null;
@@ -80,14 +80,14 @@ public class TwitterCardUtils {
                 return true;
             }
         }
-        if (CardPollFragment.isPoll(status.card_name)) {
+        if (CardPollFragment.isPoll(status.card)) {
             return true;
         }
         return false;
     }
 
     public static boolean isPoll(ParcelableStatus status) {
-        if (status.card_name == null) return false;
-        return CardPollFragment.isPoll(status.card_name);
+        if (status.card_name == null || status.card == null) return false;
+        return CardPollFragment.isPoll(status.card);
     }
 }

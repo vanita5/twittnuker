@@ -61,6 +61,7 @@ import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -136,7 +137,8 @@ public class StreamingService extends Service implements Constants {
         if (BuildConfig.DEBUG) {
             Log.d(Constants.LOGTAG, "Stream service started.");
         }
-        mTwitterWrapper = ApplicationModule.get(this).getAsyncTwitterWrapper();
+        DependencyHolder holder = new DependencyHolder(this);
+        mTwitterWrapper = holder.getAsyncTwitterWrapper();
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);

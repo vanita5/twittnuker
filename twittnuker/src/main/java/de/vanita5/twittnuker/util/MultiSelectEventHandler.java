@@ -42,8 +42,7 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +54,6 @@ import java.util.TreeSet;
 
 import javax.inject.Inject;
 
-import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenNames;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
 import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
@@ -77,7 +75,7 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
     public static final int MENU_GROUP = 201;
 
     public MultiSelectEventHandler(final BaseAppCompatActivity activity) {
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(activity)).build().inject(this);
+        GeneralComponentHelper.build(activity).inject(this);
         mActivity = activity;
     }
 

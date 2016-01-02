@@ -33,7 +33,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -70,11 +69,11 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
 
@@ -411,16 +410,16 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
 
             @Inject
             UserColorNameManager mUserColorNameManager;
+            @Inject
+            SharedPreferencesWrapper mPreferences;
 
             private final boolean mNameFirst;
             private int mUserIdIdx, mNameIdx, mScreenNameIdx;
 
             FilterUsersListAdapter(final Context context) {
                 super(context, android.R.layout.simple_list_item_activated_1, null, new String[0], new int[0], 0);
-                DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
-                final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
-                        Context.MODE_PRIVATE);
-                mNameFirst = prefs.getBoolean(KEY_NAME_FIRST, true);
+                GeneralComponentHelper.build(context).inject(this);
+                mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
             }
 
             @Override

@@ -52,12 +52,13 @@ import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.BugReporter;
 import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.ExternalThemeManager;
-import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.TwidereBugReporter;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache;
 import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
 import de.vanita5.twittnuker.util.net.TwidereDns;
@@ -105,7 +106,7 @@ public class TwittnukerApplication extends Application implements Constants,
     public void initKeyboardShortcuts() {
         final SharedPreferences preferences = getSharedPreferences();
         if (!preferences.getBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, false)) {
-            getApplicationModule().getKeyboardShortcutsHandler().reset();
+//            getApplicationModule().getKeyboardShortcutsHandler().reset();
             preferences.edit().putBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, true).apply();
         }
     }
@@ -147,7 +148,8 @@ public class TwittnukerApplication extends Application implements Constants,
 
         reloadConnectivitySettings();
 
-        registerActivityLifecycleCallbacks(getApplicationModule().getActivityTracker());
+        DependencyHolder holder = DependencyHolder.get(this);
+        registerActivityLifecycleCallbacks(holder.getActivityTracker());
 
         final IntentFilter packageFilter = new IntentFilter();
         packageFilter.addAction(Intent.ACTION_PACKAGE_CHANGED);
@@ -159,7 +161,8 @@ public class TwittnukerApplication extends Application implements Constants,
             public void onReceive(Context context, Intent intent) {
                 final int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
                 final String[] packages = getPackageManager().getPackagesForUid(uid);
-                final ExternalThemeManager manager = getApplicationModule().getExternalThemeManager();
+                DependencyHolder holder = DependencyHolder.get(context);
+                final ExternalThemeManager manager = holder.getExternalThemeManager();
                 if (ArrayUtils.contains(packages, manager.getEmojiPackageName())) {
                     manager.reloadEmojiPreferences();
                 }
@@ -227,13 +230,14 @@ public class TwittnukerApplication extends Application implements Constants,
                 editor.apply();
                 break;
             case KEY_EMOJI_SUPPORT:
-                getApplicationModule().getExternalThemeManager().initEmojiSupport();
+                DependencyHolder.get(this).getExternalThemeManager().initEmojiSupport();
                 break;
         }
     }
 
     private void reloadDnsSettings() {
-        final Dns dns = getApplicationModule().getDns();
+        DependencyHolder holder = DependencyHolder.get(this);
+        final Dns dns = holder.getDns();
         if (dns instanceof TwidereDns) {
             ((TwidereDns) dns).reloadDnsSettings();
         }

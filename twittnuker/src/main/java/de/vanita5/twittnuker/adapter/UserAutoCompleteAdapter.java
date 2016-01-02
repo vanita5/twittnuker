@@ -40,8 +40,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.ProfileImageView;
 
 import javax.inject.Inject;
@@ -67,7 +66,7 @@ public class UserAutoCompleteAdapter extends SimpleCursorAdapter implements Cons
 
     public UserAutoCompleteAdapter(final Context context) {
         super(context, R.layout.list_item_auto_complete, null, FROM, TO, 0);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
+        GeneralComponentHelper.build(context).inject(this);
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
     }
 
