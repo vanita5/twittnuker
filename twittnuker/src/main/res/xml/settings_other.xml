@@ -6,4 +6,11 @@
         android:key="import_export_settings"
         android:title="@string/import_export_settings" />
 
+    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        android:defaultValue="true"
+        android:key="bug_reports"
+        android:order="12"
+        android:summary="@string/bug_reports_summary"
+        android:title="@string/bug_reports"/>
+
 </PreferenceScreen>

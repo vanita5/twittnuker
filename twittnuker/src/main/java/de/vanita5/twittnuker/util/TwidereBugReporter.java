@@ -23,13 +23,15 @@
 package de.vanita5.twittnuker.util;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import org.acra.ACRA;
+import com.crashlytics.android.Crashlytics;
+
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
+
+import io.fabric.sdk.android.Fabric;
 
 public class TwidereBugReporter extends BugReporter implements Constants {
 
@@ -58,28 +60,12 @@ public class TwidereBugReporter extends BugReporter implements Constants {
     }
 
     private void handleSilentException(final Throwable throwable) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                ACRA.getErrorReporter().handleSilentException(throwable);
-            }
-        });
+        Crashlytics.logException(throwable);
     }
 
     @Override
     protected void initImpl(final Application application) {
-        // ACRA sets it self as DefaultUncaughtExceptionHandler, we hijack it to suppress some errors
-        ACRA.init(application);
-        // handler should be ACRA's ErrorReporter now
-        final Thread.UncaughtExceptionHandler handler = Thread.getDefaultUncaughtExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable ex) {
-                // We can't fix OOM, so just don't report it and try to save VM
-                if (Utils.isOutOfMemory(ex)) return;
-                handler.uncaughtException(thread, ex);
-            }
-        });
+        Fabric.with(application, new Crashlytics());
     }
 
 }

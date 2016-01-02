@@ -38,11 +38,12 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
+import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
 import com.squareup.okhttp.Dns;
 
-import org.acra.annotation.ReportsCrashes;
+import io.fabric.sdk.android.Fabric;
 import org.apache.commons.lang3.ArrayUtils;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -70,7 +71,6 @@ import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
-//TODO Crash Report
 public class TwittnukerApplication extends Application implements Constants,
         OnSharedPreferenceChangeListener {
 
@@ -130,6 +130,7 @@ public class TwittnukerApplication extends Application implements Constants,
             StrictModeUtils.detectAllVmPolicy();
         }
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         initDebugMode();
         initBugReport();
         mHandler = new Handler();
