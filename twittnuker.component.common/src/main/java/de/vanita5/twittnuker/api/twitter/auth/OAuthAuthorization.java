@@ -44,9 +44,8 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * Created by mariotaku on 15/2/4.
- */
+import okio.ByteString;
+
 public class OAuthAuthorization implements Authorization, OAuthSupport {
 
     private static final String DEFAULT_ENCODING = "UTF-8";
@@ -211,7 +210,12 @@ public class OAuthAuthorization implements Authorization, OAuthSupport {
     private String generateOAuthNonce() {
         final byte[] input = new byte[32];
         secureRandom.nextBytes(input);
-        return Base64.encodeToString(input, Base64.NO_WRAP).replaceAll("[^\\w\\d]", "");
+        final ByteString byteString = ByteString.of(input);
+        final String encodedString = byteString.base64Url();
+        if (encodedString == null) {
+            throw new IllegalStateException("Bad nonce " + byteString.hex());
+        }
+        return encodedString.replaceAll("[^\\w\\d]", "");
     }
 
 }

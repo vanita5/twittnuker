@@ -23,6 +23,8 @@ JNIEXPORT jobject JNICALL
 Java_de_vanita5_twittnuker_util_net_InetAddressUtils_getResolvedIPAddress(JNIEnv *env, jclass type,
                                                                             jstring host_,
                                                                             jstring address_) {
+    if (address_ == NULL) return NULL;
+
     const char *address = (*env)->GetStringUTFChars(env, address_, 0);
 
     jclass addressClass = (*env)->FindClass(env, "java/net/InetAddress");
