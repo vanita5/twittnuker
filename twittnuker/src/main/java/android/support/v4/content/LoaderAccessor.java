@@ -20,22 +20,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package android.support.v7.app;
+package android.support.v4.content;
 
-import android.support.annotation.Nullable;
-
-public class AppCompatDelegateTrojan {
-
-	@Nullable
-	public static ActionBar peekActionBar(@Nullable AppCompatDelegate delegate) {
-		if (delegate instanceof AppCompatDelegateImplBase)
-			return ((AppCompatDelegateImplBase) delegate).peekSupportActionBar();
-		return null;
-	}
-
-	public static boolean isFloating(AppCompatDelegate delegate) {
-		if (delegate instanceof AppCompatDelegateImplBase)
-			return ((AppCompatDelegateImplBase) delegate).mIsFloating;
-		return false;
-	}
+public class LoaderAccessor {
+    public static <T> boolean isContentChanged(final Loader<T> loader) {
+        return loader.mContentChanged;
+    }
 }

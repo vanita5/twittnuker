@@ -24,9 +24,9 @@ package android.support.v7.widget;
 
 import android.support.v7.widget.RecyclerView.ViewHolder;
 
-public class ViewHolderTrojan {
+public class ViewHolderAccessor {
 
-	public static boolean isRemoved(ViewHolder holder) {
-		return holder.isRemoved();
-	}
+    public static boolean isRemoved(ViewHolder holder) {
+        return holder.isRemoved();
+    }
 }

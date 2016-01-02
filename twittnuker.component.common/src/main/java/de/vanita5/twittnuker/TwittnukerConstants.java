@@ -69,6 +69,8 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String PROTOCOL_CONTENT = SCHEME_CONTENT + "://";
     String PROTOCOL_TWITTNUKER = SCHEME_TWITTNUKER + "://";
 
+    String AUTHORITY_TWITTNUKER_FILE = "twittnuker.file";
+
     String AUTHORITY_USER = "user";
     String AUTHORITY_HOME = "home";
     String AUTHORITY_MENTIONS = "mentions";

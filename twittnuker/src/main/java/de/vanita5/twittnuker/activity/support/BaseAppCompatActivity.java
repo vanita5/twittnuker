@@ -34,6 +34,7 @@ import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
+import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.util.ActivityTracker;
@@ -49,13 +50,15 @@ import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import javax.inject.Inject;
 
 @SuppressLint("Registered")
 public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Constants,
         OnFitSystemWindowsListener, SystemWindowsInsetsCallback, IControlBarActivity,
-        KeyboardShortcutCallback {
+        KeyboardShortcutCallback, IExtendedActivity {
 
     // Utility classes
     @Inject
@@ -81,6 +84,8 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     private boolean mIsVisible;
     private Rect mSystemWindowsInsets;
     private int mKeyMetaState;
+    private boolean mFragmentResumed;
+    private Queue<Action> mActionQueue = new LinkedList<>();
 
     @Override
     public boolean getSystemWindowsInsets(Rect insets) {
@@ -191,6 +196,7 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
 
     @Override
     protected void onPause() {
+        mFragmentResumed = false;
         super.onPause();
     }
 
@@ -258,4 +264,24 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
         return mKeyMetaState;
     }
 
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        mFragmentResumed = true;
+        executePending();
+    }
+
+    @Override
+    public void executeAfterFragmentResumed(Action action) {
+        mActionQueue.add(action);
+        executePending();
+    }
+
+    private void executePending() {
+        if (!mFragmentResumed) return;
+        Action action;
+        while ((action = mActionQueue.poll()) != null) {
+            action.execute(this);
+        }
+    }
 }

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<bool name="default_display_tab_label">false</bool>
-	<bool name="home_display_icon">false</bool>
-	<bool name="is_large_screen">false</bool>
-	<bool name="default_shadow_slidable">true</bool>
-	<bool name="shadow_slidable">true</bool>
+    <bool name="default_display_tab_label">false</bool>
+    <bool name="home_display_icon">false</bool>
+    <bool name="default_shadow_slidable">true</bool>
+    <bool name="shadow_slidable">true</bool>
     <bool name="has_font_family">false</bool>
     <bool name="hires_profile_image">false</bool>
-	<bool name="relative_behind_width">false</bool>
+    <bool name="relative_behind_width">false</bool>
 
 </resources>

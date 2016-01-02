@@ -24,7 +24,7 @@ package android.support.v4.widget;
 
 import android.view.View;
 
-public class DrawerLayoutTrojan {
+public class DrawerLayoutAccessor {
 
     public static View findDrawerWithGravity(DrawerLayout layout, int gravity) {
         return layout.findDrawerWithGravity(gravity);

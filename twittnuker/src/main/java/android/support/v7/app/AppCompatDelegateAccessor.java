@@ -20,13 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package android.support.v4.content;
+package android.support.v7.app;
 
-/**
- * Created by mariotaku on 15/7/5.
- */
-public class LoaderTrojan {
-    public static <T> boolean isContentChanged(final Loader<T> loader) {
-        return loader.mContentChanged;
+import android.support.annotation.Nullable;
+
+public class AppCompatDelegateAccessor {
+
+    @Nullable
+    public static ActionBar peekActionBar(@Nullable AppCompatDelegate delegate) {
+        if (delegate instanceof AppCompatDelegateImplBase)
+            return ((AppCompatDelegateImplBase) delegate).peekSupportActionBar();
+        return null;
+    }
+
+    public static boolean isFloating(AppCompatDelegate delegate) {
+        if (delegate instanceof AppCompatDelegateImplBase)
+            return ((AppCompatDelegateImplBase) delegate).mIsFloating;
+        return false;
     }
 }

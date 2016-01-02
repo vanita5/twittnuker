@@ -20,17 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.bluelinelabs.logansquare;
+package de.vanita5.twittnuker.activity.iface;
 
-import java.lang.reflect.Type;
+public interface IExtendedActivity {
 
-/**
- * Created by mariotaku on 15/12/13.
- */
-public class ParameterizedTypeTrojan {
+    void executeAfterFragmentResumed(Action action);
 
-    public static <T> ParameterizedType<T> create(Type type) {
-        return new ParameterizedType.ConcreteParameterizedType<>(type);
+    interface Action {
+        void execute(IExtendedActivity activity);
     }
-
 }
