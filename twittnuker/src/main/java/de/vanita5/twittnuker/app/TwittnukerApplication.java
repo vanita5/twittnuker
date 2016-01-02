@@ -38,12 +38,10 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
-import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
 import com.squareup.okhttp.Dns;
 
-import io.fabric.sdk.android.Fabric;
 import org.apache.commons.lang3.ArrayUtils;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -130,7 +128,6 @@ public class TwittnukerApplication extends Application implements Constants,
             StrictModeUtils.detectAllVmPolicy();
         }
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
         initDebugMode();
         initBugReport();
         mHandler = new Handler();
@@ -211,6 +208,9 @@ public class TwittnukerApplication extends Application implements Constants,
             case KEY_CONNECTION_TIMEOUT:
             case KEY_PROXY_HOST:
             case KEY_PROXY_PORT:
+            case KEY_PROXY_TYPE:
+            case KEY_PROXY_USERNAME:
+            case KEY_PROXY_PASSWORD:
                 reloadConnectivitySettings();
                 break;
             case KEY_DNS_SERVER:

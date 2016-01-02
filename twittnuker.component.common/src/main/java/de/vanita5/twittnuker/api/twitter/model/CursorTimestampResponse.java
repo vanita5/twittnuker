@@ -26,9 +26,15 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 @JsonObject
-public class CursorResponse {
+public class CursorTimestampResponse {
     @JsonField(name = "cursor")
     long cursor;
+    @JsonField(name = "timestamp")
+    long timestamp;
+
+    public long getTimestamp() {
+        return timestamp;
+    }
 
     public long getCursor() {
         return cursor;

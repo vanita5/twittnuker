@@ -65,6 +65,7 @@ import org.mariotaku.restfu.okhttp.OkHttpRestClient;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterCaps;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.TwitterUpload;
@@ -211,7 +212,8 @@ public class TwitterAPIFactory implements TwittnukerConstants {
                 }
             });
         } else {
-            client.setProxySelector(ProxySelector.getDefault());
+            client.setProxySelector(null);
+            client.setAuthenticator(null);
         }
     }
 
@@ -317,6 +319,9 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         } else if (TwitterUserStream.class.isAssignableFrom(cls)) {
             domain = "userstream";
             versionSuffix = noVersionSuffix ? null : "/1.1/";
+        } else if (TwitterCaps.class.isAssignableFrom(cls)) {
+            domain = "caps";
+            versionSuffix = null;
         } else {
             throw new TwitterConverter.UnsupportedTypeException(cls);
         }

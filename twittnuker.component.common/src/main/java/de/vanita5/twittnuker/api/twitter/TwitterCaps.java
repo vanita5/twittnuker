@@ -28,6 +28,8 @@ import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Form;
 import org.mariotaku.restfu.annotation.param.Query;
+
+import de.vanita5.twittnuker.api.twitter.model.CardDataMap;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.api.twitter.model.CreateCardData;
 import de.vanita5.twittnuker.api.twitter.model.CreateCardResult;
@@ -39,6 +41,9 @@ public interface TwitterCaps {
                        @NonNull @Query("twitter:string:cards_platform") String cardsPlatform,
                        @NonNull @Query("twitter:string:response_card_name") String responseCardName)
             throws TwitterException;
+
+    @GET("/v2/capi/passthrough/1")
+    CardEntity sendPassThrough(@Form CardDataMap data) throws TwitterException;
 
     @POST("/v2/cards/create.json")
     CreateCardResult createCard(@Form("card_data") CreateCardData cardData) throws TwitterException;

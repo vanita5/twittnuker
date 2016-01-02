@@ -170,7 +170,11 @@ public class RefreshService extends Service implements Constants {
         registerReceiver(mPowerStateReceiver, batteryFilter);
         PowerStateReceiver.setServiceReceiverStarted(true);
         */
-        startAutoRefresh();
+        if (hasAutoRefreshAccounts(this)) {
+            startAutoRefresh();
+        } else {
+            stopSelf();
+        }
     }
 
     @Override
