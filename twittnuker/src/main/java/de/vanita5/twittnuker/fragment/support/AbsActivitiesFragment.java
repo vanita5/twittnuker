@@ -43,7 +43,6 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -207,7 +206,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
             lastVisiblePos = layoutManager.findFirstVisibleItemPosition();
         }
         if (lastVisiblePos != RecyclerView.NO_POSITION && lastVisiblePos < adapter.getItemCount()) {
-//            lastReadId = adapter.getStatusId(lastVisiblePos);
+            lastReadId = adapter.getTimestamp(lastVisiblePos);
             final View positionView = layoutManager.findViewByPosition(lastVisiblePos);
             lastVisibleTop = positionView != null ? positionView.getTop() : 0;
         } else if (rememberPosition && tag != null) {
@@ -222,20 +221,20 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         if (!(loader instanceof IExtendedLoader) || ((IExtendedLoader) loader).isFromUser()) {
             adapter.setLoadMoreSupported(hasMoreData(data));
             int pos = -1;
-//            for (int i = 0, j = adapter.getItemCount(); i < j; i++) {
-//                if (lastReadId != -1 && lastReadId == adapter.getStatusId(i)) {
-//                    pos = i;
-//                    break;
-//                }
-//            }
-//            if (pos != -1 && adapter.isStatus(pos) && (readFromBottom || lastVisiblePos != 0)) {
-//                if (layoutManager.getHeight() == 0) {
-//                    // RecyclerView has not currently laid out, ignore padding.
-//                    layoutManager.scrollToPositionWithOffset(pos, lastVisibleTop);
-//                } else {
-//                    layoutManager.scrollToPositionWithOffset(pos, lastVisibleTop - layoutManager.getPaddingTop());
-//                }
-//            }
+            for (int i = 0, j = adapter.getItemCount(); i < j; i++) {
+                if (lastReadId != -1 && lastReadId == adapter.getTimestamp(i)) {
+                    pos = i;
+                    break;
+                }
+            }
+            if (pos != -1 && adapter.isActivity(pos) && (readFromBottom || lastVisiblePos != 0)) {
+                if (layoutManager.getHeight() == 0) {
+                    // RecyclerView has not currently laid out, ignore padding.
+                    layoutManager.scrollToPositionWithOffset(pos, lastVisibleTop);
+                } else {
+                    layoutManager.scrollToPositionWithOffset(pos, lastVisibleTop - layoutManager.getPaddingTop());
+                }
+            }
         }
         if (loader instanceof IExtendedLoader) {
             ((IExtendedLoader) loader).setFromUser(false);
