@@ -68,7 +68,7 @@ import de.vanita5.twittnuker.preference.WizardPageNavPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
-import de.vanita5.twittnuker.util.MathUtils;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.LinePageIndicator;
@@ -131,7 +131,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
     public void gotoNextPage() {
         if (mViewPager == null || mAdapter == null) return;
         final int current = mViewPager.getCurrentItem();
-        mViewPager.setCurrentItem(MathUtils.clamp(current + 1, mAdapter.getCount() - 1, 0));
+        mViewPager.setCurrentItem(TwidereMathUtils.clamp(current + 1, mAdapter.getCount() - 1, 0));
     }
 
     @Override
@@ -607,7 +607,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
     }
 
     private void gotoPage(int page) {
-        mViewPager.setCurrentItem(MathUtils.clamp(page, 0, getPageCount() - 1));
+        mViewPager.setCurrentItem(TwidereMathUtils.clamp(page, 0, getPageCount() - 1));
     }
 
     private int getPageCount() {

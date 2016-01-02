@@ -27,8 +27,10 @@ import org.mariotaku.restfu.annotation.param.MethodExtra;
 import org.mariotaku.restfu.annotation.param.Query;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.api.twitter.model.CursorResponse;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.model.TimestampResponse;
 
 @SuppressWarnings("RedundantThrows")
 @MethodExtra(name = "extra_params", values = {"include_my_retweet", "include_rts", "include_entities",
@@ -39,6 +41,14 @@ public interface PrivateActivityResources extends PrivateResources {
     @GET("/activity/about_me.json")
     ResponseList<Activity> getActivitiesAboutMe(@Query Paging paging) throws TwitterException;
 
+    @GET("/activity/about_me/unread.json?cursor=true")
+    CursorResponse getActivitiesAboutMeUnreadCursor() throws TwitterException;
+
+    @GET("/activity/about_me/unread.json?cursor=false")
+    TimestampResponse getActivitiesAboutMeUnreadTimestamp() throws TwitterException;
+
     @GET("/activity/by_friends.json")
     ResponseList<Activity> getActivitiesByFriends(@Query Paging paging) throws TwitterException;
+
+
 }

@@ -54,7 +54,7 @@ import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.BugReporter;
 import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.ExternalThemeManager;
-import de.vanita5.twittnuker.util.MathUtils;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.TwidereBugReporter;
 import de.vanita5.twittnuker.util.Utils;
@@ -248,7 +248,7 @@ public class TwittnukerApplication extends Application implements Constants,
         final File fallbackCacheDir = getInternalCacheDir(this, dirName);
         final URLFileNameGenerator fileNameGenerator = new URLFileNameGenerator();
         final SharedPreferences preferences = getSharedPreferences();
-        final int cacheSize = MathUtils.clamp(preferences.getInt(KEY_CACHE_SIZE_LIMIT, 512), 100, 1024);
+        final int cacheSize = TwidereMathUtils.clamp(preferences.getInt(KEY_CACHE_SIZE_LIMIT, 512), 100, 1024);
         try {
             final int cacheMaxSizeBytes = cacheSize * 1024 * 1024;
             if (cacheDir != null)

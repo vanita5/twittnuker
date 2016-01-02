@@ -120,7 +120,6 @@ import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
-import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MenuUtils;
@@ -133,6 +132,7 @@ import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
 import de.vanita5.twittnuker.util.StatusLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
@@ -1248,6 +1248,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 }
                 case R.id.quote_original_link: {
                     Utils.openStatus(adapter.getContext(), status.account_id, status.quoted_id);
+                    break;
                 }
                 case R.id.translate_label: {
                     fragment.loadTranslation(adapter.getStatus());
@@ -1879,7 +1880,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         @Override
         public int getItemCount() {
             if (mStatus == null) return 0;
-            return MathUtils.sum(mItemCounts);
+            return TwidereMathUtils.sum(mItemCounts);
         }
 
         @Override

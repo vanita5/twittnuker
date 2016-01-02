@@ -94,7 +94,7 @@ import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
-import de.vanita5.twittnuker.util.MathUtils;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -611,7 +611,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     protected void onNewIntent(final Intent intent) {
         final int tabPosition = handleIntent(intent, false);
         if (tabPosition >= 0) {
-            mViewPager.setCurrentItem(MathUtils.clamp(tabPosition, mPagerAdapter.getCount(), 0));
+            mViewPager.setCurrentItem(TwidereMathUtils.clamp(tabPosition, mPagerAdapter.getCount(), 0));
         }
     }
 
@@ -806,10 +806,10 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     private void setTabPosition(final int initialTab) {
         final boolean rememberPosition = mPreferences.getBoolean(KEY_REMEMBER_POSITION, true);
         if (initialTab >= 0) {
-            mViewPager.setCurrentItem(MathUtils.clamp(initialTab, mPagerAdapter.getCount(), 0));
+            mViewPager.setCurrentItem(TwidereMathUtils.clamp(initialTab, mPagerAdapter.getCount(), 0));
         } else if (rememberPosition) {
             final int position = mPreferences.getInt(KEY_SAVED_TAB_POSITION, 0);
-            mViewPager.setCurrentItem(MathUtils.clamp(position, mPagerAdapter.getCount(), 0));
+            mViewPager.setCurrentItem(TwidereMathUtils.clamp(position, mPagerAdapter.getCount(), 0));
         }
     }
 

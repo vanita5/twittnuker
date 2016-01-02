@@ -29,14 +29,19 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.SSLCertificateSocketFactory;
 import android.os.Build;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
+import com.squareup.okhttp.Authenticator;
+import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.Dns;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mariotaku.restfu.ExceptionFactory;
@@ -57,7 +62,6 @@ import org.mariotaku.restfu.http.RestHttpResponse;
 import org.mariotaku.restfu.http.mime.StringTypedData;
 import org.mariotaku.restfu.http.mime.TypedData;
 import org.mariotaku.restfu.okhttp.OkHttpRestClient;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -77,9 +81,13 @@ import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.net.NetworkUsageUtils;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.ProxySelector;
 import java.net.SocketAddress;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -177,21 +185,51 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             client.setSslSocketFactory(null);
         }
         if (enableProxy) {
-            client.setProxy(getProxy(prefs));
+            final String proxyType = prefs.getString(KEY_PROXY_TYPE, null);
+            final String proxyHost = prefs.getString(KEY_PROXY_HOST, null);
+            final int proxyPort = NumberUtils.toInt(prefs.getString(KEY_PROXY_PORT, null), -1);
+            if (!isEmpty(proxyHost) && TwidereMathUtils.inRangeInclusiveInclusive(proxyPort, 0, 65535)) {
+                client.setProxySelector(new TwidereProxySelector(client.getDns(),
+                        getProxyType(proxyType), proxyHost, proxyPort));
+            }
+            final String username = prefs.getString(KEY_PROXY_USERNAME, null);
+            final String password = prefs.getString(KEY_PROXY_PASSWORD, null);
+            client.setAuthenticator(new Authenticator() {
+                @Override
+                public Request authenticate(Proxy proxy, Response response) throws IOException {
+                    return null;
+                }
+
+                @Override
+                public Request authenticateProxy(Proxy proxy, Response response) throws IOException {
+                    final Request.Builder builder = response.request().newBuilder();
+                    if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
+                        final String credential = Credentials.basic(username, password);
+                        builder.header("Proxy-Authorization", credential);
+                    }
+                    return builder.build();
+                }
+            });
         } else {
-            client.setProxy(null);
+            client.setProxySelector(ProxySelector.getDefault());
         }
     }
 
 
     public static Proxy getProxy(final SharedPreferences prefs) {
+        final String proxyType = prefs.getString(KEY_PROXY_TYPE, null);
         final String proxyHost = prefs.getString(KEY_PROXY_HOST, null);
-        final int proxyPort = NumberUtils.toInt(prefs.getString(KEY_PROXY_PORT, "-1"), -1);
-        if (!isEmpty(proxyHost) && proxyPort >= 0 && proxyPort < 65535) {
+        final int proxyPort = NumberUtils.toInt(prefs.getString(KEY_PROXY_PORT, null), -1);
+        if (!isEmpty(proxyHost) && TwidereMathUtils.inRangeInclusiveInclusive(proxyPort, 0, 65535)) {
             final SocketAddress addr = InetSocketAddress.createUnresolved(proxyHost, proxyPort);
-            return new Proxy(Proxy.Type.HTTP, addr);
+            return new Proxy(getProxyType(proxyType), addr);
         }
         return Proxy.NO_PROXY;
+    }
+
+    private static Proxy.Type getProxyType(String proxyType) {
+        if ("socks".equalsIgnoreCase(proxyType)) return Proxy.Type.SOCKS;
+        return Proxy.Type.HTTP;
     }
 
     @WorkerThread
@@ -555,4 +593,47 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         }
     }
 
+    private static class TwidereProxySelector extends ProxySelector {
+        private final Dns dns;
+        private final Proxy.Type type;
+        private final String host;
+        private final int port;
+        private List<Proxy> proxy;
+
+        public TwidereProxySelector(Dns dns, Proxy.Type type, String host, int port) {
+            this.dns = dns;
+            this.type = type;
+            this.host = host;
+            this.port = port;
+        }
+
+        @Override
+        public List<Proxy> select(URI uri) {
+            if (proxy != null) return proxy;
+            final InetSocketAddress unresolved;
+            if (Looper.myLooper() != Looper.getMainLooper()) {
+                unresolved = createResolved(host, port);
+            } else {
+                unresolved = InetSocketAddress.createUnresolved(host, port);
+            }
+            return proxy = Collections.singletonList(new Proxy(type, unresolved));
+        }
+
+        private InetSocketAddress createResolved(String host, int port) {
+            try {
+                //noinspection LoopStatementThatDoesntLoop
+                for (InetAddress inetAddress : dns.lookup(host)) {
+                    return new InetSocketAddress(inetAddress, port);
+                }
+            } catch (IOException e) {
+                return InetSocketAddress.createUnresolved(host, port);
+            }
+            return InetSocketAddress.createUnresolved(host, port);
+        }
+
+        @Override
+        public void connectFailed(URI uri, SocketAddress address, IOException failure) {
+
+        }
+    }
 }

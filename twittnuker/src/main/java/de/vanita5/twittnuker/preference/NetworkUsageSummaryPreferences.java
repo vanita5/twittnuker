@@ -39,7 +39,7 @@ import com.desmond.asyncmanager.TaskRunnable;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.NetworkUsageInfo;
 import de.vanita5.twittnuker.model.RequestType;
-import de.vanita5.twittnuker.util.MathUtils;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.util.Calendar;
@@ -136,7 +136,7 @@ public class NetworkUsageSummaryPreferences extends Preference {
             apiSet.addBar(day, (float) dayUsage[RequestType.API.getValue()]);
             mediaSet.addBar(day, (float) dayUsage[RequestType.MEDIA.getValue()]);
             usageStatisticsSet.addBar(day, (float) dayUsage[RequestType.USAGE_STATISTICS.getValue()]);
-            dayUsageMax = Math.max(dayUsageMax, MathUtils.sum(dayUsage));
+            dayUsageMax = Math.max(dayUsageMax, TwidereMathUtils.sum(dayUsage));
         }
 
         apiSet.setColor(Color.RED);
