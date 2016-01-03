@@ -54,6 +54,8 @@ import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.text.util.EmojiEditableFactory;
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
+import de.vanita5.twittnuker.util.imageloader.TwidereSkiaImageDecoder;
+import de.vanita5.twittnuker.util.imageloader.TwidereSkiaImageRegionDecoder;
 import de.vanita5.twittnuker.util.net.TwidereProxySelector;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
@@ -130,4 +132,8 @@ public interface GeneralComponent {
     void inject(DependencyHolder object);
 
     void inject(TileImageLoader object);
+
+    void inject(TwidereSkiaImageRegionDecoder object);
+
+    void inject(TwidereSkiaImageDecoder object);
 }

@@ -65,6 +65,9 @@ import android.widget.Toast;
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.davemorrissey.labs.subscaleview.decoder.DecoderFactory;
+import com.davemorrissey.labs.subscaleview.decoder.ImageDecoder;
+import com.davemorrissey.labs.subscaleview.decoder.ImageRegionDecoder;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.sprylab.android.widget.TextureVideoView;
 
@@ -97,9 +100,10 @@ import de.vanita5.twittnuker.util.VideoLoadingListener;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import de.vanita5.twittnuker.util.imageloader.TwidereSkiaImageDecoder;
+import de.vanita5.twittnuker.util.imageloader.TwidereSkiaImageRegionDecoder;
 import pl.droidsonroids.gif.GifSupportChecker;
 import pl.droidsonroids.gif.GifTextureView;
-import pl.droidsonroids.gif.InputSource.FileSource;
 
 
 public final class MediaViewerActivity extends BaseAppCompatActivity implements Constants, OnPageChangeListener {
@@ -281,8 +285,8 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
         private float mContentLength;
         private SaveFileTask mSaveFileTask;
 
-        private File mImageFile;
         private File mShareImageFile;
+        private File mImageFile;
 
         @Override
         public void onBaseViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -310,18 +314,11 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
 
         @Override
         public void onLoadFinished(final Loader<TileImageLoader.Result> loader, final TileImageLoader.Result data) {
-            if (data.hasData()) {
-                mImageFile = data.file;
-                if (data.useDecoder) {
-                    setImageViewVisibility(View.VISIBLE);
-                    mImageView.setImage(ImageSource.uri(Uri.fromFile(data.file)));
-                } else {
-                    setImageViewVisibility(View.VISIBLE);
-                    mImageView.setImage(ImageSource.bitmap(data.bitmap));
-                }
+            if (data.cacheUri != null) {
+                setImageViewVisibility(View.VISIBLE);
+                mImageView.setImage(ImageSource.uri(data.cacheUri));
             } else {
                 mImageView.recycle();
-                mImageFile = null;
                 setImageViewVisibility(View.GONE);
                 Utils.showErrorMessage(getActivity(), null, data.exception, true);
             }
@@ -409,21 +406,21 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
         @Override
         protected void saveToGallery() {
             if (mSaveFileTask != null && mSaveFileTask.getStatus() == Status.RUNNING) return;
-            final File file = mImageFile;
-            final boolean hasImage = file != null && file.exists();
-            if (!hasImage) return;
-            mSaveFileTask = SaveImageToGalleryTask.create(getActivity(), file);
-            AsyncTaskUtils.executeTask(mSaveFileTask);
+//            final File file = mImageFile;
+//            final boolean hasImage = file != null && file.exists();
+//            if (!hasImage) return;
+//            mSaveFileTask = SaveImageToGalleryTask.create(getActivity(), file);
+//            AsyncTaskUtils.executeTask(mSaveFileTask);
         }
 
         @Override
         public void onPrepareOptionsMenu(Menu menu) {
             super.onPrepareOptionsMenu(menu);
-            final boolean isLoading = getLoaderManager().hasRunningLoaders();
-            final boolean hasImage = mImageFile != null;
-            MenuUtils.setMenuItemAvailability(menu, R.id.refresh, !hasImage && !isLoading);
-            MenuUtils.setMenuItemAvailability(menu, R.id.share, hasImage && !isLoading);
-            MenuUtils.setMenuItemAvailability(menu, R.id.save, hasImage && !isLoading);
+//            final boolean isLoading = getLoaderManager().hasRunningLoaders();
+//            final boolean hasImage = mImageFile != null;
+//            MenuUtils.setMenuItemAvailability(menu, R.id.refresh, !hasImage && !isLoading);
+//            MenuUtils.setMenuItemAvailability(menu, R.id.share, hasImage && !isLoading);
+//            MenuUtils.setMenuItemAvailability(menu, R.id.save, hasImage && !isLoading);
         }
 
 
@@ -517,6 +514,18 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
             super.onActivityCreated(savedInstanceState);
             setHasOptionsMenu(true);
             mImageView.setOnClickListener(this);
+            mImageView.setRegionDecoderFactory(new DecoderFactory<ImageRegionDecoder>() {
+                @Override
+                public ImageRegionDecoder make() {
+                    return new TwidereSkiaImageRegionDecoder(getContext());
+                }
+            });
+            mImageView.setBitmapDecoderFactory(new DecoderFactory<ImageDecoder>() {
+                @Override
+                public ImageDecoder make() {
+                    return new TwidereSkiaImageDecoder(getContext());
+                }
+            });
             mImageView.setOnGenericMotionListener(new OnGenericMotionListener() {
                 @Override
                 public boolean onGenericMotion(View v, MotionEvent event) {
@@ -555,15 +564,15 @@ public final class MediaViewerActivity extends BaseAppCompatActivity implements 
 
         @Override
         public void onLoadFinished(final Loader<TileImageLoader.Result> loader, final TileImageLoader.Result data) {
-            if (data.hasData() && "image/gif".equals(data.options.outMimeType)) {
-                mGifImageView.setVisibility(View.VISIBLE);
-                setImageViewVisibility(View.GONE);
-                mGifImageView.setInputSource(new FileSource(data.file));
-                setLoadProgressVisibility(View.GONE);
-                setLoadProgress(0);
-                invalidateOptionsMenu();
-                return;
-            }
+//            if (data.hasData() && "image/gif".equals(data.options.outMimeType)) {
+//                mGifImageView.setVisibility(View.VISIBLE);
+//                setImageViewVisibility(View.GONE);
+//                mGifImageView.setInputSource(new InS(data.file));
+//                setLoadProgressVisibility(View.GONE);
+//                setLoadProgress(0);
+//                invalidateOptionsMenu();
+//                return;
+//            }
             super.onLoadFinished(loader, data);
         }
 

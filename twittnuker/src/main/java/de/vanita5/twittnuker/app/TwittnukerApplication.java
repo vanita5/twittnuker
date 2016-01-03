@@ -38,12 +38,9 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
-import com.nostra13.universalimageloader.cache.disc.DiskCache;
-import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
 import com.squareup.okhttp.Dns;
 
 import org.apache.commons.lang3.ArrayUtils;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.AssistLauncherActivity;
@@ -54,19 +51,12 @@ import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.ExternalThemeManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.TwidereBugReporter;
-import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
-import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache;
-import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 
-import java.io.File;
-import java.io.IOException;
-
-import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
@@ -77,7 +67,6 @@ public class TwittnukerApplication extends Application implements Constants,
 
     private Handler mHandler;
     private SharedPreferences mPreferences;
-    private DiskCache mDiskCache, mFullDiskCache;
     private SQLiteOpenHelper mSQLiteOpenHelper;
     private SQLiteDatabase mDatabase;
 
@@ -86,16 +75,6 @@ public class TwittnukerApplication extends Application implements Constants,
     @NonNull
     public static TwittnukerApplication getInstance(@NonNull final Context context) {
         return (TwittnukerApplication) context.getApplicationContext();
-    }
-
-    public DiskCache getDiskCache() {
-        if (mDiskCache != null) return mDiskCache;
-        return mDiskCache = createDiskCache(DIR_NAME_IMAGE_CACHE);
-    }
-
-    public DiskCache getFullDiskCache() {
-        if (mFullDiskCache != null) return mFullDiskCache;
-        return mFullDiskCache = createDiskCache(DIR_NAME_FULL_IMAGE_CACHE);
     }
 
 
@@ -247,21 +226,6 @@ public class TwittnukerApplication extends Application implements Constants,
         getApplicationModule().reloadConnectivitySettings();
     }
 
-    private DiskCache createDiskCache(final String dirName) {
-        final File cacheDir = Utils.getExternalCacheDir(this, dirName);
-        final File fallbackCacheDir = getInternalCacheDir(this, dirName);
-        final URLFileNameGenerator fileNameGenerator = new URLFileNameGenerator();
-        final SharedPreferences preferences = getSharedPreferences();
-        final int cacheSize = TwidereMathUtils.clamp(preferences.getInt(KEY_CACHE_SIZE_LIMIT, 512), 100, 1024);
-        try {
-            final int cacheMaxSizeBytes = cacheSize * 1024 * 1024;
-            if (cacheDir != null)
-                return new LruDiskCache(cacheDir, fallbackCacheDir, fileNameGenerator, cacheMaxSizeBytes, 0);
-            return new LruDiskCache(fallbackCacheDir, null, fileNameGenerator, cacheMaxSizeBytes, 0);
-        } catch (IOException e) {
-            return new ReadOnlyDiskLRUNameCache(cacheDir, fallbackCacheDir, fileNameGenerator);
-        }
-    }
 
     private void initializeAsyncTask() {
         // AsyncTask class needs to be loaded in UI thread.

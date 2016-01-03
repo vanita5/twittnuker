@@ -23,9 +23,14 @@
 package de.vanita5.twittnuker.util.dagger;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 public class GeneralComponentHelper {
-    public static GeneralComponent build(Context context) {
-        return DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build();
+    private static GeneralComponent sGeneralComponent;
+
+    @NonNull
+    public static GeneralComponent build(@NonNull Context context) {
+        if (sGeneralComponent != null) return sGeneralComponent;
+        return sGeneralComponent = DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build();
     }
 }

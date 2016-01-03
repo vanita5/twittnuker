@@ -26,7 +26,8 @@ import android.content.Context;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 
-import com.danikula.videocache.HttpProxyCacheServer;
+import com.nostra13.universalimageloader.cache.disc.DiskCache;
+import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
@@ -51,18 +52,28 @@ import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
+import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache;
 import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
+import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
 import de.vanita5.twittnuker.util.net.TwidereDns;
+
+import java.io.File;
+import java.io.IOException;
 
 import javax.inject.Singleton;
 
+import cz.fhucho.android.util.SimpleDiskCache;
 import dagger.Module;
 import dagger.Provides;
 
+import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
+
 @Module
-public class ApplicationModule {
+public class ApplicationModule implements Constants {
 
     private final TwittnukerApplication application;
 
@@ -134,14 +145,14 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public ImageLoader imageLoader(ImageDownloader downloader) {
+    public ImageLoader imageLoader(ImageDownloader downloader, SharedPreferencesWrapper preferences) {
         final ImageLoader loader = ImageLoader.getInstance();
         final ImageLoaderConfiguration.Builder cb = new ImageLoaderConfiguration.Builder(application);
         cb.threadPriority(Thread.NORM_PRIORITY - 2);
         cb.denyCacheImageMultipleSizesInMemory();
         cb.tasksProcessingOrder(QueueProcessingType.LIFO);
         // cb.memoryCache(new ImageMemoryCache(40));
-        cb.diskCache(application.getDiskCache());
+        cb.diskCache(createDiskCache("images", preferences));
         cb.imageDownloader(downloader);
         L.writeDebugLogs(BuildConfig.DEBUG);
         loader.init(cb.build());
@@ -188,10 +199,36 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    public HttpProxyCacheServer providesHttpProxyCacheServer() {
-        return new HttpProxyCacheServer(application);
+    public SimpleDiskCache providesSimpleDiskCache() {
+        final File cacheDir = new File(application.getCacheDir(), "files");
+        final File reserveCacheDir = new File(application.getExternalCacheDir(), "files");
+        return openCache(cacheDir, reserveCacheDir);
     }
 
+    private SimpleDiskCache openCache(File cacheDir, File reserveCacheDir) {
+        try {
+            return SimpleDiskCache.open(cacheDir, BuildConfig.VERSION_CODE, 512 * 1024 * 1024);
+        } catch (IOException e) {
+            if (reserveCacheDir == null) throw new RuntimeException(e);
+            return openCache(reserveCacheDir, null);
+        }
+    }
+
+
+    private DiskCache createDiskCache(final String dirName, SharedPreferencesWrapper preferences) {
+        final File cacheDir = Utils.getExternalCacheDir(application, dirName);
+        final File fallbackCacheDir = getInternalCacheDir(application, dirName);
+        final URLFileNameGenerator fileNameGenerator = new URLFileNameGenerator();
+        final int cacheSize = TwidereMathUtils.clamp(preferences.getInt(KEY_CACHE_SIZE_LIMIT, 300), 100, 500);
+        try {
+            final int cacheMaxSizeBytes = cacheSize * 1024 * 1024;
+            if (cacheDir != null)
+                return new LruDiskCache(cacheDir, fallbackCacheDir, fileNameGenerator, cacheMaxSizeBytes, 0);
+            return new LruDiskCache(fallbackCacheDir, null, fileNameGenerator, cacheMaxSizeBytes, 0);
+        } catch (IOException e) {
+            return new ReadOnlyDiskLRUNameCache(cacheDir, fallbackCacheDir, fileNameGenerator);
+        }
+    }
 
     public void reloadConnectivitySettings() {
 //        imageDownloader.reloadConnectivitySettings();

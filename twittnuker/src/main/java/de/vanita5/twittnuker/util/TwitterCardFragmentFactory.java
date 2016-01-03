@@ -26,11 +26,8 @@ import android.support.v4.app.Fragment;
 
 import de.vanita5.twittnuker.fragment.support.card.CardBrowserFragment;
 import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
-import de.vanita5.twittnuker.model.ParcelableBindingValue;
-import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
-
-import de.vanita5.twittnuker.api.twitter.model.CardEntity.BindingValue;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public abstract class TwitterCardFragmentFactory {
 
@@ -45,9 +42,9 @@ public abstract class TwitterCardFragmentFactory {
     }
 
     public static Fragment createGenericPlayerFragment(ParcelableCardEntity card) {
-        final ParcelableBindingValue player_url = ParcelableCardEntity.getValue(card, "player_url");
-        if (player_url == null || !BindingValue.TYPE_STRING.equals(player_url.type)) return null;
-        return CardBrowserFragment.show(player_url.value);
+        final String playerUrl = card.getString("player_url");
+        if (playerUrl == null) return null;
+        return CardBrowserFragment.show(playerUrl);
     }
 
     public static Fragment createCardPollFragment(ParcelableStatus status) {
