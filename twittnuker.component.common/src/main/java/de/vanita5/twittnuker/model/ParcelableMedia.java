@@ -46,9 +46,9 @@ import de.vanita5.twittnuker.api.twitter.model.MediaEntity.Size;
 import de.vanita5.twittnuker.api.twitter.model.MediaEntity.Type;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
-import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
+import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -178,13 +178,8 @@ public class ParcelableMedia implements Parcelable {
         if (urlEntities != null) {
             for (final UrlEntity url : urlEntities) {
                 final String expanded = url.getExpandedUrl();
-                final String media_url = MediaPreviewUtils.getSupportedLink(expanded);
-                if (expanded != null && media_url != null) {
-                    final ParcelableMedia media = new ParcelableMedia();
-                    media.type = TYPE_IMAGE;
-                    media.page_url = expanded;
-                    media.media_url = media_url;
-                    media.preview_url = media_url;
+                final ParcelableMedia media = PreviewMediaExtractor.fromLink(expanded);
+                if (media != null) {
                     media.start = url.getStart();
                     media.end = url.getEnd();
                     list.add(media);

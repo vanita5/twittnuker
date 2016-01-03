@@ -30,6 +30,7 @@ android {
         }
 
         buildConfigField 'int', 'DATABASES_VERSION', '116'
+        buildConfigField 'boolean', 'ENABLE_MEDIA_VIEWER', 'Boolean.parseBoolean("true")'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -116,7 +117,6 @@ dependencies {
     compile 'com.lnikkila:extendedtouchview:0.1.0'
     compile 'com.google.dagger:dagger:2.0.2'
     compile 'org.attoparser:attoparser:1.4.0.RELEASE'
-    compile 'com.jakewharton:disklrucache:2.0.2'
     compile 'com.google.android.gms:play-services-gcm:8.3.0'
     compile ':YouTubeAndroidPlayerApi:1.2.2@jar'
 

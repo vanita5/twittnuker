@@ -20,27 +20,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.imageloader;
+package de.vanita5.twittnuker.util;
 
-import com.nostra13.universalimageloader.cache.disc.naming.FileNameGenerator;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import android.content.ContentResolver;
+import android.net.Uri;
 
-public class URLFileNameGenerator implements FileNameGenerator {
+import de.vanita5.twittnuker.TwittnukerConstants;
+import okio.ByteString;
 
-    private final Md5FileNameGenerator mGenerator;
+public class SimpleDiskCacheUtils implements TwittnukerConstants {
 
-    public URLFileNameGenerator() {
-        mGenerator = new Md5FileNameGenerator();
+    public static Uri getCacheUri(String key) {
+        return new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT)
+                .authority(AUTHORITY_TWITTNUKER_CACHE)
+                .appendPath(ByteString.encodeUtf8(key).base64Url())
+                .build();
     }
 
-    @Override
-    public String generate(String imageUri) {
-        if (imageUri == null) return null;
-        int start = imageUri.indexOf("://");
-        if (start == -1) {
-            return mGenerator.generate(imageUri);
-        }
-        return mGenerator.generate(imageUri.substring(start + 3));
+    public static String getCacheKey(Uri uri) {
+        if (!ContentResolver.SCHEME_CONTENT.equals(uri.getScheme()))
+            throw new IllegalArgumentException(uri.toString());
+        if (!AUTHORITY_TWITTNUKER_CACHE.equals(uri.getAuthority()))
+            throw new IllegalArgumentException(uri.toString());
+        return ByteString.decodeBase64(uri.getLastPathSegment()).utf8();
     }
-
 }

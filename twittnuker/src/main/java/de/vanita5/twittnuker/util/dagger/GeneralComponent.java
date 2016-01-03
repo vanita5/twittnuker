@@ -44,8 +44,10 @@ import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
-import de.vanita5.twittnuker.loader.support.TileImageLoader;
+import de.vanita5.twittnuker.loader.support.CacheDownloadLoader;
+import de.vanita5.twittnuker.loader.support.FullImageDownloadLoader;
 import de.vanita5.twittnuker.preference.AccountsListPreference;
+import de.vanita5.twittnuker.provider.CacheProvider;
 import de.vanita5.twittnuker.provider.TwidereCommandProvider;
 import de.vanita5.twittnuker.provider.TwidereDataProvider;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
@@ -54,8 +56,6 @@ import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.text.util.EmojiEditableFactory;
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
-import de.vanita5.twittnuker.util.imageloader.TwidereSkiaImageDecoder;
-import de.vanita5.twittnuker.util.imageloader.TwidereSkiaImageRegionDecoder;
 import de.vanita5.twittnuker.util.net.TwidereProxySelector;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
@@ -128,12 +128,12 @@ public interface GeneralComponent {
 
     void inject(MessagesConversationFragment.SetReadStateTask object);
 
-
     void inject(DependencyHolder object);
 
-    void inject(TileImageLoader object);
+    void inject(CacheDownloadLoader object);
 
-    void inject(TwidereSkiaImageRegionDecoder object);
+    void inject(FullImageDownloadLoader object);
 
-    void inject(TwidereSkiaImageDecoder object);
+    void inject(CacheProvider object);
+
 }

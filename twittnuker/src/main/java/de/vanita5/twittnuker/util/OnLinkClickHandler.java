@@ -34,6 +34,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
+import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 import static de.vanita5.twittnuker.util.Utils.openStatus;
 import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
@@ -67,7 +68,7 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
                 break;
             }
             case TwidereLinkify.LINK_TYPE_LINK: {
-                if (MediaPreviewUtils.isLinkSupported(link)) {
+                if (PreviewMediaExtractor.isSupported(link)) {
                     openMedia(accountId, extraId, sensitive, link, start, end);
                 } else {
                     openLink(link);
@@ -94,16 +95,6 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
                 openStatus(context, accountId, NumberUtils.toLong(link, -1));
                 break;
             }
-//			case TwidereLinkify.LINK_TYPE_HOTOTIN: {
-////				context.setProgressBarIndeterminateVisibility(true); //FIXME
-//				expandHototin(context, link);
-//				break;
-//			}
-//			case TwidereLinkify.LINK_TYPE_TWITLONGER: {
-////				context.setProgressBarIndeterminateVisibility(true); //FIXME
-//				expandTwitLonger(context, link);
-//				break;
-//			}
         }
     }
 

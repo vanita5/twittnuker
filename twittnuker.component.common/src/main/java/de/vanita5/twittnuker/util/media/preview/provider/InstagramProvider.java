@@ -20,27 +20,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.imageloader;
+package de.vanita5.twittnuker.util.media.preview.provider;
 
-import com.nostra13.universalimageloader.cache.disc.naming.FileNameGenerator;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import android.net.Uri;
+import android.support.annotation.WorkerThread;
 
-public class URLFileNameGenerator implements FileNameGenerator {
+import de.vanita5.twittnuker.model.ParcelableMedia;
 
-    private final Md5FileNameGenerator mGenerator;
-
-    public URLFileNameGenerator() {
-        mGenerator = new Md5FileNameGenerator();
+public class InstagramProvider implements Provider {
+    @Override
+    @WorkerThread
+    public boolean supportsAuthority(String authority) {
+        return "instagr.am".equals(authority) || "instagram.com".equals(authority) ||
+                "www.instagram.com".equals(authority);
     }
 
     @Override
-    public String generate(String imageUri) {
-        if (imageUri == null) return null;
-        int start = imageUri.indexOf("://");
-        if (start == -1) {
-            return mGenerator.generate(imageUri);
-        }
-        return mGenerator.generate(imageUri.substring(start + 3));
+    @WorkerThread
+    public ParcelableMedia from(Uri uri) {
+        return null;
     }
-
 }

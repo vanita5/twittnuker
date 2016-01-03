@@ -109,7 +109,6 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.DatabaseQueryUtils;
 import de.vanita5.twittnuker.util.ImagePreloader;
-import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.NotificationHelper;
@@ -1583,9 +1582,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             }
             if (mPreferences.getBoolean(KEY_PRELOAD_PREVIEW_IMAGES, false)) {
                 final String textHtml = v.getAsString(Statuses.TEXT_HTML);
-                for (final String link : MediaPreviewUtils.getSupportedLinksInStatus(textHtml)) {
-                    mImagePreloader.preloadImage(link);
-                }
+//                for (final String link : MediaPreviewUtils.getSupportedLinksInStatus(textHtml)) {
+//                    mImagePreloader.preloadImage(link);
+//                }
             }
         }
     }

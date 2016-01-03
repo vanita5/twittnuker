@@ -49,12 +49,12 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.RequestType;
-import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -90,7 +90,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
     @Override
     protected InputStream getStreamFromNetwork(final String uriString, final Object extras) throws IOException {
         if (uriString == null) return null;
-        final ParcelableMedia media = MediaPreviewUtils.getAllAvailableImage(uriString, extras instanceof FullImageExtra, mClient);
+        final ParcelableMedia media = PreviewMediaExtractor.fromLink(uriString);
         try {
             final String mediaUrl = media != null ? media.media_url : uriString;
             if (isTwitterProfileImage(uriString)) {
