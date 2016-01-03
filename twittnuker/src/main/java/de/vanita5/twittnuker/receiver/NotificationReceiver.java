@@ -35,7 +35,6 @@ import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.UriExtraUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 public class NotificationReceiver extends BroadcastReceiver implements Constants {
@@ -47,7 +46,7 @@ public class NotificationReceiver extends BroadcastReceiver implements Constants
             case BROADCAST_NOTIFICATION_DELETED: {
                 final Uri uri = intent.getData();
                 if (uri == null) return;
-                DependencyHolder holder = new DependencyHolder(context);
+                DependencyHolder holder = DependencyHolder.get(context);
                 final String type = uri.getQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE);
                 final long accountId = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
                 final long itemId = NumberUtils.toLong(UriExtraUtils.getExtra(uri, "item_id"), -1);

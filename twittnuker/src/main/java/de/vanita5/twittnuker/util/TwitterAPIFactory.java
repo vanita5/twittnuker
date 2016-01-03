@@ -77,7 +77,6 @@ import de.vanita5.twittnuker.api.twitter.util.TwitterConverter;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.RequestType;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.NetworkUsageUtils;
 import de.vanita5.twittnuker.util.net.TwidereProxySelector;
@@ -247,7 +246,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         } else {
             userAgent = getTwidereUserAgent(context);
         }
-        DependencyHolder holder = new DependencyHolder(context);
+        DependencyHolder holder = DependencyHolder.get(context);
         factory.setClient(holder.getRestHttpClient());
         factory.setConverter(new TwitterConverter());
         factory.setEndpoint(endpoint);

@@ -57,7 +57,7 @@ public class NotificationHelper implements Constants {
 
     public NotificationHelper(final Context context) {
         this.mContext = context;
-        DependencyHolder holder = new DependencyHolder(context);
+        DependencyHolder holder = DependencyHolder.get(context);
         mMediaLoader = holder.getmImageLoader();
         mImagePreloader = new ImagePreloader(context, mMediaLoader);
         mSharedPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);

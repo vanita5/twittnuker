@@ -24,9 +24,11 @@ package de.vanita5.twittnuker.util.net;
 
 import android.content.Context;
 import android.os.Looper;
+import android.util.Log;
 
 import com.squareup.okhttp.Dns;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import java.io.IOException;
@@ -82,6 +84,8 @@ public class TwidereProxySelector extends ProxySelector {
 
     @Override
     public void connectFailed(URI uri, SocketAddress address, IOException failure) {
-
+        if (BuildConfig.DEBUG) {
+            Log.w("TwidereProxy", String.format("%s: proxy %s connect failed", uri, address), failure);
+        }
     }
 }

@@ -53,7 +53,7 @@ public class DependencyHolder {
     @Inject
     ImageLoader mImageLoader;
 
-    public DependencyHolder(Context context) {
+    DependencyHolder(Context context) {
         GeneralComponentHelper.build(context).inject(this);
     }
 
