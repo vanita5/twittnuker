@@ -100,7 +100,7 @@ public class AccountPreferences implements Constants {
         return mPreferences.getBoolean(KEY_DIRECT_MESSAGES_NOTIFICATION, DEFAULT_DIRECT_MESSAGES_NOTIFICATION);
     }
 
-    public boolean isMentionsNotificationEnabled() {
+    public boolean isInteractionsNotificationEnabled() {
         return mPreferences.getBoolean(KEY_MENTIONS_NOTIFICATION, DEFAULT_MENTIONS_NOTIFICATION);
     }
 

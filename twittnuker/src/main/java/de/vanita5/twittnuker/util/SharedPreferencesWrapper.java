@@ -96,6 +96,14 @@ public class SharedPreferencesWrapper implements Constants, SharedPreferences {
         return annotation.defaultBoolean();
     }
 
+    private int getDefaultInt(String key) {
+        final Preference annotation = mMap.get(key);
+        if (annotation == null || !annotation.hasDefault()) return 0;
+        final int resId = annotation.defaultResource();
+        if (resId != 0) return mContext.getResources().getInteger(resId);
+        return annotation.defaultInt();
+    }
+
     @Override
     public float getFloat(final String key, final float defValue) {
         try {
@@ -105,6 +113,10 @@ public class SharedPreferencesWrapper implements Constants, SharedPreferences {
             mPreferences.edit().remove(key).apply();
             return defValue;
         }
+    }
+
+    public int getInt(final String key) {
+        return getInt(key, getDefaultInt(key));
     }
 
     @Override

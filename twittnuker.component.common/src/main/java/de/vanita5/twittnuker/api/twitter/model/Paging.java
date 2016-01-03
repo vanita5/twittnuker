@@ -24,26 +24,23 @@ package de.vanita5.twittnuker.api.twitter.model;
 
 import org.mariotaku.restfu.http.SimpleValueMap;
 
-/**
- * Created by mariotaku on 15/2/6.
- */
 public class Paging extends SimpleValueMap {
 
     public void setSinceId(long sinceId) {
         put("since_id", sinceId);
-	}
+    }
 
     public void setMaxId(long maxId) {
         put("max_id", maxId);
-	}
+    }
 
     public void setCount(int count) {
         put("count", count);
-	}
+    }
 
     public void setPage(int page) {
         put("page", page);
-	}
+    }
 
     public void setCursor(long cursor) {
         put("cursor", cursor);
@@ -51,27 +48,36 @@ public class Paging extends SimpleValueMap {
 
     public void setCursor(String cursor) {
         put("cursor", cursor);
-	}
+    }
+
+    public void setLatestResults(boolean latestResults) {
+        put("latest_results", latestResults);
+    }
 
     public Paging sinceId(long sinceId) {
         setSinceId(sinceId);
-		return this;
-	}
+        return this;
+    }
+
+    public Paging latestResults(boolean latestResults) {
+        setLatestResults(latestResults);
+        return this;
+    }
 
     public Paging maxId(long maxId) {
         setMaxId(maxId);
-		return this;
-	}
+        return this;
+    }
 
     public Paging count(int count) {
         setCount(count);
         return this;
-	}
+    }
 
     public Paging page(int page) {
         setPage(page);
-		return this;
-	}
+        return this;
+    }
 
     public Paging cursor(long cursor) {
         setCursor(cursor);

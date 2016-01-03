@@ -78,6 +78,7 @@ import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
+import de.vanita5.twittnuker.util.net.InetAddressUtils;
 import de.vanita5.twittnuker.util.net.NetworkUsageUtils;
 import de.vanita5.twittnuker.util.net.TwidereProxySelector;
 
@@ -184,8 +185,17 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             final String proxyHost = prefs.getString(KEY_PROXY_HOST, null);
             final int proxyPort = NumberUtils.toInt(prefs.getString(KEY_PROXY_PORT, null), -1);
             if (!isEmpty(proxyHost) && TwidereMathUtils.inRangeInclusiveInclusive(proxyPort, 0, 65535)) {
-                client.setProxySelector(new TwidereProxySelector(context, getProxyType(proxyType),
-                        proxyHost, proxyPort));
+                // If proxy host is an IP address, use proxy directly
+                if (InetAddressUtils.getInetAddressType(proxyHost) != 0) {
+                    client.setProxySelector(null);
+                    client.setProxy(new Proxy(getProxyType(proxyType),
+                            InetSocketAddress.createUnresolved(proxyHost, proxyPort)));
+                } else {
+                    // ... otherwise use proxy selector to prevent proxy address from dns poisoning
+                    client.setProxy(null);
+                    client.setProxySelector(new TwidereProxySelector(context, getProxyType(proxyType),
+                            proxyHost, proxyPort));
+                }
             }
             final String username = prefs.getString(KEY_PROXY_USERNAME, null);
             final String password = prefs.getString(KEY_PROXY_PASSWORD, null);
@@ -206,6 +216,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
                 }
             });
         } else {
+            client.setProxy(null);
             client.setProxySelector(null);
             client.setAuthenticator(null);
         }
