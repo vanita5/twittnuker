@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.view.ActionIconView;
 import de.vanita5.twittnuker.view.BadgeView;
@@ -75,7 +76,7 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
 
     public void displayActivity(ParcelableActivity activity, boolean byFriends) {
         final Context context = adapter.getContext();
-        final ParcelableUser[] sources = activity.getUnfilteredSources();
+        final ParcelableUser[] sources = ParcelableActivityUtils.getAfterFilteredSources(activity);
         final ActivityTitleSummaryMessage message = ActivityTitleSummaryMessage.get(context,
                 adapter.getUserColorNameManager(), activity, sources, activityTypeView.getDefaultColor(),
                 byFriends, adapter.shouldUseStarsForLikes(), adapter.isNameFirst());

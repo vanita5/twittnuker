@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
@@ -302,7 +303,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
     public void onActivityClick(ActivityTitleSummaryViewHolder holder, int position) {
         final ParcelableActivity activity = getAdapter().getActivity(position);
         if (activity == null) return;
-        Utils.openUsers(getActivity(), Arrays.asList(activity.sources));
+        Utils.openUsers(getActivity(), Arrays.asList(ParcelableActivityUtils.getAfterFilteredSources(activity)));
     }
 
     @Override
