@@ -235,6 +235,7 @@ public abstract class CacheDownloadFragment extends BaseSupportFragment implemen
         mData = data;
         hideProgress();
         displayDownloaded(data);
+        invalidateOptionsMenu();
     }
 
     protected abstract void displayDownloaded(CacheDownloadLoader.Result data);
