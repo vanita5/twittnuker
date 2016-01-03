@@ -25,15 +25,14 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
-
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.User;
 
 public abstract class CursorSupportUsersLoader extends BaseCursorSupportUsersLoader {
 
@@ -42,19 +41,18 @@ public abstract class CursorSupportUsersLoader extends BaseCursorSupportUsersLoa
         super(context, accountId, cursor, data, fromUser);
     }
 
-    protected abstract PageableResponseList<User> getCursoredUsers(Twitter twitter, Paging paging)
+    @NonNull
+    protected abstract PageableResponseList<User> getCursoredUsers(@NonNull Twitter twitter, Paging paging)
             throws TwitterException;
 
     @Override
     protected final List<User> getUsers(@NonNull final Twitter twitter) throws TwitterException {
-        if (twitter == null) return null;
         final Paging paging = new Paging();
         paging.count(getCount());
         if (getCursor() > 0) {
             paging.setCursor(getCursor());
         }
         final PageableResponseList<User> users = getCursoredUsers(twitter, paging);
-        if (users == null) return null;
         setCursorIds(users);
         return users;
     }

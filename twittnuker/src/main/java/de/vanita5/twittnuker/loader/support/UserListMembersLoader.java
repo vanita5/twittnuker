@@ -23,22 +23,22 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
-
-import de.vanita5.twittnuker.model.ParcelableUser;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableUser;
 
 public class UserListMembersLoader extends CursorSupportUsersLoader {
 
     private final long mListId;
-	private final long mUserId;
-	private final String mScreenName, mListName;
+    private final long mUserId;
+    private final String mScreenName, mListName;
 
     public UserListMembersLoader(final Context context, final long accountId, final long listId,
                                  final long userId, final String screenName, final String listName,
@@ -48,19 +48,19 @@ public class UserListMembersLoader extends CursorSupportUsersLoader {
         mUserId = userId;
         mScreenName = screenName;
         mListName = listName;
-	}
+    }
 
-	@Override
-    public PageableResponseList<User> getCursoredUsers(final Twitter twitter, final Paging paging)
-			throws TwitterException {
-		if (twitter == null) return null;
-		if (mListId > 0)
-			return twitter.getUserListMembers(mListId, paging);
-		else if (mUserId > 0)
-			return twitter.getUserListMembers(mListName.replace(' ', '-'), mUserId, paging);
-		else if (mScreenName != null)
-			return twitter.getUserListMembers(mListName.replace(' ', '-'), mScreenName, paging);
-		return null;
-	}
+    @NonNull
+    @Override
+    public PageableResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, final Paging paging)
+            throws TwitterException {
+        if (mListId > 0)
+            return twitter.getUserListMembers(mListId, paging);
+        else if (mUserId > 0)
+            return twitter.getUserListMembers(mListName.replace(' ', '-'), mUserId, paging);
+        else if (mScreenName != null)
+            return twitter.getUserListMembers(mListName.replace(' ', '-'), mScreenName, paging);
+        throw new TwitterException("list_id or list_name and user_id (or screen_name) required");
+    }
 
 }

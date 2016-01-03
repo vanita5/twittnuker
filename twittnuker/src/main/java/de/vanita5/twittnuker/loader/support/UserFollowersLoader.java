@@ -23,21 +23,21 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
-
-import de.vanita5.twittnuker.model.ParcelableUser;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableUser;
 
 public class UserFollowersLoader extends CursorSupportUsersLoader {
 
-	private final long mUserId;
-	private final String mScreenName;
+    private final long mUserId;
+    private final String mScreenName;
 
     public UserFollowersLoader(final Context context, final long accountId, final long userId,
                                final String screenName, final long cursor, final List<ParcelableUser> data,
@@ -45,16 +45,16 @@ public class UserFollowersLoader extends CursorSupportUsersLoader {
         super(context, accountId, cursor, data, fromUser);
         mUserId = userId;
         mScreenName = screenName;
-	}
+    }
 
-	@Override
-    protected PageableResponseList<User> getCursoredUsers(final Twitter twitter, final Paging paging)
-			throws TwitterException {
-		if (twitter == null) return null;
-		if (mUserId > 0)
-			return twitter.getFollowersList(mUserId, paging);
-		else if (mScreenName != null) return twitter.getFollowersList(mScreenName, paging);
-		return null;
-	}
+    @NonNull
+    @Override
+    protected PageableResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, final Paging paging)
+            throws TwitterException {
+        if (mUserId > 0)
+            return twitter.getFollowersList(mUserId, paging);
+        else if (mScreenName != null) return twitter.getFollowersList(mScreenName, paging);
+        throw new TwitterException("user_id or screen_name required");
+    }
 
 }

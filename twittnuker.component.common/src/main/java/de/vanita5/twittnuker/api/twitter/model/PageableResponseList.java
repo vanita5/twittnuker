@@ -27,13 +27,10 @@ import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
 import java.util.ArrayList;
 
-/**
- * Created by mariotaku on 15/5/7.
- */
 public class PageableResponseList<T> extends ArrayList<T> implements TwitterResponse, CursorSupport {
 
-    private int accessLevel;
-    private RateLimitStatus rateLimitStatus;
+    int accessLevel;
+    RateLimitStatus rateLimitStatus;
     long previousCursor;
     long nextCursor;
 
@@ -56,12 +53,12 @@ public class PageableResponseList<T> extends ArrayList<T> implements TwitterResp
 
     @Override
     public long getNextCursor() {
-        return 0;
+        return nextCursor;
     }
 
     @Override
     public long getPreviousCursor() {
-        return 0;
+        return previousCursor;
     }
 
     @Override
