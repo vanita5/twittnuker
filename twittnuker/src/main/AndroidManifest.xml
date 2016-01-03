@@ -504,7 +504,7 @@
         </service>
         <service
             android:name=".service.RegistrationIntentService"
-            android:exported="false"></service>
+            android:exported="false"/>
 
         <provider
             android:name=".provider.TwidereDataProvider"
@@ -512,11 +512,6 @@
             android:exported="true"
             android:grantUriPermissions="true"
             android:label="@string/label_data_provider"
-            tools:ignore="ExportedContentProvider" />
-        <provider
-            android:name=".provider.TwidereCommandProvider"
-            android:authorities="twittnuker.command"
-            android:exported="true"
             tools:ignore="ExportedContentProvider" />
         <provider
             android:name=".provider.RecentSearchProvider"

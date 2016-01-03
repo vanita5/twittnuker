@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 public class ParcelableActivityUtils {
     public static void getAfterFilteredSourceIds(ParcelableActivity activity, long[] filteredUserIds, boolean followingOnly) {
         if (activity.after_filtered_source_ids != null) return;
-        if (!ArrayUtils.isEmpty(filteredUserIds)) {
+        if (followingOnly || !ArrayUtils.isEmpty(filteredUserIds)) {
             ArrayLongList list = new ArrayLongList();
             for (ParcelableUser user : activity.sources) {
                 if (followingOnly && !user.is_following) {

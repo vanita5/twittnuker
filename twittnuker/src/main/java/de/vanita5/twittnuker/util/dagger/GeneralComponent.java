@@ -43,12 +43,11 @@ import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
 import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
-import de.vanita5.twittnuker.fragment.support.DownloadingMediaPageFragment;
+import de.vanita5.twittnuker.fragment.support.CacheDownloadFragment;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.loader.support.CacheDownloadLoader;
 import de.vanita5.twittnuker.preference.AccountsListPreference;
 import de.vanita5.twittnuker.provider.CacheProvider;
-import de.vanita5.twittnuker.provider.TwidereCommandProvider;
 import de.vanita5.twittnuker.provider.TwidereDataProvider;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.service.RefreshService;
@@ -83,8 +82,6 @@ public interface GeneralComponent {
     void inject(RefreshService object);
 
     void inject(ThemedFragmentActivity object);
-
-    void inject(TwidereCommandProvider object);
 
     void inject(TwidereDataProvider object);
 
@@ -134,5 +131,5 @@ public interface GeneralComponent {
 
     void inject(CacheProvider object);
 
-    void inject(DownloadingMediaPageFragment.MediaDownloader object);
+    void inject(CacheDownloadFragment.MediaDownloader object);
 }
