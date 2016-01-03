@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
@@ -253,7 +254,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         }
 
         if (adapter.shouldShowAccountsColor()) {
-            itemContent.drawEnd(Utils.getAccountColor(context, status.account_id));
+            itemContent.drawEnd(DataStoreUtils.getAccountColor(context, status.account_id));
         } else {
             itemContent.drawEnd();
         }

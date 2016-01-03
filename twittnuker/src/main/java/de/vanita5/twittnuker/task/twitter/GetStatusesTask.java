@@ -87,7 +87,8 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
         return sinceIds != null && sinceIds.length == accountIds.length;
     }
 
-    private void storeStatus(long accountId, List<de.vanita5.twittnuker.api.twitter.model.Status> statuses, long maxId, boolean truncated, boolean notify) {
+    private void storeStatus(long accountId, List<de.vanita5.twittnuker.api.twitter.model.Status> statuses,
+                             long maxId, boolean notify, int loadItemLimit) {
         if (statuses == null || statuses.isEmpty() || accountId <= 0) {
             return;
         }
@@ -111,7 +112,8 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
         }
         // Delete all rows conflicting before new data inserted.
         final Expression accountWhere = Expression.equals(TwidereDataStore.Statuses.ACCOUNT_ID, accountId);
-        final Expression statusWhere = Expression.in(new Columns.Column(TwidereDataStore.Statuses.STATUS_ID), new RawItemArray(statusIds));
+        final Expression statusWhere = Expression.in(new Columns.Column(TwidereDataStore.Statuses.STATUS_ID),
+                new RawItemArray(statusIds));
         final String countWhere = Expression.and(accountWhere, statusWhere).getSQL();
         final String[] projection = {SQLFunctions.COUNT()};
         final int rowsDeleted;
@@ -129,8 +131,8 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
         // Insert a gap.
         final boolean deletedOldGap = rowsDeleted > 0 && ArrayUtils.contains(statusIds, maxId);
         final boolean noRowsDeleted = rowsDeleted == 0;
-        final boolean insertGap = minId > 0 && (noRowsDeleted || deletedOldGap) && !truncated
-                && !noItemsBefore && statuses.size() > 1;
+        final boolean insertGap = minId > 0 && (noRowsDeleted || deletedOldGap) && !noItemsBefore
+                && statuses.size() >= loadItemLimit;
         if (insertGap && minIdx != -1) {
             values[minIdx].put(TwidereDataStore.Statuses.IS_GAP, true);
         }
@@ -189,10 +191,9 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
                 } else {
                     sinceId = -1;
                 }
-                final List<de.vanita5.twittnuker.api.twitter.model.Status> statuses = new ArrayList<>();
-                final boolean truncated = Utils.truncateStatuses(getStatuses(twitter, paging), statuses, sinceId);
+                final List<de.vanita5.twittnuker.api.twitter.model.Status> statuses = getStatuses(twitter, paging);
                 TwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
-                storeStatus(accountId, statuses, maxId, truncated, true);
+                storeStatus(accountId, statuses, maxId, true, loadItemLimit);
                 publishProgress(new TwitterWrapper.StatusListResponse(accountId, statuses));
             } catch (final TwitterException e) {
                 Log.w(LOGTAG, e);

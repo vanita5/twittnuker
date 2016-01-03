@@ -58,12 +58,13 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
     private final Context mContext;
     private final long mAccountId;
     private final long mMaxId, mSinceId;
+    @Nullable
     private final Object[] mSavedStatusesFileArgs;
     private Comparator<ParcelableStatus> mComparator;
 
     public TwitterAPIStatusesLoader(final Context context, final long accountId, final long sinceId,
                                     final long maxId, final List<ParcelableStatus> data,
-                                    final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
+                                    @Nullable final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
         super(context, data, tabPosition, fromUser);
         mContext = context;
         mAccountId = accountId;
@@ -108,11 +109,14 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
                 paging.setMaxId(mMaxId);
             }
             if (mSinceId > 0) {
-                paging.setSinceId(mSinceId - 1);
+                paging.setSinceId(mSinceId);
+                if (mMaxId <= 0) {
+                    paging.setLatestResults(true);
+                }
             }
             statuses = new ArrayList<>();
             truncated = Utils.truncateStatuses(getStatuses(twitter, paging), statuses, mSinceId);
-            if (!Utils.isOfficialTwitterInstance(context, twitter)) {
+            if (!TwitterAPIFactory.isOfficialTwitterInstance(context, twitter)) {
                 TwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
             }
         } catch (final TwitterException e) {
@@ -170,6 +174,17 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         mComparator = comparator;
     }
 
+    public long getSinceId() {
+        return mSinceId;
+    }
+
+    public long getMaxId() {
+        return mMaxId;
+    }
+
+    public long getAccountId() {
+        return mAccountId;
+    }
 
     @NonNull
     protected abstract List<Status> getStatuses(@NonNull Twitter twitter, Paging paging) throws TwitterException;

@@ -67,6 +67,7 @@ import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
@@ -83,7 +84,6 @@ import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconObject;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
 import static de.vanita5.twittnuker.util.CustomTabUtils.isTabAdded;
 import static de.vanita5.twittnuker.util.CustomTabUtils.isTabTypeValid;
-import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 
 public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<Cursor>,
         MultiChoiceModeListener, OnItemClickListener {
@@ -224,7 +224,7 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
         final Resources res = getResources();
         final boolean hasOfficialKeyAccounts = Utils.hasAccountSignedWithOfficialKeys(getActivity());
         final boolean forcePrivateAPI = mPreferences.getBoolean(KEY_FORCE_USING_PRIVATE_APIS, false);
-        final long[] accountIds = getAccountIds(getActivity());
+        final long[] accountIds = DataStoreUtils.getAccountIds(getActivity());
         final MenuItem itemAdd = menu.findItem(R.id.add_submenu);
         if (itemAdd != null && itemAdd.hasSubMenu()) {
             final SubMenu subMenu = itemAdd.getSubMenu();

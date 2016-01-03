@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.model.DraftItemCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -45,8 +46,6 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.holder.DraftViewHolder;
 
 import javax.inject.Inject;
-
-import static de.vanita5.twittnuker.util.Utils.getAccountColors;
 
 public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
 
@@ -84,7 +83,7 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
         } else {
             holder.media_preview_container.setVisibility(View.GONE);
         }
-        holder.content.drawEnd(getAccountColors(context, accountIds));
+        holder.content.drawEnd(DataStoreUtils.getAccountColors(context, accountIds));
         holder.setTextSize(mTextSize);
         final boolean emptyContent = TextUtils.isEmpty(text);
         if (emptyContent) {

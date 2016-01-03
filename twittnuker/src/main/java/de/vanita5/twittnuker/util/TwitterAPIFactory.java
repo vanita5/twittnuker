@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.SSLCertificateSocketFactory;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -47,6 +48,7 @@ import org.mariotaku.restfu.HttpRequestFactory;
 import org.mariotaku.restfu.Pair;
 import org.mariotaku.restfu.RequestInfoFactory;
 import org.mariotaku.restfu.RestAPIFactory;
+import org.mariotaku.restfu.RestClient;
 import org.mariotaku.restfu.RestMethodInfo;
 import org.mariotaku.restfu.RestRequestInfo;
 import org.mariotaku.restfu.annotation.RestMethod;
@@ -60,6 +62,8 @@ import org.mariotaku.restfu.http.RestHttpResponse;
 import org.mariotaku.restfu.http.mime.StringTypedData;
 import org.mariotaku.restfu.http.mime.TypedData;
 import org.mariotaku.restfu.okhttp.OkHttpRestClient;
+import org.mariotaku.sqliteqb.library.Expression;
+
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -72,11 +76,13 @@ import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.EmptyAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
+import de.vanita5.twittnuker.api.twitter.auth.OAuthSupport;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.api.twitter.util.TwitterConverter;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.RequestType;
+import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.InetAddressUtils;
 import de.vanita5.twittnuker.util.net.NetworkUsageUtils;
@@ -500,6 +506,36 @@ public class TwitterAPIFactory implements TwittnukerConstants {
 
     private static boolean isAsciiLetterOrDigit(int codePoint) {
         return ('A' <= codePoint && codePoint <= 'Z') || ('a' <= codePoint && codePoint <= 'z') || '0' <= codePoint && codePoint <= '9';
+    }
+
+    public static boolean isOfficialKeyAccount(final Context context, final long accountId) {
+        return getOfficialKeyType(context, accountId) != ConsumerKeyType.UNKNOWN;
+    }
+
+    @NonNull
+    public static ConsumerKeyType getOfficialKeyType(final Context context, final long accountId) {
+        if (context == null) return ConsumerKeyType.UNKNOWN;
+        final String[] projection = {TwidereDataStore.Accounts.CONSUMER_KEY, TwidereDataStore.Accounts.CONSUMER_SECRET};
+        final String selection = Expression.equals(TwidereDataStore.Accounts.ACCOUNT_ID, accountId).getSQL();
+        final Cursor c = context.getContentResolver().query(TwidereDataStore.Accounts.CONTENT_URI, projection, selection, null, null);
+        //noinspection TryFinallyCanBeTryWithResources
+        try {
+            if (c.moveToPosition(0))
+                return TwitterContentUtils.getOfficialKeyType(context, c.getString(0), c.getString(1));
+        } finally {
+            c.close();
+        }
+        return ConsumerKeyType.UNKNOWN;
+    }
+
+    public static boolean isOfficialTwitterInstance(final Context context, final Twitter twitter) {
+        if (context == null || twitter == null) return false;
+        final RestClient restClient = RestAPIFactory.getRestClient(twitter);
+        final Authorization auth = restClient.getAuthorization();
+        if (!(auth instanceof OAuthSupport)) return false;
+        final String consumerKey = ((OAuthSupport) auth).getConsumerKey();
+        final String consumerSecret = ((OAuthSupport) auth).getConsumerSecret();
+        return TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret);
     }
 
     public static class Options {

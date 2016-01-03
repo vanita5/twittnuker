@@ -497,7 +497,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mUser = user;
         final int userColor = mUserColorNameManager.getUserColor(user.id, true);
         mProfileImageView.setBorderColor(userColor != 0 ? userColor : Color.WHITE);
-        mProfileNameContainer.drawEnd(Utils.getAccountColor(activity, user.account_id));
+        mProfileNameContainer.drawEnd(DataStoreUtils.getAccountColor(activity, user.account_id));
         mNameView.setText(user.name);
         final int typeIconRes = Utils.getUserTypeIconRes(user.is_verified, user.is_protected);
         if (typeIconRes != 0) {
@@ -841,7 +841,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         MenuUtils.setMenuItemAvailability(menu, R.id.incoming_friendships, isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.saved_searches, isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.scheduled_statuses, isMyself
-                && Utils.getOfficialKeyType(getActivity(), user.account_id) == ConsumerKeyType.TWEETDECK);
+                && TwitterAPIFactory.getOfficialKeyType(getActivity(), user.account_id) == ConsumerKeyType.TWEETDECK);
 //        final MenuItem followItem = menu.findItem(MENU_FOLLOW);
 //        followItem.setVisible(!isMyself);
 //        final boolean shouldShowFollowItem = !creatingFriendship && !destroyingFriendship && !isMyself
@@ -1434,7 +1434,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         }
         mPagerAdapter.addTab(UserTimelineFragment.class, tabArgs, getString(R.string.statuses),
                 R.drawable.ic_action_quote, TAB_TYPE_STATUSES, TAB_POSITION_STATUSES, null);
-        if (Utils.isOfficialKeyAccount(context, accountId)) {
+        if (TwitterAPIFactory.isOfficialKeyAccount(context, accountId)) {
             mPagerAdapter.addTab(UserMediaTimelineFragment.class, tabArgs, getString(R.string.media),
                     R.drawable.ic_action_gallery, TAB_TYPE_MEDIA, TAB_POSITION_MEDIA, null);
         }

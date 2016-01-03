@@ -576,7 +576,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         mValidator = new TwidereValidator(this);
         setContentView(R.layout.activity_compose);
         setFinishOnTouchOutside(false);
-        final long[] defaultAccountIds = Utils.getAccountIds(this);
+        final long[] defaultAccountIds = DataStoreUtils.getAccountIds(this);
         if (defaultAccountIds.length <= 0) {
             final Intent intent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
             intent.setClass(this, SignInActivity.class);

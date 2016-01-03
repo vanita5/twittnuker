@@ -48,7 +48,6 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
-import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.hasAutoRefreshAccounts;
 import static de.vanita5.twittnuker.util.Utils.isBatteryOkay;
@@ -83,7 +82,7 @@ public class RefreshService extends Service implements Constants {
             } else if (BROADCAST_RESCHEDULE_TRENDS_REFRESHING.equals(action)) {
                 rescheduleTrendsRefreshing();
             } else if (isAutoRefreshAllowed()) {
-                final long[] accountIds = getAccountIds(context);
+                final long[] accountIds = DataStoreUtils.getAccountIds(context);
                 final AccountPreferences[] accountPrefs = AccountPreferences.getAccountPreferences(context, accountIds);
                 if (BROADCAST_REFRESH_HOME_TIMELINE.equals(action)) {
                     final long[] refreshIds = getRefreshableIds(accountPrefs, new HomeRefreshableFilter());

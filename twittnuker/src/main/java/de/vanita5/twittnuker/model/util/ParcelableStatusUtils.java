@@ -20,25 +20,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.model.util;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import java.util.Collections;
-import java.util.List;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 
-public class Nullables {
+public class ParcelableStatusUtils {
 
-    @NonNull
-    public static <T> List<T> list(@Nullable List<T> list) {
-        if (list == null) return Collections.emptyList();
-        return list;
+    public static void makeOriginalStatus(@NonNull ParcelableStatus status) {
+        if (!status.is_retweet) return;
+        status.id = status.retweet_id;
+        status.retweeted_by_user_id = -1;
+        status.retweeted_by_user_name = null;
+        status.retweeted_by_user_screen_name = null;
+        status.retweeted_by_user_profile_image = null;
+        status.retweet_timestamp = -1;
+        status.retweet_id = -1;
     }
 
-    @NonNull
-    public static <T> T assertNonNull(@Nullable T object) {
-        if (object == null) throw new NullPointerException();
-        return object;
-    }
 }

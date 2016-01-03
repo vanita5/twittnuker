@@ -86,7 +86,6 @@ import de.vanita5.twittnuker.model.DraftItemCursorIndices;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.model.UnreadItem;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
@@ -95,7 +94,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
@@ -107,7 +105,6 @@ import de.vanita5.twittnuker.receiver.NotificationReceiver;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
-import de.vanita5.twittnuker.util.DatabaseQueryUtils;
 import de.vanita5.twittnuker.util.ImagePreloader;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -143,7 +140,6 @@ import static de.vanita5.twittnuker.util.DataStoreUtils.getTableId;
 import static de.vanita5.twittnuker.util.DataStoreUtils.getTableNameById;
 import static de.vanita5.twittnuker.util.Utils.clearAccountColor;
 import static de.vanita5.twittnuker.util.Utils.clearAccountName;
-import static de.vanita5.twittnuker.util.Utils.getAccountIds;
 import static de.vanita5.twittnuker.util.Utils.getNotificationUri;
 import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 
@@ -1072,7 +1068,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         switch (tableId) {
             case TABLE_ID_STATUSES: {
 //                final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(context,
-//                        getAccountIds(context));
+//                        DataStoreUtils.getAccountIds(context));
 //                for (final AccountPreferences pref : prefs) {
 //                    if (!pref.isHomeTimelineNotificationEnabled()) continue;
 //                    showTimelineNotification(pref, getPositionTag(TAB_TYPE_HOME_TIMELINE, pref.getAccountId()));
@@ -1082,7 +1078,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             }
             case TABLE_ID_ACTIVITIES_ABOUT_ME: {
                 final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(context,
-                        getAccountIds(context));
+                        DataStoreUtils.getAccountIds(context));
                 final boolean combined = mPreferences.getBoolean(KEY_COMBINED_NOTIFICATIONS);
                 for (final AccountPreferences pref : prefs) {
                     if (!pref.isInteractionsNotificationEnabled()) continue;
@@ -1093,7 +1089,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             }
             case TABLE_ID_DIRECT_MESSAGES_INBOX: {
                 final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(context,
-                        getAccountIds(context));
+                        DataStoreUtils.getAccountIds(context));
                 for (final AccountPreferences pref : prefs) {
                     if (!pref.isDirectMessagesNotificationEnabled()) continue;
                     final StringLongPair[] pairs = mReadStateManager.getPositionPairs(TAB_TYPE_DIRECT_MESSAGES);
@@ -1300,7 +1296,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             final int usersCount = userCursor.getCount();
             final int messagesCount = messageCursor.getCount();
             if (messagesCount == 0 || usersCount == 0) return;
-            final String accountName = Utils.getAccountName(context, accountId);
+            final String accountName = DataStoreUtils.getAccountName(context, accountId);
             final String accountScreenName = DataStoreUtils.getAccountScreenName(context, accountId);
             final int idxMessageText = messageCursor.getColumnIndex(DirectMessages.TEXT_UNESCAPED),
                     idxMessageTimestamp = messageCursor.getColumnIndex(DirectMessages.MESSAGE_TIMESTAMP),

@@ -22,23 +22,31 @@
 
 package de.vanita5.twittnuker.util;
 
-import android.support.annotation.NonNull;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.Field;
 
-public class Nullables {
+public class ParcelUtils {
 
-    @NonNull
-    public static <T> List<T> list(@Nullable List<T> list) {
-        if (list == null) return Collections.emptyList();
-        return list;
-    }
-
-    @NonNull
-    public static <T> T assertNonNull(@Nullable T object) {
-        if (object == null) throw new NullPointerException();
-        return object;
+    @Nullable
+    public static <T extends Parcelable> T clone(@Nullable T object) {
+        if (object == null) return null;
+        final Parcel parcel = Parcel.obtain();
+        try {
+            object.writeToParcel(parcel, 0);
+            parcel.setDataPosition(0);
+            final Field creatorField = object.getClass().getDeclaredField("CREATOR");
+            //noinspection unchecked
+            final Parcelable.Creator<T> creator = (Parcelable.Creator<T>) creatorField.get(null);
+            return creator.createFromParcel(parcel);
+        } catch (NoSuchFieldException e) {
+            throw new NoSuchFieldError("Missing CREATOR field");
+        } catch (IllegalAccessException e) {
+            throw new IllegalAccessError("Can't access CREATOR field");
+        } finally {
+            parcel.recycle();
+        }
     }
 }
