@@ -20,24 +20,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.media.preview.provider;
+package de.vanita5.twittnuker.api.twitter.auth;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.mariotaku.restfu.http.RestHttpClient;
+@JsonObject
+public class OAuth2Token {
+    @JsonField(name = "token_type")
+    String tokenType;
+    @JsonField(name = "access_token")
+    String accessToken;
 
-import de.vanita5.twittnuker.model.ParcelableMedia;
+    public String getTokenType() {
+        return tokenType;
+    }
 
-public interface Provider {
-
-    boolean supports(@NonNull String link);
-
-    @Nullable
-    ParcelableMedia from(@NonNull String url);
-
-    @Nullable
-    @WorkerThread
-    ParcelableMedia from(@NonNull String link, @NonNull RestHttpClient client, @Nullable Object extra);
+    public String getAccessToken() {
+        return accessToken;
+    }
 }

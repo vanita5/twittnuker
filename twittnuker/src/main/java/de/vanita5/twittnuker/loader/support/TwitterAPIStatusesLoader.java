@@ -42,12 +42,10 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
-import de.vanita5.twittnuker.util.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -114,8 +112,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
                     paging.setLatestResults(true);
                 }
             }
-            statuses = new ArrayList<>();
-            truncated = Utils.truncateStatuses(getStatuses(twitter, paging), statuses, mSinceId);
+            statuses = getStatuses(twitter, paging);
             if (!TwitterAPIFactory.isOfficialTwitterInstance(context, twitter)) {
                 TwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
             }
@@ -146,8 +143,8 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         // Insert a gap.
         final boolean deletedOldGap = rowsDeleted > 0 && ArrayUtils.contains(statusIds, mMaxId);
         final boolean noRowsDeleted = rowsDeleted == 0;
-        final boolean insertGap = minId > 0 && (noRowsDeleted || deletedOldGap) && !truncated
-                && !noItemsBefore && statuses.size() > 1;
+        final boolean insertGap = minId > 0 && (noRowsDeleted || deletedOldGap) && !noItemsBefore
+                && statuses.size() >= loadItemLimit;
         for (int i = 0, j = statuses.size(); i < j; i++) {
             final Status status = statuses.get(i);
             data.add(new ParcelableStatus(status, mAccountId, insertGap && isGapEnabled() && minIdx == i));

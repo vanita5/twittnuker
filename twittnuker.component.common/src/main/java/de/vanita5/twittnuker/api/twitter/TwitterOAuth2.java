@@ -20,24 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.media.preview.provider;
+package de.vanita5.twittnuker.api.twitter;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Header;
+import de.vanita5.twittnuker.api.twitter.auth.OAuth2GetTokenHeader;
+import de.vanita5.twittnuker.api.twitter.auth.OAuth2Token;
 
-import org.mariotaku.restfu.http.RestHttpClient;
+public interface TwitterOAuth2 {
 
-import de.vanita5.twittnuker.model.ParcelableMedia;
-
-public interface Provider {
-
-    boolean supports(@NonNull String link);
-
-    @Nullable
-    ParcelableMedia from(@NonNull String url);
-
-    @Nullable
-    @WorkerThread
-    ParcelableMedia from(@NonNull String link, @NonNull RestHttpClient client, @Nullable Object extra);
+    @POST("/oauth2/token")
+    OAuth2Token getApplicationOnlyAccessToken(@Header("Authorization") OAuth2GetTokenHeader token)
+            throws TwitterException;
 }

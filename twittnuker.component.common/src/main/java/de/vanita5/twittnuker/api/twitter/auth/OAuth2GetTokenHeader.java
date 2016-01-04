@@ -20,35 +20,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.api.twitter.auth;
 
-import java.util.regex.Matcher;
+import android.util.Base64;
 
-public class RegexUtils {
-	public static int matcherEnd(final Matcher matcher, final int group) {
-		try {
-			return matcher.end(group);
-		} catch (final IllegalStateException e) {
-			// Ignore.
-		}
-		return -1;
-	}
+import org.mariotaku.restfu.http.HeaderValue;
 
-	public static String matcherGroup(final Matcher matcher, final int group) {
-		try {
-			return matcher.group(group);
-		} catch (final IllegalStateException e) {
-			// Ignore.
-		}
-		return null;
-	}
+public class OAuth2GetTokenHeader implements HeaderValue {
 
-	public static int matcherStart(final Matcher matcher, final int group) {
-		try {
-			return matcher.start(group);
-		} catch (final IllegalStateException e) {
-			// Ignore.
-		}
-		return -1;
-	}
+    private final OAuthToken token;
+
+    public OAuth2GetTokenHeader(OAuthToken token) {
+        this.token = token;
+    }
+
+    @Override
+    public String toHeaderValue() {
+        return "Basic " + Base64.encodeToString((token.getOauthToken() + ":"
+                + token.getOauthTokenSecret()).getBytes(), Base64.NO_WRAP);
+    }
 }

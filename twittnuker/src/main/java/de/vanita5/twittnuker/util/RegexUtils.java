@@ -20,24 +20,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.media.preview.provider;
+package de.vanita5.twittnuker.util;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
+import java.util.regex.Matcher;
 
-import org.mariotaku.restfu.http.RestHttpClient;
+public class RegexUtils {
+    public static int matcherEnd(final Matcher matcher, final int group) {
+        try {
+            return matcher.end(group);
+        } catch (final IllegalStateException e) {
+            // Ignore.
+        }
+        return -1;
+    }
 
-import de.vanita5.twittnuker.model.ParcelableMedia;
+    public static String matcherGroup(final Matcher matcher, final int group) {
+        try {
+            return matcher.group(group);
+        } catch (final IllegalStateException e) {
+            // Ignore.
+        }
+        return null;
+    }
 
-public interface Provider {
-
-    boolean supports(@NonNull String link);
-
-    @Nullable
-    ParcelableMedia from(@NonNull String url);
-
-    @Nullable
-    @WorkerThread
-    ParcelableMedia from(@NonNull String link, @NonNull RestHttpClient client, @Nullable Object extra);
+    public static int matcherStart(final Matcher matcher, final int group) {
+        try {
+            return matcher.start(group);
+        } catch (final IllegalStateException e) {
+            // Ignore.
+        }
+        return -1;
+    }
 }

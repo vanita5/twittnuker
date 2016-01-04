@@ -20,21 +20,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.api.twitter.auth;
 
-import com.bluelinelabs.logansquare.LoganSquare;
+import org.mariotaku.restfu.RestRequestInfo;
+import org.mariotaku.restfu.http.Authorization;
+import org.mariotaku.restfu.http.Endpoint;
 
-import java.io.IOException;
-import java.util.Arrays;
+public class BearerAuthorization implements Authorization {
+    private final String accessToken;
 
-public class SerializeUtils {
-
-    public static <T> String serializeArray(Class<T> cls, T... array) {
-        try {
-            return LoganSquare.serialize(Arrays.asList(array), cls);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public BearerAuthorization(String accessToken) {
+        this.accessToken = accessToken;
     }
 
+
+    @Override
+    public String getHeader(Endpoint endpoint, RestRequestInfo info) {
+        return "Bearer " + accessToken;
+    }
+
+    @Override
+    public boolean hasAuthorization() {
+        return accessToken != null;
+    }
 }

@@ -30,6 +30,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.vanita5.twittnuker.util.BugReporter;
+
 @JsonObject
 public class MediaEntity extends UrlEntity {
     @JsonField(name = "id")
@@ -146,6 +148,7 @@ public class MediaEntity extends UrlEntity {
             } else if ("animated_gif".equalsIgnoreCase(typeString)) {
                 return ANIMATED_GIF;
             }
+            BugReporter.error("Unknown MediaEntity.Type " + typeString);
             return UNKNOWN;
         }
 
