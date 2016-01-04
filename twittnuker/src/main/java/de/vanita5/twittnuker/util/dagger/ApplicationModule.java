@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util.dagger;
 import android.content.Context;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.v4.text.BidiFormatter;
 
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
@@ -195,6 +196,11 @@ public class ApplicationModule implements Constants {
     @Singleton
     public DiskCache providesDiskCache(SharedPreferencesWrapper preferences) {
         return createDiskCache("files", preferences);
+    }
+
+    @Provides
+    public BidiFormatter provideBidiFormatter() {
+        return BidiFormatter.getInstance();
     }
 
     private DiskCache createDiskCache(final String dirName, SharedPreferencesWrapper preferences) {
