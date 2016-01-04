@@ -31,6 +31,7 @@ import org.mariotaku.restfu.http.RestHttpClient;
 
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.HtmlLinkExtractor;
+import de.vanita5.twittnuker.util.media.preview.provider.GenericProvider;
 import de.vanita5.twittnuker.util.media.preview.provider.InstagramProvider;
 import de.vanita5.twittnuker.util.media.preview.provider.Provider;
 
@@ -42,6 +43,7 @@ import java.util.List;
 public class PreviewMediaExtractor {
 
     private static final Provider[] sProviders = {
+            new GenericProvider(),
             new InstagramProvider()
     };
 
