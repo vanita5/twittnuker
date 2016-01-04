@@ -26,6 +26,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.text.BidiFormatter;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Spanned;
@@ -132,7 +133,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         profileImageView.setImageResource(R.mipmap.ic_launcher);
         nameView.setName(TWIDERE_PREVIEW_NAME);
         nameView.setScreenName("@" + TWIDERE_PREVIEW_SCREEN_NAME);
-        nameView.updateText();
+        nameView.updateText(adapter.getBidiFormatter());
         if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
             final TwidereLinkify linkify = adapter.getTwidereLinkify();
             final Spanned text = HtmlSpanBuilder.fromHtml(TWIDERE_PREVIEW_TEXT_HTML);
@@ -158,6 +159,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         final AsyncTwitterWrapper twitter = adapter.getTwitterWrapper();
         final TwidereLinkify linkify = adapter.getTwidereLinkify();
         final UserColorNameManager manager = adapter.getUserColorNameManager();
+        final BidiFormatter formatter = adapter.getBidiFormatter();
         final Context context = adapter.getContext();
         final boolean nameFirst = adapter.isNameFirst();
 
@@ -173,14 +175,14 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         } else if (status.retweet_id > 0) {
             final String retweetedBy = manager.getDisplayName(status.retweeted_by_user_id,
                     status.retweeted_by_user_name, status.retweeted_by_user_screen_name, nameFirst, false);
-            statusInfoLabel.setText(context.getString(R.string.name_retweeted, retweetedBy));
+            statusInfoLabel.setText(context.getString(R.string.name_retweeted, formatter.unicodeWrap(retweetedBy)));
             statusInfoIcon.setImageResource(R.drawable.ic_activity_action_retweet);
             statusInfoLabel.setVisibility(View.VISIBLE);
             statusInfoIcon.setVisibility(View.VISIBLE);
         } else if (status.in_reply_to_status_id > 0 && status.in_reply_to_user_id > 0 && displayInReplyTo) {
             final String inReplyTo = manager.getDisplayName(status.in_reply_to_user_id,
                     status.in_reply_to_name, status.in_reply_to_screen_name, nameFirst, false);
-            statusInfoLabel.setText(context.getString(R.string.in_reply_to_name, inReplyTo));
+            statusInfoLabel.setText(context.getString(R.string.in_reply_to_name, formatter.unicodeWrap(inReplyTo)));
             statusInfoIcon.setImageResource(R.drawable.ic_activity_action_reply);
             statusInfoLabel.setVisibility(View.VISIBLE);
             statusInfoIcon.setVisibility(View.VISIBLE);
@@ -323,8 +325,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
             extraTypeView.setVisibility(View.GONE);
         }
 
-        nameView.updateText();
-        quotedNameView.updateText();
+        nameView.updateText(formatter);
+        quotedNameView.updateText(formatter);
     }
 
     @Override
@@ -479,6 +481,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         AsyncTwitterWrapper twitter;
         @Inject
         UserColorNameManager manager;
+        @Inject
+        BidiFormatter formatter;
 
         private int profileImageStyle;
         private int mediaPreviewStyle;
@@ -513,6 +517,12 @@ public class StatusViewHolder extends ViewHolder implements Constants, OnClickLi
         @Override
         public MediaLoaderWrapper getMediaLoader() {
             return loader;
+        }
+
+        @NonNull
+        @Override
+        public BidiFormatter getBidiFormatter() {
+            return formatter;
         }
 
         @NonNull

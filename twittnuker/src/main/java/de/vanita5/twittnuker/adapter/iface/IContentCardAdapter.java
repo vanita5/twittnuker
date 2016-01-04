@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.adapter.iface;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.text.BidiFormatter;
 
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -33,7 +34,7 @@ import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 public interface IContentCardAdapter extends ILoadMoreSupportAdapter {
 
     @NonNull
-	Context getContext();
+    Context getContext();
 
     @NonNull
     UserColorNameManager getUserColorNameManager();
@@ -41,15 +42,18 @@ public interface IContentCardAdapter extends ILoadMoreSupportAdapter {
     int getItemCount();
 
     @ShapeStyle
-	int getProfileImageStyle();
+    int getProfileImageStyle();
 
     boolean isProfileImageEnabled();
 
     float getTextSize();
 
     @NonNull
-	AsyncTwitterWrapper getTwitterWrapper();
+    AsyncTwitterWrapper getTwitterWrapper();
 
     @NonNull
     MediaLoaderWrapper getMediaLoader();
+
+    @NonNull
+    BidiFormatter getBidiFormatter();
 }
