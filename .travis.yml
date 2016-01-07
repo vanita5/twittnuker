@@ -46,4 +46,4 @@ before_install:
   - ./travis/scripts/install_android_ndk.sh
   - export PATH=$HOME/.local/bin:$PATH
 
-script: ./gradlew build --no-daemon --stacktrace
+script: ./gradlew build --no-daemon --stacktrace --info
