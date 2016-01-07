@@ -87,7 +87,6 @@ import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-import de.vanita5.twittnuker.service.RegistrationIntentService;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
@@ -118,7 +117,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
-import static de.vanita5.twittnuker.util.Utils.checkPlayServices;
 import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
@@ -138,8 +136,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     private MultiSelectEventHandler mMultiSelectHandler;
 
     private SupportTabsAdapter mPagerAdapter;
-
-    private BroadcastReceiver mGCMRegistrationReceiver;
 
     private ExtendedViewPager mViewPager;
     private TabPagerIndicator mTabIndicator;
@@ -377,17 +373,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
         int tabDisplayOptionInt = getTabDisplayOptionInt(this);
 
-        mGCMRegistrationReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (mPreferences.getBoolean(GCM_TOKEN_SENT, false)) {
-                    Toast.makeText(context, "Push Notifications activated", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, "Push Notifications failed", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
-
         mTabColumns = getResources().getInteger(R.integer.default_tab_columns);
 
         mHomeContent.setOnFitSystemWindowsListener(this);
@@ -452,18 +437,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         } else {
             stopStreamingService();
         }
-        registerGCMIfNeeded();
-    }
-
-    private void registerGCMIfNeeded() {
-        if (!mPreferences.getBoolean(KEY_ENABLE_PUSH_NOTIFICATIONS, false)) return;
-        if (TextUtils.isEmpty(mPreferences.getString(KEY_PUSH_API_URL, null))) return;
-        if (mPreferences.getBoolean(GCM_TOKEN_SENT, false)) return;
-
-        if (checkPlayServices(this)) {
-            Intent gcmRegIntent = new Intent(this, RegistrationIntentService.class);
-            startService(gcmRegIntent);
-        }
     }
 
     @Override
@@ -475,7 +448,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, getActionBarColor()));
         }
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONRESUME));
-        registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
         invalidateOptionsMenu();
         updateActionsButtonStyle();
         updateActionsButton();
@@ -490,7 +462,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     @Override
     protected void onPause() {
-        unregisterReceiver(mGCMRegistrationReceiver);
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONPAUSE));
         super.onPause();
     }

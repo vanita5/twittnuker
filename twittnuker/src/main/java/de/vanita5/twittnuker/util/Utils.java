@@ -112,9 +112,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONException;
@@ -3276,20 +3273,5 @@ public final class Utils implements Constants {
             value = value / 1024;
         }
         return String.format("%.2f %s", value, fileSizeUnits[index]);
-    }
-
-    public static boolean checkPlayServices(final Activity activity) {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(activity);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(resultCode)) {
-                apiAvailability.getErrorDialog(activity, resultCode, 9000)
-                        .show();
-            } else {
-                Log.i("PlayServices", "This device is not supported.");
-            }
-            return false;
-        }
-        return true;
     }
 }
