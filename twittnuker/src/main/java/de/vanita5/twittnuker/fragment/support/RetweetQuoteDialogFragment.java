@@ -118,7 +118,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         builder.setNeutralButton(R.string.quote, this);
         builder.setNegativeButton(android.R.string.cancel, null);
 
-        holder.displayStatus(status, null, false, true);
+        holder.displayStatus(status, false, true);
 
         view.findViewById(R.id.item_menu).setVisibility(View.GONE);
         view.findViewById(R.id.action_buttons).setVisibility(View.GONE);

@@ -22,50 +22,127 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.EnumClass;
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.UserListImpl;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
+
+import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
 
 import java.util.Date;
 
-@Implementation(UserListImpl.class)
-public interface UserList extends Comparable<UserList>, TwitterResponse {
-    Mode getMode();
+@JsonObject
+public class UserList extends TwitterResponseObject implements Comparable<UserList>, TwitterResponse {
+    @JsonField(name = "id")
+    long id;
 
-    String getDescription();
+    @JsonField(name = "name")
+    String name;
+
+    @JsonField(name = "uri")
+    String uri;
+
+    @JsonField(name = "subscriber_count")
+    long subscriberCount;
+
+    @JsonField(name = "member_count")
+    long memberCount;
+
+    @JsonField(name = "mode", typeConverter = Mode.Converter.class)
+    Mode mode;
+
+    @JsonField(name = "description")
+    String description;
+
+    @JsonField(name = "slug")
+    String slug;
+
+    @JsonField(name = "full_name")
+    String fullName;
+
+    @JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
+    Date createdAt;
+
+    @JsonField(name = "following")
+    boolean following;
+
+    @JsonField(name = "user")
+    User user;
+
+    public long getId() {
+        return id;
+    }
 
 
-    String getFullName();
+    public String getName() {
+        return name;
+    }
 
+    public String getUri() {
+        return uri;
+    }
 
-    long getId();
+    public long getSubscriberCount() {
+        return subscriberCount;
+    }
 
+    public long getMemberCount() {
+        return memberCount;
+    }
 
-    long getMemberCount();
+    public Mode getMode() {
+        return mode;
+    }
 
+    public String getDescription() {
+        return description;
+    }
 
-    String getName();
+    public String getSlug() {
+        return slug;
+    }
 
+    public String getFullName() {
+        return fullName;
+    }
 
-    String getSlug();
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
+    public boolean isFollowing() {
+        return following;
+    }
 
-    long getSubscriberCount();
+    public User getUser() {
+        return user;
+    }
 
+    @Override
+    public int compareTo(@NonNull UserList another) {
+        return (int) (id - another.id);
+    }
 
-    String getUri();
+    @Override
+    public String toString() {
+        return "UserList{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", uri='" + uri + '\'' +
+                ", subscriberCount=" + subscriberCount +
+                ", memberCount=" + memberCount +
+                ", mode=" + mode +
+                ", description='" + description + '\'' +
+                ", slug='" + slug + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", createdAt=" + createdAt +
+                ", following=" + following +
+                ", user=" + user +
+                "} " + super.toString();
+    }
 
-
-    User getUser();
-
-
-    Date getCreatedAt();
-
-    boolean isFollowing();
-
-    @EnumClass
-    enum Mode {
+    public enum Mode {
         PUBLIC("public"), PRIVATE("private");
 
         private final String mode;
@@ -86,6 +163,19 @@ public interface UserList extends Comparable<UserList>, TwitterResponse {
 
         public String getMode() {
             return mode;
+        }
+
+        public static class Converter extends StringBasedTypeConverter<Mode> {
+
+            @Override
+            public Mode getFromString(String string) {
+                return Mode.parse(string);
+            }
+
+            @Override
+            public String convertToString(Mode object) {
+                return object.mode;
+            }
         }
     }
 }

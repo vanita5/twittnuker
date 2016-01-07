@@ -1,8 +1,18 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.21.2'
+    }
+}
 import fr.avianey.androidsvgdrawable.gradle.SvgDrawableTask
 
 import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'androidsvgdrawable'
 
@@ -11,9 +21,14 @@ android {
         applicationId "de.vanita5.twittnuker"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 21
-        versionName "0.7.7"
+        versionCode 23
+        versionName "0.7.8"
         //multiDexEnabled false
+        ndk {
+            ldLibs 'log'
+        }
+
+        buildConfigField 'boolean', 'ENABLE_MEDIA_VIEWER', 'Boolean.parseBoolean("true")'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -26,10 +41,12 @@ android {
 
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd")
             versionNameSuffix String.format(" (dev %s)", format.format(new Date()))
+            resValue("bool", "debug", "true")
         }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue("bool", "debug", "false")
         }
     }
     sourceSets {
@@ -43,10 +60,6 @@ android {
     }
 }
 
-configurations {
-    all*.exclude group: 'org.yaml', module: 'snakeyaml'
-}
-
 repositories {
     jcenter()
     mavenCentral()
@@ -56,6 +69,8 @@ repositories {
     maven {
         url "https://s3.amazonaws.com/repo.commonsware.com"
     }
+    flatDir { dirs "$projectDir/lib" }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 apt {
@@ -65,73 +80,79 @@ apt {
 }
 
 dependencies {
-    apt 'com.bluelinelabs:logansquare-compiler:1.1.0'
-    apt 'com.hannesdorfmann.parcelableplease:processor:1.0.1'
-    apt 'com.google.dagger:dagger-compiler:2.0.1'
+    apt 'com.bluelinelabs:logansquare-compiler:1.3.4'
+    apt 'com.hannesdorfmann.parcelableplease:processor:1.0.2'
+    apt 'com.google.dagger:dagger-compiler:2.0.2'
+    apt 'com.github.mariotaku.ObjectCursor:processor:0.9.3'
     //compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-v13:23.1.1'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:cardview-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'com.twitter:twitter-text:1.12.1'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
-    compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
-    compile 'org.apache.httpcomponents:httpmime:4.3.5'
+    compile 'com.twitter:twitter-text:1.13.0'
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.squareup:otto:1.3.8'
     compile 'dnsjava:dnsjava:2.1.7'
     compile 'com.commonsware.cwac:merge:1.1.1'
     compile 'com.commonsware.cwac:layouts:0.4.2'
-    compile 'com.commonsware.cwac:sacklist:1.0.0'
-    compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.4.0'
+    compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.4.1'
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.pnikosis:materialish-progress:1.7'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.bluelinelabs:logansquare:1.1.0'
-    compile 'ch.acra:acra:4.7.0-RC.1'
-    compile 'org.jraf:android-switch-backport:2.0.1'
-    compile 'com.fasterxml.jackson.jr:jackson-jr-objects:2.6.2'
-    compile 'com.makeramen:roundedimageview:2.1.1'
-    compile 'com.soundcloud.android:android-crop:1.0.1@aar'
-    compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
-    compile 'com.github.mariotaku:PickNCrop:1dff3ed574'
-    compile 'com.github.mariotaku.RestFu:library:0.9.7'
-    compile 'com.github.mariotaku.RestFu:okhttp:0.9.7'
-    compile 'com.diogobernardino:williamchart:2.0.1'
-    compile 'com.lnikkila:extendedtouchview:0.1.0'
-    compile 'com.google.dagger:dagger:2.0.1'
-    compile 'org.attoparser:attoparser:1.4.0.RELEASE'
-    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
-    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
+    compile 'com.squareup.okhttp:okhttp:2.7.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.7'
     compile 'com.github.johnpersano:supertoasts:1.3.4.1@aar'
     compile 'com.github.mariotaku:MessageBubbleView:1.2'
     compile 'com.github.mariotaku:DragSortListView:0.6.1'
     compile 'com.github.uucky:ColorPicker-Android:0.9.7@aar'
     compile 'com.github.boxme:asyncmanager:1.0.0'
-    compile 'com.sprylab.android.texturevideoview:texturevideoview:1.0.1'
+    compile 'com.sprylab.android.texturevideoview:texturevideoview:1.0.2'
     compile 'com.squareup:tape:1.2.3'
     compile 'commons-primitives:commons-primitives:1.0'
+    compile 'com.bluelinelabs:logansquare:1.3.4'
+    compile 'org.jraf:android-switch-backport:2.0.1'
+    compile 'com.github.mariotaku:jackson-jr-trees:7fe682ee09'
+    compile 'com.makeramen:roundedimageview:2.1.1'
+    compile 'com.soundcloud.android:android-crop:1.0.1@aar'
+    compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.2'
+    compile 'com.github.mariotaku:PickNCrop:0.9.2'
+    compile 'com.github.mariotaku.RestFu:library:0.9.8'
+    compile 'com.github.mariotaku.RestFu:okhttp:0.9.8'
+    compile 'com.diogobernardino:williamchart:2.1'
+    compile 'com.lnikkila:extendedtouchview:0.1.0'
+    compile 'com.google.dagger:dagger:2.0.2'
+    compile 'org.attoparser:attoparser:1.4.0.RELEASE'
+    compile 'com.j256.simplemagic:simplemagic:1.6'
+    compile ':YouTubeAndroidPlayerApi:1.2.2@jar'
+
+    // Twittnuker specific
     compile 'org.sufficientlysecure:donations:2.4'
+    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
+    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
 
     // libraries for f-droid
-    compile 'org.osmdroid:osmdroid-android:4.3'
-    compile 'org.slf4j:slf4j-simple:1.7.12'
+    compile 'org.osmdroid:osmdroid-android:5.0.1'
+
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
 
     compile project(':twittnuker.component.common')
+    compile 'com.github.mariotaku.ObjectCursor:core:0.9.3'
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     provided 'javax.annotation:jsr250-api:1.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+        transitive = true;
+    }
 }
 
 task svgToDrawable(type: SvgDrawableTask) {
     // specify where to pick SVG from
-    from = file('src/main/svg/drawable')
+    from = files('src/main/svg/drawable')
     // specify the android res folder
     to = file('src/main/res-svg2png')
     // create qualified directories if missing
     createMissingDirectories = true
     // override files only if necessary
-    overrideMode = 'ifModified'
+    overwriteMode = 'ifModified'
     // let generate PNG for the following densities only
     targetedDensities = ['hdpi', 'mdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
     // relative path of the file specifying nine patch specs
@@ -140,4 +161,19 @@ task svgToDrawable(type: SvgDrawableTask) {
     outputFormat = 'PNG'
 
     outputType = 'drawable'
+}
+
+task svgToMipmap(type: SvgDrawableTask) {
+    // specify where to pick SVG from
+    from = files('src/main/svg/mipmap')
+    // specify the android res folder
+    to = file('src/main/res-svg2png')
+    // override files only if necessary
+    overwriteMode = 'ifModified'
+    // let generate PNG for the following densities only
+    targetedDensities = ['hdpi', 'mdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
+    // output format of the generated resources
+    outputFormat = 'PNG'
+
+    outputType = 'mipmap'
 }

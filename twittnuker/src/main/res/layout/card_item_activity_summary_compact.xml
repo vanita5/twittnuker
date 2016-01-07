@@ -21,9 +21,10 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<de.vanita5.twittnuker.view.ColorLabelRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<de.vanita5.twittnuker.view.ColorLabelRelativeLayout
     android:id="@+id/item_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
@@ -93,18 +94,14 @@
             android:layout_margin="2dp"
             android:contentDescription="@string/profile_image"/>
 
-        <de.vanita5.twittnuker.view.themed.ThemedTextView
+        <de.vanita5.twittnuker.view.BadgeView
             android:id="@+id/activity_profile_image_more_number"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            style="?profileImageStyle"
+            android:layout_width="@dimen/profile_image_size_activity_small"
+            android:layout_height="@dimen/profile_image_size_activity_small"
             android:layout_margin="2dp"
-            android:layout_weight="1"
             android:gravity="center"
-            android:minHeight="@dimen/profile_image_size_activity_small"
-            android:minWidth="@dimen/profile_image_size_activity_small"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorPrimary"
-            android:textStyle="bold"
             tools:text="11"/>
     </LinearLayout>
 
@@ -125,7 +122,7 @@
         android:singleLine="false"
         android:textAppearance="?android:textAppearanceSmall"
         android:textColor="?android:textColorPrimary"
-        tools:text="Uucky and 15 others liked your tweet."/>
+        tools:text="User and 15 others liked your tweet."/>
 
     <de.vanita5.twittnuker.view.themed.ThemedTextView
         android:id="@+id/summary"

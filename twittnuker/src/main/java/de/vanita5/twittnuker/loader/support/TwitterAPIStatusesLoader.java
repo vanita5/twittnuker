@@ -42,12 +42,10 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
-import de.vanita5.twittnuker.util.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -58,12 +56,13 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
     private final Context mContext;
     private final long mAccountId;
     private final long mMaxId, mSinceId;
+    @Nullable
     private final Object[] mSavedStatusesFileArgs;
     private Comparator<ParcelableStatus> mComparator;
 
     public TwitterAPIStatusesLoader(final Context context, final long accountId, final long sinceId,
                                     final long maxId, final List<ParcelableStatus> data,
-                                    final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
+                                    @Nullable final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
         super(context, data, tabPosition, fromUser);
         mContext = context;
         mAccountId = accountId;
@@ -108,11 +107,13 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
                 paging.setMaxId(mMaxId);
             }
             if (mSinceId > 0) {
-                paging.setSinceId(mSinceId - 1);
+                paging.setSinceId(mSinceId);
+                if (mMaxId <= 0) {
+                    paging.setLatestResults(true);
+                }
             }
-            statuses = new ArrayList<>();
-            truncated = Utils.truncateStatuses(getStatuses(twitter, paging), statuses, mSinceId);
-            if (!Utils.isOfficialTwitterInstance(context, twitter)) {
+            statuses = getStatuses(twitter, paging);
+            if (!TwitterAPIFactory.isOfficialTwitterInstance(context, twitter)) {
                 TwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
             }
         } catch (final TwitterException e) {
@@ -142,8 +143,8 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         // Insert a gap.
         final boolean deletedOldGap = rowsDeleted > 0 && ArrayUtils.contains(statusIds, mMaxId);
         final boolean noRowsDeleted = rowsDeleted == 0;
-        final boolean insertGap = minId > 0 && (noRowsDeleted || deletedOldGap) && !truncated
-                && !noItemsBefore && statuses.size() > 1;
+        final boolean insertGap = minId > 0 && (noRowsDeleted || deletedOldGap) && !noItemsBefore
+                && statuses.size() >= loadItemLimit;
         for (int i = 0, j = statuses.size(); i < j; i++) {
             final Status status = statuses.get(i);
             data.add(new ParcelableStatus(status, mAccountId, insertGap && isGapEnabled() && minIdx == i));
@@ -170,6 +171,17 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         mComparator = comparator;
     }
 
+    public long getSinceId() {
+        return mSinceId;
+    }
+
+    public long getMaxId() {
+        return mMaxId;
+    }
+
+    public long getAccountId() {
+        return mAccountId;
+    }
 
     @NonNull
     protected abstract List<Status> getStatuses(@NonNull Twitter twitter, Paging paging) throws TwitterException;
@@ -190,7 +202,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         try {
             return JsonSerializer.parseList(file, ParcelableStatus.class);
         } catch (final IOException e) {
-            Log.w(LOGTAG, e);
+            // Ignore
         }
         return null;
     }
@@ -200,9 +212,8 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         try {
             return JsonSerializer.getSerializationFile(mContext, mSavedStatusesFileArgs);
         } catch (final IOException e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     private void saveCachedData(final File file, final List<ParcelableStatus> data) {
@@ -213,7 +224,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
             final List<ParcelableStatus> statuses = data.subList(0, Math.min(databaseItemLimit, data.size()));
             LoganSquare.serialize(statuses, new FileOutputStream(file), ParcelableStatus.class);
         } catch (final IOException e) {
-            e.printStackTrace();
+            // Ignore
         }
     }
 

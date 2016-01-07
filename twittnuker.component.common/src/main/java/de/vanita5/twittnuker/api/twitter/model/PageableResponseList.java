@@ -22,16 +22,52 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.Wrapper;
+import org.mariotaku.restfu.http.RestHttpResponse;
+import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.PageableResponseListWrapper;
+import java.util.ArrayList;
 
-/**
- * ResponseList with cursor support.
- *
- * @author Yusuke Yamamoto - yusuke at mac.com
- */
-@Wrapper(PageableResponseListWrapper.class)
-public interface PageableResponseList<T > extends ResponseList<T>, CursorSupport {
+public class PageableResponseList<T> extends ArrayList<T> implements TwitterResponse, CursorSupport {
 
+    int accessLevel;
+    RateLimitStatus rateLimitStatus;
+    long previousCursor;
+    long nextCursor;
+
+
+    @Override
+    public final void processResponseHeader(RestHttpResponse resp) {
+        rateLimitStatus = RateLimitStatus.createFromResponseHeader(resp);
+        accessLevel = InternalParseUtil.toAccessLevel(resp);
+    }
+
+    @Override
+    public final int getAccessLevel() {
+        return accessLevel;
+    }
+
+    @Override
+    public final RateLimitStatus getRateLimitStatus() {
+        return rateLimitStatus;
+    }
+
+    @Override
+    public long getNextCursor() {
+        return nextCursor;
+    }
+
+    @Override
+    public long getPreviousCursor() {
+        return previousCursor;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return getNextCursor() != 0;
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return getPreviousCursor() != 0;
+    }
 }

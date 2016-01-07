@@ -32,7 +32,6 @@ import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
 import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
-import de.vanita5.twittnuker.api.twitter.model.impl.RateLimitStatusJSONImpl;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
 import java.util.Locale;
@@ -121,7 +120,7 @@ public class TwitterException extends Exception implements TwitterResponse, Http
     public void setHttpResponse(RestHttpResponse res) {
         httpResponse = res;
         if (res != null) {
-            rateLimitStatus = RateLimitStatusJSONImpl.createFromResponseHeader(res);
+            rateLimitStatus = RateLimitStatus.createFromResponseHeader(res);
             statusCode = res.getStatus();
         } else {
             rateLimitStatus = null;
@@ -283,7 +282,7 @@ public class TwitterException extends Exception implements TwitterResponse, Http
         nested = true;
     }
 
-    static class SingleErrorInfo implements ErrorInfo {
+    static class SingleErrorInfo extends ErrorInfo {
         private final String message;
         private final String request;
         private final int code;
@@ -294,17 +293,14 @@ public class TwitterException extends Exception implements TwitterResponse, Http
             this.code = -1;
         }
 
-        @Override
         public int getCode() {
             return code;
         }
 
-        @Override
         public String getRequest() {
             return request;
         }
 
-        @Override
         public String getMessage() {
             return message;
         }

@@ -65,6 +65,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.lang.reflect.Field;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -74,8 +77,6 @@ import de.vanita5.twittnuker.preference.ThemeBackgroundPreference;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
-
-import java.lang.reflect.Field;
 
 public class ThemeUtils implements Constants {
 
@@ -159,7 +160,7 @@ public class ThemeUtils implements Constants {
         if (!(contextView instanceof ActionBarContextView)) return;
         setActionBarContextViewBackground((ActionBarContextView) contextView, themeRes,
                 actionBarColor, backgroundOption, outlineEnabled);
-        }
+    }
 
     public static void setActionBarContextViewBackground(@NonNull ActionBarContextView contextView,
                                                          int themeRes, int actionBarColor,
@@ -650,9 +651,9 @@ public class ThemeUtils implements Constants {
         final float[] hsv = new float[3];
         Color.colorToHSV(themeColor, hsv);
         if (isDarkTheme(context)) {
-            hsv[2] = MathUtils.clamp(hsv[2], 1, 0.5f);
+            hsv[2] = TwidereMathUtils.clamp(hsv[2], 1, 0.5f);
         } else {
-            hsv[2] = MathUtils.clamp(hsv[2], 0.1f, 0.75f);
+            hsv[2] = TwidereMathUtils.clamp(hsv[2], 0.1f, 0.75f);
         }
         return Color.HSVToColor(hsv);
     }
@@ -660,14 +661,14 @@ public class ThemeUtils implements Constants {
     public static int getUserThemeBackgroundAlpha(final Context context) {
         if (context == null) return DEFAULT_THEME_BACKGROUND_ALPHA;
         final SharedPreferencesWrapper pref = getSharedPreferencesWrapper(context);
-        return MathUtils.clamp(pref.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA),
+        return TwidereMathUtils.clamp(pref.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA),
                 ThemeBackgroundPreference.MIN_ALPHA, ThemeBackgroundPreference.MAX_ALPHA);
     }
 
     public static int getActionBarAlpha(final int alpha) {
-        final int normalizedAlpha = MathUtils.clamp(alpha, 0, 0xFF);
+        final int normalizedAlpha = TwidereMathUtils.clamp(alpha, 0, 0xFF);
         final int delta = (ThemeBackgroundPreference.MAX_ALPHA - normalizedAlpha);
-        return MathUtils.clamp(ThemeBackgroundPreference.MAX_ALPHA - delta / 2,
+        return TwidereMathUtils.clamp(ThemeBackgroundPreference.MAX_ALPHA - delta / 2,
                 ThemeBackgroundPreference.MIN_ALPHA, ThemeBackgroundPreference.MAX_ALPHA);
     }
 
@@ -728,9 +729,18 @@ public class ThemeUtils implements Constants {
         a.recycle();
         if (d == null) return null;
         d.mutate();
-        d.setAlpha(MathUtils.clamp(alpha, ThemeBackgroundPreference.MIN_ALPHA,
+        d.setAlpha(TwidereMathUtils.clamp(alpha, ThemeBackgroundPreference.MIN_ALPHA,
                 ThemeBackgroundPreference.MAX_ALPHA));
         return d;
+    }
+
+    public static Drawable getWindowContentOverlay(final Context context) {
+        final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.windowContentOverlay});
+        try {
+            return a.getDrawable(0);
+        } finally {
+            a.recycle();
+        }
     }
 
     public static Drawable getWindowContentOverlay(final Context context, int themeRes) {
@@ -826,7 +836,7 @@ public class ThemeUtils implements Constants {
     }
 
     public static void overrideActivityCloseAnimation(final Activity activity) {
-        TypedArray a = activity.obtainStyledAttributes(new int[] { android.R.attr.windowAnimationStyle });
+        TypedArray a = activity.obtainStyledAttributes(new int[]{android.R.attr.windowAnimationStyle});
         final int windowAnimationStyleResId = a.getResourceId(0, 0);
         a.recycle();
         // Now retrieve the resource ids of the actual animations used in the
@@ -841,7 +851,7 @@ public class ThemeUtils implements Constants {
 
     public static void overrideActivityOpenAnimation(final Activity activity) {
 
-        TypedArray a = activity.obtainStyledAttributes(new int[] { android.R.attr.windowAnimationStyle });
+        TypedArray a = activity.obtainStyledAttributes(new int[]{android.R.attr.windowAnimationStyle});
         final int windowAnimationStyleResId = a.getResourceId(0, 0);
         a.recycle();
         // Now retrieve the resource ids of the actual animations used in the

@@ -30,31 +30,31 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public class StatusLinkClickHandler extends OnLinkClickHandler {
 
-	private ParcelableStatus mStatus;
+    private ParcelableStatus mStatus;
 
-	@Override
+    @Override
     protected void openMedia(long accountId, long extraId, boolean sensitive, String link, int start, int end) {
-		final ParcelableStatus status = mStatus;
-		final ParcelableMedia current = findByLink(status.media, link);
+        final ParcelableStatus status = mStatus;
+        final ParcelableMedia current = findByLink(status.media, link);
         //TODO open media animation
         Bundle options = null;
         Utils.openMedia(context, status, current, options);
-	}
+    }
 
     public static ParcelableMedia findByLink(ParcelableMedia[] media, String link) {
         if (link == null || media == null) return null;
-		for (ParcelableMedia mediaItem : media) {
-			if (link.equals(mediaItem.media_url) || link.equals(mediaItem.page_url))
-				return mediaItem;
-		}
-		return null;
-	}
+        for (ParcelableMedia mediaItem : media) {
+            if (link.equals(mediaItem.media_url) || link.equals(mediaItem.url))
+                return mediaItem;
+        }
+        return null;
+    }
 
-	public void setStatus(ParcelableStatus status) {
-		mStatus = status;
-	}
+    public void setStatus(ParcelableStatus status) {
+        mStatus = status;
+    }
 
-	public StatusLinkClickHandler(Context context, MultiSelectManager manager) {
-		super(context, manager);
-	}
+    public StatusLinkClickHandler(Context context, MultiSelectManager manager) {
+        super(context, manager);
+    }
 }

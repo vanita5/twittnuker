@@ -31,7 +31,7 @@ package de.vanita5.twittnuker;
 public interface Constants extends TwittnukerConstants {
 
     String DATABASES_NAME = "twittnuker.sqlite";
-    int DATABASES_VERSION = 111;
+    int DATABASES_VERSION = 117;
 
     int MENU_GROUP_STATUS_SHARE = 20;
 
@@ -86,5 +86,7 @@ public interface Constants extends TwittnukerConstants {
             R.color.material_teal, R.color.material_green, R.color.material_light_green,
             R.color.material_lime, R.color.material_yellow, R.color.material_amber,
             R.color.material_orange, R.color.material_deep_orange};
+
+    String READ_POSITION_TAG_ACTIVITIES_ABOUT_ME = "activities_about_me";
 
 }

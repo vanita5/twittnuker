@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -35,64 +36,78 @@ import java.io.IOException;
 import java.util.List;
 
 @JsonObject
-@ParcelablePlease(allFields = false)
+@ParcelablePlease
 public class ParcelableMediaUpdate implements Parcelable {
 
-	public static final Parcelable.Creator<ParcelableMediaUpdate> CREATOR = new Parcelable.Creator<ParcelableMediaUpdate>() {
-		@Override
-		public ParcelableMediaUpdate createFromParcel(final Parcel in) {
-			return new ParcelableMediaUpdate(in);
-		}
-
-		@Override
-		public ParcelableMediaUpdate[] newArray(final int size) {
-			return new ParcelableMediaUpdate[size];
-		}
-	};
-
+    @SuppressWarnings("NullableProblems")
+    @NonNull
     @JsonField(name = "uri")
     public String uri;
     @JsonField(name = "type")
     public int type;
 
     public ParcelableMediaUpdate() {
-	}
+    }
 
-	public ParcelableMediaUpdate(final Parcel in) {
-		uri = in.readString();
-		type = in.readInt();
-	}
+    public ParcelableMediaUpdate(@NonNull final String uri, final int type) {
+        this.uri = uri;
+        this.type = type;
+    }
 
-	public ParcelableMediaUpdate(final String uri, final int type) {
-		this.uri = uri;
-		this.type = type;
-	}
+    @Override
+    public String toString() {
+        return "ParcelableMediaUpdate{uri=" + uri + ", type=" + type + "}";
+    }
 
-	@Override
-	public int describeContents() {
-		return 0;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-	@Override
-	public String toString() {
-		return "ParcelableMediaUpdate{uri=" + uri + ", type=" + type + "}";
-	}
+        ParcelableMediaUpdate that = (ParcelableMediaUpdate) o;
 
-	@Override
-	public void writeToParcel(final Parcel dest, final int flags) {
-		dest.writeString(uri);
-		dest.writeInt(type);
-	}
+        if (type != that.type) return false;
+        return uri.equals(that.uri);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uri.hashCode();
+        result = 31 * result + type;
+        return result;
+    }
 
     @Deprecated
-	public static ParcelableMediaUpdate[] fromJSONString(final String json) {
-		if (TextUtils.isEmpty(json)) return null;
-		try {
+    public static ParcelableMediaUpdate[] fromJSONString(final String json) {
+        if (TextUtils.isEmpty(json)) return null;
+        try {
             final List<ParcelableMediaUpdate> list = LoganSquare.parseList(json, ParcelableMediaUpdate.class);
             return list.toArray(new ParcelableMediaUpdate[list.size()]);
         } catch (final IOException e) {
-			return null;
-		}
-	}
+            return null;
+        }
+    }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        ParcelableMediaUpdateParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static final Creator<ParcelableMediaUpdate> CREATOR = new Creator<ParcelableMediaUpdate>() {
+        public ParcelableMediaUpdate createFromParcel(Parcel source) {
+            ParcelableMediaUpdate target = new ParcelableMediaUpdate();
+            ParcelableMediaUpdateParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        public ParcelableMediaUpdate[] newArray(int size) {
+            return new ParcelableMediaUpdate[size];
+        }
+    };
 }

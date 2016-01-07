@@ -22,33 +22,66 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
-
-import de.vanita5.twittnuker.api.twitter.model.impl.LocationImpl;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 /**
- * @author Yusuke Yamamoto - yusuke at mac.com
+ * Created by mariotaku on 15/5/10.
  */
-@Implementation(LocationImpl.class)
-public interface Location {
-    String getCountryCode();
+@JsonObject
+public class Location {
 
-    String getCountryName();
+    @JsonField(name = "woeid")
+    int woeid;
+    @JsonField(name = "country")
+    String countryName;
+    @JsonField(name = "countryCode")
+    String countryCode;
+    @JsonField(name = "placeType")
+    PlaceTypeImpl placeType;
+    @JsonField(name = "name")
+    String name;
+    @JsonField(name = "url")
+    String url;
 
-    String getName();
+    public int getWoeid() {
+        return woeid;
+    }
 
-    String getUrl();
+    public String getCountryName() {
+        return countryName;
+    }
 
-    int getWoeid();
+    public String getCountryCode() {
+        return countryCode;
+    }
 
-    PlaceType getPlaceType();
+    public PlaceTypeImpl getPlaceType() {
+        return placeType;
+    }
 
-    @Implementation(LocationImpl.PlaceTypeImpl.class)
-    interface PlaceType {
+    public String getName() {
+        return name;
+    }
 
-        int getCode();
+    public String getUrl() {
+        return url;
+    }
 
-        String getName();
+    @JsonObject
+    public static class PlaceTypeImpl {
 
+        @JsonField(name = "name")
+        String name;
+        @JsonField(name = "code")
+        int code;
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }

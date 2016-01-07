@@ -22,42 +22,64 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.Loader;
+import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.loader.support.ActivitiesAboutMeLoader;
-import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 
-import java.util.List;
-
-public class ActivitiesAboutMeFragment extends ParcelableActivitiesFragment {
+public class ActivitiesAboutMeFragment extends CursorActivitiesFragment {
 
     @Override
-    public Loader<List<ParcelableActivity>> onCreateLoader(final int id, final Bundle args) {
-        setProgressBarIndeterminateVisibility(true);
-        final long[] accountIds = args.getLongArray(EXTRA_ACCOUNT_IDS);
-        final long[] sinceIds = args.getLongArray(EXTRA_SINCE_IDS);
-        final long[] maxIds = args.getLongArray(EXTRA_MAX_IDS);
-        final long accountId = accountIds != null ? accountIds[0] : -1;
-        final long sinceId = sinceIds != null ? sinceIds[0] : -1;
-        final long maxId = maxIds != null ? maxIds[0] : -1;
-        return new ActivitiesAboutMeLoader(getActivity(), accountId, sinceId, maxId, getAdapterData(),
-                getSavedActivitiesFileArgs(), getTabPosition());
+    public boolean getActivities(long[] accountIds, long[] maxIds, long[] sinceIds) {
+        mTwitterWrapper.getActivitiesAboutMeAsync(accountIds, maxIds, sinceIds);
+        return true;
     }
 
     @Override
-    protected boolean isByFriends() {
-        return false;
+    public Uri getContentUri() {
+        return Activities.AboutMe.CONTENT_URI;
     }
 
     @Override
-    protected String[] getSavedActivitiesFileArgs() {
-        final Bundle args = getArguments();
-        if (args != null && args.containsKey(EXTRA_ACCOUNT_ID)) {
-            final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
-            return new String[]{AUTHORITY_ACTIVITIES_ABOUT_ME, "account" + account_id};
+    protected int getNotificationType() {
+        return NOTIFICATION_ID_INTERACTIONS_TIMELINE;
+    }
+
+    @Override
+    protected boolean isFilterEnabled() {
+        return true;
+    }
+
+    @Override
+    protected void updateRefreshState() {
+        setRefreshing(mTwitterWrapper.isMentionsTimelineRefreshing());
+    }
+
+    @NonNull
+    @Override
+    protected ParcelableActivitiesAdapter onCreateAdapter(Context context, boolean compact) {
+        final ParcelableActivitiesAdapter adapter = super.onCreateAdapter(context, compact);
+        final Bundle arguments = getArguments();
+        if (arguments != null) {
+            final Bundle extras = arguments.getBundle(EXTRA_EXTRAS);
+            if (extras != null) {
+                adapter.setFollowingOnly(extras.getBoolean(EXTRA_MY_FOLLOWING_ONLY));
+            }
         }
-        return new String[]{AUTHORITY_ACTIVITIES_ABOUT_ME};
+        return adapter;
+    }
+
+    @Override
+    protected String getReadPositionTag() {
+        return READ_POSITION_TAG_ACTIVITIES_ABOUT_ME;
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return mTwitterWrapper.isMentionsTimelineRefreshing();
     }
 
 }

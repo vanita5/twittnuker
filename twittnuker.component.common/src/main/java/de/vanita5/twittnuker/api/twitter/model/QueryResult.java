@@ -22,26 +22,119 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.Wrapper;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.QueryResultWrapper;
+import org.mariotaku.restfu.http.RestHttpResponse;
+import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
+
+import java.util.AbstractList;
+import java.util.ArrayList;
 
 /**
- * A data interface representing search API response
- *
- * @author Yusuke Yamamoto - yusuke at mac.com
+ * Created by mariotaku on 15/5/7.
  */
-@Wrapper(QueryResultWrapper.class)
-public interface QueryResult extends ResponseList<Status> {
-    double getCompletedIn();
+@JsonObject
+public class QueryResult extends AbstractList<Status> implements TwitterResponse, CursorSupport {
 
-    long getMaxId();
+    @JsonField(name = "previous_cursor")
+    long previousCursor;
+    @JsonField(name = "next_cursor")
+    long nextCursor;
 
-    String getQuery();
+    @JsonField(name = "search_metadata")
+    SearchMetadata metadata;
 
-    int getResultsPerPage();
+    @JsonField(name = "statuses")
+    ArrayList<Status> statuses;
 
-    long getSinceId();
+    private int accessLevel;
+    private RateLimitStatus rateLimitStatus;
 
-    String getWarning();
+    @Override
+    public final void processResponseHeader(RestHttpResponse resp) {
+        rateLimitStatus = RateLimitStatus.createFromResponseHeader(resp);
+        accessLevel = InternalParseUtil.toAccessLevel(resp);
+    }
+
+    @Override
+    public final int getAccessLevel() {
+        return accessLevel;
+    }
+
+    @Override
+    public final RateLimitStatus getRateLimitStatus() {
+        return rateLimitStatus;
+    }
+
+    @Override
+    public Status get(int index) {
+        return statuses.get(index);
+    }
+
+    @Override
+    public int size() {
+        return statuses.size();
+    }
+
+    public double getCompletedIn() {
+        return metadata.completedIn;
+    }
+
+    public long getMaxId() {
+        return metadata.maxId;
+    }
+
+    public String getQuery() {
+        return metadata.query;
+    }
+
+    public int getResultsPerPage() {
+        return metadata.count;
+    }
+
+    @Override
+    public long getNextCursor() {
+        return nextCursor;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return nextCursor != 0;
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return previousCursor != 0;
+    }
+
+    @Override
+    public long getPreviousCursor() {
+        return previousCursor;
+    }
+
+    public long getSinceId() {
+        return metadata.sinceId;
+    }
+
+    public String getWarning() {
+        return metadata.warning;
+    }
+
+    @JsonObject
+    public static class SearchMetadata {
+        @JsonField(name = "max_id")
+        long maxId;
+        @JsonField(name = "since_id")
+        long sinceId;
+        @JsonField(name = "count")
+        int count;
+        @JsonField(name = "completed_in")
+        double completedIn;
+        @JsonField(name = "query")
+        String query;
+        @JsonField(name = "warning")
+        String warning;
+    }
+
 }

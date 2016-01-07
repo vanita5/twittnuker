@@ -40,11 +40,12 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
 import de.vanita5.twittnuker.receiver.NotificationActionReceiver;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
 import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
-import static de.vanita5.twittnuker.util.Utils.isOnWifi;
+import static de.vanita5.twittnuker.util.ConnectivityUtils.isOnWifi;
 
 public class NotificationHelper implements Constants {
 
@@ -56,7 +57,8 @@ public class NotificationHelper implements Constants {
 
     public NotificationHelper(final Context context) {
         this.mContext = context;
-        mMediaLoader = ApplicationModule.get(context).getImageLoader();
+        DependencyHolder holder = DependencyHolder.get(context);
+        mMediaLoader = holder.getmImageLoader();
         mImagePreloader = new ImagePreloader(context, mMediaLoader);
         mSharedPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
@@ -168,9 +170,12 @@ public class NotificationHelper implements Constants {
         }
         status.account_id = notification.getAccountId();
         status.user_screen_name = notification.getFromUser();
+        status.user_profile_image_url = notification.getProfileImageUrl();
         status.is_retweet = is_retweet;
         status.is_favorite = false;
         status.text_plain = notification.getMessage();
+        status.text_html = notification.getMessage();
+        status.timestamp = notification.getTimestamp();
 
         if (is_retweet) {
             try {

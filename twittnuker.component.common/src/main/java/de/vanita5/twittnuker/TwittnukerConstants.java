@@ -69,6 +69,9 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String PROTOCOL_CONTENT = SCHEME_CONTENT + "://";
     String PROTOCOL_TWITTNUKER = SCHEME_TWITTNUKER + "://";
 
+    String AUTHORITY_TWITTNUKER_FILE = "twittnuker.file";
+    String AUTHORITY_TWITTNUKER_CACHE = "twittnuker.cache";
+
     String AUTHORITY_USER = "user";
     String AUTHORITY_HOME = "home";
     String AUTHORITY_MENTIONS = "mentions";
@@ -170,6 +173,8 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int TABLE_ID_ACCOUNTS = 1;
     int TABLE_ID_STATUSES = 12;
     int TABLE_ID_MENTIONS = 13;
+    int TABLE_ID_ACTIVITIES_ABOUT_ME = 14;
+    int TABLE_ID_ACTIVITIES_BY_FRIENDS = 15;
     int TABLE_ID_DIRECT_MESSAGES = 21;
     int TABLE_ID_DIRECT_MESSAGES_INBOX = 22;
     int TABLE_ID_DIRECT_MESSAGES_OUTBOX = 23;
@@ -207,8 +212,10 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int VIRTUAL_TABLE_ID_SUGGESTIONS_AUTO_COMPLETE = 141;
     int VIRTUAL_TABLE_ID_SUGGESTIONS_SEARCH = 142;
 
+    int VIRTUAL_TABLE_ID_EMPTY = 200;
+
     int NOTIFICATION_ID_HOME_TIMELINE = 1;
-    int NOTIFICATION_ID_MENTIONS_TIMELINE = 2;
+    int NOTIFICATION_ID_INTERACTIONS_TIMELINE = 2;
     int NOTIFICATION_ID_DIRECT_MESSAGES = 3;
     int NOTIFICATION_ID_DRAFTS = 4;
     int NOTIFICATION_ID_STREAMING = 6;
@@ -235,7 +242,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String SERVICE_COMMAND_GET_RECEIVED_DIRECT_MESSAGES = "get_received_direct_messages";
 
     String TAB_TYPE_HOME_TIMELINE = "home_timeline";
-    String TAB_TYPE_MENTIONS_TIMELINE = "mentions_timeline";
+    String TAB_TYPE_NOTIFICATIONS_TIMELINE = "notifications_timeline";
     String TAB_TYPE_TRENDS_SUGGESTIONS = "trends_suggestions";
     String TAB_TYPE_DIRECT_MESSAGES = "direct_messages";
     String TAB_TYPE_FAVORITES = "favorites";
@@ -248,7 +255,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
 
     int TAB_CODE_HOME_TIMELINE = 1;
-    int TAB_CODE_MENTIONS_TIMELINE = 2;
+    int TAB_CODE_NOTIFICATIONS_TIMELINE = 2;
     int TAB_CODE_DIRECT_MESSAGES = 4;
 
     int TWITTER_MAX_IMAGE_SIZE = 3145728;

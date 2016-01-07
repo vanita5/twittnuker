@@ -28,30 +28,30 @@ import android.widget.ImageView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
-import de.vanita5.twittnuker.model.ParcelableDirectMessage;
+import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 
 public class IncomingMessageViewHolder extends MessageViewHolder {
 
-	private final ImageView profileImageView;
+    private final ImageView profileImageView;
 
-	public IncomingMessageViewHolder(MessageConversationAdapter adapter, View itemView) {
-		super(adapter, itemView);
-		profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
-	}
+    public IncomingMessageViewHolder(MessageConversationAdapter adapter, View itemView) {
+        super(adapter, itemView);
+        profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
+    }
 
-	@Override
-	public void displayMessage(Cursor cursor, ParcelableDirectMessage.CursorIndices indices) {
-		super.displayMessage(cursor, indices);
-		final MediaLoaderWrapper wrapper = adapter.getMediaLoader();
-		if (adapter.isProfileImageEnabled()) {
-			profileImageView.setVisibility(View.VISIBLE);
-			wrapper.displayProfileImage(profileImageView, cursor.getString(indices.sender_profile_image_url));
-		} else {
-			profileImageView.setVisibility(View.GONE);
-			wrapper.cancelDisplayTask(profileImageView);
-		}
-	}
+    @Override
+    public void displayMessage(Cursor cursor, ParcelableDirectMessageCursorIndices indices) {
+        super.displayMessage(cursor, indices);
+        final MediaLoaderWrapper wrapper = adapter.getMediaLoader();
+        if (adapter.isProfileImageEnabled()) {
+            profileImageView.setVisibility(View.VISIBLE);
+            wrapper.displayProfileImage(profileImageView, cursor.getString(indices.sender_profile_image_url));
+        } else {
+            profileImageView.setVisibility(View.GONE);
+            wrapper.cancelDisplayTask(profileImageView);
+        }
+    }
 
 
 }

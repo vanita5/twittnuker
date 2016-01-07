@@ -159,11 +159,15 @@
     <string name="filename_hint">Filename</string>
     <string name="please_wait">Please wait.</string>
     <string name="saved_to_gallery">Saved to gallery.</string>
-    <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
     <string name="http_proxy_summary">Use HTTP Proxy for all network requests.</string>
-    <string name="proxy_host">Proxy Host</string>
-    <string name="proxy_port">Proxy Port</string>
+    <string name="proxy">Proxy</string>
+    <string name="proxy_summary">Use proxy for all network requests.</string>
+    <string name="proxy_type">Proxy type</string>
+    <string name="proxy_host">Proxy host</string>
+    <string name="proxy_port">Proxy port</string>
+    <string name="proxy_username">Proxy username</string>
+    <string name="proxy_password">Proxy password</string>
     <string name="block">Block</string>
     <string name="unblock">Unblock</string>
     <string name="report_for_spam">Report spam</string>
@@ -621,8 +625,7 @@
     <string name="N_media_quantity_other"><xliff:g id="items">%d</xliff:g> media</string>
     <string name="delete_drafts_confirm">Delete selected drafts?</string>
     <string name="extra_configurations">Extra configurations</string>
-    <string name="click_item_to_config">Click an item to config</string>
-    <string name="dark_drawer">Dark drawer</string>
+    <string name="click_item_to_configure">Click an item to config</string>
     <string name="retweets_of_me">Retweets of me</string>
     <string name="from_gallery">From gallery</string>
     <string name="from_camera">From camera</string>
@@ -715,6 +718,8 @@
     <string name="N_favorites_quantity_other"><xliff:g id="count">%d</xliff:g> favorites</string>
     <string name="N_likes_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> like</string>
     <string name="N_likes_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> likes</string>
+    <string name="N_votes_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> vote</string>
+    <string name="N_votes_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> votes</string>
     <string name="drafts_hint_messages">Your unsent tweets will be saved here</string>
     <string name="keyboard_shortcuts">Keyboard shortcuts</string>
     <string name="keyboard_shortcut_hint">Press keys</string>
@@ -762,6 +767,7 @@
     <string name="scheduled_statuses">Scheduled tweets</string>
     <string name="cache_size_limit">Cache size limit</string>
     <string name="bug_reports">Bug reports</string>
+    <string name="bug_reports_summary">Powered by Fabric</string>
     <string name="invalid_consumer_key">Invalid consumer key</string>
     <string name="invalid_consumer_secret">Invalid consumer secret</string>
     <string name="page_up">Page up</string>
@@ -786,6 +792,14 @@
     <string name="login_verification_push_hint">Accept login verification request from Twitter app, once you approved the request, click OK.</string>
     <string name="login_verification_failed">Login verification failed.</string>
     <string name="saved_searches_already_saved_hint">You already saved this search</string>
+    <string name="unsupported_activity_action_summary">Please report action above</string>
+    <string name="unknown_language">Unknown language</string>
+    <string name="system_default">System default</string>
+    <string name="emoji_support">Emoji support</string>
+    <string name="open_poll_in_official_app">Open poll in official app</string>
+    <string name="action_vote">Vote</string>
+    <string name="label_poll">Poll</string>
+    <string name="poll_summary_format"><xliff:g id="poll_count">%s</xliff:g> · <xliff:g id="poll_time_left">%s</xliff:g></string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

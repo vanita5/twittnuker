@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 
@@ -35,19 +36,17 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 public class StatusFavoritersLoader extends IDsUsersLoader {
 
-	private final long mStatusId;
+    private final long mStatusId;
 
-	public StatusFavoritersLoader(final Context context, final long accountId, final long statusId,
+    public StatusFavoritersLoader(final Context context, final long accountId, final long statusId,
                                   final long cursor, final List<ParcelableUser> data, boolean fromUser) {
-		super(context, accountId, cursor, data, fromUser);
-		mStatusId = statusId;
-	}
+        super(context, accountId, cursor, data, fromUser);
+        mStatusId = statusId;
+    }
 
-	@Override
-    protected IDs getIDs(final Twitter twitter, final Paging paging) throws TwitterException {
-		if (twitter == null) return null;
-		if (mStatusId > 0) return twitter.getStatusActivitySummary(mStatusId).getFavoriters();
-		return null;
-	}
+    @Override
+    protected IDs getIDs(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
+        return twitter.getStatusActivitySummary(mStatusId).getFavoriters();
+    }
 
 }

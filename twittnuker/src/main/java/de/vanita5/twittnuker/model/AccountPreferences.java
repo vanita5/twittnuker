@@ -27,7 +27,6 @@ import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
@@ -101,7 +100,7 @@ public class AccountPreferences implements Constants {
         return mPreferences.getBoolean(KEY_DIRECT_MESSAGES_NOTIFICATION, DEFAULT_DIRECT_MESSAGES_NOTIFICATION);
     }
 
-    public boolean isMentionsNotificationEnabled() {
+    public boolean isInteractionsNotificationEnabled() {
         return mPreferences.getBoolean(KEY_MENTIONS_NOTIFICATION, DEFAULT_MENTIONS_NOTIFICATION);
     }
 
@@ -129,8 +128,9 @@ public class AccountPreferences implements Constants {
         return preferences;
     }
 
+    @NonNull
     public static long[] getAutoRefreshEnabledAccountIds(final Context context, final long[] accountIds) {
-        if (context == null || accountIds == null) return null;
+        if (context == null || accountIds == null) return new long[0];
         final long[] temp = new long[accountIds.length];
         int i = 0;
         for (final long accountId : accountIds) {

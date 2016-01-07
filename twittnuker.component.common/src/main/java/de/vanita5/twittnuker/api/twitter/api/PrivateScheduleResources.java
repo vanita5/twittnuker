@@ -34,8 +34,8 @@ import org.mariotaku.restfu.annotation.param.Query;
 import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.ScheduledStatus;
-import de.vanita5.twittnuker.api.twitter.model.ScheduledStatusesList;
 import de.vanita5.twittnuker.api.twitter.model.StatusSchedule;
 
 public interface PrivateScheduleResources {
@@ -53,6 +53,6 @@ public interface PrivateScheduleResources {
 
     @GET("/schedule/status/list.json")
     @MethodExtra(name = "extra_params", values = {"include_entities", "include_cards", "cards_platform"})
-    ScheduledStatusesList getScheduledStatusesList(@Query Paging paging, @Query("state") ScheduledStatus.State[] states) throws TwitterException;
+    ResponseList<ScheduledStatus> getScheduledStatusesList(@Query Paging paging, @Query("state") ScheduledStatus.State[] states) throws TwitterException;
 
 }

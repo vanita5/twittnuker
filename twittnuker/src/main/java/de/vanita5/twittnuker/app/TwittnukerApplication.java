@@ -23,10 +23,13 @@
 package de.vanita5.twittnuker.app;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -35,36 +38,28 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
-import com.nostra13.universalimageloader.cache.disc.DiskCache;
-import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache;
-import com.squareup.okhttp.internal.Network;
+import com.squareup.okhttp.Dns;
 
-import org.acra.annotation.ReportsCrashes;
+import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.AssistLauncherActivity;
 import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
-import de.vanita5.twittnuker.util.AbsLogger;
+import de.vanita5.twittnuker.util.BugReporter;
 import de.vanita5.twittnuker.util.DebugModeUtils;
-import de.vanita5.twittnuker.util.MathUtils;
+import de.vanita5.twittnuker.util.ExternalThemeManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
-import de.vanita5.twittnuker.util.TwidereLogger;
+import de.vanita5.twittnuker.util.TwidereBugReporter;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache;
-import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
-import de.vanita5.twittnuker.util.net.TwidereNetwork;
+import de.vanita5.twittnuker.util.dagger.DependencyHolder;
+import de.vanita5.twittnuker.util.net.TwidereDns;
 
-import java.io.File;
-import java.io.IOException;
-
-import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
-//TODO Crash Report
 public class TwittnukerApplication extends Application implements Constants,
         OnSharedPreferenceChangeListener {
 
@@ -72,9 +67,7 @@ public class TwittnukerApplication extends Application implements Constants,
 
     private Handler mHandler;
     private SharedPreferences mPreferences;
-    private DiskCache mDiskCache, mFullDiskCache;
     private SQLiteOpenHelper mSQLiteOpenHelper;
-    private Network mNetwork;
     private SQLiteDatabase mDatabase;
 
     private ApplicationModule mApplicationModule;
@@ -84,30 +77,15 @@ public class TwittnukerApplication extends Application implements Constants,
         return (TwittnukerApplication) context.getApplicationContext();
     }
 
-    public DiskCache getDiskCache() {
-        if (mDiskCache != null) return mDiskCache;
-        return mDiskCache = createDiskCache(DIR_NAME_IMAGE_CACHE);
-    }
-
-    public DiskCache getFullDiskCache() {
-        if (mFullDiskCache != null) return mFullDiskCache;
-        return mFullDiskCache = createDiskCache(DIR_NAME_FULL_IMAGE_CACHE);
-    }
-
 
     public Handler getHandler() {
         return mHandler;
     }
 
-    public Network getNetwork() {
-        if (mNetwork != null) return mNetwork;
-        return mNetwork = new TwidereNetwork(this);
-    }
-
     public void initKeyboardShortcuts() {
         final SharedPreferences preferences = getSharedPreferences();
         if (!preferences.getBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, false)) {
-            getApplicationModule().getKeyboardShortcutsHandler().reset();
+//            getApplicationModule().getKeyboardShortcutsHandler().reset();
             preferences.edit().putBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, true).apply();
         }
     }
@@ -149,7 +127,26 @@ public class TwittnukerApplication extends Application implements Constants,
 
         reloadConnectivitySettings();
 
-        registerActivityLifecycleCallbacks(getApplicationModule().getActivityTracker());
+        DependencyHolder holder = DependencyHolder.get(this);
+        registerActivityLifecycleCallbacks(holder.getActivityTracker());
+
+        final IntentFilter packageFilter = new IntentFilter();
+        packageFilter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        packageFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final int uid = intent.getIntExtra(Intent.EXTRA_UID, -1);
+                final String[] packages = getPackageManager().getPackagesForUid(uid);
+                DependencyHolder holder = DependencyHolder.get(context);
+                final ExternalThemeManager manager = holder.getExternalThemeManager();
+                if (ArrayUtils.contains(packages, manager.getEmojiPackageName())) {
+                    manager.reloadEmojiPreferences();
+                }
+            }
+        }, packageFilter);
     }
 
     private void initDebugMode() {
@@ -159,8 +156,8 @@ public class TwittnukerApplication extends Application implements Constants,
     private void initBugReport() {
         final SharedPreferences preferences = getSharedPreferences();
         if (!preferences.getBoolean(KEY_BUG_REPORTS, true)) return;
-        AbsLogger.setImplementation(new TwidereLogger());
-        AbsLogger.init(this);
+        BugReporter.setImplementation(new TwidereBugReporter());
+        BugReporter.init(this);
     }
 
     private SharedPreferences getSharedPreferences() {
@@ -184,17 +181,44 @@ public class TwittnukerApplication extends Application implements Constants,
 
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
-        if (KEY_REFRESH_INTERVAL.equals(key)) {
-            stopService(new Intent(this, RefreshService.class));
-            startRefreshServiceIfNeeded(this);
-        } else if (KEY_ENABLE_PROXY.equals(key) || KEY_CONNECTION_TIMEOUT.equals(key) || KEY_PROXY_HOST.equals(key)
-                || KEY_PROXY_PORT.equals(key)) {
-            reloadConnectivitySettings();
-        } else if (KEY_CONSUMER_KEY.equals(key) || KEY_CONSUMER_SECRET.equals(key) || KEY_API_URL_FORMAT.equals(key)
-                || KEY_AUTH_TYPE.equals(key) || KEY_SAME_OAUTH_SIGNING_URL.equals(key)) {
-            final SharedPreferences.Editor editor = preferences.edit();
-            editor.putLong(KEY_API_LAST_CHANGE, System.currentTimeMillis());
-            editor.apply();
+        switch (key) {
+            case KEY_REFRESH_INTERVAL:
+                stopService(new Intent(this, RefreshService.class));
+                startRefreshServiceIfNeeded(this);
+                break;
+            case KEY_ENABLE_PROXY:
+            case KEY_CONNECTION_TIMEOUT:
+            case KEY_PROXY_HOST:
+            case KEY_PROXY_PORT:
+            case KEY_PROXY_TYPE:
+            case KEY_PROXY_USERNAME:
+            case KEY_PROXY_PASSWORD:
+                reloadConnectivitySettings();
+                break;
+            case KEY_DNS_SERVER:
+            case KEY_TCP_DNS_QUERY:
+                reloadDnsSettings();
+                break;
+            case KEY_CONSUMER_KEY:
+            case KEY_CONSUMER_SECRET:
+            case KEY_API_URL_FORMAT:
+            case KEY_AUTH_TYPE:
+            case KEY_SAME_OAUTH_SIGNING_URL:
+                final Editor editor = preferences.edit();
+                editor.putLong(KEY_API_LAST_CHANGE, System.currentTimeMillis());
+                editor.apply();
+                break;
+            case KEY_EMOJI_SUPPORT:
+                DependencyHolder.get(this).getExternalThemeManager().initEmojiSupport();
+                break;
+        }
+    }
+
+    private void reloadDnsSettings() {
+        DependencyHolder holder = DependencyHolder.get(this);
+        final Dns dns = holder.getDns();
+        if (dns instanceof TwidereDns) {
+            ((TwidereDns) dns).reloadDnsSettings();
         }
     }
 
@@ -202,21 +226,6 @@ public class TwittnukerApplication extends Application implements Constants,
         getApplicationModule().reloadConnectivitySettings();
     }
 
-    private DiskCache createDiskCache(final String dirName) {
-        final File cacheDir = Utils.getExternalCacheDir(this, dirName);
-        final File fallbackCacheDir = getInternalCacheDir(this, dirName);
-        final URLFileNameGenerator fileNameGenerator = new URLFileNameGenerator();
-        final SharedPreferences preferences = getSharedPreferences();
-        final int cacheSize = MathUtils.clamp(preferences.getInt(KEY_CACHE_SIZE_LIMIT, 512), 100, 1024);
-        try {
-            final int cacheMaxSizeBytes = cacheSize * 1024 * 1024;
-            if (cacheDir != null)
-                return new LruDiskCache(cacheDir, fallbackCacheDir, fileNameGenerator, cacheMaxSizeBytes, 0);
-            return new LruDiskCache(fallbackCacheDir, null, fileNameGenerator, cacheMaxSizeBytes, 0);
-        } catch (IOException e) {
-            return new ReadOnlyDiskLRUNameCache(cacheDir, fallbackCacheDir, fileNameGenerator);
-        }
-    }
 
     private void initializeAsyncTask() {
         // AsyncTask class needs to be loaded in UI thread.

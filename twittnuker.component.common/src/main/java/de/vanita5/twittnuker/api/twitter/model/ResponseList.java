@@ -22,19 +22,63 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import org.mariotaku.restfu.http.RestHttpResponse;
+import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
+
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * List of TwitterResponse.
- *
- * @author Yusuke Yamamoto - yusuke at mac.com
+ * Created by mariotaku on 15/5/7.
  */
-public interface ResponseList<T> extends TwitterResponse, List<T> {
+public class ResponseList<T> extends AbstractList<T> implements TwitterResponse {
 
-    /**
-     * {@inheritDoc}
-     */
+    private List<T> list;
+    private int accessLevel;
+    private RateLimitStatus rateLimitStatus;
+
+    public ResponseList(List<T> list) {
+        this.list = list;
+    }
+
     @Override
-    RateLimitStatus getRateLimitStatus();
+    public void add(int location, T object) {
+        list.add(location, object);
+    }
 
+    @Override
+    public T set(int location, T object) {
+        return list.set(location, object);
+    }
+
+    @Override
+    public T get(int location) {
+        return list.get(location);
+    }
+
+    @Override
+    public int size() {
+        return list.size();
+    }
+
+    public ResponseList() {
+        this(new ArrayList<T>());
+    }
+
+    @Override
+    public final void processResponseHeader(RestHttpResponse resp) {
+        rateLimitStatus = RateLimitStatus.createFromResponseHeader(resp);
+        accessLevel = InternalParseUtil.toAccessLevel(resp);
+    }
+
+    @Override
+    public final int getAccessLevel() {
+        return accessLevel;
+    }
+
+    @Override
+    public final RateLimitStatus getRateLimitStatus() {
+        return rateLimitStatus;
+    }
 }

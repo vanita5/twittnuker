@@ -29,13 +29,11 @@ import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 import javax.inject.Inject;
 
-@Deprecated
 public abstract class ManagedAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> implements
         Constants {
 
@@ -52,10 +50,7 @@ public abstract class ManagedAsyncTask<Params, Progress, Result> extends AsyncTa
 
     public ManagedAsyncTask(final Context context, final String tag) {
         //noinspection unchecked
-        DaggerGeneralComponent.builder()
-                .applicationModule(ApplicationModule.get(context))
-                .build()
-                .inject((ManagedAsyncTask<Object, Object, Object>) this);
+        GeneralComponentHelper.build(context).inject((ManagedAsyncTask<Object, Object, Object>) this);
         this.context = context;
         this.tag = tag;
     }

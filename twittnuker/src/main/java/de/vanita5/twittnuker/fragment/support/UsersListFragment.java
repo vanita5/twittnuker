@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.loader.support.IntentExtrasUsersLoader;
@@ -33,11 +34,34 @@ import java.util.List;
 
 public class UsersListFragment extends ParcelableUsersFragment {
 
-	@Override
-	public Loader<List<ParcelableUser>> onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser) {
-		if (args == null) return null;
-		if (args.containsKey(EXTRA_USERS)) return new IntentExtrasUsersLoader(context, args, getData(), fromUser);
-		return null;
-	}
+    @Override
+    protected boolean hasMoreData(List<ParcelableUser> data) {
+        return false;
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return false;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<ParcelableUser>> loader, List<ParcelableUser> data) {
+        super.onLoadFinished(loader, data);
+        setRefreshEnabled(false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setRefreshEnabled(false);
+    }
+
+    @Override
+    public Loader<List<ParcelableUser>> onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser) {
+        if (args == null) return null;
+        if (args.containsKey(EXTRA_USERS))
+            return new IntentExtrasUsersLoader(context, args, getData(), fromUser);
+        return null;
+    }
 
 }

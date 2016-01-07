@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,13 +33,11 @@ import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableAccount.Indices;
+import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.holder.AccountViewHolder;
 
 import javax.inject.Inject;
@@ -49,11 +46,10 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
 
     @Inject
     MediaLoaderWrapper mImageLoader;
-    private final SharedPreferences mPreferences;
 
     private boolean mDisplayProfileImage;
     private boolean mSortEnabled;
-    private Indices mIndices;
+    private ParcelableAccountCursorIndices mIndices;
     private boolean mSwitchEnabled;
     private OnAccountToggleListener mOnAccountToggleListener;
 
@@ -70,21 +66,20 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
     public AccountsAdapter(final Context context) {
         super(context, R.layout.list_item_account, null, new String[]{Accounts.NAME},
                 new int[]{android.R.id.text1}, 0);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
-        mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        GeneralComponentHelper.build(context).inject(this);
     }
 
     public ParcelableAccount getAccount(int position) {
         final Cursor c = getCursor();
         if (c == null || c.isClosed() || !c.moveToPosition(position)) return null;
-        return new ParcelableAccount(c, mIndices);
+        return mIndices.newObject(c);
     }
 
     @Override
     public void bindView(final View view, final Context context, final Cursor cursor) {
         final int color = cursor.getInt(mIndices.color);
         final AccountViewHolder holder = (AccountViewHolder) view.getTag();
-        holder.screenName.setText("@" + cursor.getString(mIndices.screen_name));
+        holder.screenName.setText(String.format("@%s", cursor.getString(mIndices.screen_name)));
         holder.setAccountColor(color);
         if (mDisplayProfileImage) {
             mImageLoader.displayProfileImage(holder.profileImage, cursor.getString(mIndices.profile_image_url));
@@ -176,7 +171,7 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
     @Override
     public Cursor swapCursor(final Cursor cursor) {
         if (cursor != null) {
-            mIndices = new Indices(cursor);
+            mIndices = new ParcelableAccountCursorIndices(cursor);
         }
         return super.swapCursor(cursor);
     }

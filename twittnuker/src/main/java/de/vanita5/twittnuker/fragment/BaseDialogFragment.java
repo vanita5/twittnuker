@@ -31,9 +31,9 @@ import android.content.SharedPreferences;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
 
@@ -44,7 +44,7 @@ public class BaseDialogFragment extends DialogFragment implements Constants {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(activity)).build().inject(this);
+        GeneralComponentHelper.build(activity).inject(this);
     }
 
     public TwittnukerApplication getApplication() {
@@ -87,5 +87,11 @@ public class BaseDialogFragment extends DialogFragment implements Constants {
         final Activity activity = getActivity();
         if (activity == null) return;
         activity.unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DebugModeUtils.watchReferenceLeak(this);
     }
 }

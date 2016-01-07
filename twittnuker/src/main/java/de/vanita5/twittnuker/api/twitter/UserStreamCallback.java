@@ -26,11 +26,10 @@ import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.simple.tree.SimpleTreeCodec;
+import com.fasterxml.jackson.jr.tree.JacksonJrSimpleTreeCodec;
 
 import org.mariotaku.restfu.callback.RawCallback;
 import org.mariotaku.restfu.http.RestHttpResponse;
-
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusDeletionNotice;
@@ -39,14 +38,11 @@ import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.Warning;
 import de.vanita5.twittnuker.api.twitter.util.CRLFLineReader;
 import de.vanita5.twittnuker.api.twitter.util.JSONObjectType;
-import de.vanita5.twittnuker.util.AbsLogger;
+import de.vanita5.twittnuker.util.BugReporter;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-/**
- * Created by mariotaku on 15/5/26.
- */
 public abstract class UserStreamCallback implements RawCallback {
 
     private boolean connected;
@@ -61,7 +57,7 @@ public abstract class UserStreamCallback implements RawCallback {
             onException(cause);
             return;
         }
-        final SimpleTreeCodec mapper = new SimpleTreeCodec();
+        final JacksonJrSimpleTreeCodec mapper = new JacksonJrSimpleTreeCodec();
         final CRLFLineReader reader = new CRLFLineReader(new InputStreamReader(response.getBody().stream(), "UTF-8"));
         try {
             for (String line; (line = reader.readLine()) != null && !disconnected; ) {
@@ -79,7 +75,7 @@ public abstract class UserStreamCallback implements RawCallback {
                         try {
                             onStatus(LoganSquare.mapperFor(Status.class).parse(rootNode.traverse()));
                         } catch (NullPointerException e) {
-                            AbsLogger.error("Streaming NPE -- " + e.getMessage(), e);
+                            BugReporter.error("Streaming NPE -- " + e.getMessage(), e);
                         }
                         break;
                     }

@@ -25,9 +25,11 @@ package de.vanita5.twittnuker.util;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity.ParcelableBindingValue;
+import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
+import de.vanita5.twittnuker.model.ParcelableCardEntity;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public class TwitterCardUtils {
 
@@ -38,7 +40,9 @@ public class TwitterCardUtils {
     public static final String CARD_NAME_ANIMATED_GIF = "animated_gif";
 
     @Nullable
-    public static Fragment createCardFragment(ParcelableCardEntity card) {
+    public static Fragment createCardFragment(ParcelableStatus status) {
+        final ParcelableCardEntity card = status.card;
+        if (card == null || card.name == null) return null;
         if (CARD_NAME_PLAYER.equals(card.name)) {
             final Fragment playerFragment = sFactory.createPlayerFragment(card);
             if (playerFragment != null) return playerFragment;
@@ -51,35 +55,40 @@ public class TwitterCardUtils {
             final Fragment playerFragment = sFactory.createAnimatedGifFragment(card);
             if (playerFragment != null) return playerFragment;
             return TwitterCardFragmentFactory.createGenericPlayerFragment(card);
+        } else if (CardPollFragment.isPoll(card)) {
+            return TwitterCardFragmentFactory.createCardPollFragment(status);
         }
         return null;
     }
 
 
     public static Point getCardSize(ParcelableCardEntity card) {
-        final ParcelableBindingValue player_width = ParcelableCardEntity.getValue(card, "player_width");
-        final ParcelableBindingValue player_height = ParcelableCardEntity.getValue(card, "player_height");
-        if (player_width != null && player_height != null) {
-            final int width = ParseUtils.parseInt(String.valueOf(player_width.value));
-            final int height = ParseUtils.parseInt(String.valueOf(player_height.value));
-            if (width > 0 && height > 0) {
-                return new Point(width, height);
-            }
+        final int playerWidth = card.getAsInteger("player_width", -1);
+        final int playerHeight = card.getAsInteger("player_height", -1);
+        if (playerWidth > 0 && playerHeight > 0) {
+            return new Point(playerWidth, playerHeight);
         }
         return null;
     }
 
-    public static boolean isCardSupported(ParcelableCardEntity card) {
-        if (card == null || card.name == null) return false;
-        switch (card.name) {
+    public static boolean isCardSupported(ParcelableStatus status) {
+        if (status.card == null || status.card_name == null) return false;
+        switch (status.card_name) {
             case CARD_NAME_PLAYER: {
-                return ParcelableCardEntity.getValue(card, "player_stream_url") == null;
+                return TextUtils.isEmpty(status.card.getString("player_stream_url"));
             }
             case CARD_NAME_AUDIO: {
                 return true;
             }
         }
+        if (CardPollFragment.isPoll(status.card)) {
+            return true;
+        }
         return false;
     }
 
+    public static boolean isPoll(ParcelableStatus status) {
+        if (status.card_name == null || status.card == null) return false;
+        return CardPollFragment.isPoll(status.card);
+    }
 }

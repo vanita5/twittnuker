@@ -597,7 +597,7 @@
     <string name="add">Toevoegen</string>
     <string name="delete_drafts_confirm">Geselecteerde concepten verwijderen?</string>
     <string name="extra_configurations">Extra instellingen</string>
-    <string name="click_item_to_config">Klik op een item om in te stellen</string>
+    <string name="click_item_to_configure">Klik op een item om in te stellen</string>
     <string name="dark_drawer">Donker schuifpaneel</string>
     <string name="retweets_of_me">Retweets van mij</string>
     <string name="from_gallery">Uit galerij</string>

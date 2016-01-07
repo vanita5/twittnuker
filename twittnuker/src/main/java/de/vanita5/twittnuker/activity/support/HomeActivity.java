@@ -41,13 +41,12 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.DrawerLayoutTrojan;
+import android.support.v4.widget.DrawerLayoutAccessor;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -64,10 +63,14 @@ import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.Toast;
 
+import com.desmond.asyncmanager.AsyncManager;
+import com.desmond.asyncmanager.TaskRunnable;
 import com.meizu.flyme.reflect.StatusBarProxy;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
@@ -82,16 +85,16 @@ import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.StreamingService;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
-import de.vanita5.twittnuker.util.MathUtils;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
@@ -120,7 +123,6 @@ import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
 import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
-import static de.vanita5.twittnuker.util.Utils.showMenuItemToast;
 
 public class HomeActivity extends BaseAppCompatActivity implements OnClickListener, OnPageChangeListener,
         SupportFragmentCallback, OnLongClickListener {
@@ -169,7 +171,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         if (fragment instanceof AccountsDashboardFragment) {
             return ((AccountsDashboardFragment) fragment).getActivatedAccountIds();
         }
-        return Utils.getActivatedAccountIds(this);
+        return DataStoreUtils.getActivatedAccountIds(this);
     }
 
     @Override
@@ -261,7 +263,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             switch (action) {
                 case ACTION_NAVIGATION_PREVIOUS_TAB: {
                     final int previous = mViewPager.getCurrentItem() - 1;
-                    if (previous < 0 && DrawerLayoutTrojan.findDrawerWithGravity(mDrawerLayout, Gravity.START) != null) {
+                    if (previous < 0 && DrawerLayoutAccessor.findDrawerWithGravity(mDrawerLayout, Gravity.START) != null) {
                         mDrawerLayout.openDrawer(GravityCompat.START);
                         setControlBarVisibleAnimate(true);
                     } else if (previous < mPagerAdapter.getCount()) {
@@ -275,7 +277,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                 }
                 case ACTION_NAVIGATION_NEXT_TAB: {
                     final int next = mViewPager.getCurrentItem() + 1;
-                    if (next >= mPagerAdapter.getCount() && DrawerLayoutTrojan.findDrawerWithGravity(mDrawerLayout, Gravity.END) != null) {
+                    if (next >= mPagerAdapter.getCount() && DrawerLayoutAccessor.findDrawerWithGravity(mDrawerLayout, Gravity.END) != null) {
                         mDrawerLayout.openDrawer(GravityCompat.END);
                         setControlBarVisibleAnimate(true);
                     } else if (next >= 0) {
@@ -351,7 +353,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         }
         mMultiSelectHandler = new MultiSelectEventHandler(this);
         mMultiSelectHandler.dispatchOnCreate();
-        if (!Utils.hasAccount(this)) {
+        if (!DataStoreUtils.hasAccount(this)) {
             final Intent signInIntent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
             signInIntent.setClass(this, SignInActivity.class);
             startActivity(signInIntent);
@@ -440,6 +442,11 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
+        if (ThemeUtils.isDarkTheme(getCurrentThemeResourceId())) {
+            // TODO show dark bar
+        } else {
+            ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, getActionBarColor()));
+        }
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONRESUME));
         invalidateOptionsMenu();
         updateActionsButtonStyle();
@@ -515,7 +522,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     public boolean onLongClick(final View v) {
         switch (v.getId()) {
             case R.id.actions_button: {
-                showMenuItemToast(v, v.getContentDescription(), true);
+                Utils.showMenuItemToast(v, v.getContentDescription(), true);
                 return true;
             }
         }
@@ -575,7 +582,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     protected void onNewIntent(final Intent intent) {
         final int tabPosition = handleIntent(intent, false);
         if (tabPosition >= 0) {
-            mViewPager.setCurrentItem(MathUtils.clamp(tabPosition, mPagerAdapter.getCount(), 0));
+            mViewPager.setCurrentItem(TwidereMathUtils.clamp(tabPosition, mPagerAdapter.getCount(), 0));
         }
     }
 
@@ -585,7 +592,15 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         stopStreamingService();
 
         // Delete unused items in databases.
-        cleanDatabasesByItemLimit(this);
+
+        final Context context = getApplicationContext();
+        AsyncManager.runBackgroundTask(new TaskRunnable() {
+            @Override
+            public Object doLongOperation(Object o) throws InterruptedException {
+                cleanDatabasesByItemLimit(context);
+                return null;
+            }
+        });
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONDESTROY));
         super.onDestroy();
     }
@@ -710,7 +725,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         final String tabType = uri != null ? Utils.matchTabType(uri) : null;
         int initialTab = -1;
         if (tabType != null) {
-            final long accountId = ParseUtils.parseLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID));
+            final long accountId = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
             for (int i = mPagerAdapter.getCount() - 1; i > -1; i--) {
                 final SupportTabSpec tab = mPagerAdapter.getTab(i);
                 if (tabType.equals(tab.type)) {
@@ -762,10 +777,10 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     private void setTabPosition(final int initialTab) {
         final boolean rememberPosition = mPreferences.getBoolean(KEY_REMEMBER_POSITION, true);
         if (initialTab >= 0) {
-            mViewPager.setCurrentItem(MathUtils.clamp(initialTab, mPagerAdapter.getCount(), 0));
+            mViewPager.setCurrentItem(TwidereMathUtils.clamp(initialTab, mPagerAdapter.getCount(), 0));
         } else if (rememberPosition) {
             final int position = mPreferences.getInt(KEY_SAVED_TAB_POSITION, 0);
-            mViewPager.setCurrentItem(MathUtils.clamp(position, mPagerAdapter.getCount(), 0));
+            mViewPager.setCurrentItem(TwidereMathUtils.clamp(position, mPagerAdapter.getCount(), 0));
         }
     }
 
@@ -789,7 +804,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         mTabIndicator.setStripColor(themeColor);
         mTabIndicator.setIconColor(actionItemColor);
         mTabIndicator.setLabelColor(actionItemColor);
-        ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, actionBarColor));
         mHomeContent.setDrawColor(true);
         mHomeContent.setDrawShadow(false);
         mHomeContent.setColor(actionBarColor, actionBarAlpha);
@@ -936,14 +950,14 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                         final long[] accountIds = Utils.getAccountIds(spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
-                        result.put(spec, Utils.getStatusesCount(mContext, Statuses.CONTENT_URI, position, accountIds));
+                        result.put(spec, DataStoreUtils.getStatusesCount(mContext, Statuses.CONTENT_URI, position, accountIds));
                         break;
                     }
-                    case TAB_TYPE_MENTIONS_TIMELINE: {
+                    case TAB_TYPE_ACTIVITIES_ABOUT_ME: {
                         final long[] accountIds = Utils.getAccountIds(spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
-                        result.put(spec, Utils.getStatusesCount(mContext, Mentions.CONTENT_URI, position, accountIds));
+                        result.put(spec, DataStoreUtils.getActivitiesCount(mContext, Activities.AboutMe.CONTENT_URI, position, accountIds));
                         break;
                     }
                     case TAB_TYPE_DIRECT_MESSAGES: {

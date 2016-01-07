@@ -33,7 +33,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManagerTrojan;
+import android.support.v4.app.FragmentManagerAccessor;
+import android.support.v4.text.BidiFormatter;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.view.LayoutInflaterFactory;
 import android.view.LayoutInflater;
@@ -44,10 +45,10 @@ import com.squareup.otto.Bus;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
@@ -55,9 +56,7 @@ import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
-import de.vanita5.twittnuker.util.VideoLoader;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
 
@@ -71,8 +70,6 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     @Inject
     protected MediaLoaderWrapper mMediaLoader;
     @Inject
-    protected VideoLoader mVideoLoader;
-    @Inject
     protected Bus mBus;
     @Inject
     protected AsyncTaskManager mAsyncTaskManager;
@@ -84,6 +81,8 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     protected SharedPreferencesWrapper mPreferences;
     @Inject
     protected NotificationManagerWrapper mNotificationManager;
+    @Inject
+    protected BidiFormatter mBidiFormatter;
 
     public BaseSupportFragment() {
 
@@ -99,14 +98,7 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
-    }
-
-
-    public TwittnukerApplication getApplication() {
-        final Activity activity = getActivity();
-        if (activity != null) return (TwittnukerApplication) activity.getApplication();
-        return null;
+        GeneralComponentHelper.build(context).inject(this);
     }
 
     public ContentResolver getContentResolver() {
@@ -195,9 +187,15 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
         }
         final LayoutInflater inflater = activity.getLayoutInflater().cloneInContext(getThemedContext());
         getChildFragmentManager(); // Init if needed; use raw implementation below.
-        final LayoutInflaterFactory delegate = FragmentManagerTrojan.getLayoutInflaterFactory(getChildFragmentManager());
+        final LayoutInflaterFactory delegate = FragmentManagerAccessor.getLayoutInflaterFactory(getChildFragmentManager());
         LayoutInflaterCompat.setFactory(inflater, new ThemedLayoutInflaterFactory((IThemedActivity) activity, delegate));
         return inflater;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DebugModeUtils.watchReferenceLeak(this);
     }
 
     public Context getThemedContext() {

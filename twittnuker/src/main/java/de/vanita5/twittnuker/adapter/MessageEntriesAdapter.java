@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,10 +37,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager.OnReadStateChangeListener;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.MessageEntryViewHolder;
@@ -90,12 +86,6 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
         return mTextSize;
     }
 
-    @NonNull
-    @Override
-    public AsyncTwitterWrapper getTwitterWrapper() {
-        return mTwitterWrapper;
-    }
-
     @Override
     public boolean isProfileImageEnabled() {
         return mDisplayProfileImage;
@@ -105,18 +95,6 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
         final Cursor c = mCursor;
         if (c == null || c.isClosed() || !c.moveToPosition(position)) return null;
         return new DirectMessageEntry(c);
-    }
-
-    @NonNull
-    @Override
-    public MediaLoaderWrapper getMediaLoader() {
-        return mMediaLoader;
-    }
-
-    @NonNull
-    @Override
-    public UserColorNameManager getUserColorNameManager() {
-        return mUserColorNameManager;
     }
 
     @Override

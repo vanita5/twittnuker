@@ -44,6 +44,8 @@ public interface TwidereDataStore {
 
     String CONTENT_PATH_NULL = "null_content";
 
+    String CONTENT_PATH_EMPTY = "empty_content";
+
     String CONTENT_PATH_DATABASE_READY = "database_ready";
 
     Uri BASE_CONTENT_URI = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT)
@@ -51,11 +53,12 @@ public interface TwidereDataStore {
 
     Uri CONTENT_URI_NULL = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH_NULL);
 
+    Uri CONTENT_URI_EMPTY = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH_EMPTY);
+
     Uri CONTENT_URI_DATABASE_READY = Uri.withAppendedPath(BASE_CONTENT_URI,
             CONTENT_PATH_DATABASE_READY);
 
-    Uri[] STATUSES_URIS = new Uri[]{Statuses.CONTENT_URI, Mentions.CONTENT_URI,
-            CachedStatuses.CONTENT_URI};
+    Uri[] STATUSES_URIS = new Uri[]{Statuses.CONTENT_URI, CachedStatuses.CONTENT_URI};
     Uri[] CACHE_URIS = new Uri[]{CachedUsers.CONTENT_URI, CachedStatuses.CONTENT_URI,
             CachedHashtags.CONTENT_URI, CachedTrends.Local.CONTENT_URI};
     Uri[] DIRECT_MESSAGES_URIS = new Uri[]{DirectMessages.Inbox.CONTENT_URI,
@@ -707,6 +710,8 @@ public interface TwidereDataStore {
          */
         String TEXT_PLAIN = "text_plain";
 
+        String LANG = "lang";
+
         String TEXT_UNESCAPED = "text_unescaped";
 
         /**
@@ -838,6 +843,8 @@ public interface TwidereDataStore {
         String QUOTED_USER_IS_VERIFIED = "quoted_user_is_verified";
         String QUOTED_USER_IS_PROTECTED = "quoted_user_is_protected";
 
+        String RETWEETED = "retweeted";
+
         String[] COLUMNS = {_ID, ACCOUNT_ID, STATUS_ID, USER_ID,
                 STATUS_TIMESTAMP, TEXT_HTML, TEXT_PLAIN, TEXT_UNESCAPED, USER_NAME, USER_SCREEN_NAME,
                 USER_PROFILE_IMAGE_URL, IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, IN_REPLY_TO_USER_NAME,
@@ -849,7 +856,7 @@ public interface TwidereDataStore {
                 QUOTED_USER_IS_VERIFIED, QUOTED_USER_IS_PROTECTED, MY_RETWEET_ID, IS_RETWEET,
                 IS_QUOTE, IS_FAVORITE, IS_PROTECTED, IS_VERIFIED, IS_FOLLOWING, IS_GAP,
                 IS_POSSIBLY_SENSITIVE, MEDIA_JSON, MENTIONS_JSON, QUOTED_MEDIA_JSON, CARD_NAME, CARD,
-                PLACE_FULL_NAME};
+                PLACE_FULL_NAME, LANG, RETWEETED};
 
         String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT, TYPE_INT,
                 TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
@@ -859,14 +866,18 @@ public interface TwidereDataStore {
                 TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_INT, TYPE_BOOLEAN,
                 TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN,
                 TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-                TYPE_TEXT, TYPE_TEXT};
+                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_BOOLEAN};
 
     }
 
     interface Activities extends BaseColumns {
 
         String ACCOUNT_ID = "account_id";
+        String ACTION = "action";
+        String RAW_ACTION = "raw_action";
         String TIMESTAMP = "timestamp";
+        String STATUS_ID = "status_id";
+        String STATUS_RETWEET_ID = "status_retweet_id";
         String STATUS_USER_ID = "status_user_id";
         String STATUS_RETWEETED_BY_USER_ID = "status_retweeted_by_user_id";
         String STATUS_QUOTED_USER_ID = "status_quoted_user_id";
@@ -876,19 +887,44 @@ public interface TwidereDataStore {
         String STATUS_QUOTE_TEXT_PLAIN = "status_quote_text_plain";
         String STATUS_TEXT_HTML = "status_text_html";
         String STATUS_QUOTE_TEXT_HTML = "status_quote_text_html";
-        String STATUS_IS_GAP = "status_is_gap";
+        String STATUS_USER_FOLLOWING = "status_user_following";
+        String IS_GAP = "status_is_gap";
         String MIN_POSITION = "min_position";
         String MAX_POSITION = "max_position";
         String SOURCES = "sources";
+        String SOURCE_IDS = "source_ids";
         String TARGET_STATUSES = "target_statuses";
         String TARGET_USERS = "target_users";
         String TARGET_USER_LISTS = "target_user_lists";
         String TARGET_OBJECT_STATUSES = "target_object_statuses";
         String TARGET_OBJECT_USER_LISTS = "target_object_user_lists";
+        String TARGET_OBJECT_USERS = "target_object_users";
+
+        String[] COLUMNS = {_ID, ACCOUNT_ID, ACTION, TIMESTAMP, STATUS_ID, STATUS_USER_ID,
+                STATUS_RETWEETED_BY_USER_ID, STATUS_QUOTED_USER_ID, STATUS_SOURCE, STATUS_QUOTE_SOURCE,
+                STATUS_TEXT_PLAIN, STATUS_QUOTE_TEXT_PLAIN, STATUS_TEXT_HTML, STATUS_QUOTE_TEXT_HTML,
+                IS_GAP, MIN_POSITION, MAX_POSITION, SOURCES, SOURCE_IDS, TARGET_STATUSES, TARGET_USERS,
+                TARGET_USER_LISTS, TARGET_OBJECT_STATUSES, TARGET_OBJECT_USER_LISTS, TARGET_OBJECT_USERS,
+                STATUS_RETWEET_ID, STATUS_USER_FOLLOWING};
+        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT,
+                TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
+                TYPE_BOOLEAN, TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
+                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_BOOLEAN};
+
+        String DEFAULT_SORT_ORDER = TIMESTAMP + " DESC";
 
         interface AboutMe extends Activities {
 
             String CONTENT_PATH = "activities_about_me";
+            String TABLE_NAME = "activities_about_me";
+
+            Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
+        }
+
+        interface ByFriends extends Activities {
+
+            String CONTENT_PATH = "activities_by_friends";
+            String TABLE_NAME = "activities_by_friends";
 
             Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
         }

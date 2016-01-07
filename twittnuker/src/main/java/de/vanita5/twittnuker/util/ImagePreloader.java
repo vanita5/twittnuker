@@ -33,42 +33,42 @@ import de.vanita5.twittnuker.Constants;
 
 import java.io.File;
 
-import static de.vanita5.twittnuker.util.Utils.isOnWifi;
+import static de.vanita5.twittnuker.util.ConnectivityUtils.isOnWifi;
 
 /**
  * @author mariotaku
  */
 public class ImagePreloader implements Constants {
 
-	public static final String LOGTAG = "ImagePreloader";
+    public static final String LOGTAG = "ImagePreloader";
 
-	private final Context mContext;
-	private final SharedPreferences mPreferences;
-	private final DiskCache mDiskCache;
-	private final ImageLoader mImageLoader;
+    private final Context mContext;
+    private final SharedPreferences mPreferences;
+    private final DiskCache mDiskCache;
+    private final ImageLoader mImageLoader;
 
-	public ImagePreloader(final Context context, final ImageLoader loader) {
-		mContext = context;
-		mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-		mImageLoader = loader;
-		mDiskCache = loader.getDiskCache();
-	}
+    public ImagePreloader(final Context context, final ImageLoader loader) {
+        mContext = context;
+        mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        mImageLoader = loader;
+        mDiskCache = loader.getDiskCache();
+    }
 
-	public File getCachedImageFile(final String url) {
-		if (url == null) return null;
-		final File cache = mDiskCache.get(url);
+    public File getCachedImageFile(final String url) {
+        if (url == null) return null;
+        final File cache = mDiskCache.get(url);
         if (ImageValidator.isValid(ImageValidator.checkImageValidity(cache)))
             return cache;
         else {
-			preloadImage(url);
-		}
+            preloadImage(url);
+        }
         return null;
-	}
+    }
 
-	public void preloadImage(final String url) {
-		if (TextUtils.isEmpty(url)) return;
-		if (!isOnWifi(mContext) && mPreferences.getBoolean(KEY_PRELOAD_WIFI_ONLY, true)) return;
+    public void preloadImage(final String url) {
+        if (TextUtils.isEmpty(url)) return;
+        if (!isOnWifi(mContext) && mPreferences.getBoolean(KEY_PRELOAD_WIFI_ONLY, true)) return;
         mImageLoader.loadImage(url, null);
-	}
+    }
 
 }

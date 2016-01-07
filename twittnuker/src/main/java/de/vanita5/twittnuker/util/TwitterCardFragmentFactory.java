@@ -24,26 +24,30 @@ package de.vanita5.twittnuker.util;
 
 import android.support.v4.app.Fragment;
 
-import de.vanita5.twittnuker.fragment.support.CardBrowserFragment;
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity.ParcelableBindingValue;
-import de.vanita5.twittnuker.api.twitter.model.CardEntity.BindingValue;
+import de.vanita5.twittnuker.fragment.support.card.CardBrowserFragment;
+import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
+import de.vanita5.twittnuker.model.ParcelableCardEntity;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public abstract class TwitterCardFragmentFactory {
 
-	public abstract Fragment createAnimatedGifFragment(ParcelableCardEntity card);
+    public abstract Fragment createAnimatedGifFragment(ParcelableCardEntity card);
 
-	public abstract Fragment createAudioFragment(ParcelableCardEntity card);
+    public abstract Fragment createAudioFragment(ParcelableCardEntity card);
 
-	public abstract Fragment createPlayerFragment(ParcelableCardEntity card);
+    public abstract Fragment createPlayerFragment(ParcelableCardEntity card);
 
-	public static TwitterCardFragmentFactory getInstance() {
-		return new TwitterCardFragmentFactoryImpl();
-	}
+    public static TwitterCardFragmentFactory getInstance() {
+        return new TwitterCardFragmentFactoryImpl();
+    }
 
-	public static Fragment createGenericPlayerFragment(ParcelableCardEntity card) {
-        final ParcelableBindingValue player_url = ParcelableCardEntity.getValue(card, "player_url");
-        if (player_url == null || !BindingValue.TYPE_STRING.equals(player_url.type)) return null;
-        return CardBrowserFragment.show(player_url.value);
-	}
+    public static Fragment createGenericPlayerFragment(ParcelableCardEntity card) {
+        final String playerUrl = card.getString("player_url");
+        if (playerUrl == null) return null;
+        return CardBrowserFragment.show(playerUrl);
+    }
+
+    public static Fragment createCardPollFragment(ParcelableStatus status) {
+        return CardPollFragment.show(status);
+    }
 }

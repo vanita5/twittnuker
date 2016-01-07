@@ -59,6 +59,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
@@ -222,8 +223,8 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
             @Override
             protected long[][] doInBackground(final Object... params) {
                 final long[][] result = new long[2][];
-                result[0] = Utils.getActivatedAccountIds(getActivity());
-                result[1] = Utils.getNewestMessageIdsFromDatabase(getActivity(), DirectMessages.Inbox.CONTENT_URI);
+                result[0] = DataStoreUtils.getActivatedAccountIds(getActivity());
+                result[1] = DataStoreUtils.getNewestMessageIdsFromDatabase(getActivity(), DirectMessages.Inbox.CONTENT_URI);
                 return result;
             }
 
@@ -322,12 +323,11 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
         if (activity instanceof HomeActivity) {
             return ((HomeActivity) activity).getActivatedAccountIds();
         }
-        return Utils.getActivatedAccountIds(getActivity());
+        return DataStoreUtils.getActivatedAccountIds(getActivity());
     }
 
     protected void updateRefreshState() {
-        final AsyncTwitterWrapper twitter = mTwitterWrapper;
-        setRefreshing(twitter != null && (twitter.isReceivedDirectMessagesRefreshing() || twitter.isSentDirectMessagesRefreshing()));
+        setRefreshing(mTwitterWrapper.isReceivedDirectMessagesRefreshing() || mTwitterWrapper.isSentDirectMessagesRefreshing());
     }
 
     private void addReadPosition(final int firstVisibleItem) {
@@ -357,9 +357,9 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
             @Override
             protected long[][] doInBackground(final Object... params) {
                 final long[][] result = new long[3][];
-                result[0] = Utils.getActivatedAccountIds(getActivity());
-                result[1] = Utils.getOldestMessageIdsFromDatabase(getActivity(), DirectMessages.Inbox.CONTENT_URI);
-                result[2] = Utils.getOldestMessageIdsFromDatabase(getActivity(), DirectMessages.Outbox.CONTENT_URI);
+                result[0] = DataStoreUtils.getActivatedAccountIds(getActivity());
+                result[1] = DataStoreUtils.getOldestMessageIdsFromDatabase(getActivity(), DirectMessages.Inbox.CONTENT_URI);
+                result[2] = DataStoreUtils.getOldestMessageIdsFromDatabase(getActivity(), DirectMessages.Outbox.CONTENT_URI);
                 return result;
             }
 

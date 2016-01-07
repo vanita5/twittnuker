@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,11 +109,6 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
         return mShowAccountsColor;
     }
 
-    @NonNull
-    @Override
-    public final MediaLoaderWrapper getMediaLoader() {
-        return mMediaLoader;
-    }
 
     @Override
     public final MediaLoadingHandler getMediaLoadingHandler() {
@@ -127,18 +123,6 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     @Override
     public final int getMediaPreviewStyle() {
         return mMediaPreviewStyle;
-    }
-
-    @NonNull
-    @Override
-    public final AsyncTwitterWrapper getTwitterWrapper() {
-        return mTwitterWrapper;
-    }
-
-    @NonNull
-    @Override
-    public UserColorNameManager getUserColorNameManager() {
-        return mUserColorNameManager;
     }
 
     @Override
@@ -198,9 +182,9 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     }
 
     @Override
-    public void onMediaClick(IStatusViewHolder holder, View view, final ParcelableMedia media, int position) {
+    public void onMediaClick(IStatusViewHolder holder, View view, final ParcelableMedia media, int statusPosition) {
         if (mStatusAdapterListener == null) return;
-        mStatusAdapterListener.onMediaClick(holder, view, media, position);
+        mStatusAdapterListener.onMediaClick(holder, view, media, statusPosition);
     }
 
     @Override
@@ -307,6 +291,16 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
         notifyDataSetChanged();
     }
 
+
+    @Nullable
+    @Override
+    public ParcelableStatus findStatusById(long accountId, long statusId) {
+        for (int i = 0, j = getStatusesCount(); i < j; i++) {
+            if (accountId == getAccountId(i) && statusId == getStatusId(i)) return getStatus(i);
+        }
+        return null;
+    }
+
     protected void bindStatus(IStatusViewHolder holder, int position) {
         holder.displayStatus(getStatus(position), isShowInReplyTo());
     }
@@ -314,7 +308,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     public interface StatusAdapterListener {
         void onGapClick(GapViewHolder holder, int position);
 
-        void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position);
+        void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int statusPosition);
 
         void onStatusActionClick(IStatusViewHolder holder, int id, int position);
 

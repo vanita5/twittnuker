@@ -21,6 +21,8 @@
  */
 package de.vanita5.twittnuker.adapter.iface;
 
+import android.support.annotation.Nullable;
+
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -38,6 +40,11 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter, IStatusView
     ParcelableStatus getStatus(int position);
 
     long getStatusId(int position);
+
+    long getAccountId(int position);
+
+    @Nullable
+    ParcelableStatus findStatusById(long accountId, long statusId);
 
     int getStatusesCount();
 

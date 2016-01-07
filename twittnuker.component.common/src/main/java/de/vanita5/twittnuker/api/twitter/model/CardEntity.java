@@ -22,31 +22,70 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
-import org.mariotaku.library.logansquare.extension.annotation.Wrapper;
+import android.support.v4.util.ArrayMap;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.CardEntityImpl;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
 
 import java.util.Map;
 
 /**
- * Created by mariotaku on 14/12/31.
+ * Created by mariotaku on 15/5/7.
  */
-@Implementation(CardEntityImpl.class)
-public interface CardEntity {
+@JsonObject
+public class CardEntity {
 
-    String getName();
+    @JsonField(name = "name")
+    String name;
 
-    String getUrl();
+    @JsonField(name = "url")
+    String url;
 
-    User[] getUsers();
+    @JsonField(name = "binding_values")
+    Map<String, RawBindingValue> rawBindingValues;
+    Map<String, BindingValue> bindingValues;
 
-    BindingValue getBindingValue(String key);
+    public String getName() {
+        return name;
+    }
 
-    Map<String, BindingValue> getBindingValues();
+    public String getUrl() {
+        return url;
+    }
 
-    @Wrapper(CardEntityImpl.BindingValueWrapper.class)
-    interface BindingValue {
+    public User[] getUsers() {
+        return new User[0];
+    }
+
+    public BindingValue getBindingValue(String key) {
+        return bindingValues.get(key);
+    }
+
+    public Map<String, BindingValue> getBindingValues() {
+        return bindingValues;
+    }
+
+    @OnJsonParseComplete
+    void onParseComplete() {
+        if (rawBindingValues != null) {
+            bindingValues = new ArrayMap<>();
+            for (Map.Entry<String, RawBindingValue> entry : rawBindingValues.entrySet()) {
+                bindingValues.put(entry.getKey(), entry.getValue().getBindingValue());
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "CardEntity{" +
+                "name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", bindingValues=" + bindingValues +
+                '}';
+    }
+
+    public interface BindingValue {
 
         String TYPE_STRING = "STRING";
         String TYPE_IMAGE = "IMAGE";
@@ -55,24 +94,137 @@ public interface CardEntity {
 
     }
 
+    @JsonObject
+    public static class ImageValue implements BindingValue {
+        @JsonField(name = "width")
+        int width;
+        @JsonField(name = "height")
+        int height;
+        @JsonField(name = "url")
+        String url;
 
-    interface UserValue extends BindingValue {
-        long getUserId();
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        @Override
+        public String toString() {
+            return "ImageValue{" +
+                    "width=" + width +
+                    ", height=" + height +
+                    ", url='" + url + '\'' +
+                    '}';
+        }
     }
 
-    interface StringValue extends BindingValue {
-        String getValue();
+    public static class BooleanValue implements BindingValue {
+
+        public BooleanValue(boolean value) {
+            this.value = value;
+        }
+
+        private boolean value;
+
+        public boolean getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return "BooleanValue{" +
+                    "value=" + value +
+                    '}';
+        }
     }
 
-    interface BooleanValue extends BindingValue {
-        boolean getValue();
+    public static class StringValue implements BindingValue {
+        private final String value;
+
+        public StringValue(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return "StringValue{" +
+                    "value='" + value + '\'' +
+                    '}';
+        }
     }
 
-    interface ImageValue extends BindingValue {
-        int getWidth();
+    @JsonObject
+    public static class UserValue implements BindingValue {
 
-        int getHeight();
+        @JsonField(name = "id")
+        long userId;
 
-        String getUrl();
+        public long getUserId() {
+            return userId;
+        }
+
+        @Override
+        public String toString() {
+            return "UserValue{" +
+                    "userId=" + userId +
+                    '}';
+        }
+    }
+
+    @JsonObject
+    public static class RawBindingValue {
+
+        @JsonField(name = "type")
+        String type;
+        @JsonField(name = "boolean_value")
+        boolean booleanValue;
+        @JsonField(name = "string_value")
+        String stringValue;
+        @JsonField(name = "image_value")
+        ImageValue imageValue;
+        @JsonField(name = "user_value")
+        UserValue userValue;
+
+
+        public BindingValue getBindingValue() {
+            if (type == null) return null;
+            switch (type) {
+                case BindingValue.TYPE_BOOLEAN: {
+                    return new BooleanValue(booleanValue);
+                }
+                case BindingValue.TYPE_STRING: {
+                    return new StringValue(stringValue);
+                }
+                case BindingValue.TYPE_IMAGE: {
+                    return imageValue;
+                }
+                case BindingValue.TYPE_USER: {
+                    return userValue;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public String toString() {
+            return "RawBindingValue{" +
+                    "type='" + type + '\'' +
+                    ", booleanValue=" + booleanValue +
+                    ", stringValue='" + stringValue + '\'' +
+                    ", imageValue=" + imageValue +
+                    ", userValue=" + userValue +
+                    '}';
+        }
     }
 }

@@ -6,6 +6,7 @@ env:
   global:
     MALLOC_ARENA_MAX=2
     JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
+    GRADLE_OPTS=-Xmx1024m -Dorg.gradle.parallel=false
 
 jdk:
   - oraclejdk8
@@ -18,7 +19,7 @@ android:
     - tools
 
     # The BuildTools version used by your project
-    - build-tools-23.0.1
+    - build-tools-23.0.2
 
     # The SDK version used to compile your project
     - android-23
@@ -33,8 +34,16 @@ android:
     # - sys-img-armeabi-v7a-android-19
     # - sys-img-x86-android-17
 
+cache:
+  directories:
+    - $HOME/.local/opt
+
 before_script:
   - "echo $JAVA_OPTS"
   - "export JAVA_OPTS=-Xmx2048m"
 
-script: ./gradlew build --no-daemon
+before_install:
+  - ./travis/scripts/install_android_ndk.sh
+  - export PATH=$HOME/.local/bin:$PATH
+
+script: ./gradlew build --no-daemon --stacktrace

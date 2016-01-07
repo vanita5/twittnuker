@@ -26,15 +26,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.model.ParcelableStatus;
-
-import java.util.List;
-
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.model.ParcelableStatus;
+
+import java.util.List;
 
 public class UserFavoritesLoader extends TwitterAPIStatusesLoader {
 
@@ -56,7 +55,7 @@ public class UserFavoritesLoader extends TwitterAPIStatusesLoader {
         if (mUserId != -1)
             return twitter.getFavorites(mUserId, paging);
         else if (mUserScreenName != null) return twitter.getFavorites(mUserScreenName, paging);
-        return null;
+        throw new IllegalArgumentException();
     }
 
     public int getTotalItemsCount() {

@@ -24,68 +24,68 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
+import android.util.Log;
 
+import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
+import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
+import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.loader.support.iface.ICursorSupportLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
 import java.util.Collections;
 import java.util.List;
 
-import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.UserList;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
-
-import static de.vanita5.twittnuker.util.TwitterAPIFactory.getTwitterInstance;
 
 public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<ParcelableUserList>>
-        implements ICursorSupportLoader {
+        implements TwittnukerConstants, ICursorSupportLoader {
 
     protected final NoDuplicatesArrayList<ParcelableUserList> mData = new NoDuplicatesArrayList<>();
-	protected final long mAccountId;
-	private final long mCursor;
+    protected final long mAccountId;
+    private final long mCursor;
 
-	private long mNextCursor, mPrevCursor;
+    private long mNextCursor, mPrevCursor;
 
     public BaseUserListsLoader(final Context context, final long accountId, final long cursor,
-			final List<ParcelableUserList> data) {
-		super(context);
-		if (data != null) {
-			mData.addAll(data);
-		}
-		mCursor = cursor;
+                               final List<ParcelableUserList> data) {
+        super(context);
+        if (data != null) {
+            mData.addAll(data);
+        }
+        mCursor = cursor;
         mAccountId = accountId;
-	}
+    }
 
     @Override
-	public long getCursor() {
-		return mCursor;
-	}
+    public long getCursor() {
+        return mCursor;
+    }
 
     @Override
-	public long getNextCursor() {
-		return mNextCursor;
-	}
+    public long getNextCursor() {
+        return mNextCursor;
+    }
 
     @Override
-	public long getPrevCursor() {
-		return mPrevCursor;
-	}
+    public long getPrevCursor() {
+        return mPrevCursor;
+    }
 
-	public abstract List<UserList> getUserLists(final Twitter twitter) throws TwitterException;
+    public abstract List<UserList> getUserLists(final Twitter twitter) throws TwitterException;
 
-	@Override
-	public List<ParcelableUserList> loadInBackground() {
+    @Override
+    public List<ParcelableUserList> loadInBackground() {
         final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, true);
         List<UserList> listLoaded = null;
-		try {
+        try {
             listLoaded = getUserLists(twitter);
-		} catch (final TwitterException e) {
-			e.printStackTrace();
-		}
+        } catch (final TwitterException e) {
+            Log.w(LOGTAG, e);
+        }
         if (listLoaded != null) {
             final int listSize = listLoaded.size();
             if (listLoaded instanceof PageableResponseList) {
@@ -95,24 +95,24 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
                 for (int i = 0; i < listSize; i++) {
                     final UserList list = listLoaded.get(i);
                     mData.add(new ParcelableUserList(list, mAccountId, dataSize + i, isFollowing(list)));
-				}
-			} else {
+                }
+            } else {
                 for (int i = 0; i < listSize; i++) {
                     final UserList list = listLoaded.get(i);
                     mData.add(new ParcelableUserList(listLoaded.get(i), mAccountId, i, isFollowing(list)));
-				}
-			}
-		}
-		Collections.sort(mData);
-		return mData;
-	}
+                }
+            }
+        }
+        Collections.sort(mData);
+        return mData;
+    }
 
-	@Override
-	public void onStartLoading() {
-		forceLoad();
-	}
+    @Override
+    public void onStartLoading() {
+        forceLoad();
+    }
 
-	protected boolean isFollowing(final UserList list) {
-		return list.isFollowing();
-	}
+    protected boolean isFollowing(final UserList list) {
+        return list.isFollowing();
+    }
 }

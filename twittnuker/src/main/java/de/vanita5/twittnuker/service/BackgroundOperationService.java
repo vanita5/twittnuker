@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.service;
 
 import android.app.IntentService;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -45,6 +44,7 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.utils.IoUtils;
 import com.twitter.Extractor;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.mime.FileTypedData;
 import org.mariotaku.sqliteqb.library.Expression;
@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.DraftItemCursorIndices;
 import de.vanita5.twittnuker.model.MediaUploadResult;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
@@ -77,17 +78,15 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.ListUtils;
 import de.vanita5.twittnuker.util.MediaUploaderInterface;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.StatusCodeMessageUtils;
 import de.vanita5.twittnuker.util.StatusShortenerInterface;
+import de.vanita5.twittnuker.util.TwidereListUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener;
 
@@ -131,7 +130,7 @@ public class BackgroundOperationService extends IntentService implements Constan
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
+        GeneralComponentHelper.build(this).inject(this);
         final TwittnukerApplication app = TwittnukerApplication.getInstance(this);
         mHandler = new Handler();
         mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
@@ -219,17 +218,18 @@ public class BackgroundOperationService extends IntentService implements Constan
         final Uri uri = intent.getData();
         if (uri == null) return;
         mNotificationManager.cancel(uri.toString(), NOTIFICATION_ID_DRAFTS);
-        final long draftId = ParseUtils.parseLong(uri.getLastPathSegment(), -1);
+        final long def = -1;
+        final long draftId = NumberUtils.toLong(uri.getLastPathSegment(), def);
         if (draftId == -1) return;
         final Expression where = Expression.equals(Drafts._ID, draftId);
         final ContentResolver cr = getContentResolver();
         final Cursor c = cr.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.getSQL(), null, null);
         if (c == null) return;
-        final DraftItem.CursorIndices i = new DraftItem.CursorIndices(c);
+        final DraftItemCursorIndices i = new DraftItemCursorIndices(c);
         final DraftItem item;
         try {
             if (!c.moveToFirst()) return;
-            item = new DraftItem(c, i);
+            item = i.newObject(c);
         } finally {
             c.close();
         }
@@ -237,7 +237,7 @@ public class BackgroundOperationService extends IntentService implements Constan
         if (item.action_type == Drafts.ACTION_UPDATE_STATUS || item.action_type <= 0) {
             updateStatuses(new ParcelableStatusUpdate(this, item));
         } else if (item.action_type == Drafts.ACTION_SEND_DIRECT_MESSAGE) {
-            final long recipientId = item.action_extras.optLong(EXTRA_RECIPIENT_ID);
+            final long recipientId = item.action_extras != null ? item.action_extras.optLong(EXTRA_RECIPIENT_ID) : -1;
             if (item.account_ids == null || item.account_ids.length <= 0 || recipientId <= 0) {
                 return;
             }
@@ -252,7 +252,8 @@ public class BackgroundOperationService extends IntentService implements Constan
         if (data == null) return;
         mNotificationManager.cancel(data.toString(), NOTIFICATION_ID_DRAFTS);
         final ContentResolver cr = getContentResolver();
-        final long id = ParseUtils.parseLong(data.getLastPathSegment(), -1);
+        final long def = -1;
+        final long id = NumberUtils.toLong(data.getLastPathSegment(), def);
         final Expression where = Expression.equals(Drafts._ID, id);
         cr.delete(Drafts.CONTENT_URI, where.getSQL(), null);
     }
@@ -322,13 +323,14 @@ public class BackgroundOperationService extends IntentService implements Constan
             final ContentValues draftValues = ContentValuesCreator.createStatusDraft(item,
                     ParcelableAccount.getAccountIds(item.accounts));
             final Uri draftUri = mResolver.insert(Drafts.CONTENT_URI, draftValues);
-            final long draftId = draftUri != null ? ParseUtils.parseLong(draftUri.getLastPathSegment(), -1) : -1;
+            final long def = -1;
+            final long draftId = draftUri != null ? NumberUtils.toLong(draftUri.getLastPathSegment(), def) : -1;
             mTwitter.addSendingDraftId(draftId);
             final List<SingleResponse<ParcelableStatus>> result = updateStatus(builder, item);
             boolean failed = false;
             Exception exception = null;
             final Expression where = Expression.equals(Drafts._ID, draftId);
-            final List<Long> failedAccountIds = ListUtils.fromArray(ParcelableAccount.getAccountIds(item.accounts));
+            final List<Long> failedAccountIds = TwidereListUtils.fromArray(ParcelableAccount.getAccountIds(item.accounts));
 
             for (final SingleResponse<ParcelableStatus> response : result) {
                 final ParcelableStatus data = response.getData();
@@ -352,7 +354,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                     showErrorMessage(getString(R.string.status_is_duplicate), false);
                 } else {
                     final ContentValues accountIdsValues = new ContentValues();
-                    accountIdsValues.put(Drafts.ACCOUNT_IDS, ListUtils.toString(failedAccountIds, ',', false));
+                    accountIdsValues.put(Drafts.ACCOUNT_IDS, TwidereListUtils.toString(failedAccountIds, ',', false));
                     mResolver.update(Drafts.CONTENT_URI, accountIdsValues, where.getSQL(), null);
                     showErrorMessage(R.string.action_updating_status, exception, true);
                     final ContentValues notifValues = new ContentValues();
@@ -450,9 +452,6 @@ public class BackgroundOperationService extends IntentService implements Constan
         if (statusUpdate.accounts.length == 0) return Collections.emptyList();
 
         try {
-//            if (mUseUploader && mUploader == null) throw new UploaderNotFoundException(this);
-//            if (mUseShortener && mShortener == null) throw new ShortenerNotFoundException(this);
-
             if (mUseUploader && mUploader == null) mUseUploader = false;
             if (mUseShortener && mShortener == null) mUseShortener = false;
 
@@ -515,7 +514,9 @@ public class BackgroundOperationService extends IntentService implements Constan
                 final Twitter twitter = TwitterAPIFactory.getTwitterInstance(this, account.account_id, true, true);
                 final TwitterUpload upload = TwitterAPIFactory.getTwitterInstance(this, account.account_id, true, true, TwitterUpload.class);
                 final StatusUpdate status = new StatusUpdate(shortenedText);
-                status.inReplyToStatusId(statusUpdate.in_reply_to_status_id);
+                if (statusUpdate.in_reply_to_status_id > 0) {
+                    status.inReplyToStatusId(statusUpdate.in_reply_to_status_id);
+                }
                 if (statusUpdate.location != null) {
                     status.location(ParcelableLocation.toGeoLocation(statusUpdate.location));
                 }

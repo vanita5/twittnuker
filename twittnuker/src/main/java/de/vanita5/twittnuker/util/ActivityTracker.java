@@ -52,7 +52,7 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
     }
 
     @Override
-    public void onActivityStarted(Activity activity) {
+    public void onActivityStarted(final Activity activity) {
         mInternalStack.add(System.identityHashCode(activity));
     }
 

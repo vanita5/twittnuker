@@ -171,7 +171,13 @@ public interface SharedPreferenceConstants {
     @Preference(type = STRING)
     String KEY_PROXY_HOST = "proxy_host";
     @Preference(type = STRING)
+    String KEY_PROXY_TYPE = "proxy_type";
+    @Preference(type = STRING)
     String KEY_PROXY_PORT = "proxy_port";
+    @Preference(type = STRING)
+    String KEY_PROXY_USERNAME = "proxy_username";
+    @Preference(type = STRING)
+    String KEY_PROXY_PASSWORD = "proxy_password";
     @Preference(type = BOOLEAN)
     String KEY_REFRESH_ON_START = "refresh_on_start";
     @Preference(type = BOOLEAN)
@@ -215,7 +221,7 @@ public interface SharedPreferenceConstants {
     String KEY_COMPOSE_ACCOUNTS = "compose_accounts";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_TCP_DNS_QUERY = "tcp_dns_query";
-    @Preference(type = STRING, hasDefault = false)
+    @Preference(type = STRING, hasDefault = true, defaultString = "")
     String KEY_DNS_SERVER = "dns_server";
     String KEY_CONNECTION_TIMEOUT = "connection_timeout";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
@@ -314,7 +320,7 @@ public interface SharedPreferenceConstants {
     String KEY_HIDE_CARD_ACTIONS = "hide_card_actions";
     @Preference(type = INT, hasDefault = true, defaultInt = 512)
     String KEY_CACHE_SIZE_LIMIT = "cache_size_limit";
-    @Preference(type = BOOLEAN,hasDefault = true,defaultBoolean = true)
+    @Preference(type = BOOLEAN,hasDefault = true, defaultBoolean = true)
     String KEY_BUG_REPORTS = "bug_reports";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_COMBINED_NOTIFICATIONS = "combined_notifications";
@@ -322,4 +328,18 @@ public interface SharedPreferenceConstants {
     String KEY_TWITTER_OPTIMIZED_SEARCHES = "twitter_optimized_searches";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_I_WANT_MY_STARS_BACK = "i_want_my_stars_back";
+    @Preference(type = STRING, hasDefault = false)
+    String KEY_EMOJI_SUPPORT = "emoji_support";
+
+    //GCM
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    String KEY_ENABLE_PUSH_NOTIFICATIONS = "enable_push_notifications";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    String GCM_TOKEN_SENT = "gcm_token_sent";
+    @Preference(type = STRING)
+    String GCM_CURRENT_TOKEN = "gcm_current_token";
+    @Preference(type = STRING)
+    String KEY_PUSH_NOTIFICATION_SERVER = "push_notification_server";
+    @Preference(type = STRING)
+    String KEY_PUSH_API_URL = "push_api_url";
 }

@@ -22,25 +22,34 @@
 
 package de.vanita5.twittnuker.fragment;
 
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.Utils;
 
 public class AccountRefreshSettingsFragment extends BaseAccountPreferenceFragment {
 
-	@Override
-	protected int getPreferencesResource() {
-		return R.xml.settings_account_refresh;
-	}
+    @Override
+    protected int getPreferencesResource() {
+        return R.xml.settings_account_refresh;
+    }
 
-	@Override
-	protected boolean getSwitchPreferenceDefault() {
-		return DEFAULT_AUTO_REFRESH;
-	}
+    @Override
+    protected boolean getSwitchPreferenceDefault() {
+        return DEFAULT_AUTO_REFRESH;
+    }
 
-	@Override
-	@Nullable
-	protected String getSwitchPreferenceKey() {
-		return null;
-	}
+    @Override
+    @Nullable
+    protected String getSwitchPreferenceKey() {
+        return null;
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (KEY_AUTO_REFRESH.equals(key)) {
+            Utils.startRefreshServiceIfNeeded(getActivity());
+        }
+    }
 }

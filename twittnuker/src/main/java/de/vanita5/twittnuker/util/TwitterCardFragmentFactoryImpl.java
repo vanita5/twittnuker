@@ -22,25 +22,63 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.net.Uri;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 
-import de.vanita5.twittnuker.model.ParcelableStatus.ParcelableCardEntity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+
+import de.vanita5.twittnuker.model.ParcelableCardEntity;
 
 public final class TwitterCardFragmentFactoryImpl extends TwitterCardFragmentFactory {
 
-	@Override
-	public Fragment createAnimatedGifFragment(ParcelableCardEntity card) {
-		return null;
-	}
+    private static final String YOUTUBE_DATA_API_KEY = "AIzaSyCVdCIMFFxdNqHnCPrJ9yKUzoTfs8jhYGc";
 
-	@Override
-	public Fragment createAudioFragment(ParcelableCardEntity card) {
-		return null;
-	}
+    @Override
+    public Fragment createAnimatedGifFragment(ParcelableCardEntity card) {
+        return null;
+    }
 
-	@Override
-	public Fragment createPlayerFragment(ParcelableCardEntity card) {
-		return null;
-	}
+    @Override
+    public Fragment createAudioFragment(ParcelableCardEntity card) {
+        return null;
+    }
+
+    @Override
+    public Fragment createPlayerFragment(ParcelableCardEntity card) {
+        if (Boolean.parseBoolean("true")) return null;
+        final String appUrlResolved = card.getString("app_url_resolved");
+        final String domain = card.getString("domain");
+        if (domain != null && appUrlResolved != null) {
+            final Uri uri = Uri.parse(appUrlResolved);
+            final String paramV = uri.getQueryParameter("v");
+            if ("www.youtube.com".equals(domain) && paramV != null) {
+                final YouTubePlayerSupportFragment fragment = YouTubePlayerSupportFragment.newInstance();
+                fragment.initialize(YOUTUBE_DATA_API_KEY, new YouTubePlayer.OnInitializedListener() {
+                    @Override
+                    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
+                        if (!wasRestored) {
+                            player.cueVideo(paramV);
+                        }
+                    }
+
+                    @Override
+                    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult errorReason) {
+                        final FragmentActivity activity = fragment.getActivity();
+                        if (activity == null) return;
+//                        if (errorReason.isUserRecoverableError()) {
+//                            errorReason.getErrorDialog(activity, RECOVERY_DIALOG_REQUEST).show();
+//                        } else {
+//                            Toast.makeText(activity, errorReason.toString(), Toast.LENGTH_LONG).show();
+//                        }
+                    }
+                });
+                return fragment;
+            }
+        }
+        return null;
+    }
 
 }

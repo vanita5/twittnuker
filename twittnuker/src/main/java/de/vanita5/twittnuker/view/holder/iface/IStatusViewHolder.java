@@ -28,7 +28,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
-import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.view.CardMediaContainer;
@@ -36,7 +35,7 @@ import de.vanita5.twittnuker.view.CardMediaContainer;
 public interface IStatusViewHolder extends CardMediaContainer.OnMediaClickListener {
     void displayStatus(ParcelableStatus status, boolean displayInReplyTo);
 
-    void displayStatus(@NonNull ParcelableStatus status, @Nullable TranslationResult translation,
+    void displayStatus(@NonNull ParcelableStatus status,
                        boolean displayInReplyTo, boolean shouldDisplayExtraType);
 
     @Nullable
@@ -54,7 +53,7 @@ public interface IStatusViewHolder extends CardMediaContainer.OnMediaClickListen
 
     interface StatusClickListener extends ContentCardClickListener {
 
-        void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position);
+        void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int statusPosition);
 
         void onStatusClick(IStatusViewHolder holder, int position);
 

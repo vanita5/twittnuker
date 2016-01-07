@@ -22,39 +22,87 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.EnumClass;
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.ExtendedProfileImpl;
+@JsonObject
+public class ExtendedProfile {
 
-@Implementation(ExtendedProfileImpl.class)
-public interface ExtendedProfile {
+    @JsonField(name = "id")
+    long id;
+    @JsonField(name = "birthdate")
+    Birthdate birthdate;
 
-    long getId();
+    public long getId() {
+        return id;
+    }
 
-    Birthdate getBirthdate();
+    public Birthdate getBirthdate() {
+        return birthdate;
+    }
 
-    interface Birthdate {
-        int getDay();
+    @JsonObject
+    public static class Birthdate {
 
-        int getMonth();
+        @JsonField(name = "day")
+        int day;
+        @JsonField(name = "month")
+        int month;
+        @JsonField(name = "year")
+        int year;
+        @JsonField(name = "visibility", typeConverter = Visibility.Converter.class)
+        Visibility visibility;
+        @JsonField(name = "year_visibility", typeConverter = Visibility.Converter.class)
+        Visibility yearVisibility;
 
-        int getYear();
+        public int getDay() {
+            return day;
+        }
 
-        Visibility getVisibility();
+        public int getMonth() {
+            return month;
+        }
 
-        Visibility getYearVisibility();
+        public int getYear() {
+            return year;
+        }
 
-        @EnumClass
-        enum Visibility {
-            MUTUALFOLLOW, PUBLIC, UNKNOWN;
+        public Visibility getVisibility() {
+            return visibility;
+        }
+
+        public Visibility getYearVisibility() {
+            return yearVisibility;
+        }
+
+        public enum Visibility {
+            MUTUALFOLLOW("mutualfollow"), PUBLIC("public"), UNKNOWN(null);
+
+            private final String literal;
+
+            Visibility(String literal) {
+                this.literal = literal;
+            }
 
             public static Visibility parse(String s) {
                 if ("mutualfollow".equals(s)) return MUTUALFOLLOW;
                 if ("public".equals(s)) return PUBLIC;
                 return UNKNOWN;
             }
+
+            public static class Converter extends StringBasedTypeConverter<Visibility> {
+
+                @Override
+                public Visibility getFromString(String string) {
+                    return Visibility.parse(string);
+                }
+
+                @Override
+                public String convertToString(Visibility object) {
+                    return object.literal;
+                }
+            }
         }
     }
-
 }

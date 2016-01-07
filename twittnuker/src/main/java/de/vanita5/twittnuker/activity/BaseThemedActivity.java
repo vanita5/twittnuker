@@ -29,13 +29,11 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.ShapedImageView;
 
 import javax.inject.Inject;
@@ -49,8 +47,6 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
     private String mCurrentThemeFontFamily;
     private String mCurrentThemeBackgroundOption;
     private int mProfileImageStyle;
-    @Inject
-    protected ActivityTracker mActivityTracker;
     @Inject
     protected KeyboardShortcutsHandler mKeyboardShortcutHandler;
 
@@ -122,7 +118,7 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
             StrictModeUtils.detectAllThreadPolicy();
         }
         super.onCreate(savedInstanceState);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(this)).build().inject(this);
+        GeneralComponentHelper.build(this).inject(this);
         setActionBarBackground();
     }
 

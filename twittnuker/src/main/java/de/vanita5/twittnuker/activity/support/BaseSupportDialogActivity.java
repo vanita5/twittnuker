@@ -23,49 +23,150 @@
 package de.vanita5.twittnuker.activity.support;
 
 import android.annotation.SuppressLint;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatCallback;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.view.ActionMode;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 @SuppressLint("Registered")
-public class BaseSupportDialogActivity extends ThemedFragmentActivity implements Constants {
+public class BaseSupportDialogActivity extends ThemedFragmentActivity implements Constants,
+        AppCompatCallback {
 
-	private boolean mInstanceStateSaved;
-
-	@Override
-	public int getThemeColor() {
-		return ThemeUtils.getThemeColor(this, getThemeResourceId());
-	}
-
-	@Override
-	public int getActionBarColor() {
-		return ThemeUtils.getActionBarColor(this);
-	}
-
-	@Override
-	public int getThemeResourceId() {
-		return ThemeUtils.getDialogThemeResource(this);
-	}
-
-    public TwittnukerApplication getTwittnukerApplication() {
-        return (TwittnukerApplication) getApplication();
+    @Override
+    public int getThemeColor() {
+        return ThemeUtils.getThemeColor(this, getThemeResourceId());
     }
 
-	protected boolean isStateSaved() {
-		return mInstanceStateSaved;
-	}
+    @Override
+    public int getActionBarColor() {
+        return ThemeUtils.getActionBarColor(this);
+    }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		mInstanceStateSaved = false;
-	}
+    @Override
+    public int getThemeResourceId() {
+        return ThemeUtils.getDialogThemeResource(this);
+    }
 
-	@Override
-	protected void onSaveInstanceState(final Bundle outState) {
-		mInstanceStateSaved = true;
-		super.onSaveInstanceState(outState);
-	}
+    private AppCompatDelegate mDelegate;
+
+    /**
+     * Notifies the Activity that a support action mode has been started.
+     * Activity subclasses overriding this method should call the superclass implementation.
+     *
+     * @param mode The new action mode.
+     */
+    @Override
+    public void onSupportActionModeStarted(ActionMode mode) {
+    }
+
+    /**
+     * Notifies the activity that a support action mode has finished.
+     * Activity subclasses overriding this method should call the superclass implementation.
+     *
+     * @param mode The action mode that just finished.
+     */
+    @Override
+    public void onSupportActionModeFinished(ActionMode mode) {
+    }
+
+    @Nullable
+    @Override
+    public ActionMode onWindowStartingSupportActionMode(ActionMode.Callback callback) {
+        return null;
+    }
+
+    public boolean supportRequestWindowFeature(int featureId) {
+        return getDelegate().requestWindowFeature(featureId);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        getDelegate().installViewFactory();
+        getDelegate().onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        getDelegate().onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getDelegate().onDestroy();
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        getDelegate().onPostCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        getDelegate().onPostResume();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        getDelegate().onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        getDelegate().setContentView(layoutResID);
+    }
+
+    @Override
+    public void setContentView(View view) {
+        getDelegate().setContentView(view);
+    }
+
+    @Override
+    public void setContentView(View view, ViewGroup.LayoutParams params) {
+        getDelegate().setContentView(view, params);
+    }
+
+    @Override
+    public void addContentView(View view, ViewGroup.LayoutParams params) {
+        getDelegate().addContentView(view, params);
+    }
+
+    @Override
+    public void invalidateOptionsMenu() {
+        getDelegate().invalidateOptionsMenu();
+    }
+
+    @NonNull
+    @Override
+    public MenuInflater getMenuInflater() {
+        return getDelegate().getMenuInflater();
+    }
+
+    @Override
+    protected void onTitleChanged(CharSequence title, int color) {
+        super.onTitleChanged(title, color);
+        getDelegate().setTitle(title);
+    }
+
+    public AppCompatDelegate getDelegate() {
+        if (mDelegate == null) {
+            mDelegate = AppCompatDelegate.create(this, this);
+        }
+        return mDelegate;
+    }
 }

@@ -23,27 +23,26 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.IDs;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
-import de.vanita5.twittnuker.api.twitter.model.IDs;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-
 public class IncomingFriendshipsLoader extends IDsUsersLoader {
 
-	public IncomingFriendshipsLoader(final Context context, final long accountId, final long maxId,
+    public IncomingFriendshipsLoader(final Context context, final long accountId, final long maxId,
                                      final List<ParcelableUser> data, boolean fromUser) {
-		super(context, accountId, maxId, data, fromUser);
-	}
+        super(context, accountId, maxId, data, fromUser);
+    }
 
-	@Override
-    protected IDs getIDs(final Twitter twitter, final Paging paging) throws TwitterException {
-		if (twitter == null) return null;
-		return twitter.getIncomingFriendships(paging);
-	}
+    @Override
+    protected IDs getIDs(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
+        return twitter.getIncomingFriendships(paging);
+    }
 
 }

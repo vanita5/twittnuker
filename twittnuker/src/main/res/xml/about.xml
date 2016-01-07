@@ -75,10 +75,10 @@
     <PreferenceCategory android:title="@string/special_thanks_to">
         <Preference
             android:summary="for the Twittnuker Launcher icon"
-            android:title="herrsch0r">
+            android:title="trvmmergemyt">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="twittnuker://user?user_id=254264302&amp;finish_only=true"/>
+                android:data="twittnuker://user?user_id=1036836883&amp;finish_only=true"/>
         </Preference>
         <Preference
             android:summary="for some logos"
@@ -99,11 +99,11 @@
             android:title="nilsding and therealkings86">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="twittnuker://user_list_members?list_id=123934408&amp;user_id=2493385122&amp;finish_only=true" />
+                android:data="twittnuker://user_list_members?list_id=112765631&amp;user_id=2493385122&amp;finish_only=true" />
         </Preference>
         <Preference
             android:summary="for the Japanese translation"
-            android:title="Noumi Ryoko (WedyDQ10)">
+            android:title="Noumi Ryoko (AndroPlus)">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:data="twittnuker://user?user_id=210818534&amp;finish_only=true" />

@@ -28,6 +28,7 @@ import org.mariotaku.restfu.annotation.param.Body;
 import org.mariotaku.restfu.annotation.param.Form;
 import org.mariotaku.restfu.annotation.param.Path;
 import org.mariotaku.restfu.http.BodyType;
+
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
@@ -41,11 +42,11 @@ public interface SavedSearchesResources {
 
     @POST("/saved_searches/destroy/{id}.json")
     @Body(BodyType.FORM)
-    SavedSearch destroySavedSearch(@Path("id") int id) throws TwitterException;
+    SavedSearch destroySavedSearch(@Path("id") long id) throws TwitterException;
 
     @GET("/saved_searches/list.json")
-	ResponseList<SavedSearch> getSavedSearches() throws TwitterException;
+    ResponseList<SavedSearch> getSavedSearches() throws TwitterException;
 
     @POST("/saved_searches/show/{id}.json")
-    SavedSearch showSavedSearch(@Path("id") int id) throws TwitterException;
+    SavedSearch showSavedSearch(@Path("id") long id) throws TwitterException;
 }

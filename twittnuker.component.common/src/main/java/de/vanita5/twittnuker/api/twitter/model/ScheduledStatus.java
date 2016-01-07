@@ -22,50 +22,87 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.EnumClass;
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.ScheduledStatusImpl;
+import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
 
 import java.util.Date;
 
-@Implementation(ScheduledStatusImpl.class)
-public interface ScheduledStatus {
+@JsonObject
+public class ScheduledStatus {
 
-    long getUserId();
+    @JsonField(name = "updated_at", typeConverter = TwitterDateConverter.class)
+    Date updatedAt;
+    @JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
+    Date createdAt;
+    @JsonField(name = "execute_at", typeConverter = TwitterDateConverter.class)
+    Date executeAt;
+    @JsonField(name = "text")
+    String text;
+    @JsonField(name = "media_ids")
+    long[] mediaIds;
+    @JsonField(name = "id")
+    long id;
+    @JsonField(name = "possiblySensitive")
+    boolean possiblySensitive;
+    @JsonField(name = "user_id")
+    long userId;
+    @JsonField(name = "state", typeConverter = State.Converter.class)
+    State state;
 
-    boolean isPossiblySensitive();
+    public long getUserId() {
+        return userId;
+    }
 
-    long getId();
+    public boolean isPossiblySensitive() {
+        return possiblySensitive;
+    }
 
-    long[] getMediaIds();
+    public long getId() {
+        return id;
+    }
 
-    Date getUpdatedAt();
+    public long[] getMediaIds() {
+        return mediaIds;
+    }
 
-    Date getCreatedAt();
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
 
-    Date getExecuteAt();
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
-    String getText();
+    public Date getExecuteAt() {
+        return executeAt;
+    }
 
-    State getState();
+    public String getText() {
+        return text;
+    }
 
-    @EnumClass
-    enum State {
+    public State getState() {
+        return state;
+    }
+
+    public enum State {
         SCHEDULED("scheduled"), FAILED("failed"), CANCELED("canceled");
 
-        private final String value;
+        private final String literal;
 
-        State(String value) {
-            this.value = value;
+        State(String literal) {
+            this.literal = literal;
         }
 
         public static State parse(String value) {
-            if (SCHEDULED.value.equalsIgnoreCase(value)) {
+            if (SCHEDULED.literal.equalsIgnoreCase(value)) {
                 return SCHEDULED;
-            } else if (FAILED.value.equalsIgnoreCase(value)) {
+            } else if (FAILED.literal.equalsIgnoreCase(value)) {
                 return FAILED;
-            } else if (CANCELED.value.equalsIgnoreCase(value)) {
+            } else if (CANCELED.literal.equalsIgnoreCase(value)) {
                 return CANCELED;
             }
             return null;
@@ -73,7 +110,20 @@ public interface ScheduledStatus {
 
         @Override
         public String toString() {
-            return value;
+            return literal;
+        }
+
+        public static class Converter extends StringBasedTypeConverter<State> {
+
+            @Override
+            public State getFromString(String string) {
+                return State.parse(string);
+            }
+
+            @Override
+            public String convertToString(State object) {
+                return object.literal;
+            }
         }
     }
 }

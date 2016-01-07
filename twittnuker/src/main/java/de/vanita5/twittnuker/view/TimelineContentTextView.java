@@ -31,6 +31,7 @@ import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import de.vanita5.twittnuker.util.EmojiSupportUtils;
 import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
 /**
@@ -42,14 +43,17 @@ public class TimelineContentTextView extends ThemedTextView {
 
     public TimelineContentTextView(Context context) {
         super(context);
+        EmojiSupportUtils.initForTextView(this);
     }
 
     public TimelineContentTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        EmojiSupportUtils.initForTextView(this);
     }
 
     public TimelineContentTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        EmojiSupportUtils.initForTextView(this);
     }
 
     @Override

@@ -22,18 +22,58 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import com.bluelinelabs.logansquare.LoganSquare;
+import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.IDsImpl;
+import java.io.IOException;
 
 /**
- * A data interface representing array of numeric IDs.
- *
- * @author Yusuke Yamamoto - yusuke at mac.com
+ * Created by mariotaku on 15/5/10.
  */
-@Implementation(IDsImpl.class)
-public interface IDs extends TwitterResponse, CursorSupport {
+public class IDs extends TwitterResponseObject implements TwitterResponse, CursorSupport {
 
-    long[] getIDs();
+    long previousCursor;
+    long nextCursor;
+    long[] ids;
 
+    @Override
+    public long getNextCursor() {
+        return nextCursor;
+    }
+
+    @Override
+    public long getPreviousCursor() {
+        return previousCursor;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return nextCursor != 0;
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return previousCursor != 0;
+    }
+
+    public long[] getIDs() {
+        return ids;
+    }
+
+    public static class Converter implements TypeConverter<IDs> {
+        @Override
+        public IDs parse(JsonParser jsonParser) throws IOException {
+            return LoganSquare.mapperFor(IDs.class).parse(jsonParser);
+        }
+
+        @Override
+        public void serialize(IDs object, String fieldName, boolean writeFieldNameForObject, JsonGenerator jsonGenerator) throws IOException {
+            if (writeFieldNameForObject) {
+                jsonGenerator.writeFieldName(fieldName);
+            }
+            LoganSquare.mapperFor(IDs.class).serialize(object, jsonGenerator, true);
+        }
+    }
 }

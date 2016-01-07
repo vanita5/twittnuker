@@ -27,9 +27,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.LoaderTrojan;
+import android.support.v4.content.LoaderAccessor;
 
-import de.vanita5.twittnuker.model.ObjectCursor;
+import org.mariotaku.library.objectcursor.ObjectCursor;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -61,7 +61,11 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<List<T>> {
             cursor.registerContentObserver(mObserver);
         }
         if (cursor == null) throw new NullPointerException("Cursor is null");
-        return new ObjectCursor<>(cursor, createIndices(cursor));
+        return createObjectCursor(cursor, createIndices(cursor));
+    }
+
+    protected ObjectCursor<T> createObjectCursor(Cursor cursor, ObjectCursor.CursorIndices<T> indices) {
+        return new ObjectCursor<>(cursor, indices);
     }
 
     @SuppressWarnings("TryWithIdenticalCatches")
@@ -137,7 +141,7 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<List<T>> {
      * Starts an asynchronous load of the contacts list data. When the result is ready the callbacks
      * will be called on the UI thread. If a previous load has been completed and is still valid
      * the result may be passed to the callbacks immediately.
-     * <p>
+     * <p/>
      * Must be called from the UI thread
      */
     @Override
@@ -243,7 +247,7 @@ public class ObjectCursorLoader<T> extends AsyncTaskLoader<List<T>> {
         writer.println(mObjects);
         writer.print(prefix);
         writer.print("mContentChanged=");
-        writer.println(LoaderTrojan.isContentChanged(this));
+        writer.println(LoaderAccessor.isContentChanged(this));
     }
 
 }

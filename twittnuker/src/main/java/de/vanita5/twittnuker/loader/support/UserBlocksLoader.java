@@ -23,29 +23,29 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
-
-import de.vanita5.twittnuker.model.ParcelableUser;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableUser;
 
 public class UserBlocksLoader extends CursorSupportUsersLoader {
 
     public UserBlocksLoader(final Context context, final long accountId, final long cursor,
                             final List<ParcelableUser> data, boolean fromUser) {
         super(context, accountId, cursor, data, fromUser);
-	}
+    }
 
-	@Override
-    protected final PageableResponseList<User> getCursoredUsers(final Twitter twitter, final Paging paging)
-			throws TwitterException {
-		if (twitter == null) return null;
-		return twitter.getBlocksList(paging);
-	}
+    @NonNull
+    @Override
+    protected final PageableResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, final Paging paging)
+            throws TwitterException {
+        return twitter.getBlocksList(paging);
+    }
 
 }

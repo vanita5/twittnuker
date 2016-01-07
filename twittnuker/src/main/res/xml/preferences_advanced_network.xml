@@ -41,7 +41,6 @@
             android:title="@string/tcp_dns_query"/>
 
         <de.vanita5.twittnuker.preference.SummaryEditTextPreference
-            android:defaultValue="8.8.8.8"
             android:dialogTitle="@string/dns_server"
             android:inputType="textVisiblePassword"
             android:key="dns_server"
@@ -62,9 +61,16 @@
             android:defaultValue="false"
             android:disableDependentsState="false"
             android:key="enable_proxy"
-            android:summary="@string/http_proxy_summary"
-            android:title="@string/http_proxy"/>
+            android:summary="@string/proxy_summary"
+            android:title="@string/proxy"/>
 
+        <de.vanita5.twittnuker.preference.SummaryListPreference
+            android:defaultValue="http"
+            android:dependency="enable_proxy"
+            android:entries="@array/entries_proxy_type"
+            android:entryValues="@array/values_proxy_type"
+            android:key="proxy_type"
+            android:title="@string/proxy_type"/>
         <de.vanita5.twittnuker.preference.SummaryEditTextPreference
             android:dependency="enable_proxy"
             android:key="proxy_host"
@@ -76,6 +82,18 @@
             android:key="proxy_port"
             android:singleLine="true"
             android:title="@string/proxy_port"/>
+        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
+            android:dependency="enable_proxy"
+            android:inputType="textEmailAddress"
+            android:key="proxy_username"
+            android:singleLine="true"
+            android:title="@string/proxy_username"/>
+        <de.vanita5.twittnuker.preference.AutoFixEditTextPreference
+            android:dependency="enable_proxy"
+            android:inputType="textPassword"
+            android:key="proxy_password"
+            android:singleLine="true"
+            android:title="@string/proxy_password"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="category_api"

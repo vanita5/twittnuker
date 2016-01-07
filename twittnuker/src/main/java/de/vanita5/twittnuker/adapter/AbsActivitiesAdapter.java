@@ -24,31 +24,32 @@ package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.Pair;
+import android.support.v4.widget.Space;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.fragment.support.CursorActivitiesFragment;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
+import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
-import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
@@ -57,48 +58,39 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
+import java.util.Random;
+
 public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
-        IActivitiesAdapter<Data>, IStatusViewHolder.StatusClickListener, OnLinkClickListener,
+        IActivitiesAdapter<Data>, IStatusViewHolder.StatusClickListener,
         ActivityTitleSummaryViewHolder.ActivityClickListener {
 
-    private static final int ITEM_VIEW_TYPE_STUB = 0;
-    private static final int ITEM_VIEW_TYPE_GAP = 1;
-    private static final int ITEM_VIEW_TYPE_LOAD_INDICATOR = 2;
-    private static final int ITEM_VIEW_TYPE_TITLE_SUMMARY = 3;
-    private static final int ITEM_VIEW_TYPE_STATUS = 4;
+    public static final int ITEM_VIEW_TYPE_STUB = 0;
+    public static final int ITEM_VIEW_TYPE_GAP = 1;
+    public static final int ITEM_VIEW_TYPE_LOAD_INDICATOR = 2;
+    public static final int ITEM_VIEW_TYPE_TITLE_SUMMARY = 3;
+    public static final int ITEM_VIEW_TYPE_STATUS = 4;
+    public static final int ITEM_VIEW_TYPE_EMPTY = 5;
 
     private final LayoutInflater mInflater;
     private final MediaLoadingHandler mLoadingHandler;
     private final int mCardBackgroundColor;
-    private final int mTextSize;
-    private final int mProfileImageStyle, mMediaPreviewStyle, mLinkHighlightingStyle;
     private final boolean mCompactCards;
-    private final boolean mDisplayMediaPreview;
-    private final boolean mNameFirst;
-    private final boolean mDisplayProfileImage;
-    private final boolean mShouldUseStarsForLikes;
-    private final TwidereLinkify mLinkify;
     private final DummyStatusHolderAdapter mStatusAdapterDelegate;
     private ActivityAdapterListener mActivityAdapterListener;
 
+    private long[] mFilteredUserIds;
+    private boolean mFollowingOnly;
+
     protected AbsActivitiesAdapter(final Context context, boolean compact) {
         super(context);
+        mStatusAdapterDelegate = new DummyStatusHolderAdapter(context, new TwidereLinkify(new OnLinkClickHandler(context, null)));
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context,
                 ThemeUtils.getThemeBackgroundOption(context),
                 ThemeUtils.getUserThemeBackgroundAlpha(context));
         mInflater = LayoutInflater.from(context);
         mLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
-        mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
-        mShouldUseStarsForLikes = mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false);
         mCompactCards = compact;
-        mProfileImageStyle = Utils.getProfileImageStyle(mPreferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
-        mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
-        mLinkHighlightingStyle = Utils.getLinkHighlightingStyleInt(mPreferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null));
-        mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
-        mDisplayMediaPreview = mPreferences.getBoolean(KEY_MEDIA_PREVIEW, true);
-        mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
-        mLinkify = new TwidereLinkify(this);
-        mStatusAdapterDelegate = new DummyStatusHolderAdapter(context);
+        mStatusAdapterDelegate.updateOptions();
     }
 
     @Override
@@ -110,13 +102,14 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     public abstract Data getData();
 
     @Override
-    public abstract void setData(Data data);
-
-    @NonNull
-    @Override
-    public MediaLoaderWrapper getMediaLoader() {
-        return mMediaLoader;
+    public final void setData(Data data) {
+        if (data instanceof CursorActivitiesFragment.CursorActivitiesLoader.ActivityCursor) {
+            mFilteredUserIds = ((CursorActivitiesFragment.CursorActivitiesLoader.ActivityCursor) data).getFilteredUserIds();
+        }
+        onSetData(data);
     }
+
+    protected abstract void onSetData(Data data);
 
     @Override
     public MediaLoadingHandler getMediaLoadingHandler() {
@@ -125,74 +118,57 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
 
     @Override
     public int getProfileImageStyle() {
-        return mProfileImageStyle;
+        return mStatusAdapterDelegate.getProfileImageStyle();
     }
 
     @Override
     public int getMediaPreviewStyle() {
-        return mMediaPreviewStyle;
-    }
-
-    @NonNull
-    @Override
-    public AsyncTwitterWrapper getTwitterWrapper() {
-        return mTwitterWrapper;
+        return mStatusAdapterDelegate.getMediaPreviewStyle();
     }
 
     @Override
     public float getTextSize() {
-        return mTextSize;
+        return mStatusAdapterDelegate.getTextSize();
     }
 
     public int getLinkHighlightingStyle() {
-        return mLinkHighlightingStyle;
-    }
-
-    public TwidereLinkify getLinkify() {
-        return mLinkify;
+        return mStatusAdapterDelegate.getLinkHighlightingStyle();
     }
 
     public boolean isNameFirst() {
-        return mNameFirst;
+        return mStatusAdapterDelegate.isNameFirst();
     }
 
     @Override
     public boolean isProfileImageEnabled() {
-        return mDisplayProfileImage;
+        return mStatusAdapterDelegate.isProfileImageEnabled();
     }
 
     @Override
     public void onStatusClick(IStatusViewHolder holder, int position) {
-        final ParcelableActivity activity = getActivity(position);
-        final ParcelableStatus status;
-        if (activity.action == Activity.ACTION_MENTION) {
-            status = activity.target_object_statuses[0];
-        } else {
-            status = activity.target_statuses[0];
+        if (mActivityAdapterListener != null) {
+            mActivityAdapterListener.onStatusClick(holder, position);
         }
-        Utils.openStatus(getContext(), status, null);
     }
 
     @Override
-    public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position) {
-
+    public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int statusPosition) {
+        if (mActivityAdapterListener != null) {
+            mActivityAdapterListener.onMediaClick(holder, view, media, statusPosition);
+        }
     }
 
     @Override
     public boolean shouldUseStarsForLikes() {
-        return mShouldUseStarsForLikes;
+        return mStatusAdapterDelegate.shouldUseStarsForLikes();
     }
 
     @Override
     public void onUserProfileClick(IStatusViewHolder holder, int position) {
         final Context context = getContext();
         final ParcelableActivity activity = getActivity(position);
-        final ParcelableStatus status;
-        if (activity.action == Activity.ACTION_MENTION) {
-            status = activity.target_object_statuses[0];
-        } else {
-            status = activity.target_statuses[0];
-        }
+        final ParcelableStatus status = ParcelableActivity.getActivityStatus(activity);
+        assert status != null;
         final View profileImageView = holder.getProfileImageView();
         final View profileTypeView = holder.getProfileTypeView();
         if (context instanceof FragmentActivity) {
@@ -220,19 +196,19 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
                     cardView.setCardBackgroundColor(mCardBackgroundColor);
                 }
                 final StatusViewHolder holder = new StatusViewHolder(mStatusAdapterDelegate, view);
-                holder.setTextSize(getTextSize());
+                holder.setupViewOptions();
                 holder.setStatusClickListener(this);
                 return holder;
             }
             case ITEM_VIEW_TYPE_TITLE_SUMMARY: {
                 final View view;
-                if (mCompactCards) {
+//                if (mCompactCards) {
                     view = mInflater.inflate(R.layout.card_item_activity_summary_compact, parent, false);
-                } else {
-                    view = mInflater.inflate(R.layout.card_item_activity_summary, parent, false);
-                    final CardView cardView = (CardView) view.findViewById(R.id.card);
-                    cardView.setCardBackgroundColor(mCardBackgroundColor);
-                }
+//                } else {
+//                    view = mInflater.inflate(R.layout.card_item_activity_summary, parent, false);
+//                    final CardView cardView = (CardView) view.findViewById(R.id.card);
+//                    cardView.setCardBackgroundColor(mCardBackgroundColor);
+//                }
                 final ActivityTitleSummaryViewHolder holder = new ActivityTitleSummaryViewHolder(this, view);
                 holder.setOnClickListeners();
                 holder.setTextSize(getTextSize());
@@ -246,11 +222,15 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
                 final View view = mInflater.inflate(R.layout.card_item_load_indicator, parent, false);
                 return new LoadIndicatorViewHolder(view);
             }
-            default: {
+            case ITEM_VIEW_TYPE_STUB: {
                 final View view = mInflater.inflate(R.layout.list_item_two_line, parent, false);
                 return new StubViewHolder(view);
             }
+            case ITEM_VIEW_TYPE_EMPTY: {
+                return new EmptyViewHolder(new Space(getContext()));
+            }
         }
+        throw new UnsupportedOperationException("Unsupported viewType " + viewType);
     }
 
     @Override
@@ -258,14 +238,10 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
         switch (getItemViewType(position)) {
             case ITEM_VIEW_TYPE_STATUS: {
                 final ParcelableActivity activity = getActivity(position);
-                final ParcelableStatus status;
-                if (activity.action == Activity.ACTION_MENTION) {
-                    status = activity.target_object_statuses[0];
-                } else {
-                    status = activity.target_statuses[0];
-                }
-                final IStatusViewHolder IStatusViewHolder = (IStatusViewHolder) holder;
-                IStatusViewHolder.displayStatus(status, null, true, true);
+                final ParcelableStatus status = ParcelableActivity.getActivityStatus(activity);
+                assert status != null;
+                final IStatusViewHolder statusViewHolder = (IStatusViewHolder) holder;
+                statusViewHolder.displayStatus(status, true, true);
                 break;
             }
             case ITEM_VIEW_TYPE_TITLE_SUMMARY: {
@@ -286,30 +262,49 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
 
     @Override
     public int getItemViewType(int position) {
+        final ParcelableActivity activity = getActivity(position);
         if (position == getActivityCount()) {
             return ITEM_VIEW_TYPE_LOAD_INDICATOR;
         } else if (isGapItem(position)) {
             return ITEM_VIEW_TYPE_GAP;
         }
-        switch (getActivityAction(position)) {
-            case Activity.ACTION_MENTION:
-            case Activity.ACTION_REPLY:
-            case Activity.ACTION_QUOTE: {
-                return ITEM_VIEW_TYPE_STATUS;
+        final String action = getActivityAction(position);
+        if (Activity.Action.MENTION.literal.equals(action)) {
+            if (ArrayUtils.isEmpty(activity.target_object_statuses)) {
+                return ITEM_VIEW_TYPE_STUB;
             }
-            case Activity.ACTION_FOLLOW:
-            case Activity.ACTION_FAVORITE:
-            case Activity.ACTION_RETWEET:
-            case Activity.ACTION_FAVORITED_RETWEET:
-            case Activity.ACTION_RETWEETED_RETWEET:
-            case Activity.ACTION_RETWEETED_MENTION:
-            case Activity.ACTION_FAVORITED_MENTION:
-            case Activity.ACTION_LIST_CREATED:
-            case Activity.ACTION_LIST_MEMBER_ADDED: {
-                return ITEM_VIEW_TYPE_TITLE_SUMMARY;
+            if (mFollowingOnly && !activity.status_user_following) return ITEM_VIEW_TYPE_EMPTY;
+            return ITEM_VIEW_TYPE_STATUS;
+        } else if (Activity.Action.REPLY.literal.equals(action)) {
+            if (ArrayUtils.isEmpty(activity.target_statuses)) {
+                return ITEM_VIEW_TYPE_STUB;
             }
+            if (mFollowingOnly && !activity.status_user_following) return ITEM_VIEW_TYPE_EMPTY;
+            return ITEM_VIEW_TYPE_STATUS;
+        } else if (Activity.Action.QUOTE.literal.equals(action)) {
+            if (ArrayUtils.isEmpty(activity.target_statuses)) {
+                return ITEM_VIEW_TYPE_STUB;
+            }
+            if (mFollowingOnly && !activity.status_user_following) return ITEM_VIEW_TYPE_EMPTY;
+            return ITEM_VIEW_TYPE_STATUS;
+        } else if (Activity.Action.FOLLOW.literal.equals(action) || Activity.Action.FAVORITE.literal.equals(action)
+                || Activity.Action.RETWEET.literal.equals(action) || Activity.Action.FAVORITED_RETWEET.literal.equals(action)
+                || Activity.Action.RETWEETED_RETWEET.literal.equals(action) || Activity.Action.RETWEETED_MENTION.literal.equals(action)
+                || Activity.Action.FAVORITED_MENTION.literal.equals(action) || Activity.Action.LIST_CREATED.literal.equals(action)
+                || Activity.Action.LIST_MEMBER_ADDED.literal.equals(action)) {
+            ParcelableActivityUtils.getAfterFilteredSourceIds(activity, mFilteredUserIds,
+                    mFollowingOnly);
+            if (ArrayUtils.isEmpty(activity.after_filtered_source_ids)) {
+            return ITEM_VIEW_TYPE_EMPTY;
+        }
+            return ITEM_VIEW_TYPE_TITLE_SUMMARY;
         }
         return ITEM_VIEW_TYPE_STUB;
+    }
+
+    public void setFollowingOnly(boolean followingOnly) {
+        mFollowingOnly = followingOnly;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -318,36 +313,24 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     }
 
     @Override
-    public boolean isGapItem(int position) {
-        return false;
-    }
-
-    @Override
-    public void onGapClick(ViewHolder holder, int position) {
+    public final void onGapClick(ViewHolder holder, int position) {
         if (mActivityAdapterListener != null) {
             mActivityAdapterListener.onGapClick((GapViewHolder) holder, position);
         }
     }
 
     @Override
-    public void onItemActionClick(ViewHolder holder, int id, int position) {
-
+    public final void onItemActionClick(ViewHolder holder, int id, int position) {
+        if (mActivityAdapterListener != null) {
+            mActivityAdapterListener.onStatusActionClick(((IStatusViewHolder) holder), id, position);
+        }
     }
 
     @Override
-    public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
-
-    }
-
-    @Override
-    public void onLinkClick(String link, String orig, long accountId, long extraId, int type, boolean sensitive, int start, int end) {
-
-    }
-
-    @NonNull
-    @Override
-    public UserColorNameManager getUserColorNameManager() {
-        return mUserColorNameManager;
+    public final void onItemMenuClick(ViewHolder holder, View menuView, int position) {
+        if (mActivityAdapterListener != null) {
+            mActivityAdapterListener.onStatusMenuClick((StatusViewHolder) holder, menuView, position);
+        }
     }
 
     public void setListener(ActivityAdapterListener listener) {
@@ -356,10 +339,13 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
 
     protected abstract void bindTitleSummaryViewHolder(ActivityTitleSummaryViewHolder holder, int position);
 
-    protected abstract int getActivityAction(int position);
+    public abstract String getActivityAction(int position);
 
-    private boolean isMediaPreviewEnabled() {
-        return mDisplayMediaPreview;
+    public abstract long getTimestamp(int position);
+
+    @Override
+    public boolean isMediaPreviewEnabled() {
+        return mStatusAdapterDelegate.isMediaPreviewEnabled();
     }
 
     @Override
@@ -368,10 +354,35 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
         mActivityAdapterListener.onActivityClick(holder, position);
     }
 
+
+    @Override
+    public boolean shouldShowAccountsColor() {
+        return mStatusAdapterDelegate.shouldShowAccountsColor();
+    }
+
+    public void setShowAccountsColor(boolean showAccountsColor) {
+        mStatusAdapterDelegate.setShouldShowAccountsColor(showAccountsColor);
+        notifyDataSetChanged();
+    }
+
+    public boolean isActivity(int position) {
+        return position < getActivityCount();
+    }
+
+
     public interface ActivityAdapterListener {
         void onGapClick(GapViewHolder holder, int position);
 
         void onActivityClick(ActivityTitleSummaryViewHolder holder, int position);
+
+        void onStatusActionClick(IStatusViewHolder holder, int id, int position);
+
+        void onStatusMenuClick(IStatusViewHolder holder, View menuView, int position);
+
+        void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position);
+
+        void onStatusClick(IStatusViewHolder holder, int position);
+
     }
 
     private static class StubViewHolder extends ViewHolder {
@@ -385,10 +396,16 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
         }
 
         public void displayActivity(ParcelableActivity activity) {
-            text1.setText(String.valueOf(activity.action));
-            text2.setText(activity.toString());
+            text1.setText(text1.getResources().getString(R.string.unsupported_activity_action_title,
+                    activity.action));
+            text2.setText(R.string.unsupported_activity_action_summary);
         }
     }
 
 
+    private static class EmptyViewHolder extends ViewHolder {
+        public EmptyViewHolder(View view) {
+            super(view);
+        }
+    }
 }

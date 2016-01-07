@@ -63,8 +63,6 @@ import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
-import static de.vanita5.twittnuker.util.Utils.setMenuForStatus;
-
 public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerViewFragment<AbsStatusesAdapter<Data>>
         implements LoaderCallbacks<Data>, StatusAdapterListener, KeyboardShortcutCallback {
 
@@ -94,7 +92,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
                 return true;
             }
             return Utils.handleMenuItemClick(getActivity(), AbsStatusesFragment.this,
-                    getFragmentManager(), mTwitterWrapper, status, item);
+                    getFragmentManager(), mUserColorNameManager, mTwitterWrapper, status, item);
         }
     };
     private OnScrollListener mPauseOnScrollListener;
@@ -263,19 +261,15 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
     public void onGapClick(GapViewHolder holder, int position) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(position);
-        final ParcelableStatus sinceStatus = position + 1 < adapter.getStatusesCount() ? adapter.getStatus(position + 1) : null;
-        final long sinceId = sinceStatus != null ? sinceStatus.id : -1;
         final long[] accountIds = {status.account_id};
         final long[] maxIds = {status.id};
-//        final long[] sinceIds = {sinceId};
-        final long[] sinceIds = null;
-        getStatuses(accountIds, maxIds, sinceIds);
+        getStatuses(accountIds, maxIds, null);
     }
 
     @Override
-    public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position) {
+    public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int statusPosition) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
-        final ParcelableStatus status = adapter.getStatus(position);
+        final ParcelableStatus status = adapter.getStatus(statusPosition);
         if (status == null) return;
         final Bundle options = Utils.createMediaViewerActivityOption(view);
         Utils.openMedia(getActivity(), status, media, options);
@@ -335,7 +329,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         popupMenu.setOnMenuItemClickListener(mOnStatusMenuItemClickListener);
         popupMenu.inflate(R.menu.action_status);
         final ParcelableStatus status = adapter.getStatus(position);
-        setMenuForStatus(adapter.getContext(), mPreferences, popupMenu.getMenu(), status);
+        Utils.setMenuForStatus(adapter.getContext(), mPreferences, popupMenu.getMenu(), status, mTwitterWrapper);
         popupMenu.show();
         mPopupMenu = popupMenu;
         mSelectedStatus = status;

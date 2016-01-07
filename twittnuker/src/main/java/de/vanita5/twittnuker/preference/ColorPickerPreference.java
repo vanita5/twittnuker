@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -45,16 +46,16 @@ import me.uucky.colorpicker.ColorPickerDialog;
 public class ColorPickerPreference extends DialogPreference implements DialogInterface.OnClickListener, Constants {
 
     private int mDefaultValue = Color.WHITE;
-	private boolean mAlphaSliderEnabled = false;
+    private boolean mAlphaSliderEnabled = false;
 
     private ColorPickerDialog.Controller mController;
 
-	public ColorPickerPreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceStyle);
-	}
+    public ColorPickerPreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, android.R.attr.preferenceStyle);
+    }
 
-	public ColorPickerPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
+    public ColorPickerPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
         setWidgetLayoutResource(R.layout.preference_widget_color_picker);
 
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ColorPickerPreferences);
@@ -63,7 +64,7 @@ public class ColorPickerPreference extends DialogPreference implements DialogInt
         a.recycle();
     }
 
-	@Override
+    @Override
     protected void onBindView(@NonNull final View view) {
         super.onBindView(view);
         final ImageView imageView = (ImageView) view.findViewById(R.id.color);
@@ -106,29 +107,29 @@ public class ColorPickerPreference extends DialogPreference implements DialogInt
     }
 
     @Override
-	public void onClick(final DialogInterface dialog, final int which) {
-		switch (which) {
-			case DialogInterface.BUTTON_POSITIVE:
+    public void onClick(final DialogInterface dialog, final int which) {
+        switch (which) {
+            case DialogInterface.BUTTON_POSITIVE:
                 if (mController == null) return;
                 final int color = mController.getColor();
-				if (isPersistent()) {
-					persistInt(color);
-				}
-				final OnPreferenceChangeListener listener = getOnPreferenceChangeListener();
-				if (listener != null) {
-					listener.onPreferenceChange(this, color);
-				}
-				break;
-		}
-	}
+                if (isPersistent()) {
+                    persistInt(color);
+                }
+                final OnPreferenceChangeListener listener = getOnPreferenceChangeListener();
+                if (listener != null) {
+                    listener.onPreferenceChange(this, color);
+                }
+                break;
+        }
+    }
 
-	private int getValue() {
-		try {
-			if (isPersistent()) return getPersistedInt(mDefaultValue);
-		} catch (final ClassCastException e) {
-			e.printStackTrace();
-		}
-		return mDefaultValue;
-	}
+    private int getValue() {
+        try {
+            if (isPersistent()) return getPersistedInt(mDefaultValue);
+        } catch (final ClassCastException e) {
+            Log.w(LOGTAG, e);
+        }
+        return mDefaultValue;
+    }
 
 }

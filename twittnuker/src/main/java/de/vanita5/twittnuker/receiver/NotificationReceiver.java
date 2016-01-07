@@ -29,12 +29,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.StringLongPair;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
+import de.vanita5.twittnuker.util.UriExtraUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 public class NotificationReceiver extends BroadcastReceiver implements Constants {
     @Override
@@ -45,15 +46,20 @@ public class NotificationReceiver extends BroadcastReceiver implements Constants
             case BROADCAST_NOTIFICATION_DELETED: {
                 final Uri uri = intent.getData();
                 if (uri == null) return;
+                DependencyHolder holder = DependencyHolder.get(context);
                 final String type = uri.getQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE);
-                final long accountId = ParseUtils.parseLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
-                final ApplicationModule module = ApplicationModule.get(context);
-                final ReadStateManager manager = module.getReadStateManager();
+                final long accountId = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
+                final long itemId = NumberUtils.toLong(UriExtraUtils.getExtra(uri, "item_id"), -1);
+                final long itemUserId = NumberUtils.toLong(UriExtraUtils.getExtra(uri, "item_user_id"), -1);
+                final boolean itemUserFollowing = Boolean.parseBoolean(UriExtraUtils.getExtra(uri, "item_user_following"));
+                final long timestamp = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_TIMESTAMP), -1);
+                final ReadStateManager manager = holder.getReadStateManager();
                 final String paramReadPosition, paramReadPositions;
                 final String tag = getPositionTag(type);
                 if (tag != null && !TextUtils.isEmpty(paramReadPosition = uri.getQueryParameter(QUERY_PARAM_READ_POSITION))) {
+                    final long def = -1;
                     manager.setPosition(Utils.getReadPositionTagWithAccounts(tag, accountId),
-                            ParseUtils.parseLong(paramReadPosition, -1));
+                            NumberUtils.toLong(paramReadPosition, def));
                 } else if (!TextUtils.isEmpty(paramReadPositions = uri.getQueryParameter(QUERY_PARAM_READ_POSITIONS))) {
                     try {
                         final StringLongPair[] pairs = StringLongPair.valuesOf(paramReadPositions);
@@ -75,7 +81,7 @@ public class NotificationReceiver extends BroadcastReceiver implements Constants
                 return TAB_TYPE_HOME_TIMELINE;
             }
             case AUTHORITY_MENTIONS: {
-                return TAB_TYPE_MENTIONS_TIMELINE;
+                return TAB_TYPE_NOTIFICATIONS_TIMELINE;
             }
             case AUTHORITY_DIRECT_MESSAGES: {
                 return TAB_TYPE_DIRECT_MESSAGES;

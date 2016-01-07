@@ -32,22 +32,20 @@ import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.DraftItemCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.holder.DraftViewHolder;
 
 import javax.inject.Inject;
-
-import static de.vanita5.twittnuker.util.Utils.getAccountColors;
 
 public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
 
@@ -59,11 +57,11 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
     private final int mMediaPreviewStyle;
 
     private float mTextSize;
-    private DraftItem.CursorIndices mIndices;
+    private DraftItemCursorIndices mIndices;
 
     public DraftsAdapter(final Context context) {
         super(context, R.layout.list_item_draft, null, new String[0], new int[0], 0);
-        DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
+        GeneralComponentHelper.build(context).inject(this);
         mMediaLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
     }
@@ -85,7 +83,7 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
         } else {
             holder.media_preview_container.setVisibility(View.GONE);
         }
-        holder.content.drawEnd(getAccountColors(context, accountIds));
+        holder.content.drawEnd(DataStoreUtils.getAccountColors(context, accountIds));
         holder.setTextSize(mTextSize);
         final boolean emptyContent = TextUtils.isEmpty(text);
         if (emptyContent) {
@@ -121,7 +119,7 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
     public Cursor swapCursor(final Cursor c) {
         final Cursor old = super.swapCursor(c);
         if (c != null) {
-            mIndices = new DraftItem.CursorIndices(c);
+            mIndices = new DraftItemCursorIndices(c);
         }
         return old;
     }

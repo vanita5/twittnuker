@@ -22,20 +22,29 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
-
-import de.vanita5.twittnuker.api.twitter.model.impl.ErrorInfoImpl;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 /**
  * Created by mariotaku on 15/5/7.
  */
-@Implementation(ErrorInfoImpl.class)
-public interface ErrorInfo {
+@JsonObject
+public class ErrorInfo {
 
-    int getCode();
+    @JsonField(name = "code")
+    int code;
+    @JsonField(name = "message")
+    String message;
 
-    String getMessage();
+    public int getCode() {
+        return code;
+    }
 
-    String getRequest();
+    public String getMessage() {
+        return message;
+    }
+
+    public String getRequest() {
+        return null;
+    }
 }

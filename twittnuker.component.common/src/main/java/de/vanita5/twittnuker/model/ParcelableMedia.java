@@ -27,12 +27,18 @@ import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity.BindingValue;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity.ImageValue;
@@ -41,74 +47,75 @@ import de.vanita5.twittnuker.api.twitter.model.EntitySupport;
 import de.vanita5.twittnuker.api.twitter.model.ExtendedEntitySupport;
 import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
 import de.vanita5.twittnuker.api.twitter.model.MediaEntity.Size;
-import de.vanita5.twittnuker.api.twitter.model.MediaEntity.Type;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
-import de.vanita5.twittnuker.util.MediaPreviewUtils;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
+import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
-import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-@SuppressWarnings("unused")
 @JsonObject
+@ParcelablePlease
 public class ParcelableMedia implements Parcelable {
-
-    @MediaType
-    public static final int TYPE_UNKNOWN = 0;
-    @MediaType
-    public static final int TYPE_IMAGE = 1;
-    @MediaType
-    public static final int TYPE_VIDEO = 2;
-    @MediaType
-    public static final int TYPE_ANIMATED_GIF = 3;
-    @MediaType
-    public static final int TYPE_CARD_ANIMATED_GIF = 4;
-    public static final Parcelable.Creator<ParcelableMedia> CREATOR = new Parcelable.Creator<ParcelableMedia>() {
-        @Override
-        public ParcelableMedia createFromParcel(final Parcel in) {
-            return new ParcelableMedia(in);
+    @SuppressWarnings("NullableProblems")
+    @NonNull
+    @JsonField(name = "url")
+    @ParcelableThisPlease
+    public String url;
+    @Nullable
+    @JsonField(name = "media_url")
+    @ParcelableThisPlease
+    public String media_url;
+    @Nullable
+    @JsonField(name = "preview_url")
+    @ParcelableThisPlease
+    public String preview_url;
+    @JsonField(name = "start")
+    @ParcelableThisPlease
+    public int start;
+    @JsonField(name = "end")
+    @ParcelableThisPlease
+    public int end;
+    @Type
+    @JsonField(name = "type")
+    @ParcelableThisPlease
+    public int type;
+    @JsonField(name = "width")
+    @ParcelableThisPlease
+    public int width;
+    @JsonField(name = "height")
+    @ParcelableThisPlease
+    public int height;
+    @JsonField(name = "video_info")
+    @ParcelableThisPlease
+    public VideoInfo video_info;
+    @ParcelableNoThanks
+    public ParcelableCardEntity card;
+    @JsonField(name = "page_url")
+    String page_url;
+    public static final Creator<ParcelableMedia> CREATOR = new Creator<ParcelableMedia>() {
+        public ParcelableMedia createFromParcel(Parcel source) {
+            ParcelableMedia target = new ParcelableMedia();
+            ParcelableMediaParcelablePlease.readFromParcel(target, source);
+            return target;
         }
 
-        @Override
-        public ParcelableMedia[] newArray(final int size) {
+        public ParcelableMedia[] newArray(int size) {
             return new ParcelableMedia[size];
         }
     };
-    @JsonField(name = "media_url")
-    public String media_url;
-    @Nullable
-    @JsonField(name = "page_url")
-    public String page_url;
-    @Nullable
-    @JsonField(name = "preview_url")
-    public String preview_url;
-    @JsonField(name = "start")
-    public int start;
-    @JsonField(name = "end")
-    public int end;
-    @MediaType
-    @JsonField(name = "type")
-    public int type;
-    @JsonField(name = "width")
-    public int width;
-    @JsonField(name = "height")
-    public int height;
-    @JsonField(name = "video_info")
-    public VideoInfo video_info;
 
     public ParcelableMedia() {
 
     }
 
+
     public ParcelableMedia(final MediaEntity entity) {
-        page_url = TwitterContentUtils.getMediaUrl(entity);
+        url = TwitterContentUtils.getMediaUrl(entity);
         media_url = TwitterContentUtils.getMediaUrl(entity);
         preview_url = TwitterContentUtils.getMediaUrl(entity);
         start = entity.getStart();
@@ -120,81 +127,11 @@ public class ParcelableMedia implements Parcelable {
         video_info = VideoInfo.fromMediaEntityInfo(entity.getVideoInfo());
     }
 
-
     public ParcelableMedia(ParcelableMediaUpdate update) {
         media_url = update.uri;
-        page_url = update.uri;
+        url = update.uri;
         preview_url = update.uri;
         type = update.type;
-    }
-
-
-    public ParcelableMedia(final Parcel in) {
-        page_url = in.readString();
-        media_url = in.readString();
-        preview_url = in.readString();
-        start = in.readInt();
-        end = in.readInt();
-        //noinspection ResourceType
-        type = in.readInt();
-        width = in.readInt();
-        height = in.readInt();
-        video_info = in.readParcelable(VideoInfo.class.getClassLoader());
-    }
-
-    private ParcelableMedia(@NonNull final String media_url, @Nullable final String page_url,
-                            @Nullable final String preview_url, final int start, final int end,
-                            final int type) {
-        this.page_url = page_url;
-        this.media_url = media_url;
-        this.preview_url = preview_url;
-        this.start = start;
-        this.end = end;
-        this.type = type;
-        this.width = 0;
-        this.height = 0;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ParcelableMedia that = (ParcelableMedia) o;
-
-        if (end != that.end) return false;
-        if (start != that.start) return false;
-        if (type != that.type) return false;
-        if (!media_url.equals(that.media_url)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = media_url.hashCode();
-        result = 31 * result + start;
-        result = 31 * result + end;
-        result = 31 * result + type;
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ParcelableMedia{" +
-                "media_url='" + media_url + '\'' +
-                ", page_url='" + page_url + '\'' +
-                ", start=" + start +
-                ", end=" + end +
-                ", type=" + type +
-                ", width=" + width +
-                ", height=" + height +
-                '}';
     }
 
     @Nullable
@@ -221,13 +158,8 @@ public class ParcelableMedia implements Parcelable {
         if (urlEntities != null) {
             for (final UrlEntity url : urlEntities) {
                 final String expanded = url.getExpandedUrl();
-                final String media_url = MediaPreviewUtils.getSupportedLink(expanded);
-                if (expanded != null && media_url != null) {
-                    final ParcelableMedia media = new ParcelableMedia();
-                    media.type = TYPE_IMAGE;
-                    media.page_url = expanded;
-                    media.media_url = media_url;
-                    media.preview_url = media_url;
+                final ParcelableMedia media = PreviewMediaExtractor.fromLink(expanded);
+                if (media != null) {
                     media.start = url.getStart();
                     media.end = url.getEnd();
                     list.add(media);
@@ -249,17 +181,6 @@ public class ParcelableMedia implements Parcelable {
         return media;
     }
 
-    @Deprecated
-    public static ParcelableMedia[] fromSerializedJson(String string) {
-        if (TextUtils.isEmpty(string)) return null;
-        try {
-            final List<ParcelableMedia> list = LoganSquare.parseList(string, ParcelableMedia.class);
-            return list.toArray(new ParcelableMedia[list.size()]);
-        } catch (IOException ignore) {
-            return null;
-        }
-    }
-
     @Nullable
     public static ParcelableMedia[] fromStatus(final Status status) {
         final ParcelableMedia[] fromEntities = fromEntities(status);
@@ -274,36 +195,65 @@ public class ParcelableMedia implements Parcelable {
         return merged;
     }
 
-    public static ParcelableMedia newImage(final String media_url, final String url) {
-        return new ParcelableMedia(media_url, url, media_url, 0, 0, TYPE_IMAGE);
-    }
-
     @Nullable
     private static ParcelableMedia[] fromCard(@Nullable CardEntity card, @Nullable UrlEntity[] entities) {
         if (card == null) return null;
         final String name = card.getName();
         if ("animated_gif".equals(name) || "player".equals(name)) {
-            final BindingValue player_stream_url = card.getBindingValue("player_stream_url");
-            if (!(player_stream_url instanceof StringValue))
-                return null;
-
             final ParcelableMedia media = new ParcelableMedia();
-            media.type = ParcelableMedia.TYPE_CARD_ANIMATED_GIF;
-            media.media_url = ((StringValue) player_stream_url).getValue();
-            media.page_url = card.getUrl();
-            final BindingValue player_image = card.getBindingValue("player_image");
-            if (player_image instanceof ImageValue) {
-                media.preview_url = ((ImageValue) player_image).getUrl();
+            final BindingValue playerStreamUrl = card.getBindingValue("player_stream_url");
+            media.card = ParcelableCardEntity.fromCardEntity(card, -1);
+            media.url = card.getUrl();
+            if ("animated_gif".equals(name)) {
+                media.media_url = ((StringValue) playerStreamUrl).getValue();
+                media.type = Type.TYPE_CARD_ANIMATED_GIF;
+            } else if (playerStreamUrl instanceof StringValue) {
+                media.media_url = ((StringValue) playerStreamUrl).getValue();
+                media.type = Type.TYPE_VIDEO;
+            } else {
+                media.type = Type.TYPE_EXTERNAL_PLAYER;
             }
-            final BindingValue player_width = card.getBindingValue("player_width");
-            final BindingValue player_height = card.getBindingValue("player_height");
-            if (player_width instanceof StringValue && player_height instanceof StringValue) {
-                media.width = ParseUtils.parseInt(((StringValue) player_width).getValue());
-                media.height = ParseUtils.parseInt(((StringValue) player_height).getValue());
+            final BindingValue playerImage = card.getBindingValue("player_image");
+            if (playerImage instanceof ImageValue) {
+                media.preview_url = ((ImageValue) playerImage).getUrl();
+                media.width = ((ImageValue) playerImage).getWidth();
+                media.height = ((ImageValue) playerImage).getHeight();
+            }
+            final BindingValue playerWidth = card.getBindingValue("player_width");
+            final BindingValue playerHeight = card.getBindingValue("player_height");
+            if (playerWidth instanceof StringValue && playerHeight instanceof StringValue) {
+                media.width = NumberUtils.toInt(((StringValue) playerWidth).getValue(), -1);
+                media.height = NumberUtils.toInt(((StringValue) playerHeight).getValue(), -1);
             }
             if (entities != null) {
                 for (UrlEntity entity : entities) {
-                    if (entity.getUrl().equals(media.page_url)) {
+                    if (entity.getUrl().equals(media.url)) {
+                        media.start = entity.getStart();
+                        media.end = entity.getEnd();
+                        break;
+                    }
+                }
+            }
+            return new ParcelableMedia[]{media};
+        } else if ("summary_large_image".equals(name)) {
+            final BindingValue photoImageFullSize = card.getBindingValue("photo_image_full_size");
+            if (!(photoImageFullSize instanceof ImageValue))
+                return null;
+
+            final ParcelableMedia media = new ParcelableMedia();
+            media.url = card.getUrl();
+            media.card = ParcelableCardEntity.fromCardEntity(card, -1);
+            media.type = Type.TYPE_IMAGE;
+            media.media_url = ((ImageValue) photoImageFullSize).getUrl();
+            media.width = ((ImageValue) photoImageFullSize).getWidth();
+            media.height = ((ImageValue) photoImageFullSize).getHeight();
+            final BindingValue summaryPhotoImage = card.getBindingValue("summary_photo_image");
+            if (summaryPhotoImage instanceof ImageValue) {
+                media.preview_url = ((ImageValue) summaryPhotoImage).getUrl();
+            }
+            if (entities != null) {
+                for (UrlEntity entity : entities) {
+                    if (entity.getUrl().equals(media.url)) {
                         media.start = entity.getStart();
                         media.end = entity.getEnd();
                         break;
@@ -315,55 +265,148 @@ public class ParcelableMedia implements Parcelable {
         return null;
     }
 
-    @Override
-    public void writeToParcel(final Parcel dest, final int flags) {
-        dest.writeString(page_url);
-        dest.writeString(media_url);
-        dest.writeString(preview_url);
-        dest.writeInt(start);
-        dest.writeInt(end);
-        dest.writeInt(type);
-        dest.writeInt(width);
-        dest.writeInt(height);
-        dest.writeParcelable(video_info, flags);
-    }
-
-    private static int getTypeInt(Type type) {
+    private static int getTypeInt(MediaEntity.Type type) {
         switch (type) {
             case PHOTO:
-                return TYPE_IMAGE;
+                return Type.TYPE_IMAGE;
             case VIDEO:
-                return TYPE_VIDEO;
+                return Type.TYPE_VIDEO;
             case ANIMATED_GIF:
-                return TYPE_ANIMATED_GIF;
+                return Type.TYPE_ANIMATED_GIF;
         }
-        return TYPE_UNKNOWN;
+        return Type.TYPE_UNKNOWN;
     }
 
-    @IntDef({TYPE_UNKNOWN, TYPE_IMAGE, TYPE_VIDEO, TYPE_ANIMATED_GIF, TYPE_CARD_ANIMATED_GIF})
+
+    public static ParcelableMedia image(final String url) {
+        ParcelableMedia media = new ParcelableMedia();
+        media.type = Type.TYPE_VARIABLE_TYPE;
+        media.url = url;
+        media.media_url = url;
+        media.preview_url = url;
+        return media;
+    }
+
+    public static ParcelableMedia variableType(@NonNull String link) {
+        ParcelableMedia media = new ParcelableMedia();
+        media.type = Type.TYPE_VARIABLE_TYPE;
+        media.url = link;
+        return media;
+    }
+
+    @OnJsonParseComplete
+    void onParseComplete() {
+        if (this.page_url != null) {
+            this.url = this.page_url;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("media_url", media_url)
+                .append("page_url", url)
+                .append("preview_url", preview_url)
+                .append("start", start)
+                .append("end", end)
+                .append("type", type)
+                .append("width", width)
+                .append("height", height)
+                .append("video_info", video_info)
+                .append("card", card)
+                .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ParcelableMedia media = (ParcelableMedia) o;
+
+        return new EqualsBuilder()
+                .append(start, media.start)
+                .append(end, media.end)
+                .append(type, media.type)
+                .append(width, media.width)
+                .append(height, media.height)
+                .append(media_url, media.media_url)
+                .append(url, media.url)
+                .append(preview_url, media.preview_url)
+                .append(video_info, media.video_info)
+                .append(card, media.card)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(media_url)
+                .append(url)
+                .append(preview_url)
+                .append(start)
+                .append(end)
+                .append(type)
+                .append(width)
+                .append(height)
+                .append(video_info)
+                .append(card)
+                .toHashCode();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        ParcelableMediaParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    @IntDef({Type.TYPE_UNKNOWN, Type.TYPE_IMAGE, Type.TYPE_VIDEO, Type.TYPE_ANIMATED_GIF,
+            Type.TYPE_CARD_ANIMATED_GIF, Type.TYPE_EXTERNAL_PLAYER, Type.TYPE_VARIABLE_TYPE})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface MediaType {
+    public @interface Type {
 
+        @Type
+        int TYPE_UNKNOWN = 0;
+        @Type
+        int TYPE_IMAGE = 1;
+        @Type
+        int TYPE_VIDEO = 2;
+        @Type
+        int TYPE_ANIMATED_GIF = 3;
+        @Type
+        int TYPE_CARD_ANIMATED_GIF = 4;
+        @Type
+        int TYPE_EXTERNAL_PLAYER = 5;
+        @Type
+        int TYPE_VARIABLE_TYPE = 6;
     }
 
+    @ParcelablePlease
     @JsonObject
     public static class VideoInfo implements Parcelable {
 
-        public static final Parcelable.Creator<VideoInfo> CREATOR = new Parcelable.Creator<VideoInfo>() {
-            @Override
+        @ParcelableThisPlease
+        @JsonField(name = "variants")
+        public Variant[] variants;
+        @ParcelableThisPlease
+        @JsonField(name = "duration")
+        public long duration;
+        public static final Creator<VideoInfo> CREATOR = new Creator<VideoInfo>() {
             public VideoInfo createFromParcel(Parcel source) {
-                return new VideoInfo(source);
+                VideoInfo target = new VideoInfo();
+                ParcelableMedia$VideoInfoParcelablePlease.readFromParcel(target, source);
+                return target;
             }
 
-            @Override
             public VideoInfo[] newArray(int size) {
                 return new VideoInfo[size];
             }
         };
-        @JsonField(name = "variants")
-        public Variant[] variants;
-        @JsonField(name = "duration")
-        public long duration;
 
         public VideoInfo() {
 
@@ -374,11 +417,6 @@ public class ParcelableMedia implements Parcelable {
             duration = videoInfo.getDuration();
         }
 
-        private VideoInfo(Parcel in) {
-            variants = in.createTypedArray(Variant.CREATOR);
-            duration = in.readLong();
-        }
-
         public static VideoInfo fromMediaEntityInfo(MediaEntity.VideoInfo videoInfo) {
             if (videoInfo == null) return null;
             return new VideoInfo(videoInfo);
@@ -386,41 +424,67 @@ public class ParcelableMedia implements Parcelable {
 
         @Override
         public String toString() {
-            return "VideoInfo{" +
-                    "variants=" + Arrays.toString(variants) +
-                    ", duration=" + duration +
-                    '}';
+            return new ToStringBuilder(this)
+                    .append("variants", variants)
+                    .append("duration", duration)
+                    .toString();
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+
+            if (o == null || getClass() != o.getClass()) return false;
+
+            VideoInfo videoInfo = (VideoInfo) o;
+
+            return new EqualsBuilder()
+                    .append(duration, videoInfo.duration)
+                    .append(variants, videoInfo.variants)
+                    .isEquals();
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder(17, 37)
+                    .append(variants)
+                    .append(duration)
+                    .toHashCode();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            ParcelableMedia$VideoInfoParcelablePlease.writeToParcel(this, dest, flags);
+        }
+
+        @ParcelablePlease
         @JsonObject
         public static class Variant implements Parcelable {
-            public static final Parcelable.Creator<Variant> CREATOR = new Parcelable.Creator<Variant>() {
-                @Override
+            @ParcelableThisPlease
+            @JsonField(name = "content_type")
+            public String content_type;
+            @ParcelableThisPlease
+            @JsonField(name = "url")
+            public String url;
+            @ParcelableThisPlease
+            @JsonField(name = "bitrate")
+            public long bitrate;
+            public static final Creator<Variant> CREATOR = new Creator<Variant>() {
                 public Variant createFromParcel(Parcel source) {
-                    return new Variant(source);
+                    Variant target = new Variant();
+                    ParcelableMedia$VideoInfo$VariantParcelablePlease.readFromParcel(target, source);
+                    return target;
                 }
 
-                @Override
                 public Variant[] newArray(int size) {
                     return new Variant[size];
                 }
             };
-            @JsonField(name = "content_type")
-            public String content_type;
-            @JsonField(name = "url")
-            public String url;
-
-            @Override
-            public String toString() {
-                return "Variant{" +
-                        "content_type='" + content_type + '\'' +
-                        ", url='" + url + '\'' +
-                        ", bitrate=" + bitrate +
-                        '}';
-            }
-
-            @JsonField(name = "bitrate")
-            public long bitrate;
 
             public Variant() {
             }
@@ -429,12 +493,6 @@ public class ParcelableMedia implements Parcelable {
                 content_type = entityVariant.getContentType();
                 url = entityVariant.getUrl();
                 bitrate = entityVariant.getBitrate();
-            }
-
-            private Variant(Parcel in) {
-                this.content_type = in.readString();
-                this.url = in.readString();
-                this.bitrate = in.readLong();
             }
 
             public static Variant[] fromMediaEntityVariants(MediaEntity.VideoInfo.Variant[] entityVariants) {
@@ -447,31 +505,47 @@ public class ParcelableMedia implements Parcelable {
             }
 
             @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+
+                if (o == null || getClass() != o.getClass()) return false;
+
+                Variant variant = (Variant) o;
+
+                return new EqualsBuilder()
+                        .append(bitrate, variant.bitrate)
+                        .append(content_type, variant.content_type)
+                        .append(url, variant.url)
+                        .isEquals();
+            }
+
+            @Override
+            public int hashCode() {
+                return new HashCodeBuilder(17, 37)
+                        .append(content_type)
+                        .append(url)
+                        .append(bitrate)
+                        .toHashCode();
+            }
+
+            @Override
+            public String toString() {
+                return new ToStringBuilder(this)
+                        .append("content_type", content_type)
+                        .append("url", url)
+                        .append("bitrate", bitrate)
+                        .toString();
+            }
+
+            @Override
             public int describeContents() {
                 return 0;
             }
 
-
             @Override
             public void writeToParcel(Parcel dest, int flags) {
-                dest.writeString(this.content_type);
-                dest.writeString(this.url);
-                dest.writeLong(this.bitrate);
+                ParcelableMedia$VideoInfo$VariantParcelablePlease.writeToParcel(this, dest, flags);
             }
-
         }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeTypedArray(variants, flags);
-            dest.writeLong(duration);
-        }
-
     }
-
 }

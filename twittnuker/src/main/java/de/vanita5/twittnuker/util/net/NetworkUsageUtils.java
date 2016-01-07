@@ -37,12 +37,17 @@ import com.squareup.okhttp.ResponseBody;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
-import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.ConnectivityUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class NetworkUsageUtils implements Constants {
+
+    private static final Executor sNetworkUsageExecutor = Executors.newSingleThreadExecutor();
+
     public static void initForHttpClient(Context context, OkHttpClient client) {
         final List<Interceptor> interceptors = client.networkInterceptors();
         interceptors.add(new NetworkUsageInterceptor(context));
@@ -59,7 +64,7 @@ public class NetworkUsageUtils implements Constants {
 
         public NetworkUsageInterceptor(Context context) {
             this.context = context;
-            setNetworkType(Utils.getActiveNetworkType(context));
+            setNetworkType(ConnectivityUtils.getActiveNetworkType(context));
         }
 
         @Override
@@ -74,12 +79,17 @@ public class NetworkUsageUtils implements Constants {
             values.put(NetworkUsages.REQUEST_NETWORK, sNetworkType);
             final Response response = chain.proceed(request);
             values.put(NetworkUsages.KILOBYTES_RECEIVED, getBodyLength(response.body()) / 1024.0);
-            final ContentResolver cr = context.getContentResolver();
-            try {
-                cr.insert(NetworkUsages.CONTENT_URI, values);
-            } catch (IllegalStateException e) {
-                Log.e(LOGTAG, "Unable to log network usage", e);
-            }
+            sNetworkUsageExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    final ContentResolver cr = context.getContentResolver();
+                    try {
+                        cr.insert(NetworkUsages.CONTENT_URI, values);
+                    } catch (IllegalStateException e) {
+                        Log.e(LOGTAG, "Unable to log network usage", e);
+                    }
+                }
+            });
             return response;
         }
 

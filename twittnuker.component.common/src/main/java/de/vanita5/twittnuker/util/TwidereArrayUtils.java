@@ -266,4 +266,10 @@ public final class TwidereArrayUtils {
         }
         return builder.toString();
     }
+
+    public static void offset(long[] array, long offset) {
+        for (int i = 0; i < array.length; i++) {
+            array[i] += offset;
+        }
+    }
 }

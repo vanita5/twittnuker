@@ -34,9 +34,9 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ShortTimeView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
@@ -44,44 +44,44 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
 public class MessageEntryViewHolder extends ViewHolder implements OnClickListener {
 
-	public final ImageView profileImageView;
-	public final TextView nameView, screenNameView, textView;
-	public final ShortTimeView timeView;
+    public final ImageView profileImageView;
+    public final TextView nameView, screenNameView, textView;
+    public final ShortTimeView timeView;
     private final MessageEntriesAdapter adapter;
     private final IColorLabelView content;
 
-	public MessageEntryViewHolder(final MessageEntriesAdapter adapter, final View itemView) {
-		super(itemView);
-		this.adapter = adapter;
+    public MessageEntryViewHolder(final MessageEntriesAdapter adapter, final View itemView) {
+        super(itemView);
+        this.adapter = adapter;
         content = (IColorLabelView) itemView.findViewById(R.id.content);
-		profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
-		nameView = (TextView) itemView.findViewById(R.id.name);
-		screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
-		textView = (TextView) itemView.findViewById(R.id.text);
-		timeView = (ShortTimeView) itemView.findViewById(R.id.time);
+        profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
+        nameView = (TextView) itemView.findViewById(R.id.name);
+        screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
+        textView = (TextView) itemView.findViewById(R.id.text);
+        timeView = (ShortTimeView) itemView.findViewById(R.id.time);
 
         setTextSize(adapter.getTextSize());
-		itemView.setOnClickListener(this);
+        itemView.setOnClickListener(this);
         profileImageView.setOnClickListener(this);
-	}
+    }
 
     public void displayMessage(Cursor cursor, boolean isUnread) {
-		final Context context = adapter.getContext();
+        final Context context = adapter.getContext();
         final MediaLoaderWrapper loader = adapter.getMediaLoader();
         final UserColorNameManager manager = adapter.getUserColorNameManager();
 
-		final long accountId = cursor.getLong(ConversationEntries.IDX_ACCOUNT_ID);
-		final long conversationId = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);
-		final long timestamp = cursor.getLong(ConversationEntries.IDX_MESSAGE_TIMESTAMP);
-		final boolean isOutgoing = cursor.getInt(ConversationEntries.IDX_IS_OUTGOING) == 1;
+        final long accountId = cursor.getLong(ConversationEntries.IDX_ACCOUNT_ID);
+        final long conversationId = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);
+        final long timestamp = cursor.getLong(ConversationEntries.IDX_MESSAGE_TIMESTAMP);
+        final boolean isOutgoing = cursor.getInt(ConversationEntries.IDX_IS_OUTGOING) == 1;
 
-		final String name = cursor.getString(ConversationEntries.IDX_NAME);
-		final String screenName = cursor.getString(ConversationEntries.IDX_SCREEN_NAME);
+        final String name = cursor.getString(ConversationEntries.IDX_NAME);
+        final String screenName = cursor.getString(ConversationEntries.IDX_SCREEN_NAME);
 
-		nameView.setText(name);
-		screenNameView.setText("@" + screenName);
-		textView.setText(toPlainText(cursor.getString(ConversationEntries.IDX_TEXT)));
-		timeView.setTime(timestamp);
+        nameView.setText(name);
+        screenNameView.setText("@" + screenName);
+        textView.setText(toPlainText(cursor.getString(ConversationEntries.IDX_TEXT)));
+        timeView.setTime(timestamp);
         if (isOutgoing) {
             timeView.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_indicator_sent, 0);
         } else {
@@ -91,37 +91,37 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
         screenNameView.setTypeface(null, isUnread && !isOutgoing ? Typeface.BOLD : Typeface.NORMAL);
         textView.setTypeface(null, isUnread && !isOutgoing ? Typeface.BOLD : Typeface.NORMAL);
         if (adapter.shouldShowAccountsColor()) {
-            content.drawEnd(Utils.getAccountColor(context, accountId));
+            content.drawEnd(DataStoreUtils.getAccountColor(context, accountId));
         } else {
             content.drawEnd();
         }
         content.drawStart(manager.getUserColor(conversationId, false));
 
-		final String profileImage = cursor.getString(ConversationEntries.IDX_PROFILE_IMAGE_URL);
-		loader.displayProfileImage(profileImageView, profileImage);
-	}
+        final String profileImage = cursor.getString(ConversationEntries.IDX_PROFILE_IMAGE_URL);
+        loader.displayProfileImage(profileImageView, profileImage);
+    }
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.profile_image: {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.profile_image: {
                 adapter.onUserProfileClick(getLayoutPosition());
-				break;
-			}
-			default: {
-				if (v == itemView) {
+                break;
+            }
+            default: {
+                if (v == itemView) {
                     adapter.onMessageClick(getLayoutPosition());
-				}
-				break;
-			}
-		}
-	}
+                }
+                break;
+            }
+        }
+    }
 
     public void setTextSize(final float textSize) {
         nameView.setTextSize(textSize * 1.1f);
         screenNameView.setTextSize(textSize);
         textView.setTextSize(textSize);
         timeView.setTextSize(textSize * 0.85f);
-	}
+    }
 
 }

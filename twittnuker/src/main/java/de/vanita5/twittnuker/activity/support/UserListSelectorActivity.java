@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -55,14 +56,14 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
+import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.ParseUtils.parseString;
-import static de.vanita5.twittnuker.util.Utils.getAccountScreenName;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
 
 public class UserListSelectorActivity extends BaseSupportDialogActivity implements OnClickListener, OnItemClickListener {
 
@@ -91,7 +92,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
     public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.screen_name_confirm: {
-                final String screen_name = parseString(mEditScreenName.getText());
+                final String screen_name = ParseUtils.parseString(mEditScreenName.getText());
                 if (isEmpty(screen_name)) return;
                 searchUser(screen_name);
                 break;
@@ -315,7 +316,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
                 result.getExtras().putBoolean(EXTRA_IS_MY_ACCOUNT, is_my_account);
                 return result;
             } catch (final TwitterException e) {
-                e.printStackTrace();
+                Log.w(LOGTAG, e);
                 return SingleResponse.getInstance(e);
             }
         }
@@ -369,7 +370,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
                 }
                 return SingleResponse.getInstance(data);
             } catch (final TwitterException e) {
-                e.printStackTrace();
+                Log.w(LOGTAG, e);
                 return SingleResponse.getInstance(e);
             }
         }

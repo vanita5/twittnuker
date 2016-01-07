@@ -94,6 +94,7 @@ import de.vanita5.twittnuker.menu.support.AccountToggleProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.CompareUtils;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.ListViewUtils;
@@ -104,8 +105,7 @@ import de.vanita5.twittnuker.util.TransitionUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DaggerGeneralComponent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.ShapedImageView;
 
 import java.util.ArrayList;
@@ -159,7 +159,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         if (mAccountActionProvider != null) {
             return mAccountActionProvider.getActivatedAccountIds();
         }
-        return Utils.getActivatedAccountIds(getActivity());
+        return DataStoreUtils.getActivatedAccountIds(getActivity());
     }
 
     @Override
@@ -906,7 +906,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 
         OptionItemsAdapter(final Context context) {
             super(context, R.layout.list_item_dashboard_menu);
-            DaggerGeneralComponent.builder().applicationModule(ApplicationModule.get(context)).build().inject(this);
+            GeneralComponentHelper.build(context).inject(this);
             mActionIconColor = ThemeUtils.getThemeForegroundColor(context);
         }
 

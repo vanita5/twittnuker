@@ -37,6 +37,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.location.Criteria;
@@ -65,15 +66,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ItemDecoration;
 import android.support.v7.widget.RecyclerView.State;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.CharacterStyle;
 import android.text.style.ImageSpan;
-import android.text.style.MetricAffectingSpan;
-import android.text.style.URLSpan;
+import android.text.style.SuggestionSpan;
+import android.text.style.UpdateAppearance;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.ActionMode.Callback;
@@ -88,7 +89,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,8 +99,8 @@ import com.github.johnpersano.supertoasts.SuperToast.OnDismissListener;
 import com.nostra13.universalimageloader.utils.IoUtils;
 import com.twitter.Extractor;
 
-import org.mariotaku.dynamicgridview.DraggableArrayAdapter;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
@@ -118,12 +118,13 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.text.MarkForDeleteSpan;
+import de.vanita5.twittnuker.text.style.EmojiSpan;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
-import de.vanita5.twittnuker.util.MathUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -138,12 +139,14 @@ import de.vanita5.twittnuker.view.BadgeView;
 import de.vanita5.twittnuker.view.ComposeEditText;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.StatusTextCountView;
+import de.vanita5.twittnuker.view.helper.SimpleItemTouchHelperCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -151,8 +154,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
 
-public class ComposeActivity extends ThemedFragmentActivity implements LocationListener,
-        OnMenuItemClickListener, OnClickListener, OnLongClickListener, Callback {
+public class ComposeActivity extends ThemedFragmentActivity implements OnMenuItemClickListener,
+        OnClickListener, OnLongClickListener, Callback {
 
     // Constants
     private static final String FAKE_IMAGE_LINK = "https://www.example.com/fake_image.jpg";
@@ -169,9 +172,10 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private ContentResolver mResolver;
     private AsyncTask<Object, Object, ?> mTask;
     private SupportMenuInflater mMenuInflater;
+    private ItemTouchHelper mItemTouchHelper;
 
     // Views
-    private GridView mMediaPreviewGrid;
+    private RecyclerView mAttachedMediaPreview;
     private ActionMenuView mMenuBar;
     private ComposeEditText mEditText;
     private View mSendView;
@@ -204,6 +208,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private boolean mFragmentResumed;
     private int mKeyMetaState;
 
+    // Listeners
+    private LocationListener mLocationListener;
+
     @Override
     public int getThemeColor() {
         return ThemeUtils.getUserAccentColor(this);
@@ -228,7 +235,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 if (resultCode == Activity.RESULT_OK) {
                     final Uri src = intent.getData();
                     mTask = AsyncTaskUtils.executeTask(new AddMediaTask(this, src,
-                            createTempImageUri(), ParcelableMedia.TYPE_IMAGE, true));
+                            createTempImageUri(), ParcelableMedia.Type.TYPE_IMAGE, true));
                 }
                 break;
             }
@@ -292,7 +299,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     protected void onStop() {
         saveAccountSelection();
         try {
-            mLocationManager.removeUpdates(this);
+            mLocationManager.removeUpdates(mLocationListener);
         } catch (SecurityException ignore) {
         }
         super.onStop();
@@ -371,22 +378,34 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 contentView.getPaddingRight(), contentView.getPaddingBottom());
     }
 
-    @Override
-    public void onLocationChanged(final Location location) {
-        setRecentLocation(ParcelableLocation.fromLocation(location));
-    }
+    static class ComposeLocationListener implements LocationListener {
 
-    @Override
-    public void onStatusChanged(final String provider, final int status, final Bundle extras) {
+        private final WeakReference<ComposeActivity> mActivityRef;
 
-    }
+        ComposeLocationListener(ComposeActivity activity) {
+            mActivityRef = new WeakReference<>(activity);
+        }
 
-    @Override
-    public void onProviderEnabled(final String provider) {
-    }
+        @Override
+        public void onLocationChanged(final Location location) {
+            final ComposeActivity activity = mActivityRef.get();
+            if (activity == null) return;
+            activity.setRecentLocation(ParcelableLocation.fromLocation(location));
+        }
 
-    @Override
-    public void onProviderDisabled(final String provider) {
+        @Override
+        public void onStatusChanged(final String provider, final int status, final Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(final String provider) {
+        }
+
+        @Override
+        public void onProviderDisabled(final String provider) {
+        }
+
     }
 
     @Override
@@ -430,6 +449,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 updateTextCount();
                 break;
             }
+
             case R.id.view: {
                 if (mInReplyToStatus == null) return false;
                 final DialogFragment fragment = new ViewStatusDialogFragment();
@@ -439,6 +459,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 fragment.show(getSupportFragmentManager(), "view_status");
                 break;
             }
+
             case R.id.link_to_quoted_status: {
                 final boolean newValue = !item.isChecked();
                 item.setChecked(newValue);
@@ -482,7 +503,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     public void onContentChanged() {
         super.onContentChanged();
         mEditText = (ComposeEditText) findViewById(R.id.edit_text);
-        mMediaPreviewGrid = (GridView) findViewById(R.id.media_thumbnail_preview);
+        mAttachedMediaPreview = (RecyclerView) findViewById(R.id.attached_media_preview);
         mMenuBar = (ActionMenuView) findViewById(R.id.menu_bar);
         mSendView = findViewById(R.id.send);
         mSendTextCountView = (StatusTextCountView) mSendView.findViewById(R.id.status_text_count);
@@ -507,7 +528,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     public void removeAllMedia(final List<ParcelableMediaUpdate> list) {
         mMediaPreviewAdapter.removeAll(list);
-        updateMediaPreview();
     }
 
     public void saveToDrafts() {
@@ -551,11 +571,12 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mLocationListener = new ComposeLocationListener(this);
         mResolver = getContentResolver();
         mValidator = new TwidereValidator(this);
         setContentView(R.layout.activity_compose);
         setFinishOnTouchOutside(false);
-        final long[] defaultAccountIds = Utils.getAccountIds(this);
+        final long[] defaultAccountIds = DataStoreUtils.getAccountIds(this);
         if (defaultAccountIds.length <= 0) {
             final Intent intent = new Intent(INTENT_ACTION_TWITTER_LOGIN);
             intent.setClass(this, SignInActivity.class);
@@ -579,8 +600,26 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         mAccountSelector.setAdapter(mAccountsAdapter);
         mAccountsAdapter.setAccounts(ParcelableCredentials.getCredentialsArray(this, false, false));
 
-        mMediaPreviewAdapter = new MediaPreviewAdapter(this);
-        mMediaPreviewGrid.setAdapter(mMediaPreviewAdapter);
+
+        mMediaPreviewAdapter = new MediaPreviewAdapter(this, new SimpleItemTouchHelperCallback.OnStartDragListener() {
+            @Override
+            public void onStartDrag(ViewHolder viewHolder) {
+                mItemTouchHelper.startDrag(viewHolder);
+            }
+        });
+        mItemTouchHelper = new ItemTouchHelper(new AttachedMediaItemTouchHelperCallback(mMediaPreviewAdapter));
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mAttachedMediaPreview.setLayoutManager(layoutManager);
+        mAttachedMediaPreview.setAdapter(mMediaPreviewAdapter);
+        mItemTouchHelper.attachToRecyclerView(mAttachedMediaPreview);
+        final int previewGridSpacing = getResources().getDimensionPixelSize(R.dimen.element_spacing_small);
+        mAttachedMediaPreview.addItemDecoration(new ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, State state) {
+                outRect.left = outRect.right = previewGridSpacing;
+            }
+        });
 
         final Intent intent = getIntent();
 
@@ -633,10 +672,11 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         mSendView.setOnLongClickListener(this);
         setMenu();
         updateLocationState();
-        updateMediaPreview();
         notifyAccountSelectionChanged();
 
         mTextChanged = false;
+
+        updateAttachedMediaView();
     }
 
     @Override
@@ -680,12 +720,16 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 updateTextCount();
                 if (s instanceof Spannable && count == 1 && before == 0) {
                     final ImageSpan[] imageSpans = ((Spannable) s).getSpans(start, start + count, ImageSpan.class);
-                    if (imageSpans.length == 1) {
-                        final Intent intent = ThemedImagePickerActivity.withThemed(ComposeActivity.this)
-                                .getImage(Uri.parse(imageSpans[0].getSource())).build();
-                        startActivityForResult(intent, REQUEST_PICK_IMAGE);
+                    List<String> imageSources = new ArrayList<>();
+                    for (ImageSpan imageSpan : imageSpans) {
+                        imageSources.add(imageSpan.getSource());
                         ((Spannable) s).setSpan(new MarkForDeleteSpan(), start, start + count,
                                 Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+                    }
+                    if (!imageSources.isEmpty()) {
+                        final Intent intent = ThemedImagePickerActivity.withThemed(ComposeActivity.this)
+                                .getImage(Uri.parse(imageSources.get(0))).build();
+                        startActivityForResult(intent, REQUEST_PICK_IMAGE);
                     }
                 }
             }
@@ -698,13 +742,15 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                     s.delete(s.getSpanStart(delete), s.getSpanEnd(delete));
                     s.removeSpan(delete);
                 }
-                for (Object span : s.getSpans(0, s.length(), CharacterStyle.class)) {
-                    if (span instanceof URLSpan) {
-                        s.removeSpan(span);
-                    } else if (span instanceof MetricAffectingSpan) {
-                        s.removeSpan(span);
-                    }
+                for (Object span : s.getSpans(0, s.length(), UpdateAppearance.class)) {
+                    trimSpans(s, span);
                 }
+            }
+
+            private void trimSpans(Editable s, Object span) {
+                if (span instanceof EmojiSpan) return;
+                if (span instanceof SuggestionSpan) return;
+                s.removeSpan(span);
             }
         });
         mEditText.setCustomSelectionActionModeCallback(this);
@@ -748,17 +794,23 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     private void addMedia(final ParcelableMediaUpdate media) {
         mMediaPreviewAdapter.add(media);
-        updateMediaPreview();
+        updateAttachedMediaView();
     }
+
 
     private void addMedia(final List<ParcelableMediaUpdate> media) {
         mMediaPreviewAdapter.addAll(media);
-        updateMediaPreview();
+        updateAttachedMediaView();
     }
 
     private void clearMedia() {
         mMediaPreviewAdapter.clear();
-        updateMediaPreview();
+        updateAttachedMediaView();
+    }
+
+    private void updateAttachedMediaView() {
+        mAttachedMediaPreview.setVisibility(hasMedia() ? View.VISIBLE : View.GONE);
+        setMenu();
     }
 
     private Uri createTempImageUri() {
@@ -802,14 +854,14 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         final Uri extraStream = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         //TODO handle share_screenshot extra (Bitmap)
         if (extraStream != null) {
-            AsyncTaskUtils.executeTask(new AddMediaTask(this, extraStream, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false));
+            AsyncTaskUtils.executeTask(new AddMediaTask(this, extraStream, createTempImageUri(), ParcelableMedia.Type.TYPE_IMAGE, false));
         } else if (data != null) {
-            AsyncTaskUtils.executeTask(new AddMediaTask(this, data, createTempImageUri(), ParcelableMedia.TYPE_IMAGE, false));
+            AsyncTaskUtils.executeTask(new AddMediaTask(this, data, createTempImageUri(), ParcelableMedia.Type.TYPE_IMAGE, false));
         } else if (intent.hasExtra(EXTRA_SHARE_SCREENSHOT) && Utils.useShareScreenshot()) {
             final Bitmap bitmap = intent.getParcelableExtra(EXTRA_SHARE_SCREENSHOT);
             if (bitmap != null) {
                 try {
-                    AsyncTaskUtils.executeTask(new AddBitmapTask(this, bitmap, createTempImageUri(), ParcelableMedia.TYPE_IMAGE));
+                    AsyncTaskUtils.executeTask(new AddBitmapTask(this, bitmap, createTempImageUri(), ParcelableMedia.Type.TYPE_IMAGE));
                 } catch (IOException e) {
                     // ignore
                     bitmap.recycle();
@@ -876,9 +928,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     private boolean handleMentionIntent(final ParcelableUser user) {
         if (user == null || user.id <= 0) return false;
-        final String my_screen_name = Utils.getAccountScreenName(this, user.account_id);
+        final String my_screen_name = DataStoreUtils.getAccountScreenName(this, user.account_id);
         if (TextUtils.isEmpty(my_screen_name)) return false;
-        mEditText.setText("@" + user.screen_name + " ");
+        mEditText.setText(String.format("@%s ", user.screen_name));
         final int selection_end = mEditText.length();
         mEditText.setSelection(selection_end);
         mAccountsAdapter.setSelectedAccountIds(user.account_id);
@@ -895,7 +947,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
 
     private boolean handleReplyIntent(final ParcelableStatus status) {
         if (status == null || status.id <= 0) return false;
-        final String myScreenName = Utils.getAccountScreenName(this, status.account_id);
+        final String myScreenName = DataStoreUtils.getAccountScreenName(this, status.account_id);
         if (TextUtils.isEmpty(myScreenName)) return false;
         int selectionStart = 0;
         mEditText.append("@" + status.user_screen_name + " ");
@@ -906,8 +958,13 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         if (status.is_retweet) {
             mEditText.append("@" + status.retweeted_by_user_screen_name + " ");
         }
+        if (status.is_quote) {
+            mEditText.append("@" + status.quoted_user_screen_name + " ");
+        }
         final Collection<String> mentions = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         mentions.addAll(mExtractor.extractMentionedScreennames(status.text_plain));
+        mentions.addAll(mExtractor.extractMentionedScreennames(status.quoted_text_plain));
+
         for (final String mention : mentions) {
             if (mention.equalsIgnoreCase(status.user_screen_name) || mention.equalsIgnoreCase(myScreenName)
                     || mention.equalsIgnoreCase(status.retweeted_by_user_screen_name)) {
@@ -924,7 +981,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private boolean handleReplyMultipleIntent(final String[] screenNames, final long accountId,
                                               final long inReplyToStatusId) {
         if (screenNames == null || screenNames.length == 0 || accountId <= 0) return false;
-        final String myScreenName = Utils.getAccountScreenName(this, accountId);
+        final String myScreenName = DataStoreUtils.getAccountScreenName(this, accountId);
         if (TextUtils.isEmpty(myScreenName)) return false;
         for (final String screenName : screenNames) {
             if (screenName.equalsIgnoreCase(myScreenName)) {
@@ -939,7 +996,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     }
 
     private boolean hasMedia() {
-        return !mMediaPreviewAdapter.isEmpty();
+        return mMediaPreviewAdapter.getItemCount() > 0;
     }
 
     private boolean isQuote() {
@@ -1083,30 +1140,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
     }
 
-    private static class SetProgressVisibleRunnable implements Runnable {
-
-        private final ComposeActivity activity;
-        private final boolean visible;
-
-        SetProgressVisibleRunnable(ComposeActivity activity, boolean visible) {
-            this.activity = activity;
-            this.visible = visible;
-        }
-
-        @Override
-        public void run() {
-            final FragmentManager fm = activity.getSupportFragmentManager();
-            final Fragment f = fm.findFragmentByTag(DISCARD_STATUS_DIALOG_FRAGMENT_TAG);
-            if (!visible && f instanceof DialogFragment) {
-                ((DialogFragment) f).dismiss();
-            } else if (visible) {
-                SupportProgressDialogFragment df = new SupportProgressDialogFragment();
-                df.show(fm, DISCARD_STATUS_DIALOG_FRAGMENT_TAG);
-                df.setCancelable(false);
-            }
-        }
-    }
-
     private void setRecentLocation(ParcelableLocation location) {
         if (location != null) {
             mLocationText.setText(location.getHumanReadableString(3));
@@ -1124,7 +1157,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
     private boolean startLocationUpdateIfEnabled() {
         final LocationManager lm = mLocationManager;
         try {
-            lm.removeUpdates(this);
+            lm.removeUpdates(mLocationListener);
         } catch (SecurityException ignore) {
         }
         final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION);
@@ -1137,10 +1170,10 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         if (provider != null) {
             try {
                 mLocationText.setText(R.string.getting_location);
-                lm.requestLocationUpdates(provider, 0, 0, this);
+                lm.requestLocationUpdates(provider, 0, 0, mLocationListener);
                 final Location location = Utils.getCachedLocation(this);
                 if (location != null) {
-                    onLocationChanged(location);
+                    mLocationListener.onLocationChanged(location);
                 }
             } catch (SecurityException e) {
                 return false;
@@ -1186,13 +1219,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
             mLocationIcon.setColorFilter(mLocationIcon.getDefaultColor(), Mode.SRC_ATOP);
             mLocationText.setText(R.string.no_location);
         }
-    }
-
-    private void updateMediaPreview() {
-        final int count = mMediaPreviewAdapter.getCount();
-        final Resources res = getResources();
-        final int maxColumns = res.getInteger(R.integer.grid_column_image_preview);
-        mMediaPreviewGrid.setNumColumns(MathUtils.clamp(count, maxColumns, 1));
     }
 
     private void updateStatus() {
@@ -1251,6 +1277,30 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
                 new String[]{FAKE_IMAGE_LINK}, textOrig) : textOrig + " " + FAKE_IMAGE_LINK : textOrig;
         final int validatedCount = text != null ? mValidator.getTweetLength(text) : 0;
         mSendTextCountView.setTextCount(validatedCount);
+    }
+
+    private static class SetProgressVisibleRunnable implements Runnable {
+
+        private final ComposeActivity activity;
+        private final boolean visible;
+
+        SetProgressVisibleRunnable(ComposeActivity activity, boolean visible) {
+            this.activity = activity;
+            this.visible = visible;
+        }
+
+        @Override
+        public void run() {
+            final FragmentManager fm = activity.getSupportFragmentManager();
+            final Fragment f = fm.findFragmentByTag(DISCARD_STATUS_DIALOG_FRAGMENT_TAG);
+            if (!visible && f instanceof DialogFragment) {
+                ((DialogFragment) f).dismiss();
+            } else if (visible) {
+                SupportProgressDialogFragment df = new SupportProgressDialogFragment();
+                df.show(fm, DISCARD_STATUS_DIALOG_FRAGMENT_TAG);
+                df.setCancelable(false);
+            }
+        }
     }
 
     static class AccountIconViewHolder extends ViewHolder implements OnClickListener {
@@ -1490,7 +1540,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
             if (mMedia == null) return false;
             try {
                 for (final ParcelableMediaUpdate media : mMedia) {
-                    if (media.uri == null) continue;
                     final Uri uri = Uri.parse(media.uri);
                     if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
                         final File file = new File(uri.getPath());
@@ -1532,7 +1581,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         @Override
         protected Object doInBackground(final Object... params) {
             for (final ParcelableMediaUpdate media : mActivity.getMediaList()) {
-                if (media.uri == null) continue;
                 final Uri uri = Uri.parse(media.uri);
                 if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
                     final File file = new File(uri.getPath());
@@ -1556,28 +1604,77 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
     }
 
-    private static class MediaPreviewAdapter extends DraggableArrayAdapter<ParcelableMediaUpdate> {
+    public static class MediaPreviewAdapter extends ArrayRecyclerAdapter<ParcelableMediaUpdate, MediaPreviewViewHolder>
+            implements SimpleItemTouchHelperCallback.ItemTouchHelperAdapter {
 
-        private final MediaLoaderWrapper mImageLoader;
+        private final LayoutInflater mInflater;
 
-        public MediaPreviewAdapter(final ComposeActivity activity) {
-            super(activity, R.layout.grid_item_media_editor);
-            mImageLoader = activity.mImageLoader;
+        private final SimpleItemTouchHelperCallback.OnStartDragListener mDragStartListener;
+
+        public MediaPreviewAdapter(final ComposeActivity activity, SimpleItemTouchHelperCallback.OnStartDragListener dragStartListener) {
+            super(activity);
+            mInflater = LayoutInflater.from(activity);
+            mDragStartListener = dragStartListener;
+        }
+
+        public void onStartDrag(ViewHolder viewHolder) {
+            mDragStartListener.onStartDrag(viewHolder);
         }
 
         public List<ParcelableMediaUpdate> getAsList() {
-            return Collections.unmodifiableList(getObjects());
+            return Collections.unmodifiableList(mData);
+        }
+
+
+        @Override
+        public void onBindViewHolder(MediaPreviewViewHolder holder, int position, ParcelableMediaUpdate item) {
+            final ParcelableMediaUpdate media = getItem(position);
+            holder.displayMedia(this, media);
         }
 
         @Override
-        public View getView(final int position, final View convertView, final ViewGroup parent) {
-            final View view = super.getView(position, convertView, parent);
-            final ParcelableMediaUpdate media = getItem(position);
-            final ImageView image = (ImageView) view.findViewById(R.id.image);
-            mImageLoader.displayPreviewImage(media.uri, image);
-            return view;
+        public MediaPreviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            final View view = mInflater.inflate(R.layout.grid_item_media_editor, parent, false);
+            return new MediaPreviewViewHolder(this, view);
         }
 
+        @Override
+        public void onItemDismiss(int position) {
+            mData.remove(position);
+            notifyItemRemoved(position);
+
+            ((ComposeActivity) getContext()).updateAttachedMediaView();
+        }
+
+        @Override
+        public boolean onItemMove(int fromPosition, int toPosition) {
+            Collections.swap(mData, fromPosition, toPosition);
+            notifyItemMoved(fromPosition, toPosition);
+            return true;
+        }
+    }
+
+    static class MediaPreviewViewHolder extends ViewHolder implements OnLongClickListener {
+
+        private final ImageView image;
+        private final MediaPreviewAdapter adapter;
+
+        public MediaPreviewViewHolder(MediaPreviewAdapter adapter, View itemView) {
+            super(itemView);
+            this.adapter = adapter;
+            itemView.setOnLongClickListener(this);
+            image = (ImageView) itemView.findViewById(R.id.image);
+        }
+
+        public void displayMedia(MediaPreviewAdapter adapter, ParcelableMediaUpdate media) {
+            adapter.getMediaLoader().displayPreviewImage(media.uri, image);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            adapter.onStartDrag(this);
+            return true;
+        }
 
     }
 
@@ -1633,4 +1730,52 @@ public class ComposeActivity extends ThemedFragmentActivity implements LocationL
         }
     }
 
+    public static class AttachedMediaItemTouchHelperCallback extends SimpleItemTouchHelperCallback {
+        public static final float ALPHA_FULL = 1.0f;
+
+        public AttachedMediaItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
+            super(adapter);
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return true;
+        }
+
+        @Override
+        public boolean isItemViewSwipeEnabled() {
+            return true;
+        }
+
+        @Override
+        public int getMovementFlags(RecyclerView recyclerView, ViewHolder viewHolder) {
+            // Set movement flags based on the layout manager
+            final int dragFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+            final int swipeFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            return makeMovementFlags(dragFlags, swipeFlags);
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                // Fade out the view as it is swiped out of the parent's bounds
+                final float alpha = ALPHA_FULL - Math.abs(dY) / (float) viewHolder.itemView.getHeight();
+                viewHolder.itemView.setAlpha(alpha);
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            } else {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        }
+
+        @Override
+        public float getSwipeThreshold(ViewHolder viewHolder) {
+            return 0.75f;
+        }
+
+        @Override
+        public void clearView(RecyclerView recyclerView, ViewHolder viewHolder) {
+            super.clearView(recyclerView, viewHolder);
+            viewHolder.itemView.setAlpha(ALPHA_FULL);
+        }
+    }
 }

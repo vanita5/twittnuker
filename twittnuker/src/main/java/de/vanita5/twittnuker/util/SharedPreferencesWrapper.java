@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -95,6 +96,14 @@ public class SharedPreferencesWrapper implements Constants, SharedPreferences {
         return annotation.defaultBoolean();
     }
 
+    private int getDefaultInt(String key) {
+        final Preference annotation = mMap.get(key);
+        if (annotation == null || !annotation.hasDefault()) return 0;
+        final int resId = annotation.defaultResource();
+        if (resId != 0) return mContext.getResources().getInteger(resId);
+        return annotation.defaultInt();
+    }
+
     @Override
     public float getFloat(final String key, final float defValue) {
         try {
@@ -104,6 +113,10 @@ public class SharedPreferencesWrapper implements Constants, SharedPreferences {
             mPreferences.edit().remove(key).apply();
             return defValue;
         }
+    }
+
+    public int getInt(final String key) {
+        return getInt(key, getDefaultInt(key));
     }
 
     @Override
@@ -168,11 +181,12 @@ public class SharedPreferencesWrapper implements Constants, SharedPreferences {
         return getInstance(context, name, mode, null);
     }
 
+    @NonNull
     public static SharedPreferencesWrapper getInstance(final Context context, final String name, final int mode,
                                                        final Class<?> keysClass) {
         final Context app = context.getApplicationContext();
         final SharedPreferences prefs = app.getSharedPreferences(name, mode);
-        if (prefs == null) return null;
+        if (prefs == null) throw new NullPointerException();
         return new SharedPreferencesWrapper(app, prefs, keysClass);
     }
 

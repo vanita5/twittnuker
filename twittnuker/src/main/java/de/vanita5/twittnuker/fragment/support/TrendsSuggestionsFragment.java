@@ -43,20 +43,18 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
-import static de.vanita5.twittnuker.util.Utils.getTableNameByUri;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri;
 import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
 
 public class TrendsSuggestionsFragment extends AbsContentListViewFragment<TrendsAdapter>
         implements LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
-    private SharedPreferences mPreferences;
 
 
     private long mAccountId;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
-        mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         super.onActivityCreated(savedInstanceState);
         mAccountId = getDefaultAccountId(getActivity());
         getListView().setOnItemClickListener(this);

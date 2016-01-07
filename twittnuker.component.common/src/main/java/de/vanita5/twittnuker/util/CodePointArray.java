@@ -24,21 +24,23 @@ package de.vanita5.twittnuker.util;
 
 import android.support.annotation.NonNull;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 public final class CodePointArray {
 
     private final int[] codePoints;
+    private final int length;
 
     public CodePointArray(@NonNull final CharSequence cs) {
         final int inputLength = cs.length();
-        final int[] temp = new int[inputLength];
+        codePoints = new int[inputLength];
         int codePointsLength = 0;
         for (int offset = 0; offset < inputLength; ) {
             final int codePoint = Character.codePointAt(cs, offset);
-            temp[codePointsLength++] = codePoint;
+            codePoints[codePointsLength++] = codePoint;
             offset += Character.charCount(codePoint);
         }
-        codePoints = new int[codePointsLength];
-        System.arraycopy(temp, 0, codePoints, 0, codePointsLength);
+        this.length = codePointsLength;
     }
 
     public int get(int pos) {
@@ -46,7 +48,17 @@ public final class CodePointArray {
     }
 
     public int length() {
-        return codePoints.length;
+        return length;
+    }
+
+    public int indexOfText(int codePoint, int start) {
+        int index = 0;
+        for (int i = 0; i < length; i++) {
+            final int current = codePoints[i];
+            if (current == codePoint && i >= start) return index;
+            index += Character.charCount(current);
+        }
+        return -1;
     }
 
     @NonNull
@@ -56,5 +68,9 @@ public final class CodePointArray {
             sb.appendCodePoint(codePoints[i]);
         }
         return sb.toString();
+    }
+
+    public int[] subarray(int start, int end) {
+        return ArrayUtils.subarray(codePoints, start, end);
     }
 }

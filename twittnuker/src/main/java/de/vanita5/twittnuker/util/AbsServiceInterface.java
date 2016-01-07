@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.IInterface;
+import android.util.Log;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.ServiceUtils.ServiceToken;
@@ -37,58 +38,58 @@ import static de.vanita5.twittnuker.util.ServiceUtils.unbindFromService;
 
 public abstract class AbsServiceInterface<I extends IInterface> implements Constants, IInterface {
 
-	private final Context mContext;
-	private final String mShortenerName;
-	private I mIInterface;
+    private final Context mContext;
+    private final String mShortenerName;
+    private I mIInterface;
 
-	private ServiceToken mToken;
+    private ServiceToken mToken;
 
-	private final ServiceConnection mConnection = new ServiceConnection() {
+    private final ServiceConnection mConnection = new ServiceConnection() {
 
-		@Override
-		public void onServiceConnected(final ComponentName service, final IBinder obj) {
-			mIInterface = AbsServiceInterface.this.onServiceConnected(service, obj);
-		}
+        @Override
+        public void onServiceConnected(final ComponentName service, final IBinder obj) {
+            mIInterface = AbsServiceInterface.this.onServiceConnected(service, obj);
+        }
 
-		@Override
-		public void onServiceDisconnected(final ComponentName service) {
-			mIInterface = null;
-		}
-	};
+        @Override
+        public void onServiceDisconnected(final ComponentName service) {
+            mIInterface = null;
+        }
+    };
 
-	protected abstract I onServiceConnected(ComponentName service, IBinder obj);
+    protected abstract I onServiceConnected(ComponentName service, IBinder obj);
 
-	protected AbsServiceInterface(final Context context, final String shortenerName) {
-		mContext = context;
-		mShortenerName = shortenerName;
-	}
+    protected AbsServiceInterface(final Context context, final String shortenerName) {
+        mContext = context;
+        mShortenerName = shortenerName;
+    }
 
-	public final I getInterface() {
-		return mIInterface;
-	}
+    public final I getInterface() {
+        return mIInterface;
+    }
 
-	@Override
-	public final IBinder asBinder() {
-		// Useless here
-		return mIInterface.asBinder();
-	}
+    @Override
+    public final IBinder asBinder() {
+        // Useless here
+        return mIInterface.asBinder();
+    }
 
-	public final void unbindService() {
-		unbindFromService(mToken);
-	}
+    public final void unbindService() {
+        unbindFromService(mToken);
+    }
 
-	public final void waitForService() {
-		final Intent intent = new Intent(INTENT_ACTION_EXTENSION_SHORTEN_STATUS);
-		final ComponentName component = ComponentName.unflattenFromString(mShortenerName);
-		intent.setComponent(component);
-		mToken = bindToService(mContext, intent, mConnection);
-		while (mIInterface == null) {
-			try {
-				Thread.sleep(100L);
-			} catch (final InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    public final void waitForService() {
+        final Intent intent = new Intent(INTENT_ACTION_EXTENSION_SHORTEN_STATUS);
+        final ComponentName component = ComponentName.unflattenFromString(mShortenerName);
+        intent.setComponent(component);
+        mToken = bindToService(mContext, intent, mConnection);
+        while (mIInterface == null) {
+            try {
+                Thread.sleep(100L);
+            } catch (final InterruptedException e) {
+                Log.w(LOGTAG, e);
+            }
+        }
+    }
 
 }

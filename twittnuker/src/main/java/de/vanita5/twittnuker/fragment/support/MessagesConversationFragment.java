@@ -84,13 +84,12 @@ import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.model.ParcelableUser.CachedIndices;
+import de.vanita5.twittnuker.model.ParcelableUserCursorIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -107,10 +106,10 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.TakeAllKeyboardShortc
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereValidator;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.view.ComposeEditText;
 
@@ -118,6 +117,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import me.uucky.colorpicker.internal.EffectViewHelper;
 
@@ -143,7 +144,8 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
             final String query = args.getString(EXTRA_QUERY);
             final boolean fromCache = args.getBoolean(EXTRA_FROM_CACHE);
             final boolean fromUser = args.getBoolean(EXTRA_FROM_USER, false);
-            return new CacheUserSearchLoader(getActivity(), accountId, query, fromCache, fromUser);
+            return new CacheUserSearchLoader(MessagesConversationFragment.this, accountId, query,
+                    fromCache, fromUser);
         }
 
         @Override
@@ -164,7 +166,6 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 
     // Utility classes
     private TwidereValidator mValidator;
-    private SharedPreferencesWrapper mPreferences;
     private SharedPreferences mMessageDrafts;
     private EffectViewHelper mEffectHelper;
 
@@ -229,8 +230,6 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         super.onActivityCreated(savedInstanceState);
 
         final BaseAppCompatActivity activity = (BaseAppCompatActivity) getActivity();
-        mPreferences = SharedPreferencesWrapper.getInstance(activity, SHARED_PREFERENCES_NAME,
-                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
         mMessageDrafts = getSharedPreferences(MESSAGE_DRAFTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mValidator = new TwidereValidator(activity);
 
@@ -826,9 +825,11 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
 
     public static class CacheUserSearchLoader extends UserSearchLoader {
         private final boolean mFromCache;
+        private final UserColorNameManager mUserColorNameManager;
 
-        public CacheUserSearchLoader(Context context, long accountId, String query, boolean fromCache, boolean fromUser) {
-            super(context, accountId, query, 0, null, fromUser);
+        public CacheUserSearchLoader(MessagesConversationFragment fragment, long accountId, String query, boolean fromCache, boolean fromUser) {
+            super(fragment.getContext(), accountId, query, 0, null, fromUser);
+            mUserColorNameManager = fragment.mUserColorNameManager;
             mFromCache = fromCache;
         }
 
@@ -856,10 +857,10 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
                 final Cursor c = context.getContentResolver().query(CachedUsers.CONTENT_URI,
                         CachedUsers.BASIC_COLUMNS, selection != null ? selection.getSQL() : null,
                         selectionArgs, orderBy.getSQL());
-                final CachedIndices i = new CachedIndices(c);
+                final ParcelableUserCursorIndices i = new ParcelableUserCursorIndices(c);
                 c.moveToFirst();
                 while (!c.isAfterLast()) {
-                    cachedList.add(new ParcelableUser(c, i, -1));
+                    cachedList.add(i.newObject(c));
                     c.moveToNext();
                 }
                 c.close();
@@ -897,14 +898,16 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         }
     }
 
-    static class SetReadStateTask extends AsyncTask<Object, Object, Cursor> {
+    public static class SetReadStateTask extends AsyncTask<Object, Object, Cursor> {
         private final Context mContext;
-        private final ReadStateManager mReadStateManager;
         private final ParcelableCredentials mAccount;
         private final ParcelableUser mRecipient;
 
+        @Inject
+        ReadStateManager mReadStateManager;
+
         public SetReadStateTask(Context context, ParcelableCredentials account, ParcelableUser recipient) {
-            mReadStateManager = ApplicationModule.get(context).getReadStateManager();
+            GeneralComponentHelper.build(context).inject(this);
             mContext = context;
             mAccount = account;
             mRecipient = recipient;

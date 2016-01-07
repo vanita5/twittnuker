@@ -27,6 +27,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.apache.commons.lang3.text.translate.EntityArrays;
 import org.apache.commons.lang3.text.translate.LookupTranslator;
@@ -39,7 +40,6 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
-import de.vanita5.twittnuker.api.twitter.model.impl.StatusImpl;
 import de.vanita5.twittnuker.common.R;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.util.collection.LongSparseMap;
@@ -171,10 +171,16 @@ public class TwitterContentUtils {
     }
 
     private static final CharSequenceTranslator UNESCAPE_TWITTER_RAW_TEXT = new LookupTranslator(EntityArrays.BASIC_UNESCAPE());
+    private static final CharSequenceTranslator ESCAPE_TWITTER_RAW_TEXT = new LookupTranslator(EntityArrays.BASIC_ESCAPE());
 
     public static String unescapeTwitterStatusText(final CharSequence text) {
         if (text == null) return null;
         return UNESCAPE_TWITTER_RAW_TEXT.translate(text);
+    }
+
+    public static String escapeTwitterStatusText(final CharSequence text) {
+        if (text == null) return null;
+        return ESCAPE_TWITTER_RAW_TEXT.translate(text);
     }
 
     public static <T extends List<Status>> T getStatusesWithQuoteData(Twitter twitter, @NonNull T list) throws TwitterException {
@@ -188,7 +194,8 @@ public class TwitterContentUtils {
             for (int i = entities.length - 1; i >= 0; i--) {
                 final Matcher m = PATTERN_TWITTER_STATUS_LINK.matcher(entities[i].getExpandedUrl());
                 if (!m.matches()) continue;
-                final long quoteId = ParseUtils.parseLong(m.group(3), -1);
+                final long def = -1;
+                final long quoteId = NumberUtils.toLong(m.group(3), def);
                 if (quoteId > 0) {
                     quotes.put(quoteId, status);
                 }
@@ -208,7 +215,7 @@ public class TwitterContentUtils {
                 // This set shouldn't be null here, add null check to make inspector happy.
                 if (orig == null) continue;
                 for (Status status : orig) {
-                    StatusImpl.setQuotedStatus(status, quoted);
+                    Status.setQuotedStatus(status, quoted);
                 }
             }
         }

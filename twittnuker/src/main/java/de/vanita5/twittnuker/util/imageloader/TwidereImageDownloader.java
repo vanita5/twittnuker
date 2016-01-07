@@ -45,17 +45,16 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.RequestType;
-import de.vanita5.twittnuker.util.MediaPreviewUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -68,18 +67,19 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
 
     private final Context mContext;
     private final SharedPreferencesWrapper mPreferences;
-    private final String mUserAgent;
     private final RestHttpClient mClient;
+
+    private final String mUserAgent;
+
     private final String mTwitterProfileImageSize;
 
-    public TwidereImageDownloader(final Context context, final RestHttpClient client) {
+    public TwidereImageDownloader(final Context context, SharedPreferencesWrapper preferences, RestHttpClient client) {
         super(context);
         mContext = context;
-        mPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME,
-                Context.MODE_PRIVATE, SharedPreferenceConstants.class);
+        mPreferences = preferences;
+        mClient = client;
         mTwitterProfileImageSize = context.getString(R.string.profile_image_size);
         mUserAgent = UserAgentUtils.getDefaultUserAgentString(context);
-        mClient = client;
         reloadConnectivitySettings();
     }
 
@@ -90,7 +90,7 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
     @Override
     protected InputStream getStreamFromNetwork(final String uriString, final Object extras) throws IOException {
         if (uriString == null) return null;
-        final ParcelableMedia media = MediaPreviewUtils.getAllAvailableImage(uriString, extras instanceof FullImageExtra, mClient);
+        final ParcelableMedia media = PreviewMediaExtractor.fromLink(uriString, mClient, extras);
         try {
             final String mediaUrl = media != null ? media.media_url : uriString;
             if (isTwitterProfileImage(uriString)) {

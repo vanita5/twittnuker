@@ -242,7 +242,7 @@
     <string name="status_shortener">推文縮短服務</string>
     <string name="status_shortener_default">無（不發送過長推文）</string>
     <string name="error_message_status_too_long">推文太長</string>
-    <string name="error_message_message_too_long">資訊太長</string>
+    <string name="error_message_message_too_long">訊息過長</string>
     <string name="error_message_no_content">沒有內容</string>
     <string name="error_message_tweet_shorten_failed">推文縮短失敗</string>
     <string name="error_message_tweet_shortener_not_found">未找到推文縮短擴展，它可能已經被移除</string>
@@ -385,7 +385,7 @@
     <string name="preview_images">推文預覽圖片</string>
     <string name="preload_wifi_only">僅使用 Wi-Fi 預加載</string>
     <string name="sign_in_method_introduction_title">輸入密碼登錄是怎樣工作的？</string>
-    <string name="sign_in_method_introduction">很多客戶端打開網頁登錄到Twitter。這在使用自定義API或是網速緩慢時可能會有所不便。Twidere模擬普通的瀏覽器幫助登錄到Twitter。毋須擔心，你的密碼永遠不會被儲存或者被洩露。</string>
+    <string name="sign_in_method_introduction">很多客戶端打開網頁登錄到Twitter。這在使用自定義API或是網速緩慢時可能會有所不便。Twittnuker模擬普通的瀏覽器幫助登錄到Twitter。毋須擔心，你的密碼永遠不會被儲存或者被洩露。</string>
     <string name="quote_protected_status_notice">不建議引用受保護的推文</string>
     <string name="edit_draft">編輯草稿</string>
     <string name="profile_image">個人資料圖片</string>
@@ -488,7 +488,7 @@
     <string name="wizard_page_tabs_unchanged_message">您可以稍後在設定中新增標籤頁</string>
     <string name="wizard_page_cards_text">設定卡片項目。</string>
     <string name="wizard_page_hints_text">這裡有一些有用的小提示。</string>
-    <!--<string name="wizard_page_usage_statistics_text">Twidere加入了一些需要收集使用資訊的研究項目。</string>-->
+    <!--<string name="wizard_page_usage_statistics_text">Twittnuker加入了一些需要收集使用資訊的研究項目。</string>-->
     <string name="wizard_page_finished_title">完成</string>
     <string name="wizard_page_finished_text">現在 Twittnuker 已經可以使用了。</string>
     <string name="invalid_tab">無效標籤頁</string>
@@ -614,7 +614,7 @@
     <string name="N_media_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g>媒體</string>
     <string name="delete_drafts_confirm">刪除選擇的草稿？</string>
     <string name="extra_configurations">額外設定</string>
-    <string name="click_item_to_config">點擊一項以設定</string>
+    <string name="click_item_to_configure">點擊一項以設定</string>
     <string name="dark_drawer">暗色側欄</string>
     <string name="retweets_of_me">轉推我的內容</string>
     <string name="from_gallery">來自相簿</string>
@@ -693,14 +693,14 @@
     <string name="unknown_location">未知位置</string>
     <!--<string name="ellipsis">&#8230;</string>-->
     <string name="import_export_settings">導入/導出設定</string>
-    <!--<string name="usage_statistics_header_summary">Twidere參與了一些研究項目，加入這些項目幫助Twidere和更多應用做得更好。</string>-->
+    <!--<string name="usage_statistics_header_summary">Twittnuker參與了一些研究項目，加入這些項目幫助Twittnuker和更多應用做得更好。</string>-->
     <string name="no_tab">沒有標籤頁</string>
     <string name="user_protected_summary">你需要向這個受保護的用戶發送關注請求來查看推文</string>
     <string name="no_account">沒有帳號</string>
-    <!--<string name="permission_description_shorten_status">應用程序可以為Twidere縮短推文，所以它可以訪問你正在發送的推文。</string>-->
-    <!--<string name="permission_description_upload_media">應用程序可以為Twidere上傳媒體，所以它可以訪問你正在發送的推文中的媒體。</string>-->
-    <!--<string name="permission_description_sync_timeline">應用程序可以為Twidere同步閱讀位置，所以它可以訪問你的閱讀位置。</string>-->
-    <!--<string name="usage_statistics_notification_summary">幫助我們改進Twidere！</string>-->
+    <!--<string name="permission_description_shorten_status">應用程序可以為Twittnuker縮短推文，所以它可以訪問你正在發送的推文。</string>-->
+    <!--<string name="permission_description_upload_media">應用程序可以為Twittnuker上傳媒體，所以它可以訪問你正在發送的推文中的媒體。</string>-->
+    <!--<string name="permission_description_sync_timeline">應用程序可以為Twittnuker同步閱讀位置，所以它可以訪問你的閱讀位置。</string>-->
+    <!--<string name="usage_statistics_notification_summary">幫助我們改進Twittnuker！</string>-->
     <string name="from_name">來自<xliff:g id="name">%1$s</xliff:g></string>
     <string name="from_name_and_name">來自<xliff:g id="name">%1$s</xliff:g>和<xliff:g id="name">%2$s</xliff:g></string>
     <string name="from_name_and_N_others">來自<xliff:g id="name">%1$s</xliff:g>和其他<xliff:g id="name">%2$d</xliff:g>人</string>
@@ -742,7 +742,7 @@
     <string name="press_again_to_close">再次按下以關閉</string>
     <string name="name_not_set"><xliff:g id="name">%s</xliff:g>沒有設定</string>
     <string name="swipe_down_to_refresh">下拉以刷新</string>
-    <string name="app_restart_confirm">Twidere將重啟以應用設定</string>
+    <string name="app_restart_confirm">Twittnuker將重啟以應用設定</string>
     <string name="dont_restart">不重啟</string>
     <string name="user_list_details">列表詳情</string>
     <string name="invalid_list_name">只能包含字母、數字、“-”和“_”且必須以字母開始</string>
@@ -762,7 +762,7 @@
     <!--<string name="enable_streaming">啟用實時流</string>-->
     <string name="dark_theme">暗色主題</string>
     <string name="wizard_hint_title_location_requirement">位置許可權</string>
-    <string name="wizard_hint_summary_location_requirement">在你發送含有位置的推文時，Twidere需要位置許可權</string>
+    <string name="wizard_hint_summary_location_requirement">在你發送含有位置的推文時，Twittnuker需要位置許可權</string>
     <!--<string name="scrapyard">垃圾場</string>-->
     <string name="crop_image">裁剪圖像</string>
     <string name="usage_label_sent">已發送</string>
@@ -770,7 +770,7 @@
     <string name="this_month">本月</string>
     <string name="media_preload">媒體預載入</string>
     <string name="on_mobile_network">使用移動網絡</string>
-    <string name="set_consumer_key_secret_message">Twidere 的令牌將要用完了。你需要在 https://apps.twitter.com/ 創建一個應用並把 consumer key and secret 粘貼在下面。\n如果你繼續使用默認的key，可能會沒法登錄。</string>
+    <string name="set_consumer_key_secret_message">Twittnuker 的令牌將要用完了。你需要在 https://apps.twitter.com/ 創建一個應用並把 consumer key and secret 粘貼在下面。\n如果你繼續使用默認的key，可能會沒法登錄。</string>
     <string name="send_at">發送於</string>
     <string name="scheduled_statuses">被排期推文</string>
     <!--<string name="report_usage_statistics_now">立即彙報使用情況</string>-->

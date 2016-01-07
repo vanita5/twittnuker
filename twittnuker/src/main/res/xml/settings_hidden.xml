@@ -21,8 +21,10 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:title="@string/hidden_settings">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/hidden_settings">
 
     <Preference android:layout="@layout/header_hidden_settings"/>
 
@@ -30,6 +32,18 @@
         android:defaultValue="false"
         android:key="force_using_private_apis"
         android:title="@string/force_using_private_apis"/>
+    <de.vanita5.twittnuker.preference.SeekBarDialogPreference
+        android:defaultValue="10"
+        android:key="connection_timeout"
+        android:title="@string/connection_timeout"
+        app:max="30"
+        app:min="5"
+        app:progressTextSuffix="s"/>
+    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        android:defaultValue="false"
+        android:key="ignore_ssl_error"
+        android:summary="@string/ignore_ssl_error_summary"
+        android:title="@string/ignore_ssl_error"/>
 
     <de.vanita5.twittnuker.preference.AutoFixEditTextPreference
         android:defaultValue="140"
@@ -43,4 +57,9 @@
         	android:targetPackage="de.vanita5.twittnuker"/>
     </Preference>
 
+    <Preference android:title="Leaks">
+        <intent
+            android:targetClass="com.squareup.leakcanary.internal.DisplayLeakActivity"
+            android:targetPackage="de.vanita5.twittnuker"/>
+    </Preference>
 </PreferenceScreen>

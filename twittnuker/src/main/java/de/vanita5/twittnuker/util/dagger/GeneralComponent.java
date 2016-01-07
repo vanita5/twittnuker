@@ -43,16 +43,26 @@ import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
 import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
-import de.vanita5.twittnuker.provider.TwidereCommandProvider;
+import de.vanita5.twittnuker.fragment.support.CacheDownloadFragment;
+import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
+import de.vanita5.twittnuker.loader.support.CacheDownloadLoader;
+import de.vanita5.twittnuker.preference.AccountsListPreference;
+import de.vanita5.twittnuker.provider.CacheProvider;
 import de.vanita5.twittnuker.provider.TwidereDataProvider;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
+import de.vanita5.twittnuker.text.util.EmojiEditableFactory;
+import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
+import de.vanita5.twittnuker.util.net.TwidereProxySelector;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+
+import javax.inject.Singleton;
 
 import dagger.Component;
 
+@Singleton
 @Component(modules = ApplicationModule.class)
 public interface GeneralComponent {
     void inject(StatusViewHolder.DummyStatusHolderAdapter object);
@@ -72,8 +82,6 @@ public interface GeneralComponent {
     void inject(RefreshService object);
 
     void inject(ThemedFragmentActivity object);
-
-    void inject(TwidereCommandProvider object);
 
     void inject(TwidereDataProvider object);
 
@@ -106,4 +114,22 @@ public interface GeneralComponent {
     void inject(BaseFiltersFragment.FilteredUsersFragment.FilterUsersListAdapter object);
 
     void inject(AccountsDashboardFragment.OptionItemsAdapter object);
+
+    void inject(EmojiSpannableFactory object);
+
+    void inject(EmojiEditableFactory object);
+
+    void inject(AccountsListPreference.AccountItemPreference object);
+
+    void inject(TwidereProxySelector object);
+
+    void inject(MessagesConversationFragment.SetReadStateTask object);
+
+    void inject(DependencyHolder object);
+
+    void inject(CacheDownloadLoader object);
+
+    void inject(CacheProvider object);
+
+    void inject(CacheDownloadFragment.MediaDownloader object);
 }

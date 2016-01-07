@@ -22,26 +22,52 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.MediaUploadResponseImpl;
+@JsonObject
+public class MediaUploadResponse extends TwitterResponseObject implements TwitterResponse {
 
-@Implementation(MediaUploadResponseImpl.class)
-public interface MediaUploadResponse extends TwitterResponse {
+    public long getId() {
+        return mediaId;
+    }
 
-    long getId();
+    public Image getImage() {
+        return image;
+    }
 
-    Image getImage();
+    public long getSize() {
+        return size;
+    }
 
-    long getSize();
+    @JsonField(name = "media_id")
+    long mediaId;
+    @JsonField(name = "size")
+    long size;
+    @JsonField(name = "image")
+    Image image;
 
-    @Implementation(MediaUploadResponseImpl.ImageImpl.class)
-    interface Image {
 
-        int getHeight();
+    @JsonObject
+    public static class Image {
 
-        String getImageType();
+        @JsonField(name = "width")
+        int width;
+        @JsonField(name = "height")
+        int height;
+        @JsonField(name = "image_type")
+        String imageType;
 
-        int getWidth();
+        public int getHeight() {
+            return height;
+        }
+
+        public String getImageType() {
+            return imageType;
+        }
+
+        public int getWidth() {
+            return width;
+        }
     }
 }

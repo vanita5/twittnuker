@@ -153,3 +153,8 @@
 }
 
 -dontwarn com.damnhandy.uri.template.jackson.datatype.**
+
+# leakcanary
+-keep class org.eclipse.mat.** { *; }
+-keep class com.squareup.leakcanary.** { *; }
+-dontwarn com.squareup.leakcanary.DisplayLeakService

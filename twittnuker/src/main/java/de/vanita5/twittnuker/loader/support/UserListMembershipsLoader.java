@@ -24,37 +24,36 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 
-import de.vanita5.twittnuker.model.ParcelableUserList;
-
 import java.util.List;
 
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.model.ParcelableUserList;
 
 public class UserListMembershipsLoader extends BaseUserListsLoader {
 
-	private final long mUserId;
-	private final String mScreenName;
+    private final long mUserId;
+    private final String mScreenName;
 
-	public UserListMembershipsLoader(final Context context, final long account_id, final long user_id,
-			final String screen_name, final long cursor, final List<ParcelableUserList> data) {
-		super(context, account_id, cursor, data);
-		mUserId = user_id;
-		mScreenName = screen_name;
-	}
+    public UserListMembershipsLoader(final Context context, final long account_id, final long user_id,
+                                     final String screen_name, final long cursor, final List<ParcelableUserList> data) {
+        super(context, account_id, cursor, data);
+        mUserId = user_id;
+        mScreenName = screen_name;
+    }
 
-	@Override
-	public PageableResponseList<UserList> getUserLists(final Twitter twitter) throws TwitterException {
-		if (twitter == null) return null;
+    @Override
+    public PageableResponseList<UserList> getUserLists(final Twitter twitter) throws TwitterException {
+        if (twitter == null) return null;
         final Paging paging = new Paging();
         paging.cursor(getCursor());
-		if (mUserId > 0)
+        if (mUserId > 0)
             return twitter.getUserListMemberships(mUserId, paging);
         else if (mScreenName != null) return twitter.getUserListMemberships(mScreenName, paging);
-		return null;
-	}
+        return null;
+    }
 
 }

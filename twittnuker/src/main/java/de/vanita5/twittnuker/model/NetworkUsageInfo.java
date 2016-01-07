@@ -30,7 +30,7 @@ import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
-import de.vanita5.twittnuker.util.MathUtils;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -90,7 +90,7 @@ public class NetworkUsageInfo {
         double dayUsageMax = 0;
         for (int i = 0; i < days; i++) {
             final double[] dayUsage = chartUsage[i];
-            dayUsageMax = Math.max(dayUsageMax, MathUtils.sum(dayUsage));
+            dayUsageMax = Math.max(dayUsageMax, TwidereMathUtils.sum(dayUsage));
         }
 
         return new NetworkUsageInfo(chartUsage, usageTotal, totalReceived, totalSent, dayUsageMax, dayMin, dayMax);

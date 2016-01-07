@@ -23,10 +23,10 @@
 package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.view.View;
 
+import org.mariotaku.library.objectcursor.ObjectCursor;
 import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 
 import java.util.List;
@@ -48,8 +48,21 @@ public class ParcelableActivitiesAdapter extends AbsActivitiesAdapter<List<Parce
 
 
     @Override
-    protected int getActivityAction(int position) {
+    public String getActivityAction(int position) {
+        if (mData instanceof ObjectCursor) {
+            final ParcelableActivityCursorIndices indices = (ParcelableActivityCursorIndices) ((ObjectCursor) mData).getIndices();
+            return ((ObjectCursor) mData).getCursor(position).getString(indices.action);
+        }
         return mData.get(position).action;
+    }
+
+    @Override
+    public long getTimestamp(int position) {
+        if (mData instanceof ObjectCursor) {
+            final ParcelableActivityCursorIndices indices = (ParcelableActivityCursorIndices) ((ObjectCursor) mData).getIndices();
+            return ((ObjectCursor) mData).getCursor(position).getLong(indices.timestamp);
+        }
+        return mData.get(position).timestamp;
     }
 
     @Override
@@ -59,23 +72,13 @@ public class ParcelableActivitiesAdapter extends AbsActivitiesAdapter<List<Parce
     }
 
     @Override
-    public void onItemActionClick(ViewHolder holder, int id, int position) {
-
-    }
-
-    @Override
     public int getActivityCount() {
         if (mData == null) return 0;
         return mData.size();
     }
 
     @Override
-    public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
-
-    }
-
-    @Override
-    public void setData(List<ParcelableActivity> data) {
+    protected void onSetData(List<ParcelableActivity> data) {
         mData = data;
         notifyDataSetChanged();
     }

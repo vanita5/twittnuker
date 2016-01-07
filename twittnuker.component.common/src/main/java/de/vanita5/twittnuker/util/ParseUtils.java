@@ -117,71 +117,12 @@ public final class ParseUtils {
                     Log.w(TwittnukerConstants.LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
                 }
             }
-        } catch (final JSONException e) {
-            e.printStackTrace();
-        } catch (final ClassCastException e) {
+        } catch (final JSONException | ClassCastException e) {
             e.printStackTrace();
         }
         return bundle;
     }
 
-    public static double parseDouble(final String source) {
-        return parseDouble(source, -1);
-    }
-
-    public static double parseDouble(final String source, final double def) {
-        if (source == null) return def;
-        try {
-            return Double.parseDouble(source);
-        } catch (final NumberFormatException e) {
-            // Wrong number format? Ignore them.
-        }
-        return def;
-    }
-
-    public static float parseFloat(final String source) {
-        return parseFloat(source, -1);
-    }
-
-    public static float parseFloat(final String source, final float def) {
-        if (source == null) return def;
-        try {
-            return Float.parseFloat(source);
-        } catch (final NumberFormatException e) {
-            // Wrong number format? Ignore them.
-        }
-        return def;
-    }
-
-    public static int parseInt(final String source) {
-        return parseInt(source, -1);
-    }
-
-    public static int parseInt(final String source, final int def) {
-        if (source == null) return def;
-        try {
-            return Integer.valueOf(source);
-        } catch (final NumberFormatException e) {
-            // Wrong number format? Ignore them.
-        }
-        return def;
-    }
-
-    public static long parseLong(final String source) {
-        return parseLong(source, -1);
-    }
-
-    public static long parseLong(final String source, final long def) {
-        if (source == null) return def;
-        try {
-            return Long.parseLong(source);
-        } catch (final NumberFormatException e) {
-            // Wrong number format? Ignore them.
-        }
-        return def;
-    }
-
-    @Deprecated
     public static String parseString(final String object) {
         return object;
     }
@@ -201,26 +142,6 @@ public final class ParseUtils {
     public static String parseString(final Object object, final String def) {
         if (object == null) return def;
         return String.valueOf(object);
-    }
-
-    public static URI parseURI(final String uriString) {
-        if (uriString == null) return null;
-        try {
-            return new URI(uriString);
-        } catch (final URISyntaxException e) {
-            // This should not happen.
-        }
-        return null;
-    }
-
-    public static URL parseURL(final String urlString) {
-        if (urlString == null) return null;
-        try {
-            return new URL(urlString);
-        } catch (final MalformedURLException e) {
-            // This should not happen.
-        }
-        return null;
     }
 
     private static boolean shouldPutLong(final String key) {

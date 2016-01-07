@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -53,7 +54,7 @@ public class UserSearchLoader extends TwitterAPIUsersLoader {
     }
 
     @Override
-    public List<User> getUsers(final Twitter twitter) throws TwitterException {
+    public List<User> getUsers(@NonNull final Twitter twitter) throws TwitterException {
         if (twitter == null) return null;
         final Paging paging = new Paging();
         paging.page(mPage);

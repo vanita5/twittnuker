@@ -28,12 +28,13 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.support.v4.util.LongSparseArray;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 
 import java.util.Map;
 import java.util.Set;
@@ -54,10 +55,6 @@ public class UserColorNameManager implements TwittnukerConstants {
 
         final SharedPreferences prefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
         prefs.registerOnSharedPreferenceChangeListener(new OnColorPreferenceChangeListener(listener));
-    }
-
-    public static UserColorNameManager getInstance(Context context) {
-        return ApplicationModule.get(context).getUserColorNameManager();
     }
 
     public void clearUserColor(final long userId) {
@@ -120,7 +117,8 @@ public class UserColorNameManager implements TwittnukerConstants {
 
         @Override
         public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-            final long userId = ParseUtils.parseLong(key, -1);
+            final long def = -1;
+            final long userId = NumberUtils.toLong(key, def);
             if (mListener != null) {
                 mListener.onUserColorChanged(userId, sharedPreferences.getInt(key, 0));
             }

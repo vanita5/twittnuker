@@ -11,7 +11,7 @@ buildscript {
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.11.3'
         classpath 'com.android.tools.build:gradle:1.5.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath('fr.avianey.androidsvgdrawable:gradle-plugin:2.0.0') {
+        classpath('fr.avianey.androidsvgdrawable:gradle-plugin:3.0.0') {
             // should be excluded to avoid conflict
             exclude group: 'xerces'
         }
@@ -31,10 +31,11 @@ allprojects {
 
 subprojects {
     afterEvaluate { project ->
+
         if (project.hasProperty('android')) {
             android {
                 compileSdkVersion 23
-                buildToolsVersion '23.0.1'
+                buildToolsVersion '23.0.2'
 
                 lintOptions {
                     abortOnError false
@@ -51,13 +52,17 @@ subprojects {
                     exclude 'META-INF/notice.txt'
                     exclude 'META-INF/ASL2.0'
                 }
+
+                if (System.getenv('TRAVIS') == 'true') {
+                    dexOptions {
+                        preDexLibraries = false;
+                    }
+                }
+
             }
         }
 
-        if (project.plugins.hasPlugin('com.android.application')) {
-            android {
-            }
-        }
+
     }
 
 }
@@ -68,4 +73,13 @@ task clean(type: Delete) {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.9'
+}
+
+def loadSigningConfig(def cfg, def file) {
+    Properties signingProp = new Properties()
+    signingProp.load(file.newInputStream())
+    cfg.setStoreFile(new File((String) signingProp.get('storeFile')))
+    cfg.setStorePassword((String) signingProp.get('storePassword'))
+    cfg.setKeyAlias((String) signingProp.get('keyAlias'))
+    cfg.setKeyPassword((String) signingProp.get('keyPassword'))
 }

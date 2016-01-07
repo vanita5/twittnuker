@@ -35,9 +35,9 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.IntentSupport;
 
@@ -120,7 +120,7 @@ public class TwitterLinkHandlerActivity extends Activity implements Constants {
             startActivity(handled.first);
         } else {
             if (!handled.second) {
-//                AbsLogger.error(new TwitterLinkException("Unable to handle twitter uri " + uri));
+//                BugReporter.error(new TwitterLinkException("Unable to handle twitter uri " + uri));
             }
             final String packageName = mPreferences.getString(KEY_FALLBACK_TWITTER_LINK_HANDLER, null);
             final Intent fallbackIntent = new Intent(Intent.ACTION_VIEW, uri);
@@ -244,7 +244,8 @@ public class TwitterLinkHandlerActivity extends Activity implements Constants {
                 }
             }
         } else if (segsSize >= 3) {
-            if ("status".equals(pathSegments.get(1)) && ParseUtils.parseLong(pathSegments.get(2), -1) != -1) {
+            final long def = -1;
+            if ("status".equals(pathSegments.get(1)) && NumberUtils.toLong(pathSegments.get(2), def) != -1) {
                 final Uri.Builder builder = new Uri.Builder();
                 builder.scheme(SCHEME_TWITTNUKER);
                 builder.authority(AUTHORITY_STATUS);

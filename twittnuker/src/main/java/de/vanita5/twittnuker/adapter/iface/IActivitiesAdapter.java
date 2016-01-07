@@ -40,4 +40,8 @@ public interface IActivitiesAdapter<Data> extends IContentCardAdapter, IGapSuppo
     boolean shouldUseStarsForLikes();
 
     MediaLoadingHandler getMediaLoadingHandler();
+
+    boolean isMediaPreviewEnabled();
+
+    boolean shouldShowAccountsColor();
 }

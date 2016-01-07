@@ -34,15 +34,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Deprecated
 public final class AsyncTaskManager {
 
     private final CopyOnWriteArrayList<ManagedAsyncTask<?, ?, ?>> mTasks = new CopyOnWriteArrayList<>();
     private final Handler mHandler;
     private final ExecutorService mExecutor;
-    private static AsyncTaskManager sInstance;
 
-    AsyncTaskManager() {
+    public AsyncTaskManager() {
         this(new Handler(Looper.getMainLooper()));
     }
 
@@ -112,6 +110,14 @@ public final class AsyncTaskManager {
         return false;
     }
 
+    public void cancel(final String tag) {
+        for (final ManagedAsyncTask<?, ?, ?> task : getTaskSpecList()) {
+            if (tag.equals(task.getTag())) {
+                task.cancel(true);
+            }
+        }
+    }
+
     public boolean isExecuting(final int hashCode) {
         final ManagedAsyncTask<?, ?, ?> task = findTask(hashCode);
         return task != null && task.getStatus() == AsyncTask.Status.RUNNING;
@@ -131,12 +137,4 @@ public final class AsyncTaskManager {
         }
         return null;
     }
-
-    public static AsyncTaskManager getInstance() {
-        if (sInstance == null) {
-            sInstance = new AsyncTaskManager();
-        }
-        return sInstance;
-    }
-
 }

@@ -22,103 +22,211 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.library.logansquare.extension.annotation.EnumClass;
-import org.mariotaku.library.logansquare.extension.annotation.Implementation;
+import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.twitter.model.impl.ActivityImpl;
-import de.vanita5.twittnuker.util.AbsLogger;
+import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 
-@Implementation(ActivityImpl.class)
-public interface Activity extends TwitterResponse, Comparable<Activity> {
+public class Activity extends TwitterResponseObject implements TwitterResponse, Comparable<Activity> {
 
-    int ACTION_UNKNOWN = 0x00;
-    int ACTION_FAVORITE = 0x01;
-    int ACTION_FOLLOW = 0x02;
-    int ACTION_MENTION = 0x03;
-    int ACTION_REPLY = 0x04;
-    int ACTION_RETWEET = 0x05;
-    int ACTION_LIST_MEMBER_ADDED = 0x06;
-    int ACTION_LIST_CREATED = 0x07;
-    int ACTION_FAVORITED_RETWEET = 0x08;
-    int ACTION_RETWEETED_RETWEET = 0x09;
-    int ACTION_QUOTE = 0x0A;
-    int ACTION_RETWEETED_MENTION = 0x0B;
-    int ACTION_FAVORITED_MENTION = 0x0C;
-    int ACTION_JOINED_TWITTER = 0x0D;
-    int ACTION_MEDIA_TAGGED = 0x0E;
-    int ACTION_FAVORITED_MEDIA_TAGGED = 0x0F;
-    int ACTION_RETWEETED_MEDIA_TAGGED = 0x10;
+    Action action;
+    String rawAction;
 
-    Action getAction();
+    Date createdAt;
 
-    Date getCreatedAt();
+    User[] sources;
+    User[] targetUsers;
+    User[] targetObjectUsers;
+    Status[] targetObjectStatuses, targetStatuses;
+    UserList[] targetUserLists, targetObjectUserLists;
+    long maxPosition, minPosition;
+    int targetObjectsSize, targetsSize, sourcesSize;
 
-    long getMaxPosition();
+    Activity() {
+    }
 
-    long getMinPosition();
+    public String getRawAction() {
+        return rawAction;
+    }
 
-    User[] getSources();
+    public User[] getTargetObjectUsers() {
+        return targetObjectUsers;
+    }
 
-    int getSourcesSize();
+    @Override
+    public int compareTo(@NonNull final Activity another) {
+        final Date thisDate = getCreatedAt(), thatDate = another.getCreatedAt();
+        if (thisDate == null || thatDate == null) return 0;
+        return thisDate.compareTo(thatDate);
+    }
 
-    int getTargetObjectsSize();
+    public Action getAction() {
+        return action;
+    }
 
-    Status[] getTargetObjectStatuses();
+    public Date getCreatedAt() {
+        return createdAt;
+    }
 
-    UserList[] getTargetObjectUserLists();
+    public long getMaxPosition() {
+        return maxPosition;
+    }
 
-    int getTargetsSize();
+    public long getMinPosition() {
+        return minPosition;
+    }
 
-    Status[] getTargetStatuses();
+    public User[] getSources() {
+        return sources;
+    }
 
-    UserList[] getTargetUserLists();
+    public int getSourcesSize() {
+        return sourcesSize;
+    }
 
-    User[] getTargetUsers();
+    public int getTargetObjectsSize() {
+        return targetObjectsSize;
+    }
 
-    User[] getTargetObjectUsers();
+    public Status[] getTargetObjectStatuses() {
+        return targetObjectStatuses;
+    }
 
+    public UserList[] getTargetObjectUserLists() {
+        return targetObjectUserLists;
+    }
 
-    @EnumClass
-    enum Action {
-        FAVORITE(ACTION_FAVORITE), FOLLOW(ACTION_FOLLOW), MENTION(ACTION_MENTION), REPLY(ACTION_REPLY),
-        RETWEET(ACTION_RETWEET), LIST_MEMBER_ADDED(ACTION_LIST_MEMBER_ADDED), LIST_CREATED(ACTION_LIST_CREATED),
-        FAVORITED_RETWEET(ACTION_FAVORITED_RETWEET), RETWEETED_RETWEET(ACTION_RETWEETED_RETWEET),
-        QUOTE(ACTION_QUOTE), RETWEETED_MENTION(ACTION_RETWEETED_MENTION),
-        FAVORITED_MENTION(ACTION_FAVORITED_MENTION), JOINED_TWITTER(ACTION_JOINED_TWITTER),
-        MEDIA_TAGGED(ACTION_MEDIA_TAGGED), FAVORITED_MEDIA_TAGGED(ACTION_FAVORITED_MEDIA_TAGGED),
-        RETWEETED_MEDIA_TAGGED(ACTION_RETWEETED_MEDIA_TAGGED), UNKNOWN(ACTION_UNKNOWN);
+    public int getTargetsSize() {
+        return targetsSize;
+    }
 
-        private final int actionId;
+    public Status[] getTargetStatuses() {
+        return targetStatuses;
+    }
 
-        Action(final int action) {
-            actionId = action;
+    public UserList[] getTargetUserLists() {
+        return targetUserLists;
+    }
+
+    public User[] getTargetUsers() {
+        return targetUsers;
+    }
+
+    @Override
+    public String toString() {
+        return "ActivityJSONImpl{" +
+                "action=" + action +
+                ", createdAt=" + createdAt +
+                ", sources=" + Arrays.toString(sources) +
+                ", targetUsers=" + Arrays.toString(targetUsers) +
+                ", targetObjectStatuses=" + Arrays.toString(targetObjectStatuses) +
+                ", targetStatuses=" + Arrays.toString(targetStatuses) +
+                ", targetUserLists=" + Arrays.toString(targetUserLists) +
+                ", targetObjectUserLists=" + Arrays.toString(targetObjectUserLists) +
+                ", maxPosition=" + maxPosition +
+                ", minPosition=" + minPosition +
+                ", targetObjectsSize=" + targetObjectsSize +
+                ", targetsSize=" + targetsSize +
+                ", sourcesSize=" + sourcesSize +
+                '}';
+    }
+
+    public static Activity fromMention(long accountId, Status status) {
+        final Activity activity = new Activity();
+
+        activity.maxPosition = activity.minPosition = status.getId();
+        activity.createdAt = status.getCreatedAt();
+
+        if (status.getInReplyToUserId() == accountId) {
+            activity.action = Action.REPLY;
+            activity.rawAction = "reply";
+            activity.targetStatuses = new Status[]{status};
+
+            //TODO set target statuses (in reply to status)
+            activity.targetObjectStatuses = new Status[0];
+        } else {
+            activity.action = Action.MENTION;
+            activity.rawAction = "mention";
+            activity.targetObjectStatuses = new Status[]{status};
+
+            // TODO set target users (mentioned users)
+            activity.targetUsers = null;
+        }
+        activity.sourcesSize = 1;
+        activity.sources = new User[]{status.getUser()};
+        return activity;
+    }
+
+    public enum Action {
+        FAVORITE("favorite"),
+        /**
+         * Sources: followers to targets (User)
+         * Targets: following user (User)
+         */
+        FOLLOW("follow"),
+        /**
+         * Targets: mentioned users (User)
+         * Target objects: mention status (Status)
+         */
+        MENTION("mention"),
+        /**
+         * Targets: reply status (Status)
+         * Target objects: in reply to status (Status)
+         */
+        REPLY("reply"),
+        RETWEET("retweet"),
+        LIST_MEMBER_ADDED("list_member_added"),
+        LIST_CREATED("list_created"),
+        FAVORITED_RETWEET("favorited_retweet"),
+        RETWEETED_RETWEET("retweeted_retweet"),
+        /**
+         * Targets: Quote result (Status)
+         * Target objects: Original status (Status)
+         */
+        QUOTE("quote"),
+        RETWEETED_MENTION("retweeted_mention"),
+        FAVORITED_MENTION("favorited_mention"),
+        JOINED_TWITTER("joined_twitter"),
+        MEDIA_TAGGED("media_tagged"),
+        FAVORITED_MEDIA_TAGGED("favorited_media_tagged"),
+        RETWEETED_MEDIA_TAGGED("retweeted_media_tagged"),
+        UNKNOWN(null);
+
+        public final String literal;
+
+        Action(final String literal) {
+            this.literal = literal;
         }
 
         public static Action parse(final String string) {
-            if ("favorite".equalsIgnoreCase(string)) return FAVORITE;
-            if ("follow".equalsIgnoreCase(string)) return FOLLOW;
-            if ("mention".equalsIgnoreCase(string)) return MENTION;
-            if ("reply".equalsIgnoreCase(string)) return REPLY;
-            if ("retweet".equalsIgnoreCase(string)) return RETWEET;
-            if ("list_member_added".equalsIgnoreCase(string)) return LIST_MEMBER_ADDED;
-            if ("list_created".equalsIgnoreCase(string)) return LIST_CREATED;
-            if ("favorited_retweet".equalsIgnoreCase(string)) return FAVORITED_RETWEET;
-            if ("retweeted_retweet".equalsIgnoreCase(string)) return RETWEETED_RETWEET;
-            if ("quote".equalsIgnoreCase(string)) return QUOTE;
-            if ("retweeted_mention".equalsIgnoreCase(string)) return RETWEETED_MENTION;
-            if ("favorited_mention".equalsIgnoreCase(string)) return FAVORITED_MENTION;
-            if ("joined_twitter".equalsIgnoreCase(string)) return JOINED_TWITTER;
-            if ("media_tagged".equalsIgnoreCase(string)) return MEDIA_TAGGED;
-            if ("favorited_media_tagged".equalsIgnoreCase(string)) return FAVORITED_MEDIA_TAGGED;
-            if ("retweeted_media_tagged".equalsIgnoreCase(string)) return RETWEETED_MEDIA_TAGGED;
-            AbsLogger.error("Unknown Twitter activity action " + string);
+            for (Action action : values()) {
+                if (StringUtils.equalsIgnoreCase(action.literal, string)) return action;
+            }
             return UNKNOWN;
         }
 
-        public int getActionId() {
-            return actionId;
+        public String getLiteral() {
+            return literal;
+        }
+
+        public static class Converter extends StringBasedTypeConverter<Action> {
+
+            @Override
+            public Action getFromString(String string) {
+                return Action.parse(string);
+            }
+
+            @Override
+            public String convertToString(Action object) {
+                if (object == null) return null;
+                return object.literal;
+            }
         }
     }
 }

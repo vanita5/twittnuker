@@ -35,9 +35,8 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IDirectMessagesAdapter;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
-import de.vanita5.twittnuker.model.ParcelableDirectMessage.CursorIndices;
+import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -63,7 +62,7 @@ public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHold
     private final MediaLoadingHandler mMediaLoadingHandler;
 
     private Cursor mCursor;
-    private CursorIndices mIndices;
+    private ParcelableDirectMessageCursorIndices mIndices;
     private TwidereLinkify mLinkify;
 
     public MessageConversationAdapter(final Context context) {
@@ -76,11 +75,6 @@ public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHold
         mMediaLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         mIncomingMessageColor = ThemeUtils.getUserAccentColor(context);
         mOutgoingMessageColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
-    }
-
-    @Override
-    public MediaLoaderWrapper getMediaLoader() {
-        return mMediaLoader;
     }
 
     public MediaLoadingHandler getMediaLoadingHandler() {
@@ -167,7 +161,7 @@ public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHold
         if (c == null || c.isClosed()) return null;
         c.moveToPosition(position);
         final long account_id = c.getLong(mIndices.account_id);
-        final long message_id = c.getLong(mIndices.message_id);
+        final long message_id = c.getLong(mIndices.id);
         return Utils.findDirectMessageInDatabases(getContext(), account_id, message_id);
     }
 
@@ -194,7 +188,7 @@ public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHold
 
     public void setCursor(final Cursor cursor) {
         if (cursor != null) {
-            mIndices = new CursorIndices(cursor);
+            mIndices = new ParcelableDirectMessageCursorIndices(cursor);
         } else {
             mIndices = null;
         }
