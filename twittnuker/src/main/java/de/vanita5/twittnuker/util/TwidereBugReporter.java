@@ -26,18 +26,16 @@ import android.app.Application;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-
-import io.fabric.sdk.android.Fabric;
 
 public class TwidereBugReporter extends BugReporter implements Constants {
 
     @Override
     protected void logImpl(@Nullable String message, @Nullable Throwable throwable) {
-        Log.d(LOGTAG, message, throwable);
+        if (BuildConfig.DEBUG) {
+            Log.d(LOGTAG, message, throwable);
+        }
     }
 
     @Override
@@ -49,23 +47,15 @@ public class TwidereBugReporter extends BugReporter implements Constants {
             if (BuildConfig.DEBUG) {
                 Log.w(LOGTAG, message, throwable);
             }
-
-            handleSilentException(new Exception(message, throwable));
             return;
         }
         if (BuildConfig.DEBUG) {
             Log.w(LOGTAG, throwable);
         }
-        handleSilentException(throwable);
-    }
-
-    private void handleSilentException(final Throwable throwable) {
-        Crashlytics.logException(throwable);
     }
 
     @Override
     protected void initImpl(final Application application) {
-        Fabric.with(application, new Crashlytics());
     }
 
 }
