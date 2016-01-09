@@ -29,13 +29,13 @@ import android.os.Build;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class BackgroundJobService extends JobService {
-	@Override
-	public boolean onStartJob(JobParameters params) {
-		return false;
-	}
+    @Override
+    public boolean onStartJob(JobParameters params) {
+        return false;
+    }
 
-	@Override
-	public boolean onStopJob(JobParameters params) {
-		return false;
-	}
+    @Override
+    public boolean onStopJob(JobParameters params) {
+        return false;
+    }
 }

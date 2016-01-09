@@ -29,7 +29,7 @@ import org.mariotaku.restfu.annotation.method.GET;
  */
 public interface TwitterUserStream {
 
-	@GET("/user.json")
-	void getUserStream(UserStreamCallback callback);
+    @GET("/user.json")
+    void getUserStream(UserStreamCallback callback);
 
 }

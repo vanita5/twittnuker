@@ -60,7 +60,6 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 import java.io.ByteArrayOutputStream;
@@ -79,7 +78,7 @@ public class StreamingService extends Service implements Constants {
     private AsyncTwitterWrapper mTwitterWrapper;
 
     private long[] mAccountIds;
-    private boolean isStreaming = false;
+    private boolean mNetworkOK;
 
     private static final Uri[] STATUSES_URIS = new Uri[]{Statuses.CONTENT_URI, Mentions.CONTENT_URI};
     private static final Uri[] MESSAGES_URIS = new Uri[]{DirectMessages.Inbox.CONTENT_URI,
@@ -91,17 +90,23 @@ public class StreamingService extends Service implements Constants {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
 
-            if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) {
-                if (BuildConfig.DEBUG) Log.d(Constants.LOGTAG, "StreamingService: Received NETWORK_STATE_CHANGED_ACTION");
-                NetworkInfo wifi = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-
-                if (wifi.isConnected() || mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) {
-                    initStreaming();
-                } else {
-                    clearTwitterInstances();
-                }
-            } else if (BROADCAST_REFRESH_STREAMING_SERVICE.equals(action)) {
-//                clearTwitterInstances();
+//            if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) {
+//                if (BuildConfig.DEBUG) Log.d(Constants.LOGTAG, "StreamingService: Received NETWORK_STATE_CHANGED_ACTION");
+//                NetworkInfo wifi = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+//
+//                if ((wifi.isConnected() && !mNetworkOK) || mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) {
+//                    mNetworkOK = true;
+//                    Log.d(LOGTAG, "Wifi OK");
+//                    initStreaming();
+//                } else {
+//                    mNetworkOK = false;
+//                    Log.d(LOGTAG, "Wifi BAD");
+//                    clearTwitterInstances();
+//                }
+//            } else
+            if (BROADCAST_REFRESH_STREAMING_SERVICE.equals(action)) {
+                Log.d(LOGTAG, "Refresh Streaming Service");
+                clearTwitterInstances();
                 initStreaming();
             }
         }
@@ -117,6 +122,7 @@ public class StreamingService extends Service implements Constants {
         @Override
         public void onChange(final boolean selfChange, final Uri uri) {
             if (!TwidereArrayUtils.contentMatch(mAccountIds, DataStoreUtils.getActivatedAccountIds(StreamingService.this))) {
+                clearTwitterInstances();
                 initStreaming();
             }
         }
@@ -140,8 +146,12 @@ public class StreamingService extends Service implements Constants {
         DependencyHolder holder = DependencyHolder.get(this);
         mTwitterWrapper = holder.getAsyncTwitterWrapper();
 
+//        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+//        NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+//        mNetworkOK = wifi.isConnected();
+
         IntentFilter filter = new IntentFilter();
-        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+//        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(BROADCAST_REFRESH_STREAMING_SERVICE);
         registerReceiver(mStateReceiver, filter);
 
@@ -165,22 +175,17 @@ public class StreamingService extends Service implements Constants {
             new Thread(new ShutdownStreamTwitterRunnable(mCallbacks.valueAt(i))).start();
         }
         mCallbacks.clear();
-        isStreaming = false;
-        mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
+        updateStreamState();
     }
 
     @SuppressWarnings("deprecation")
     private void initStreaming() {
         if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
 
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
-                || wifi.isConnected()) {
+//        if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
+//                || mNetworkOK) {
             setTwitterInstances();
-            updateStreamState();
-        }
+//        }
     }
 
     private boolean setTwitterInstances() {
@@ -214,17 +219,11 @@ public class StreamingService extends Service implements Constants {
                 @Override
                 public void run() {
                     twitter.getUserStream(callback);
-                    Log.d(Constants.LOGTAG, String.format("Stream %d disconnected", account.account_id));
-                    mCallbacks.remove(account.account_id);
-                    updateStreamState();
-                    try {
-                        Thread.sleep(60*1000*10);
-                    } catch (InterruptedException ignored) {}
-                    initStreaming();
                 }
             }.start();
             result |= true;
         }
+        updateStreamState();
         return result;
     }
 
@@ -235,9 +234,12 @@ public class StreamingService extends Service implements Constants {
     }
 
     private void updateStreamState() {
-        if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, true)) return;
+        Log.d(LOGTAG, "updateStreamState()");
+        if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, true)) {
+            mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
+            return;
+        }
         if (mCallbacks.size() > 0) {
-            isStreaming = true;
             final Intent intent = new Intent(this, HomeActivity.class);
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
             builder.setOngoing(true)
