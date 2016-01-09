@@ -22,31 +22,10 @@
 
 package de.vanita5.twittnuker.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import android.support.annotation.IntDef;
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Preference {
-
-    boolean defaultBoolean() default false;
-
-    float defaultFloat() default 0;
-
-    int defaultInt() default 0;
-
-    long defaultLong() default 0;
-
-    int defaultResource() default 0;
-
-    String defaultString() default "";
-
-    boolean exportable() default true;
-
-    boolean hasDefault() default false;
-
-    @PreferenceType int type() default PreferenceType.NULL;
-
+@IntDef({PreferenceType.BOOLEAN, PreferenceType.INT, PreferenceType.LONG, PreferenceType.FLOAT,
+        PreferenceType.STRING, PreferenceType.NULL, PreferenceType.INVALID})
+public @interface PreferenceType {
+    int BOOLEAN = 1, INT = 2, LONG = 3, FLOAT = 4, STRING = 5, NULL = 0, INVALID = -1;
 }

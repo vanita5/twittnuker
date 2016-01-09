@@ -26,10 +26,10 @@ import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.annotation.Preference;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 
-import static de.vanita5.twittnuker.annotation.Preference.Type.BOOLEAN;
-import static de.vanita5.twittnuker.annotation.Preference.Type.INT;
-import static de.vanita5.twittnuker.annotation.Preference.Type.LONG;
-import static de.vanita5.twittnuker.annotation.Preference.Type.STRING;
+import static de.vanita5.twittnuker.annotation.PreferenceType.BOOLEAN;
+import static de.vanita5.twittnuker.annotation.PreferenceType.INT;
+import static de.vanita5.twittnuker.annotation.PreferenceType.LONG;
+import static de.vanita5.twittnuker.annotation.PreferenceType.STRING;
 
 public interface SharedPreferenceConstants {
 
