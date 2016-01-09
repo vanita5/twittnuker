@@ -29,15 +29,15 @@ import org.mariotaku.restfu.http.SimpleValueMap;
  */
 public class UserListUpdate extends SimpleValueMap {
 
-	public void setDescription(String description) {
-		put("description", description);
-	}
+    public void setDescription(String description) {
+        put("description", description);
+    }
 
-	public void setName(String name) {
-		put("name", name);
-	}
+    public void setName(String name) {
+        put("name", name);
+    }
 
-    public void setMode(UserList.Mode mode) {
-        put("mode", mode.getMode());
-	}
+    public void setMode(@UserList.Mode String mode) {
+        put("mode", mode);
+    }
 }

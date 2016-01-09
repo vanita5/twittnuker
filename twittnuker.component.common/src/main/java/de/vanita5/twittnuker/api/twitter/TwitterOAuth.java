@@ -28,6 +28,7 @@ import org.mariotaku.restfu.annotation.param.Body;
 import org.mariotaku.restfu.annotation.param.Extra;
 import org.mariotaku.restfu.annotation.param.Form;
 import org.mariotaku.restfu.http.BodyType;
+
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 
 /**
@@ -36,32 +37,22 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 public interface TwitterOAuth {
 
     @POST("/oauth/request_token")
-	@Body(BodyType.FORM)
+    @Body(BodyType.FORM)
     OAuthToken getRequestToken(@Form("oauth_callback") String oauthCallback) throws TwitterException;
 
     @POST("/oauth/access_token")
-	@Body(BodyType.FORM)
-	OAuthToken getAccessToken(@Form("x_auth_username") String xauthUsername,
-							  @Form("x_auth_password") String xauthPassword,
-                              @Form("x_auth_mode") XAuthMode xauthMode)throws TwitterException;
+    @Body(BodyType.FORM)
+    OAuthToken getAccessToken(@Form("x_auth_username") String xauthUsername,
+                              @Form("x_auth_password") String xauthPassword,
+                              @Form("x_auth_mode") @XAuthMode String xauthMode) throws TwitterException;
 
 
     @POST("/oauth/access_token")
-	@Body(BodyType.FORM)
-    OAuthToken getAccessToken(@Extra({"oauth_token", "oauth_token_secret"}) OAuthToken requestToken, @Form("oauth_verifier") String oauthVerifier)throws TwitterException;
+    @Body(BodyType.FORM)
+    OAuthToken getAccessToken(@Extra({"oauth_token", "oauth_token_secret"}) OAuthToken requestToken, @Form("oauth_verifier") String oauthVerifier) throws TwitterException;
 
-	enum XAuthMode {
-		CLIENT("client_auth");
+    @interface XAuthMode {
+        String CLIENT = "client_auth";
 
-		@Override
-		public String toString() {
-			return mode;
-		}
-
-		private final String mode;
-
-		XAuthMode(String mode) {
-			this.mode = mode;
-		}
-	}
+    }
 }
