@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Warning;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterUserStream;
@@ -45,6 +46,8 @@ import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -405,6 +408,19 @@ public class StreamingService extends Service implements Constants {
 
         @Override
         public void onFavorite(final User source, final User target, final Status favoritedStatus) {
+//            ParcelableActivity activity = new ParcelableActivity();
+//            activity.account_id = account.account_id;
+//            activity.timestamp = favoritedStatus.getCreatedAt() != null ? favoritedStatus.getCreatedAt().getTime() : System.currentTimeMillis();
+//            activity.action = Activity.Action.FAVORITE.literal;
+//            activity.sources = ParcelableUser.fromUsers(new User[]{source}, source.getId());
+//            activity.target_users = ParcelableUser.fromUsers(new User[]{target}, target.getId());
+//            activity.target_statuses = ParcelableStatus.fromStatuses(new Status[]{favoritedStatus}, favoritedStatus.getId());
+//            activity.source_ids = new long[] { source.getId() };
+//            activity.is_gap = false;
+//
+//            ContentValues values = ParcelableActivityValuesCreator.create(activity);
+//            resolver.insert(Activities.AboutMe.CONTENT_URI, values);
+
             if (favoritedStatus.getUser().getId() == account.account_id) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
                         Utils.parseURLEntities(favoritedStatus.getText(), favoritedStatus.getUrlEntities()),
@@ -450,18 +466,24 @@ public class StreamingService extends Service implements Constants {
             final String where = Statuses.ACCOUNT_ID + " = " + account.account_id + " AND " + Statuses.STATUS_ID + " = "
                     + status.getId();
             resolver.delete(Statuses.CONTENT_URI, where, null);
-            resolver.delete(Mentions.CONTENT_URI, where, null);
+//            resolver.delete(Activities.AboutMe.CONTENT_URI, where, null);
             resolver.insert(Statuses.CONTENT_URI, values);
             final Status rt = status.getRetweetedStatus();
             if (rt != null && rt.getText().contains("@" + account.screen_name) || rt == null
                     && status.getText().contains("@" + account.screen_name)) {
-                resolver.insert(Mentions.CONTENT_URI, values);
+
+//                Activity activity = Activity.fromMention(account.account_id, status);
+//                final ParcelableActivity parcelableActivity = new ParcelableActivity(activity, account.account_id, false);
+//                parcelableActivity.timestamp = status.getCreatedAt() != null ? status.getCreatedAt().getTime(): System.currentTimeMillis();
+//                final ContentValues activityValues = ParcelableActivityValuesCreator.create(parcelableActivity);
+//                resolver.insert(Activities.AboutMe.CONTENT_URI, activityValues);
             }
             if (rt != null && rt.getUser().getId() == account.account_id) {
                 createNotification(status.getUser().getScreenName(),
                         NotificationContent.NOTIFICATION_TYPE_RETWEET,
                         Utils.parseURLEntities(rt.getText(), rt.getUrlEntities()),
                         new ParcelableStatus(status, account.account_id, false), status.getUser());
+                //TODO insert retweet activity
             }
         }
 

@@ -492,6 +492,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     protected void onPause() {
         unregisterReceiver(mGCMRegistrationReceiver);
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONPAUSE));
+        stopStreamingService();
         super.onPause();
     }
 
