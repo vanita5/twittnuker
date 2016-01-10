@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.api.twitter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -30,6 +32,8 @@ import com.fasterxml.jackson.jr.tree.JacksonJrSimpleTreeCodec;
 
 import org.mariotaku.restfu.callback.RawCallback;
 import org.mariotaku.restfu.http.RestHttpResponse;
+
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusDeletionNotice;
@@ -49,12 +53,20 @@ public abstract class UserStreamCallback implements RawCallback {
 
     private boolean disconnected;
 
+    protected Context mContext;
+
+    public UserStreamCallback(Context context) {
+        this.mContext = context;
+    }
+
     @Override
     public final void result(final RestHttpResponse response) throws IOException {
         if (!response.isSuccessful()) {
             final TwitterException cause = new TwitterException();
             cause.setHttpResponse(response);
             onException(cause);
+
+            notifyServiceRestart();
             return;
         }
         final JacksonJrSimpleTreeCodec mapper = new JacksonJrSimpleTreeCodec();
@@ -208,4 +220,8 @@ public abstract class UserStreamCallback implements RawCallback {
     public abstract void onUserListUpdate(User listOwner, UserList list);
 
     public abstract void onUserProfileUpdate(User updatedUser);
+
+    private void notifyServiceRestart() {
+//        mContext.sendBroadcast(new Intent(Constants.BROADCAST_REFRESH_STREAMING_SERVICE));
+    }
 }

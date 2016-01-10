@@ -86,7 +86,7 @@ public class DependencyHolder {
         return mAsyncTwitterWrapper;
     }
 
-    public ImageLoader getmImageLoader() {
+    public ImageLoader getImageLoader() {
         return mImageLoader;
     }
 }

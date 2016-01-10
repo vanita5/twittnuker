@@ -492,7 +492,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     protected void onPause() {
         unregisterReceiver(mGCMRegistrationReceiver);
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONPAUSE));
-        stopStreamingService();
         super.onPause();
     }
 
@@ -926,8 +925,9 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             final Intent serviceIntent = new Intent(this, StreamingService.class);
             startService(serviceIntent);
             isStreamingServiceRunning = true;
+        } else {
+            sendBroadcast(new Intent(BROADCAST_REFRESH_STREAMING_SERVICE));
         }
-        sendBroadcast(new Intent(BROADCAST_REFRESH_STREAMING_SERVICE));
     }
 
     private void stopStreamingService() {

@@ -11,10 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -33,7 +30,6 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Warning;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterUserStream;
@@ -46,8 +42,6 @@ import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -278,7 +272,6 @@ public class StreamingService extends Service implements Constants {
 
     static class TwidereUserStreamCallback extends UserStreamCallback {
 
-        private final Context context;
         private final ParcelableAccount account;
         private final ContentResolver resolver;
 
@@ -289,7 +282,7 @@ public class StreamingService extends Service implements Constants {
 
         public TwidereUserStreamCallback(final Context context, final ParcelableAccount account,
                                          SharedPreferences preferences) {
-            this.context = context;
+            super(context);
             this.account = account;
             resolver = context.getContentResolver();
             mNotificationHelper = new NotificationHelper(context);
@@ -299,7 +292,7 @@ public class StreamingService extends Service implements Constants {
         private void createNotification(final String fromUser, final String type, final String msg,
                                         ParcelableStatus status, User sourceUser) {
             if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATIONS, true)) {
-                AccountPreferences pref = new AccountPreferences(context, account.account_id);
+                AccountPreferences pref = new AccountPreferences(mContext, account.account_id);
                 NotificationContent notification = new NotificationContent();
                 notification.setAccountId(account.account_id);
                 notification.setObjectId(status != null ? String.valueOf(status.id) : null);
@@ -496,14 +489,14 @@ public class StreamingService extends Service implements Constants {
         public void onUnblock(final User source, final User unblockedUser) {
             final String message = String.format("%s unblocked %s", source.getScreenName(),
                     unblockedUser.getScreenName());
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onUnfavorite(final User source, final User target, final Status unfavoritedStatus) {
             final String message = String.format("%s unfavorited %s's tweet: %s", source.getScreenName(),
                     target.getScreenName(), unfavoritedStatus.getText());
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
 
         }
 
