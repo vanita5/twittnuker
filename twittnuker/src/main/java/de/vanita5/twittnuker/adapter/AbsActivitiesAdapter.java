@@ -28,7 +28,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.Space;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,8 +56,6 @@ import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
-
-import java.util.Random;
 
 public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
         IActivitiesAdapter<Data>, IStatusViewHolder.StatusClickListener,
@@ -202,14 +199,13 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
             }
             case ITEM_VIEW_TYPE_TITLE_SUMMARY: {
                 final View view;
-//                if (mCompactCards) {
-                    view = mInflater.inflate(R.layout.card_item_activity_summary_compact, parent, false);
-//                } else {
-//                    view = mInflater.inflate(R.layout.card_item_activity_summary, parent, false);
-//                    final CardView cardView = (CardView) view.findViewById(R.id.card);
-//                    cardView.setCardBackgroundColor(mCardBackgroundColor);
-//                }
-                final ActivityTitleSummaryViewHolder holder = new ActivityTitleSummaryViewHolder(this, view);
+                if (mCompactCards) {
+                    view = mInflater.inflate(R.layout.card_item_activity_summary_common, parent, false);
+                } else {
+                    view = mInflater.inflate(R.layout.card_item_activity_summary, parent, false);
+                }
+                final ActivityTitleSummaryViewHolder holder = new ActivityTitleSummaryViewHolder(this,
+                        view, mCompactCards);
                 holder.setOnClickListeners();
                 holder.setTextSize(getTextSize());
                 return holder;
