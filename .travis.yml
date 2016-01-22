@@ -43,7 +43,6 @@ before_script:
   - "export JAVA_OPTS=-Xmx2048m"
 
 before_install:
-  - ./travis/scripts/install_android_ndk.sh
   - export PATH=$HOME/.local/bin:$PATH
 
 script: ./gradlew build --no-daemon --stacktrace

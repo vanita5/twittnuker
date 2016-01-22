@@ -39,6 +39,8 @@ import org.apache.commons.lang3.StringUtils;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+
+import org.mariotaku.inetaddrjni.library.InetAddressUtils;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CNAMERecord;
