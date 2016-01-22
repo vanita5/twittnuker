@@ -23,11 +23,14 @@
 package de.vanita5.twittnuker.api.twitter;
 
 import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.KeyValue;
 import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Params;
 import org.mariotaku.restfu.http.BodyType;
+import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.restfu.http.mime.FileBody;
-
 import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
+import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
 
 import java.io.File;
 
@@ -42,4 +45,19 @@ public interface TwitterUpload {
     @BodyType(BodyType.MULTIPART)
     MediaUploadResponse uploadMedia(@Param("media") FileBody data) throws TwitterException;
 
+
+    @POST("/media/upload.json")
+    @Params(@KeyValue(key = "command", value = "INIT"))
+    MediaUploadResponse initUploadMedia(@Param("media_type") String mediaType,
+                                        @Param("total_bytes") long totalBytes) throws TwitterException;
+
+    @POST("/media/upload.json")
+    @Params(@KeyValue(key = "command", value = "APPEND"))
+    ResponseCode initUploadMedia(@Param("media_id") long mediaId,
+                                 @Param("segment_index") int segmentIndex,
+                                 @Param("media") Body media) throws TwitterException;
+
+    @POST("/media/upload.json")
+    @Params(@KeyValue(key = "command", value = "FINALIZE"))
+    MediaUploadResponse initUploadMedia(@Param("media_id") long mediaId) throws TwitterException;
 }

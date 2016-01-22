@@ -32,86 +32,90 @@ import java.io.InputStream;
 
 public class ContentLengthInputStream extends InputStream {
 
-	private final InputStream stream;
-	private final long length;
-	private ReadListener readListener;
+    private final InputStream stream;
+    private final long length;
+    private ReadListener readListener;
 
-	private long pos;
+    private long pos;
 
-	public ContentLengthInputStream(final File file) throws FileNotFoundException {
-		this(new FileInputStream(file), file.length());
-	}
+    public ContentLengthInputStream(final File file) throws FileNotFoundException {
+        this(new FileInputStream(file), file.length());
+    }
 
-	public ContentLengthInputStream(final InputStream stream, final long length) {
-		this.stream = stream;
-		this.length = length;
-	}
+    public ContentLengthInputStream(final InputStream stream) throws IOException {
+        this(stream, stream.available());
+    }
 
-	public ContentLengthInputStream(final String file) throws FileNotFoundException {
-		this(new FileInputStream(file), file.length());
-	}
+    public ContentLengthInputStream(final InputStream stream, final long length) {
+        this.stream = stream;
+        this.length = length;
+    }
 
-	@Override
-	public synchronized int available() {
-		return (int) (length - pos);
-	}
+    public ContentLengthInputStream(final String file) throws FileNotFoundException {
+        this(new FileInputStream(file), file.length());
+    }
 
-	@Override
-	public void close() throws IOException {
-		stream.close();
-	}
+    @Override
+    public synchronized int available() {
+        return (int) (length - pos);
+    }
 
-	public long length() {
-		return length;
-	}
-	
-	@Override
+    @Override
+    public void close() throws IOException {
+        stream.close();
+    }
+
+    public long length() {
+        return length;
+    }
+
+    @Override
     public void mark(final int readLimit) {
         pos = readLimit;
         stream.mark(readLimit);
-	}
+    }
 
-	@Override
-	public int read() throws IOException {
-		pos++;
-		if (readListener != null) {
-			readListener.onRead(length, pos);
-		}
-		return stream.read();
-	}
-	
-	@Override
+    @Override
+    public int read() throws IOException {
+        pos++;
+        if (readListener != null) {
+            readListener.onRead(length, pos);
+        }
+        return stream.read();
+    }
+
+    @Override
     public int read(@NonNull final byte[] buffer) throws IOException {
-		return read(buffer, 0, buffer.length);
-	}
+        return read(buffer, 0, buffer.length);
+    }
 
-	@Override
+    @Override
     public int read(@NonNull final byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
-		pos += byteCount;
-		if (readListener != null) {
-			readListener.onRead(length, pos);
-		}
-		return stream.read(buffer, byteOffset, byteCount);
-	}
+        pos += byteCount;
+        if (readListener != null) {
+            readListener.onRead(length, pos);
+        }
+        return stream.read(buffer, byteOffset, byteCount);
+    }
 
-	@Override
-	public synchronized void reset() throws IOException {
-		pos = 0;
-		stream.reset();
-	}
-	
-	public void setReadListener(final ReadListener readListener) {
-		this.readListener = readListener;
-	}
+    @Override
+    public synchronized void reset() throws IOException {
+        pos = 0;
+        stream.reset();
+    }
 
-	@Override
-	public long skip(final long byteCount) throws IOException {
-		pos += byteCount;
-		return stream.skip(byteCount);
-	}
+    public void setReadListener(final ReadListener readListener) {
+        this.readListener = readListener;
+    }
 
-	public interface ReadListener {
-		void onRead(long length, long position);
-	}
+    @Override
+    public long skip(final long byteCount) throws IOException {
+        pos += byteCount;
+        return stream.skip(byteCount);
+    }
+
+    public interface ReadListener {
+        void onRead(long length, long position);
+    }
 
 }

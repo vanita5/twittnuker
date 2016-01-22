@@ -21,18 +21,18 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true">
+    android:layout_height="match_parent">
 
     <FrameLayout
-        android:visibility="gone"
-        tools:visibility="visible"
         android:id="@+id/list_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <ListView
             android:id="@android:id/list"
@@ -66,12 +66,12 @@
     </FrameLayout>
 
     <FrameLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/progress_container"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="visible"
-        tools:visibility="gone"
-        android:layout_height="match_parent">
+        tools:visibility="gone">
 
         <de.vanita5.twittnuker.view.themed.AccentProgressWheel
             android:id="@+id/load_progress"

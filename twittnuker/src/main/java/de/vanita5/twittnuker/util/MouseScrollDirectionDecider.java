@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -37,117 +38,128 @@ import android.widget.ScrollView;
  */
 public class MouseScrollDirectionDecider {
 
-	private final float factor;
-	private final View verticalView, horizontalView;
+    private final float factor;
+    @Nullable
+    private View verticalView, horizontalView;
 
-	private int horizontalDirection = 0, verticalDirection = 0;
-	private float horizontalScroll, verticalScroll;
+    private int horizontalDirection = 0, verticalDirection = 0;
+    private float horizontalScroll, verticalScroll;
 
-	public MouseScrollDirectionDecider(Context context, float factor) {
-		this.factor = factor;
-		this.verticalView = new InternalScrollView(context, this);
-		this.horizontalView = new InternalHorizontalScrollView(context, this);
-	}
+    public MouseScrollDirectionDecider(float factor) {
+        this.factor = factor;
+    }
 
-	public float getHorizontalDirection() {
-		return horizontalDirection;
-	}
+    public float getHorizontalDirection() {
+        return horizontalDirection;
+    }
 
-	public boolean isHorizontalAvailable() {
-		return horizontalDirection != 0;
-	}
+    public boolean isHorizontalAvailable() {
+        return horizontalDirection != 0;
+    }
 
-	public boolean isVerticalAvailable() {
-		return verticalDirection != 0;
-	}
+    public boolean isVerticalAvailable() {
+        return verticalDirection != 0;
+    }
 
-	private void setHorizontalDirection(int direction) {
-		horizontalDirection = direction;
-	}
+    private void setHorizontalDirection(int direction) {
+        horizontalDirection = direction;
+    }
 
-	public float getVerticalDirection() {
-		return verticalDirection;
-	}
+    public float getVerticalDirection() {
+        return verticalDirection;
+    }
 
-	private void setVerticalDirection(int direction) {
-		verticalDirection = direction;
-	}
+    private void setVerticalDirection(int direction) {
+        verticalDirection = direction;
+    }
 
-	public boolean guessDirection(MotionEvent event) {
-		if ((event.getSource() & InputDevice.SOURCE_CLASS_POINTER) == 0) {
-			return false;
-		}
-		if (event.getAction() != MotionEventCompat.ACTION_SCROLL) return false;
-		verticalScroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
-		horizontalScroll = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
-		verticalView.onGenericMotionEvent(event);
-		horizontalView.onGenericMotionEvent(event);
-		return verticalScroll != 0 || horizontalScroll != 0;
-	}
+    public boolean guessDirection(MotionEvent event) {
+        if (verticalView == null || horizontalView == null) return false;
+        if ((event.getSource() & InputDevice.SOURCE_CLASS_POINTER) == 0) {
+            return false;
+        }
+        if (event.getAction() != MotionEventCompat.ACTION_SCROLL) return false;
+        verticalScroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
+        horizontalScroll = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
+        verticalView.onGenericMotionEvent(event);
+        horizontalView.onGenericMotionEvent(event);
+        return verticalScroll != 0 || horizontalScroll != 0;
+    }
 
-	@SuppressLint("ViewConstructor")
-	private static class InternalScrollView extends ScrollView {
+    public void attach(View view) {
+        final Context context = view.getContext();
+        verticalView = new InternalScrollView(context, this);
+        horizontalView = new InternalHorizontalScrollView(context, this);
+    }
 
-		private final int factor;
-		private final MouseScrollDirectionDecider decider;
+    public void detach() {
+        verticalView = null;
+        horizontalView = null;
+    }
 
-		public InternalScrollView(Context context, MouseScrollDirectionDecider decider) {
-			super(context);
-			this.decider = decider;
-			final View view = new View(context);
-			addView(view);
-			this.factor = Math.round(decider.factor);
-			view.setTop(-factor);
-			view.setBottom(factor);
-		}
+    @SuppressLint("ViewConstructor")
+    private static class InternalScrollView extends ScrollView {
 
-		@Override
-		protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-			super.scrollTo(0, factor);
-			if (t != factor) {
-				float value = (t - oldt) * decider.verticalScroll;
-				if (value > 0) {
-					decider.setVerticalDirection(1);
-				} else if (value < 0) {
-					decider.setVerticalDirection(-1);
-				} else {
-					decider.setVerticalDirection(0);
-				}
-			}
-		}
+        private final int factor;
+        private final MouseScrollDirectionDecider decider;
 
-	}
+        public InternalScrollView(Context context, MouseScrollDirectionDecider decider) {
+            super(context);
+            this.decider = decider;
+            final View view = new View(context);
+            addView(view);
+            this.factor = Math.round(decider.factor);
+            view.setTop(-factor);
+            view.setBottom(factor);
+        }
 
-	@SuppressLint("ViewConstructor")
-	private class InternalHorizontalScrollView extends HorizontalScrollView {
+        @Override
+        protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+            super.scrollTo(0, factor);
+            if (t != factor) {
+                float value = (t - oldt) * decider.verticalScroll;
+                if (value > 0) {
+                    decider.setVerticalDirection(1);
+                } else if (value < 0) {
+                    decider.setVerticalDirection(-1);
+                } else {
+                    decider.setVerticalDirection(0);
+                }
+            }
+        }
 
-		private final int factor;
-		private final MouseScrollDirectionDecider decider;
+    }
 
-		public InternalHorizontalScrollView(Context context, MouseScrollDirectionDecider decider) {
-			super(context);
-			this.decider = decider;
-			final View view = new View(context);
-			addView(view);
-			this.factor = Math.round(decider.factor);
-			view.setLeft(-factor);
-			view.setRight(factor);
-		}
+    @SuppressLint("ViewConstructor")
+    private class InternalHorizontalScrollView extends HorizontalScrollView {
 
-		@Override
-		protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-			super.scrollTo(factor, 0);
-			if (t != factor) {
-				float value = (t - oldt) * decider.horizontalScroll;
-				if (value > 0) {
-					decider.setHorizontalDirection(1);
-				} else if (value < 0) {
-					decider.setHorizontalDirection(-1);
-				} else {
-					decider.setHorizontalDirection(0);
-				}
-			}
-		}
-	}
+        private final int factor;
+        private final MouseScrollDirectionDecider decider;
+
+        public InternalHorizontalScrollView(Context context, MouseScrollDirectionDecider decider) {
+            super(context);
+            this.decider = decider;
+            final View view = new View(context);
+            addView(view);
+            this.factor = Math.round(decider.factor);
+            view.setLeft(-factor);
+            view.setRight(factor);
+        }
+
+        @Override
+        protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+            super.scrollTo(factor, 0);
+            if (t != factor) {
+                float value = (t - oldt) * decider.horizontalScroll;
+                if (value > 0) {
+                    decider.setHorizontalDirection(1);
+                } else if (value < 0) {
+                    decider.setHorizontalDirection(-1);
+                } else {
+                    decider.setHorizontalDirection(0);
+                }
+            }
+        }
+    }
 
 }
