@@ -22,8 +22,8 @@ import android.widget.Toast;
 import org.mariotaku.restfu.http.Authorization;
 import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.Endpoint;
-import org.mariotaku.restfu.http.RestHttpResponse;
-import org.mariotaku.restfu.http.mime.TypedData;
+import org.mariotaku.restfu.http.HttpResponse;
+import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -369,10 +369,10 @@ public class StreamingService extends Service implements Constants {
         public void onException(final Throwable ex) {
             if (ex instanceof TwitterException) {
                 Log.w(LOGTAG, String.format("Error %d", ((TwitterException) ex).getStatusCode()), ex);
-                final RestHttpResponse response = ((TwitterException) ex).getHttpResponse();
+                final HttpResponse response = ((TwitterException) ex).getHttpResponse();
                 if (response != null) {
                     try {
-                        final TypedData body = response.getBody();
+                        final Body body = response.getBody();
                         if (body != null) {
                             final ByteArrayOutputStream os = new ByteArrayOutputStream();
                             body.writeTo(os);

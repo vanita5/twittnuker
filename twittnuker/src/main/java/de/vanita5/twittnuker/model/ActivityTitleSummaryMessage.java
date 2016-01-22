@@ -54,7 +54,7 @@ public class ActivityTitleSummaryMessage {
                                                   boolean shouldUseStarsForLikes,
                                                   boolean nameFirst) {
         final Resources resources = context.getResources();
-        if (Activity.Action.FOLLOW.literal.equals(activity.action)) {
+        if (Activity.Action.FOLLOW.equals(activity.action)) {
             int typeIcon = (R.drawable.ic_activity_action_follow);
             int color = ContextCompat.getColor(context, R.color.highlight_follow);
             CharSequence title;
@@ -66,7 +66,7 @@ public class ActivityTitleSummaryMessage {
                         R.string.activity_about_me_follow_multi, sources, nameFirst));
             }
             return new ActivityTitleSummaryMessage(typeIcon, color, title, null);
-        } else if (Activity.Action.FAVORITE.literal.equals(activity.action)) {
+        } else if (Activity.Action.FAVORITE.equals(activity.action)) {
             int typeIcon;
             int color;
             CharSequence title;
@@ -94,7 +94,7 @@ public class ActivityTitleSummaryMessage {
             }
             final String summary = activity.target_statuses[0].text_unescaped;
             return new ActivityTitleSummaryMessage(typeIcon, color, title, summary);
-        } else if (Activity.Action.RETWEET.literal.equals(activity.action)) {
+        } else if (Activity.Action.RETWEET.equals(activity.action)) {
             int typeIcon = (R.drawable.ic_activity_action_retweet);
             int color = ContextCompat.getColor(context, R.color.highlight_retweet);
             CharSequence title;
@@ -107,7 +107,7 @@ public class ActivityTitleSummaryMessage {
             }
             final String summary = activity.target_statuses[0].text_unescaped;
             return new ActivityTitleSummaryMessage(typeIcon, color, title, summary);
-        } else if (Activity.Action.FAVORITED_RETWEET.literal.equals(activity.action)) {
+        } else if (Activity.Action.FAVORITED_RETWEET.equals(activity.action)) {
             if (byFriends) return null;
             int typeIcon;
             int color;
@@ -125,7 +125,7 @@ public class ActivityTitleSummaryMessage {
             }
             final String summary = activity.target_statuses[0].text_unescaped;
             return new ActivityTitleSummaryMessage(typeIcon, color, title, summary);
-        } else if (Activity.Action.RETWEETED_RETWEET.literal.equals(activity.action)) {
+        } else if (Activity.Action.RETWEETED_RETWEET.equals(activity.action)) {
             if (byFriends) return null;
             int typeIcon = (R.drawable.ic_activity_action_retweet);
             int color = ContextCompat.getColor(context, R.color.highlight_retweet);
@@ -133,7 +133,7 @@ public class ActivityTitleSummaryMessage {
                     R.string.activity_about_me_retweeted_retweet_multi, sources, nameFirst));
             final String summary = activity.target_statuses[0].text_unescaped;
             return new ActivityTitleSummaryMessage(typeIcon, color, title, summary);
-        } else if (Activity.Action.RETWEETED_MENTION.literal.equals(activity.action)) {
+        } else if (Activity.Action.RETWEETED_MENTION.equals(activity.action)) {
             if (byFriends) return null;
             int typeIcon = (R.drawable.ic_activity_action_retweet);
             int color = ContextCompat.getColor(context, R.color.highlight_retweet);
@@ -141,7 +141,7 @@ public class ActivityTitleSummaryMessage {
                     R.string.activity_about_me_retweeted_mention_multi, sources, nameFirst));
             final String summary = activity.target_statuses[0].text_unescaped;
             return new ActivityTitleSummaryMessage(typeIcon, color, title, summary);
-        } else if (Activity.Action.FAVORITED_MENTION.literal.equals(activity.action)) {
+        } else if (Activity.Action.FAVORITED_MENTION.equals(activity.action)) {
             if (byFriends) return null;
             int typeIcon;
             int color;
@@ -159,7 +159,7 @@ public class ActivityTitleSummaryMessage {
             }
             final String summary = activity.target_statuses[0].text_unescaped;
             return new ActivityTitleSummaryMessage(typeIcon, color, title, summary);
-        } else if (Activity.Action.LIST_CREATED.literal.equals(activity.action)) {
+        } else if (Activity.Action.LIST_CREATED.equals(activity.action)) {
             if (!byFriends) return null;
             int typeIcon = (R.drawable.ic_activity_action_list_added);
             CharSequence title = (getTitleStringByFriends(resources, manager, R.string.activity_by_friends_list_created,
@@ -175,7 +175,7 @@ public class ActivityTitleSummaryMessage {
                 firstLine = false;
             }
             return new ActivityTitleSummaryMessage(typeIcon, defaultColor, title, sb);
-        } else if (Activity.Action.LIST_MEMBER_ADDED.literal.equals(activity.action)) {
+        } else if (Activity.Action.LIST_MEMBER_ADDED.equals(activity.action)) {
             if (byFriends) return null;
             CharSequence title;
             int icon = R.drawable.ic_activity_action_list_added;

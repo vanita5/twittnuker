@@ -28,8 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.LongSparseArray;
 import android.util.Log;
 
-import org.mariotaku.restfu.http.mime.FileTypedData;
-
+import org.mariotaku.restfu.http.mime.FileBody;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -178,7 +177,7 @@ public class TwitterWrapper implements Constants {
         InputStream is = null;
         try {
             is = context.getContentResolver().openInputStream(imageUri);
-            twitter.updateProfileBannerImage(new FileTypedData(is, "image", -1, null));
+            twitter.updateProfileBannerImage(new FileBody(is, "image", -1, null));
         } finally {
             Utils.closeSilently(is);
             if (deleteImage && "file".equals(imageUri.getScheme())) {
@@ -196,7 +195,7 @@ public class TwitterWrapper implements Constants {
         InputStream is = null;
         try {
             is = context.getContentResolver().openInputStream(imageUri);
-            return twitter.updateProfileImage(new FileTypedData(is, "image", -1, null));
+            return twitter.updateProfileImage(new FileBody(is, "image", -1, null));
         } finally {
             Utils.closeSilently(is);
             if (deleteImage && "file".equals(imageUri.getScheme())) {

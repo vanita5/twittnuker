@@ -41,6 +41,8 @@ import android.support.annotation.NonNull;
 import com.squareup.okhttp.Dns;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.mariotaku.restfu.http.RestHttpClient;
+import org.mariotaku.restfu.okhttp.OkHttpRestClient;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.AssistLauncherActivity;
@@ -51,6 +53,7 @@ import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.ExternalThemeManager;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.TwidereBugReporter;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
@@ -174,8 +177,7 @@ public class TwittnukerApplication extends Application implements Constants,
 
     @Override
     public void onLowMemory() {
-        final ApplicationModule module = getApplicationModule();
-        module.onLowMemory();
+        final DependencyHolder holder = DependencyHolder.get(this);
         super.onLowMemory();
     }
 
@@ -223,7 +225,12 @@ public class TwittnukerApplication extends Application implements Constants,
     }
 
     public void reloadConnectivitySettings() {
-        getApplicationModule().reloadConnectivitySettings();
+        DependencyHolder holder = DependencyHolder.get(this);
+        final RestHttpClient client = holder.getRestHttpClient();
+        if (client instanceof OkHttpRestClient) {
+            TwitterAPIFactory.initDefaultHttpClient(this, getSharedPreferences(),
+                    ((OkHttpRestClient) client).getClient());
+        }
     }
 
 

@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.util;
 
 import android.app.Application;
-import android.os.Build;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -38,9 +37,7 @@ public class DebugModeUtils {
 
     public static void initForApplication(final Application application) {
         // LeakCanary not working on Android Marshmallow, see https://github.com/square/leakcanary/issues/267
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            sRefWatcher = LeakCanary.install(application);
-        }
+        sRefWatcher = LeakCanary.install(application);
     }
 
     public static void watchReferenceLeak(final Object object) {

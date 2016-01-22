@@ -34,10 +34,12 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.utils.L;
 import com.squareup.okhttp.Dns;
+import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
 import org.mariotaku.restfu.http.RestHttpClient;
+import org.mariotaku.restfu.okhttp.OkHttpRestClient;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -216,16 +218,5 @@ public class ApplicationModule implements Constants {
         } catch (IOException e) {
             return new ReadOnlyDiskLRUNameCache(cacheDir, fallbackCacheDir, fileNameGenerator);
         }
-    }
-
-    public void reloadConnectivitySettings() {
-//        imageDownloader.reloadConnectivitySettings();
-//        if (restHttpClient instanceof OkHttpRestClient) {
-//             OkHttpClient okHttpClient = ((OkHttpRestClient) restHttpClient).getClient();
-//            TwitterAPIFactory.updateHttpClientConfiguration(application, sharedPreferences, okHttpClient);
-//        }
-    }
-
-    public void onLowMemory() {
     }
 }

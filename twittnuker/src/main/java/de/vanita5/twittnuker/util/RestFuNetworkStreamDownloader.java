@@ -27,10 +27,10 @@ import android.net.Uri;
 
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.http.ContentType;
+import org.mariotaku.restfu.http.HttpRequest;
+import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.RestHttpClient;
-import org.mariotaku.restfu.http.RestHttpRequest;
-import org.mariotaku.restfu.http.RestHttpResponse;
-import org.mariotaku.restfu.http.mime.TypedData;
+import org.mariotaku.restfu.http.mime.Body;
 import de.vanita5.twittnuker.activity.support.ThemedImagePickerActivity;
 import de.vanita5.twittnuker.model.RequestType;
 
@@ -44,13 +44,13 @@ public class RestFuNetworkStreamDownloader extends ThemedImagePickerActivity.Net
 
     public DownloadResult get(Uri uri) throws IOException {
         final RestHttpClient client = TwitterAPIFactory.getDefaultHttpClient(getContext());
-        final RestHttpRequest.Builder builder = new RestHttpRequest.Builder();
+        final HttpRequest.Builder builder = new HttpRequest.Builder();
         builder.method(GET.METHOD);
         builder.url(uri.toString());
-        builder.extra(RequestType.MEDIA);
-        final RestHttpResponse response = client.execute(builder.build());
+        builder.tag(RequestType.MEDIA);
+        final HttpResponse response = client.newCall(builder.build()).execute();
         if (response.isSuccessful()) {
-            final TypedData body = response.getBody();
+            final Body body = response.getBody();
             final ContentType contentType = body.contentType();
             return DownloadResult.get(body.stream(), contentType != null ? contentType.getContentType() : "image/*");
         } else {

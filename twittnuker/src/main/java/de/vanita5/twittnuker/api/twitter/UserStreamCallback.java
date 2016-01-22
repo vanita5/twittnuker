@@ -31,8 +31,7 @@ import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.jr.tree.JacksonJrSimpleTreeCodec;
 
 import org.mariotaku.restfu.callback.RawCallback;
-import org.mariotaku.restfu.http.RestHttpResponse;
-
+import org.mariotaku.restfu.http.HttpResponse;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Status;
@@ -60,7 +59,7 @@ public abstract class UserStreamCallback implements RawCallback {
     }
 
     @Override
-    public final void result(final RestHttpResponse response) throws IOException {
+    public final void result(final HttpResponse response) throws IOException {
         if (!response.isSuccessful()) {
             final TwitterException cause = new TwitterException();
             cause.setHttpResponse(response);
