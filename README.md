@@ -46,7 +46,7 @@ Do you have more ideas on how to improve the app? Feel free to contribute!
 
 ### Open source projects ###
 
-* [Twidere](https://github.com/mariotaku/twidere), Copyright 2012-2014 Mariotaku Lee
+* [Twidere](https://github.com/mariotaku/twidere), Copyright 2012-2016 Mariotaku Lee
 * [Android-ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator/), Copyright 2012 Jake Wharton
 * [Android ViewBadger](https://github.com/jgilfelt/android-viewbadger), Copyright (c) 2012 readyState Software Ltd.
 * [Universal Image Loader for Android](https://github.com/nostra13/Android-Universal-Image-Loader), Copyright 2011-2013 Sergey Tarasevich
@@ -86,10 +86,10 @@ Paypal
     /*
      * Twittnuker - Twitter client for Android
      *
-     * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+     * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
      *
      * This program incorporates a modified version of Twidere.
-     * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+     * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
      *
      * This program is free software: you can redistribute it and/or modify
      * it under the terms of the GNU General Public License as published by
