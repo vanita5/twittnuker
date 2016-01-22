@@ -32,7 +32,7 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
+import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 public class ViewStatusDialogFragment extends BaseSupportDialogFragment {

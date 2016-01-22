@@ -55,7 +55,7 @@ import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.view.ComposeEditText;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
+import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 import static de.vanita5.twittnuker.util.Utils.isMyRetweet;

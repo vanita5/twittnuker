@@ -30,16 +30,18 @@ import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter;
 
 public class GapViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
 
-	private final IGapSupportedAdapter adapter;
+    private final IGapSupportedAdapter adapter;
 
-	public GapViewHolder(IGapSupportedAdapter adapter, View itemView) {
-		super(itemView);
-		this.adapter = adapter;
-		itemView.setOnClickListener(this);
-	}
+    public GapViewHolder(IGapSupportedAdapter adapter, View itemView) {
+        super(itemView);
+        this.adapter = adapter;
+        itemView.setOnClickListener(this);
+    }
 
-	@Override
-	public void onClick(View v) {
-        adapter.onGapClick(this, getLayoutPosition());
-	}
+    @Override
+    public void onClick(View v) {
+        final IGapSupportedAdapter.GapClickListener listener = adapter.getGapClickListener();
+        if (listener == null) return;
+        listener.onGapClick(this, getLayoutPosition());
+    }
 }

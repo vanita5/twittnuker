@@ -25,6 +25,8 @@ package de.vanita5.twittnuker.api.twitter.model;
 import org.mariotaku.restfu.RestConverter;
 import org.mariotaku.restfu.http.HttpResponse;
 
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+
 /**
  * Created by mariotaku on 15/6/15.
  */
@@ -44,7 +46,7 @@ public class ResponseCode {
         return responseCode >= 200 && responseCode < 300;
     }
 
-    public static class Converter implements RestConverter<HttpResponse, ResponseCode> {
+    public static class Converter implements RestConverter<HttpResponse, ResponseCode, TwitterException> {
 
         @Override
         public ResponseCode convert(HttpResponse response) {

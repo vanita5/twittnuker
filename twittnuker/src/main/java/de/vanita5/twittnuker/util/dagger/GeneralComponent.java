@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.adapter.BaseArrayAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
+import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
 import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
@@ -56,7 +57,6 @@ import de.vanita5.twittnuker.text.util.EmojiEditableFactory;
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.net.TwidereProxySelector;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 
 import javax.inject.Singleton;
 
@@ -65,7 +65,7 @@ import dagger.Component;
 @Singleton
 @Component(modules = ApplicationModule.class)
 public interface GeneralComponent {
-    void inject(StatusViewHolder.DummyStatusHolderAdapter object);
+    void inject(DummyStatusHolderAdapter object);
 
     void inject(BaseFragment object);
 

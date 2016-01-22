@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.Space;
@@ -54,12 +55,12 @@ import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
-import de.vanita5.twittnuker.view.holder.StatusViewHolder.DummyStatusHolderAdapter;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
+import java.lang.ref.WeakReference;
+
 public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<ViewHolder> implements Constants,
-        IActivitiesAdapter<Data>, IStatusViewHolder.StatusClickListener,
-        ActivityTitleSummaryViewHolder.ActivityClickListener {
+        IActivitiesAdapter<Data> {
 
     public static final int ITEM_VIEW_TYPE_STUB = 0;
     public static final int ITEM_VIEW_TYPE_GAP = 1;
@@ -68,15 +69,17 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     public static final int ITEM_VIEW_TYPE_STATUS = 4;
     public static final int ITEM_VIEW_TYPE_EMPTY = 5;
 
-    private final LayoutInflater mInflater;
-    private final MediaLoadingHandler mLoadingHandler;
-    private final int mCardBackgroundColor;
-    private final boolean mCompactCards;
-    private final DummyStatusHolderAdapter mStatusAdapterDelegate;
-    private ActivityAdapterListener mActivityAdapterListener;
+    final LayoutInflater mInflater;
+    final MediaLoadingHandler mLoadingHandler;
+    final int mCardBackgroundColor;
+    final boolean mCompactCards;
+    final DummyStatusHolderAdapter mStatusAdapterDelegate;
+    final EventListener mEventListener;
+    ActivityAdapterListener mActivityAdapterListener;
 
-    private long[] mFilteredUserIds;
-    private boolean mFollowingOnly;
+    long[] mFilteredUserIds;
+    boolean mFollowingOnly;
+
 
     protected AbsActivitiesAdapter(final Context context, boolean compact) {
         super(context);
@@ -86,6 +89,7 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
                 ThemeUtils.getUserThemeBackgroundAlpha(context));
         mInflater = LayoutInflater.from(context);
         mLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
+        mEventListener = new EventListener(this);
         mCompactCards = compact;
         mStatusAdapterDelegate.updateOptions();
     }
@@ -111,6 +115,17 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     @Override
     public MediaLoadingHandler getMediaLoadingHandler() {
         return mLoadingHandler;
+    }
+
+    @Override
+    public ActivityClickListener getActivityClickListener() {
+        return mEventListener;
+    }
+
+    @Nullable
+    @Override
+    public GapClickListener getGapClickListener() {
+        return mEventListener;
     }
 
     @Override
@@ -141,42 +156,12 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
         return mStatusAdapterDelegate.isProfileImageEnabled();
     }
 
-    @Override
-    public void onStatusClick(IStatusViewHolder holder, int position) {
-        if (mActivityAdapterListener != null) {
-            mActivityAdapterListener.onStatusClick(holder, position);
-        }
-    }
-
-    @Override
-    public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int statusPosition) {
-        if (mActivityAdapterListener != null) {
-            mActivityAdapterListener.onMediaClick(holder, view, media, statusPosition);
-        }
-    }
 
     @Override
     public boolean shouldUseStarsForLikes() {
         return mStatusAdapterDelegate.shouldUseStarsForLikes();
     }
 
-    @Override
-    public void onUserProfileClick(IStatusViewHolder holder, int position) {
-        final Context context = getContext();
-        final ParcelableActivity activity = getActivity(position);
-        final ParcelableStatus status = ParcelableActivity.getActivityStatus(activity);
-        assert status != null;
-        final View profileImageView = holder.getProfileImageView();
-        final View profileTypeView = holder.getProfileTypeView();
-        if (context instanceof FragmentActivity) {
-            final Bundle options = Utils.makeSceneTransitionOption((FragmentActivity) context,
-                    new Pair<>(profileImageView, UserFragment.TRANSITION_NAME_PROFILE_IMAGE),
-                    new Pair<>(profileTypeView, UserFragment.TRANSITION_NAME_PROFILE_TYPE));
-            Utils.openUserProfile(context, status.account_id, status.user_id, status.user_screen_name, options);
-        } else {
-            Utils.openUserProfile(context, status.account_id, status.user_id, status.user_screen_name, null);
-        }
-    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -194,7 +179,7 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
                 }
                 final StatusViewHolder holder = new StatusViewHolder(mStatusAdapterDelegate, view);
                 holder.setupViewOptions();
-                holder.setStatusClickListener(this);
+                holder.setStatusClickListener(mEventListener);
                 return holder;
             }
             case ITEM_VIEW_TYPE_TITLE_SUMMARY: {
@@ -252,11 +237,6 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     }
 
     @Override
-    public boolean onStatusLongClick(IStatusViewHolder holder, int position) {
-        return false;
-    }
-
-    @Override
     public int getItemViewType(int position) {
         final ParcelableActivity activity = getActivity(position);
         if (position == getActivityCount()) {
@@ -308,26 +288,6 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
         return getActivityCount() + (isLoadMoreIndicatorVisible() ? 1 : 0);
     }
 
-    @Override
-    public final void onGapClick(ViewHolder holder, int position) {
-        if (mActivityAdapterListener != null) {
-            mActivityAdapterListener.onGapClick((GapViewHolder) holder, position);
-        }
-    }
-
-    @Override
-    public final void onItemActionClick(ViewHolder holder, int id, int position) {
-        if (mActivityAdapterListener != null) {
-            mActivityAdapterListener.onStatusActionClick(((IStatusViewHolder) holder), id, position);
-        }
-    }
-
-    @Override
-    public final void onItemMenuClick(ViewHolder holder, View menuView, int position) {
-        if (mActivityAdapterListener != null) {
-            mActivityAdapterListener.onStatusMenuClick((StatusViewHolder) holder, menuView, position);
-        }
-    }
 
     public void setListener(ActivityAdapterListener listener) {
         mActivityAdapterListener = listener;
@@ -342,12 +302,6 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     @Override
     public boolean isMediaPreviewEnabled() {
         return mStatusAdapterDelegate.isMediaPreviewEnabled();
-    }
-
-    @Override
-    public void onActivityClick(ActivityTitleSummaryViewHolder holder, int position) {
-        if (mActivityAdapterListener == null) return;
-        mActivityAdapterListener.onActivityClick(holder, position);
     }
 
 
@@ -381,9 +335,9 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
 
     }
 
-    private static class StubViewHolder extends ViewHolder {
+    static class StubViewHolder extends ViewHolder {
 
-        private final TextView text1, text2;
+        final TextView text1, text2;
 
         public StubViewHolder(View itemView) {
             super(itemView);
@@ -399,9 +353,97 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
     }
 
 
-    private static class EmptyViewHolder extends ViewHolder {
+    static class EmptyViewHolder extends ViewHolder {
         public EmptyViewHolder(View view) {
             super(view);
+        }
+    }
+
+    static class EventListener implements IStatusViewHolder.StatusClickListener, GapClickListener,
+            ActivityClickListener {
+
+        final WeakReference<AbsActivitiesAdapter<?>> adapterRef;
+
+        EventListener(AbsActivitiesAdapter<?> adapter) {
+            adapterRef = new WeakReference<AbsActivitiesAdapter<?>>(adapter);
+        }
+
+        @Override
+        public final void onGapClick(ViewHolder holder, int position) {
+            final AbsActivitiesAdapter<?> adapter = adapterRef.get();
+            if (adapter == null) return;
+            if (adapter.mActivityAdapterListener != null) {
+                adapter.mActivityAdapterListener.onGapClick((GapViewHolder) holder, position);
+            }
+        }
+
+        @Override
+        public final void onItemActionClick(ViewHolder holder, int id, int position) {
+            final AbsActivitiesAdapter<?> adapter = adapterRef.get();
+            if (adapter == null) return;
+            if (adapter.mActivityAdapterListener != null) {
+                adapter.mActivityAdapterListener.onStatusActionClick(((IStatusViewHolder) holder), id, position);
+            }
+        }
+
+        @Override
+        public boolean onStatusLongClick(IStatusViewHolder holder, int position) {
+            return false;
+        }
+
+        @Override
+        public void onUserProfileClick(IStatusViewHolder holder, int position) {
+            final AbsActivitiesAdapter<?> adapter = adapterRef.get();
+            if (adapter == null) return;
+            final Context context = adapter.getContext();
+            final ParcelableActivity activity = adapter.getActivity(position);
+            final ParcelableStatus status = ParcelableActivity.getActivityStatus(activity);
+            assert status != null;
+            final View profileImageView = holder.getProfileImageView();
+            final View profileTypeView = holder.getProfileTypeView();
+            if (context instanceof FragmentActivity) {
+                final Bundle options = Utils.makeSceneTransitionOption((FragmentActivity) context,
+                        new Pair<>(profileImageView, UserFragment.TRANSITION_NAME_PROFILE_IMAGE),
+                        new Pair<>(profileTypeView, UserFragment.TRANSITION_NAME_PROFILE_TYPE));
+                Utils.openUserProfile(context, status.account_id, status.user_id, status.user_screen_name, options);
+            } else {
+                Utils.openUserProfile(context, status.account_id, status.user_id, status.user_screen_name, null);
+            }
+        }
+
+        @Override
+        public void onStatusClick(IStatusViewHolder holder, int position) {
+            final AbsActivitiesAdapter<?> adapter = adapterRef.get();
+            if (adapter == null) return;
+            if (adapter.mActivityAdapterListener != null) {
+                adapter.mActivityAdapterListener.onStatusClick(holder, position);
+            }
+        }
+
+        @Override
+        public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int statusPosition) {
+            final AbsActivitiesAdapter<?> adapter = adapterRef.get();
+            if (adapter == null) return;
+            if (adapter.mActivityAdapterListener != null) {
+                adapter.mActivityAdapterListener.onMediaClick(holder, view, media, statusPosition);
+            }
+        }
+
+        @Override
+        public void onActivityClick(ActivityTitleSummaryViewHolder holder, int position) {
+            final AbsActivitiesAdapter<?> adapter = adapterRef.get();
+            if (adapter == null) return;
+            if (adapter.mActivityAdapterListener == null) return;
+            adapter.mActivityAdapterListener.onActivityClick(holder, position);
+        }
+
+        @Override
+        public final void onItemMenuClick(ViewHolder holder, View menuView, int position) {
+            final AbsActivitiesAdapter<?> adapter = adapterRef.get();
+            if (adapter == null) return;
+            if (adapter.mActivityAdapterListener != null) {
+                adapter.mActivityAdapterListener.onStatusMenuClick((StatusViewHolder) holder, menuView, position);
+            }
         }
     }
 }

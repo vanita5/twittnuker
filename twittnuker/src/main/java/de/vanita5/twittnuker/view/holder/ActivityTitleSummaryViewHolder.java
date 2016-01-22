@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
+import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter;
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -56,7 +57,7 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
     private final ImageView[] profileImageViews;
     private final View profileImageSpace;
 
-    private ActivityClickListener activityClickListener;
+    private IActivitiesAdapter.ActivityClickListener activityClickListener;
 
     public ActivityTitleSummaryViewHolder(AbsActivitiesAdapter adapter, View itemView, boolean isCompact) {
         super(itemView);
@@ -150,10 +151,10 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
     }
 
     public void setOnClickListeners() {
-        setActivityClickListener(adapter);
+        setActivityClickListener(adapter.getActivityClickListener());
     }
 
-    public void setActivityClickListener(ActivityClickListener listener) {
+    public void setActivityClickListener(IActivitiesAdapter.ActivityClickListener listener) {
         activityClickListener = listener;
         ((View) itemContent).setOnClickListener(this);
 //        ((View) itemContent).setOnLongClickListener(this);
@@ -172,8 +173,4 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
         }
     }
 
-    public interface ActivityClickListener {
-
-        void onActivityClick(ActivityTitleSummaryViewHolder holder, int position);
-    }
 }

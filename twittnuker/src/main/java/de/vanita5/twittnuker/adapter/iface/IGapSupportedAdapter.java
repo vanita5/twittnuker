@@ -22,14 +22,23 @@
 
 package de.vanita5.twittnuker.adapter.iface;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 
 public interface IGapSupportedAdapter {
 
     int ITEM_VIEW_TYPE_GAP = 1;
 
-	boolean isGapItem(int position);
+    boolean isGapItem(int position);
 
-    void onGapClick(ViewHolder holder, int position);
+    @Nullable
+    GapClickListener getGapClickListener();
+
+    interface GapClickListener {
+
+        void onGapClick(ViewHolder holder, int position);
+
+    }
+
 
 }
