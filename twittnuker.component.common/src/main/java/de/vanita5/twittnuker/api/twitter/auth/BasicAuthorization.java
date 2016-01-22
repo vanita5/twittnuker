@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.api.twitter.auth;
 
 import android.util.Base64;
 
-import org.mariotaku.restfu.RestRequestInfo;
+import org.mariotaku.restfu.RestRequest;
 import org.mariotaku.restfu.http.Authorization;
 import org.mariotaku.restfu.http.Endpoint;
 
@@ -33,22 +33,22 @@ import org.mariotaku.restfu.http.Endpoint;
  */
 public final class BasicAuthorization implements Authorization {
 
-	private final String user;
-	private final String password;
+    private final String user;
+    private final String password;
 
-	public BasicAuthorization(String user, String password) {
-		this.user = user;
-		this.password = password;
-	}
+    public BasicAuthorization(String user, String password) {
+        this.user = user;
+        this.password = password;
+    }
 
-	@Override
-    public String getHeader(Endpoint endpoint, RestRequestInfo info) {
-		if (!hasAuthorization()) return null;
-		return "Basic " + Base64.encodeToString((user + ":" + password).getBytes(), Base64.NO_WRAP);
-	}
+    @Override
+    public String getHeader(Endpoint endpoint, RestRequest info) {
+        if (!hasAuthorization()) return null;
+        return "Basic " + Base64.encodeToString((user + ":" + password).getBytes(), Base64.NO_WRAP);
+    }
 
-	@Override
-	public boolean hasAuthorization() {
-		return user != null && password != null;
-	}
+    @Override
+    public boolean hasAuthorization() {
+        return user != null && password != null;
+    }
 }

@@ -24,11 +24,10 @@ package de.vanita5.twittnuker.api.twitter;
 
 
 import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Body;
 import org.mariotaku.restfu.annotation.param.Extra;
-import org.mariotaku.restfu.annotation.param.Form;
-import org.mariotaku.restfu.http.BodyType;
-
+import org.mariotaku.restfu.annotation.param.KeyValue;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Params;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 
 /**
@@ -37,22 +36,16 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 public interface TwitterOAuth {
 
     @POST("/oauth/request_token")
-    @Body(BodyType.FORM)
-    OAuthToken getRequestToken(@Form("oauth_callback") String oauthCallback) throws TwitterException;
+    OAuthToken getRequestToken(@Param("oauth_callback") String oauthCallback) throws TwitterException;
 
     @POST("/oauth/access_token")
-    @Body(BodyType.FORM)
-    OAuthToken getAccessToken(@Form("x_auth_username") String xauthUsername,
-                              @Form("x_auth_password") String xauthPassword,
-                              @Form("x_auth_mode") @XAuthMode String xauthMode) throws TwitterException;
+    @Params(@KeyValue(key = "x_auth_mode", value = "client_auth"))
+    OAuthToken getAccessToken(@Param("x_auth_username") String xauthUsername,
+                              @Param("x_auth_password") String xauthPassword) throws TwitterException;
 
 
     @POST("/oauth/access_token")
-    @Body(BodyType.FORM)
-    OAuthToken getAccessToken(@Extra({"oauth_token", "oauth_token_secret"}) OAuthToken requestToken, @Form("oauth_verifier") String oauthVerifier) throws TwitterException;
+    OAuthToken getAccessToken(@Extra({"oauth_token", "oauth_token_secret"}) OAuthToken requestToken,
+                              @Param("oauth_verifier") String oauthVerifier) throws TwitterException;
 
-    @interface XAuthMode {
-        String CLIENT = "client_auth";
-
-    }
 }

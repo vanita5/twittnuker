@@ -22,20 +22,15 @@
 
 package de.vanita5.twittnuker.api.twitter;
 
-import android.support.annotation.NonNull;
-
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Body;
-import org.mariotaku.restfu.annotation.param.Form;
+import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.annotation.param.Query;
 import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.model.CardDataMap;
-import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.api.twitter.model.CardResponse;
 import de.vanita5.twittnuker.api.twitter.model.CreateCardData;
 import de.vanita5.twittnuker.api.twitter.model.CreateCardResult;
-import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
 
 public interface TwitterCaps {
 
@@ -44,9 +39,9 @@ public interface TwitterCaps {
             throws TwitterException;
 
     @POST("/v2/capi/passthrough/1")
-    @Body(BodyType.FORM)
-    CardResponse sendPassThrough(@Form CardDataMap params) throws TwitterException;
+    @BodyType(BodyType.FORM)
+    CardResponse sendPassThrough(@Param CardDataMap params) throws TwitterException;
 
     @POST("/v2/cards/create.json")
-    CreateCardResult createCard(@Form("card_data") CreateCardData cardData) throws TwitterException;
+    CreateCardResult createCard(@Param("card_data") CreateCardData cardData) throws TwitterException;
 }

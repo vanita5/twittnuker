@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.restfu.http.RestHttpResponse;
+import org.mariotaku.restfu.http.HttpResponse;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
 import java.util.AbstractList;
@@ -67,7 +67,7 @@ public class ResponseList<T> extends AbstractList<T> implements TwitterResponse 
     }
 
     @Override
-    public final void processResponseHeader(RestHttpResponse resp) {
+    public final void processResponseHeader(HttpResponse resp) {
         rateLimitStatus = RateLimitStatus.createFromResponseHeader(resp);
         accessLevel = InternalParseUtil.toAccessLevel(resp);
     }

@@ -78,7 +78,7 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthSupport;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
-import de.vanita5.twittnuker.api.twitter.util.TwitterConverter;
+import de.vanita5.twittnuker.api.twitter.util.TwitterConverterFactory;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.RequestType;
@@ -256,7 +256,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         }
         DependencyHolder holder = DependencyHolder.get(context);
         factory.setClient(holder.getRestHttpClient());
-        factory.setConverter(new TwitterConverter());
+        factory.setConverter(new TwitterConverterFactory());
         factory.setEndpoint(endpoint);
         factory.setAuthorization(auth);
         factory.setRequestInfoFactory(new TwidereRequestInfoFactory(extraRequestParams));
@@ -326,7 +326,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             domain = "caps";
             versionSuffix = null;
         } else {
-            throw new TwitterConverter.UnsupportedTypeException(cls);
+            throw new TwitterConverterFactory.UnsupportedTypeException(cls);
         }
         final String endpointUrl;
         endpointUrl = getApiUrl(apiUrlFormat, domain, versionSuffix);
@@ -634,7 +634,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             if (cause != null) {
                 te = new TwitterException(cause);
             } else {
-                te = TwitterConverter.parseTwitterException(response);
+                te = TwitterConverterFactory.parseTwitterException(response);
             }
             te.setHttpResponse(response);
             return te;

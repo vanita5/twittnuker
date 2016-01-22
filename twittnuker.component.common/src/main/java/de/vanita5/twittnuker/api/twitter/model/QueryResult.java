@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.api.twitter.model;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.mariotaku.restfu.http.RestHttpResponse;
+import org.mariotaku.restfu.http.HttpResponse;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
 import java.util.AbstractList;
@@ -52,7 +52,7 @@ public class QueryResult extends AbstractList<Status> implements TwitterResponse
     private RateLimitStatus rateLimitStatus;
 
     @Override
-    public final void processResponseHeader(RestHttpResponse resp) {
+    public final void processResponseHeader(HttpResponse resp) {
         rateLimitStatus = RateLimitStatus.createFromResponseHeader(resp);
         accessLevel = InternalParseUtil.toAccessLevel(resp);
     }

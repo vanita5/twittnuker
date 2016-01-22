@@ -23,8 +23,7 @@
 package de.vanita5.twittnuker.api.twitter.api;
 
 import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Body;
-import org.mariotaku.restfu.annotation.param.Form;
+import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
@@ -36,10 +35,10 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 public interface SpamReportingResources {
 
     @POST("/users/report_spam.json")
-    @Body(BodyType.FORM)
-    User reportSpam(@Form("user_id") long userId) throws TwitterException;
+    @BodyType(BodyType.FORM)
+    User reportSpam(@Param("user_id") long userId) throws TwitterException;
 
     @POST("/users/report_spam.json")
-    @Body(BodyType.FORM)
-    User reportSpam(@Form("screen_name") String screenName) throws TwitterException;
+    @BodyType(BodyType.FORM)
+    User reportSpam(@Param("screen_name") String screenName) throws TwitterException;
 }

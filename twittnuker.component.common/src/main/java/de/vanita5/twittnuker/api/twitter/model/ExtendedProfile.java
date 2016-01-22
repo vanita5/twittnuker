@@ -22,9 +22,10 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import android.support.annotation.StringDef;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
 
 @JsonObject
 public class ExtendedProfile {
@@ -51,10 +52,12 @@ public class ExtendedProfile {
         int month;
         @JsonField(name = "year")
         int year;
-        @JsonField(name = "visibility", typeConverter = Visibility.Converter.class)
-        Visibility visibility;
-        @JsonField(name = "year_visibility", typeConverter = Visibility.Converter.class)
-        Visibility yearVisibility;
+        @JsonField(name = "visibility")
+        @Visibility
+        String visibility;
+        @JsonField(name = "year_visibility")
+        @Visibility
+        String yearVisibility;
 
         public int getDay() {
             return day;
@@ -68,41 +71,23 @@ public class ExtendedProfile {
             return year;
         }
 
-        public Visibility getVisibility() {
+        public
+        @Visibility
+        String getVisibility() {
             return visibility;
         }
 
-        public Visibility getYearVisibility() {
+        public
+        @Visibility
+        String getYearVisibility() {
             return yearVisibility;
         }
 
-        public enum Visibility {
-            MUTUALFOLLOW("mutualfollow"), PUBLIC("public"), UNKNOWN(null);
+        @StringDef({Visibility.MUTUALFOLLOW, Visibility.PUBLIC})
+        public @interface Visibility {
+            String MUTUALFOLLOW = ("mutualfollow");
+            String PUBLIC = ("public");
 
-            private final String literal;
-
-            Visibility(String literal) {
-                this.literal = literal;
-            }
-
-            public static Visibility parse(String s) {
-                if ("mutualfollow".equals(s)) return MUTUALFOLLOW;
-                if ("public".equals(s)) return PUBLIC;
-                return UNKNOWN;
-            }
-
-            public static class Converter extends StringBasedTypeConverter<Visibility> {
-
-                @Override
-                public Visibility getFromString(String string) {
-                    return Visibility.parse(string);
-                }
-
-                @Override
-                public String convertToString(Visibility object) {
-                    return object.literal;
-                }
-            }
         }
     }
 }
