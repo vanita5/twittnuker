@@ -98,5 +98,8 @@ public class ThemedImagePickerActivity extends ImagePickerActivity {
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

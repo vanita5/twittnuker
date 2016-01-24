@@ -137,6 +137,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+
+    testCompile 'junit:junit:4.12'
 }
 
 task svgToDrawable(type: SvgDrawableTask) {

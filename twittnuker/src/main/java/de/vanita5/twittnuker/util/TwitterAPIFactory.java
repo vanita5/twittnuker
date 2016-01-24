@@ -198,7 +198,8 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             final String proxyType = prefs.getString(KEY_PROXY_TYPE, null);
             final String proxyHost = prefs.getString(KEY_PROXY_HOST, null);
             final int proxyPort = NumberUtils.toInt(prefs.getString(KEY_PROXY_PORT, null), -1);
-            if (!isEmpty(proxyHost) && TwidereMathUtils.inRangeInclusiveInclusive(proxyPort, 0, 65535)) {
+            if (!isEmpty(proxyHost) && TwidereMathUtils.inRange(proxyPort, 0, 65535,
+                    TwidereMathUtils.RANGE_INCLUSIVE_INCLUSIVE)) {
                 client.setProxy(null);
                 client.setProxySelector(new TwidereProxySelector(context, getProxyType(proxyType),
                         proxyHost, proxyPort));
@@ -233,7 +234,8 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         final String proxyType = prefs.getString(KEY_PROXY_TYPE, null);
         final String proxyHost = prefs.getString(KEY_PROXY_HOST, null);
         final int proxyPort = NumberUtils.toInt(prefs.getString(KEY_PROXY_PORT, null), -1);
-        if (!isEmpty(proxyHost) && TwidereMathUtils.inRangeInclusiveInclusive(proxyPort, 0, 65535)) {
+        if (!isEmpty(proxyHost) && TwidereMathUtils.inRange(proxyPort, 0, 65535,
+                TwidereMathUtils.RANGE_INCLUSIVE_INCLUSIVE)) {
             final SocketAddress addr = InetSocketAddress.createUnresolved(proxyHost, proxyPort);
             return new Proxy(getProxyType(proxyType), addr);
         }
