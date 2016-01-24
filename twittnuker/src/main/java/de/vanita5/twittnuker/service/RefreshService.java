@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -186,6 +187,7 @@ public class RefreshService extends Service implements Constants {
             startService(new Intent(this, getClass()));
         }
         super.onDestroy();
+        DebugModeUtils.watchReferenceLeak(this);
     }
 
     protected boolean isAutoRefreshAllowed() {

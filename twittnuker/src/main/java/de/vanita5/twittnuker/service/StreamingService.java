@@ -74,6 +74,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
@@ -187,6 +188,7 @@ public class StreamingService extends Service implements Constants {
             Log.d(Constants.LOGTAG, "Stream service stopped.");
         }
         super.onDestroy();
+        DebugModeUtils.watchReferenceLeak(this);
     }
 
     private void clearTwitterInstances() {

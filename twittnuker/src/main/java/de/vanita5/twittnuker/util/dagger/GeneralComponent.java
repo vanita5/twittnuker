@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
 import de.vanita5.twittnuker.fragment.support.CacheDownloadFragment;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.loader.support.CacheDownloadLoader;
+import de.vanita5.twittnuker.loader.support.TwitterAPIStatusesLoader;
 import de.vanita5.twittnuker.preference.AccountsListPreference;
 import de.vanita5.twittnuker.provider.CacheProvider;
 import de.vanita5.twittnuker.provider.TwidereDataProvider;
@@ -132,4 +133,6 @@ public interface GeneralComponent {
     void inject(CacheProvider object);
 
     void inject(CacheDownloadFragment.MediaDownloader object);
+
+    void inject(TwitterAPIStatusesLoader loader);
 }

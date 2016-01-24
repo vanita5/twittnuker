@@ -78,6 +78,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
+import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.MediaUploaderInterface;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.StatusCodeMessageUtils;
@@ -143,6 +144,12 @@ public class BackgroundOperationService extends IntentService implements Constan
         mUseShortener = !ServicePickerPreference.isNoneValue(shortenerComponent);
         mUploader = mUseUploader ? MediaUploaderInterface.getInstance(app, uploaderComponent) : null;
         mShortener = mUseShortener ? StatusShortenerInterface.getInstance(app, shortenerComponent) : null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        DebugModeUtils.watchReferenceLeak(this);
     }
 
     @Override
