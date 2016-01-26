@@ -528,8 +528,10 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mMediaLoader.displayProfileImage(mProfileImageView, Utils.getOriginalTwitterProfileImage(user.profile_image_url));
         if (userColor != 0) {
             setUiColor(userColor);
-        } else {
+        } else if (user.link_color != 0) {
             setUiColor(user.link_color);
+        } else if (activity instanceof IThemedActivity) {
+            setUiColor(((IThemedActivity) activity).getCurrentThemeColor());
         }
         final int defWidth = resources.getDisplayMetrics().widthPixels;
         final int width = mBannerWidth > 0 ? mBannerWidth : defWidth;
