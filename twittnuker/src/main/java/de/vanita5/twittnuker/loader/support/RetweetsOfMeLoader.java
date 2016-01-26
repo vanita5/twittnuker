@@ -32,10 +32,10 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
 
-import static de.vanita5.twittnuker.util.Utils.isFiltered;
 
 public class RetweetsOfMeLoader extends TwitterAPIStatusesLoader {
 
@@ -53,6 +53,7 @@ public class RetweetsOfMeLoader extends TwitterAPIStatusesLoader {
 
     @Override
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
-        return isFiltered(database, -1, status.text_plain, status.text_html, status.source, -1);
+        return Utils.isFiltered(database, -1, status.text_plain, status.text_html, status.source,
+                status.retweeted_by_user_id, status.quoted_user_id);
     }
 }

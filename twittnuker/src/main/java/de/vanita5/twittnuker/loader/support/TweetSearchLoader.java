@@ -32,10 +32,9 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
-
-import static de.vanita5.twittnuker.util.Utils.isFiltered;
 
 public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 
@@ -70,7 +69,7 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 
     @Override
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
-        return isFiltered(database, status, true);
+        return Utils.isFiltered(database, status, true);
     }
 
     @Override

@@ -2021,6 +2021,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             this.twitterWrapper = asyncTwitterWrapper;
         }
 
+        @NonNull
         @Override
         public ResponseList<de.vanita5.twittnuker.api.twitter.model.Status> getStatuses(final Twitter twitter, final Paging paging)
                 throws TwitterException {

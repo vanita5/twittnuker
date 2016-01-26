@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.api.twitter.api.PrivateTweetResources;
 import de.vanita5.twittnuker.api.twitter.api.SavedSearchesResources;
 import de.vanita5.twittnuker.api.twitter.api.SearchResource;
 import de.vanita5.twittnuker.api.twitter.api.SpamReportingResources;
-import de.vanita5.twittnuker.api.twitter.api.TimelinesResources;
+import de.vanita5.twittnuker.api.twitter.api.TimelineResources;
 import de.vanita5.twittnuker.api.twitter.api.TrendsResources;
 import de.vanita5.twittnuker.api.twitter.api.TweetResources;
 import de.vanita5.twittnuker.api.twitter.api.UsersResources;
@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.api.twitter.api.UsersResources;
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.2.0
  */
-public interface Twitter extends SearchResource, TimelinesResources,
+public interface Twitter extends SearchResource, TimelineResources,
 		TweetResources, UsersResources, ListsResources, DirectMessagesResources, FriendsFollowersResources,
 		FavoritesResources, SpamReportingResources, SavedSearchesResources, TrendsResources, PlacesGeoResources,
         HelpResources, PrivateActivityResources, PrivateTweetResources, PrivateTimelinesResources,

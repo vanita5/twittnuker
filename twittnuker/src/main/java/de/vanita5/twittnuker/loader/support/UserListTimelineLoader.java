@@ -26,22 +26,20 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.model.ParcelableStatus;
-
 import java.util.List;
 
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-
-import static de.vanita5.twittnuker.util.Utils.isFiltered;
+import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.Utils;
 
 public class UserListTimelineLoader extends TwitterAPIStatusesLoader {
 
-	private final long mUserId;
-	private final String mScreenName, mListName;
+    private final long mUserId;
+    private final String mScreenName, mListName;
     private final long mListId;
 
     public UserListTimelineLoader(final Context context, final long accountId, final long listId,
@@ -53,25 +51,25 @@ public class UserListTimelineLoader extends TwitterAPIStatusesLoader {
         mUserId = userId;
         mScreenName = screenName;
         mListName = listName;
-	}
+    }
 
     @NonNull
-	@Override
+    @Override
     protected ResponseList<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
-		if (mListId > 0)
-			return twitter.getUserListStatuses(mListId, paging);
+        if (mListId > 0)
+            return twitter.getUserListStatuses(mListId, paging);
         else if (mListName == null)
             throw new TwitterException("No list name or id given");
-		else if (mUserId > 0)
-			return twitter.getUserListStatuses(mListName.replace(' ', '-'), mUserId, paging);
-		else if (mScreenName != null)
-			return twitter.getUserListStatuses(mListName.replace(' ', '-'), mScreenName, paging);
+        else if (mUserId > 0)
+            return twitter.getUserListStatuses(mListName.replace(' ', '-'), mUserId, paging);
+        else if (mScreenName != null)
+            return twitter.getUserListStatuses(mListName.replace(' ', '-'), mScreenName, paging);
         throw new TwitterException("User id or screen name is required for list name");
-	}
+    }
 
-	@Override
-	protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
-        return isFiltered(database, status, true);
-	}
+    @Override
+    protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
+        return Utils.isFiltered(database, status, true);
+    }
 
 }

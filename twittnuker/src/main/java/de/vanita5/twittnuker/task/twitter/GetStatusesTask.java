@@ -73,6 +73,7 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
         this.twitterWrapper = twitterWrapper;
     }
 
+    @NonNull
     public abstract ResponseList<de.vanita5.twittnuker.api.twitter.model.Status> getStatuses(Twitter twitter, Paging paging)
             throws TwitterException;
 
