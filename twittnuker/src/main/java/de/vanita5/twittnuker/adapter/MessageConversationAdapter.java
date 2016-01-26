@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.Constants;
@@ -36,17 +35,21 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IDirectMessagesAdapter;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.holder.IncomingMessageViewHolder;
 import de.vanita5.twittnuker.view.holder.MessageViewHolder;
 
+import java.lang.ref.WeakReference;
+
 public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHolder> implements Constants,
-        IDirectMessagesAdapter, OnClickListener {
+        IDirectMessagesAdapter {
 
     private static final int ITEM_VIEW_TYPE_MESSAGE_OUTGOING = 1;
     private static final int ITEM_VIEW_TYPE_MESSAGE_INCOMING = 2;
@@ -64,6 +67,7 @@ public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHold
     private Cursor mCursor;
     private ParcelableDirectMessageCursorIndices mIndices;
     private TwidereLinkify mLinkify;
+    private CardMediaContainer.OnMediaClickListener mEventListener;
 
     public MessageConversationAdapter(final Context context) {
         super(context);
@@ -74,7 +78,9 @@ public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHold
         mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
         mMediaLoadingHandler = new MediaLoadingHandler(R.id.media_preview_progress);
         mIncomingMessageColor = ThemeUtils.getUserAccentColor(context);
-        mOutgoingMessageColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
+        mOutgoingMessageColor = ThemeUtils.getCardBackgroundColor(context,
+                ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
+        mEventListener = new EventListener(this);
     }
 
     public MediaLoadingHandler getMediaLoadingHandler() {
@@ -166,22 +172,6 @@ public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHold
     }
 
     @Override
-    public void onClick(final View view) {
-        if (mMultiSelectManager.isActive()) return;
-        final Object tag = view.getTag();
-        final int position = tag instanceof Integer ? (Integer) tag : -1;
-        if (position == -1) return;
-        switch (view.getId()) {
-            case R.id.media_preview: {
-                final ParcelableDirectMessage message = getDirectMessage(position);
-                if (message == null || message.media == null) return;
-                final Bundle options = Utils.createMediaViewerActivityOption(view);
-                Utils.openMedia(getContext(), message, null, options);
-            }
-        }
-    }
-
-    @Override
     public final int getMediaPreviewStyle() {
         return mMediaPreviewStyle;
     }
@@ -194,5 +184,27 @@ public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHold
         }
         mCursor = cursor;
         notifyDataSetChanged();
+    }
+
+    public CardMediaContainer.OnMediaClickListener getOnMediaClickListener() {
+        return mEventListener;
+    }
+
+    static class EventListener implements CardMediaContainer.OnMediaClickListener {
+
+        private final WeakReference<MessageConversationAdapter> adapterRef;
+
+        public EventListener(MessageConversationAdapter adapter) {
+            this.adapterRef = new WeakReference<>(adapter);
+        }
+
+        @Override
+        public void onMediaClick(View view, ParcelableMedia media, long accountId, long extraId) {
+            final MessageConversationAdapter adapter = adapterRef.get();
+            final Bundle options = Utils.createMediaViewerActivityOption(view);
+            Utils.openMedia(adapter.getContext(), adapter.getDirectMessage((int) extraId), media,
+                    options);
+        }
+
     }
 }

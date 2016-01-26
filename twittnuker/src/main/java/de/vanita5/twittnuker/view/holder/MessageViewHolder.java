@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Spanned;
 import android.view.View;
@@ -45,9 +44,8 @@ import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.CardMediaContainer;
-import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 
-public class MessageViewHolder extends ViewHolder implements OnMediaClickListener {
+public class MessageViewHolder extends ViewHolder {
 
     public final CardMediaContainer mediaContainer;
     public final TextView textView, time;
@@ -90,13 +88,8 @@ public class MessageViewHolder extends ViewHolder implements OnMediaClickListene
         textView.setText(linkify.applyAllLinks(text, accountId, false));
         time.setText(Utils.formatToLongTimeString(context, timestamp));
         mediaContainer.setVisibility(media != null && media.length > 0 ? View.VISIBLE : View.GONE);
-        mediaContainer.displayMedia(media, loader, accountId, true, this, adapter.getMediaLoadingHandler());
-    }
-
-    @Override
-    public void onMediaClick(View view, ParcelableMedia media, long accountId) {
-        final Bundle options = Utils.createMediaViewerActivityOption(view);
-        Utils.openMedia(adapter.getContext(), adapter.getDirectMessage(getAdapterPosition()), media, options);
+        mediaContainer.displayMedia(media, loader, accountId, getLayoutPosition(), true,
+                adapter.getOnMediaClickListener(), adapter.getMediaLoadingHandler());
     }
 
     public void setMessageColor(int color) {
