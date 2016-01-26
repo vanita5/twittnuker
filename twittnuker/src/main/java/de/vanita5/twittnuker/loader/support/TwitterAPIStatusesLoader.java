@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.JsonSerializer;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
@@ -59,7 +60,6 @@ import javax.inject.Inject;
 
 public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader {
 
-    private final Context mContext;
     private final long mAccountId;
     private final long mMaxId, mSinceId;
     @Nullable
@@ -67,13 +67,14 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
     private Comparator<ParcelableStatus> mComparator;
     @Inject
     DiskCache mFileCache;
+    @Inject
+    SharedPreferencesWrapper mPreferences;
 
     public TwitterAPIStatusesLoader(final Context context, final long accountId, final long sinceId,
                                     final long maxId, final List<ParcelableStatus> data,
                                     @Nullable final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
         super(context, data, tabPosition, fromUser);
         GeneralComponentHelper.build(context).inject(this);
-        mContext = context;
         mAccountId = accountId;
         mMaxId = maxId;
         mSinceId = sinceId;
@@ -196,7 +197,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
 
     @Nullable
     protected final Twitter getTwitter() {
-        return TwitterAPIFactory.getTwitterInstance(mContext, mAccountId, true, true);
+        return TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, true, true);
     }
 
     protected abstract boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status);
@@ -226,8 +227,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
     private void saveCachedData(final List<ParcelableStatus> data) {
         final String key = getSerializationKey();
         if (key == null || data == null) return;
-        final SharedPreferences prefs = mContext.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final int databaseItemLimit = prefs.getInt(KEY_DATABASE_ITEM_LIMIT, DEFAULT_DATABASE_ITEM_LIMIT);
+        final int databaseItemLimit = mPreferences.getInt(KEY_DATABASE_ITEM_LIMIT, DEFAULT_DATABASE_ITEM_LIMIT);
         try {
             final List<ParcelableStatus> statuses = data.subList(0, Math.min(databaseItemLimit, data.size()));
             final PipedOutputStream pos = new PipedOutputStream();
