@@ -27,6 +27,7 @@ import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -35,10 +36,13 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
+
+import de.vanita5.twittnuker.api.gnusocial.model.Attachment;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity.BindingValue;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity.ImageValue;
@@ -134,9 +138,9 @@ public class ParcelableMedia implements Parcelable {
         type = update.type;
     }
 
-    @Nullable
+    @NonNull
     public static ParcelableMedia[] fromEntities(@Nullable final EntitySupport entities) {
-        if (entities == null) return null;
+        if (entities == null) return new ParcelableMedia[0];
         final List<ParcelableMedia> list = new ArrayList<>();
         final MediaEntity[] mediaEntities;
         if (entities instanceof ExtendedEntitySupport) {
@@ -166,7 +170,6 @@ public class ParcelableMedia implements Parcelable {
                 }
             }
         }
-        if (list.isEmpty()) return null;
         return list.toArray(new ParcelableMedia[list.size()]);
     }
 
@@ -182,22 +185,43 @@ public class ParcelableMedia implements Parcelable {
     }
 
     @Nullable
-    public static ParcelableMedia[] fromStatus(final Status status) {
+    public static ParcelableMedia[] fromStatus(@NonNull final Status status) {
         final ParcelableMedia[] fromEntities = fromEntities(status);
+        final ParcelableMedia[] fromAttachments = fromAttachments(status);
         final ParcelableMedia[] fromCard = fromCard(status.getCard(), status.getUrlEntities());
-        if (fromEntities == null) {
-            return fromCard;
-        } else if (fromCard == null) {
-            return fromEntities;
-        }
-        final ParcelableMedia[] merged = new ParcelableMedia[fromCard.length + fromEntities.length];
-        TwidereArrayUtils.mergeArray(merged, fromEntities, fromCard);
+        final ParcelableMedia[] merged = new ParcelableMedia[fromCard.length +
+                fromAttachments.length + fromEntities.length];
+        TwidereArrayUtils.mergeArray(merged, fromEntities, fromAttachments, fromCard);
         return merged;
     }
 
-    @Nullable
+    @NonNull
+    private static ParcelableMedia[] fromAttachments(@NonNull Status status) {
+        final Attachment[] attachments = status.getAttachments();
+        if (attachments == null) return new ParcelableMedia[0];
+        final ParcelableMedia[] temp = new ParcelableMedia[attachments.length];
+        final String externalUrl = status.getExternalUrl();
+        int i = 0;
+        for (Attachment attachment : attachments) {
+            final String mimetype = attachment.getMimetype();
+            if (mimetype != null && mimetype.startsWith("image/")) {
+                ParcelableMedia media = new ParcelableMedia();
+                media.type = Type.TYPE_IMAGE;
+                media.width = attachment.getWidth();
+                media.height = attachment.getHeight();
+                media.url = TextUtils.isEmpty(externalUrl) ? attachment.getUrl() : externalUrl;
+                media.page_url = TextUtils.isEmpty(externalUrl) ? attachment.getUrl() : externalUrl;
+                media.media_url = attachment.getUrl();
+                media.preview_url = attachment.getLargeThumbUrl();
+                temp[i++] = media;
+            }
+        }
+        return ArrayUtils.subarray(temp, 0, i);
+    }
+
+    @NonNull
     private static ParcelableMedia[] fromCard(@Nullable CardEntity card, @Nullable UrlEntity[] entities) {
-        if (card == null) return null;
+        if (card == null) return new ParcelableMedia[0];
         final String name = card.getName();
         if ("animated_gif".equals(name) || "player".equals(name)) {
             final ParcelableMedia media = new ParcelableMedia();
@@ -243,7 +267,7 @@ public class ParcelableMedia implements Parcelable {
         } else if ("summary_large_image".equals(name)) {
             final BindingValue photoImageFullSize = card.getBindingValue("photo_image_full_size");
             if (!(photoImageFullSize instanceof ImageValue))
-                return null;
+                return new ParcelableMedia[0];
 
             final ParcelableMedia media = new ParcelableMedia();
             media.url = card.getUrl();
@@ -267,7 +291,7 @@ public class ParcelableMedia implements Parcelable {
             }
             return new ParcelableMedia[]{media};
         }
-        return null;
+        return new ParcelableMedia[0];
     }
 
     private static int getTypeInt(String type) {
