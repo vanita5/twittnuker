@@ -39,7 +39,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -204,14 +203,12 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters.Users;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
-import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
@@ -1098,27 +1095,6 @@ public final class Utils implements Constants {
         }
         final Expression where = Expression.equals(CachedUsers.USER_ID, userId);
         return cr.update(CachedUsers.CONTENT_URI, values, where.getSQL(), null) != 0;
-    }
-
-
-    public static String getBestBannerUrl(final String baseUrl, final int width) {
-        final String type = getBestBannerType(width);
-        return TextUtils.isEmpty(baseUrl) ? null : baseUrl + "/" + type;
-    }
-
-    public static String getBestBannerType(final int width) {
-        if (width <= 320)
-            return "mobile";
-        else if (width <= 520)
-            return "web";
-        else if (width <= 626)
-            return "ipad";
-        else if (width <= 640)
-            return "mobile_retina";
-        else if (width <= 1040)
-            return "web_retina";
-        else
-            return "ipad_retina";
     }
 
     public static File getBestCacheDir(final Context context, final String cacheDirName) {

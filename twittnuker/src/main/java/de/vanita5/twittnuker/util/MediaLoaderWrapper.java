@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.util.imageloader.OvalBitmapDisplayer;
 
 import javax.inject.Singleton;
 
-import static de.vanita5.twittnuker.util.Utils.getBestBannerUrl;
+import static de.vanita5.twittnuker.util.TwitterContentUtils.getBestBannerUrl;
 
 @Singleton
 public class MediaLoaderWrapper implements Constants {

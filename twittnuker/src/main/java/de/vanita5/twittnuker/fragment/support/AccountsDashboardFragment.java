@@ -102,6 +102,7 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TransitionUtils;
+import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
@@ -657,7 +658,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         final Resources res = getResources();
         final int defWidth = res.getDisplayMetrics().widthPixels;
         final int width = bannerWidth > 0 ? bannerWidth : defWidth;
-        final String bannerUrl = Utils.getBestBannerUrl(account.profile_banner_url, width);
+        final String bannerUrl = TwitterContentUtils.getBestBannerUrl(account.profile_banner_url, width);
         final ImageView bannerView = mAccountProfileBannerView;
         if (bannerView.getDrawable() == null || !CompareUtils.objectEquals(bannerUrl, bannerView.getTag())) {
             mMediaLoader.displayProfileBanner(mAccountProfileBannerView, bannerUrl, this);
