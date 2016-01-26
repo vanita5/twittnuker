@@ -27,8 +27,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public class TwitterCardUtils {
@@ -46,15 +49,15 @@ public class TwitterCardUtils {
         if (CARD_NAME_PLAYER.equals(card.name)) {
             final Fragment playerFragment = sFactory.createPlayerFragment(card);
             if (playerFragment != null) return playerFragment;
-            return TwitterCardFragmentFactory.createGenericPlayerFragment(card);
+            return TwitterCardFragmentFactory.createGenericPlayerFragment(card, null);
         } else if (CARD_NAME_AUDIO.equals(card.name)) {
             final Fragment playerFragment = sFactory.createAudioFragment(card);
             if (playerFragment != null) return playerFragment;
-            return TwitterCardFragmentFactory.createGenericPlayerFragment(card);
+            return TwitterCardFragmentFactory.createGenericPlayerFragment(card, null);
         } else if (CARD_NAME_ANIMATED_GIF.equals(card.name)) {
             final Fragment playerFragment = sFactory.createAnimatedGifFragment(card);
             if (playerFragment != null) return playerFragment;
-            return TwitterCardFragmentFactory.createGenericPlayerFragment(card);
+            return TwitterCardFragmentFactory.createGenericPlayerFragment(card, null);
         } else if (CardPollFragment.isPoll(card)) {
             return TwitterCardFragmentFactory.createCardPollFragment(status);
         }
@@ -75,6 +78,15 @@ public class TwitterCardUtils {
         if (status.card == null || status.card_name == null) return false;
         switch (status.card_name) {
             case CARD_NAME_PLAYER: {
+                if (!ArrayUtils.isEmpty(status.media)) {
+                    String appUrlResolved = status.card.getString("app_url_resolved");
+                    String cardUrl = status.card.url;
+                    for (ParcelableMedia media : status.media) {
+                        if (media.url.equals(appUrlResolved) || media.url.equals(cardUrl)) {
+                            return false;
+                        }
+                    }
+                }
                 return TextUtils.isEmpty(status.card.getString("player_stream_url"));
             }
             case CARD_NAME_AUDIO: {

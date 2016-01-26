@@ -35,12 +35,12 @@ import com.hannesdorfmann.parcelableplease.annotation.Bagger;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
@@ -142,13 +142,13 @@ public final class ParcelableCardEntity implements Parcelable {
 
     @Override
     public String toString() {
-        return "ParcelableCardEntity{" +
-                "account_id=" + account_id +
-                ", name='" + name + '\'' +
-                ", url='" + url + '\'' +
-                ", users=" + Arrays.toString(users) +
-                ", values=" + values +
-                '}';
+        return new ToStringBuilder(this)
+                .append("account_id", account_id)
+                .append("name", name)
+                .append("url", url)
+                .append("users", users)
+                .append("values", values)
+                .toString();
     }
 
     @Override
