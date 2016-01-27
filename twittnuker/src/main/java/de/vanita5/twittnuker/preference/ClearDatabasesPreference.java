@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.preference;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.util.AttributeSet;
@@ -75,6 +76,11 @@ public class ClearDatabasesPreference extends AsyncTaskPreference implements Con
         resolver.delete(Notifications.CONTENT_URI, null, null);
         resolver.delete(UnreadCounts.CONTENT_URI, null, null);
         resolver.delete(SavedSearches.CONTENT_URI, null, null);
+
+        final SharedPreferences prefs = context.getSharedPreferences(TIMELINE_POSITIONS_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
     }
 
 }

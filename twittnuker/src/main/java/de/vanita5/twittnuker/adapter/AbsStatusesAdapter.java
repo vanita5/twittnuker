@@ -73,6 +73,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     final boolean mHideCardActions;
     final boolean mUseStarsForLikes;
     final EventListener mEventListener;
+    @Nullable
     StatusAdapterListener mStatusAdapterListener;
     boolean mShowInReplyTo;
     boolean mShowAccountsColor;
@@ -137,6 +138,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
         return mTextSize;
     }
 
+    @Nullable
     @Override
     public StatusAdapterListener getStatusAdapterListener() {
         return mStatusAdapterListener;
@@ -253,7 +255,7 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
     }
 
 
-    public void setListener(StatusAdapterListener listener) {
+    public void setListener(@Nullable StatusAdapterListener listener) {
         mStatusAdapterListener = listener;
     }
 

@@ -85,7 +85,6 @@ import com.squareup.otto.Subscribe;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mariotaku.sqliteqb.library.Expression;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
@@ -1596,6 +1595,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return mEventListener;
         }
 
+        @Nullable
         @Override
         public StatusAdapterListener getStatusAdapterListener() {
             return mStatusAdapterListener;

@@ -51,9 +51,9 @@ import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.BugReporter;
 import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.ExternalThemeManager;
+import de.vanita5.twittnuker.util.HttpClientFactory;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.TwidereBugReporter;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
@@ -228,7 +228,7 @@ public class TwittnukerApplication extends Application implements Constants,
         DependencyHolder holder = DependencyHolder.get(this);
         final RestHttpClient client = holder.getRestHttpClient();
         if (client instanceof OkHttpRestClient) {
-            TwitterAPIFactory.initDefaultHttpClient(this, getSharedPreferences(),
+            HttpClientFactory.initDefaultHttpClient(this, getSharedPreferences(),
                     ((OkHttpRestClient) client).getClient());
         }
     }

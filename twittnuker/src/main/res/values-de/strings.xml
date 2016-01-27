@@ -766,6 +766,7 @@
     <string name="action_vote">Abstimmen</string>
     <string name="label_poll">Umfrage</string>
     <string name="poll_summary_format"><xliff:g id="poll_count">%s</xliff:g> · <xliff:g id="poll_time_left">%s</xliff:g></string>
+    <string name="N_more" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> mehr</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

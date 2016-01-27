@@ -56,7 +56,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DNS;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
 import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
@@ -123,8 +122,6 @@ public class DataStoreUtils implements Constants {
                 TABLE_ID_SAVED_SEARCHES);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, SearchHistory.CONTENT_PATH,
                 TABLE_ID_SEARCH_HISTORY);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, NetworkUsages.CONTENT_PATH,
-                TABLE_ID_NETWORK_USAGES);
 
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Notifications.CONTENT_PATH,
                 VIRTUAL_TABLE_ID_NOTIFICATIONS);
@@ -672,8 +669,6 @@ public class DataStoreUtils implements Constants {
                 return SavedSearches.TABLE_NAME;
             case TwittnukerConstants.TABLE_ID_SEARCH_HISTORY:
                 return SearchHistory.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_NETWORK_USAGES:
-                return NetworkUsages.TABLE_NAME;
             default:
                 return null;
         }

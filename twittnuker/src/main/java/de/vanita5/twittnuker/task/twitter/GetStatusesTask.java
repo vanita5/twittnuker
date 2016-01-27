@@ -40,7 +40,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
@@ -105,6 +105,7 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
         for (int i = 0, j = statuses.size(); i < j; i++) {
             final de.vanita5.twittnuker.api.twitter.model.Status status = statuses.get(i);
             values[i] = ContentValuesCreator.createStatus(status, accountId);
+            values[i].put(Statuses.INSERTED_DATE, System.currentTimeMillis());
             final long id = status.getId();
             if (sinceId > 0 && id <= sinceId) {
                 hasIntersection = true;
@@ -116,8 +117,8 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
             statusIds[i] = id;
         }
         // Delete all rows conflicting before new data inserted.
-        final Expression accountWhere = Expression.equals(TwidereDataStore.Statuses.ACCOUNT_ID, accountId);
-        final Expression statusWhere = Expression.in(new Columns.Column(TwidereDataStore.Statuses.STATUS_ID),
+        final Expression accountWhere = Expression.equals(Statuses.ACCOUNT_ID, accountId);
+        final Expression statusWhere = Expression.in(new Columns.Column(Statuses.STATUS_ID),
                 new RawItemArray(statusIds));
         final String countWhere = Expression.and(accountWhere, statusWhere).getSQL();
         final String[] projection = {SQLFunctions.COUNT()};
@@ -139,7 +140,7 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
         final boolean insertGap = minId > 0 && (noRowsDeleted || deletedOldGap) && !noItemsBefore
                 && !hasIntersection;
         if (insertGap && minIdx != -1) {
-            values[minIdx].put(TwidereDataStore.Statuses.IS_GAP, true);
+            values[minIdx].put(Statuses.IS_GAP, true);
         }
         // Insert previously fetched items.
         final Uri insertUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, notify);
