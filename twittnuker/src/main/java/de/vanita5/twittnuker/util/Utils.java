@@ -136,6 +136,8 @@ import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
+import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
@@ -287,10 +289,9 @@ public final class Utils implements Constants {
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_FILTERS, null, LINK_ID_FILTERS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_PROFILE_EDITOR, null, LINK_ID_PROFILE_EDITOR);
 
-        HOME_TABS_URI_MATCHER.addURI(AUTHORITY_HOME, null, TAB_CODE_HOME_TIMELINE);
-        HOME_TABS_URI_MATCHER.addURI(AUTHORITY_MENTIONS, null, TAB_CODE_NOTIFICATIONS_TIMELINE);
-        HOME_TABS_URI_MATCHER.addURI(AUTHORITY_ACTIVITIES_ABOUT_ME, null, TAB_CODE_NOTIFICATIONS_TIMELINE);
-        HOME_TABS_URI_MATCHER.addURI(AUTHORITY_DIRECT_MESSAGES, null, TAB_CODE_DIRECT_MESSAGES);
+        HOME_TABS_URI_MATCHER.addURI(CustomTabType.HOME_TIMELINE, null, TAB_CODE_HOME_TIMELINE);
+        HOME_TABS_URI_MATCHER.addURI(CustomTabType.NOTIFICATIONS_TIMELINE, null, TAB_CODE_NOTIFICATIONS_TIMELINE);
+        HOME_TABS_URI_MATCHER.addURI(CustomTabType.DIRECT_MESSAGES, null, TAB_CODE_DIRECT_MESSAGES);
     }
 
 
@@ -871,7 +872,7 @@ public final class Utils implements Constants {
     }
 
 
-    public static String getReadPositionTagWithAccounts(String tag, Bundle args) {
+    public static String getReadPositionTagWithAccounts(@ReadPositionTag String tag, Bundle args) {
         final long[] accountIds = getAccountIds(args);
         return getReadPositionTagWithAccounts(tag, accountIds);
     }
@@ -888,7 +889,10 @@ public final class Utils implements Constants {
         return accountIds;
     }
 
-    public static String getReadPositionTagWithAccounts(String tag, long... accountIds) {
+    @Nullable
+    public static String getReadPositionTagWithAccounts(@Nullable @ReadPositionTag final String tag,
+                                                        final long... accountIds) {
+        if (tag == null) return null;
         if (accountIds == null || accountIds.length == 0 || (accountIds.length == 1 && accountIds[0] < 0))
             return tag;
         final long[] accountIdsClone = accountIds.clone();
@@ -896,7 +900,11 @@ public final class Utils implements Constants {
         return tag + "_" + TwidereArrayUtils.toString(accountIdsClone, '_', false);
     }
 
-    public static String getReadPositionTagWithAccounts(Context context, boolean activatedIfMissing, String tag, long... accountIds) {
+    @Nullable
+    public static String getReadPositionTagWithAccounts(Context context, boolean activatedIfMissing,
+                                                        @Nullable @ReadPositionTag String tag,
+                                                        long... accountIds) {
+        if (tag == null) return null;
         if (accountIds == null || accountIds.length == 0 || (accountIds.length == 1 && accountIds[0] < 0)) {
             final long[] activatedIds = DataStoreUtils.getActivatedAccountIds(context);
             Arrays.sort(activatedIds);
@@ -1743,13 +1751,13 @@ public final class Utils implements Constants {
     public static String getTabType(final int code) {
         switch (code) {
             case TAB_CODE_HOME_TIMELINE: {
-                return TAB_TYPE_HOME_TIMELINE;
+                return CustomTabType.HOME_TIMELINE;
             }
             case TAB_CODE_NOTIFICATIONS_TIMELINE: {
-                return TAB_TYPE_NOTIFICATIONS_TIMELINE;
+                return CustomTabType.NOTIFICATIONS_TIMELINE;
             }
             case TAB_CODE_DIRECT_MESSAGES: {
-                return TAB_TYPE_DIRECT_MESSAGES;
+                return CustomTabType.DIRECT_MESSAGES;
             }
         }
         return null;

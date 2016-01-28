@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
@@ -23,23 +22,13 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<item
-		android:id="@id/copy"
-		android:icon="@drawable/ic_action_copy"
-		android:title="@android:string/copy"/>
-	<item
-		android:id="@+id/delete_submenu"
-		android:icon="@drawable/ic_action_delete"
-		android:title="@string/delete">
-		<menu>
-			<item
-				android:id="@id/delete"
-				android:icon="@drawable/ic_action_delete"
-				android:title="@string/delete"/>
-			<item
-				android:icon="@drawable/ic_action_cancel"
-				android:title="@android:string/cancel"/>
-		</menu>
-	</item>
+    <item
+        android:id="@id/copy"
+        android:icon="@drawable/ic_action_copy"
+        android:title="@android:string/copy" />
+    <item
+        android:id="@id/delete"
+        android:icon="@drawable/ic_action_delete"
+        android:title="@string/delete" />
 
 </menu>

@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.model.util;
 
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public class ParcelableStatusUtils {

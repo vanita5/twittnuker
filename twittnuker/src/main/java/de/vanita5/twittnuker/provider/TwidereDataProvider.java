@@ -73,6 +73,9 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
+import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.annotation.NotificationType;
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage;
@@ -167,14 +170,14 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     private boolean mNameFirst;
     private boolean mUseStarForLikes;
 
-    private static PendingIntent getMarkReadDeleteIntent(Context context, String type, long accountId,
-                                                         long position, boolean extraUserFollowing) {
+    private static PendingIntent getMarkReadDeleteIntent(Context context, @NotificationType String type,
+                                                         long accountId, long position, boolean extraUserFollowing) {
         return getMarkReadDeleteIntent(context, type, accountId, position, -1, -1, extraUserFollowing);
     }
 
-    private static PendingIntent getMarkReadDeleteIntent(Context context, String type, long accountId,
-                                                         long position, long extraId, long extraUserId,
-                                                         boolean extraUserFollowing) {
+    private static PendingIntent getMarkReadDeleteIntent(Context context, @NotificationType String type,
+                                                         long accountId, long position, long extraId,
+                                                         long extraUserId, boolean extraUserFollowing) {
         // Setup delete intent
         final Intent intent = new Intent(context, NotificationReceiver.class);
         intent.setAction(BROADCAST_NOTIFICATION_DELETED);
@@ -194,17 +197,18 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
 
-    private static PendingIntent getMarkReadDeleteIntent(Context context, String type, long accountId, StringLongPair[] positions) {
+    private static PendingIntent getMarkReadDeleteIntent(Context context, @NotificationType String notificationType,
+                                                         long accountId, StringLongPair[] positions) {
         // Setup delete intent
         final Intent intent = new Intent(context, NotificationReceiver.class);
         final Uri.Builder linkBuilder = new Uri.Builder();
         linkBuilder.scheme(SCHEME_TWITTNUKER);
         linkBuilder.authority(AUTHORITY_NOTIFICATIONS);
-        linkBuilder.appendPath(type);
+        linkBuilder.appendPath(notificationType);
         linkBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
         linkBuilder.appendQueryParameter(QUERY_PARAM_READ_POSITIONS, StringLongPair.toString(positions));
         linkBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-        linkBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, type);
+        linkBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, notificationType);
         intent.setData(linkBuilder.build());
         return PendingIntent.getBroadcast(context, 0, intent, 0);
     }
@@ -1036,7 +1040,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 //                        DataStoreUtils.getAccountIds(context));
 //                for (final AccountPreferences pref : prefs) {
 //                    if (!pref.isHomeTimelineNotificationEnabled()) continue;
-//                    showTimelineNotification(pref, getPositionTag(TAB_TYPE_HOME_TIMELINE, pref.getAccountId()));
+//                    showTimelineNotification(pref, getPositionTag(CustomTabType.HOME_TIMELINE, pref.getAccountId()));
 //                }
                 notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE);
                 break;
@@ -1047,7 +1051,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 final boolean combined = mPreferences.getBoolean(KEY_COMBINED_NOTIFICATIONS);
                 for (final AccountPreferences pref : prefs) {
                     if (!pref.isInteractionsNotificationEnabled()) continue;
-                    showInteractionsNotification(pref, getPositionTag(READ_POSITION_TAG_ACTIVITIES_ABOUT_ME,
+                    showInteractionsNotification(pref, getPositionTag(ReadPositionTag.ACTIVITIES_ABOUT_ME,
                             pref.getAccountId()), combined);
                 }
                 notifyUnreadCountChanged(NOTIFICATION_ID_INTERACTIONS_TIMELINE);
@@ -1058,7 +1062,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                         DataStoreUtils.getAccountIds(context));
                 for (final AccountPreferences pref : prefs) {
                     if (!pref.isDirectMessagesNotificationEnabled()) continue;
-                    final StringLongPair[] pairs = mReadStateManager.getPositionPairs(TAB_TYPE_DIRECT_MESSAGES);
+                    final StringLongPair[] pairs = mReadStateManager.getPositionPairs(CustomTabType.DIRECT_MESSAGES);
                     showMessagesNotification(pref, pairs, valuesArray);
                 }
                 notifyUnreadCountChanged(NOTIFICATION_ID_DIRECT_MESSAGES);
@@ -1131,9 +1135,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setContentTitle(notificationTitle);
             builder.setContentText(notificationContent);
             builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
-            builder.setContentIntent(getContentIntent(context, AUTHORITY_HOME, accountId));
-            builder.setDeleteIntent(getMarkReadDeleteIntent(context, AUTHORITY_HOME, accountId,
-                    statusId, false));
+            builder.setContentIntent(getContentIntent(context, CustomTabType.HOME_TIMELINE,
+                    NotificationType.HOME_TIMELINE, accountId));
+            builder.setDeleteIntent(getMarkReadDeleteIntent(context, NotificationType.HOME_TIMELINE,
+                    accountId, statusId, false));
             builder.setNumber(statusesCount);
             builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
             applyNotificationPreferences(builder, pref, pref.getHomeTimelineNotificationType());
@@ -1209,11 +1214,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 }
                 c.moveToNext();
             }
-            builder.setContentIntent(getContentIntent(context, AUTHORITY_ACTIVITIES_ABOUT_ME,
-                    accountId));
+            builder.setContentIntent(getContentIntent(context, CustomTabType.NOTIFICATIONS_TIMELINE,
+                    NotificationType.INTERACTIONS, accountId));
             if (timestamp != -1) {
-                builder.setDeleteIntent(getMarkReadDeleteIntent(context, AUTHORITY_ACTIVITIES_ABOUT_ME,
-                        accountId, timestamp, false));
+                builder.setDeleteIntent(getMarkReadDeleteIntent(context,
+                        NotificationType.INTERACTIONS, accountId, timestamp, false));
             }
         } finally {
             c.close();
@@ -1222,7 +1227,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         mNotificationManager.notify("interactions", notificationId, builder.build());
     }
 
-    private PendingIntent getContentIntent(Context context, String type, long accountId) {
+    private PendingIntent getContentIntent(final Context context, @CustomTabType final String type,
+                                           @NotificationType final String notificationType,
+                                           final long accountId) {
         // Setup click intent
         final Intent homeIntent = new Intent(context, HomeActivity.class);
         final Uri.Builder homeLinkBuilder = new Uri.Builder();
@@ -1236,8 +1243,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         return PendingIntent.getActivity(context, 0, homeIntent, 0);
     }
 
-    private PendingIntent getStatusContentIntent(Context context, String type, long accountId,
-                                                 long statusId, long userId, boolean userFollowing) {
+    private PendingIntent getStatusContentIntent(final Context context, @CustomTabType final String type,
+                                                 @NotificationType final String notificationType,
+                                                 long accountId, long statusId,
+                                                 long userId, boolean userFollowing) {
         // Setup click intent
         final Intent homeIntent = new Intent(Intent.ACTION_VIEW);
         homeIntent.setPackage(BuildConfig.APPLICATION_ID);
@@ -1398,8 +1407,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setContentTitle(notificationTitle);
             builder.setContentText(notificationContent);
             builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
-            builder.setContentIntent(getContentIntent(context, AUTHORITY_DIRECT_MESSAGES, accountId));
-            builder.setDeleteIntent(getMarkReadDeleteIntent(context, AUTHORITY_DIRECT_MESSAGES, accountId, positions));
+            builder.setContentIntent(getContentIntent(context, CustomTabType.DIRECT_MESSAGES,
+                    NotificationType.DIRECT_MESSAGES, accountId));
+            builder.setDeleteIntent(getMarkReadDeleteIntent(context,
+                    NotificationType.DIRECT_MESSAGES, accountId, positions));
             builder.setNumber(messagesCount);
             builder.setWhen(when);
             builder.setStyle(style);

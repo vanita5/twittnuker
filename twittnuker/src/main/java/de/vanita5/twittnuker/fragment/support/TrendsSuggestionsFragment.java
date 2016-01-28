@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;

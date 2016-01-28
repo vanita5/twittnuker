@@ -53,6 +53,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.adapter.TabsAdapter;
+import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
@@ -514,9 +515,9 @@ public class SettingsWizardActivity extends Activity implements Constants {
 
         private static final String FRAGMENT_TAG = "initial_settings_dialog";
 
-        private static final String[] DEFAULT_TAB_TYPES = {TAB_TYPE_HOME_TIMELINE,
-                TAB_TYPE_NOTIFICATIONS_TIMELINE, TAB_TYPE_DIRECT_MESSAGES,
-                TAB_TYPE_TRENDS_SUGGESTIONS};
+        private static final String[] DEFAULT_TAB_TYPES = {CustomTabType.HOME_TIMELINE,
+                CustomTabType.NOTIFICATIONS_TIMELINE, CustomTabType.DIRECT_MESSAGES,
+                CustomTabType.TRENDS_SUGGESTIONS};
 
         private final SettingsWizardActivity mActivity;
 

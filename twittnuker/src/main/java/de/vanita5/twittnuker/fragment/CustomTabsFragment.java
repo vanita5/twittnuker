@@ -64,6 +64,7 @@ import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
+import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
@@ -237,8 +238,7 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
                 final String type = entry.getKey();
                 final CustomTabConfiguration conf = entry.getValue();
 
-                final boolean isOfficialKeyAccountRequired = TAB_TYPE_ACTIVITIES_ABOUT_ME.equals(type)
-                        || TAB_TYPE_ACTIVITIES_BY_FRIENDS.equals(type);
+                final boolean isOfficialKeyAccountRequired = CustomTabType.ACTIVITIES_BY_FRIENDS.equals(type);
                 final boolean accountIdRequired = conf.getAccountRequirement() == CustomTabConfiguration.ACCOUNT_REQUIRED;
 
                 final Intent intent = new Intent(INTENT_ACTION_ADD_TAB);

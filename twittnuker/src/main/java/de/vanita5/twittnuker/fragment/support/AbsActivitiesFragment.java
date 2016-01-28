@@ -43,6 +43,7 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -391,6 +392,8 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         adapter.setData(data);
     }
 
+    @ReadPositionTag
+    @Nullable
     protected String getReadPositionTag() {
         return null;
     }

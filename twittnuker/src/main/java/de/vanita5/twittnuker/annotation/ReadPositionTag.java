@@ -20,27 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.annotation;
 
-/**
- * Example
- * <pre>
- * {@code
- * CreateCardData cardData = new CreateCardData("poll2choice_text_only");
- * cardData.putString("choice1_label", "Label 1");
- * cardData.putString("choice2_label", "Label 2");
- * }
- * </pre>
- */
-public class CreateCardData extends CardDataMap {
+import android.support.annotation.StringDef;
 
-    public CreateCardData(String name) {
-        this(name, "1");
-    }
-
-    public CreateCardData(String name, String endpoint) {
-        map.put("twitter:card", name);
-        map.put("twitter:api:api:endpoint", endpoint);
-    }
-
+@StringDef({
+        ReadPositionTag.ACTIVITIES_ABOUT_ME,
+        ReadPositionTag.HOME_TIMELINE,
+        ReadPositionTag.DIRECT_MESSAGES,
+})
+public @interface ReadPositionTag {
+    String HOME_TIMELINE = "home_timeline";
+    String ACTIVITIES_ABOUT_ME = "activities_about_me";
+    String DIRECT_MESSAGES = "direct_messages";
 }

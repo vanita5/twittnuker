@@ -417,7 +417,6 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         final View view = getView();
         assert view != null;
         final Context context = view.getContext();
-        final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
         mListView.setItemsCanFocus(true);
         mListView.setHorizontalScrollBarEnabled(false);
         mListView.setVerticalScrollBarEnabled(false);

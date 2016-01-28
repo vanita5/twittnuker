@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.fragment.support;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
@@ -79,8 +80,9 @@ public class HomeTimelineFragment extends CursorStatusesFragment {
     }
 
     @Override
+    @ReadPositionTag
     protected String getReadPositionTag() {
-        return TAB_TYPE_HOME_TIMELINE;
+        return ReadPositionTag.HOME_TIMELINE;
     }
 
 }

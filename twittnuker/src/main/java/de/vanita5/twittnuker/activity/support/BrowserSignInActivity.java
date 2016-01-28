@@ -44,7 +44,6 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import org.attoparser.AttoParseException;
-import org.mariotaku.restfu.Pair;
 import org.mariotaku.restfu.http.Authorization;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;

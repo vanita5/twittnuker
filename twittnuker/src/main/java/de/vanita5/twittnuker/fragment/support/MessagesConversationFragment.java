@@ -84,6 +84,7 @@ import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
+import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -858,6 +859,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
                         CachedUsers.BASIC_COLUMNS, selection != null ? selection.getSQL() : null,
                         selectionArgs, orderBy.getSQL());
                 final ParcelableUserCursorIndices i = new ParcelableUserCursorIndices(c);
+                assert c != null;
                 c.moveToFirst();
                 while (!c.isAfterLast()) {
                     cachedList.add(i.newObject(c));
@@ -930,7 +932,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
             if (cursor.moveToFirst()) {
                 final int messageIdIdx = cursor.getColumnIndex(ConversationEntries.MESSAGE_ID);
                 final String key = mAccount.account_id + "-" + mRecipient.id;
-                mReadStateManager.setPosition(TAB_TYPE_DIRECT_MESSAGES, key, cursor.getLong(messageIdIdx), false);
+                mReadStateManager.setPosition(CustomTabType.DIRECT_MESSAGES, key, cursor.getLong(messageIdIdx), false);
             }
             cursor.close();
         }

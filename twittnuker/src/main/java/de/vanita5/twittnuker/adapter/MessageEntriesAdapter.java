@@ -35,6 +35,7 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
+import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.ReadStateManager.OnReadStateChangeListener;
@@ -185,7 +186,7 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
     }
 
     public void updateReadState() {
-        mPositionPairs = mReadStateManager.getPositionPairs(TAB_TYPE_DIRECT_MESSAGES);
+        mPositionPairs = mReadStateManager.getPositionPairs(CustomTabType.DIRECT_MESSAGES);
         notifyDataSetChanged();
     }
 

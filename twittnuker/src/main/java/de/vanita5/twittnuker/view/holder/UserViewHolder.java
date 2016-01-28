@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
-import de.vanita5.twittnuker.view.ShapedImageView;
+import de.vanita5.twittnuker.view.NameView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import java.util.Locale;
@@ -51,61 +51,61 @@ public class UserViewHolder extends ViewHolder implements OnClickListener, OnLon
     private final IColorLabelView itemContent;
     private final ImageView profileImageView;
     private final ImageView profileTypeView;
-    private final TextView nameView, screenNameView, descriptionView, locationView, urlView,
+    private final NameView nameView;
+    private final TextView descriptionView, locationView, urlView,
             statusesCountView, followersCountView, friendsCountView;
 
     private UserClickListener userClickListener;
 
     public UserViewHolder(final IUsersAdapter<?> adapter, final View itemView) {
-		super(itemView);
-		this.adapter = adapter;
+        super(itemView);
+        this.adapter = adapter;
         itemContent = (IColorLabelView) itemView.findViewById(R.id.item_content);
         profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
-		profileTypeView = (ImageView) itemView.findViewById(R.id.profile_type);
-        nameView = (TextView) itemView.findViewById(R.id.name);
-        screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
+        profileTypeView = (ImageView) itemView.findViewById(R.id.profile_type);
+        nameView = (NameView) itemView.findViewById(R.id.name);
         descriptionView = (TextView) itemView.findViewById(R.id.description);
         locationView = (TextView) itemView.findViewById(R.id.location);
         urlView = (TextView) itemView.findViewById(R.id.url);
         statusesCountView = (TextView) itemView.findViewById(R.id.statuses_count);
         followersCountView = (TextView) itemView.findViewById(R.id.followers_count);
         friendsCountView = (TextView) itemView.findViewById(R.id.friends_count);
-	}
+    }
 
-	public void displayUser(ParcelableUser user) {
+    public void displayUser(ParcelableUser user) {
 
-		final MediaLoaderWrapper loader = adapter.getMediaLoader();
+        final MediaLoaderWrapper loader = adapter.getMediaLoader();
         final UserColorNameManager manager = adapter.getUserColorNameManager();
 
 
         itemContent.drawStart(manager.getUserColor(user.id, false));
 
-		final int userTypeRes = getUserTypeIconRes(user.is_verified, user.is_protected);
-		if (userTypeRes != 0) {
-			profileTypeView.setImageResource(userTypeRes);
-		} else {
-			profileTypeView.setImageDrawable(null);
-		}
-		nameView.setText(user.name);
-        screenNameView.setText("@" + user.screen_name);
+        final int userTypeRes = getUserTypeIconRes(user.is_verified, user.is_protected);
+        if (userTypeRes != 0) {
+            profileTypeView.setImageResource(userTypeRes);
+        } else {
+            profileTypeView.setImageDrawable(null);
+        }
+        nameView.setName(user.name);
+        nameView.setScreenName("@" + user.screen_name);
         descriptionView.setVisibility(TextUtils.isEmpty(user.description_unescaped) ? View.GONE : View.VISIBLE);
         descriptionView.setText(user.description_unescaped);
         locationView.setVisibility(TextUtils.isEmpty(user.location) ? View.GONE : View.VISIBLE);
         locationView.setText(user.location);
         urlView.setVisibility(TextUtils.isEmpty(user.url_expanded) ? View.GONE : View.VISIBLE);
         urlView.setText(user.url_expanded);
-		final Locale locale = Locale.getDefault();
+        final Locale locale = Locale.getDefault();
         statusesCountView.setText(getLocalizedNumber(locale, user.statuses_count));
         followersCountView.setText(getLocalizedNumber(locale, user.followers_count));
         friendsCountView.setText(getLocalizedNumber(locale, user.friends_count));
-		if (adapter.isProfileImageEnabled()) {
-			profileImageView.setVisibility(View.VISIBLE);
-			loader.displayProfileImage(profileImageView, user.profile_image_url);
-		} else {
-			profileImageView.setVisibility(View.GONE);
-			loader.cancelDisplayTask(profileImageView);
-		}
-	}
+        if (adapter.isProfileImageEnabled()) {
+            profileImageView.setVisibility(View.VISIBLE);
+            loader.displayProfileImage(profileImageView, user.profile_image_url);
+        } else {
+            profileImageView.setVisibility(View.GONE);
+            loader.cancelDisplayTask(profileImageView);
+        }
+    }
 
     public ImageView getProfileImageView() {
         return profileImageView;
@@ -144,7 +144,6 @@ public class UserViewHolder extends ViewHolder implements OnClickListener, OnLon
     public void setTextSize(final float textSize) {
         descriptionView.setTextSize(textSize);
         nameView.setTextSize(textSize);
-        screenNameView.setTextSize(textSize * 0.75f);
         locationView.setTextSize(textSize);
         urlView.setTextSize(textSize);
         statusesCountView.setTextSize(textSize);

@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker;
 
+import android.content.ContentResolver;
+
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 
@@ -54,10 +56,9 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
     String SCHEME_HTTP = "http";
     String SCHEME_HTTPS = "https";
-    String SCHEME_CONTENT = "content";
+    String SCHEME_CONTENT = ContentResolver.SCHEME_CONTENT;
     String SCHEME_TWITTNUKER = "twittnuker";
     String SCHEME_DATA = "data";
-    String SCHEME_FILE = "file";
 
     String SERVICE_SHORTENER_HOTOTIN = "hototin";
     String SERVICE_SHORTENER_TWITLONGER = "twitlonger";
@@ -73,9 +74,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_TWITTNUKER_CACHE = "twittnuker.cache";
 
     String AUTHORITY_USER = "user";
-    String AUTHORITY_HOME = "home";
-    String AUTHORITY_MENTIONS = "mentions";
-    String AUTHORITY_DIRECT_MESSAGES = "direct_messages";
     String AUTHORITY_USERS = "users";
     String AUTHORITY_USER_TIMELINE = "user_timeline";
     String AUTHORITY_USER_MEDIA_TIMELINE = "user_media_timeline";
@@ -233,24 +231,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String TASK_TAG_GET_RECEIVED_DIRECT_MESSAGES = "get_received_direct_messages";
     String TASK_TAG_GET_TRENDS = "get_trends";
     String TASK_TAG_STORE_TRENDS = "store_trends";
-
-    String SERVICE_COMMAND_REFRESH_ALL = "refresh_all";
-    String SERVICE_COMMAND_GET_HOME_TIMELINE = "get_home_timeline";
-    String SERVICE_COMMAND_GET_MENTIONS = "get_mentions";
-    String SERVICE_COMMAND_GET_SENT_DIRECT_MESSAGES = "get_sent_direct_messages";
-    String SERVICE_COMMAND_GET_RECEIVED_DIRECT_MESSAGES = "get_received_direct_messages";
-
-    String TAB_TYPE_HOME_TIMELINE = "home_timeline";
-    String TAB_TYPE_NOTIFICATIONS_TIMELINE = "notifications_timeline";
-    String TAB_TYPE_TRENDS_SUGGESTIONS = "trends_suggestions";
-    String TAB_TYPE_DIRECT_MESSAGES = "direct_messages";
-    String TAB_TYPE_FAVORITES = "favorites";
-    String TAB_TYPE_USER_TIMELINE = "user_timeline";
-    String TAB_TYPE_SEARCH_STATUSES = "search_statuses";
-    String TAB_TYPE_LIST_TIMELINE = "list_timeline";
-    String TAB_TYPE_ACTIVITIES_ABOUT_ME = "activities_about_me";
-    String TAB_TYPE_ACTIVITIES_BY_FRIENDS = "activities_by_friends";
-    String TAB_TYPE_RETWEETS_OF_ME = "retweets_of_me";
 
 
     int TAB_CODE_HOME_TIMELINE = 1;

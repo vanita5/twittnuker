@@ -49,6 +49,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayoutAccessor;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.SparseIntArray;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -75,6 +76,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
+import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
@@ -112,10 +114,7 @@ import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.Utils.checkPlayServices;
@@ -765,8 +764,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                 }
             }
         }
-        if (initialTab != -1 && mViewPager != null) {
-        }
         final Intent extraIntent = intent.getParcelableExtra(EXTRA_EXTRA_INTENT);
         if (extraIntent != null && firstCreate) {
             extraIntent.setExtrasClassLoader(getClassLoader());
@@ -958,13 +955,14 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         }
     }
 
-    private static class UpdateUnreadCountTask extends AsyncTask<Object, Object, Map<SupportTabSpec, Integer>> {
+    private static class UpdateUnreadCountTask extends AsyncTask<Object, Object, SparseIntArray> {
         private final Context mContext;
         private final ReadStateManager mReadStateManager;
         private final TabPagerIndicator mIndicator;
         private final List<SupportTabSpec> mTabs;
 
-        UpdateUnreadCountTask(final Context context, final ReadStateManager manager, final TabPagerIndicator indicator, final List<SupportTabSpec> tabs) {
+        UpdateUnreadCountTask(final Context context, final ReadStateManager manager,
+                              final TabPagerIndicator indicator, final List<SupportTabSpec> tabs) {
             mContext = context;
             mReadStateManager = manager;
             mIndicator = indicator;
@@ -972,25 +970,30 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         }
 
         @Override
-        protected Map<SupportTabSpec, Integer> doInBackground(final Object... params) {
-            final Map<SupportTabSpec, Integer> result = new HashMap<>();
+        protected SparseIntArray doInBackground(final Object... params) {
+            final SparseIntArray result = new SparseIntArray();
             for (SupportTabSpec spec : mTabs) {
+                if (spec.type == null) continue;
                 switch (spec.type) {
-                    case TAB_TYPE_HOME_TIMELINE: {
+                    case CustomTabType.HOME_TIMELINE: {
                         final long[] accountIds = Utils.getAccountIds(spec.args);
-                        final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
+                        final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext,
+                                true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
-                        result.put(spec, DataStoreUtils.getStatusesCount(mContext, Statuses.CONTENT_URI, position, accountIds));
+                        result.put(spec.position, DataStoreUtils.getStatusesCount(mContext,
+                                Statuses.CONTENT_URI, position, accountIds));
                         break;
                     }
-                    case TAB_TYPE_ACTIVITIES_ABOUT_ME: {
+                    case CustomTabType.NOTIFICATIONS_TIMELINE: {
                         final long[] accountIds = Utils.getAccountIds(spec.args);
-                        final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext, true, spec.tag, accountIds);
+                        final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext,
+                                true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
-                        result.put(spec, DataStoreUtils.getActivitiesCount(mContext, Activities.AboutMe.CONTENT_URI, position, accountIds));
+                        result.put(spec.position, DataStoreUtils.getActivitiesCount(mContext,
+                                Activities.AboutMe.CONTENT_URI, position, accountIds));
                         break;
                     }
-                    case TAB_TYPE_DIRECT_MESSAGES: {
+                    case CustomTabType.DIRECT_MESSAGES: {
                         break;
                     }
                 }
@@ -999,11 +1002,10 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         }
 
         @Override
-        protected void onPostExecute(final Map<SupportTabSpec, Integer> result) {
+        protected void onPostExecute(final SparseIntArray result) {
             mIndicator.clearBadge();
-            for (Entry<SupportTabSpec, Integer> entry : result.entrySet()) {
-                final SupportTabSpec key = entry.getKey();
-                mIndicator.setBadge(key.position, entry.getValue());
+            for (int i = 0, j = result.size(); i < j; i++) {
+                mIndicator.setBadge(result.keyAt(i), result.valueAt(i));
             }
         }
 

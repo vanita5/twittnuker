@@ -43,6 +43,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
@@ -530,7 +531,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             protected void getReadPosition(long accountId, Twitter twitter) {
                 try {
                     CursorTimestampResponse response = twitter.getActivitiesAboutMeUnread(true);
-                    final String tag = Utils.getReadPositionTagWithAccounts(READ_POSITION_TAG_ACTIVITIES_ABOUT_ME, accountIds);
+                    final String tag = Utils.getReadPositionTagWithAccounts(ReadPositionTag.ACTIVITIES_ABOUT_ME, accountIds);
                     mReadStateManager.setPosition(tag, response.getCursor(), false);
                 } catch (TwitterException e) {
                     // Ignore

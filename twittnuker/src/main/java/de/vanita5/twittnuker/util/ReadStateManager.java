@@ -30,6 +30,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.annotation.NotificationType;
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
 
@@ -147,20 +149,32 @@ public class ReadStateManager implements Constants {
         return true;
     }
 
-    public boolean setPosition(final String key, final long id) {
-        return setPosition(key, id, false);
+    public boolean setPosition(final String key, final long position) {
+        return setPosition(key, position, false);
     }
 
-    public boolean setPosition(final String key, final long id, boolean acceptOlder) {
-        if (TextUtils.isEmpty(key) || !acceptOlder && getPosition(key) >= id) return false;
+    public boolean setPosition(final String key, final long position, boolean acceptOlder) {
+        if (TextUtils.isEmpty(key) || !acceptOlder && getPosition(key) >= position) return false;
         final SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putLong(key, id);
+        editor.putLong(key, position);
         editor.apply();
         return true;
     }
 
     public interface OnReadStateChangeListener {
         void onReadStateChanged();
+    }
+
+    @Nullable
+    @ReadPositionTag
+    public static String getReadPositionTagForNotificationType(@NotificationType String notificationType) {
+        if (notificationType == null) return null;
+        switch (notificationType) {
+            case NotificationType.INTERACTIONS: {
+                return ReadPositionTag.ACTIVITIES_ABOUT_ME;
+            }
+        }
+        return null;
     }
 
 }

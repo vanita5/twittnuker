@@ -47,7 +47,6 @@ import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 

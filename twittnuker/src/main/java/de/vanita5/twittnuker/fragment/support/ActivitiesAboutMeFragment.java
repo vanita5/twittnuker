@@ -26,8 +26,10 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 
 public class ActivitiesAboutMeFragment extends CursorActivitiesFragment {
@@ -72,9 +74,11 @@ public class ActivitiesAboutMeFragment extends CursorActivitiesFragment {
         return adapter;
     }
 
+    @Nullable
     @Override
+    @ReadPositionTag
     protected String getReadPositionTag() {
-        return READ_POSITION_TAG_ACTIVITIES_ABOUT_ME;
+        return ReadPositionTag.ACTIVITIES_ABOUT_ME;
     }
 
     @Override

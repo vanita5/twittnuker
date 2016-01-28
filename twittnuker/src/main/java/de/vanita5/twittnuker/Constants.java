@@ -87,6 +87,4 @@ public interface Constants extends TwittnukerConstants {
             R.color.material_lime, R.color.material_yellow, R.color.material_amber,
             R.color.material_orange, R.color.material_deep_orange};
 
-    String READ_POSITION_TAG_ACTIVITIES_ABOUT_ME = "activities_about_me";
-
 }

@@ -25,8 +25,6 @@ package de.vanita5.twittnuker.api.twitter.model;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.api.twitter.model.TimeZone;
-
 /**
  * Created by mariotaku on 15/5/13.
  */

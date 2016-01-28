@@ -48,6 +48,7 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter.StatusAdapterListener;
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -422,6 +423,8 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         adapter.setData(data);
     }
 
+    @ReadPositionTag
+    @Nullable
     protected String getReadPositionTag() {
         return null;
     }
