@@ -757,7 +757,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             final long accountId = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
             for (int i = mPagerAdapter.getCount() - 1; i > -1; i--) {
                 final SupportTabSpec tab = mPagerAdapter.getTab(i);
-                if (tabType.equals(tab.type)) {
+                if (tabType.equals(CustomTabUtils.getTabTypeAlias(tab.type))) {
                     initialTab = i;
                     if (hasAccountId(tab.args, accountId)) {
                         break;
