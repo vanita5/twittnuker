@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
@@ -38,12 +39,13 @@ import de.vanita5.twittnuker.util.UserColorNameManager;
 import org.oshkimaadziig.george.androidutils.SpanFormatter;
 
 public class ActivityTitleSummaryMessage {
-    int icon;
-    int color;
-    CharSequence title;
-    CharSequence summary;
+    final int icon;
+    final int color;
+    @NonNull
+    final CharSequence title;
+    final CharSequence summary;
 
-    ActivityTitleSummaryMessage(int icon, int color, CharSequence title, CharSequence summary) {
+    ActivityTitleSummaryMessage(int icon, int color, @NonNull CharSequence title, @Nullable CharSequence summary) {
         this.icon = icon;
         this.color = color;
         this.title = title;
@@ -102,7 +104,7 @@ public class ActivityTitleSummaryMessage {
                     if (!first) {
                         summaryBuilder.append('\n');
                     }
-                    summaryBuilder.append(status.text_unescaped);
+                    summaryBuilder.append(status.text_unescaped.replace('\n', ' '));
                     first = false;
                 }
                 return new ActivityTitleSummaryMessage(typeIcon, color, title, summaryBuilder.toString());
@@ -189,7 +191,7 @@ public class ActivityTitleSummaryMessage {
                     if (!firstLine) {
                         sb.append("\n");
                     }
-                    sb.append(item.description);
+                    sb.append(item.description.replace('\n', ' '));
                     firstLine = false;
                 }
                 return new ActivityTitleSummaryMessage(typeIcon, defaultColor, title, sb);
@@ -220,8 +222,11 @@ public class ActivityTitleSummaryMessage {
             case Activity.Action.QUOTE: {
                 final ParcelableStatus status = ParcelableActivity.getActivityStatus(activity);
                 if (status == null) return null;
-                final String text = status.text_unescaped;
-                return new ActivityTitleSummaryMessage(0, 0, text, text);
+                final SpannableString title = new SpannableString(manager.getDisplayName(status,
+                        nameFirst, false));
+                title.setSpan(new StyleSpan(Typeface.BOLD), 0, title.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                return new ActivityTitleSummaryMessage(0, 0, title, status.text_unescaped);
             }
         }
         return null;
@@ -298,10 +303,12 @@ public class ActivityTitleSummaryMessage {
         return color;
     }
 
+    @NonNull
     public CharSequence getTitle() {
         return title;
     }
 
+    @Nullable
     public CharSequence getSummary() {
         return summary;
     }

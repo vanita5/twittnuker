@@ -375,7 +375,7 @@
     <string name="none">Nichts</string>
     <string name="large">Groß</string>
     <string name="small">Klein</string>
-    <string name="and_more">und <xliff:g id="count">%d</xliff:g> weitere</string>
+    <string name="and_N_more">und <xliff:g id="count">%d</xliff:g> weitere</string>
     <string name="clear_search_history">Suchbegriffe löschen</string>
     <!--<string name="permission_description_none">Keine Erlaubnis notwendig</string>-->
     <!--<string name="permission_description_refresh">Zeit zwischen Aktualisierungen (auch für Direct Messages)</string>-->
@@ -765,8 +765,8 @@
     <string name="open_poll_in_official_app">Umfrage in der offiziellen Twitter App öffnen</string>
     <string name="action_vote">Abstimmen</string>
     <string name="label_poll">Umfrage</string>
-    <string name="poll_summary_format"><xliff:g id="poll_count">%s</xliff:g> · <xliff:g id="poll_time_left">%s</xliff:g></string>
-    <string name="N_more" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> mehr</string>
+    <string name="poll_summary_format"><xliff:g id="poll_count">%1$s</xliff:g> · <xliff:g id="poll_time_left">%2$s</xliff:g></string>
+    <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

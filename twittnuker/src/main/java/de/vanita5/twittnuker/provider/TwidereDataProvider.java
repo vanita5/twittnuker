@@ -121,6 +121,7 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
+import org.oshkimaadziig.george.androidutils.SpanFormatter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1134,7 +1135,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setDeleteIntent(getMarkReadDeleteIntent(context, AUTHORITY_HOME, accountId,
                     statusId, false));
             builder.setNumber(statusesCount);
-            builder.setColor(pref.getNotificationLightColor());
             applyNotificationPreferences(builder, pref, pref.getHomeTimelineNotificationType());
             try {
                 nm.notify("home_" + accountId, Utils.getNotificationId(NOTIFICATION_ID_HOME_TIMELINE, accountId), builder.build());
@@ -1165,6 +1165,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             if (count == 0) return;
             c.moveToFirst();
             builder.setSmallIcon(R.drawable.ic_stat_mention);
+            builder.setNumber(count);
+            builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
+            applyNotificationPreferences(builder, pref, pref.getHomeTimelineNotificationType());
 
             final Resources resources = context.getResources();
             final String title = resources.getQuantityString(R.plurals.N_new_interactions,
@@ -1181,7 +1184,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
             while (!c.isAfterLast()) {
                 if (messageLines == 5) {
-                    style.setSummaryText(resources.getString(R.string.N_more, count - c.getPosition()));
+                    style.addLine(resources.getString(R.string.and_N_more, count - c.getPosition()));
                     break;
                 }
                 final ParcelableActivity activity = ci.newObject(c);
@@ -1189,7 +1192,13 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                         mUserColorNameManager, activity, activity.sources, 0, false,
                         mUseStarForLikes, mNameFirst);
                 if (message != null) {
-                    style.addLine(message.getTitle());
+                    final CharSequence summary = message.getSummary();
+                    if (TextUtils.isEmpty(summary)) {
+                        style.addLine(message.getTitle());
+                    } else {
+                        style.addLine(SpanFormatter.format(resources.getString(R.string.title_summary_line_format),
+                                message.getTitle(), summary));
+                    }
                     messageLines++;
                 }
                 c.moveToNext();
