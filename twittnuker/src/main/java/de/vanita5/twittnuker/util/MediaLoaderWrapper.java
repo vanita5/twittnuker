@@ -33,8 +33,8 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.util.imageloader.AccountExtra;
 import de.vanita5.twittnuker.util.imageloader.OvalBitmapDisplayer;
+import de.vanita5.twittnuker.util.media.MediaExtra;
 
 import javax.inject.Singleton;
 
@@ -114,7 +114,9 @@ public class MediaLoaderWrapper implements Constants {
         }
         final DisplayImageOptions.Builder b = new DisplayImageOptions.Builder();
         b.cloneFrom(mImageDisplayOptions);
-        b.extraForDownloader(new AccountExtra(accountId));
+        MediaExtra extra = new MediaExtra();
+        extra.setAccountId(accountId);
+        b.extraForDownloader(extra);
         mImageLoader.displayImage(url, view, b.build(), loadingHandler, loadingHandler);
     }
 

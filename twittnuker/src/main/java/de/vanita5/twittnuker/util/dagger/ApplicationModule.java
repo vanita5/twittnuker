@@ -37,6 +37,8 @@ import com.squareup.okhttp.Dns;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
+import org.mariotaku.mediaviewer.library.FileCache;
+import org.mariotaku.mediaviewer.library.MediaDownloader;
 import org.mariotaku.restfu.http.RestHttpClient;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
@@ -59,6 +61,8 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache;
 import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
+import de.vanita5.twittnuker.util.media.TwidereMediaDownloader;
+import de.vanita5.twittnuker.util.media.UILFileCache;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 
 import java.io.File;
@@ -144,7 +148,7 @@ public class ApplicationModule implements Constants {
 
     @Provides
     @Singleton
-    public ImageLoader imageLoader(SharedPreferencesWrapper preferences, RestHttpClient client) {
+    public ImageLoader imageLoader(SharedPreferencesWrapper preferences, MediaDownloader downloader) {
         final ImageLoader loader = ImageLoader.getInstance();
         final ImageLoaderConfiguration.Builder cb = new ImageLoaderConfiguration.Builder(application);
         cb.threadPriority(Thread.NORM_PRIORITY - 2);
@@ -152,7 +156,7 @@ public class ApplicationModule implements Constants {
         cb.tasksProcessingOrder(QueueProcessingType.LIFO);
         // cb.memoryCache(new ImageMemoryCache(40));
         cb.diskCache(createDiskCache("images", preferences));
-        cb.imageDownloader(new TwidereImageDownloader(application, preferences, client));
+        cb.imageDownloader(new TwidereImageDownloader(application, downloader));
         L.writeDebugLogs(BuildConfig.DEBUG);
         loader.init(cb.build());
         return loader;
@@ -196,6 +200,18 @@ public class ApplicationModule implements Constants {
     @Singleton
     public DiskCache providesDiskCache(SharedPreferencesWrapper preferences) {
         return createDiskCache("files", preferences);
+    }
+
+    @Provides
+    @Singleton
+    public FileCache fileCache(DiskCache cache) {
+        return new UILFileCache(cache);
+    }
+
+    @Provides
+    @Singleton
+    public MediaDownloader mediaDownloader(SharedPreferencesWrapper preferences, RestHttpClient client) {
+        return new TwidereMediaDownloader(application, client);
     }
 
     @Provides

@@ -27,6 +27,7 @@ import android.support.v7.widget.RecyclerView;
 import de.vanita5.twittnuker.activity.BasePreferenceActivity;
 import de.vanita5.twittnuker.activity.BaseThemedActivity;
 import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
+import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.activity.support.ThemedFragmentActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
@@ -130,9 +131,11 @@ public interface GeneralComponent {
 
     void inject(CacheDownloadLoader object);
 
-    void inject(CacheProvider object);
+    void inject(CacheProvider provider);
 
-    void inject(CacheDownloadFragment.MediaDownloader object);
+    void inject(CacheDownloadFragment.MediaDownloader downloader);
 
     void inject(TwitterAPIStatusesLoader loader);
+
+    void inject(MediaViewerActivity activity);
 }

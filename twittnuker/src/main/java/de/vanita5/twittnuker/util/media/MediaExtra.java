@@ -20,14 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.imageloader;
+package de.vanita5.twittnuker.util.media;
 
-public class AccountExtra {
+public class MediaExtra {
+    long accountId;
 
-	public final long account_id;
+    public long getAccountId() {
+        return accountId;
+    }
 
-	public AccountExtra(final long account_id) {
-		this.account_id = account_id;
-	}
-
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
+    }
 }

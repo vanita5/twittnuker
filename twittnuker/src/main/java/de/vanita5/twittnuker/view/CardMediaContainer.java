@@ -126,6 +126,7 @@ public class CardMediaContainer extends ViewGroup implements Constants {
             }
             if (i < k) {
                 final ParcelableMedia media = mediaArray[i];
+                if (media == null) continue;
                 final String url = TextUtils.isEmpty(media.preview_url) ? media.media_url : media.preview_url;
                 if (withCredentials) {
                     loader.displayPreviewImageWithCredentials(imageView, url, accountId, loadingHandler);

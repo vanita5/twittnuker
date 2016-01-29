@@ -23,10 +23,12 @@
 package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;
+import java.util.Locale;
 
 public class UserMentionsLoader extends TweetSearchLoader {
 
@@ -38,11 +40,14 @@ public class UserMentionsLoader extends TweetSearchLoader {
                 fromUser, makeGap, twitterOptimizedSearches);
     }
 
+    @NonNull
     @Override
-    protected String processQuery(final String query) {
-        if (query == null) return null;
-        final String screenName = query.startsWith("@") ? query : String.format("@%s", query);
-        return String.format("%s exclude:retweets", screenName);
+    protected String processQuery(@NonNull final String query) {
+        final String screenName = query.startsWith("@") ? query.substring(1) : query;
+        if (isTwitterOptimizedSearches()) {
+            return String.format(Locale.ROOT, "to:%s exclude:retweets", screenName);
+        }
+        return String.format(Locale.ROOT, "@%s -RT", screenName);
     }
 
 }

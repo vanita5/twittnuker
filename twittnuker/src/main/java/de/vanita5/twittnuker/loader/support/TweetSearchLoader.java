@@ -38,11 +38,12 @@ import java.util.List;
 
 public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 
+    @NonNull
     private final String mQuery;
     private final boolean mGapEnabled;
     private final boolean mTwitterOptimizedSearches;
 
-    public TweetSearchLoader(final Context context, final long accountId, final String query,
+    public TweetSearchLoader(final Context context, final long accountId, @NonNull final String query,
                              final long sinceId, final long maxId, final List<ParcelableStatus> data,
                              final String[] savedStatusesArgs, final int tabPosition, boolean fromUser,
                              boolean makeGap, boolean twitterOptimizedSearches) {
@@ -60,7 +61,8 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
         return twitter.search(query);
     }
 
-    protected String processQuery(final String query) {
+    @NonNull
+    protected String processQuery(@NonNull final String query) {
         if (mTwitterOptimizedSearches) {
             return String.format("%s exclude:retweets", query);
         }
@@ -75,5 +77,9 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
     @Override
     protected boolean isGapEnabled() {
         return mGapEnabled;
+    }
+
+    public boolean isTwitterOptimizedSearches() {
+        return mTwitterOptimizedSearches;
     }
 }
