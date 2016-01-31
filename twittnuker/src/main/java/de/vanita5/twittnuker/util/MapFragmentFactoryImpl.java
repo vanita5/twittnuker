@@ -28,8 +28,8 @@ import android.support.v4.app.Fragment;
 import de.vanita5.twittnuker.fragment.support.OpenStreetMapViewerFragment;
 
 public class MapFragmentFactoryImpl extends MapFragmentFactory {
-	@Override
-	public Fragment createMapFragment(Context context) {
+    @Override
+    public Fragment createMapFragment(Context context) {
         return new OpenStreetMapViewerFragment();
-		}
-	}
+    }
+}
