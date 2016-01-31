@@ -149,7 +149,6 @@ public class BackgroundOperationService extends IntentService implements Constan
     @Override
     public void onDestroy() {
         super.onDestroy();
-        DebugModeUtils.watchReferenceLeak(this);
     }
 
     @Override

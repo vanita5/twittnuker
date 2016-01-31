@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 /**
  * Common tool to check strings, objects etc.
@@ -45,5 +46,9 @@ public class CheckUtils {
             return false;
         }
         return true;
+    }
+
+    public static boolean isValidLocale(String locale) {
+        return !TextUtils.isEmpty(locale) && !"und".equals(locale);
     }
 }

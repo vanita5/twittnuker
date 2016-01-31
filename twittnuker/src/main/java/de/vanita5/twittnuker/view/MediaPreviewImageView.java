@@ -28,66 +28,51 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.view.iface.IForegroundView;
 
-public class ForegroundImageView extends ImageView implements IForegroundView {
+public class MediaPreviewImageView extends ImageView {
 
-    private final ForegroundViewHelper mForegroundViewHelper;
+    private final IForegroundView.ForegroundViewHelper mForegroundViewHelper;
 
-    public ForegroundImageView(final Context context) {
-        super(context);
-        mForegroundViewHelper = new ForegroundViewHelper(this, context, null, 0);
+    private boolean mHasPlayIcon;
+
+    public MediaPreviewImageView(Context context) {
+        this(context, null);
     }
 
-    public ForegroundImageView(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-        mForegroundViewHelper = new ForegroundViewHelper(this, context, attrs, 0);
+    public MediaPreviewImageView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public ForegroundImageView(final Context context, final AttributeSet attrs, final int defStyle) {
+    public MediaPreviewImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mForegroundViewHelper = new ForegroundViewHelper(this, context, attrs, defStyle);
+        mForegroundViewHelper = new IForegroundView.ForegroundViewHelper(this, context, attrs, defStyle);
     }
 
     @Override
-    public Drawable getForeground() {
-        if (mForegroundViewHelper != null) {
-            return mForegroundViewHelper.getForeground();
-        }
-        return null;
+    public void setImageDrawable(Drawable drawable) {
+        super.setImageDrawable(drawable);
+        updatePlayIcon();
     }
 
-    /**
-     * Supply a Drawable that is to be rendered on top of all of the child views
-     * in the frame layout. Any padding in the Drawable will be taken into
-     * account by ensuring that the children are inset to be placed inside of
-     * the padding area.
-     *
-     * @param drawable The Drawable to be drawn on top of the children.
-     * @attr ref android.R.styleable#FrameLayout_foreground
-     */
-    @Override
-    public void setForeground(final Drawable drawable) {
-        if (mForegroundViewHelper != null) {
-            mForegroundViewHelper.setForeground(drawable);
+    protected void updatePlayIcon() {
+        if (mHasPlayIcon && getDrawable() != null) {
+            mForegroundViewHelper.setForeground(ContextCompat.getDrawable(getContext(), R.drawable.ic_card_media_play));
+        } else {
+            mForegroundViewHelper.setForeground(null);
         }
     }
 
-    /**
-     * Describes how the foreground is positioned. Defaults to START and TOP.
-     *
-     * @param foregroundGravity See {@link android.view.Gravity}
-     * @attr ref android.R.styleable#FrameLayout_foregroundGravity
-     */
-    @Override
-    public void setForegroundGravity(final int foregroundGravity) {
-        if (mForegroundViewHelper != null) {
-            mForegroundViewHelper.setForegroundGravity(foregroundGravity);
-        }
+    public void setHasPlayIcon(boolean hasPlayIcon) {
+        mHasPlayIcon = hasPlayIcon;
+        updatePlayIcon();
     }
+
 
     @Override
     protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
@@ -142,5 +127,4 @@ public class ForegroundImageView extends ImageView implements IForegroundView {
             mForegroundViewHelper.dispatchOnDraw(canvas);
         }
     }
-
 }

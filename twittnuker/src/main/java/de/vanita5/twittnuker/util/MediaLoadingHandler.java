@@ -23,13 +23,10 @@
 package de.vanita5.twittnuker.util;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.res.ResourcesCompat;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -37,7 +34,6 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ForegroundImageView;
 
@@ -61,8 +57,7 @@ public class MediaLoadingHandler implements ImageLoadingListener, ImageLoadingPr
     @Override
     public void onLoadingStarted(final String imageUri, final View view) {
         final int viewHashCode = System.identityHashCode(view);
-        if (view == null || imageUri == null || imageUri.equals(mLoadingUris.get(viewHashCode)))
-            return;
+        if (view == null || imageUri == null || imageUri.equals(getLoadingUri(view))) return;
         ViewGroup parent = (ViewGroup) view.getParent();
         if (view instanceof ForegroundImageView) {
             ViewSupport.setForeground(view, null);
@@ -79,12 +74,6 @@ public class MediaLoadingHandler implements ImageLoadingListener, ImageLoadingPr
     @Override
     public void onLoadingFailed(final String imageUri, final View view, final FailReason reason) {
         if (view == null) return;
-        if (view instanceof ForegroundImageView) {
-            ((ImageView) view).setImageDrawable(null);
-            final Drawable foreground = ResourcesCompat.getDrawable(view.getResources(),
-                    R.drawable.image_preview_refresh, null);
-            ViewSupport.setForeground(view, foreground);
-        }
         mLoadingUris.remove(System.identityHashCode(view));
         final ProgressBar progress = findProgressBar(view.getParent());
         if (progress != null) {
@@ -97,35 +86,17 @@ public class MediaLoadingHandler implements ImageLoadingListener, ImageLoadingPr
         if (view == null) return;
         mLoadingUris.remove(System.identityHashCode(view));
         final ViewGroup parent = (ViewGroup) view.getParent();
-        setVideoIndicator(view, parent);
         final ProgressBar progress = findProgressBar(parent);
         if (progress != null) {
             progress.setVisibility(View.GONE);
         }
     }
 
-    public static void setVideoIndicator(View view, ViewGroup parent) {
-        if (view instanceof ForegroundImageView) {
-            final Drawable foreground;
-            if (isVideoItem(parent)) {
-                foreground = ResourcesCompat.getDrawable(view.getResources(),
-                        R.drawable.ic_card_media_play, null);
-            } else {
-                foreground = null;
-            }
-            ViewSupport.setForeground(view, foreground);
-        }
-    }
-
     @Override
     public void onLoadingCancelled(final String imageUri, final View view) {
         final int viewHashCode = System.identityHashCode(view);
-        if (view == null || imageUri == null || imageUri.equals(mLoadingUris.get(viewHashCode)))
-            return;
+        if (view == null || imageUri == null || imageUri.equals(getLoadingUri(view))) return;
         mLoadingUris.remove(viewHashCode);
-        if (view instanceof ForegroundImageView) {
-            ViewSupport.setForeground(view, null);
-        }
         final ProgressBar progress = findProgressBar(view.getParent());
         if (progress != null) {
             progress.setVisibility(View.GONE);
@@ -133,7 +104,8 @@ public class MediaLoadingHandler implements ImageLoadingListener, ImageLoadingPr
     }
 
     @Override
-    public void onProgressUpdate(final String imageUri, final View view, final int current, final int total) {
+    public void onProgressUpdate(final String imageUri, final View view, final int current,
+                                 final int total) {
         if (total == 0 || view == null) return;
         final ProgressBar progress = findProgressBar(view.getParent());
         if (progress != null) {
@@ -152,14 +124,4 @@ public class MediaLoadingHandler implements ImageLoadingListener, ImageLoadingPr
         return null;
     }
 
-    private static boolean isVideoItem(ViewGroup parent) {
-        final Object tag = parent.getTag();
-        if (tag instanceof ParcelableMedia) {
-            final int type = ((ParcelableMedia) tag).type;
-            return type == ParcelableMedia.Type.TYPE_VIDEO || type == ParcelableMedia.Type.TYPE_ANIMATED_GIF
-                    || type == ParcelableMedia.Type.TYPE_CARD_ANIMATED_GIF
-                    || type == ParcelableMedia.Type.TYPE_EXTERNAL_PLAYER;
-        }
-        return false;
-    }
 }

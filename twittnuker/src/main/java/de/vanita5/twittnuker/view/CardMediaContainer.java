@@ -35,15 +35,15 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.ref.WeakReference;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.ref.WeakReference;
 
 public class CardMediaContainer extends ViewGroup implements Constants {
 
@@ -132,6 +132,9 @@ public class CardMediaContainer extends ViewGroup implements Constants {
                     loader.displayPreviewImageWithCredentials(imageView, url, accountId, loadingHandler);
                 } else {
                     loader.displayPreviewImage(imageView, url, loadingHandler);
+                }
+                if (imageView instanceof MediaPreviewImageView) {
+                    ((MediaPreviewImageView) imageView).setHasPlayIcon(ParcelableMedia.hasPlayIcon(media.type));
                 }
                 child.setTag(media);
                 child.setVisibility(VISIBLE);

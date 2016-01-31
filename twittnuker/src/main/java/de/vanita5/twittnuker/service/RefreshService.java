@@ -188,7 +188,6 @@ public class RefreshService extends Service implements Constants {
             startService(new Intent(this, getClass()));
         }
         super.onDestroy();
-        DebugModeUtils.watchReferenceLeak(this);
     }
 
     protected boolean isAutoRefreshAllowed() {

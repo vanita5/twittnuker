@@ -26,7 +26,7 @@
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
-    <de.vanita5.twittnuker.view.ForegroundImageView
+    <de.vanita5.twittnuker.view.MediaPreviewImageView
         android:id="@+id/media_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

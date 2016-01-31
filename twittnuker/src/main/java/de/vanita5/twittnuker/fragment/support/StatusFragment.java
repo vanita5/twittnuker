@@ -114,6 +114,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.CheckUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
@@ -1071,7 +1072,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
 
             final String lang = status.lang;
-            if (!Utils.isOfficialCredentials(context, account) || TextUtils.isEmpty(lang)) {
+            if (!Utils.isOfficialCredentials(context, account) || !CheckUtils.isValidLocale(lang)) {
                 translateLabelView.setText(R.string.unknown_language);
                 translateContainer.setVisibility(View.GONE);
             } else {
@@ -1087,6 +1088,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
             textView.setTextIsSelectable(true);
             quotedTextView.setTextIsSelectable(true);
+            translateResultView.setTextIsSelectable(true);
 
             textView.setMovementMethod(LinkMovementMethod.getInstance());
             quotedTextView.setMovementMethod(LinkMovementMethod.getInstance());

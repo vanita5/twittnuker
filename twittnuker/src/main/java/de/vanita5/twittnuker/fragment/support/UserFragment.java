@@ -1391,11 +1391,11 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             mActionBarBackground.setColor(actionBarColor);
         }
         ActivitySupport.setTaskDescription(activity, new TaskDescriptionCompat(null, null, actionBarColor));
-        final int optimalLinkColor = ThemeUtils.getOptimalLinkColor(color,
+        final int optimalAccentColor = ThemeUtils.getOptimalAccentColor(color,
                 mDescriptionView.getCurrentTextColor());
-        mDescriptionView.setLinkTextColor(optimalLinkColor);
-        mLocationView.setLinkTextColor(optimalLinkColor);
-        mURLView.setLinkTextColor(optimalLinkColor);
+        mDescriptionView.setLinkTextColor(optimalAccentColor);
+        mLocationView.setLinkTextColor(optimalAccentColor);
+        mURLView.setLinkTextColor(optimalAccentColor);
         mProfileBannerView.setBackgroundColor(color);
         ViewSupport.setBackground(mPagerIndicator, ThemeUtils.getActionBarStackedBackground(activity,
                 themeRes, actionBarColor, backgroundOption, true));
@@ -1542,7 +1542,12 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 final int tabContrastColor = primaryColors[tabItemIsDark ? 0 : 1];
                 mPagerIndicator.setIconColor(tabContrastColor);
                 mPagerIndicator.setLabelColor(tabContrastColor);
-                mPagerIndicator.setStripColor(tabContrastColor);
+                if (ThemeUtils.isDarkTheme(themeId)) {
+                    mPagerIndicator.setStripColor(ThemeUtils.getOptimalAccentColor(mUiColor,
+                            tabContrastColor));
+                } else {
+                    mPagerIndicator.setStripColor(tabContrastColor);
+                }
                 mPagerIndicator.updateAppearance();
             }
             mPreviousTabItemIsDark = (tabItemIsDark ? 1 : -1);
