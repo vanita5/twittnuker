@@ -121,8 +121,8 @@ dependencies {
     compile 'com.google.dagger:dagger:2.0.2'
     compile 'org.attoparser:attoparser:1.4.0.RELEASE'
     compile 'com.j256.simplemagic:simplemagic:1.6'
-    compile 'com.github.mariotaku.MediaViewerLibrary:base:0.9.2-SNAPSHOT'
-    compile 'com.github.mariotaku.MediaViewerLibrary:subsample-image-view:0.9.2-SNAPSHOT'
+    compile 'com.github.mariotaku.MediaViewerLibrary:base:0.9.3'
+    compile 'com.github.mariotaku.MediaViewerLibrary:subsample-image-view:0.9.3'
     compile 'com.google.android.gms:play-services-gcm:8.3.0'
     compile ':YouTubeAndroidPlayerApi:1.2.2@jar'
 

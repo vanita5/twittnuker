@@ -33,9 +33,11 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.net.ConnectivityManagerCompat;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -66,7 +68,6 @@ import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
 import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
 import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
-import static de.vanita5.twittnuker.util.ConnectivityUtils.isOnWifi;
 
 public class NotificationHelper implements Constants {
 
@@ -660,6 +661,8 @@ public class NotificationHelper implements Constants {
     }
 
     private Bitmap getProfileImageForNotification(final String profileImageUrl) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
         final Resources res = mContext.getResources();
         final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
         final int h = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
@@ -668,7 +671,7 @@ public class NotificationHelper implements Constants {
         Bitmap profileImage = null;
         if (profileImageFile != null && profileImageFile.isFile()) {
             profileImage = BitmapFactory.decodeFile(profileImageFile.getAbsolutePath());
-        } else if (isOnWifi(mContext)) {
+        } else if (ConnectivityManagerCompat.isActiveNetworkMetered(connectivityManager)) {
             profileImage = mMediaLoader.loadImageSync(profileImageUrl);
         }
         return (profileImage != null) ? Bitmap.createScaledBitmap(profileImage, w, h, true) : null;

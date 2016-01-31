@@ -32,7 +32,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.KeyEvent;
@@ -67,7 +66,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         implements LoaderCallbacks<Data>, AbsActivitiesAdapter.ActivityAdapterListener, KeyboardShortcutCallback {
 
     private final Object mStatusesBusCallback;
-    private PopupMenu mPopupMenu;
+
     private final OnScrollListener mOnScrollListener = new OnScrollListener() {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -343,9 +342,6 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
 
     @Override
     public void onDestroyView() {
-        if (mPopupMenu != null) {
-            mPopupMenu.dismiss();
-        }
         super.onDestroyView();
     }
 

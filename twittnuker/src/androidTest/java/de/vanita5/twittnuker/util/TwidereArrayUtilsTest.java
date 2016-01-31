@@ -20,37 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.util;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
+import org.junit.Test;
 
-/**
- * Created by mariotaku on 15/5/7.
- */
-@JsonObject
-public class ErrorInfo {
+public class TwidereArrayUtilsTest {
 
-    public static final int PAGE_NOT_FOUND = 34;
-    public static final int RATE_LIMIT_EXCEEDED = 88;
-    public static final int NOT_AUTHORIZED = 179;
-    public static final int STATUS_IS_DUPLICATE = 187;
-    public static final int NO_DIRECT_MESSAGE_PERMISSION = 93;
-
-    @JsonField(name = "code")
-    int code;
-    @JsonField(name = "message")
-    String message;
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getRequest() {
-        return null;
+    @Test
+    public void testMergeArray() throws Exception {
     }
 }

@@ -71,12 +71,14 @@ import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
@@ -989,8 +991,20 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext,
                                 true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
+
+                        Expression extraWhere = null;
+                        String[] extraWhereArgs = null;
+                        if (spec.args != null) {
+                            Bundle extras = spec.args.getBundle(EXTRA_EXTRAS);
+                            if (extras != null && extras.getBoolean(EXTRA_MENTIONS_ONLY)) {
+                                extraWhere = Expression.inArgs(Activities.ACTION, 3);
+                                extraWhereArgs = new String[]{Activity.Action.MENTION,
+                                        Activity.Action.REPLY, Activity.Action.QUOTE};
+                            }
+                        }
                         result.put(spec.position, DataStoreUtils.getActivitiesCount(mContext,
-                                Activities.AboutMe.CONTENT_URI, position, accountIds));
+                                Activities.AboutMe.CONTENT_URI, extraWhere, extraWhereArgs,
+                                position, accountIds));
                         break;
                     }
                     case CustomTabType.DIRECT_MESSAGES: {

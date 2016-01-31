@@ -76,6 +76,7 @@ import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.NotificationType;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage;
@@ -86,8 +87,10 @@ import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.model.UnreadItem;
+import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedImages;
@@ -1206,18 +1209,28 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             int messageLines = 0;
 
             long timestamp = -1;
-            while (!c.isAfterLast()) {
+            c.moveToFirst();
+            while (c.moveToNext()) {
                 if (messageLines == 5) {
                     style.addLine(resources.getString(R.string.and_N_more, count - c.getPosition()));
                     break;
                 }
                 final ParcelableActivity activity = ci.newObject(c);
+                if (pref.isNotificationMentionsOnly() && ArrayUtils.contains(Activity.Action.MENTION_ACTIONS,
+                        activity.action)) {
+                    continue;
+                }
+                final long[] filteredUserIds = DataStoreUtils.getFilteredUserIds(context);
                 if (timestamp == -1) {
                     timestamp = activity.timestamp;
                 }
+                ParcelableActivityUtils.initAfterFilteredSourceIds(activity, filteredUserIds,
+                        pref.isNotificationFollowingOnly());
+                final ParcelableUser[] sources = ParcelableActivityUtils.getAfterFilteredSources(activity);
+                if (ArrayUtils.isEmpty(sources)) continue;
                 final ActivityTitleSummaryMessage message = ActivityTitleSummaryMessage.get(context,
-                        mUserColorNameManager, activity, activity.sources, 0, false,
-                        mUseStarForLikes, mNameFirst);
+                        mUserColorNameManager, activity, sources,
+                        0, false, mUseStarForLikes, mNameFirst);
                 if (message != null) {
                     final CharSequence summary = message.getSummary();
                     if (TextUtils.isEmpty(summary)) {
@@ -1228,7 +1241,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     }
                     messageLines++;
                 }
-                c.moveToNext();
             }
             builder.setContentIntent(getContentIntent(context, CustomTabType.NOTIFICATIONS_TIMELINE,
                     NotificationType.INTERACTIONS, accountId));

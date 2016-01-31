@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
@@ -153,17 +154,25 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
     @Override
     public void onLoadFinished(final Loader<Cursor> loader, final Cursor cursor) {
         if (getActivity() == null) return;
+        final boolean isEmpty = cursor != null && cursor.getCount() == 0;
         mFirstVisibleItem = -1;
         final MessageEntriesAdapter adapter = getAdapter();
         adapter.setCursor(cursor);
         adapter.setLoadMoreIndicatorVisible(false);
-        adapter.setLoadMoreSupported(cursor != null && cursor.getCount() > 0);
+        adapter.setLoadMoreSupported(!isEmpty);
         adapter.setLoadMoreSupported(hasMoreData(cursor));
         final long[] accountIds = getAccountIds();
         adapter.setShowAccountsColor(accountIds.length > 1);
         setRefreshEnabled(true);
+
         if (accountIds.length > 0) {
-            showContent();
+            final ErrorInfoStore.DisplayErrorInfo errorInfo = ErrorInfoStore.getErrorInfo(getContext(),
+                    mErrorInfoStore.get(ErrorInfoStore.KEY_DIRECT_MESSAGES, accountIds[0]));
+            if (isEmpty && errorInfo != null) {
+                showError(errorInfo.getIcon(), errorInfo.getMessage());
+            } else {
+                showContent();
+            }
         } else {
             showError(R.drawable.ic_info_accounts, getString(R.string.no_account_selected));
         }

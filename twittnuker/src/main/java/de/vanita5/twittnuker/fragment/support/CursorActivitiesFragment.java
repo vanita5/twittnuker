@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.Loader;
 
@@ -92,19 +93,21 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
         final String table = getTableNameByUri(uri);
         final String sortOrder = getSortOrder();
         final long[] accountIds = getAccountIds();
-        final Expression accountWhere = Expression.in(new Column(Activities.ACCOUNT_ID), new RawItemArray(accountIds));
+        final Expression accountWhere = Expression.in(new Column(Activities.ACCOUNT_ID),
+                new RawItemArray(accountIds));
         final Expression filterWhere = getFiltersWhere(table), where;
         if (filterWhere != null) {
             where = Expression.and(accountWhere, filterWhere);
         } else {
             where = accountWhere;
         }
-        final String selection = processWhere(where).getSQL();
+        final Where expression = processWhere(where, new String[0]);
+        final String selection = expression.getSQL();
         final AbsActivitiesAdapter<List<ParcelableActivity>> adapter = getAdapter();
         adapter.setShowAccountsColor(accountIds.length > 1);
         final String[] projection = Activities.COLUMNS;
-        return new CursorActivitiesLoader(context, uri, projection, selection, null, sortOrder,
-                fromUser);
+        return new CursorActivitiesLoader(context, uri, projection, selection, expression.whereArgs,
+                sortOrder, fromUser);
     }
 
     @Override
@@ -242,8 +245,9 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
 
     protected abstract boolean isFilterEnabled();
 
-    protected Expression processWhere(final Expression where) {
-        return where;
+    @NonNull
+    protected Where processWhere(@NonNull final Expression where, @NonNull final String[] whereArgs) {
+        return new Where(where, whereArgs);
     }
 
     protected abstract void updateRefreshState();
@@ -291,6 +295,20 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
 
         }
 
+    }
+
+    public static class Where {
+        Expression where;
+        String[] whereArgs;
+
+        public Where(@NonNull Expression where, @Nullable String[] whereArgs) {
+            this.where = where;
+            this.whereArgs = whereArgs;
+        }
+
+        public String getSQL() {
+            return where.getSQL();
+        }
     }
 
     public static class CursorActivitiesLoader extends ExtendedObjectCursorLoader<ParcelableActivity> {

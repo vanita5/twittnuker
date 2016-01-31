@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DebugModeUtils;
+import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
@@ -83,6 +84,8 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     protected NotificationManagerWrapper mNotificationManager;
     @Inject
     protected BidiFormatter mBidiFormatter;
+    @Inject
+    protected ErrorInfoStore mErrorInfoStore;
 
     public BaseSupportFragment() {
 

@@ -28,8 +28,16 @@ import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 public class ParcelableActivityUtils {
-    public static void getAfterFilteredSourceIds(ParcelableActivity activity, long[] filteredUserIds, boolean followingOnly) {
-        if (activity.after_filtered_source_ids != null) return;
+
+    /**
+     * @param activity        Activity for processing
+     * @param filteredUserIds Those ids will be removed from source_ids.
+     * @param followingOnly   Limit following users in sources
+     * @return true if source ids changed, false otherwise
+     */
+    public static boolean initAfterFilteredSourceIds(ParcelableActivity activity, long[] filteredUserIds,
+                                                     boolean followingOnly) {
+        if (activity.after_filtered_source_ids != null) return false;
         if (followingOnly || !ArrayUtils.isEmpty(filteredUserIds)) {
             ArrayLongList list = new ArrayLongList();
             for (ParcelableUser user : activity.sources) {
@@ -41,8 +49,10 @@ public class ParcelableActivityUtils {
                 }
             }
             activity.after_filtered_source_ids = list.toArray();
+            return true;
         } else {
             activity.after_filtered_source_ids = activity.source_ids;
+            return false;
         }
     }
 

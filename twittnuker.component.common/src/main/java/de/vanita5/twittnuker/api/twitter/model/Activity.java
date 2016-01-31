@@ -196,5 +196,6 @@ public class Activity extends TwitterResponseObject implements TwitterResponse, 
         String FAVORITED_MEDIA_TAGGED = ("favorited_media_tagged");
         String RETWEETED_MEDIA_TAGGED = ("retweeted_media_tagged");
 
+        String[] MENTION_ACTIONS = {MENTION, REPLY, QUOTE};
     }
 }
