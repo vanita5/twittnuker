@@ -7,7 +7,7 @@ env:
     MALLOC_ARENA_MAX=2
     JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
     GRADLE_OPTS=-Xmx1024m -Dorg.gradle.parallel=false
-    ADB_INSTALL_TIMEOUT=10
+    ADB_INSTALL_TIMEOUT=30
 
 jdk:
   - oraclejdk8
