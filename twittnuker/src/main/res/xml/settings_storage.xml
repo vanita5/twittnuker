@@ -21,7 +21,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="settings_storage"
     android:title="@string/storage">
@@ -45,6 +46,7 @@
             android:title="@string/cache_size_limit"
             app:max="1024"
             app:min="100"
+            app:progressTextSuffix="MB"
             app:step="50" />
 
         <de.vanita5.twittnuker.preference.ClearSearchHistoryPreference
