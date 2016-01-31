@@ -7,7 +7,7 @@ env:
     MALLOC_ARENA_MAX=2
     JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
     GRADLE_OPTS=-Xmx1024m -Dorg.gradle.parallel=false
-    ADB_INSTALL_TIMEOUT=30
+    ADB_INSTALL_TIMEOUT=8
 
 jdk:
   - oraclejdk8
@@ -47,8 +47,13 @@ before_script:
 before_install:
   - export PATH=$HOME/.local/bin:$PATH
   - echo no | android create avd --force -n test -t android-23 --abi armeabi-v7a
-  - emulator -avd test -no-audio -no-window &
+  - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
 
-script: ./gradlew build connectedAndroidTest --no-daemon --stacktrace
+script:
+  - ./gradlew assembleDebug --no-daemon --stacktrace
+  - ./gradlew assembleDebugAndroidTest
+  - adb install twittnuker/build/outputs/apk/twittnuker-debug.apk
+  - adb install twittnuker/build/outputs/apk/twittnuker-debug-androidTest-unaligned.apk
+  - adb shell am instrument -w de.vanita5.twittnuker.test/android.support.test.runner.AndroidJUnitRunner
