@@ -36,6 +36,7 @@ import android.webkit.URLUtil;
 import org.mariotaku.restfu.ExceptionFactory;
 import org.mariotaku.restfu.RestAPIFactory;
 import org.mariotaku.restfu.RestClient;
+import org.mariotaku.restfu.RestConverter;
 import org.mariotaku.restfu.RestRequest;
 import org.mariotaku.restfu.http.Authorization;
 import org.mariotaku.restfu.http.Endpoint;
@@ -43,8 +44,6 @@ import org.mariotaku.restfu.http.HttpRequest;
 import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.MultiValueMap;
 import org.mariotaku.restfu.http.SimpleValueMap;
-import org.mariotaku.restfu.http.mime.BaseBody;
-import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.TwittnukerConstants;
@@ -63,10 +62,10 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.api.twitter.util.TwitterConverterFactory;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
-import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -269,15 +268,6 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         return new EmptyAuthorization();
     }
 
-    private static void addParam(MultiValueMap<String> params, String name, Object value) {
-        params.add(name, String.valueOf(value));
-    }
-
-    private static void addPart(MultiValueMap<Body> params, String name, Object value) {
-        final Body typedData = BaseBody.wrap(value);
-        params.add(name, typedData);
-    }
-
     public static boolean verifyApiFormat(@NonNull String format) {
         return URLUtil.isValidUrl(getApiBaseUrl(format, "test"));
     }
@@ -440,8 +430,10 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         }
 
         @Override
-        public HttpRequest create(@NonNull Endpoint endpoint, @NonNull RestRequest info,
-                                      @Nullable Authorization authorization) {
+        public <E extends Exception> HttpRequest create(@NonNull Endpoint endpoint, @NonNull RestRequest info,
+                                                        @Nullable Authorization authorization,
+                                                        RestConverter.Factory<E> converterFactory)
+                throws IOException, RestConverter.ConvertException, E {
             final String restMethod = info.getMethod();
             final String url = Endpoint.constructUrl(endpoint.getUrl(), info);
             MultiValueMap<String> headers = info.getHeaders();
@@ -453,7 +445,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
                 headers.add("Authorization", authorization.getHeader(endpoint, info));
             }
             headers.add("User-Agent", userAgent);
-            return new HttpRequest(restMethod, url, headers, info.getBody(), RequestType.API);
+            return new HttpRequest(restMethod, url, headers, info.getBody(converterFactory), null);
         }
     }
 

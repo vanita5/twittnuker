@@ -45,7 +45,7 @@ import org.mariotaku.restfu.http.Endpoint;
 import org.mariotaku.restfu.http.HttpRequest;
 import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.MultiValueMap;
-import org.mariotaku.restfu.http.mime.BaseBody;
+import org.mariotaku.restfu.http.mime.SimpleBody;
 import org.mariotaku.restfu.http.mime.FormBody;
 import org.mariotaku.restfu.okhttp.OkHttpRestClient;
 import de.vanita5.twittnuker.Constants;
@@ -234,7 +234,7 @@ public class OAuthPasswordAuthenticator implements Constants {
                 }
             }
         };
-        PARSER.parse(BaseBody.reader(response.getBody()), handler);
+        PARSER.parse(SimpleBody.reader(response.getBody()), handler);
     }
 
     private AuthorizeResponseData getAuthorizeResponseData(OAuthToken requestToken,
@@ -364,7 +364,7 @@ public class OAuthPasswordAuthenticator implements Constants {
                     }
                 }
             };
-            PARSER.parse(BaseBody.reader(response.getBody()), handler);
+            PARSER.parse(SimpleBody.reader(response.getBody()), handler);
             return data;
         } catch (AttoParseException e) {
             throw new AuthenticationException("Malformed HTML", e);
