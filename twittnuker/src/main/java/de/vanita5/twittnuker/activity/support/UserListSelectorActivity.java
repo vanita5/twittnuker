@@ -22,10 +22,7 @@
 
 package de.vanita5.twittnuker.activity.support;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -38,6 +35,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
+
+import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUserListsAdapter;
@@ -58,6 +57,7 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.message.UserListCreatedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,16 +75,6 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
 
     private String mScreenName;
 
-    private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            final String action = intent.getAction();
-            if (BROADCAST_USER_LIST_CREATED.equals(action)) {
-                getUserLists(mScreenName);
-            }
-        }
-    };
     private Runnable mResumeFragmentRunnable;
     private boolean mFragmentsResumed;
 
@@ -199,14 +189,18 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
     @Override
     protected void onStart() {
         super.onStart();
-        final IntentFilter filter = new IntentFilter(BROADCAST_USER_LIST_CREATED);
-        registerReceiver(mStatusReceiver, filter);
+        mBus.register(this);
     }
 
     @Override
     protected void onStop() {
-        unregisterReceiver(mStatusReceiver);
+        mBus.unregister(this);
         super.onStop();
+    }
+
+    @Subscribe
+    void onUserListCreated(UserListCreatedEvent event) {
+        getUserLists(mScreenName);
     }
 
     private long getAccountId() {

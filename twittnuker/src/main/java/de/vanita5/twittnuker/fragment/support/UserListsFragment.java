@@ -22,10 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.Loader;
@@ -33,31 +30,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.squareup.otto.Subscribe;
+
+import java.util.List;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsUserListsAdapter;
 import de.vanita5.twittnuker.loader.support.UserListsLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.Utils;
-
-import java.util.List;
+import de.vanita5.twittnuker.util.message.UserListDestroyedEvent;
 
 public class UserListsFragment extends ParcelableUserListsFragment {
-
-    private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
-
-	@Override
-        public void onReceive(final Context context, final Intent intent) {
-            if (getActivity() == null || !isAdded() || isDetached()) return;
-            final String action = intent.getAction();
-            if (BROADCAST_USER_LIST_DELETED.equals(action)) {
-                final ParcelableUserList list = intent.getParcelableExtra(EXTRA_USER_LIST);
-                if (list != null) {
-                    removeUserList(list.id);
-                }
-            }
-        }
-    };
 
     @Override
     public Loader<List<ParcelableUserList>> onCreateUserListsLoader(final Context context,
@@ -69,17 +54,17 @@ public class UserListsFragment extends ParcelableUserListsFragment {
     }
 
     @Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-	}
+    }
 
-	@Override
+    @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.menu_user_lists_owned, menu);
-	}
+    }
 
-	@Override
+    @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.new_user_list: {
@@ -88,13 +73,13 @@ public class UserListsFragment extends ParcelableUserListsFragment {
                 args.putLong(EXTRA_ACCOUNT_ID, getAccountId());
                 f.setArguments(args);
                 f.show(getFragmentManager(), null);
-				return true;
-			}
+                return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
 
-	@Override
+    @Override
     public void onPrepareOptionsMenu(final Menu menu) {
         final MenuItem item = menu.findItem(R.id.new_user_list);
         if (item == null) return;
@@ -112,19 +97,24 @@ public class UserListsFragment extends ParcelableUserListsFragment {
 
     private long getUserId() {
         return getArguments().getLong(EXTRA_USER_ID);
-	}
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        registerReceiver(mStatusReceiver, new IntentFilter(BROADCAST_USER_LIST_DELETED));
+        mBus.register(this);
     }
 
     @Override
     public void onStop() {
-        unregisterReceiver(mStatusReceiver);
+        mBus.unregister(this);
         super.onStop();
-	}
+    }
+
+    @Subscribe
+    void onUserListDestroyed(UserListDestroyedEvent event) {
+        removeUserList(event.userList.id);
+    }
 
     private void removeUserList(final long id) {
         final AbsUserListsAdapter<List<ParcelableUserList>> adapter = getAdapter();

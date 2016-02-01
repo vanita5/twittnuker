@@ -50,11 +50,9 @@ public class UserColorNameManager implements TwittnukerConstants {
         mColorPreferences = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
-    public static void registerOnUserColorChangedListener(final Context context,
-                                                          final OnUserColorChangedListener listener) {
+    public void registerColorChangedListener(final UserColorChangedListener listener) {
 
-        final SharedPreferences prefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        prefs.registerOnSharedPreferenceChangeListener(new OnColorPreferenceChangeListener(listener));
+        mColorPreferences.registerOnSharedPreferenceChangeListener(new OnColorPreferenceChangeListener(listener));
     }
 
     public void clearUserColor(final long userId) {
@@ -103,15 +101,15 @@ public class UserColorNameManager implements TwittnukerConstants {
         return color;
     }
 
-    public interface OnUserColorChangedListener {
+    public interface UserColorChangedListener {
         void onUserColorChanged(long userId, int color);
     }
 
     private static final class OnColorPreferenceChangeListener implements OnSharedPreferenceChangeListener {
 
-        private final OnUserColorChangedListener mListener;
+        private final UserColorChangedListener mListener;
 
-        OnColorPreferenceChangeListener(final OnUserColorChangedListener listener) {
+        OnColorPreferenceChangeListener(final UserColorChangedListener listener) {
             mListener = listener;
         }
 

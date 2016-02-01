@@ -27,6 +27,7 @@ import android.support.v7.widget.RecyclerView;
 import de.vanita5.twittnuker.activity.BasePreferenceActivity;
 import de.vanita5.twittnuker.activity.BaseThemedActivity;
 import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
+import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.activity.support.ThemedFragmentActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
@@ -84,6 +85,8 @@ public interface GeneralComponent {
     void inject(RefreshService object);
 
     void inject(ThemedFragmentActivity object);
+
+    void inject(ComposeActivity object);
 
     void inject(TwidereDataProvider object);
 

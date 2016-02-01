@@ -36,6 +36,7 @@ import com.nostra13.universalimageloader.utils.L;
 import com.squareup.okhttp.Dns;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
+import com.twitter.Extractor;
 
 import org.mariotaku.mediaviewer.library.FileCache;
 import org.mariotaku.mediaviewer.library.MediaDownloader;
@@ -57,6 +58,7 @@ import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
+import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache;
@@ -211,8 +213,20 @@ public class ApplicationModule implements Constants {
 
     @Provides
     @Singleton
-    public MediaDownloader mediaDownloader(SharedPreferencesWrapper preferences, RestHttpClient client) {
+    public MediaDownloader mediaDownloader(RestHttpClient client) {
         return new TwidereMediaDownloader(application, client);
+    }
+
+    @Provides
+    @Singleton
+    public TwidereValidator twidereValidator(SharedPreferencesWrapper preferences) {
+        return new TwidereValidator(preferences);
+    }
+
+    @Provides
+    @Singleton
+    public Extractor extractor() {
+        return new Extractor();
     }
 
     @Provides

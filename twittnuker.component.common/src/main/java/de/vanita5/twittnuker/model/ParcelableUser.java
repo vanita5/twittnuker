@@ -50,10 +50,13 @@ import de.vanita5.twittnuker.util.TwitterContentUtils;
 @CursorObject(valuesCreator = true)
 public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
 
-
     @ParcelableThisPlease
     @JsonField(name = "account_id")
     public long account_id;
+
+    @ParcelableThisPlease
+    public int account_color;
+
     @ParcelableThisPlease
     @JsonField(name = "id")
     @CursorField(CachedUsers.USER_ID)
@@ -206,13 +209,6 @@ public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
         text_color = 0;
         is_cache = true;
         is_basic = true;
-    }
-
-    public ParcelableUser(final Cursor cursor, ParcelableUserCursorIndices indices, final long accountId) {
-        indices.callBeforeCreated(this);
-        indices.parseFields(this, cursor);
-        indices.callAfterCreated(this);
-        this.account_id = accountId;
     }
 
     @AfterCursorObjectCreated
