@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
@@ -22,8 +21,8 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	android:title="@string/notifications">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/notifications">
 
     <PreferenceCategory
         android:key="cat_general"
@@ -32,7 +31,7 @@
         <de.vanita5.twittnuker.preference.ColorPickerPreference
             android:key="notification_light_color"
             android:title="@string/notification_light_color"
-            app:defaultColor="@color/branding_color"/>
+            app:defaultColor="@color/branding_color" />
 
         <RingtonePreference
             android:key="notification_ringtone"
@@ -48,35 +47,39 @@
 
         <de.vanita5.twittnuker.preference.NotificationContentPreference
             android:key="content_to_notify"
-            android:title="@string/content_to_notify"/>
+            android:title="@string/content_to_notify" />
     </PreferenceCategory>
 
-	<PreferenceCategory
-		android:key="cat_notifications_type"
-		android:title="@string/notifications_type">
-		<de.vanita5.twittnuker.preference.NotificationTypePreference
-			android:key="notification_type_mentions"
-			android:title="@string/mentions"
-			app:dependencyKey="mentions_notification"
-			app:dependencyValueDefault="false"
-			app:dependencyValues="@array/dependency_values_true"
-			app:notificationType="vibration|light"/>
-		<de.vanita5.twittnuker.preference.NotificationTypePreference
-			android:key="notification_type_direct_messages"
-			android:title="@string/direct_messages"
-			app:dependencyKey="direct_messages_notification"
-			app:dependencyValueDefault="false"
-			app:dependencyValues="@array/dependency_values_true"
-			app:notificationType="ringtone|vibration|light"/>
-	</PreferenceCategory>
     <PreferenceCategory
-        	android:key="cat_other_settings"
-    		android:title="@string/other_settings">
-    		<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-    			android:defaultValue="false"
-                android:key="notification_following_only"
-                android:summary="@string/following_only_summary"
-                android:title="@string/following_only"/>
+        android:key="cat_notifications_type"
+        android:title="@string/notifications_type">
+        <de.vanita5.twittnuker.preference.NotificationTypePreference
+            android:key="notification_type_mentions"
+            android:title="@string/interactions"
+            app:dependencyKey="mentions_notification"
+            app:dependencyValueDefault="false"
+            app:dependencyValues="@array/dependency_values_true"
+            app:notificationType="vibration|light" />
+        <de.vanita5.twittnuker.preference.NotificationTypePreference
+            android:key="notification_type_direct_messages"
+            android:title="@string/direct_messages"
+            app:dependencyKey="direct_messages_notification"
+            app:dependencyValueDefault="false"
+            app:dependencyValues="@array/dependency_values_true"
+            app:notificationType="ringtone|vibration|light" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="cat_other_settings"
+        android:title="@string/other_settings">
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:defaultValue="false"
+            android:key="notification_following_only"
+            android:summary="@string/following_only_summary"
+            android:title="@string/following_only" />
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:defaultValue="false"
+            android:key="notification_mentions_only"
+            android:title="@string/mentions_only" />
     </PreferenceCategory>
 
 </PreferenceScreen>

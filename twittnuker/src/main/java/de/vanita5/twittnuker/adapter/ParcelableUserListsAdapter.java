@@ -24,57 +24,65 @@ package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 
+import java.util.List;
+
 public class ParcelableUserListsAdapter extends AbsUserListsAdapter<List<ParcelableUserList>> {
 
-	private List<ParcelableUserList> mData;
+    private List<ParcelableUserList> mData;
 
 
-	public ParcelableUserListsAdapter(Context context, boolean compact) {
-		super(context, compact);
-	}
+    public ParcelableUserListsAdapter(Context context, boolean compact) {
+        super(context, compact);
+    }
 
-	@Override
-	public List<ParcelableUserList> getData() {
-		return mData;
-	}
+    @Override
+    public List<ParcelableUserList> getData() {
+        return mData;
+    }
 
 
-	@Override
-	public void setData(List<ParcelableUserList> data) {
-		mData = data;
-		notifyDataSetChanged();
-	}
+    @Override
+    public void setData(List<ParcelableUserList> data) {
+        mData = data;
+        notifyDataSetChanged();
+    }
 
-	@Override
-	protected void bindUserList(UserListViewHolder holder, int position) {
-		holder.displayUserList(getUserList(position));
-	}
+    @Override
+    protected void bindUserList(UserListViewHolder holder, int position) {
+        holder.displayUserList(getUserList(position));
+    }
 
-	@Override
-	public int getItemCount() {
-		return getUserListsCount() + (isLoadMoreIndicatorVisible() ? 1 : 0);
-	}
+    @Override
+    public int getItemCount() {
+        final int position = getLoadMoreIndicatorPosition();
+        int count = getUserListsCount();
+        if ((position & IndicatorPosition.START) != 0) {
+            count++;
+        }
+        if ((position & IndicatorPosition.END) != 0) {
+            count++;
+        }
+        return count;
+    }
 
-	@Override
-	public ParcelableUserList getUserList(int position) {
-		if (position == getUserListsCount()) return null;
-		return mData.get(position);
-	}
+    @Override
+    public ParcelableUserList getUserList(int position) {
+        if (position == getUserListsCount()) return null;
+        return mData.get(position);
+    }
 
-	@Override
-	public long getUserListId(int position) {
-		if (position == getUserListsCount()) return -1;
-		return mData.get(position).id;
-	}
+    @Override
+    public long getUserListId(int position) {
+        if (position == getUserListsCount()) return -1;
+        return mData.get(position).id;
+    }
 
-	@Override
-	public int getUserListsCount() {
-		if (mData == null) return 0;
-		return mData.size();
-	}
+    @Override
+    public int getUserListsCount() {
+        if (mData == null) return 0;
+        return mData.size();
+    }
 }

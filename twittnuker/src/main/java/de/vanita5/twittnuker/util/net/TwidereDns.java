@@ -43,7 +43,6 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import org.mariotaku.inetaddrjni.library.InetAddressUtils;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
-import org.xbill.DNS.CNAMERecord;
 import org.xbill.DNS.DClass;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Name;
@@ -74,12 +73,14 @@ public class TwidereDns implements Constants, Dns {
 
     private Resolver mResolver;
     private TimingLogger mLogger;
+    private long mConnnectTimeout;
 
     public TwidereDns(final Context context) {
         mLogger = new TimingLogger(RESOLVER_LOGTAG, "resolve");
         mHostMapping = SharedPreferencesWrapper.getInstance(context, HOST_MAPPING_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mSystemHosts = new SystemHosts();
+        reloadDnsSettings();
     }
 
     private static boolean hostMatches(final String host, final String rule) {
@@ -98,14 +99,14 @@ public class TwidereDns implements Constants, Dns {
     }
 
     @NonNull
-    private InetAddress[] resolveInternal(String originalHost, String host, int depth) throws IOException {
+    private InetAddress[] resolveInternal(String originalHost, String host, int depth, boolean putCache) throws IOException {
         resetLog(originalHost);
         // Return if host is an address
         final InetAddress[] fromAddressString = fromAddressString(originalHost, host);
         if (fromAddressString != null) {
             if (BuildConfig.DEBUG) {
                 addLogSplit(originalHost, host, "valid ip address", depth);
-                dumpLog();
+                dumpLog(fromAddressString);
             }
             return fromAddressString;
         }
@@ -114,7 +115,7 @@ public class TwidereDns implements Constants, Dns {
         if (fromCache != null) {
             if (BuildConfig.DEBUG) {
                 addLogSplit(originalHost, host, "hit cache", depth);
-                dumpLog();
+                dumpLog(fromCache);
             }
             return fromCache;
         }
@@ -125,7 +126,7 @@ public class TwidereDns implements Constants, Dns {
         if (fromMapping != null) {
             putCache(originalHost, fromMapping, -1, TimeUnit.SECONDS);
             if (BuildConfig.DEBUG) {
-                dumpLog();
+                dumpLog(fromMapping);
             }
             return fromMapping;
         }
@@ -136,7 +137,7 @@ public class TwidereDns implements Constants, Dns {
         if (fromSystemHosts != null) {
             putCache(originalHost, fromSystemHosts, 60, TimeUnit.SECONDS);
             if (BuildConfig.DEBUG) {
-                dumpLog();
+                dumpLog(fromSystemHosts);
             }
             return fromSystemHosts;
         }
@@ -144,23 +145,24 @@ public class TwidereDns implements Constants, Dns {
         addLogSplit(originalHost, host, "start resolver resolve", depth);
         final InetAddress[] fromResolver = fromResolver(originalHost, host, depth);
         addLogSplit(originalHost, host, "end resolver resolve", depth);
-        if (fromResolver != null) {
+        if (!ArrayUtils.isEmpty(fromResolver)) {
         if (BuildConfig.DEBUG) {
-                dumpLog();
+                dumpLog(fromResolver);
             }
             return fromResolver;
         }
         addLogSplit(originalHost, host, "start system default resolve", depth);
         final InetAddress[] fromDefault = InetAddress.getAllByName(host);
         addLogSplit(originalHost, host, "end system default resolve", depth);
-        putCache(host, fromDefault, 0, TimeUnit.SECONDS);
+        putCache(host, fromDefault, 60, TimeUnit.SECONDS);
         if (BuildConfig.DEBUG) {
-            dumpLog();
+            dumpLog(fromDefault);
         }
         return fromDefault;
     }
 
-    private void dumpLog() {
+    private void dumpLog(@NonNull InetAddress[] addresses) {
+        Log.v(RESOLVER_LOGTAG, "Resolved " + Arrays.toString(addresses));
             mLogger.dumpToLog();
         }
 
@@ -192,6 +194,7 @@ public class TwidereDns implements Constants, Dns {
         return mHostCache.getValid(host);
     }
 
+    @Nullable
     private InetAddress[] fromResolver(String originalHost, String host, int depth) throws IOException {
         final Resolver dns = getResolver();
         final Lookup lookup = new Lookup(new Name(host), Type.A, DClass.IN);
@@ -210,30 +213,34 @@ public class TwidereDns implements Constants, Dns {
             if (ttl == -1) {
                 ttl = record.getTTL();
             }
+            final InetAddress inetAddress;
             if (record instanceof ARecord) {
-                final InetAddress ipv4Addr = ((ARecord) record).getAddress();
-                resolvedAddresses.add(InetAddress.getByAddress(originalHost, ipv4Addr.getAddress()));
+                inetAddress = ((ARecord) record).getAddress();
             } else if (record instanceof AAAARecord) {
-                final InetAddress ipv6Addr = ((AAAARecord) record).getAddress();
-                resolvedAddresses.add(InetAddress.getByAddress(originalHost, ipv6Addr.getAddress()));
+                inetAddress = ((AAAARecord) record).getAddress();
+            } else {
+                continue;
+            }
+            if (mConnnectTimeout == 0 || inetAddress.isReachable((int) mConnnectTimeout)) {
+                resolvedAddresses.add(InetAddress.getByAddress(originalHost, inetAddress.getAddress()));
             }
         }
         if (!resolvedAddresses.isEmpty()) {
             final InetAddress[] hostAddr = resolvedAddresses.toArray(new InetAddress[resolvedAddresses.size()]);
             putCache(originalHost, hostAddr, ttl, TimeUnit.SECONDS);
-            if (BuildConfig.DEBUG) {
-                Log.v(RESOLVER_LOGTAG, "Resolved " + Arrays.toString(hostAddr));
-            }
             return hostAddr;
         }
         // No address is reachable, but I believe the IP is correct.
-
-        for (final Record record : records) {
-            if (record instanceof CNAMERecord)
-                return resolveInternal(originalHost, ((CNAMERecord) record).getTarget().toString(),
-                        depth + 1);
-        }
         return null;
+//        final List<InetAddress> addresses = new ArrayList<>();
+//        for (final Record record : records) {
+//            if (!(record instanceof CNAMERecord)) {
+//                continue;
+//            }
+//            Collections.addAll(addresses, resolveInternal(originalHost,
+//                    ((CNAMERecord) record).getTarget().toString(), depth + 1, false));
+//        }
+//        return addresses.toArray(new InetAddress[addresses.size()]);
     }
 
     private void putCache(String host, InetAddress[] addresses, long ttl, TimeUnit unit) {
@@ -289,12 +296,13 @@ public class TwidereDns implements Constants, Dns {
 
     public void reloadDnsSettings() {
         mResolver = null;
+        mConnnectTimeout = TimeUnit.SECONDS.toMillis(mPreferences.getInt(KEY_CONNECTION_TIMEOUT, 10));
     }
 
     @Override
     public List<InetAddress> lookup(String hostname) throws UnknownHostException {
         try {
-            return Arrays.asList(resolveInternal(hostname, hostname, 0));
+            return Arrays.asList(resolveInternal(hostname, hostname, 0, true));
         } catch (IOException e) {
             if (e instanceof UnknownHostException) throw (UnknownHostException) e;
             throw new UnknownHostException("Unable to resolve address " + e.getMessage());

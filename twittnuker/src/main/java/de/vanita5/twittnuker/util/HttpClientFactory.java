@@ -31,6 +31,7 @@ import android.text.TextUtils;
 
 import com.squareup.okhttp.Authenticator;
 import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.Dns;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -49,33 +50,32 @@ import java.util.concurrent.TimeUnit;
 import static android.text.TextUtils.isEmpty;
 
 public class HttpClientFactory implements Constants {
-    public static RestHttpClient getDefaultHttpClient(final Context context) {
+    public static RestHttpClient getDefaultHttpClient(final Context context, SharedPreferences prefs, Dns dns) {
         if (context == null) return null;
-        final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(context,
-                TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        return createHttpClient(context, prefs);
+        return createHttpClient(context, prefs, dns);
     }
 
-    public static RestHttpClient createHttpClient(final Context context, final SharedPreferences prefs) {
+    public static RestHttpClient createHttpClient(final Context context, final SharedPreferences prefs, Dns dns) {
         final OkHttpClient client = new OkHttpClient();
-        initDefaultHttpClient(context, prefs, client);
+        initDefaultHttpClient(context, prefs, client, dns);
         return new OkHttpRestClient(client);
     }
 
-    public static void initDefaultHttpClient(Context context, SharedPreferences prefs, OkHttpClient client) {
-        updateHttpClientConfiguration(context, prefs, client);
+    public static void initDefaultHttpClient(Context context, SharedPreferences prefs, OkHttpClient client, Dns dns) {
+        updateHttpClientConfiguration(context, prefs, dns, client);
         DebugModeUtils.initForHttpClient(client);
     }
 
     @SuppressLint("SSLCertificateSocketFactoryGetInsecure")
     public static void updateHttpClientConfiguration(final Context context,
                                                      final SharedPreferences prefs,
-                                                     final OkHttpClient client) {
+                                                     Dns dns, final OkHttpClient client) {
         final int connectionTimeoutSeconds = prefs.getInt(KEY_CONNECTION_TIMEOUT, 10);
         final boolean ignoreSslError = prefs.getBoolean(KEY_IGNORE_SSL_ERROR, false);
         final boolean enableProxy = prefs.getBoolean(KEY_ENABLE_PROXY, false);
 
         client.setConnectTimeout(connectionTimeoutSeconds, TimeUnit.SECONDS);
+
         if (ignoreSslError) {
             // We use insecure connections intentionally
             client.setSslSocketFactory(SSLCertificateSocketFactory.getInsecure((int)
@@ -116,6 +116,9 @@ public class HttpClientFactory implements Constants {
             client.setProxy(null);
             client.setProxySelector(null);
             client.setAuthenticator(null);
+        }
+        if (dns != null) {
+            client.setDns(dns);
         }
     }
 

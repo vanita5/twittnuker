@@ -75,6 +75,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Space;
@@ -91,6 +92,7 @@ import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter.StatusAdapterListener;
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -116,6 +118,7 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.CheckUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
+import de.vanita5.twittnuker.util.ContentListScrollListener;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
@@ -157,7 +160,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class StatusFragment extends BaseSupportFragment implements LoaderCallbacks<SingleResponse<ParcelableStatus>>,
-        OnMediaClickListener, StatusAdapterListener, KeyboardShortcutCallback {
+        OnMediaClickListener, StatusAdapterListener, KeyboardShortcutCallback, ContentListScrollListener.ContentListSupport {
 
     // Constants
     private static final int LOADER_ID_DETAIL_STATUS = 1;
@@ -181,6 +184,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
     private LoadTranslationTask mLoadTranslationTask;
     private RecyclerViewNavigationHelper mNavigationHelper;
+    private ContentListScrollListener mScrollListener;
 
     // Data fields
     private boolean mConversationLoaderInitialized;
@@ -200,7 +204,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final boolean twitterOptimizedSearches = mPreferences.getBoolean(KEY_TWITTER_OPTIMIZED_SEARCHES);
             assert status != null;
             final ConversationLoader loader = new ConversationLoader(getActivity(), status, sinceId,
-                    maxId, null, true, twitterOptimizedSearches);
+                    maxId, mStatusAdapter.getData(), true, twitterOptimizedSearches);
             loader.setComparator(ParcelableStatus.REVERSE_ID_COMPARATOR);
             return loader;
         }
@@ -340,6 +344,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         mStatusAdapter = new StatusAdapter(this, compact);
         mStatusAdapter.setEventListener(this);
         mRecyclerView.setAdapter(mStatusAdapter);
+
+        mScrollListener = new ContentListScrollListener(this);
+        mScrollListener.setTouchSlop(ViewConfiguration.get(context).getScaledTouchSlop());
 
         mNavigationHelper = new RecyclerViewNavigationHelper(mRecyclerView, mLayoutManager,
                 mStatusAdapter, null);
@@ -525,9 +532,10 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final ParcelableStatus status = data.getData();
             final Bundle dataExtra = data.getExtras();
             final ParcelableCredentials credentials = dataExtra.getParcelable(EXTRA_ACCOUNT);
+            mStatusAdapter.setLoadMoreSupported(true);
             if (mStatusAdapter.setStatus(status, credentials)) {
                 mStatusAdapter.setData(null);
-                loadConversation(status);
+                loadConversation(status, -1, -1);
                 loadActivity(status);
 
                 final int position = mStatusAdapter.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS);
@@ -540,6 +548,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             }
             setState(STATE_LOADED);
         } else {
+            mStatusAdapter.setLoadMoreSupported(false);
             //TODO show errors
             setState(STATE_ERROR);
         }
@@ -582,8 +591,44 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         restoreReadPosition(readPosition);
     }
 
-    private StatusAdapter getAdapter() {
+    public StatusAdapter getAdapter() {
         return mStatusAdapter;
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return getLoaderManager().hasRunningLoaders();
+    }
+
+    @Override
+    public void onLoadMoreContents(@IndicatorPosition int position) {
+        if ((position & IndicatorPosition.START) != 0) {
+            final int start = mStatusAdapter.getIndexStart(StatusAdapter.ITEM_IDX_CONVERSATION);
+            final ParcelableStatus status = mStatusAdapter.getStatus(start);
+            if (status == null || status.in_reply_to_status_id <= 0) return;
+            loadConversation(getStatus(), -1, status.id);
+        } else if ((position & IndicatorPosition.END) != 0) {
+            final int start = mStatusAdapter.getIndexStart(StatusAdapter.ITEM_IDX_CONVERSATION);
+            final ParcelableStatus status = mStatusAdapter.getStatus(start + mStatusAdapter.getStatusesCount() - 1);
+            if (status == null) return;
+            loadConversation(getStatus(), status.id, -1);
+        }
+        mStatusAdapter.setLoadMoreIndicatorPosition(position);
+    }
+
+    @Override
+    public void setControlVisible(boolean visible) {
+        // No-op
+    }
+
+    @Override
+    public boolean isReachingEnd() {
+        return false;
+    }
+
+    @Override
+    public boolean isReachingStart() {
+        return false;
     }
 
     private DividerItemDecoration getItemDecoration() {
@@ -594,11 +639,13 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         return mStatusAdapter.getStatus();
     }
 
-    private void loadConversation(ParcelableStatus status) {
+    private void loadConversation(ParcelableStatus status, long sinceId, long maxId) {
         if (status == null) return;
         final Bundle args = new Bundle();
         args.putLong(EXTRA_ACCOUNT_ID, status.account_id);
         args.putLong(EXTRA_STATUS_ID, status.is_retweet ? status.retweet_id : status.id);
+        args.putLong(EXTRA_SINCE_ID, sinceId);
+        args.putLong(EXTRA_MAX_ID, maxId);
         args.putParcelable(EXTRA_STATUS, status);
         if (mConversationLoaderInitialized) {
             getLoaderManager().restartLoader(LOADER_ID_STATUS_CONVERSATIONS, args, mConversationsLoaderCallback);
@@ -676,10 +723,14 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     public void onStart() {
         super.onStart();
         mBus.register(this);
+        mRecyclerView.addOnScrollListener(mScrollListener);
+        mRecyclerView.setOnTouchListener(mScrollListener.getOnTouchListener());
     }
 
     @Override
     public void onStop() {
+        mRecyclerView.setOnTouchListener(null);
+        mRecyclerView.removeOnScrollListener(mScrollListener);
         mBus.unregister(this);
         super.onStop();
     }
@@ -1381,8 +1432,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final boolean mHideCardActions;
         private final boolean mUseStarsForLikes;
         private final AbsStatusesAdapter.EventListener mEventListener;
-        private boolean mLoadMoreSupported;
-        private boolean mLoadMoreIndicatorVisible;
         private boolean mDetailMediaExpanded;
 
         private ParcelableStatus mStatus;
@@ -1639,31 +1688,33 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
 
         @Override
-        public boolean isLoadMoreIndicatorVisible() {
-            return mLoadMoreIndicatorVisible;
+        @IndicatorPosition
+        public int getLoadMoreIndicatorPosition() {
+            int position = 0;
+            if (mConversationsLoading) {
+                position |= IndicatorPosition.START;
+            }
+            if (mRepliesLoading) {
+                position |= IndicatorPosition.END;
+            }
+            return position;
         }
 
         @Override
-        public void setLoadMoreIndicatorVisible(boolean enabled) {
-            if (mLoadMoreIndicatorVisible == enabled) return;
-            mLoadMoreIndicatorVisible = enabled && mLoadMoreSupported;
+        public void setLoadMoreIndicatorPosition(@IndicatorPosition int position) {
+            setConversationsLoading((position & IndicatorPosition.START) != 0);
+            setRepliesLoading((position & IndicatorPosition.END) != 0);
             updateItemDecoration();
-            notifyDataSetChanged();
         }
 
         @Override
         public boolean isLoadMoreSupported() {
-            return mLoadMoreSupported;
+            return true;
         }
 
         @Override
         public void setLoadMoreSupported(boolean supported) {
-            mLoadMoreSupported = supported;
-            if (!supported) {
-                mLoadMoreIndicatorVisible = false;
-            }
-            notifyDataSetChanged();
-            updateItemDecoration();
+            // No-op
         }
 
         @Override
@@ -1933,6 +1984,10 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             }
             mStatusActivity = activity;
             notifyDataSetChanged();
+        }
+
+        public List<ParcelableStatus> getData() {
+            return mData;
         }
 
         public static class StatusErrorItemViewHolder extends ViewHolder {

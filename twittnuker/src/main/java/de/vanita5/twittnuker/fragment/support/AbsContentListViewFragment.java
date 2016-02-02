@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -43,6 +42,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener;
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.util.ContentListScrollListener.ContentListSupport;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -115,7 +115,7 @@ public abstract class AbsContentListViewFragment<A extends ListAdapter> extends 
     }
 
     @Override
-    public void onLoadMoreContents(boolean fromStart) {
+    public void onLoadMoreContents(@ILoadMoreSupportAdapter.IndicatorPosition int position) {
         setRefreshEnabled(false);
     }
 
@@ -124,10 +124,10 @@ public abstract class AbsContentListViewFragment<A extends ListAdapter> extends 
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof IControlBarActivity) {
-            ((IControlBarActivity) activity).registerControlBarOffsetListener(this);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof IControlBarActivity) {
+            ((IControlBarActivity) context).registerControlBarOffsetListener(this);
         }
     }
 
@@ -249,17 +249,13 @@ public abstract class AbsContentListViewFragment<A extends ListAdapter> extends 
     }
 
     @Override
-    public int[] findLastVisibleItemPositions() {
-        return new int[]{mListView.getLastVisiblePosition()};
+    public boolean isReachingStart() {
+        return mListView.getFirstVisiblePosition() <= 0;
     }
 
     @Override
-    public int[] findFirstVisibleItemPositions() {
-        return new int[]{mListView.getFirstVisiblePosition()};
+    public boolean isReachingEnd() {
+        return mListView.getLastVisiblePosition() >= mListView.getCount() - 1;
     }
 
-    @Override
-    public int getItemCount() {
-        return mListView.getCount();
-    }
 }

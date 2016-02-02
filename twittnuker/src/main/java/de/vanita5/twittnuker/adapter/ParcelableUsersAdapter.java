@@ -36,45 +36,53 @@ public class ParcelableUsersAdapter extends AbsUsersAdapter<List<ParcelableUser>
 
     public ParcelableUsersAdapter(Context context, boolean compact) {
         super(context, compact);
-	}
+    }
 
-	@Override
+    @Override
     public List<ParcelableUser> getData() {
         return mData;
-	}
+    }
 
 
-	@Override
+    @Override
     public void setData(List<ParcelableUser> data) {
         mData = data;
         notifyDataSetChanged();
-	}
+    }
 
     @Override
     protected void bindUser(UserViewHolder holder, int position) {
         holder.displayUser(getUser(position));
-	}
+    }
 
     @Override
     public int getItemCount() {
-        return getUsersCount() + (isLoadMoreIndicatorVisible() ? 1 : 0);
-	}
+        final int position = getLoadMoreIndicatorPosition();
+        int count = getUsersCount();
+        if ((position & IndicatorPosition.START) != 0) {
+            count++;
+        }
+        if ((position & IndicatorPosition.END) != 0) {
+            count++;
+        }
+        return count;
+    }
 
     @Override
     public ParcelableUser getUser(int position) {
         if (position == getUsersCount()) return null;
         return mData.get(position);
-	}
+    }
 
     @Override
     public long getUserId(int position) {
         if (position == getUsersCount()) return -1;
         return mData.get(position).id;
-	}
+    }
 
     @Override
     public int getUsersCount() {
         if (mData == null) return 0;
         return mData.size();
-	}
+    }
 }

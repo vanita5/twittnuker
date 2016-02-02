@@ -146,7 +146,9 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     @Override
     public int getItemViewType(int position) {
-        if (position == getMessagesCount()) {
+        if ((getLoadMoreIndicatorPosition() & IndicatorPosition.START) != 0 && position == 0) {
+            return ITEM_VIEW_TYPE_LOAD_INDICATOR;
+        } if (position == getMessagesCount()) {
             return ITEM_VIEW_TYPE_LOAD_INDICATOR;
         }
         return ITEM_VIEW_TYPE_MESSAGE;
@@ -154,7 +156,15 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     @Override
     public final int getItemCount() {
-        return getMessagesCount() + (isLoadMoreIndicatorVisible() ? 1 : 0);
+        final int position = getLoadMoreIndicatorPosition();
+        int count = getMessagesCount();
+        if ((position & IndicatorPosition.START) != 0) {
+            count++;
+        }
+        if ((position & IndicatorPosition.END) != 0) {
+            count++;
+        }
+        return count;
     }
 
     public void onMessageClick(int position) {

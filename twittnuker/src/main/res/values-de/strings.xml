@@ -769,6 +769,7 @@
     <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
     <string name="mentions_only">Nur Mentions</string>
     <string name="error_no_dm_permission">Deine Twitter application hat keine Berechtigung für Direktnachrichten.</string>
+    <string name="interactions">Interaktionen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

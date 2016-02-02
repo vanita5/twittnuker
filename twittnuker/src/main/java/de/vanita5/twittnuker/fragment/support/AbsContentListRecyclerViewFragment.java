@@ -29,6 +29,7 @@ import android.support.v7.widget.LinearLayoutManager;
 
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 
 public abstract class AbsContentListRecyclerViewFragment<A extends LoadMoreSupportAdapter>
         extends AbsContentRecyclerViewFragment<A, LinearLayoutManager> {
@@ -44,11 +45,12 @@ public abstract class AbsContentListRecyclerViewFragment<A extends LoadMoreSuppo
     }
 
     @Override
-    public void setLoadMoreIndicatorVisible(boolean visible) {
+    public void setLoadMoreIndicatorPosition(@IndicatorPosition int position) {
         if (mItemDecoration != null) {
-            mItemDecoration.setDecorationEndOffset(visible ? 1 : 0);
+            mItemDecoration.setDecorationStart((position & IndicatorPosition.START) != 0 ? 1 : 0);
+            mItemDecoration.setDecorationEndOffset((position & IndicatorPosition.END) != 0 ? 1 : 0);
         }
-        super.setLoadMoreIndicatorVisible(visible);
+        super.setLoadMoreIndicatorPosition(position);
     }
 
     @Override
@@ -63,17 +65,13 @@ public abstract class AbsContentListRecyclerViewFragment<A extends LoadMoreSuppo
     }
 
     @Override
-    public int[] findLastVisibleItemPositions() {
-        return new int[]{getLayoutManager().findLastVisibleItemPosition()};
+    public boolean isReachingEnd() {
+        return getLayoutManager().findLastCompletelyVisibleItemPosition() >= getLayoutManager().getItemCount() - 1;
     }
 
     @Override
-    public int[] findFirstVisibleItemPositions() {
-        return new int[]{getLayoutManager().findFirstVisibleItemPosition()};
+    public boolean isReachingStart() {
+        return getLayoutManager().findFirstCompletelyVisibleItemPosition() <= 0;
     }
 
-    @Override
-    public int getItemCount() {
-        return getLayoutManager().getItemCount();
-    }
 }

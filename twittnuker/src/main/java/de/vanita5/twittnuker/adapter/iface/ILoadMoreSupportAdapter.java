@@ -22,14 +22,26 @@
 
 package de.vanita5.twittnuker.adapter.iface;
 
+import android.support.annotation.IntDef;
+
 public interface ILoadMoreSupportAdapter {
-	int ITEM_VIEW_TYPE_LOAD_INDICATOR = 0;
+    int ITEM_VIEW_TYPE_LOAD_INDICATOR = 0;
 
-	boolean isLoadMoreIndicatorVisible();
+    @IndicatorPosition
+    int getLoadMoreIndicatorPosition();
 
-	void setLoadMoreIndicatorVisible(boolean enabled);
+    void setLoadMoreIndicatorPosition(@IndicatorPosition int position);
 
-	boolean isLoadMoreSupported();
+    boolean isLoadMoreSupported();
 
-	void setLoadMoreSupported(boolean supported);
+    void setLoadMoreSupported(boolean supported);
+
+    @IntDef(flag = true, value = {IndicatorPosition.NONE, IndicatorPosition.START,
+            IndicatorPosition.END, IndicatorPosition.BOTH})
+    @interface IndicatorPosition {
+        int NONE = 0;
+        int START = 0b01;
+        int END = 0b10;
+        int BOTH = START | END;
+    }
 }

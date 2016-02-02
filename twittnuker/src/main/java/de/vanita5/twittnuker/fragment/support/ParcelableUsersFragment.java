@@ -29,44 +29,45 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
 public abstract class ParcelableUsersFragment extends AbsUsersFragment<List<ParcelableUser>> {
 
-	@Override
-	public boolean isRefreshing() {
-		final LoaderManager lm = getLoaderManager();
-		return lm.hasRunningLoaders();
-	}
+    @Override
+    public boolean isRefreshing() {
+        final LoaderManager lm = getLoaderManager();
+        return lm.hasRunningLoaders();
+    }
 
-	@NonNull
-	@Override
-	protected final ParcelableUsersAdapter onCreateAdapter(Context context, boolean compact) {
-		return new ParcelableUsersAdapter(context, compact);
-	}
+    @NonNull
+    @Override
+    protected final ParcelableUsersAdapter onCreateAdapter(Context context, boolean compact) {
+        return new ParcelableUsersAdapter(context, compact);
+    }
 
-	protected long getAccountId() {
-		final Bundle args = getArguments();
-		return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-	}
+    protected long getAccountId() {
+        final Bundle args = getArguments();
+        return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
+    }
 
-	@Override
-	protected boolean hasMoreData(List<ParcelableUser> data) {
+    @Override
+    protected boolean hasMoreData(List<ParcelableUser> data) {
         return data == null || !data.isEmpty();
-	}
+    }
 
-	@Override
+    @Override
     public void onLoadFinished(Loader<List<ParcelableUser>> loader, List<ParcelableUser> data) {
         super.onLoadFinished(loader, data);
-		setRefreshEnabled(true);
-		setRefreshing(false);
-		setLoadMoreIndicatorVisible(false);
-	}
+        setRefreshEnabled(true);
+        setRefreshing(false);
+        setLoadMoreIndicatorPosition(IndicatorPosition.NONE);
+    }
 
-	protected void removeUsers(long... ids) {
-		//TODO remove from adapter
-	}
+    protected void removeUsers(long... ids) {
+        //TODO remove from adapter
+    }
 
 }

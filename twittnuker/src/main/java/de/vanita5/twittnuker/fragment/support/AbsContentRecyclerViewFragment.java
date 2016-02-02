@@ -41,6 +41,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.util.ContentListScrollListener;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
@@ -176,13 +177,14 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
             updateRefreshProgressOffset();
         }
         if (refreshing == currentRefreshing) return;
-        final boolean layoutRefreshing = refreshing && !mAdapter.isLoadMoreIndicatorVisible();
+        final boolean layoutRefreshing = refreshing && mAdapter.getLoadMoreIndicatorPosition()
+                != IndicatorPosition.NONE;
         mSwipeRefreshLayout.setRefreshing(layoutRefreshing);
     }
 
     @Override
-    public void onLoadMoreContents(boolean fromStart) {
-        setLoadMoreIndicatorVisible(true);
+    public void onLoadMoreContents(@IndicatorPosition int position) {
+        setLoadMoreIndicatorPosition(position);
         setRefreshEnabled(false);
     }
 
@@ -301,8 +303,8 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
         updateRefreshProgressOffset();
     }
 
-    public void setLoadMoreIndicatorVisible(boolean visible) {
-        mAdapter.setLoadMoreIndicatorVisible(visible);
+    public void setLoadMoreIndicatorPosition(@IndicatorPosition int position) {
+        mAdapter.setLoadMoreIndicatorPosition(position);
     }
 
     public void setRefreshEnabled(boolean enabled) {

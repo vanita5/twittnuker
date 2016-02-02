@@ -33,9 +33,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.StaggeredGridParcelableStatusesAdapter;
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.loader.support.MediaTimelineLoader;
@@ -134,7 +137,7 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
             ((IExtendedLoader) loader).setFromUser(false);
         }
         showContent();
-        setLoadMoreIndicatorVisible(false);
+        setLoadMoreIndicatorPosition(IndicatorPosition.NONE);
     }
 
     private boolean hasMoreData(List<ParcelableStatus> data) {
@@ -147,25 +150,23 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
     }
 
     @Override
-    public int[] findLastVisibleItemPositions() {
-        return getLayoutManager().findLastVisibleItemPositions(null);
+    public boolean isReachingEnd() {
+        final StaggeredGridLayoutManager lm = getLayoutManager();
+        return ArrayUtils.contains(lm.findLastCompletelyVisibleItemPositions(null), lm.getItemCount() - 1);
     }
 
     @Override
-    public int[] findFirstVisibleItemPositions() {
-        return getLayoutManager().findFirstVisibleItemPositions(null);
+    public boolean isReachingStart() {
+        final StaggeredGridLayoutManager lm = getLayoutManager();
+        return ArrayUtils.contains(lm.findFirstCompletelyVisibleItemPositions(null), 0);
     }
 
     @Override
-    public int getItemCount() {
-        return getLayoutManager().getItemCount();
-    }
-
-    @Override
-    public void onLoadMoreContents(boolean fromStart) {
-        if (fromStart) return;
-        //noinspection ConstantConditions
-        super.onLoadMoreContents(fromStart);
+    public void onLoadMoreContents(int position) {
+        // Only supports load from end, skip START flag
+        if ((position & IndicatorPosition.START) != 0) return;
+        super.onLoadMoreContents(position);
+        if (position == 0) return;
         final IStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
         final long maxId = adapter.getStatusId(adapter.getStatusesCount() - 1);
         getStatuses(maxId, -1);

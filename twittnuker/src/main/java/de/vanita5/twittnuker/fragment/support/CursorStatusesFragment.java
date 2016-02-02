@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.loader.support.ExtendedObjectCursorLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
@@ -119,7 +120,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
             if (!event.uri.equals(getContentUri())) return;
             setRefreshing(event.running);
             if (!event.running) {
-                setLoadMoreIndicatorVisible(false);
+                setLoadMoreIndicatorPosition(IndicatorPosition.END);
                 setRefreshEnabled(true);
             }
         }
@@ -215,10 +216,11 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
     }
 
     @Override
-    public void onLoadMoreContents(boolean fromStart) {
-        if (fromStart) return;
-        //noinspection ConstantConditions
-        super.onLoadMoreContents(fromStart);
+    public void onLoadMoreContents(@IndicatorPosition int position) {
+        // Only supports load from end, skip START flag
+        if ((position & IndicatorPosition.START) != 0) return;
+        super.onLoadMoreContents(position);
+        if (position == 0) return;
         AsyncManager.runBackgroundTask(new TaskRunnable<Object, long[][], CursorStatusesFragment>() {
             @Override
             public long[][] doLongOperation(Object o) throws InterruptedException {

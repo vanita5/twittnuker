@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ExternalThemeManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereValidator;
 
 import javax.inject.Inject;
@@ -55,6 +56,8 @@ public class DependencyHolder {
     ImageLoader mImageLoader;
     @Inject
     TwidereValidator mValidator;
+    @Inject
+    SharedPreferencesWrapper mPreferences;
 
     DependencyHolder(Context context) {
         GeneralComponentHelper.build(context).inject(this);
@@ -95,5 +98,9 @@ public class DependencyHolder {
 
     public TwidereValidator getValidator() {
         return mValidator;
+    }
+
+    public SharedPreferencesWrapper getPreferences() {
+        return mPreferences;
     }
 }
