@@ -39,6 +39,7 @@ import org.apache.commons.lang3.StringUtils;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 
 import org.mariotaku.inetaddrjni.library.InetAddressUtils;
 import org.xbill.DNS.AAAARecord;
@@ -221,7 +222,7 @@ public class TwidereDns implements Constants, Dns {
             } else {
                 continue;
             }
-            if (mConnnectTimeout == 0 || inetAddress.isReachable((int) mConnnectTimeout)) {
+            if (mConnnectTimeout == 0 || inetAddress.isReachable(TwidereMathUtils.clamp((int) mConnnectTimeout / 2, 1000, 3000))) {
                 resolvedAddresses.add(InetAddress.getByAddress(originalHost, inetAddress.getAddress()));
             }
         }

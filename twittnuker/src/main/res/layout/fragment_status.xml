@@ -39,7 +39,9 @@
         <de.vanita5.twittnuker.view.ExtendedRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fadeScrollbars="false"
+            android:scrollbars="vertical">
 
             <requestFocus/>
         </de.vanita5.twittnuker.view.ExtendedRecyclerView>

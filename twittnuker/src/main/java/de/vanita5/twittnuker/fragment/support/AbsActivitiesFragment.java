@@ -42,6 +42,7 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableActivity;
@@ -220,7 +221,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         adapter.setData(data);
         setRefreshEnabled(true);
         if (!(loader instanceof IExtendedLoader) || ((IExtendedLoader) loader).isFromUser()) {
-            adapter.setLoadMoreSupported(hasMoreData(data));
+            adapter.setLoadMoreSupportedPosition(hasMoreData(data) ? IndicatorPosition.END : IndicatorPosition.NONE);
             int pos = -1;
             for (int i = 0, j = adapter.getItemCount(); i < j; i++) {
                 if (lastReadId != -1 && lastReadId == adapter.getTimestamp(i)) {

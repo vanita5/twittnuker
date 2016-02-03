@@ -41,7 +41,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
-import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -87,7 +86,7 @@ public class RefreshService extends Service implements Constants {
                 final AccountPreferences[] accountPrefs = AccountPreferences.getAccountPreferences(context, accountIds);
                 if (BROADCAST_REFRESH_HOME_TIMELINE.equals(action)) {
                     final long[] refreshIds = getRefreshableIds(accountPrefs, new HomeRefreshableFilter());
-                    final long[] sinceIds = DataStoreUtils.getNewestStatusIdsFromDatabase(context, Statuses.CONTENT_URI, refreshIds);
+                    final long[] sinceIds = DataStoreUtils.getNewestStatusIds(context, Statuses.CONTENT_URI, refreshIds);
                     if (BuildConfig.DEBUG) {
                         Log.d(LOGTAG, String.format("Auto refreshing home for %s", Arrays.toString(refreshIds)));
                     }
@@ -104,7 +103,7 @@ public class RefreshService extends Service implements Constants {
                     }
                 } else if (BROADCAST_REFRESH_DIRECT_MESSAGES.equals(action)) {
                     final long[] refreshIds = getRefreshableIds(accountPrefs, new MessagesRefreshableFilter());
-                    final long[] sinceIds = DataStoreUtils.getNewestMessageIdsFromDatabase(context,
+                    final long[] sinceIds = DataStoreUtils.getNewestMessageIds(context,
                             DirectMessages.Inbox.CONTENT_URI,
                             refreshIds);
                     if (BuildConfig.DEBUG) {

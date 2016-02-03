@@ -211,6 +211,8 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
     int VIRTUAL_TABLE_ID_EMPTY = 200;
 
+    int VIRTUAL_TABLE_ID_RAW_QUERY = 300;
+
     int NOTIFICATION_ID_HOME_TIMELINE = 1;
     int NOTIFICATION_ID_INTERACTIONS_TIMELINE = 2;
     int NOTIFICATION_ID_DIRECT_MESSAGES = 3;

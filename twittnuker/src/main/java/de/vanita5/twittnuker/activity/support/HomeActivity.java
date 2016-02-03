@@ -120,7 +120,7 @@ import java.util.List;
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.Utils.checkPlayServices;
-import static de.vanita5.twittnuker.util.Utils.cleanDatabasesByItemLimit;
+import static de.vanita5.twittnuker.util.DataStoreUtils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;

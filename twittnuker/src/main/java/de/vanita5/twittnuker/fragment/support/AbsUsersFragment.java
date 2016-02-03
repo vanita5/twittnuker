@@ -37,6 +37,7 @@ import android.view.View;
 
 import de.vanita5.twittnuker.adapter.AbsUsersAdapter;
 import de.vanita5.twittnuker.adapter.AbsUsersAdapter.UserAdapterListener;
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
@@ -96,7 +97,7 @@ abstract class AbsUsersFragment<Data> extends AbsContentListRecyclerViewFragment
         final AbsUsersAdapter<Data> adapter = getAdapter();
         adapter.setData(data);
         if (!(loader instanceof IExtendedLoader) || ((IExtendedLoader) loader).isFromUser()) {
-            adapter.setLoadMoreSupported(hasMoreData(data));
+            adapter.setLoadMoreSupportedPosition(hasMoreData(data) ? IndicatorPosition.END : IndicatorPosition.NONE);
             setRefreshEnabled(true);
         }
         if (loader instanceof IExtendedLoader) {
