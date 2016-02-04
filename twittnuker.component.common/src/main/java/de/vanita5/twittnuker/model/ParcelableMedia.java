@@ -37,9 +37,6 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import de.vanita5.twittnuker.api.gnusocial.model.Attachment;
@@ -229,7 +226,7 @@ public class ParcelableMedia implements Parcelable {
             final BindingValue playerStreamUrl = card.getBindingValue("player_stream_url");
             media.card = ParcelableCardEntity.fromCardEntity(card, -1);
             StringValue appUrlResolved = (StringValue) card.getBindingValue("app_url_resolved");
-            media.url = appUrlResolved != null ? appUrlResolved.getValue() : card.getUrl();
+            media.url = checkUrl(appUrlResolved) ? appUrlResolved.getValue() : card.getUrl();
             if ("animated_gif".equals(name)) {
                 media.media_url = ((StringValue) playerStreamUrl).getValue();
                 media.type = Type.TYPE_CARD_ANIMATED_GIF;
@@ -293,6 +290,13 @@ public class ParcelableMedia implements Parcelable {
             return new ParcelableMedia[]{media};
         }
         return new ParcelableMedia[0];
+    }
+
+    private static boolean checkUrl(StringValue value) {
+        if (value == null) return false;
+        final String valueString = value.getValue();
+        return valueString != null && (valueString.startsWith("http://")
+                || valueString.startsWith("https://"));
     }
 
     private static int getTypeInt(String type) {
