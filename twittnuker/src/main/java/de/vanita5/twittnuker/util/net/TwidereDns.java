@@ -32,16 +32,13 @@ import android.util.Log;
 import android.util.LruCache;
 import android.util.TimingLogger;
 
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.mariotaku.inetaddrjni.library.InetAddressUtils;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
-import okhttp3.Dns;
-
-import org.mariotaku.inetaddrjni.library.InetAddressUtils;
 import org.xbill.DNS.AAAARecord;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.DClass;
@@ -63,10 +60,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
+import okhttp3.Dns;
+
 @Singleton
 public class TwidereDns implements Constants, Dns {
 
     private static final String RESOLVER_LOGTAG = "TwittnukerDns";
+    private static final boolean CHECK_ADDRESS = Boolean.parseBoolean("false");
 
     private final SharedPreferences mHostMapping, mPreferences;
     private final HostCache mHostCache = new HostCache(512);
@@ -221,7 +221,7 @@ public class TwidereDns implements Constants, Dns {
             } else {
                 continue;
             }
-            if (mConnnectTimeout == 0 || inetAddress.isReachable(TwidereMathUtils.clamp((int) mConnnectTimeout / 2, 1000, 3000))) {
+            if (mConnnectTimeout == 0 || checkAddress(inetAddress)) {
                 resolvedAddresses.add(InetAddress.getByAddress(originalHost, inetAddress.getAddress()));
             }
         }
@@ -241,6 +241,11 @@ public class TwidereDns implements Constants, Dns {
 //                    ((CNAMERecord) record).getTarget().toString(), depth + 1, false));
 //        }
 //        return addresses.toArray(new InetAddress[addresses.size()]);
+    }
+
+    private boolean checkAddress(InetAddress inetAddress) throws IOException {
+        if (!CHECK_ADDRESS) return true;
+        return inetAddress.isReachable(TwidereMathUtils.clamp((int) mConnnectTimeout / 2, 1000, 3000));
     }
 
     private void putCache(String host, InetAddress[] addresses, long ttl, TimeUnit unit) {
