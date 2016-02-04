@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
+import de.vanita5.twittnuker.util.UnitConvertUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ActionIconThemedTextView;
@@ -60,7 +61,6 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 import static de.vanita5.twittnuker.util.Utils.getUserTypeIconRes;
@@ -169,9 +169,9 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         final Context context = adapter.getContext();
         final boolean nameFirst = adapter.isNameFirst();
 
-        final long reply_count = status.reply_count;
+        final long replyCount = status.reply_count;
         final long retweetCount;
-        final long favorite_count;
+        final long favoriteCount;
 
         if (TwitterCardUtils.isPoll(status)) {
             statusInfoLabel.setText(R.string.label_poll);
@@ -302,9 +302,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
                     status.is_possibly_sensitive, adapter.getLinkHighlightingStyle()));
         }
 
-        final Locale locale = Locale.getDefault();
-        if (reply_count > 0) {
-            replyCountView.setText(Utils.getLocalizedNumber(locale, reply_count));
+        if (replyCount > 0) {
+            replyCountView.setText(UnitConvertUtils.calculateProperCount(replyCount));
         } else {
             replyCountView.setText(null);
         }
@@ -319,20 +318,20 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
             retweetCount = status.retweet_count + (creatingRetweet ? 1 : 0);
         }
         if (retweetCount > 0) {
-            retweetCountView.setText(Utils.getLocalizedNumber(locale, retweetCount));
+            retweetCountView.setText(UnitConvertUtils.calculateProperCount(retweetCount));
         } else {
             retweetCountView.setText(null);
         }
         if (twitter.isDestroyingFavorite(status.account_id, status.id)) {
             favoriteCountView.setActivated(false);
-            favorite_count = Math.max(0, status.favorite_count - 1);
+            favoriteCount = Math.max(0, status.favorite_count - 1);
         } else {
             final boolean creatingFavorite = twitter.isCreatingFavorite(status.account_id, status.id);
             favoriteCountView.setActivated(creatingFavorite || status.is_favorite);
-            favorite_count = status.favorite_count + (creatingFavorite ? 1 : 0);
+            favoriteCount = status.favorite_count + (creatingFavorite ? 1 : 0);
         }
-        if (favorite_count > 0) {
-            favoriteCountView.setText(Utils.getLocalizedNumber(locale, favorite_count));
+        if (favoriteCount > 0) {
+            favoriteCountView.setText(UnitConvertUtils.calculateProperCount(favoriteCount));
         } else {
             favoriteCountView.setText(null);
         }

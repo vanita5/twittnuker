@@ -200,7 +200,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Filters.Users;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
@@ -3074,20 +3073,6 @@ public final class Utils implements Constants {
 
         }
         return location;
-    }
-
-    public static final String[] fileSizeUnits = {"bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
-
-    public static String calculateProperSize(double bytes) {
-        double value = bytes;
-        int index;
-        for (index = 0; index < fileSizeUnits.length; index++) {
-            if (value < 1024) {
-                break;
-            }
-            value = value / 1024;
-        }
-        return String.format("%.2f %s", value, fileSizeUnits[index]);
     }
 
     public static boolean checkPlayServices(final Activity activity) {

@@ -48,8 +48,6 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import javax.inject.Inject;
 
@@ -72,6 +70,8 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     @Inject
     protected NotificationManagerWrapper mNotificationManager;
 
+    private ActionHelper mActionHelper = new ActionHelper(this);
+
     // Registered listeners
     private ArrayList<ControlBarOffsetListener> mControlBarOffsetListeners = new ArrayList<>();
 
@@ -80,8 +80,6 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     private boolean mIsVisible;
     private Rect mSystemWindowsInsets;
     private int mKeyMetaState;
-    private boolean mFragmentResumed;
-    private Queue<Action> mActionQueue = new LinkedList<>();
 
     @Override
     public boolean getSystemWindowsInsets(Rect insets) {
@@ -192,7 +190,7 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
 
     @Override
     protected void onPause() {
-        mFragmentResumed = false;
+        mActionHelper.dispatchOnPause();
         super.onPause();
     }
 
@@ -263,21 +261,12 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
-        mFragmentResumed = true;
-        executePending();
+        mActionHelper.dispatchOnResumeFragments();
     }
 
     @Override
     public void executeAfterFragmentResumed(Action action) {
-        mActionQueue.add(action);
-        executePending();
+        mActionHelper.executeAfterFragmentResumed(action);
     }
 
-    private void executePending() {
-        if (!mFragmentResumed) return;
-        Action action;
-        while ((action = mActionQueue.poll()) != null) {
-            action.execute(this);
-        }
-    }
 }
