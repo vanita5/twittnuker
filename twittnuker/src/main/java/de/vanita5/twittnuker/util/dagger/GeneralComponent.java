@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
 import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;
-import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
+import de.vanita5.twittnuker.fragment.support.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.BaseFragment;
 import de.vanita5.twittnuker.fragment.BaseListFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;

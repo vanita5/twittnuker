@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -35,52 +36,52 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
-import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredKeywordsFragment;
-import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredLinksFragment;
-import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredSourcesFragment;
-import de.vanita5.twittnuker.fragment.BaseFiltersFragment.FilteredUsersFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
+import de.vanita5.twittnuker.fragment.support.BaseFiltersFragment.FilteredKeywordsFragment;
+import de.vanita5.twittnuker.fragment.support.BaseFiltersFragment.FilteredLinksFragment;
+import de.vanita5.twittnuker.fragment.support.BaseFiltersFragment.FilteredSourcesFragment;
+import de.vanita5.twittnuker.fragment.support.BaseFiltersFragment.FilteredUsersFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 public class FiltersFragment extends BaseSupportFragment implements RefreshScrollTopInterface,
-		SupportFragmentCallback, IBaseFragment.SystemWindowsInsetsCallback {
+        SupportFragmentCallback, IBaseFragment.SystemWindowsInsetsCallback {
 
     private SupportTabsAdapter mPagerAdapter;
 
-	private TabPagerIndicator mPagerIndicator;
-	private ViewPager mViewPager;
+    private TabPagerIndicator mPagerIndicator;
+    private ViewPager mViewPager;
     private View mPagerOverlay;
 
-	@Nullable
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_content_pages, container, false);
-	}
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_content_pages, container, false);
+    }
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		final FragmentActivity activity = getActivity();
-		mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
-		mViewPager.setAdapter(mPagerAdapter);
-		mViewPager.setOffscreenPageLimit(2);
-		mPagerIndicator.setViewPager(mViewPager);
-		mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        final FragmentActivity activity = getActivity();
+        mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager(), null, 1);
+        mViewPager.setAdapter(mPagerAdapter);
+        mViewPager.setOffscreenPageLimit(2);
+        mPagerIndicator.setViewPager(mViewPager);
+        mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
 
 
-		mPagerAdapter.addTab(FilteredUsersFragment.class, null, getString(R.string.users), null, 0, null);
-		mPagerAdapter.addTab(FilteredKeywordsFragment.class, null, getString(R.string.keywords), null, 1, null);
-		mPagerAdapter.addTab(FilteredSourcesFragment.class, null, getString(R.string.sources), null, 2, null);
-		mPagerAdapter.addTab(FilteredLinksFragment.class, null, getString(R.string.links), null, 3, null);
+        mPagerAdapter.addTab(FilteredUsersFragment.class, null, getString(R.string.users), null, 0, null);
+        mPagerAdapter.addTab(FilteredKeywordsFragment.class, null, getString(R.string.keywords), null, 1, null);
+        mPagerAdapter.addTab(FilteredSourcesFragment.class, null, getString(R.string.sources), null, 2, null);
+        mPagerAdapter.addTab(FilteredLinksFragment.class, null, getString(R.string.links), null, 3, null);
 
         ThemeUtils.initPagerIndicatorAsActionBarTab(activity, mPagerIndicator, mPagerOverlay);
-		ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
-		ThemeUtils.setCompatContentViewOverlay(activity, new EmptyDrawable());
-		ThemeUtils.setWindowOverlayViewOverlay(activity, new EmptyDrawable());
+        ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
+        ThemeUtils.setCompatContentViewOverlay(activity, new EmptyDrawable());
+        ThemeUtils.setWindowOverlayViewOverlay(activity, new EmptyDrawable());
 
         if (activity instanceof IThemedActivity) {
             final String backgroundOption = ((IThemedActivity) activity).getCurrentThemeBackgroundOption();
@@ -88,43 +89,51 @@ public class FiltersFragment extends BaseSupportFragment implements RefreshScrol
             final int actionBarAlpha = isTransparent ? ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(activity)) : 0xFF;
             mPagerIndicator.setAlpha(actionBarAlpha / 255f);
         }
-	}
+    }
 
-	@Override
-	public void onBaseViewCreated(View view, Bundle savedInstanceState) {
-		super.onBaseViewCreated(view, savedInstanceState);
-		mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
-		mPagerIndicator = (TabPagerIndicator) view.findViewById(R.id.view_pager_tabs);
+    @Override
+    public void onBaseViewCreated(View view, Bundle savedInstanceState) {
+        super.onBaseViewCreated(view, savedInstanceState);
+        mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
+        mPagerIndicator = (TabPagerIndicator) view.findViewById(R.id.view_pager_tabs);
         mPagerOverlay = view.findViewById(R.id.pager_window_overlay);
-	}
+    }
 
-	@Override
-	public boolean scrollToStart() {
-		final Fragment fragment = getCurrentVisibleFragment();
-		if (!(fragment instanceof RefreshScrollTopInterface)) return false;
-		((RefreshScrollTopInterface) fragment).scrollToStart();
-		return true;
-	}
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final Object o = mPagerAdapter.instantiateItem(mViewPager, mViewPager.getCurrentItem());
+        if (o instanceof Fragment) {
+            ((Fragment) o).onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
-	@Override
-	public boolean triggerRefresh() {
-		return false;
-	}
+    @Override
+    public boolean scrollToStart() {
+        final Fragment fragment = getCurrentVisibleFragment();
+        if (!(fragment instanceof RefreshScrollTopInterface)) return false;
+        ((RefreshScrollTopInterface) fragment).scrollToStart();
+        return true;
+    }
 
-	@Override
-	public Fragment getCurrentVisibleFragment() {
-		final int currentItem = mViewPager.getCurrentItem();
-		if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
-		return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
-	}
+    @Override
+    public boolean triggerRefresh() {
+        return false;
+    }
 
-	@Override
-	public boolean getSystemWindowsInsets(Rect insets) {
-		return false;
-	}
+    @Override
+    public Fragment getCurrentVisibleFragment() {
+        final int currentItem = mViewPager.getCurrentItem();
+        if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
+        return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
+    }
 
-	@Override
-	public boolean triggerRefresh(int position) {
-		return false;
-	}
+    @Override
+    public boolean getSystemWindowsInsets(Rect insets) {
+        return false;
+    }
+
+    @Override
+    public boolean triggerRefresh(int position) {
+        return false;
+    }
 }

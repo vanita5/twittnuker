@@ -20,17 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment;
+package de.vanita5.twittnuker.fragment.support;
 
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -63,8 +61,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter;
-import de.vanita5.twittnuker.fragment.support.AbsContentListViewFragment;
-import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
@@ -79,23 +75,11 @@ import javax.inject.Inject;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 
-public abstract class BaseFiltersFragment extends AbsContentListViewFragment<SimpleCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>,
-        MultiChoiceModeListener {
+public abstract class BaseFiltersFragment extends AbsContentListViewFragment<SimpleCursorAdapter>
+        implements LoaderManager.LoaderCallbacks<Cursor>, MultiChoiceModeListener {
 
     private static final String EXTRA_AUTO_COMPLETE_TYPE = "auto_complete_type";
     private static final int AUTO_COMPLETE_TYPE_SOURCES = 2;
-    private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            if (getActivity() == null || !isAdded() || isDetached()) return;
-            final String action = intent.getAction();
-            if (BROADCAST_FILTERS_UPDATED.equals(action)) {
-                getLoaderManager().restartLoader(0, null, BaseFiltersFragment.this);
-            }
-        }
-
-    };
     private ContentResolver mResolver;
     private ActionMode mActionMode;
 
@@ -124,19 +108,6 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
         final int padding = (int) density * 16;
         listView.setPadding(padding, 0, padding, 0);
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        final IntentFilter filter = new IntentFilter(BROADCAST_FILTERS_UPDATED);
-        registerReceiver(mStateReceiver, filter);
-    }
-
-    @Override
-    public void onStop() {
-        unregisterReceiver(mStateReceiver);
-        super.onStop();
     }
 
     @Override
@@ -258,7 +229,6 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
     }
 
     public static final class AddItemFragment extends BaseSupportDialogFragment implements OnClickListener {
-
 
         @Override
         public void onClick(final DialogInterface dialog, final int which) {
@@ -416,14 +386,43 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
             }
         }
 
+        @Override
+        public String[] getContentColumns() {
+            return Filters.Users.COLUMNS;
+        }
+
+        @Override
+        public Uri getContentUri() {
+            return Filters.Users.CONTENT_URI;
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.add: {
+                    final Intent intent = new Intent(INTENT_ACTION_SELECT_USER);
+                    intent.setClass(getContext(), UserListSelectorActivity.class);
+                    intent.putExtra(EXTRA_ACCOUNT_ID, getDefaultAccountId(getActivity()));
+                    startActivityForResult(intent, REQUEST_SELECT_USER);
+                    return true;
+                }
+            }
+            return super.onOptionsItemSelected(item);
+        }
+
+        @NonNull
+        @Override
+        protected SimpleCursorAdapter onCreateAdapter(Context context, boolean isCompact) {
+            return new FilterUsersListAdapter(getActivity());
+        }
+
         public static final class FilterUsersListAdapter extends SimpleCursorAdapter {
 
+            private final boolean mNameFirst;
             @Inject
             UserColorNameManager mUserColorNameManager;
             @Inject
             SharedPreferencesWrapper mPreferences;
-
-            private final boolean mNameFirst;
             private int mUserIdIdx, mNameIdx, mScreenNameIdx;
 
             FilterUsersListAdapter(final Context context) {
@@ -455,36 +454,6 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
                 return old;
             }
 
-        }
-
-        @Override
-        public String[] getContentColumns() {
-            return Filters.Users.COLUMNS;
-        }
-
-        @Override
-        public Uri getContentUri() {
-            return Filters.Users.CONTENT_URI;
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.add: {
-                    final Intent intent = new Intent(INTENT_ACTION_SELECT_USER);
-                    intent.setClass(getActivity(), UserListSelectorActivity.class);
-                    intent.putExtra(EXTRA_ACCOUNT_ID, getDefaultAccountId(getActivity()));
-                    startActivityForResult(intent, REQUEST_SELECT_USER);
-                    return true;
-                }
-            }
-            return super.onOptionsItemSelected(item);
-        }
-
-        @NonNull
-        @Override
-        protected SimpleCursorAdapter onCreateAdapter(Context context, boolean isCompact) {
-            return new FilterUsersListAdapter(getActivity());
         }
 
     }
