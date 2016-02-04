@@ -37,7 +37,6 @@ public class DebugModeUtils {
     }
 
     public static void initForApplication(final Application application) {
-        // LeakCanary not working on Android Marshmallow, see https://github.com/square/leakcanary/issues/267
         sRefWatcher = LeakCanary.install(application);
     }
 

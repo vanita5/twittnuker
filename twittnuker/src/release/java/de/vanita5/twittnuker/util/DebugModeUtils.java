@@ -24,11 +24,11 @@ package de.vanita5.twittnuker.util;
 
 import android.app.Application;
 
-import com.squareup.okhttp.OkHttpClient;
+import okhttp3.OkHttpClient;
 
 public class DebugModeUtils {
 
-    public static void initForHttpClient(final OkHttpClient client) {
+    public static void initForHttpClient(final OkHttpClient.Builder client) {
         // No-op
     }
 
