@@ -32,8 +32,6 @@ import android.view.MenuItem;
 
 import com.squareup.otto.Subscribe;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsUserListsAdapter;
 import de.vanita5.twittnuker.loader.support.UserListsLoader;
@@ -41,6 +39,8 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.UserListDestroyedEvent;
+
+import java.util.List;
 
 public class UserListsFragment extends ParcelableUserListsFragment {
 
@@ -112,7 +112,7 @@ public class UserListsFragment extends ParcelableUserListsFragment {
     }
 
     @Subscribe
-    void onUserListDestroyed(UserListDestroyedEvent event) {
+    public void onUserListDestroyed(UserListDestroyedEvent event) {
         removeUserList(event.userList.id);
     }
 
