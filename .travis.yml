@@ -3,15 +3,13 @@ language: android
 sudo: false
 
 env:
+  - secure: "Gdkx8y1CNcBaSRGSPYra0XEz19yHAQO0ZYnN2+zGBKF7oDBVj+mAijttNZ8PMNS2mzsyZTu5GLakCGUxQe89N9eJ0icKDZc7moH58mqjjJahntKXwb21bBmIWtvZQMT7vF3+SBtbwjczh7N7srzyQNLYZ3bTSWZfSm3XbzpHidY="
+  - secure: "TnMd1gCo4Hqks+ha+x8OsksdcV0j/4m684fc0VN9rbgGiC1DQ2h85gGDfwy2PpUCV0qiENQY3qsKzZvADIwlYSpPY4Z2clB6MH4rs7Esh4/8VX3v+EG7HbkPCbXx/eWHauT8X/bLYTbMBAv+VrUFX+D8EoLM3tp/WPOs26Pp6BQ="
   global:
-    - MALLOC_ARENA_MAX=2
-    - JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
-    - GRADLE_OPTS=-Xmx1024m -Dorg.gradle.parallel=false
-    - ADB_INSTALL_TIMEOUT=8
-    - secure: 
-"Gdkx8y1CNcBaSRGSPYra0XEz19yHAQO0ZYnN2+zGBKF7oDBVj+mAijttNZ8PMNS2mzsyZTu5GLakCGUxQe89N9eJ0icKDZc7moH58mqjjJahntKXwb21bBmIWtvZQMT7vF3+SBtbwjczh7N7srzyQNLYZ3bTSWZfSm3XbzpHidY="
-    - secure: 
-"TnMd1gCo4Hqks+ha+x8OsksdcV0j/4m684fc0VN9rbgGiC1DQ2h85gGDfwy2PpUCV0qiENQY3qsKzZvADIwlYSpPY4Z2clB6MH4rs7Esh4/8VX3v+EG7HbkPCbXx/eWHauT8X/bLYTbMBAv+VrUFX+D8EoLM3tp/WPOs26Pp6BQ="
+    MALLOC_ARENA_MAX=2
+    JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
+    GRADLE_OPTS=-Xmx1024m -Dorg.gradle.parallel=false
+    ADB_INSTALL_TIMEOUT=8
 
 jdk:
   - oraclejdk8
