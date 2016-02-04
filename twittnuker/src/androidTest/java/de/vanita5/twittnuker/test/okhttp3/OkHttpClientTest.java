@@ -20,29 +20,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.test.okhttp3;
 
-import android.app.Application;
+import org.junit.Test;
 
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
-public class DebugModeUtils {
+import static org.junit.Assert.assertTrue;
 
-    private static RefWatcher sRefWatcher;
+public class OkHttpClientTest {
 
-    public static void initForHttpClient(final OkHttpClient.Builder client) {
+    @Test
+    public void testSocksFunctionality() throws Exception {
+        final Proxy proxy = new Proxy(Proxy.Type.SOCKS, InetSocketAddress.createUnresolved("127.0.0.1", 1080));
+        final OkHttpClient client = new OkHttpClient.Builder()
+                .proxy(proxy)
+                .build();
+        final Request request = new Request.Builder()
+                .url("https://www.google.com/")
+                .build();
+        assertTrue(client.newCall(request).execute().isSuccessful());
     }
 
-    public static void initForApplication(final Application application) {
-        // LeakCanary not working on Android Marshmallow, see https://github.com/square/leakcanary/issues/267
-        sRefWatcher = LeakCanary.install(application);
-    }
-
-    public static void watchReferenceLeak(final Object object) {
-        if (sRefWatcher == null) return;
-        sRefWatcher.watch(object);
-    }
 }

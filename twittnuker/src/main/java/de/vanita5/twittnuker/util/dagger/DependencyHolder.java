@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.util.dagger;
 import android.content.Context;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.okhttp.Dns;
 
 import org.mariotaku.restfu.http.RestHttpClient;
 import de.vanita5.twittnuker.util.ActivityTracker;
@@ -36,6 +35,8 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereValidator;
 
 import javax.inject.Inject;
+
+import okhttp3.Dns;
 
 public class DependencyHolder {
 

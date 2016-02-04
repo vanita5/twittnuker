@@ -32,7 +32,6 @@ import android.util.Log;
 import android.util.LruCache;
 import android.util.TimingLogger;
 
-import com.squareup.okhttp.Dns;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,6 +39,7 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
+import okhttp3.Dns;
 
 import org.mariotaku.inetaddrjni.library.InetAddressUtils;
 import org.xbill.DNS.AAAARecord;

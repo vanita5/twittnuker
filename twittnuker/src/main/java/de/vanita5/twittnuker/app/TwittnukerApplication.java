@@ -38,8 +38,6 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
-import com.squareup.okhttp.Dns;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.restfu.http.RestHttpClient;
 import org.mariotaku.restfu.okhttp.OkHttpRestClient;
@@ -59,6 +57,9 @@ import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
+
+import okhttp3.Dns;
+import okhttp3.OkHttpClient;
 
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
 import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
@@ -228,8 +229,10 @@ public class TwittnukerApplication extends Application implements Constants,
         DependencyHolder holder = DependencyHolder.get(this);
         final RestHttpClient client = holder.getRestHttpClient();
         if (client instanceof OkHttpRestClient) {
-            HttpClientFactory.initDefaultHttpClient(this, holder.getPreferences(),
-                    ((OkHttpRestClient) client).getClient(), holder.getDns());
+            final OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            HttpClientFactory.initDefaultHttpClient(this, holder.getPreferences(), builder,
+                    holder.getDns());
+            ((OkHttpRestClient) client).setClient(builder.build());
         }
     }
 

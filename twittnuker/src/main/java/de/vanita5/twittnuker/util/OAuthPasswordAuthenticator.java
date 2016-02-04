@@ -25,10 +25,6 @@ package de.vanita5.twittnuker.util;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Response;
 
 import org.attoparser.AttoParseException;
 import org.attoparser.IAttoHandler;
@@ -53,12 +49,18 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.model.RequestType;
+import de.vanita5.twittnuker.util.net.JavaNetCookieJar;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.net.CookieManager;
 import java.net.URI;
 import java.util.Map;
+
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 public class OAuthPasswordAuthenticator implements Constants {
 
@@ -76,9 +78,9 @@ public class OAuthPasswordAuthenticator implements Constants {
         final RestClient restClient = RestAPIFactory.getRestClient(oauth);
         this.oauth = oauth;
         this.client = (OkHttpRestClient) restClient.getRestClient();
-        final OkHttpClient okhttp = client.getClient();
-        okhttp.setCookieHandler(new CookieManager());
-        okhttp.networkInterceptors().add(new Interceptor() {
+        final OkHttpClient.Builder builder = client.getClient().newBuilder();
+        builder.cookieJar(new JavaNetCookieJar(new CookieManager()));
+        builder.addNetworkInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 final Response response = chain.proceed(chain.request());

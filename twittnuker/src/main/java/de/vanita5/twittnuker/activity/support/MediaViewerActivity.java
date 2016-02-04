@@ -92,6 +92,7 @@ import de.vanita5.twittnuker.util.PermissionUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
+import de.vanita5.twittnuker.util.media.MediaExtra;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -308,7 +309,10 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         switch (item.getItemId()) {
             case R.id.refresh: {
                 if (object instanceof CacheDownloadMediaViewerFragment) {
-                    ((CacheDownloadMediaViewerFragment) object).startLoading(true);
+                    final CacheDownloadMediaViewerFragment fragment = (CacheDownloadMediaViewerFragment) object;
+                    fragment.startLoading(true);
+                    fragment.showProgress(true, 0);
+                    fragment.setMediaViewVisible(false);
                 }
                 return true;
             }
@@ -811,13 +815,13 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         }
 
         @Override
-        protected void hideProgress() {
+        public void hideProgress() {
             super.hideProgress();
             getActivity().supportInvalidateOptionsMenu();
         }
 
         @Override
-        protected void showProgress(boolean indeterminate, float progress) {
+        public void showProgress(boolean indeterminate, float progress) {
             super.showProgress(indeterminate, progress);
             getActivity().supportInvalidateOptionsMenu();
         }
@@ -851,7 +855,8 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
 
         @Override
         protected Object getDownloadExtra() {
-            return null;
+            final MediaExtra extra = new MediaExtra();
+            return extra;
         }
 
         public boolean isLoopEnabled() {
@@ -859,19 +864,19 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         }
 
         @Override
-        protected void hideProgress() {
+        public void hideProgress() {
             super.hideProgress();
             getActivity().supportInvalidateOptionsMenu();
         }
 
         @Override
-        protected void showProgress(boolean indeterminate, float progress) {
+        public void showProgress(boolean indeterminate, float progress) {
             super.showProgress(indeterminate, progress);
             getActivity().supportInvalidateOptionsMenu();
         }
 
         @Override
-        protected void setMediaViewVisible(boolean visible) {
+        public void setMediaViewVisible(boolean visible) {
             super.setMediaViewVisible(visible);
             getActivity().supportInvalidateOptionsMenu();
         }
@@ -1062,10 +1067,13 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
                     break;
                 }
                 case R.id.video_view_overlay: {
+                    final MediaViewerActivity activity = (MediaViewerActivity) getActivity();
                     if (mVideoControl.getVisibility() == View.VISIBLE) {
                         mVideoControl.setVisibility(View.GONE);
+                        activity.setBarVisibility(false);
                     } else {
                         mVideoControl.setVisibility(View.VISIBLE);
+                        activity.setBarVisibility(true);
                     }
                     break;
                 }
