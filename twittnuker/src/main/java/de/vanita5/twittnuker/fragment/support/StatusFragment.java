@@ -139,6 +139,7 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
+import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
@@ -1825,11 +1826,13 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return mTranslationResult;
         }
 
-        public void setTranslationResult(TranslationResult translation) {
-            if (mStatus == null || (translation != null && mStatus.id != translation.getId())) {
-                return;
+        public void setTranslationResult(@Nullable TranslationResult translation) {
+            if (mStatus == null || translation == null || TwitterContentUtils.getOriginalId(mStatus)
+                    != translation.getId()) {
+                mTranslationResult = null;
+            } else {
+                mTranslationResult = translation;
             }
-            mTranslationResult = translation;
             notifyDataSetChanged();
         }
 
