@@ -38,4 +38,6 @@ public interface IDirectMessagesAdapter {
     int getMediaPreviewStyle();
 
     MediaLoaderWrapper getMediaLoader();
+
+    float getTextSize();
 }
