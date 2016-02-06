@@ -23,30 +23,29 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:divider="?android:dividerVertical"
     android:orientation="vertical"
     android:showDividers="middle">
 
-	<TextView
-		android:id="@android:id/title"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:padding="@dimen/element_spacing_normal"
-		android:singleLine="true"
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:textColor="?android:colorActivatedHighlight"
+    <de.vanita5.twittnuker.view.WizardHighlightTextView
+        android:id="@android:id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/element_spacing_normal"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="@dimen/text_size_wizard_title"/>
 
-	<TextView
-		android:id="@android:id/summary"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:lineSpacingMultiplier="1.25"
-		android:padding="@dimen/element_spacing_normal"
-		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:textSize="@dimen/text_size_wizard_text"
-		android:textStyle="normal"/>
+    <TextView
+        android:id="@android:id/summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingMultiplier="1.25"
+        android:padding="@dimen/element_spacing_normal"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="@dimen/text_size_wizard_text"
+        android:textStyle="normal"/>
 
 </LinearLayout>

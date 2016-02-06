@@ -42,7 +42,10 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
+import android.support.v4.view.LayoutInflaterCompat;
+import android.support.v4.view.LayoutInflaterFactory;
 import android.support.v4.view.ViewPager;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -69,6 +72,8 @@ import de.vanita5.twittnuker.preference.WizardPageNavPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -81,7 +86,7 @@ import java.util.List;
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 
-public class SettingsWizardActivity extends Activity implements Constants {
+public class SettingsWizardActivity extends BaseThemedActivity implements Constants {
 
     public static final String WIZARD_PREFERENCE_KEY_NEXT_PAGE = "next_page";
     public static final String WIZARD_PREFERENCE_KEY_USE_DEFAULTS = "use_defaults";
@@ -166,6 +171,41 @@ public class SettingsWizardActivity extends Activity implements Constants {
     }
 
     @Override
+    public String getThemeBackgroundOption() {
+        return ThemeUtils.getThemeBackgroundOption(this);
+    }
+
+    @Override
+    public int getThemeColor() {
+        return ThemeUtils.getUserAccentColor(this);
+    }
+
+    @Override
+    public int getActionBarColor() {
+        return ThemeUtils.getActionBarColor(this);
+    }
+
+    @Override
+    public int getThemeResourceId() {
+        return ThemeUtils.getNoActionBarThemeResource(this);
+    }
+
+    @NonNull
+    @Override
+    public LayoutInflater getLayoutInflater() {
+        final LayoutInflater inflater = super.getLayoutInflater();
+        if (inflater.getFactory() == null) {
+            LayoutInflaterCompat.setFactory(inflater, new ThemedLayoutInflaterFactory(this, new LayoutInflaterFactory() {
+                @Override
+                public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+                    return SettingsWizardActivity.this.onCreateView(parent, name, context, attrs);
+                }
+            }));
+        }
+        return inflater;
+    }
+
+    @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_wizard);
@@ -173,7 +213,12 @@ public class SettingsWizardActivity extends Activity implements Constants {
         mViewPager.setAdapter(mAdapter);
         mViewPager.setEnabled(false);
         mIndicator.setViewPager(mViewPager);
+        mIndicator.setSelectedColor(getCurrentThemeColor());
         initPages();
+        final int initialPage = getIntent().getIntExtra(EXTRA_PAGE, -1);
+        if (initialPage != -1) {
+            mViewPager.setCurrentItem(initialPage, false);
+        }
     }
 
     private void initPages() {
@@ -218,6 +263,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
         public void onActivityCreated(final Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
             addPreferencesFromResource(getPreferenceResource());
+
             final Context context = getActivity();
             final Preference wizardHeader = new WizardPageHeaderPreference(context);
             wizardHeader.setTitle(getHeaderTitle());
@@ -234,6 +280,24 @@ public class SettingsWizardActivity extends Activity implements Constants {
                 nextPage.setOnPreferenceClickListener(this);
                 screen.addPreference(nextPage);
             }
+
+
+            final Preference.OnPreferenceChangeListener listener = new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    final Bundle extras = preference.getExtras();
+                    if (extras != null && extras.getBoolean(EXTRA_RESTART_ACTIVITY)) {
+                        ((SettingsWizardActivity) getActivity()).restartWithCurrentPage();
+                        return true;
+                    }
+                    return true;
+                }
+            };
+
+            for (int i = 0, j = screen.getPreferenceCount(); i < j; i++) {
+                screen.getPreference(i).setOnPreferenceChangeListener(listener);
+            }
+
         }
 
         @Override
@@ -254,6 +318,13 @@ public class SettingsWizardActivity extends Activity implements Constants {
 
         protected abstract int getPreferenceResource();
 
+    }
+
+    private void restartWithCurrentPage() {
+        final Intent intent = getIntent();
+        intent.putExtra(EXTRA_PAGE, mViewPager.getCurrentItem());
+        setIntent(intent);
+        restart();
     }
 
     public static class WizardPageCardsFragment extends BaseWizardPageFragment {
