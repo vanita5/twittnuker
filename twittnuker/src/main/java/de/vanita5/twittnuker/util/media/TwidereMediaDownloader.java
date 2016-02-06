@@ -45,7 +45,6 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
-import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
@@ -80,21 +79,19 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         final Uri uri = Uri.parse(url);
         final Authorization auth;
         final ParcelableCredentials account;
-        final MediaExtra mediaExtra = extra instanceof MediaExtra ? (MediaExtra) extra : null;
-        if (isTwitterAuthRequired(uri) && mediaExtra != null) {
-            account = ParcelableAccount.getCredentials(mContext, mediaExtra.getAccountId());
+        if (extra instanceof MediaExtra) {
+            account = ParcelableAccount.getCredentials(mContext, ((MediaExtra) extra).getAccountId());
             auth = TwitterAPIFactory.getAuthorization(account);
         } else {
             account = null;
             auth = null;
         }
         Uri modifiedUri = getReplacedUri(uri, account != null ? account.api_url_format : null);
-
         final MultiValueMap<String> additionalHeaders = new MultiValueMap<>();
         additionalHeaders.add("User-Agent", mUserAgent);
         final String method = GET.METHOD;
         final String requestUri;
-        if (auth != null && auth.hasAuthorization()) {
+        if (isAuthRequired(uri, account) && auth != null && auth.hasAuthorization()) {
             final Endpoint endpoint;
             if (auth instanceof OAuthAuthorization) {
                 endpoint = new OAuthEndpoint(getEndpoint(modifiedUri), getEndpoint(uri));
@@ -118,7 +115,6 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         builder.method(method);
         builder.url(requestUri);
         builder.headers(additionalHeaders);
-        builder.tag(RequestType.MEDIA);
         final HttpResponse resp = mClient.newCall(builder.build()).execute();
         if (!resp.isSuccessful()) throw new IOException("Unable to get media");
         final Body body = resp.getBody();
@@ -138,8 +134,13 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         return sb.toString();
     }
 
-    private boolean isTwitterAuthRequired(final Uri uri) {
-        return uri != null && "ton.twitter.com".equalsIgnoreCase(uri.getHost());
+    private boolean isAuthRequired(final Uri uri, @Nullable final ParcelableCredentials credentials) {
+        if (credentials == null) return false;
+        final String host = uri.getHost();
+        if (credentials.api_url_format != null && credentials.api_url_format.contains(host)) {
+            return true;
+        }
+        return "ton.twitter.com".equalsIgnoreCase(host);
     }
 
     private boolean isTwitterUri(final Uri uri) {

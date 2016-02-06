@@ -32,7 +32,6 @@ import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.RestHttpClient;
 import org.mariotaku.restfu.http.mime.Body;
 import de.vanita5.twittnuker.activity.support.ThemedImagePickerActivity;
-import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 import java.io.IOException;
@@ -48,7 +47,6 @@ public class RestFuNetworkStreamDownloader extends ThemedImagePickerActivity.Net
         final HttpRequest.Builder builder = new HttpRequest.Builder();
         builder.method(GET.METHOD);
         builder.url(uri.toString());
-        builder.tag(RequestType.MEDIA);
         final HttpResponse response = client.newCall(builder.build()).execute();
         if (response.isSuccessful()) {
             final Body body = response.getBody();

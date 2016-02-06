@@ -47,7 +47,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
-import de.vanita5.twittnuker.model.RequestType;
 import de.vanita5.twittnuker.util.net.SimpleCookieJar;
 
 import java.io.IOException;
@@ -147,7 +146,6 @@ public class OAuthPasswordAuthenticator implements Constants {
             authorizeResultBuilder.url(endpoint.construct("/account/login_verification"));
             authorizeResultBuilder.headers(requestHeaders);
             authorizeResultBuilder.body(authorizationResultBody);
-            authorizeResultBuilder.tag(RequestType.API);
             response = client.newCall(authorizeResultBuilder.build()).execute();
             parseAuthorizeRequestData(response, data);
             if (TextUtils.isEmpty(data.authenticityToken)) {
@@ -234,7 +232,6 @@ public class OAuthPasswordAuthenticator implements Constants {
             authorizeResultBuilder.url(endpoint.construct("/oauth/authorize"));
             authorizeResultBuilder.headers(requestHeaders);
             authorizeResultBuilder.body(authorizationResultBody);
-            authorizeResultBuilder.tag(RequestType.API);
             response = client.newCall(authorizeResultBuilder.build()).execute();
             final HtmlParsingConfiguration conf = new HtmlParsingConfiguration();
             final IAttoHandler handler = new AbstractStandardNonValidatingHtmlAttoHandler(conf) {
@@ -360,7 +357,6 @@ public class OAuthPasswordAuthenticator implements Constants {
             final MultiValueMap<String> requestHeaders = new MultiValueMap<>();
             requestHeaders.add("User-Agent", userAgent);
             authorizePageBuilder.headers(requestHeaders);
-            authorizePageBuilder.tag(RequestType.API);
             final HttpRequest authorizePageRequest = authorizePageBuilder.build();
             response = client.newCall(authorizePageRequest).execute();
             parseAuthorizeRequestData(response, data);
