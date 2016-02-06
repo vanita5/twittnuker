@@ -119,6 +119,7 @@ public class ColorPickerPreference extends DialogPreference implements DialogInt
                 if (listener != null) {
                     listener.onPreferenceChange(this, color);
                 }
+                notifyChanged();
                 break;
         }
     }
