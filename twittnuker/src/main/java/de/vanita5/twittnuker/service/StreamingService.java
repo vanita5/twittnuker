@@ -295,6 +295,7 @@ public class StreamingService extends Service implements Constants {
 
     static class TwidereUserStreamCallback extends UserStreamCallback {
 
+        private final Context context;
         private final ParcelableAccount account;
         private final ContentResolver resolver;
 
@@ -305,7 +306,7 @@ public class StreamingService extends Service implements Constants {
 
         public TwidereUserStreamCallback(final Context context, final ParcelableAccount account,
                                          SharedPreferences preferences) {
-            super(context);
+            this.context = context;
             this.account = account;
             resolver = context.getContentResolver();
             mNotificationHelper = new NotificationHelper(context);
@@ -315,7 +316,7 @@ public class StreamingService extends Service implements Constants {
         private void createNotification(final String fromUser, final String type, final String msg,
                                         ParcelableStatus status, User sourceUser) {
             if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATIONS, true)) {
-                AccountPreferences pref = new AccountPreferences(mContext, account.account_id);
+                AccountPreferences pref = new AccountPreferences(context, account.account_id);
                 NotificationContent notification = new NotificationContent();
                 notification.setAccountId(account.account_id);
                 notification.setObjectId(status != null ? String.valueOf(status.id) : null);
@@ -414,7 +415,7 @@ public class StreamingService extends Service implements Constants {
                             Log.w(LOGTAG, os.toString(charsetName));
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Log.w(LOGTAG, e);
                     }
                 }
             } else {
@@ -512,15 +513,14 @@ public class StreamingService extends Service implements Constants {
         public void onUnblock(final User source, final User unblockedUser) {
             final String message = String.format("%s unblocked %s", source.getScreenName(),
                     unblockedUser.getScreenName());
-            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onUnfavorite(final User source, final User target, final Status unfavoritedStatus) {
             final String message = String.format("%s unfavorited %s's tweet: %s", source.getScreenName(),
                     target.getScreenName(), unfavoritedStatus.getText());
-            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
 
         @Override
