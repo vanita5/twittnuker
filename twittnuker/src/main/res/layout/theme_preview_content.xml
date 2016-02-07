@@ -23,33 +23,33 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<View
-		android:id="@+id/theme_preview_window_wallpaper"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_alignBottom="@+id/theme_preview_window_content"
-		android:layout_alignTop="@+id/theme_preview_window_content"
-		android:background="@drawable/nyan_stars_background"/>
+    <View
+        android:id="@+id/theme_preview_window_wallpaper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/theme_preview_window_content"
+        android:layout_alignTop="@+id/theme_preview_window_content"
+        android:background="@drawable/nyan_stars_background"/>
 
-	<View
-		android:id="@+id/theme_preview_window_background"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_alignBottom="@+id/theme_preview_window_content"
-		android:layout_alignTop="@+id/theme_preview_window_content"/>
+    <View
+        android:id="@+id/theme_preview_window_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/theme_preview_window_content"
+        android:layout_alignTop="@+id/theme_preview_window_content"/>
 
-	<LinearLayout
-		android:id="@+id/theme_preview_window_content"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_alignParentBottom="true"
-		android:layout_alignParentTop="true"
-		android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/theme_preview_window_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/action_bar"
             style="?actionBarStyle"
-			android:layout_width="match_parent"
+            android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:gravity="center_vertical"/>
 
@@ -66,6 +66,6 @@
 
         </FrameLayout>
 
-	</LinearLayout>
+    </LinearLayout>
 
 </merge>

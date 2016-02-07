@@ -137,15 +137,15 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
             statusInfoSpace.setVisibility(adapter.isProfileImageEnabled() ? View.VISIBLE : View.GONE);
         }
         profileImageView.setImageResource(R.mipmap.ic_launcher);
-        nameView.setName(TWIDERE_PREVIEW_NAME);
-        nameView.setScreenName("@" + TWIDERE_PREVIEW_SCREEN_NAME);
+        nameView.setName(TWITTNUKER_PREVIEW_NAME);
+        nameView.setScreenName("@" + TWITTNUKER_PREVIEW_SCREEN_NAME);
         nameView.updateText(adapter.getBidiFormatter());
         if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
             final TwidereLinkify linkify = adapter.getTwidereLinkify();
-            final Spanned text = HtmlSpanBuilder.fromHtml(TWIDERE_PREVIEW_TEXT_HTML);
+            final Spanned text = HtmlSpanBuilder.fromHtml(TWITTNUKER_PREVIEW_TEXT_HTML);
             textView.setText(linkify.applyAllLinks(text, -1, -1, false, adapter.getLinkHighlightingStyle()));
         } else {
-            textView.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
+            textView.setText(toPlainText(TWITTNUKER_PREVIEW_TEXT_HTML));
         }
         timeView.setTime(System.currentTimeMillis());
         mediaPreview.setVisibility(adapter.isMediaPreviewEnabled() ? View.VISIBLE : View.GONE);

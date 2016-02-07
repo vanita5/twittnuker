@@ -72,10 +72,11 @@ public interface Constants extends TwittnukerConstants {
 
     String FRAGMENT_TAG_API_UPGRADE_NOTICE = "api_upgrade_notice";
 
-    String TWIDERE_PREVIEW_NAME = "Twittnuker Project";
-    String TWIDERE_PREVIEW_SCREEN_NAME = "twittnuker";
-    String TWIDERE_PREVIEW_TEXT_HTML = "Twittnuker is an open source twitter client for Android, see <a href='https://github.com/vanita5/twittnuker'>https://github.com/vanita5/twittnuker<a/>";
-    String TWIDERE_PREVIEW_SOURCE = "Twittnuker";
+    String TWITTNUKER_PREVIEW_NAME = "Twittnuker Project";
+    String TWITTNUKER_PREVIEW_SCREEN_NAME = "twittnuker";
+    String TWITTNUKER_PREVIEW_TEXT_HTML = "Twittnuker is an open source twitter client for Android, see <a href='https://github.com/vanita5/twittnuker'>https://github.com/vanita5/twittnuker<a/>";
+    String TWITTNUKER_PREVIEW_SOURCE = "Twittnuker";
+    String TWITTNUKER_PREVIEW_LOCATION = "Freiburg, Germany";
 
     int MATERIAL_DARK = 0xff212121;
     int MATERIAL_LIGHT = 0xffbdbdbd;

@@ -29,7 +29,6 @@ import android.preference.Preference;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.view.SupportMenuInflater;
 import android.support.v7.widget.ActionMenuView;
-import android.text.Html;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Spanned;
@@ -51,6 +50,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
+import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
 
@@ -112,8 +112,6 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
         final Toolbar actionBarView = (Toolbar) view.findViewById(R.id.action_bar);
         final ActionMenuView menuBar = (ActionMenuView) view.findViewById(R.id.menu_bar);
         final View statusContentView = view.findViewById(R.id.theme_preview_status_content);
-        final TextView retweetsCountView = (TextView) view.findViewById(R.id.retweets_count);
-        final TextView favoritesCountView = (TextView) view.findViewById(R.id.favorites_count);
         final CardView cardView = (CardView) view.findViewById(R.id.card);
 
         final int defaultTextSize = getDefaultTextSize(context);
@@ -148,9 +146,18 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
             final TextView screenNameView = (TextView) statusContentView.findViewById(R.id.screen_name);
             final TextView textView = (TextView) statusContentView.findViewById(R.id.text);
             final TextView timeSourceView = (TextView) statusContentView.findViewById(R.id.time_source);
-            final View retweetedByContainer = statusContentView.findViewById(R.id.retweeted_by);
+            final View retweetedByView = statusContentView.findViewById(R.id.retweeted_by);
+            final TextView quoteOriginalLink = (TextView) statusContentView.findViewById(R.id.quote_original_link);
+            final View quotedNameContainer = statusContentView.findViewById(R.id.quoted_name_container);
+            final TextView quotedTextView = (TextView) statusContentView.findViewById(R.id.quoted_text);
+            final ForegroundColorView quoteIndicator = (ForegroundColorView) statusContentView.findViewById(R.id.quote_indicator);
+            final TextView locationView = (TextView) statusContentView.findViewById(R.id.location_view);
 
-            retweetedByContainer.setVisibility(View.GONE);
+            quoteOriginalLink.setVisibility(View.GONE);
+            quotedNameContainer.setVisibility(View.GONE);
+            quotedTextView.setVisibility(View.GONE);
+            quoteIndicator.setVisibility(View.GONE);
+            retweetedByView.setVisibility(View.GONE);
 
             nameView.setTextSize(defaultTextSize * 1.25f);
             textView.setTextSize(defaultTextSize * 1.25f);
@@ -161,28 +168,22 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
             textView.setTextIsSelectable(false);
 
             profileImageView.setImageResource(R.mipmap.ic_launcher);
-            nameView.setText(TWIDERE_PREVIEW_NAME);
-            screenNameView.setText("@" + TWIDERE_PREVIEW_SCREEN_NAME);
+            nameView.setText(TWITTNUKER_PREVIEW_NAME);
+            screenNameView.setText("@" + TWITTNUKER_PREVIEW_SCREEN_NAME);
 
             if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
-                final Spanned text = HtmlSpanBuilder.fromHtml(TWIDERE_PREVIEW_TEXT_HTML);
+                final Spanned text = HtmlSpanBuilder.fromHtml(TWITTNUKER_PREVIEW_TEXT_HTML);
                 textView.setText(linkify.applyAllLinks(text, 0, false));
             } else {
-                textView.setText(toPlainText(TWIDERE_PREVIEW_TEXT_HTML));
+                textView.setText(toPlainText(TWITTNUKER_PREVIEW_TEXT_HTML));
             }
 
+            locationView.setVisibility(View.VISIBLE);
+            locationView.setText(TWITTNUKER_PREVIEW_LOCATION);
+
             final String time = formatToLongTimeString(context, System.currentTimeMillis());
-            timeSourceView.setText(toPlainText(context.getString(R.string.time_source, time, TWIDERE_PREVIEW_SOURCE)));
+            timeSourceView.setText(HtmlSpanBuilder.fromHtml(context.getString(R.string.time_source, time, TWITTNUKER_PREVIEW_SOURCE)));
         }
-        if (retweetsCountView != null) {
-            retweetsCountView.setText("2");
-        }
-        if (favoritesCountView != null) {
-            favoritesCountView.setText("4");
-        }
-//        if (replyCountsView != null) {
-//            replyCountsView.setText("1");
-//        }
     }
 
     private static class DummyTouchInterceptor implements TouchInterceptor {
