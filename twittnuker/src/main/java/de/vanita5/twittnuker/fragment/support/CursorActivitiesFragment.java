@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.message.AccountChangedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
@@ -75,8 +76,13 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
         if (adapter.getItemCount() > 0) {
             showContent();
         } else if (accountIds.length > 0) {
-            showContent();
-            showEmpty(R.drawable.ic_info_refresh, getString(R.string.swipe_down_to_refresh));
+            final ErrorInfoStore.DisplayErrorInfo errorInfo = ErrorInfoStore.getErrorInfo(getContext(),
+                    mErrorInfoStore.get(ErrorInfoStore.KEY_INTERACTIONS, accountIds[0]));
+            if (errorInfo != null) {
+                showError(errorInfo.getIcon(), errorInfo.getMessage());
+            } else {
+                showContent();
+            }
         } else {
             showError(R.drawable.ic_info_accounts, getString(R.string.no_account_selected));
         }

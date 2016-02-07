@@ -25,54 +25,52 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
 import de.vanita5.twittnuker.loader.support.iface.ICursorSupportLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
-import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
-
 public abstract class BaseCursorSupportUsersLoader extends TwitterAPIUsersLoader
         implements ICursorSupportLoader {
 
-	private final long mCursor;
-	private final SharedPreferences mPreferences;
-	private final int mLoadItemLimit;
+    private final long mCursor;
+    private final int mLoadItemLimit;
 
-	private long mNextCursor, mPrevCursor;
+    private long mNextCursor, mPrevCursor;
 
     public BaseCursorSupportUsersLoader(final Context context, final long accountId, final long cursor,
                                         final List<ParcelableUser> data, boolean fromUser) {
         super(context, accountId, data, fromUser);
-		mCursor = cursor;
-        mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final int loadItemLimit = mPreferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
+        mCursor = cursor;
+        final SharedPreferences preferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        final int loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
         mLoadItemLimit = Math.min(100, loadItemLimit);
-	}
+    }
 
-	public final int getCount() {
-		return mLoadItemLimit;
-	}
-
-    @Override
-	public final long getCursor() {
-		return mCursor;
-	}
+    public final int getCount() {
+        return mLoadItemLimit;
+    }
 
     @Override
-	public final long getNextCursor() {
-		return mNextCursor;
-	}
+    public final long getCursor() {
+        return mCursor;
+    }
 
     @Override
-	public final long getPrevCursor() {
-		return mPrevCursor;
-	}
+    public final long getNextCursor() {
+        return mNextCursor;
+    }
 
-	protected final void setCursorIds(final CursorSupport cursor) {
-		if (cursor == null) return;
-		mNextCursor = cursor.getNextCursor();
-		mPrevCursor = cursor.getPreviousCursor();
-	}
+    @Override
+    public final long getPrevCursor() {
+        return mPrevCursor;
+    }
+
+    protected final void setCursorIds(final CursorSupport cursor) {
+        if (cursor == null) return;
+        mNextCursor = cursor.getNextCursor();
+        mPrevCursor = cursor.getPreviousCursor();
+    }
 
 }
