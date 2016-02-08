@@ -24,18 +24,18 @@ package de.vanita5.twittnuker.api.twitter.auth;
 
 
 import org.mariotaku.restfu.RestConverter;
-import org.mariotaku.restfu.Utils;
+import org.mariotaku.restfu.RestFuUtils;
 import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.ValueMap;
 import org.mariotaku.restfu.http.mime.Body;
 
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.ParseException;
-
-import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 /**
  * Created by mariotaku on 15/2/4.
@@ -69,7 +69,7 @@ public class OAuthToken implements ValueMap {
     }
 
     public OAuthToken(String body, Charset charset) throws ParseException {
-        Utils.parseQuery(body, charset.name(), new Utils.KeyValueConsumer() {
+        RestFuUtils.parseQuery(body, charset.name(), new RestFuUtils.KeyValueConsumer() {
 
             @Override
             public void consume(String key, String value) {
@@ -146,7 +146,7 @@ public class OAuthToken implements ValueMap {
                     throw new ConvertException(e);
                 }
             } finally {
-                Utils.closeSilently(body);
+                RestFuUtils.closeSilently(body);
             }
         }
     }

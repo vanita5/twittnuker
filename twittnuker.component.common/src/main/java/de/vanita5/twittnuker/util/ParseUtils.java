@@ -29,17 +29,13 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.mariotaku.restfu.Utils;
+import org.mariotaku.restfu.RestFuUtils;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.constant.IntentConstants;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
@@ -83,7 +79,7 @@ public final class ParseUtils {
             e.printStackTrace();
             return null;
         } finally {
-            Utils.closeSilently(json);
+            RestFuUtils.closeSilently(json);
         }
     }
 

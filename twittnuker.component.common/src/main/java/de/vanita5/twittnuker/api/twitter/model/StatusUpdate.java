@@ -22,23 +22,23 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.restfu.Utils;
+import org.mariotaku.restfu.RestFuUtils;
 import org.mariotaku.restfu.http.SimpleValueMap;
 
 public class StatusUpdate extends SimpleValueMap {
 
-	public StatusUpdate(final String status) {
+    public StatusUpdate(final String status) {
         put("status", status);
-	}
+    }
 
-	public StatusUpdate displayCoordinates(final boolean displayCoordinates) {
-		setDisplayCoordinates(displayCoordinates);
-		return this;
-	}
+    public StatusUpdate displayCoordinates(final boolean displayCoordinates) {
+        setDisplayCoordinates(displayCoordinates);
+        return this;
+    }
 
     public void setInReplyToStatusId(final long inReplyToStatusId) {
         put("in_reply_to_status_id", inReplyToStatusId);
-	}
+    }
 
     public void setLocation(final GeoLocation location) {
         remove("lat");
@@ -46,22 +46,22 @@ public class StatusUpdate extends SimpleValueMap {
         if (location == null) return;
         put("lat", location.getLatitude());
         put("long", location.getLongitude());
-	}
+    }
 
     public void setMediaIds(final long... mediaIds) {
         remove("media_ids");
         if (mediaIds == null) return;
-        put("media_ids", Utils.toString(mediaIds, ','));
+        put("media_ids", RestFuUtils.toString(mediaIds, ','));
     }
 
     public void setPlaceId(final String placeId) {
         put("place_id", placeId);
-	}
+    }
 
-	public StatusUpdate inReplyToStatusId(final long inReplyToStatusId) {
-		setInReplyToStatusId(inReplyToStatusId);
-		return this;
-	}
+    public StatusUpdate inReplyToStatusId(final long inReplyToStatusId) {
+        setInReplyToStatusId(inReplyToStatusId);
+        return this;
+    }
 
 
     public void setDisplayCoordinates(final boolean displayCoordinates) {
@@ -73,25 +73,25 @@ public class StatusUpdate extends SimpleValueMap {
         put("possibly_sensitive", possiblySensitive);
     }
 
-	public StatusUpdate location(final GeoLocation location) {
-		setLocation(location);
-		return this;
-	}
+    public StatusUpdate location(final GeoLocation location) {
+        setLocation(location);
+        return this;
+    }
 
-	public StatusUpdate mediaIds(final long... mediaIds) {
-		setMediaIds(mediaIds);
-		return this;
-	}
+    public StatusUpdate mediaIds(final long... mediaIds) {
+        setMediaIds(mediaIds);
+        return this;
+    }
 
-	public StatusUpdate placeId(final String placeId) {
-		setPlaceId(placeId);
-		return this;
-	}
+    public StatusUpdate placeId(final String placeId) {
+        setPlaceId(placeId);
+        return this;
+    }
 
-	public StatusUpdate possiblySensitive(final boolean possiblySensitive) {
-		setPossiblySensitive(possiblySensitive);
-		return this;
-	}
+    public StatusUpdate possiblySensitive(final boolean possiblySensitive) {
+        setPossiblySensitive(possiblySensitive);
+        return this;
+    }
 
 
 }
