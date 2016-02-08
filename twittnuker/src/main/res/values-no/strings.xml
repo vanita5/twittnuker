@@ -156,9 +156,9 @@
     <string name="filename_hint">Filnavn</string>
     <string name="please_wait">Vennligst vent.</string>
     <string name="saved_to_gallery">Lagret i galleriet.</string>
-    <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
     <string name="http_proxy_summary">Bruk HTTP Proxy for alle nettverksforespørsler.</string>
+    <string name="proxy">Proxy</string>
     <string name="proxy_host">Proxy-tjener</string>
     <string name="proxy_port">Proxy-port</string>
     <string name="block">Blokker</string>
@@ -371,7 +371,6 @@
     <string name="none">Ingen</string>
     <string name="large">Stor</string>
     <string name="small">Liten</string>
-    <string name="and_N_more">og <xliff:g id="count">%d</xliff:g> flere</string>
     <string name="clear_search_history">Tøm søkehistorikken</string>
     <!--<string name="permission_description_none">Ingen tillatelser trengs</string>-->
     <!--<string name="permission_description_refresh">Oppdater tidslinje (inkludert direktemeldinger)</string>-->
@@ -703,7 +702,7 @@
     <string name="usage_statistics">Bruksstatistikk</string>
     <string name="research_hot_mobile">Datadrevet mobilnett-forskning</string>
     <string name="unknown_location">Ukjent posisjon</string>
-    <string name="ellipsis">&#8230;</string>
+    <!--<string name="ellipsis">…</string>-->
     <string name="import_export_settings">Importer/eksporter innstillinger</string>
     <string name="usage_statistics_header_summary">Twittnuker tok del i noen forskningsprosjekter. Ved å bidra til disse prosjektene gjør du Twittnuker og fremtidige apper bedre.</string>
     <string name="no_tab">Ingen faner</string>

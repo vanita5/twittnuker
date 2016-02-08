@@ -54,6 +54,7 @@
     <string name="favorite">Favorilerine ekle</string>
     <string name="unfavorite">Favorilerinden çıkar</string>
     <string name="like">Beğen</string>
+    <string name="undo_like">Beğenmekten Vazgeç</string>
     <string name="reply">Cevapla</string>
     <string name="share">Paylaş</string>
     <string name="view_image">Resim</string>
@@ -155,9 +156,9 @@
     <string name="filename_hint">Dosya adı</string>
     <string name="please_wait">Lütfen bekleyin.</string>
     <string name="saved_to_gallery">Galeriye kaydet.</string>
-    <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP proxy</string>
     <string name="http_proxy_summary">Bütün ağ bağlantıları için HTTP proxy kullan.</string>
+    <string name="proxy">Proxy</string>
     <string name="proxy_host">Proxy sunucusu</string>
     <string name="proxy_port">Proxy portu</string>
     <string name="block">Engelle</string>
@@ -359,7 +360,6 @@
     <string name="none">Hiçbiri</string>
     <string name="large">Büyük</string>
     <string name="small">Küçük</string>
-    <string name="and_N_more">ve <xliff:g id="count">%d</xliff:g> daha</string>
     <string name="clear_search_history">Arama geçmişini temizle</string>
     <!--<string name="permission_description_none">Herhangi bir izin gerekmez</string>-->
     <!--<string name="permission_description_refresh">Zaman akışını yenile (Direkt mesajlar dahil)</string>-->
@@ -373,7 +373,7 @@
     <string name="no_thanks">Hayır, teşekkürler</string>
     <!--<string name="revoke_permissions">İzinleri kaldır</string>-->
     <string name="fast_scroll_thumb">Hızlı kaydırma butonu</string>
-    <string name="indicate_my_status">Tweetimi göster</string>
+    <string name="indicate_your_status">Tweetimi göster</string>
     <string name="default_ringtone">Varsayılan zil sesi</string>
     <string name="phishing_link_warning">Sahte adres linki uyarısı</string>
     <string name="phishing_link_warning_summary">Direkt mesajdaki bir muhtemel sahte adrese tıklarken uyar.</string>
@@ -409,7 +409,7 @@
     <string name="search_name_saved">Arama \"<xliff:g id="name">%s</xliff:g>\" kaydedildi.</string>
     <string name="search_deleted">Arama silindi.</string>
     <string name="search_name_deleted">Arama \"<xliff:g id="name">%s</xliff:g>\" silindi.</string>
-    <string name="import_from">Şuradan import&#8230;</string>
+    <string name="import_from">Şuradan import…</string>
     <string name="link_to_quoted_status">Alıntılanmış tweet\'a link</string>
     <string name="quote_original_status">Özgün tweeti alıntıla</string>
     <string name="followed_user"><xliff:g id="user">%s</xliff:g> takiplendi.</string>
@@ -454,7 +454,7 @@
     <string name="settings_interface">Arayüz</string>
     <string name="no_rule">Kural yok</string>
     <string name="safety">Güvenlik</string>
-    <string name="updating_status_notification">Tweet gönderiliyor&#8230;</string>
+    <string name="updating_status_notification">Tweet gönderiliyor…</string>
     <!--<string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g>(<xliff:g id="nickname">%2$s</xliff:g>)</string>-->
     <string name="query">Sorgu</string>
     <string name="input_text">giriş metni</string>
@@ -551,13 +551,14 @@
     <string name="deny">Reddet</string>
     <string name="import_settings">Ayarları içe aktar</string>
     <string name="export_settings">Ayarları dışa aktar</string>
-    <string name="export_settings_type_dialog_title">Ayarları dışa aktar&#8230;</string>
-    <string name="import_settings_type_dialog_title">Ayarları içe aktar&#8230;</string>
+    <string name="export_settings_type_dialog_title">Ayarları dışa aktar…</string>
+    <string name="import_settings_type_dialog_title">Ayarları içe aktar…</string>
     <!--<string name="nicknames">Lakaplar</string>-->
     <string name="user_colors">Kullanıcı renkleri</string>
     <string name="import_export">İçe aktar/Dışa aktar</string>
     <string name="hidden_settings">Gizli ayarlar</string>
     <string name="hidden_settings_warning_title">UYARI: Bu ayarları değiştirmek uygulamaya zarar verebilir!</string>
+    <string name="status_text_limit">Tweet metin limiti</string>
     <string name="load_more_from_top">Üstten daha fazla yükle</string>
     <string name="open_with_account">Hesap ile aç</string>
     <string name="card_highlight_option_highlight">Vurgula</string>

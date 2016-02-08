@@ -151,9 +151,9 @@
     <string name="filename_hint">Nazwa pliku</string>
     <string name="please_wait">Proszę czekać...</string>
     <string name="saved_to_gallery">Zapisano do galerii.</string>
-    <string name="proxy">Proxy</string>
     <string name="http_proxy">HTTP Proxy</string>
     <string name="http_proxy_summary">Użyj proxy HTTP dla wszystkich żądań.</string>
+    <string name="proxy">Proxy</string>
     <string name="proxy_host">Host proxy</string>
     <string name="proxy_port">Port proxy</string>
     <string name="block">Zablokuj</string>
@@ -346,7 +346,6 @@
     <string name="none">Brak</string>
     <string name="large">Duży</string>
     <string name="small">Mały</string>
-    <string name="and_N_more">oraz <xliff:g id="count">%d</xliff:g> więcej</string>
     <string name="clear_search_history">Wyczyść historię wyszukiwania</string>
     <!--<string name="permission_description_none">Nie są wymagane pozwolenia</string>-->
     <!--<string name="permission_description_refresh">Odśwież strumień (razem z wiadomościami)</string>-->
@@ -361,7 +360,7 @@
     <string name="no_thanks">Nie, dziękuję</string>
     <!--<string name="revoke_permissions">Odwołaj pozwolenia</string>-->
     <string name="fast_scroll_thumb">Szybkie przewijanie palcem</string>
-    <string name="indicate_my_status">Wyróżniaj twoje tweety</string>
+    <string name="indicate_your_status">Wyróżniaj twoje tweety</string>
     <string name="default_ringtone">Domyślny dzwonek</string>
     <string name="phishing_link_warning">Ostrzeżenie od linku phishingowym</string>
     <string name="phishing_link_warning_summary">Ostrzega użytkownika przed odnośnikiem w wiadomości, którego odwiedzenie może prowadzić do wyłudzenia informacji (phishing).</string>
@@ -398,7 +397,7 @@
     <string name="search_name_saved">Wyszukiwanie \"<xliff:g id="name">%s</xliff:g>\" zapisane.</string>
     <string name="search_deleted">Wyszukiwanie usunięte.</string>
     <string name="search_name_deleted">Wyszukiwanie \"<xliff:g id="name">%s</xliff:g>\" usunięte.</string>
-    <string name="import_from">Importuj z&#8230;</string>
+    <string name="import_from">Importuj z…</string>
     <string name="link_to_quoted_status">Linkuj do cytowanego tweeta</string>
     <string name="followed_user">Obserwujesz <xliff:g id="user">%s</xliff:g>.</string>
     <string name="sent_follow_request_to_user">Wysłano żądania obserwacji do <xliff:g id="user">%s</xliff:g>.</string>
@@ -449,7 +448,7 @@
     <string name="settings_interface">Interfejs</string>
     <string name="no_rule">Brak reguł</string>
     <string name="safety">Bezpieczeństwo</string>
-    <string name="updating_status_notification">Wysyłanie tweeta&#8230;</string>
+    <string name="updating_status_notification">Wysyłanie tweeta…</string>
     <!--<string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>-->
     <string name="query">Zapytanie</string>
     <string name="input_text">Tekst wejściowy</string>
@@ -558,8 +557,8 @@
     <string name="denied_users_follow_request">Odmówiono żądania obserwowania od <xliff:g id="user">%s</xliff:g>.</string>
     <string name="import_settings">Importuj ustawienia</string>
     <string name="export_settings">Eksportuj ustawienia</string>
-    <string name="export_settings_type_dialog_title">Eksportowanie ustawień&#8230;</string>
-    <string name="import_settings_type_dialog_title">Importowanie ustawień&#8230;</string>
+    <string name="export_settings_type_dialog_title">Eksportowanie ustawień…</string>
+    <string name="import_settings_type_dialog_title">Importowanie ustawień…</string>
     <!--<string name="nicknames">Pseudonimy</string>-->
     <string name="user_colors">Kolory użytkownika</string>
     <string name="import_export">Import/Eksport</string>

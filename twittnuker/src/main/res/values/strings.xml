@@ -381,7 +381,7 @@
     <string name="clear_search_history">Clear search history</string>
     <string name="no_thanks">No, thanks</string>
     <string name="fast_scroll_thumb">Fast scroll thumb</string>
-    <string name="indicate_my_status">Indicate your tweet</string>
+    <string name="indicate_your_status">Indicate your tweet</string>
     <string name="default_ringtone">Default ringtone</string>
     <string name="phishing_link_warning">Phishing link warning</string>
     <string name="phishing_link_warning_summary">Warn you when are trying to open a possibly phishing link in a direct message.</string>

@@ -156,11 +156,15 @@
     <string name="filename_hint">ファイル名</string>
     <string name="please_wait">しばらくお待ちください…</string>
     <string name="saved_to_gallery">ギャラリーに保存</string>
-    <string name="proxy">プロキシ</string>
     <string name="http_proxy">HTTP プロキシ</string>
     <string name="http_proxy_summary">ネットワークリクエストにHTTP プロキシを使用します。</string>
+    <string name="proxy">プロキシ</string>
+    <string name="proxy_summary">すべてのネットワーク要件においてプロキシを使用します。</string>
+    <string name="proxy_type">プロキシの種類</string>
     <string name="proxy_host">ホスト</string>
     <string name="proxy_port">ポート番号</string>
+    <string name="proxy_username">プロキシのユーザー名</string>
+    <string name="proxy_password">プロキシのパスワード</string>
     <string name="block">ブロック</string>
     <string name="unblock">ブロックを解除</string>
     <string name="report_for_spam">スパム報告</string>
@@ -386,7 +390,7 @@
     <string name="no_thanks">拒否</string>
     <!--<string name="revoke_permissions">許可を取り消す</string>-->
     <string name="fast_scroll_thumb">スクロールつまみ</string>
-    <string name="indicate_my_status">自分のツイートを強調</string>
+    <string name="indicate_your_status">自分のツイートを強調</string>
     <string name="default_ringtone">デフォルトの通知音</string>
     <string name="phishing_link_warning">詐欺サイトの警告</string>
     <string name="phishing_link_warning_summary">DMで詐欺の恐れのあるサイトにアクセスする時、警告プロンプトを表示します。</string>
@@ -497,7 +501,7 @@
     <string name="wizard_page_welcome_import_settings">設定をインポート</string>
     <string name="wizard_page_theme_text">好きなテーマを選んでください。</string>
     <string name="wizard_page_tabs_text">タブを追加します。\n気になるキーワードを含むツイートやユーザーの検索をするタブも追加出来ます。</string>
-    <string name="wizard_page_tabs_unchanged_message">&quot;設定&quot; - &quot;タブ&quot;でタブを追加出来ます</string>
+    <string name="wizard_page_tabs_unchanged_message">"設定" - "タブ"でタブを追加出来ます</string>
     <string name="wizard_page_cards_text">カードアイテムを編集します。</string>
     <string name="wizard_page_hints_text">お役立ちヒント!</string>
     <!--<string name="wizard_page_usage_statistics_text">Twittnukerは使用状況データを研究目的において必要とするプロジェクトに参加しています</string>-->
@@ -551,8 +555,8 @@
     <string name="theme_background_transparent">背景透過</string>
     <string name="theme_dark_actionbar">黒アクションバー</string>
     <string name="wizard_hint_compose_select_account">ツイートするアカウントを選択するにはプロフィール画像をクリックしてください。</string>
-    <string name="wizard_hint_quote_format">&quot;設定&quot; - &quot;ツイートする&quot;でお気に入りの引用形式を設定できます</string>
-    <string name="wizard_hint_filters">&quot;フィルタ&quot;を使用することで、タイムラインと通知から不要なツイートを非表示にすることができます。</string>
+    <string name="wizard_hint_quote_format">"設定" - "ツイートする"でお気に入りの引用形式を設定できます</string>
+    <string name="wizard_hint_filters">"フィルタ"を使用することで、タイムラインと通知から不要なツイートを非表示にすることができます。</string>
     <string name="view_replies">返信を表示</string>
     <string name="compact_cards">カードのコンパクト化</string>
     <string name="compact_cards_summary">画面あたりのカード表示数を増やせます。</string>
@@ -589,8 +593,8 @@
     <string name="denied_users_follow_request"><xliff:g id="user">%s</xliff:g>さんのフォローリクエストを拒否しました。</string>
     <string name="import_settings">設定のインポート</string>
     <string name="export_settings">設定のエクスポート</string>
-    <string name="export_settings_type_dialog_title">設定をエクスポート中&#8230;</string>
-    <string name="import_settings_type_dialog_title">設定のインポート&#8230;</string>
+    <string name="export_settings_type_dialog_title">設定をエクスポート中…</string>
+    <string name="import_settings_type_dialog_title">設定のインポート…</string>
     <!--<string name="nicknames">ニックネーム</string>-->
     <string name="user_colors">ユーザー色</string>
     <string name="import_export">インポート/エクスポート</string>
@@ -626,7 +630,7 @@
     <string name="N_media_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="items">%d</xliff:g>個のメディア</string>
     <string name="delete_drafts_confirm">選択した下書きを削除しますか?</string>
     <string name="extra_configurations">追加設定</string>
-    <string name="click_item_to_configure">アイテムをタップすると設定します</string>
+    <string name="click_item_to_configure">設定したい項目をタップしてください</string>
     <string name="dark_drawer">ダークドロワー</string>
     <string name="retweets_of_me">リツイートされたツイート</string>
     <string name="from_gallery">ギャラリー</string>
@@ -741,6 +745,8 @@
     <string name="N_favorites_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> お気に入り</string>
     <string name="N_likes_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> いいね</string>
     <string name="N_likes_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g> いいね</string>
+    <string name="N_votes_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g>票</string>
+    <string name="N_votes_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="count">%d</xliff:g>票</string>
     <string name="drafts_hint_messages">未送信のツイートが保存されます</string>
     <string name="keyboard_shortcuts">キーボードショートカット</string>
     <string name="keyboard_shortcut_hint">キーを押してください</string>
@@ -764,7 +770,7 @@
     <string name="delete_conversation_confirm_message">この返信のツイートを全て削除しますか？</string>
     <string name="name_first_summary_on">先に名前を表示する</string>
     <string name="name_first_summary_off">先に\@ユーザー名を表示する</string>
-    <string name="comment_hint">コメント&#8230;</string>
+    <string name="comment_hint">コメント…</string>
     <string name="comment">コメントする</string>
     <string name="enable_retweets">リツイートを有効にする</string>
     <string name="disable_retweets">リツイートを無効にする</string>
@@ -792,6 +798,7 @@
     <!--<string name="report_usage_statistics_now">現在の使用状況を報告する。</string>-->
     <string name="cache_size_limit">キャッシュサイズ制限</string>
     <string name="bug_reports">バグレポート</string>
+    <string name="bug_reports_summary">Powered by Fabric</string>
     <string name="invalid_consumer_key">無効なコンシューマーキーです</string>
     <string name="invalid_consumer_secret">無効なコンシューマーシークレットです</string>
     <string name="page_up">ページアップ</string>
@@ -807,14 +814,28 @@
     <string name="current_status">現在のツイート</string>
     <string name="twitter_optimized_searches">検索結果を最適化しました</string>
     <string name="twitter_optimized_searches_summary">リツイートを除外するなどの検索結果を改善するために、特別な検索用語を使用します</string>
-    <string name="i_want_my_stars_back">お気に入りに戻って欲しい！</string>
+    <string name="i_want_my_stars_back">お気に入りのスターを復活させる！</string>
     <string name="i_want_my_stars_back_summary">いいね (♥) の代わりにお気に入り (★) を使用する</string>
     <string name="copy_link">リンクをコピー</string>
     <string name="link_copied_to_clipboard">リンクがクリップボードにコピーされました</string>
     <string name="login_verification">ログイン認証</string>
     <string name="login_verification_pin_hint">あなたの携帯電話であることを確認するためにPINコードを入力して、ログインしてください。</string>
-    <string name="login_verification_push_hint">要求を承認したあと、Twitterアプリからのログインを受け入れてOKをタッチしてください。</string>
+    <string name="login_verification_push_hint">要求を承認したあと、Twitterアプリからのログインを受け入れてOKをタップしてください。</string>
     <string name="login_verification_failed">ログイン認証に失敗しました。</string>
+    <string name="saved_searches_already_saved_hint">おそらく、既にこの検索は保存されています</string>
+    <string name="unsupported_activity_action_summary">上記のアクションを報告してください</string>
+    <string name="unknown_language">不明な言語です</string>
+    <string name="system_default">システムデフォルト</string>
+    <string name="emoji_support">絵文字のサポート</string>
+    <string name="open_poll_in_official_app">公式アプリで投票を開く</string>
+    <string name="action_vote">投票</string>
+    <string name="label_poll">投票</string>
+    <string name="poll_summary_format"><xliff:g id="poll_count">%1$s</xliff:g> · <xliff:g id="poll_time_left">%2$s</xliff:g></string>
+    <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
+    <string name="mentions_only">ユーザー宛のツイートのみ</string>
+    <string name="error_no_dm_permission">ダイレクトメッセージのアクセス許可がありません。Twitter アプリケーションのアクセス許可設定を確認してください。</string>
+    <string name="select_accounts_for_compose">ツイートするアカウントを選択</string>
+    <string name="interactions">みんなの反応</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">タブに未読ツイート/メッセージ数を表示します。</string>

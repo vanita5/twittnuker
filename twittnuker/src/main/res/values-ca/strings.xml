@@ -153,9 +153,9 @@
     <string name="filename_hint">Nom del fitxer</string>
     <string name="please_wait">Espereu, si us plau.</string>
     <string name="saved_to_gallery">Desat a la galeria.</string>
-    <string name="proxy">Servidor intermediari</string>
     <string name="http_proxy">Servidor HTTP intermediari</string>
     <string name="http_proxy_summary">Utilitza un servidor HTTP intermediari per a totes les peticions de la xarxa.</string>
+    <string name="proxy">Servidor intermediari</string>
     <string name="proxy_host">Adreça del servidor intermediari</string>
     <string name="proxy_port">Port del servidor intermediari</string>
     <string name="block">Bloqueja</string>
@@ -355,7 +355,6 @@
     <string name="none">Cap</string>
     <string name="large">Gran</string>
     <string name="small">Petit</string>
-    <string name="and_N_more">i <xliff:g id="count">%d</xliff:g> més</string>
     <string name="clear_search_history">Neteja l\'historial de cerques</string>
     <!--<string name="permission_description_none">No calen permisos</string>-->
     <!--<string name="permission_description_refresh">Actualitza la cronologia (inclou els missatges directes)</string>-->
@@ -370,7 +369,7 @@
     <string name="no_thanks">No, gràcies</string>
     <!--<string name="revoke_permissions">Revoca els permisos</string>-->
     <string name="fast_scroll_thumb">Desplaçament ràpid amb el polze</string>
-    <string name="indicate_my_status">Indica la meva piulada</string>
+    <string name="indicate_your_status">Indica la vostra piulada</string>
     <string name="default_ringtone">To per defecte</string>
     <string name="phishing_link_warning">Avís de phishing en l\'enllaç</string>
     <string name="phishing_link_warning_summary">Us avisa quan esteu intentant d\'obrir un enllaç d\'un missatge directe amb possibles continguts malignes.</string>
@@ -482,7 +481,7 @@
     <string name="wizard_page_tabs_text">Afegeix alguna pestanya al Twittnuker.\nPodreu seguir la gent o els temes que us importin.</string>
     <string name="wizard_page_cards_text">Configura els elements de les targetes.</string>
     <string name="wizard_page_hints_text">A continuació us deixem uns consells.</string>
-    <!--<string name="wizard_page_usage_statistics_text">Twidere participa en un projecte de recerca, que consumeix una mica de dades.</string>-->
+    <!--<string name="wizard_page_usage_statistics_text">Twittnuker participa en un projecte de recerca, que consumeix una mica de dades.</string>-->
     <string name="wizard_page_finished_title">Ja heu acabat</string>
     <string name="wizard_page_finished_text">Ara el Twittnuker està preparat per funcionar.</string>
     <string name="invalid_tab">Pestanya invàlida</string>
@@ -684,14 +683,14 @@
     <string name="unknown_location">Localització desconeguda</string>
     <string name="ellipsis">…</string>
     <string name="import_export_settings">Importar/Exportar configuració</string>
-    <!--<string name="usage_statistics_header_summary">Twidere forma part en alguns projectes d\'investigació; contribuint a aquests projectes faràs Twidere i altres aplicacions futures millor.</string>-->
+    <!--<string name="usage_statistics_header_summary">Twittnuker forma part en alguns projectes d\'investigació; contribuint a aquests projectes faràs Twittnuker i altres aplicacions futures millor.</string>-->
     <!--<string name="no_tab">No hi ha pestanyes</string>-->
     <string name="user_protected_summary">Has de demanar a aquest usuari que et segueixi per poder veure\'n les piulades, perquè està protegit</string>
     <string name="no_account">Sense compte</string>
-    <!--<string name="permission_description_shorten_status">L\'aplicació pot escurçar les piulades pel Twidere. Per tant, ha de poder-les llegir.</string>-->
-    <!--<string name="permission_description_upload_media">L\'aplicació pot pujar multimèdia pel Twidere. Per tant, ha de poder accedir als adjunts de les piulades abans de ser enviades.</string>-->
-    <!--<string name="permission_description_sync_timeline">L\'aplicació pot sincronitzar la posició de lectura pel Twidere. Per tant, ha de tenir accés a la posició de lectura.</string>-->
-    <!--<string name="usage_statistics_notification_summary">Ajuda\'ns a millorar Twidere!</string>-->
+    <!--<string name="permission_description_shorten_status">L\'aplicació pot escurçar les piulades pel Twittnuker. Per tant, ha de poder-les llegir.</string>-->
+    <!--<string name="permission_description_upload_media">L\'aplicació pot pujar multimèdia pel Twittnuker. Per tant, ha de poder accedir als adjunts de les piulades abans de ser enviades.</string>-->
+    <!--<string name="permission_description_sync_timeline">L\'aplicació pot sincronitzar la posició de lectura pel Twittnuker. Per tant, ha de tenir accés a la posició de lectura.</string>-->
+    <!--<string name="usage_statistics_notification_summary">Ajuda\'ns a millorar Twittnuker!</string>-->
     <string name="from_name">De <xliff:g id="name">%1$s</xliff:g></string>
     <string name="from_name_and_name">De <xliff:g id="name">%1$s</xliff:g> i <xliff:g id="name">%2$s</xliff:g></string>
     <string name="from_name_and_N_others">De <xliff:g id="name">%1$s</xliff:g> i <xliff:g id="name">%2$d</xliff:g> més</string>

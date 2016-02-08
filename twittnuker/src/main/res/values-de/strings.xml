@@ -93,16 +93,16 @@
     <string name="name_and_count_retweeted">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> anderen</string>
     <string name="N_retweeted_quantity_one" tools:ignore="PluralsCandidate"><xliff:g id="retweet_count">%d</xliff:g> Retweet</string>
     <string name="N_retweeted_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="retweet_count">%d</xliff:g> Retweets</string>
-    <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> retweetete das</string>
-    <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> weitere haben das retweetet</string>
-    <string name="retweeted_by_count">Von <xliff:g id="retweet_count">%d</xliff:g> Benutzern retweetet</string>
+  <string name="retweeted_by_name">Retweetet von <xliff:g id="user_name">%s</xliff:g></string>
+  <string name="retweeted_by_name_with_count">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> anderen</string>
+  <string name="retweeted_by_count">Retweetet von <xliff:g id="retweet_count">%d</xliff:g> Benutzern</string>
     <string name="users_retweeted_this">Benutzer retweeteten das</string>
     <string name="users_favorited_this">Benutzer favorisierten das</string>
     <string name="users_liked_this">Benutzer gefällt das</string>
     <string name="reply_to">Antworten <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Zitat <xliff:g id="user_name">%s</xliff:g></string>
-    <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, via <xliff:g id="source">%2$s</xliff:g></string>
-    <string name="source">via <xliff:g id="source">%s</xliff:g></string>
+  <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
+  <string name="source"><xliff:g id="source">%s</xliff:g></string>
     <string name="filters">Filter</string>
     <string name="users">Benutzer</string>
     <string name="user">Benutzer</string>
@@ -110,6 +110,7 @@
     <string name="sources">Quellen</string>
     <string name="content">Inhalt</string>
     <string name="customize">Anpassen</string>
+  <!--<string name="set_nickname">Spitznamen eingeben</string>-->
     <string name="set_color">Farbschema</string>
     <string name="clear">Löschen</string>
     <string name="pick_color">Wähle Farbe</string>
@@ -120,7 +121,7 @@
     <string name="load_item_limit">Limitierung zu ladender Elemente</string>
     <string name="load_item_limit_summary">Element-Limitierung pro Ladevorgang festlegen</string>
     <string name="load_more_automatically">Lade automatisch mehr Inhalt</string>
-    <string name="load_more_automatically_summary">Lade weitere Inhalte (z.B. Fotos, Karten, Tweets) automatisch</string>
+  <string name="load_more_automatically_summary">Weitere Inhalte (z.B. Fotos, Karten, Tweets) automatisch laden</string>
     <string name="quote">Zitat</string>
     <string name="add_rule">Regel hinzufügen</string>
     <string name="text_size">Textgröße</string>
@@ -222,7 +223,7 @@
     <string name="add_member">Mitglied hinzufügen</string>
     <string name="new_user_list">Neue Liste</string>
     <string name="is_public">Öffentlich</string>
-    <string name="send_direct_message">Direktnachricht</string>
+  <string name="send_direct_message">Direktnachricht senden</string>
     <!--<string name="extensions">Erweiterungen</string>-->
     <string name="uninstall">Deinstallieren</string>
     <string name="saved_searches">Gespeicherte Suchen</string>
@@ -250,7 +251,7 @@
     <string name="status_shortener">Tweet-Verkürzungsdienst</string>
     <string name="status_shortener_default">Nicht kürzen (Senden abbrechen)</string>
     <string name="error_message_status_too_long">Der Tweet ist zu lang.</string>
-    <string name="error_message_message_too_long">Die Nachricht ist zu lang.</string>
+  <string name="error_message_message_too_long">Nachricht zu lang.</string>
     <string name="error_message_no_content">Kein Inhalt</string>
     <string name="error_message_tweet_shorten_failed">Tweet-Verkürzung schlug fehl.</string>
     <!--<string name="error_message_tweet_shortener_not_found">Tweet-Verkürzungsdienst nicht gefunden. Vielleicht wurde er deinstalliert.</string>-->
@@ -293,15 +294,15 @@
     <string name="activity_about_me_retweeted_mention_multi"><xliff:g id="user">%s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> haben einen Tweet retweetet in dem du erwähnt wurdest.</string>
     <string name="activity_about_me_favorited_mention"><xliff:g id="user">%s</xliff:g> hat einen Tweet favorisiert in dem du erwähnt wurdest.</string>
     <string name="activity_about_me_favorited_mention_multi"><xliff:g id="user">%s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> haben einen Tweet favorisiert in dem du erwähnt wurdest.</string>
-    <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> hat Dich zur Liste hinzugefügt.</string>
     <string name="activity_about_me_liked_mention"><xliff:g id="user">%s</xliff:g> gefällt ein Tweet, in dem du erwähnt wurdest.</string>
     <string name="activity_about_me_liked_mention_multi"><xliff:g id="user">%s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> gefällt ein Tweet, in dem du erwähnt wurdest.</string>
+    <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> hat Dich zur Liste hinzugefügt.</string>
     <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> hat Dich zur Liste <xliff:g id="list">%2$s</xliff:g> hinzugefügt.</string>
     <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> haben Dich zu ihren Listen hinzugefügt.</string>
     <string name="activity_by_friends_favorite"><xliff:g id="user">%1$s</xliff:g> favorisierte <xliff:g id="target">%2$s</xliff:g>s tweet.</string>
     <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g> favorisierte <xliff:g id="target">%2$s</xliff:g> und <xliff:g id="other">%3$s</xliff:g> Tweets.</string>
-    <string name="activity_by_friends_like"><xliff:g id="user">%1$s</xliff:g> gefällt <xliff:g id="target">%2$s</xliff:g>\s Tweet.</string>
-    <string name="activity_by_friends_like_multi"><xliff:g id="user">%1$s</xliff:g> gefällt <xliff:g id="target">%2$s</xliff:g> und <xliff:g id="other">%3$s</xliff:g>\s Tweets.</string>
+    <string name="activity_by_friends_like"><xliff:g id="user">%1$s</xliff:g> gefällt <xliff:g id="target">%2$s</xliff:g>\'s Tweet.</string>
+    <string name="activity_by_friends_like_multi"><xliff:g id="user">%1$s</xliff:g> gefällt <xliff:g id="target">%2$s</xliff:g> und <xliff:g id="other">%3$s</xliff:g>\'s Tweets.</string>
     <string name="activity_by_friends_follow"><xliff:g id="user">%1$s</xliff:g> folgt <xliff:g id="target">%2$s</xliff:g>.</string>
     <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g> folgt <xliff:g id="target">%2$s</xliff:g> und <xliff:g id="other">%3$s</xliff:g>.</string>
     <string name="activity_by_friends_retweet"><xliff:g id="user">%1$s</xliff:g> retweetete <xliff:g id="target">%2$s</xliff:g>s tweet.</string>
@@ -366,7 +367,7 @@
     <string name="hashtag">Hashtag</string>
     <string name="links">Links</string>
     <string name="edit_profile">Profil bearbeiten</string>
-    <string name="edit_details">Edit details</string>
+  <string name="edit_details">Details bearbeiten</string>
     <string name="display_sensitive_contents">Zeige kritische Inhalte</string>
     <string name="display_sensitive_contents_summary">Kritische Inhalte ohne Warnung anzeigen</string>
     <string name="sensitive_content_warning">Dieser Tweet könnte heiklen Inhalt haben. Fortfahren?</string>
@@ -390,7 +391,7 @@
     <string name="no_thanks">Nein, danke</string>
     <!--<string name="revoke_permissions">Berechtigungen entziehen</string>-->
     <string name="fast_scroll_thumb">Schnelles scrollen</string>
-    <string name="indicate_my_status">Kennzeichne deine Tweets</string>
+    <string name="indicate_your_status">Kennzeichne deine Tweets</string>
     <string name="default_ringtone">Standard Klingelton</string>
     <string name="phishing_link_warning">Warnung vor Phishing Links</string>
     <string name="phishing_link_warning_summary">Warnung beim Öffnen eines möglichen Phishing Links in Direktnachrichten</string>
@@ -472,7 +473,7 @@
     <string name="select_user_list">Wähle Benutzer-Liste aus</string>
     <string name="select_user">Benutzer wählen</string>
     <string name="created_by">Erstellt von <xliff:g id="created_by">%s</xliff:g></string>
-    <string name="add_to_list">Liste hinzufügen</string>
+  <string name="add_to_list">Zur Liste hinzufügen</string>
     <string name="account_delete_confirm_title">Account löschen</string>
     <string name="account_delete_confirm_message">Dieser Account wird aus Twittnuker entfernt.</string>
     <string name="theme">Theme</string>
@@ -482,6 +483,7 @@
     <string name="no_rule">Keine Regel</string>
     <string name="safety">Sicherheit</string>
     <string name="updating_status_notification">Sende Tweet…</string>
+    <!--<string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>-->
     <string name="query">Abfrage</string>
     <string name="input_text">Text eingeben</string>
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s Listen</string>
@@ -554,7 +556,7 @@
     <string name="hints">Tipps</string>
     <string name="finish">Fertig</string>
     <string name="background">Hintergrund</string>
-    <string name="theme_background_default">Default</string>
+  <string name="theme_background_default">Standard</string>
     <string name="theme_background_solid">Weiss/Schwarz</string>
     <string name="theme_background_transparent">Transparent</string>
     <string name="theme_dark_actionbar">Dunkle Action Bar</string>
@@ -592,6 +594,7 @@
     <string name="highlight_and_underline">Hervorheben und unterstreichen</string>
     <string name="back">Zurück</string>
     <string name="theme_font_family">Theme Font Family</string>
+    <string name="translation_destination">Zielsprache</string>
     <string name="accept">Akzeptieren</string>
     <string name="deny">Ablehnen</string>
     <string name="accepted_users_follow_request"><xliff:g id="user">%s</xliff:g>s Folgeanfrage angenommen.</string>
@@ -613,7 +616,7 @@
     <string name="load_more_from_top">Mehr Tweets von oben nachladen</string>
     <string name="load_more_from_top_summary">Sinnvoll, wenn du die Timeline von unten nach oben liest</string>
     <string name="open_with_account">Mit Account öffnen</string>
-    <string name="card_highlight_option_highlight">Highlight</string>
+  <string name="card_highlight_option_highlight">Hervorheben</string>
     <string name="card_highlight_option_line">Linie</string>
     <string name="timeline_sync_service">Timeline Sync Service</string>
     <string name="image_preview_scale_type">Bildvorschau Skalierung</string>
@@ -650,15 +653,15 @@
     <string name="font">Font</string>
     <string name="size">Grösse</string>
     <string name="just_now">Jetzt</string>
-    <string name="requested">(D) Requested</string>
+  <string name="requested">Angefordert</string>
     <string name="round">Rund</string>
-    <string name="square">Rechteckig</string>
+  <string name="square">Quadratisch</string>
     <string name="profile_image_style">Profilbild Format</string>
     <string name="media_preview_style">Bildvorschau Format</string>
     <string name="draft_saved">Entwurf gespeichert</string>
     <string name="open_twitter_links">Twitter Links öffnen</string>
-    <string name="N_others_quantity_one">anderem</string>
-    <string name="N_others_quantity_other"><xliff:g id="count">%d</xliff:g> anderen</string>
+  <string name="N_others_quantity_one" tools:ignore="PluralsCandidate">anderem</string>
+  <string name="N_others_quantity_other" tools:ignore="PluralsCandidate"><xliff:g id="retweet_count">%d</xliff:g> anderen</string>
     <string name="type_name_to_search">Name suchen</string>
     <string name="no_user_found">Niemanden gefunden</string>
     <string name="members">Mitglieder</string>
@@ -707,6 +710,7 @@
     <string name="keyboard_shortcut_back">Zurück</string>
     <string name="press_again_to_close">Nochmal tippen um zu schliessen</string>
     <string name="name_not_set"><xliff:g id="name">%s</xliff:g> nicht gesetzt</string>
+  <string name="swipe_down_to_refresh">Ziehen zum Aktualisieren</string>
     <string name="app_restart_confirm">Twittnuker neustarten um die Einstellung zu speichern.</string>
     <string name="dont_restart">Nicht neustarten</string>
     <string name="user_list_details">Listen Details</string>
@@ -784,7 +788,6 @@
     <string name="extra_configurations">Erweiterte Einstellungen</string>
 
     <string name="twidere_developed_by">Basiert auf Twidere</string>
-    <string name="translation_destination">Sprache zum Übersetzen</string>
 
     <string name="contact">Kontakt</string>
     <string name="mail">Mail</string>

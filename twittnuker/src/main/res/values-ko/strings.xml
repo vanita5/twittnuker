@@ -152,9 +152,9 @@
     <string name="filename_hint">파일명</string>
     <string name="please_wait">기다려 주세요.</string>
     <string name="saved_to_gallery">갤러리에 저장됨.</string>
-    <string name="proxy">프록시</string>
     <string name="http_proxy">HTTP 프록시</string>
     <string name="http_proxy_summary">모든 네트워크 요청에 HTTP 프록시를 사용.</string>
+    <string name="proxy">프록시</string>
     <string name="proxy_host">프록시 호스트</string>
     <string name="proxy_port">프록시 포트</string>
     <string name="block">차단</string>
@@ -353,7 +353,6 @@
     <string name="none">없음</string>
     <string name="large">크게</string>
     <string name="small">작게</string>
-    <string name="and_N_more">등 <xliff:g id="count">%d</xliff:g>개 이상</string>
     <string name="clear_search_history">검색 기록 지우기</string>
     <!--<string name="permission_description_none">아무런 권한을 필요로 하지 않습니다</string>-->
     <!--<string name="permission_description_refresh">타임라인 새로고침 (쪽지 포함)</string>-->
@@ -368,7 +367,7 @@
     <string name="no_thanks">아뇨, 괜찮습니다</string>
     <!--<string name="revoke_permissions">권한 취소</string>-->
     <string name="fast_scroll_thumb">빠른 스크롤 섬네일 보기</string>
-    <string name="indicate_my_status">내 트윗 강조</string>
+    <string name="indicate_your_status">내 트윗 강조</string>
     <string name="default_ringtone">기본 알림 소리</string>
     <string name="phishing_link_warning">피싱 링크 경고</string>
     <string name="phishing_link_warning_summary">쪽지로 온 피싱 주소를 열려고 할 때 경고.</string>
@@ -746,7 +745,7 @@
     <string name="delete_conversation_confirm_message">이 대화의 모든 메세지를 삭제할까요?</string>
     <string name="name_first_summary_on">이름 먼저 표시</string>
     <string name="name_first_summary_off">\@\screenname 먼저 표시</string>
-    <string name="comment_hint">코멘트&#8230;</string>
+    <string name="comment_hint">코멘트…</string>
     <string name="comment">코멘트</string>
     <string name="enable_retweets">리트윗 사용</string>
     <string name="disable_retweets">리트윗 사용 안함</string>
