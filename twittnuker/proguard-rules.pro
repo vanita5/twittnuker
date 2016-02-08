@@ -86,6 +86,9 @@
 -dontwarn org.codehaus.mojo.**
 -dontwarn com.twitter.Autolink
 -dontwarn com.google.appengine.api.urlfetch.*
+-dontwarn com.makeramen.roundedimageview.**
+
+-keepattributes *Annotation*
 
 
 # dnsjava
@@ -165,3 +168,7 @@
 
 # Marshmallow removed Notification.setLatestEventInfo()
 -dontwarn android.app.Notification
+
+-keepclassmembers class org.mariotaku.twidere.activity.support.BrowserSignInActivity.InjectorJavaScriptInterface {
+    public *;
+}
