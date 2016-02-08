@@ -31,8 +31,7 @@ import android.util.Log;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-
-import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
+import de.vanita5.twittnuker.util.Utils;
 
 public class ConnectivityStateReceiver extends BroadcastReceiver implements Constants {
 
@@ -46,7 +45,7 @@ public class ConnectivityStateReceiver extends BroadcastReceiver implements Cons
         if (!ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) return;
         final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
         application.reloadConnectivitySettings();
-        startRefreshServiceIfNeeded(context);
+        Utils.startRefreshServiceIfNeeded(application);
         //TODO start streaming here?
     }
 }

@@ -62,7 +62,6 @@ import okhttp3.Dns;
 import okhttp3.OkHttpClient;
 
 import static de.vanita5.twittnuker.util.Utils.initAccountColor;
-import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
 
 public class TwittnukerApplication extends Application implements Constants,
         OnSharedPreferenceChangeListener {
@@ -127,7 +126,7 @@ public class TwittnukerApplication extends Application implements Constants,
             pm.setComponentEnabledSetting(assist, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                     PackageManager.DONT_KILL_APP);
         }
-        startRefreshServiceIfNeeded(this);
+        Utils.startRefreshServiceIfNeeded(this);
 
         reloadConnectivitySettings();
 
@@ -187,7 +186,7 @@ public class TwittnukerApplication extends Application implements Constants,
         switch (key) {
             case KEY_REFRESH_INTERVAL: {
                 stopService(new Intent(this, RefreshService.class));
-                startRefreshServiceIfNeeded(this);
+                Utils.startRefreshServiceIfNeeded(this);
                 break;
             }
             case KEY_ENABLE_PROXY:
