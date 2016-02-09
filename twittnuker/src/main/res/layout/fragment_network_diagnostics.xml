@@ -21,23 +21,26 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:title="@string/other_settings">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <de.vanita5.twittnuker.preference.SettingsImportExportPreference
-        android:key="import_export_settings"
-        android:title="@string/import_export_settings"/>
+    <TextView
+        android:id="@+id/log_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:scrollbars="vertical"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:textColor="?android:textColorPrimary"
+        android:typeface="monospace"/>
 
-    <Preference
-        android:fragment="de.vanita5.twittnuker.fragment.NetworkDiagnosticsFragment"
-        android:order="13"
-        android:title="@string/network_diagnostics"/>
-
-    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-        android:defaultValue="true"
-        android:key="bug_reports"
-        android:order="12"
-        android:summary="@string/bug_reports_summary"
-        android:title="@string/bug_reports"/>
-
-</PreferenceScreen>
+    <Button
+        android:id="@+id/start_diagnostics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="@string/action_start"/>
+</LinearLayout>

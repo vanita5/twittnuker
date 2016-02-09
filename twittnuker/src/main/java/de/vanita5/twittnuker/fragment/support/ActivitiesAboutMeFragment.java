@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
+import de.vanita5.twittnuker.util.ErrorInfoStore;
 
 public class ActivitiesAboutMeFragment extends CursorActivitiesFragment {
 
@@ -41,6 +42,12 @@ public class ActivitiesAboutMeFragment extends CursorActivitiesFragment {
     public boolean getActivities(long[] accountIds, long[] maxIds, long[] sinceIds) {
         mTwitterWrapper.getActivitiesAboutMeAsync(accountIds, maxIds, sinceIds);
         return true;
+    }
+
+    @NonNull
+    @Override
+    protected String getErrorInfoKey() {
+        return ErrorInfoStore.KEY_INTERACTIONS;
     }
 
     @Override

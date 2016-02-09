@@ -33,6 +33,7 @@ import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.leakcanary.ServiceHeapDumpListener;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import okhttp3.OkHttpClient;
 
@@ -44,6 +45,11 @@ public class DebugModeUtils {
     }
 
     public static void initForApplication(final Application application) {
+        initLeakCanary(application);
+    }
+
+    static void initLeakCanary(Application application) {
+        if (!BuildConfig.LEAK_CANARY_ENABLED) return;
         ExcludedRefs.Builder excludedRefsBuilder = AndroidExcludedRefs.createAppDefaults();
         LeakCanary.enableDisplayLeakActivity(application);
         ServiceHeapDumpListener heapDumpListener = new ServiceHeapDumpListener(application, DisplayLeakService.class);

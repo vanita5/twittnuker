@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.message.AccountChangedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
 import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
@@ -73,14 +74,22 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
         if (adapter.getItemCount() > 0) {
             showContent();
         } else if (accountIds.length > 0) {
-            showContent();
-            showEmpty(R.drawable.ic_info_refresh, getString(R.string.swipe_down_to_refresh));
+            final ErrorInfoStore.DisplayErrorInfo errorInfo = ErrorInfoStore.getErrorInfo(getContext(),
+                    mErrorInfoStore.get(getErrorInfoKey(), accountIds[0]));
+            if (errorInfo != null) {
+                showEmpty(errorInfo.getIcon(), errorInfo.getMessage());
+            } else {
+                showEmpty(R.drawable.ic_info_refresh, getString(R.string.swipe_down_to_refresh));
+            }
         } else {
             showError(R.drawable.ic_info_accounts, getString(R.string.no_account_selected));
         }
     }
 
     private ContentObserver mContentObserver;
+
+    @NonNull
+    protected abstract String getErrorInfoKey();
 
     public abstract Uri getContentUri();
 
@@ -122,6 +131,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
             if (!event.running) {
                 setLoadMoreIndicatorPosition(IndicatorPosition.END);
                 setRefreshEnabled(true);
+                onLoadingFinished();
             }
         }
 

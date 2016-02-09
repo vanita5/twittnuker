@@ -21,7 +21,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/cards">
 
@@ -29,7 +30,8 @@
         android:key="cat_card_preview"
         android:order="11"
         android:title="@string/preview">
-        <de.vanita5.twittnuker.preference.CardPreviewPreference android:key="card_preview" />
+        <de.vanita5.twittnuker.preference.CardPreviewPreference
+            android:key="card_preview" />
     </PreferenceCategory>
 
     <de.vanita5.twittnuker.preference.SeekBarDialogPreference

@@ -23,13 +23,21 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ErrorInfoStore;
 
 public class HomeTimelineFragment extends CursorStatusesFragment {
+
+    @NonNull
+    @Override
+    protected String getErrorInfoKey() {
+        return ErrorInfoStore.KEY_HOME_TIMELINE;
+    }
 
     @Override
     public Uri getContentUri() {

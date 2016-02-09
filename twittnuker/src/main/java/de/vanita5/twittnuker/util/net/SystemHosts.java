@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.util.net;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import org.mariotaku.inetaddrjni.library.InetAddressUtils;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -33,8 +33,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Scanner;
-
-import de.vanita5.twittnuker.util.Utils;
 
 public class SystemHosts {
 
@@ -55,7 +53,7 @@ public class SystemHosts {
                     final String host = scanner.next();
                     if (host.startsWith("#")) break;
                     if (TextUtils.equals(hostToResolve, host)) {
-                        final InetAddress resolved = InetAddressUtils.getResolvedIPAddress(host, address);
+                        final InetAddress resolved = TwidereDns.getResolvedIPAddress(host, address);
                         if (resolved != null) return new InetAddress[]{resolved};
                     }
                 }

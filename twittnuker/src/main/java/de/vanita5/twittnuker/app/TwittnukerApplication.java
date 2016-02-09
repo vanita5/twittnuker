@@ -111,10 +111,10 @@ public class TwittnukerApplication extends Application implements Constants,
             StrictModeUtils.detectAllVmPolicy();
         }
         super.onCreate();
+        initializeAsyncTask();
         initDebugMode();
         initBugReport();
         mHandler = new Handler();
-        initializeAsyncTask();
         initAccountColor(this);
 
         final PackageManager pm = getPackageManager();

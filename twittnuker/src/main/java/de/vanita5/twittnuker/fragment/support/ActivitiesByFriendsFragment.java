@@ -23,8 +23,10 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.util.ErrorInfoStore;
 
 public class ActivitiesByFriendsFragment extends CursorActivitiesFragment {
 
@@ -34,6 +36,11 @@ public class ActivitiesByFriendsFragment extends CursorActivitiesFragment {
         return false;
     }
 
+    @NonNull
+    @Override
+    protected String getErrorInfoKey() {
+        return ErrorInfoStore.KEY_ACTIVITIES_BY_FRIENDS;
+    }
 
     @Override
     public Uri getContentUri() {
