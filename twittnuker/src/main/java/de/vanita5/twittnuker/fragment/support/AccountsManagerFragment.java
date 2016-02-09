@@ -73,6 +73,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
@@ -166,8 +167,8 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final ParcelableAccount account = mAdapter.getAccount(position);
-        Utils.openUserProfile(getActivity(), account.account_id, account.account_id, account.screen_name,
-                null);
+        IntentUtils.openUserProfile(getActivity(), account.account_id, account.account_id, account.screen_name,
+                null, true);
     }
 
     @Override

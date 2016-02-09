@@ -63,6 +63,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -176,12 +177,13 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         final SuggestionItem item = mUsersSearchAdapter.getSuggestionItem(position);
         switch (mUsersSearchAdapter.getItemViewType(position)) {
             case SuggestionsAdapter.VIEW_TYPE_USER_SUGGESTION_ITEM: {
-                Utils.openUserProfile(this, getAccountId(), item.extra_id, item.summary, null);
+                IntentUtils.openUserProfile(this, getAccountId(), item.extra_id, item.summary, null,
+                        true);
                 finish();
                 break;
             }
             case SuggestionsAdapter.VIEW_TYPE_USER_SCREEN_NAME: {
-                Utils.openUserProfile(this, getAccountId(), -1, item.title, null);
+                IntentUtils.openUserProfile(this, getAccountId(), -1, item.title, null, true);
                 finish();
                 break;
             }

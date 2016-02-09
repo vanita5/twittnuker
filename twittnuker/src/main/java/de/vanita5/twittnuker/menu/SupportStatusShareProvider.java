@@ -31,8 +31,9 @@ import android.view.View;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.MenuUtils;
 
-import static de.vanita5.twittnuker.util.Utils.addIntentToMenu;
+import static de.vanita5.twittnuker.util.MenuUtils.addIntentToMenu;
 import static de.vanita5.twittnuker.util.Utils.createStatusShareIntent;
 
 public class SupportStatusShareProvider extends ActionProvider implements Constants {
@@ -71,7 +72,7 @@ public class SupportStatusShareProvider extends ActionProvider implements Consta
         if (status == null) return;
         final Intent shareIntent = createStatusShareIntent(mContext, status);
         subMenu.removeGroup(MENU_GROUP_STATUS_SHARE);
-        addIntentToMenu(mContext, subMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
+        MenuUtils.addIntentToMenu(mContext, subMenu, shareIntent, MENU_GROUP_STATUS_SHARE);
     }
 
     public void setStatus(ParcelableStatus status) {

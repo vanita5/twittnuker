@@ -89,12 +89,12 @@ import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.activity.support.QuickSearchBarActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.menu.support.AccountToggleProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.ListViewUtils;
@@ -247,8 +247,8 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
                 final FragmentActivity activity = getActivity();
                 final Bundle activityOption = Utils.makeSceneTransitionOption(activity,
                         new Pair<View, String>(mAccountProfileImageView, UserFragment.TRANSITION_NAME_PROFILE_IMAGE));
-                Utils.openUserProfile(activity, account.account_id, account.account_id,
-                        account.screen_name, activityOption);
+                IntentUtils.openUserProfile(activity, account.account_id, account.account_id,
+                        account.screen_name, activityOption, true);
                 break;
             }
         }

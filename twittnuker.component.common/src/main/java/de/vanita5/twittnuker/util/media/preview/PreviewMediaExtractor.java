@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.util.HtmlLinkExtractor;
 import de.vanita5.twittnuker.util.media.preview.provider.GenericProvider;
 import de.vanita5.twittnuker.util.media.preview.provider.InstagramProvider;
 import de.vanita5.twittnuker.util.media.preview.provider.Provider;
-import de.vanita5.twittnuker.util.media.preview.provider.TwitterPicProvider;
+import de.vanita5.twittnuker.util.media.preview.provider.TwitterMediaProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class PreviewMediaExtractor {
 
     private static final Provider[] sProviders = {
             new InstagramProvider(),
-            new TwitterPicProvider(),
+            new TwitterMediaProvider(),
             new GenericProvider()
     };
 
@@ -102,5 +102,20 @@ public class PreviewMediaExtractor {
             end = link.length();
         }
         return link.substring(start + 3, end);
+    }
+
+    @Nullable
+    public static String getPath(@NonNull String link) {
+        int start = link.indexOf("://");
+        if (start < 0) return null;
+        start = link.indexOf('/', start + 3);
+        if (start < 0) {
+            return "";
+        }
+        int end = link.indexOf('?', start);
+        if (end < 0) {
+            end = link.length();
+        }
+        return link.substring(start, end);
     }
 }

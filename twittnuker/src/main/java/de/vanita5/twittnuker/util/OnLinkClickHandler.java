@@ -36,11 +36,6 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
-import static de.vanita5.twittnuker.util.Utils.openStatus;
-import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
-import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
-
 public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
     @NonNull
@@ -54,17 +49,18 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
     }
 
     @Override
-    public void onLinkClick(final String link, final String orig, final long accountId, long extraId, final int type,
-                            final boolean sensitive, int start, int end) {
+    public void onLinkClick(final String link, final String orig, final long accountId,
+                            final long extraId, final int type, final boolean sensitive,
+                            final int start, final int end) {
         if (manager != null && manager.isActive()) return;
 
         switch (type) {
             case TwidereLinkify.LINK_TYPE_MENTION: {
-                openUserProfile(context, accountId, -1, link, null);
+                IntentUtils.openUserProfile(context, accountId, -1, link, null, true);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_HASHTAG: {
-                openTweetSearch(context, accountId, "#" + link);
+                Utils.openTweetSearch(context, accountId, "#" + link);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_LINK: {
@@ -80,19 +76,19 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
                 if (mentionList.length != 2) {
                     break;
                 }
-                openUserListDetails(context, accountId, -1, -1, mentionList[0], mentionList[1]);
+                Utils.openUserListDetails(context, accountId, -1, -1, mentionList[0], mentionList[1]);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_CASHTAG: {
-                openTweetSearch(context, accountId, link);
+                Utils.openTweetSearch(context, accountId, link);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_USER_ID: {
-                openUserProfile(context, accountId, NumberUtils.toLong(link, -1), null, null);
+                IntentUtils.openUserProfile(context, accountId, NumberUtils.toLong(link, -1), null, null, true);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_STATUS: {
-                openStatus(context, accountId, NumberUtils.toLong(link, -1));
+                Utils.openStatus(context, accountId, NumberUtils.toLong(link, -1));
                 break;
             }
         }

@@ -76,16 +76,14 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.text.validator.UserListNameValidator;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.LinkCreator;
+import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
-
-import static de.vanita5.twittnuker.util.MenuUtils.setMenuItemAvailability;
-import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
 public class UserListFragment extends BaseSupportFragment implements OnClickListener,
         LoaderCallbacks<SingleResponse<ParcelableUserList>>, SystemWindowsInsetsCallback,
@@ -180,7 +178,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
                 if (resultCode == Activity.RESULT_OK) {
                     if (data == null || !data.hasExtra(EXTRA_ID)) return;
                     final long accountId = data.getLongExtra(EXTRA_ID, -1);
-                    openUserListDetails(getActivity(), accountId, userList.id, userList.user_id,
+                    Utils.openUserListDetails(getActivity(), accountId, userList.id, userList.user_id,
                             userList.user_screen_name, userList.name);
                 }
                 break;
@@ -255,14 +253,14 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         final ParcelableUserList userList = mUserList;
-        setMenuItemAvailability(menu, R.id.info, userList != null);
+        MenuUtils.setMenuItemAvailability(menu, R.id.info, userList != null);
         if (userList != null) {
             final boolean isMyList = userList.user_id == userList.account_id;
             final boolean isFollowing = userList.is_following;
-            setMenuItemAvailability(menu, R.id.edit, isMyList);
-            setMenuItemAvailability(menu, R.id.follow, !isMyList);
-            setMenuItemAvailability(menu, R.id.add, isMyList);
-            setMenuItemAvailability(menu, R.id.delete, isMyList);
+            MenuUtils.setMenuItemAvailability(menu, R.id.edit, isMyList);
+            MenuUtils.setMenuItemAvailability(menu, R.id.follow, !isMyList);
+            MenuUtils.setMenuItemAvailability(menu, R.id.add, isMyList);
+            MenuUtils.setMenuItemAvailability(menu, R.id.delete, isMyList);
             final MenuItem followItem = menu.findItem(R.id.follow);
             if (isFollowing) {
                 followItem.setIcon(R.drawable.ic_action_cancel);
@@ -275,10 +273,10 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
             extensionsIntent.setExtrasClassLoader(getActivity().getClassLoader());
             extensionsIntent.putExtra(EXTRA_USER_LIST, userList);
         } else {
-            setMenuItemAvailability(menu, R.id.edit, false);
-            setMenuItemAvailability(menu, R.id.follow, false);
-            setMenuItemAvailability(menu, R.id.add, false);
-            setMenuItemAvailability(menu, R.id.delete, false);
+            MenuUtils.setMenuItemAvailability(menu, R.id.edit, false);
+            MenuUtils.setMenuItemAvailability(menu, R.id.follow, false);
+            MenuUtils.setMenuItemAvailability(menu, R.id.add, false);
+            MenuUtils.setMenuItemAvailability(menu, R.id.delete, false);
         }
     }
 
@@ -352,8 +350,8 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
             }
             case R.id.profile_image: {
                 if (mUserList == null) return;
-                openUserProfile(getActivity(), mUserList.account_id,
-                        mUserList.user_id, mUserList.user_screen_name, null);
+                IntentUtils.openUserProfile(getActivity(), mUserList.account_id,
+                        mUserList.user_id, mUserList.user_screen_name, null, true);
                 break;
             }
         }

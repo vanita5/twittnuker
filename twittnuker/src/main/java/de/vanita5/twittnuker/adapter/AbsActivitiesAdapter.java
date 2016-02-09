@@ -23,10 +23,7 @@
 package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.util.Pair;
 import android.support.v4.widget.Space;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -41,16 +38,15 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.fragment.support.CursorActivitiesFragment;
-import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.OnLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
@@ -440,16 +436,8 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
             final ParcelableActivity activity = adapter.getActivity(position);
             final ParcelableStatus status = ParcelableActivity.getActivityStatus(activity);
             assert status != null;
-            final View profileImageView = holder.getProfileImageView();
-            final View profileTypeView = holder.getProfileTypeView();
-            if (context instanceof FragmentActivity) {
-                final Bundle options = Utils.makeSceneTransitionOption((FragmentActivity) context,
-                        new Pair<>(profileImageView, UserFragment.TRANSITION_NAME_PROFILE_IMAGE),
-                        new Pair<>(profileTypeView, UserFragment.TRANSITION_NAME_PROFILE_TYPE));
-                Utils.openUserProfile(context, status.account_id, status.user_id, status.user_screen_name, options);
-            } else {
-                Utils.openUserProfile(context, status.account_id, status.user_id, status.user_screen_name, null);
-            }
+            IntentUtils.openUserProfile(context, status.account_id, status.user_id,
+                    status.user_screen_name, null, true);
         }
 
         @Override

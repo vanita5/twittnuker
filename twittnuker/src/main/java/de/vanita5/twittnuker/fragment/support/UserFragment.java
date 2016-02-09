@@ -126,6 +126,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
@@ -682,7 +683,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 if (resultCode == Activity.RESULT_OK) {
                     if (data == null || !data.hasExtra(EXTRA_ID)) return;
                     final long accountId = data.getLongExtra(EXTRA_ID, -1);
-                    Utils.openUserProfile(getActivity(), accountId, user.id, user.screen_name, null);
+                    IntentUtils.openUserProfile(getActivity(), accountId, user.id, user.screen_name,
+                            null, true);
                 }
                 break;
             }
@@ -1043,7 +1045,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 return true;
             }
             case R.id.user_mentions: {
-                Utils.openUserMentions(getActivity(), user.account_id, user.screen_name);
+                IntentUtils.openUserMentions(getActivity(), user.account_id, user.screen_name);
                 return true;
             }
             case R.id.saved_searches: {
@@ -1250,7 +1252,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 break;
             }
             case R.id.tweets_container: {
-                Utils.openUserTimeline(getActivity(), user.account_id, user.id, user.screen_name);
+                IntentUtils.openUserTimeline(getActivity(), user.account_id, user.id, user.screen_name);
                 break;
             }
             case R.id.followers_container: {
@@ -1283,7 +1285,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         if (user == null) return;
         switch (type) {
             case TwidereLinkify.LINK_TYPE_MENTION: {
-                Utils.openUserProfile(getActivity(), user.account_id, -1, link, null);
+                IntentUtils.openUserProfile(getActivity(), user.account_id, -1, link, null, true);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_HASHTAG: {
