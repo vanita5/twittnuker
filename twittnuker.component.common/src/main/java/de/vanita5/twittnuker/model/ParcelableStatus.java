@@ -452,6 +452,10 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
 
     @Override
     public int hashCode() {
+        return calculateHashCode(account_id, id);
+    }
+
+    public static int calculateHashCode(long account_id, long id) {
         final int prime = 31;
         int result = 1;
         result = prime * result + (int) (account_id ^ account_id >>> 32);
