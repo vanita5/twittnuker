@@ -38,7 +38,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.mariotaku.restfu.http.Endpoint;
-import org.xbill.DNS.ResolverConfig;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -50,6 +49,7 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
+import org.xbill.DNS.ResolverConfig;
 
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -197,6 +197,8 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
             testDns(dns, "twitter.com");
             testNativeLookup("twitter.com");
 
+            publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
+            publishProgress(new LogText("Done. You can send this log to me, and I'll contact you to solve related issue."));
             return null;
         }
 

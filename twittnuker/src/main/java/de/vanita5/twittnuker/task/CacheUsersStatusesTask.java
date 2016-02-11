@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
+import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper.TwitterListResponse;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
@@ -41,10 +42,6 @@ import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser;
-import static de.vanita5.twittnuker.util.ContentValuesCreator.createStatus;
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
 public class CacheUsersStatusesTask extends AsyncTask<TwitterListResponse<Status>, Object, Object> implements Constants {
 
@@ -74,25 +71,25 @@ public class CacheUsersStatusesTask extends AsyncTask<TwitterListResponse<Status
                     final Set<ContentValues> statusesValues = new HashSet<>();
                     final Set<ContentValues> hashTagValues = new HashSet<>();
 
-                    statusesValues.add(createStatus(status, response.accountId));
+                    statusesValues.add(ContentValuesCreator.createStatus(status, response.accountId));
                     final String text = TwitterContentUtils.unescapeTwitterStatusText(status.getText());
                     for (final String hashtag : extractor.extractHashtags(text)) {
                         final ContentValues values = new ContentValues();
                         values.put(CachedHashtags.NAME, hashtag);
                         hashTagValues.add(values);
                     }
-                    final ContentValues cachedUser = createCachedUser(status.getUser());
+                    final ContentValues cachedUser = ContentValuesCreator.createCachedUser(status.getUser());
                     cachedUser.put(CachedUsers.LAST_SEEN, System.currentTimeMillis());
                     usersValues.add(cachedUser);
                     if (status.isRetweet()) {
-                        final ContentValues cachedRetweetedUser = createCachedUser(status.getRetweetedStatus().getUser());
+                        final ContentValues cachedRetweetedUser = ContentValuesCreator.createCachedUser(status.getRetweetedStatus().getUser());
                         cachedRetweetedUser.put(CachedUsers.LAST_SEEN, System.currentTimeMillis());
                         usersValues.add(cachedRetweetedUser);
                     }
 
-                    bulkInsert(resolver, CachedStatuses.CONTENT_URI, statusesValues);
-                    bulkInsert(resolver, CachedHashtags.CONTENT_URI, hashTagValues);
-                    bulkInsert(resolver, CachedUsers.CONTENT_URI, usersValues);
+                    ContentResolverUtils.bulkInsert(resolver, CachedStatuses.CONTENT_URI, statusesValues);
+                    ContentResolverUtils.bulkInsert(resolver, CachedHashtags.CONTENT_URI, hashTagValues);
+                    ContentResolverUtils.bulkInsert(resolver, CachedUsers.CONTENT_URI, usersValues);
                 }
             }
         }

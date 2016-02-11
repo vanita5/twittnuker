@@ -42,6 +42,7 @@ import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
+import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import java.util.ArrayList;
@@ -53,9 +54,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.inject.Inject;
-
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
 
 @SuppressLint("Registered")
 public class MultiSelectEventHandler implements Constants, ActionMode.Callback, MultiSelectManager.Callback {
@@ -150,8 +148,8 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
                         valuesList.add(ContentValuesCreator.createFilteredUser(user));
                     }
                 }
-                bulkDelete(resolver, Filters.Users.CONTENT_URI, Filters.Users.USER_ID, userIds, null, false);
-                bulkInsert(resolver, Filters.Users.CONTENT_URI, valuesList);
+                ContentResolverUtils.bulkDelete(resolver, Filters.Users.CONTENT_URI, Filters.Users.USER_ID, userIds, null, false);
+                ContentResolverUtils.bulkInsert(resolver, Filters.Users.CONTENT_URI, valuesList);
                 Toast.makeText(mActivity, R.string.message_users_muted, Toast.LENGTH_SHORT).show();
                 mode.finish();
                 mActivity.sendBroadcast(new Intent(BROADCAST_MULTI_MUTESTATE_CHANGED));
