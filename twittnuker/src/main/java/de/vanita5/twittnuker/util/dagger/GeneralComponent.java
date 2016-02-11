@@ -54,6 +54,8 @@ import de.vanita5.twittnuker.provider.TwidereDataProvider;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
+import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
+import de.vanita5.twittnuker.task.twitter.GetStatusesTask;
 import de.vanita5.twittnuker.text.util.EmojiEditableFactory;
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
@@ -135,4 +137,8 @@ public interface GeneralComponent {
     void inject(TwitterAPIStatusesLoader loader);
 
     void inject(MediaViewerActivity activity);
+
+    void inject(GetStatusesTask task);
+
+    void inject(GetActivitiesTask task);
 }

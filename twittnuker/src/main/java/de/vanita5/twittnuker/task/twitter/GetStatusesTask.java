@@ -28,7 +28,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.util.Log;
+
+import com.desmond.asyncmanager.AsyncManager;
+import com.desmond.asyncmanager.TaskRunnable;
+import com.squareup.otto.Bus;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.sqliteqb.library.Columns;
@@ -37,15 +42,15 @@ import org.mariotaku.sqliteqb.library.RawItemArray;
 import org.mariotaku.sqliteqb.library.SQLFunctions;
 
 import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
-import de.vanita5.twittnuker.task.ManagedAsyncTask;
-import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
@@ -57,47 +62,43 @@ import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.UriUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.message.GetStatusesTaskEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWrapper.TwitterListResponse<Status>, List<TwitterWrapper.StatusListResponse>> {
+import javax.inject.Inject;
 
-    private final long[] accountIds, maxIds, sinceIds;
-    private final AsyncTwitterWrapper twitterWrapper;
+public abstract class GetStatusesTask extends TaskRunnable<RefreshTaskParam,
+        List<TwitterWrapper.StatusListResponse>, Object> implements Constants {
 
-    public GetStatusesTask(AsyncTwitterWrapper twitterWrapper, final long[] accountIds,
-                           final long[] maxIds, final long[] sinceIds, final String tag) {
-        super(twitterWrapper.getContext(), tag);
-        this.twitterWrapper = twitterWrapper;
-        this.accountIds = accountIds;
-        this.maxIds = maxIds;
-        this.sinceIds = sinceIds;
+    protected final Context context;
+    @Inject
+    protected SharedPreferencesWrapper preferences;
+    @Inject
+    protected Bus bus;
+    @Inject
+    protected ErrorInfoStore errorInfoStore;
+
+    public GetStatusesTask(Context context) {
+        this.context = context;
+        GeneralComponentHelper.build(context).inject(this);
     }
 
     @NonNull
-    public abstract ResponseList<de.vanita5.twittnuker.api.twitter.model.Status> getStatuses(Twitter twitter, Paging paging)
+    public abstract ResponseList<Status> getStatuses(Twitter twitter, Paging paging)
             throws TwitterException;
 
     @NonNull
-    protected abstract Uri getDatabaseUri();
+    protected abstract Uri getContentUri();
 
-    final boolean isMaxIdsValid() {
-        return maxIds != null && maxIds.length == accountIds.length;
-    }
-
-    final boolean isSinceIdsValid() {
-        return sinceIds != null && sinceIds.length == accountIds.length;
-    }
-
-    private void storeStatus(long accountId, List<de.vanita5.twittnuker.api.twitter.model.Status> statuses,
-                             long sinceId, long maxId, boolean notify, int loadItemLimit) {
+    private void storeStatus(long accountId, List<Status> statuses,
+                             long sinceId, long maxId, boolean notify) {
         if (statuses == null || statuses.isEmpty() || accountId <= 0) {
             return;
         }
-        final Uri uri = getDatabaseUri();
-        final Context context = twitterWrapper.getContext();
+        final Uri uri = getContentUri();
         final ContentResolver resolver = context.getContentResolver();
         final boolean noItemsBefore = DataStoreUtils.getStatusCount(context, uri, accountId) <= 0;
         final ContentValues[] values = new ContentValues[statuses.size()];
@@ -106,7 +107,7 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
         int minIdx = -1;
         boolean hasIntersection = false;
         for (int i = 0, j = statuses.size(); i < j; i++) {
-            final de.vanita5.twittnuker.api.twitter.model.Status status = statuses.get(i);
+            final Status status = statuses.get(i);
             values[i] = ContentValuesCreator.createStatus(status, accountId);
             values[i].put(Statuses.INSERTED_DATE, System.currentTimeMillis());
             final long id = status.getId();
@@ -151,33 +152,23 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
 
     }
 
-    @SafeVarargs
+
     @Override
-    protected final void onProgressUpdate(TwitterWrapper.TwitterListResponse<de.vanita5.twittnuker.api.twitter.model.Status>... values) {
-        AsyncTaskUtils.executeTask(new CacheUsersStatusesTask(twitterWrapper.getContext()), values);
+    public void callback(List<TwitterWrapper.StatusListResponse> result) {
+        bus.post(new GetStatusesTaskEvent(getContentUri(), false, AsyncTwitterWrapper.getException(result)));
     }
 
-
-    @Override
-    protected void onPostExecute(List<TwitterWrapper.StatusListResponse> result) {
-        super.onPostExecute(result);
-        bus.post(new GetStatusesTaskEvent(getDatabaseUri(), false, AsyncTwitterWrapper.getException(result)));
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        bus.post(new GetStatusesTaskEvent(getDatabaseUri(), true, null));
+    @UiThread
+    public void notifyStart() {
+        bus.post(new GetStatusesTaskEvent(getContentUri(), true, null));
     }
 
     @Override
-    protected List<TwitterWrapper.StatusListResponse> doInBackground(final Object... params) {
+    public List<TwitterWrapper.StatusListResponse> doLongOperation(final RefreshTaskParam param) {
+        final long[] accountIds = param.getAccountIds(), maxIds = param.getMaxIds(), sinceIds = param.getSinceIds();
         final List<TwitterWrapper.StatusListResponse> result = new ArrayList<>();
         if (accountIds == null) return result;
         int idx = 0;
-        final SharedPreferencesWrapper preferences = twitterWrapper.getPreferences();
-        final Context context = twitterWrapper.getContext();
-        final ErrorInfoStore errorInfoStore = twitterWrapper.getErrorInfoStore();
         final int loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
         for (final long accountId : accountIds) {
             final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId, true);
@@ -201,10 +192,13 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
                 } else {
                     sinceId = -1;
                 }
-                final List<de.vanita5.twittnuker.api.twitter.model.Status> statuses = getStatuses(twitter, paging);
+                final List<Status> statuses = getStatuses(twitter, paging);
                 TwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
-                storeStatus(accountId, statuses, sinceId, maxId, true, loadItemLimit);
-                publishProgress(new TwitterWrapper.StatusListResponse(accountId, statuses));
+                storeStatus(accountId, statuses, sinceId, maxId, true);
+                // TODO cache related data and preload
+                final CacheUsersStatusesTask cacheTask = new CacheUsersStatusesTask(context);
+                cacheTask.setParams(new TwitterWrapper.StatusListResponse(accountId, statuses));
+                AsyncManager.runBackgroundTask(cacheTask);
                 errorInfoStore.remove(getErrorInfoKey(), accountId);
             } catch (final TwitterException e) {
                 if (BuildConfig.DEBUG) {
@@ -223,5 +217,6 @@ public abstract class GetStatusesTask extends ManagedAsyncTask<Object, TwitterWr
 
     @NonNull
     protected abstract String getErrorInfoKey();
+
 
 }
