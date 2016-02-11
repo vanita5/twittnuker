@@ -47,7 +47,7 @@ public class GenericProvider implements Provider {
     @Override
     public ParcelableMedia from(@NonNull String url) {
         ParcelableMedia media = new ParcelableMedia();
-        media.type = ParcelableMedia.Type.TYPE_IMAGE;
+        media.type = ParcelableMedia.Type.IMAGE;
         media.url = url;
         media.preview_url = url;
         media.media_url = url;

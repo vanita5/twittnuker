@@ -809,6 +809,8 @@
     <string name="network_diagnostics">Network diagnostics</string>
     <string name="action_start">Start</string>
     <string name="builtin_dns_resolver">Builtin DNS resolver</string>
+    <string name="bandwidth_saving_mode">Bandwidth saving mode</string>
+    <string name="bandwidth_saving_mode_summary">Disable media preview on metered network</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
