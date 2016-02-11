@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import org.mariotaku.restfu.http.Endpoint;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -110,6 +111,11 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
 
         @Override
         protected Object doInBackground(Object... params) {
+            publishProgress(new LogText("Build information: "));
+            publishProgress(new LogText("version_code: " + BuildConfig.VERSION_CODE), LogText.LINEBREAK);
+            publishProgress(new LogText("version_name: " + BuildConfig.VERSION_NAME), LogText.LINEBREAK);
+            publishProgress(new LogText("flavor: " + BuildConfig.FLAVOR), LogText.LINEBREAK);
+            publishProgress(LogText.LINEBREAK);
             publishProgress(new LogText("Basic system information: "));
             publishProgress(new LogText(String.valueOf(mContext.getResources().getConfiguration())));
             publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);

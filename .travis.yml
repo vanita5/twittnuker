@@ -49,7 +49,7 @@ cache:
 
 before_script:
   - "echo $JAVA_OPTS"
-  - "export JAVA_OPTS=-Xmx2048m"
+#  - "export JAVA_OPTS=-Xmx2048m"
 
 before_install:
   - export PATH=$HOME/.local/bin:$PATH
