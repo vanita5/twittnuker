@@ -44,7 +44,7 @@ public class ConnectivityStateReceiver extends BroadcastReceiver implements Cons
         }
         if (!ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) return;
         final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
-        application.reloadConnectivitySettings();
+//        application.reloadConnectivitySettings();
         Utils.startRefreshServiceIfNeeded(application);
         //TODO start streaming here?
     }
