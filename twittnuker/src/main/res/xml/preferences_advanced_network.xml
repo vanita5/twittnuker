@@ -31,11 +31,18 @@
 
         <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
             android:defaultValue="false"
+            android:key="builtin_dns_resolver"
+            android:title="@string/builtin_dns_resolver"/>
+
+        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="builtin_dns_resolver"
             android:key="tcp_dns_query"
             android:summary="@string/tcp_dns_query_summary"
             android:title="@string/tcp_dns_query"/>
 
         <de.vanita5.twittnuker.preference.SummaryEditTextPreference
+            android:dependency="builtin_dns_resolver"
             android:dialogTitle="@string/dns_server"
             android:inputType="textVisiblePassword"
             android:key="dns_server"

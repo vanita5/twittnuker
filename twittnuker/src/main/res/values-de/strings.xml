@@ -776,6 +776,7 @@
     <string name="interactions">Interaktionen</string>
     <string name="network_diagnostics">Netzwerk Diagnose</string>
     <string name="action_start">Start</string>
+    <string name="builtin_dns_resolver">Interne DNS Auflösung</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
