@@ -65,6 +65,7 @@ import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
+import de.vanita5.twittnuker.util.net.TwidereDns;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -72,8 +73,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import okhttp3.Dns;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -460,9 +459,9 @@ public class TwitterAPIFactory implements TwittnukerConstants {
 
     public static class TwidereExceptionFactory implements ExceptionFactory<TwitterException> {
 
-        private final Dns dns;
+        private final TwidereDns dns;
 
-        TwidereExceptionFactory(Dns dns) {
+        TwidereExceptionFactory(TwidereDns dns) {
             this.dns = dns;
         }
 
