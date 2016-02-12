@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
@@ -31,21 +30,23 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public class StatusAdapterLinkClickHandler<D> extends OnLinkClickHandler {
 
-	private final IStatusesAdapter<D> adapter;
+    private final IStatusesAdapter<D> adapter;
 
-	public StatusAdapterLinkClickHandler(IStatusesAdapter<D> adapter) {
-		super(adapter.getContext(), null);
-		this.adapter = adapter;
-	}
+    public StatusAdapterLinkClickHandler(IStatusesAdapter<D> adapter) {
+        super(adapter.getContext(), null);
+        this.adapter = adapter;
+    }
 
-	@Override
-	protected void openMedia(long accountId, long extraId, boolean sensitive, String link, int start, int end) {
-		if (extraId == RecyclerView.NO_POSITION) return;
-		final ParcelableStatus status = adapter.getStatus((int) extraId);
-		final ParcelableMedia current = StatusLinkClickHandler.findByLink(status.media, link);
-        //TODO open media animation
-        Bundle options = null;
-        Utils.openMedia(context, status, current, options);
-	}
+    @Override
+    protected void openMedia(long accountId, long extraId, boolean sensitive, String link, int start, int end) {
+        if (extraId == RecyclerView.NO_POSITION) return;
+        final ParcelableStatus status = adapter.getStatus((int) extraId);
+        final ParcelableMedia current = StatusLinkClickHandler.findByLink(status.media, link);
+        if (current != null && current.open_browser) {
+            openLink(link);
+        } else {
+            Utils.openMedia(context, status, current, null);
+        }
+    }
 
 }

@@ -29,11 +29,11 @@ import android.support.annotation.WorkerThread;
 
 import org.mariotaku.restfu.http.RestHttpClient;
 
-import java.util.List;
-import java.util.Locale;
-
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
+
+import java.util.List;
+import java.util.Locale;
 
 public class InstagramProvider implements Provider {
     @Override
@@ -55,6 +55,7 @@ public class InstagramProvider implements Provider {
         media.url = link;
         media.preview_url = String.format(Locale.ROOT, "https://instagram.com/p/%s/media/?size=m", id);
         media.media_url = String.format(Locale.ROOT, "https://instagram.com/p/%s/media/?size=l", id);
+        media.open_browser = true;
         return media;
     }
 
