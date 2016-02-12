@@ -26,58 +26,57 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.constant.IntentConstants;
-import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
-
-import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 
 import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT;
 import static de.vanita5.twittnuker.util.Utils.findStatus;
 
 public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<ParcelableStatus>> {
 
-	private final boolean mOmitIntentExtra;
-	private final Bundle mExtras;
-	private final long mAccountId, mStatusId;
+    private final boolean mOmitIntentExtra;
+    private final Bundle mExtras;
+    private final long mAccountId, mStatusId;
 
-	public ParcelableStatusLoader(final Context context, final boolean omitIntentExtra, final Bundle extras,
-								  final long accountId, final long statusId) {
-		super(context);
-		mOmitIntentExtra = omitIntentExtra;
-		mExtras = extras;
-		mAccountId = accountId;
-		mStatusId = statusId;
-	}
+    public ParcelableStatusLoader(final Context context, final boolean omitIntentExtra, final Bundle extras,
+                                  final long accountId, final long statusId) {
+        super(context);
+        mOmitIntentExtra = omitIntentExtra;
+        mExtras = extras;
+        mAccountId = accountId;
+        mStatusId = statusId;
+    }
 
-	@Override
-	public SingleResponse<ParcelableStatus> loadInBackground() {
-		if (!mOmitIntentExtra && mExtras != null) {
-			final ParcelableStatus cache = mExtras.getParcelable(IntentConstants.EXTRA_STATUS);
+    @Override
+    public SingleResponse<ParcelableStatus> loadInBackground() {
+        if (!mOmitIntentExtra && mExtras != null) {
+            final ParcelableStatus cache = mExtras.getParcelable(IntentConstants.EXTRA_STATUS);
             if (cache != null) {
                 final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(cache);
                 final Bundle extras = response.getExtras();
-                extras.putParcelable(EXTRA_ACCOUNT, ParcelableCredentials.getCredentials(getContext(), mAccountId));
+                extras.putParcelable(EXTRA_ACCOUNT, DataStoreUtils.getCredentials(getContext(), mAccountId));
                 return response;
             }
-		}
-		try {
+        }
+        try {
             final ParcelableStatus status = findStatus(getContext(), mAccountId, mStatusId);
-            final ParcelableCredentials credentials = ParcelableAccount.getCredentials(getContext(), mAccountId);
+            final ParcelableCredentials credentials = DataStoreUtils.getCredentials(getContext(), mAccountId);
             final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(status);
             final Bundle extras = response.getExtras();
             extras.putParcelable(EXTRA_ACCOUNT, credentials);
             return response;
-		} catch (final TwitterException e) {
-			return SingleResponse.getInstance(e);
-		}
-	}
+        } catch (final TwitterException e) {
+            return SingleResponse.getInstance(e);
+        }
+    }
 
-	@Override
-	protected void onStartLoading() {
-		forceLoad();
-	}
+    @Override
+    protected void onStartLoading() {
+        forceLoad();
+    }
 
 }

@@ -71,6 +71,7 @@ import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.StatusShortenResult;
 import de.vanita5.twittnuker.model.UploaderMediaItem;
+import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -78,6 +79,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaUploaderInterface;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -240,7 +242,7 @@ public class BackgroundOperationService extends IntentService implements Constan
         }
         cr.delete(Drafts.CONTENT_URI, where.getSQL(), null);
         if (item.action_type == Drafts.ACTION_UPDATE_STATUS || item.action_type <= 0) {
-            updateStatuses(new ParcelableStatusUpdate(this, item));
+            updateStatuses(ParcelableStatusUpdateUtils.fromDraftItem(this, item));
         } else if (item.action_type == Drafts.ACTION_SEND_DIRECT_MESSAGE) {
             final long recipientId = item.action_extras != null ? item.action_extras.optLong(EXTRA_RECIPIENT_ID) : -1;
             if (item.account_ids == null || item.account_ids.length <= 0 || recipientId <= 0) {
@@ -327,8 +329,7 @@ public class BackgroundOperationService extends IntentService implements Constan
         for (final ParcelableStatusUpdate item : statuses) {
             mNotificationManager.notify(NOTIFICATION_ID_UPDATE_STATUS,
                     updateUpdateStatusNotification(this, builder, 0, item));
-            final ContentValues draftValues = ContentValuesCreator.createStatusDraft(item,
-                    ParcelableAccount.getAccountIds(item.accounts));
+            final ContentValues draftValues = ContentValuesCreator.createStatusDraft(item);
             final ContentResolver resolver = getContentResolver();
             final Uri draftUri = resolver.insert(Drafts.CONTENT_URI, draftValues);
             final long def = -1;
@@ -338,7 +339,7 @@ public class BackgroundOperationService extends IntentService implements Constan
             boolean failed = false;
             Exception exception = null;
             final Expression where = Expression.equals(Drafts._ID, draftId);
-            final List<Long> failedAccountIds = TwidereListUtils.fromArray(ParcelableAccount.getAccountIds(item.accounts));
+            final List<Long> failedAccountIds = TwidereListUtils.fromArray(DataStoreUtils.getAccountIds(item.accounts));
 
             for (final SingleResponse<ParcelableStatus> response : result) {
                 final ParcelableStatus data = response.getData();

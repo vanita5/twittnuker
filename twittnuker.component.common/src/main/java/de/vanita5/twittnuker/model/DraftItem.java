@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.model.util.LongArrayConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 
 @ParcelablePlease
-@CursorObject
+@CursorObject(valuesCreator = true)
 public class DraftItem implements Parcelable {
 
     @ParcelableThisPlease
@@ -86,7 +86,11 @@ public class DraftItem implements Parcelable {
 
     public DraftItem(ParcelableStatusUpdate status) {
         _id = 0;
-        account_ids = ParcelableAccount.getAccountIds(status.accounts);
+        account_ids = new long[status.accounts.length];
+        final ParcelableAccount[] accounts = status.accounts;
+        for (int i = 0, j = accounts.length; i < j; i++) {
+            account_ids[i] = accounts[i].account_id;
+        }
         in_reply_to_status_id = status.in_reply_to_status_id;
         text = status.text;
         media = status.media;
@@ -102,8 +106,8 @@ public class DraftItem implements Parcelable {
         try {
             return new JSONObject(json);
         } catch (JSONException e) {
+            return null;
         }
-        return null;
     }
 
     @Override

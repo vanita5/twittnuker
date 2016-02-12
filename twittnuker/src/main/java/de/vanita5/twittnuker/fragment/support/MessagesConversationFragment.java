@@ -86,7 +86,6 @@ import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
-import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -99,6 +98,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Conversati
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ClipboardUtils;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
@@ -107,7 +107,6 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.TakeAllKeyboardShortc
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ReadStateManager;
-import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
@@ -244,7 +243,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         mAccountSpinner = (Spinner) actionBarView.findViewById(R.id.account_spinner);
         mEditUserQuery = (EditText) actionBarView.findViewById(R.id.user_query);
         mQueryButton = actionBarView.findViewById(R.id.query_button);
-        final List<ParcelableCredentials> accounts = ParcelableCredentials.getCredentialsList(activity, false);
+        final List<ParcelableCredentials> accounts = DataStoreUtils.getCredentialsList(activity, false);
         final AccountsSpinnerAdapter accountsSpinnerAdapter = new AccountsSpinnerAdapter(
                 actionBar.getThemedContext(), R.layout.spinner_item_account_icon);
         accountsSpinnerAdapter.setDropDownViewResource(R.layout.list_item_user);
@@ -309,7 +308,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
                     final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
                     final long userId = args.getLong(EXTRA_RECIPIENT_ID, -1);
                     final int accountPos = accountsSpinnerAdapter.findItemPosition(accountId);
-                    account = accountPos < 0 ? ParcelableAccount.getCredentials(activity, accountId)
+                    account = accountPos < 0 ? DataStoreUtils.getCredentials(activity, accountId)
                             : accountsSpinnerAdapter.getItem(accountPos);
                     recipient = Utils.getUserForConversation(activity, accountId, userId);
                 } else {

@@ -58,6 +58,7 @@ import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -299,7 +300,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
             }
             final boolean officialKeyOnly = intent.getBooleanExtra(EXTRA_OFFICIAL_KEY_ONLY, false);
             final boolean forcePrivateAPIs = intent.getBooleanExtra(KEY_FORCE_USING_PRIVATE_APIS, false);
-            mAccountsAdapter.addAll(ParcelableAccount.getCredentialsList(this, false, !forcePrivateAPIs && officialKeyOnly));
+            mAccountsAdapter.addAll(DataStoreUtils.getCredentialsList(this, false, !forcePrivateAPIs && officialKeyOnly));
             mAccountsAdapter.setDummyItemText(R.string.activated_accounts);
             switch (conf.getSecondaryFieldType()) {
                 case CustomTabConfiguration.FIELD_TYPE_USER: {

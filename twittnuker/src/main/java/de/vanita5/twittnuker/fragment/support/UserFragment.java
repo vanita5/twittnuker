@@ -982,7 +982,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(user.account_id));
                 builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(user.id));
                 final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-                intent.putExtra(EXTRA_ACCOUNT, ParcelableCredentials.getCredentials(getActivity(), user.account_id));
+                intent.putExtra(EXTRA_ACCOUNT, DataStoreUtils.getCredentials(getActivity(), user.account_id));
                 intent.putExtra(EXTRA_USER, user);
                 startActivity(intent);
                 break;
@@ -1252,7 +1252,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 break;
             }
             case R.id.tweets_container: {
-                IntentUtils.openUserTimeline(getActivity(), user.account_id, user.id, user.screen_name);
+                Utils.openUserLists(getActivity(), user.account_id, user.id, user.screen_name);
                 break;
             }
             case R.id.followers_container: {

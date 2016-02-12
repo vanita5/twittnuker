@@ -209,7 +209,7 @@ public class StreamingService extends Service implements Constants {
     }
 
     private boolean setTwitterInstances() {
-        final List<ParcelableCredentials> accountsList = ParcelableAccount.getCredentialsList(this, true);
+        final List<ParcelableCredentials> accountsList = DataStoreUtils.getCredentialsList(this, true);
         final long[] accountIds = new long[accountsList.size()];
         for (int i = 0, j = accountIds.length; i < j; i++) {
             accountIds[i] = accountsList.get(i).account_id;

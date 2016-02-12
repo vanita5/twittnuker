@@ -42,9 +42,9 @@ import org.mariotaku.restfu.http.mime.Body;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
-import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
@@ -80,7 +80,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         final Authorization auth;
         final ParcelableCredentials account;
         if (extra instanceof MediaExtra) {
-            account = ParcelableAccount.getCredentials(mContext, ((MediaExtra) extra).getAccountId());
+            account = DataStoreUtils.getCredentials(mContext, ((MediaExtra) extra).getAccountId());
             auth = TwitterAPIFactory.getAuthorization(account);
         } else {
             account = null;

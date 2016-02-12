@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.BitmapUtils;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -181,7 +182,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
 
         @Override
         protected List<ParcelableAccount> doInBackground(final Object... params) {
-            return ParcelableAccount.getAccountsList(mPreference.getContext(), false);
+            return DataStoreUtils.getAccountsList(mPreference.getContext(), false);
         }
 
         @Override

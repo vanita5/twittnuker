@@ -58,7 +58,6 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
 import de.vanita5.twittnuker.model.ListResponse;
-import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -470,7 +469,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                                  final ParcelableMediaUpdate[] media, final long inReplyToStatusId,
                                  final boolean isPossiblySensitive) {
         final ParcelableStatusUpdate.Builder builder = new ParcelableStatusUpdate.Builder();
-        builder.accounts(ParcelableAccount.getAccounts(mContext, accountIds));
+        builder.accounts(DataStoreUtils.getAccounts(mContext, accountIds));
         builder.text(text);
         builder.location(location);
         builder.media(media);

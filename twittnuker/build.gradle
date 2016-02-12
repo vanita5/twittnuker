@@ -124,6 +124,7 @@ dependencies {
     compile 'com.j256.simplemagic:simplemagic:1.6'
     compile 'com.github.mariotaku.MediaViewerLibrary:base:0.9.7'
     compile 'com.github.mariotaku.MediaViewerLibrary:subsample-image-view:0.9.7'
+    compile 'com.github.mariotaku:SQLiteQB:0.9.4'
     compile 'com.google.android.gms:play-services-gcm:8.3.0'
     compile ':YouTubeAndroidPlayerApi:1.2.2@jar'
 

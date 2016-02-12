@@ -57,10 +57,10 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
-import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
 import de.vanita5.twittnuker.util.IntentUtils;
@@ -224,7 +224,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_search_bar);
-        final List<ParcelableCredentials> accounts = ParcelableAccount.getCredentialsList(this, false);
+        final List<ParcelableCredentials> accounts = DataStoreUtils.getCredentialsList(this, false);
         final AccountsSpinnerAdapter accountsSpinnerAdapter = new AccountsSpinnerAdapter(this, R.layout.spinner_item_account_icon);
         accountsSpinnerAdapter.setDropDownViewResource(R.layout.list_item_user);
         accountsSpinnerAdapter.addAll(accounts);

@@ -67,7 +67,7 @@ import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.DraftItemCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
-import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
+import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -262,8 +262,9 @@ public class DraftsFragment extends BaseSupportFragment implements Constants, Lo
         if (twitter == null) return false;
         for (final DraftItem item : list) {
             if (item.action_type == Drafts.ACTION_UPDATE_STATUS || item.action_type <= 0) {
-                twitter.updateStatusesAsync(new ParcelableStatusUpdate(getActivity(), item));
+                twitter.updateStatusesAsync(ParcelableStatusUpdateUtils.fromDraftItem(getActivity(), item));
             } else if (item.action_type == Drafts.ACTION_SEND_DIRECT_MESSAGE) {
+                if (item.action_extras == null) continue;
                 final long recipientId = item.action_extras.optLong(EXTRA_RECIPIENT_ID);
                 if (item.account_ids == null || item.account_ids.length <= 0 || recipientId <= 0) {
                     continue;

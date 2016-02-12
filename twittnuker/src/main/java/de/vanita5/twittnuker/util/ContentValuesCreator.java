@@ -39,13 +39,13 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.Trend;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.DraftItemValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageValuesCreator;
-import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -274,10 +274,6 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         return ParcelableStatusValuesCreator.create(new ParcelableStatus(orig, accountId, false));
     }
 
-    public static ContentValues createStatusDraft(final ParcelableStatusUpdate status) {
-        return createStatusDraft(status, ParcelableAccount.getAccountIds(status.accounts));
-    }
-
     @NonNull
     public static ContentValues createActivity(final ParcelableActivity activity) {
         final ContentValues values = new ContentValues();
@@ -307,22 +303,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     }
 
 
-    public static ContentValues createStatusDraft(final ParcelableStatusUpdate status,
-                                                  final long[] accountIds) {
+    public static ContentValues createStatusDraft(final ParcelableStatusUpdate status) {
         final ContentValues values = new ContentValues();
-        values.put(Drafts.ACTION_TYPE, Drafts.ACTION_UPDATE_STATUS);
-        values.put(Drafts.TEXT, status.text);
-        values.put(Drafts.ACCOUNT_IDS, TwidereArrayUtils.toString(accountIds, ',', false));
-        values.put(Drafts.IN_REPLY_TO_STATUS_ID, status.in_reply_to_status_id);
-        values.put(Drafts.LOCATION, ParcelableLocation.toString(status.location));
-        values.put(Drafts.IS_POSSIBLY_SENSITIVE, status.is_possibly_sensitive);
-        values.put(Drafts.TIMESTAMP, System.currentTimeMillis());
-        if (status.media != null) {
-            try {
-                values.put(Drafts.MEDIA, LoganSquare.serialize(Arrays.asList(status.media), ParcelableMediaUpdate.class));
-            } catch (IOException ignored) {
-            }
-        }
+        DraftItem item = new DraftItem(status);
+        DraftItemValuesCreator.writeTo(item, values);
         return values;
     }
 

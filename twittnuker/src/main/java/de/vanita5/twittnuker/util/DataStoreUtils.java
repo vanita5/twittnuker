@@ -47,6 +47,10 @@ import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
@@ -72,7 +76,10 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.provider.TwidereDataStore.CACHE_URIS;
@@ -758,4 +765,152 @@ public class DataStoreUtils implements Constants {
             cur.close();
         }
     }
+
+    public static ParcelableAccount getAccount(final Context context, final long accountId) {
+        if (context == null) return null;
+        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
+                Accounts.COLUMNS, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(), null, null);
+        if (cur == null) return null;
+        try {
+            if (cur.moveToFirst()) {
+                return ParcelableAccountCursorIndices.fromCursor(cur);
+            }
+        } finally {
+            cur.close();
+        }
+        return null;
+    }
+
+    @NonNull
+    public static long[] getAccountIds(final ParcelableAccount[] accounts) {
+        final long[] ids = new long[accounts.length];
+        for (int i = 0, j = accounts.length; i < j; i++) {
+            ids[i] = accounts[i].account_id;
+        }
+        return ids;
+    }
+
+    @NonNull
+    public static ParcelableAccount[] getAccounts(final Context context, final boolean activatedOnly,
+                                                  final boolean officialKeyOnly) {
+        final List<ParcelableAccount> list = getAccountsList(context, activatedOnly, officialKeyOnly);
+        return list.toArray(new ParcelableAccount[list.size()]);
+    }
+
+    @NonNull
+    public static ParcelableAccount[] getAccounts(@Nullable final Context context, @Nullable final long[] accountIds) {
+        if (context == null) return new ParcelableAccount[0];
+        final String where = accountIds != null ? Expression.in(new Column(Accounts.ACCOUNT_ID),
+                new RawItemArray(accountIds)).getSQL() : null;
+        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
+                Accounts.COLUMNS_NO_CREDENTIALS, where, null, null);
+        if (cur == null) return new ParcelableAccount[0];
+        return getAccounts(cur, new ParcelableAccountCursorIndices(cur));
+    }
+
+    @NonNull
+    public static ParcelableAccount[] getAccounts(@Nullable final Cursor cursor) {
+        if (cursor == null) return new ParcelableAccount[0];
+        return getAccounts(cursor, new ParcelableAccountCursorIndices(cursor));
+    }
+
+    @NonNull
+    public static ParcelableAccount[] getAccounts(@Nullable final Cursor cursor, @Nullable final ParcelableAccountCursorIndices indices) {
+        if (cursor == null || indices == null) return new ParcelableAccount[0];
+        try {
+            cursor.moveToFirst();
+            final ParcelableAccount[] names = new ParcelableAccount[cursor.getCount()];
+            while (!cursor.isAfterLast()) {
+                names[cursor.getPosition()] = indices.newObject(cursor);
+                cursor.moveToNext();
+            }
+            return names;
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public static List<ParcelableAccount> getAccountsList(final Context context, final boolean activatedOnly) {
+        return getAccountsList(context, activatedOnly, false);
+    }
+
+    public static List<ParcelableAccount> getAccountsList(final Context context, final boolean activatedOnly,
+                                                          final boolean officialKeyOnly) {
+        if (context == null) return Collections.emptyList();
+        final ArrayList<ParcelableAccount> accounts = new ArrayList<>();
+        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(),
+                Accounts.CONTENT_URI, Accounts.COLUMNS,
+                activatedOnly ? Accounts.IS_ACTIVATED + " = 1" : null, null, Accounts.SORT_POSITION);
+        if (cur == null) return accounts;
+        final ParcelableCredentialsCursorIndices indices = new ParcelableCredentialsCursorIndices(cur);
+        cur.moveToFirst();
+        while (!cur.isAfterLast()) {
+            if (!officialKeyOnly) {
+                accounts.add(indices.newObject(cur));
+            } else {
+                final String consumerKey = cur.getString(indices.consumer_key);
+                final String consumerSecret = cur.getString(indices.consumer_secret);
+                if (TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret)) {
+                    accounts.add(indices.newObject(cur));
+                }
+            }
+            cur.moveToNext();
+        }
+        cur.close();
+        return accounts;
+    }
+
+    @Nullable
+    public static ParcelableCredentials getCredentials(final Context context, final long accountId) {
+        if (context == null || accountId < 0) return null;
+        Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
+                Accounts.COLUMNS, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(), null,
+                null);
+        if (cur == null) return null;
+        try {
+            if (cur.moveToFirst()) {
+                return ParcelableCredentialsCursorIndices.fromCursor(cur);
+            }
+        } finally {
+            cur.close();
+        }
+        return null;
+    }
+
+    public static List<ParcelableCredentials> getCredentialsList(final Context context, final boolean activatedOnly) {
+        return getCredentialsList(context, activatedOnly, false);
+    }
+
+    public static ParcelableCredentials[] getCredentialsArray(final Context context, final boolean activatedOnly,
+                                                              final boolean officialKeyOnly) {
+        final List<ParcelableCredentials> credentialsList = getCredentialsList(context, activatedOnly, officialKeyOnly);
+        return credentialsList.toArray(new ParcelableCredentials[credentialsList.size()]);
+    }
+
+    public static List<ParcelableCredentials> getCredentialsList(final Context context, final boolean activatedOnly,
+                                                                 final boolean officialKeyOnly) {
+        if (context == null) return Collections.emptyList();
+        final ArrayList<ParcelableCredentials> accounts = new ArrayList<>();
+        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(),
+                Accounts.CONTENT_URI, Accounts.COLUMNS,
+                activatedOnly ? Accounts.IS_ACTIVATED + " = 1" : null, null, Accounts.SORT_POSITION);
+        if (cur == null) return accounts;
+        ParcelableCredentialsCursorIndices indices = new ParcelableCredentialsCursorIndices(cur);
+        cur.moveToFirst();
+        while (!cur.isAfterLast()) {
+            if (officialKeyOnly) {
+                final String consumerKey = cur.getString(indices.consumer_key);
+                final String consumerSecret = cur.getString(indices.consumer_secret);
+                if (TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret)) {
+                    accounts.add(indices.newObject(cur));
+                }
+            } else {
+                accounts.add(indices.newObject(cur));
+            }
+            cur.moveToNext();
+        }
+        cur.close();
+        return accounts;
+    }
+
 }
