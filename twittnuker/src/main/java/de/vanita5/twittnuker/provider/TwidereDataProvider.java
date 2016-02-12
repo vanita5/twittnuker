@@ -127,6 +127,8 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
+import de.vanita5.twittnuker.util.net.TwidereDns;
+
 import org.oshkimaadziig.george.androidutils.SpanFormatter;
 
 import java.io.File;
@@ -145,8 +147,6 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import okhttp3.Dns;
-
 public final class TwidereDataProvider extends ContentProvider implements Constants, OnSharedPreferenceChangeListener,
         LazyLoadCallback {
 
@@ -163,7 +163,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     @Inject
     SharedPreferencesWrapper mPreferences;
     @Inject
-    Dns mDns;
+    TwidereDns mDns;
     @Inject
     Bus mBus;
     @Inject

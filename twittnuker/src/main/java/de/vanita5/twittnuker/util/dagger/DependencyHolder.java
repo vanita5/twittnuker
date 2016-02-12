@@ -33,10 +33,9 @@ import de.vanita5.twittnuker.util.ExternalThemeManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereValidator;
+import de.vanita5.twittnuker.util.net.TwidereDns;
 
 import javax.inject.Inject;
-
-import okhttp3.Dns;
 
 public class DependencyHolder {
 
@@ -50,7 +49,7 @@ public class DependencyHolder {
     @Inject
     ActivityTracker mActivityTracker;
     @Inject
-    Dns mDns;
+    TwidereDns mDns;
     @Inject
     AsyncTwitterWrapper mAsyncTwitterWrapper;
     @Inject
@@ -85,7 +84,7 @@ public class DependencyHolder {
         return mActivityTracker;
     }
 
-    public Dns getDns() {
+    public TwidereDns getDns() {
         return mDns;
     }
 
@@ -104,4 +103,5 @@ public class DependencyHolder {
     public SharedPreferencesWrapper getPreferences() {
         return mPreferences;
     }
+
 }
