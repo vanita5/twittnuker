@@ -113,12 +113,12 @@ import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.CachedRelationship;
 import de.vanita5.twittnuker.model.CachedRelationshipValuesCreator;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.SupportTabSpec;
+import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
@@ -1234,7 +1234,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             }
             case R.id.profile_image: {
                 final String url = Utils.getOriginalTwitterProfileImage(user.profile_image_url);
-                ParcelableMedia profileImage = ParcelableMedia.image(url);
+                ParcelableMedia profileImage = ParcelableMediaUtils.image(url);
                 profileImage.type = ParcelableMedia.Type.IMAGE;
                 final ParcelableMedia[] media = {profileImage};
                 Bundle options = Utils.createMediaViewerActivityOption(view);
@@ -1244,7 +1244,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             case R.id.profile_banner: {
                 if (user.profile_banner_url == null) return;
                 final String url = user.profile_banner_url + "/ipad_retina";
-                ParcelableMedia profileBanner = ParcelableMedia.image(url);
+                ParcelableMedia profileBanner = ParcelableMediaUtils.image(url);
                 profileBanner.type = ParcelableMedia.Type.IMAGE;
                 final ParcelableMedia[] media = {profileBanner};
                 Bundle options = Utils.createMediaViewerActivityOption(view);

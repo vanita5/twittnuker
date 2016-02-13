@@ -112,6 +112,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
@@ -1514,11 +1515,11 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             public void onLinkClick(String link, String orig, long accountId, long extraId, int type, boolean sensitive, int start, int end) {
                 final ParcelableStatus status = adapter.getStatus();
                 ParcelableMedia current;
-                if ((current = ParcelableMedia.findByUrl(status.media, link)) != null) {
+                if ((current = ParcelableMediaUtils.findByUrl(status.media, link)) != null) {
                     expandOrOpenMedia(current);
                     return;
                 }
-                if ((current = ParcelableMedia.findByUrl(status.quoted_media, link)) != null) {
+                if ((current = ParcelableMediaUtils.findByUrl(status.quoted_media, link)) != null) {
                     expandOrOpenMedia(current);
                     return;
                 }

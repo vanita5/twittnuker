@@ -194,6 +194,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
@@ -867,7 +868,7 @@ public final class Utils implements Constants {
         final ContentResolver resolver = context.getContentResolver();
         resolver.delete(CachedStatuses.CONTENT_URI, where, null);
         resolver.insert(CachedStatuses.CONTENT_URI, ContentValuesCreator.createStatus(status, accountId));
-        return new ParcelableStatus(status, accountId, false);
+        return ParcelableStatusUtils.fromStatus(status, accountId, false);
     }
 
     @Nullable

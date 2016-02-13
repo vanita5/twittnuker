@@ -66,6 +66,7 @@ import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -441,7 +442,7 @@ public class StreamingService extends Service implements Constants {
             if (favoritedStatus.getUser().getId() == account.account_id) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
                         Utils.parseURLEntities(favoritedStatus.getText(), favoritedStatus.getUrlEntities()),
-                        new ParcelableStatus(favoritedStatus, account.account_id, false),
+                        ParcelableStatusUtils.fromStatus(favoritedStatus, account.account_id, false),
                         source);
             }
         }
@@ -499,7 +500,7 @@ public class StreamingService extends Service implements Constants {
                 createNotification(status.getUser().getScreenName(),
                         NotificationContent.NOTIFICATION_TYPE_RETWEET,
                         Utils.parseURLEntities(rt.getText(), rt.getUrlEntities()),
-                        new ParcelableStatus(status, account.account_id, false), status.getUser());
+                        ParcelableStatusUtils.fromStatus(status, account.account_id, false), status.getUser());
                 //TODO insert retweet activity
             }
         }

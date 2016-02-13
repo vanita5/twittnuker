@@ -32,6 +32,7 @@ import android.support.annotation.Nullable;
 import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
@@ -98,7 +99,7 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
     }
 
     protected void openMedia(long accountId, long extraId, boolean sensitive, String link, int start, int end) {
-        final ParcelableMedia[] media = {ParcelableMedia.image(link)};
+        final ParcelableMedia[] media = {ParcelableMediaUtils.image(link)};
         //TODO open media animation
         Utils.openMedia(context, accountId, sensitive, null, media, null);
     }

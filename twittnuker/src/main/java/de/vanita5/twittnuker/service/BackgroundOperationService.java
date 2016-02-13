@@ -71,7 +71,9 @@ import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.StatusShortenResult;
 import de.vanita5.twittnuker.model.UploaderMediaItem;
+import de.vanita5.twittnuker.model.util.ParcelableDirectMessageUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils;
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -419,14 +421,13 @@ public class BackgroundOperationService extends IntentService implements Constan
                 is.setReadListener(new MessageMediaUploadListener(this, mNotificationManager, builder, text));
 //                final MediaUploadResponse uploadResp = twitter.uploadMedia(file.getName(), is, o.outMimeType);
                 final MediaUploadResponse uploadResp = twitterUpload.uploadMedia(file);
-                directMessage = new ParcelableDirectMessage(twitter.sendDirectMessage(recipientId, text,
+                directMessage = ParcelableDirectMessageUtils.fromDirectMessage(twitter.sendDirectMessage(recipientId, text,
                         uploadResp.getId()), accountId, true);
                 if (!file.delete()) {
                     Log.d(LOGTAG, String.format("unable to delete %s", path));
                 }
             } else {
-                directMessage = new ParcelableDirectMessage(twitter.sendDirectMessage(recipientId, text), accountId,
-                        true);
+                directMessage = ParcelableDirectMessageUtils.fromDirectMessage(twitter.sendDirectMessage(recipientId, text), accountId, true);
             }
             Utils.setLastSeen(this, recipientId, System.currentTimeMillis());
 
@@ -581,7 +582,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                             notReplyToOther = true;
                         }
                     }
-                    final ParcelableStatus result = new ParcelableStatus(resultStatus, account.account_id, false);
+                    final ParcelableStatus result = ParcelableStatusUtils.fromStatus(resultStatus, account.account_id, false);
                     results.add(SingleResponse.getInstance(result));
                 } catch (final TwitterException e) {
                     Log.w(LOGTAG, e);

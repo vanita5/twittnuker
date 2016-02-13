@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
+import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
@@ -139,7 +140,7 @@ public abstract class GetActivitiesTask extends TaskRunnable<RefreshTaskParam, O
         Arrays.fill(deleteBound, -1);
         List<ContentValues> valuesList = new ArrayList<>();
         for (Activity activity : activities) {
-            final ParcelableActivity parcelableActivity = new ParcelableActivity(activity, accountId, false);
+            final ParcelableActivity parcelableActivity = ParcelableActivityUtils.fromActivity(activity, accountId, false);
             if (deleteBound[0] < 0) {
                 deleteBound[0] = parcelableActivity.min_position;
             } else {

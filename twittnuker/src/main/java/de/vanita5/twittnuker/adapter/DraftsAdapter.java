@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.DraftItemCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
+import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -77,7 +78,7 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
         final String actionName = getActionName(context, actionType);
         holder.media_preview_container.setStyle(mMediaPreviewStyle);
         if (actionType == Drafts.ACTION_UPDATE_STATUS) {
-            final ParcelableMedia[] media = ParcelableMedia.fromMediaUpdates(mediaUpdates);
+            final ParcelableMedia[] media = ParcelableMediaUtils.fromMediaUpdates(mediaUpdates);
             holder.media_preview_container.setVisibility(View.VISIBLE);
             holder.media_preview_container.displayMedia(media, mImageLoader, -1, -1, null,
                     mMediaLoadingHandler);

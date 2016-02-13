@@ -40,6 +40,7 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
@@ -155,7 +156,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
                 && statuses.size() >= loadItemLimit;
         for (int i = 0, j = statuses.size(); i < j; i++) {
             final Status status = statuses.get(i);
-            data.add(new ParcelableStatus(status, mAccountId, insertGap && isGapEnabled() && minIdx == i));
+            data.add(ParcelableStatusUtils.fromStatus(status, mAccountId, insertGap && isGapEnabled() && minIdx == i));
         }
 
         final SQLiteDatabase db = TwittnukerApplication.getInstance(context).getSQLiteDatabase();

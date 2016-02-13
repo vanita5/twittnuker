@@ -38,6 +38,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 
@@ -134,7 +135,7 @@ public class CardMediaContainer extends ViewGroup implements Constants {
                     loader.displayPreviewImage(imageView, url, loadingHandler);
                 }
                 if (imageView instanceof MediaPreviewImageView) {
-                    ((MediaPreviewImageView) imageView).setHasPlayIcon(ParcelableMedia.hasPlayIcon(media.type));
+                    ((MediaPreviewImageView) imageView).setHasPlayIcon(ParcelableMediaUtils.hasPlayIcon(media.type));
                 }
                 child.setTag(media);
                 child.setVisibility(VISIBLE);

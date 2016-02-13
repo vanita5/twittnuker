@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.net.TwidereDns;
+import okhttp3.ConnectionPool;
 
 import javax.inject.Inject;
 
@@ -58,6 +59,8 @@ public class DependencyHolder {
     TwidereValidator mValidator;
     @Inject
     SharedPreferencesWrapper mPreferences;
+    @Inject
+    ConnectionPool mConnectionPoll;
 
     DependencyHolder(Context context) {
         GeneralComponentHelper.build(context).inject(this);
@@ -104,4 +107,7 @@ public class DependencyHolder {
         return mPreferences;
     }
 
+    public ConnectionPool getConnectionPoll() {
+        return mConnectionPoll;
+    }
 }

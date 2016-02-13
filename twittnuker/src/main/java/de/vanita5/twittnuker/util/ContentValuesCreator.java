@@ -54,6 +54,8 @@ import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
+import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
@@ -185,7 +187,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         values.put(DirectMessages.RECIPIENT_SCREEN_NAME, recipient.getScreenName());
         values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, sender_profile_image_url);
         values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, recipient_profile_image_url);
-        final ParcelableMedia[] mediaArray = ParcelableMedia.fromEntities(message);
+        final ParcelableMedia[] mediaArray = ParcelableMediaUtils.fromEntities(message);
         try {
             values.put(DirectMessages.MEDIA_JSON, LoganSquare.serialize(Arrays.asList(mediaArray), ParcelableMedia.class));
         } catch (IOException ignored) {
@@ -271,7 +273,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 
     @NonNull
     public static ContentValues createStatus(final Status orig, final long accountId) {
-        return ParcelableStatusValuesCreator.create(new ParcelableStatus(orig, accountId, false));
+        return ParcelableStatusValuesCreator.create(ParcelableStatusUtils.fromStatus(orig, accountId, false));
     }
 
     @NonNull
