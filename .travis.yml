@@ -63,4 +63,4 @@ script:
 
 after_success:
   - export SSHPASS=$DEPLOY_PASS
-  - sshpass -e scp -o stricthostkeychecking=no twittnuker/build/outputs/apk/twittnuker-debug.apk $DEPLOY_SCP
+  - sshpass -e scp -o stricthostkeychecking=no -o LogLevel=quiet twittnuker/build/outputs/apk/twittnuker-debug.apk $DEPLOY_SCP
