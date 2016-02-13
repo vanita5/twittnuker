@@ -86,6 +86,7 @@ dependencies {
     apt 'com.hannesdorfmann.parcelableplease:processor:1.0.2'
     apt 'com.google.dagger:dagger-compiler:2.0.2'
     apt 'com.github.mariotaku.ObjectCursor:processor:0.9.3'
+
     //compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-v13:23.1.1'
     compile 'com.android.support:appcompat-v7:23.1.1'
@@ -124,7 +125,11 @@ dependencies {
     compile 'com.github.mariotaku.MediaViewerLibrary:base:0.9.7'
     compile 'com.github.mariotaku.MediaViewerLibrary:subsample-image-view:0.9.7'
     compile 'com.github.mariotaku:SQLiteQB:0.9.4'
+    compile 'com.github.mariotaku.ObjectCursor:core:0.9.3'
+    compile project(':twittnuker.component.common')
+
     compile 'com.google.android.gms:play-services-gcm:8.3.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') { transitive = true; }
     compile ':YouTubeAndroidPlayerApi:1.2.2@jar'
 
     // Twittnuker specific
@@ -137,14 +142,7 @@ dependencies {
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta1'
 
-    compile project(':twittnuker.component.common')
-    compile 'com.github.mariotaku.ObjectCursor:core:0.9.3'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
     provided 'javax.annotation:jsr250-api:1.0'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
-        transitive = true;
-    }
 
     testCompile 'junit:junit:4.12'
 
