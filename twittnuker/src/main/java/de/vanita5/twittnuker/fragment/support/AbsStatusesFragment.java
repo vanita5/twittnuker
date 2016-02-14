@@ -278,8 +278,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(statusPosition);
         if (status == null) return;
-        final Bundle options = Utils.createMediaViewerActivityOption(view);
-        Utils.openMedia(getActivity(), status, media, options);
+        IntentUtils.openMedia(getActivity(), status, media, null, true);
     }
 
     @Override

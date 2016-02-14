@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
@@ -279,7 +280,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
             itemContent.drawEnd();
         }
 
-        final ParcelableMedia[] media = Utils.getPrimaryMedia(status);
+        final ParcelableMedia[] media = IntentUtils.getPrimaryMedia(status);
 
         if (adapter.isMediaPreviewEnabled()) {
             mediaPreview.setStyle(adapter.getMediaPreviewStyle());

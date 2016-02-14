@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +36,7 @@ import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -210,9 +210,8 @@ public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHold
         @Override
         public void onMediaClick(View view, ParcelableMedia media, long accountId, long extraId) {
             final MessageConversationAdapter adapter = adapterRef.get();
-            final Bundle options = Utils.createMediaViewerActivityOption(view);
-            Utils.openMedia(adapter.getContext(), adapter.getDirectMessage((int) extraId), media,
-                    options);
+            IntentUtils.openMedia(adapter.getContext(), adapter.getDirectMessage((int) extraId), media,
+                    null, true);
         }
 
     }

@@ -25,16 +25,27 @@ package de.vanita5.twittnuker.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 
-import de.vanita5.twittnuker.BuildConfig;
+import org.apache.commons.lang3.ArrayUtils;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.constant.IntentConstants;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
+import de.vanita5.twittnuker.fragment.support.SensitiveContentWarningDialogFragment;
+import de.vanita5.twittnuker.model.ParcelableDirectMessage;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
@@ -74,8 +85,7 @@ public class IntentUtils {
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         intent.setExtrasClassLoader(context.getClassLoader());
         intent.putExtras(extras);
-        if (BuildConfig.NEW_DOCUMENT_INTENT && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                && newDocument) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && newDocument) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         }
         if (context instanceof Activity) {
@@ -91,8 +101,7 @@ public class IntentUtils {
         if (context == null || accountId <= 0 || userId <= 0 && isEmpty(screenName)) return;
         final Uri uri = LinkCreator.getTwidereUserLink(accountId, userId, screenName);
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        if (BuildConfig.NEW_DOCUMENT_INTENT && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                && newDocument) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && newDocument) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         }
         if (context instanceof Activity) {
@@ -114,23 +123,6 @@ public class IntentUtils {
         context.startActivity(intent);
     }
 
-    public static void openUserTimeline(final Context context, final long accountId,
-                                        final long userId, final String screenName) {
-        if (context == null) return;
-        final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(TwittnukerConstants.SCHEME_TWITTNUKER);
-        builder.authority(TwittnukerConstants.AUTHORITY_USER_TIMELINE);
-        builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
-        if (userId > 0) {
-            builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_USER_ID, String.valueOf(userId));
-        }
-        if (screenName != null) {
-            builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_SCREEN_NAME, screenName);
-        }
-        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        context.startActivity(intent);
-    }
-
     public static void openUserMentions(final Context context, final long accountId, final String screenName) {
         if (context == null) return;
         final Uri.Builder builder = new Uri.Builder();
@@ -142,5 +134,104 @@ public class IntentUtils {
         }
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         context.startActivity(intent);
+    }
+
+    public static void openMedia(final Context context, final ParcelableDirectMessage message,
+                                 final ParcelableMedia current, @Nullable final Bundle options,
+                                 final boolean newDocument) {
+        openMedia(context, message.account_id, false, null, message, current, message.media, options, newDocument);
+    }
+
+    public static void openMedia(final Context context, final ParcelableStatus status,
+                                 final ParcelableMedia current, final Bundle options,
+                                 final boolean newDocument) {
+        openMedia(context, status.account_id, status.is_possibly_sensitive, status, null, current,
+                getPrimaryMedia(status), options, newDocument);
+    }
+
+    public static void openMedia(final Context context, final long accountId, final boolean isPossiblySensitive,
+                                 final ParcelableMedia current, final ParcelableMedia[] media,
+                                 final Bundle options, final boolean newDocument) {
+        openMedia(context, accountId, isPossiblySensitive, null, null, current, media, options, newDocument);
+    }
+
+    public static void openMedia(final Context context, final long accountId, final boolean isPossiblySensitive,
+                                 final ParcelableStatus status, final ParcelableDirectMessage message,
+                                 final ParcelableMedia current, final ParcelableMedia[] media,
+                                 final Bundle options, final boolean newDocument) {
+        if (context == null || media == null) return;
+        final SharedPreferences prefs = context.getSharedPreferences(TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        if (context instanceof FragmentActivity && isPossiblySensitive
+                && !prefs.getBoolean(SharedPreferenceConstants.KEY_DISPLAY_SENSITIVE_CONTENTS, false)) {
+            final FragmentActivity activity = (FragmentActivity) context;
+            final FragmentManager fm = activity.getSupportFragmentManager();
+            final DialogFragment fragment = new SensitiveContentWarningDialogFragment();
+            final Bundle args = new Bundle();
+            args.putLong(IntentConstants.EXTRA_ACCOUNT_ID, accountId);
+            args.putParcelable(IntentConstants.EXTRA_CURRENT_MEDIA, current);
+            if (status != null) {
+                args.putParcelable(IntentConstants.EXTRA_STATUS, status);
+            }
+            if (message != null) {
+                args.putParcelable(IntentConstants.EXTRA_MESSAGE, message);
+            }
+            args.putParcelableArray(IntentConstants.EXTRA_MEDIA, media);
+            args.putBundle(IntentConstants.EXTRA_ACTIVITY_OPTIONS, options);
+            args.putBundle(IntentConstants.EXTRA_ACTIVITY_OPTIONS, options);
+            args.putBoolean(IntentConstants.EXTRA_NEW_DOCUMENT, newDocument);
+            fragment.setArguments(args);
+            fragment.show(fm, "sensitive_content_warning");
+        } else {
+            openMediaDirectly(context, accountId, status, message, current, media, options,
+                    newDocument);
+        }
+    }
+
+    public static void openMediaDirectly(final Context context, final long accountId,
+                                         final ParcelableStatus status, final ParcelableMedia current,
+                                         final Bundle options, final boolean newDocument) {
+        openMediaDirectly(context, accountId, status, null, current, getPrimaryMedia(status),
+                options, newDocument);
+    }
+
+    public static ParcelableMedia[] getPrimaryMedia(ParcelableStatus status) {
+        if (status.is_quote && ArrayUtils.isEmpty(status.media)) {
+            return status.quoted_media;
+        } else {
+            return status.media;
+        }
+    }
+
+    public static void openMediaDirectly(final Context context, final long accountId,
+                                         final ParcelableDirectMessage message, final ParcelableMedia current,
+                                         final ParcelableMedia[] media, final Bundle options,
+                                         final boolean newDocument) {
+        openMediaDirectly(context, accountId, null, message, current, media, options, newDocument);
+    }
+
+    public static void openMediaDirectly(final Context context, final long accountId,
+                                         final ParcelableStatus status, final ParcelableDirectMessage message,
+                                         final ParcelableMedia current, final ParcelableMedia[] media,
+                                         final Bundle options, final boolean newDocument) {
+        if (context == null || media == null) return;
+        final Intent intent = new Intent(IntentConstants.INTENT_ACTION_VIEW_MEDIA);
+        intent.putExtra(IntentConstants.EXTRA_ACCOUNT_ID, accountId);
+        intent.putExtra(IntentConstants.EXTRA_CURRENT_MEDIA, current);
+        intent.putExtra(IntentConstants.EXTRA_MEDIA, media);
+        if (status != null) {
+            intent.putExtra(IntentConstants.EXTRA_STATUS, status);
+        }
+        if (message != null) {
+            intent.putExtra(IntentConstants.EXTRA_MESSAGE, message);
+        }
+        intent.setClass(context, MediaViewerActivity.class);
+        if (newDocument && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        }
+        if (context instanceof Activity) {
+            ActivityCompat.startActivity((Activity) context, intent, options);
+        } else {
+            context.startActivity(intent);
+        }
     }
 }

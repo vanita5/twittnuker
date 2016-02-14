@@ -35,6 +35,8 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -127,13 +129,15 @@ public class CardMediaContainer extends ViewGroup implements Constants {
             }
             if (i < k) {
                 final ParcelableMedia media = mediaArray[i];
-                if (media == null) continue;
                 final String url = TextUtils.isEmpty(media.preview_url) ? media.media_url : media.preview_url;
-                if (withCredentials) {
-                    loader.displayPreviewImageWithCredentials(imageView, url, accountId, loadingHandler);
-                } else {
-                    loader.displayPreviewImage(imageView, url, loadingHandler);
+                if (ObjectUtils.notEqual(url, imageView.getTag()) || imageView.getDrawable() == null) {
+                    if (withCredentials) {
+                        loader.displayPreviewImageWithCredentials(imageView, url, accountId, loadingHandler);
+                    } else {
+                        loader.displayPreviewImage(imageView, url, loadingHandler);
+                    }
                 }
+                imageView.setTag(url);
                 if (imageView instanceof MediaPreviewImageView) {
                     ((MediaPreviewImageView) imageView).setHasPlayIcon(ParcelableMediaUtils.hasPlayIcon(media.type));
                 }
@@ -152,6 +156,7 @@ public class CardMediaContainer extends ViewGroup implements Constants {
                 }
             } else {
                 loader.cancelDisplayTask(imageView);
+                imageView.setTag(null);
                 child.setVisibility(GONE);
             }
         }

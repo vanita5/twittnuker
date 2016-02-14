@@ -38,8 +38,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
 import android.widget.FrameLayout;
 
-import com.meizu.flyme.reflect.StatusBarProxy;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -304,7 +302,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
         final int statusBarColor = getCurrentActionBarColor();
         mMainContent.setColor(statusBarColor, alpha);
-        StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(statusBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
 
         mMainContent.setDrawShadow(false);
         mMainContent.setDrawColor(true);

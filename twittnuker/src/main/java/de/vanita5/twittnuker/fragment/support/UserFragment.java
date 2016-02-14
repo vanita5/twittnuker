@@ -85,7 +85,6 @@ import android.widget.TextView;
 
 import com.desmond.asyncmanager.AsyncManager;
 import com.desmond.asyncmanager.TaskRunnable;
-import com.meizu.flyme.reflect.StatusBarProxy;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -838,6 +837,12 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        setUiColor(mUiColor);
+    }
+
+    @Override
     public void onDestroyView() {
         mUser = null;
         mRelationship = null;
@@ -1237,8 +1242,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 ParcelableMedia profileImage = ParcelableMediaUtils.image(url);
                 profileImage.type = ParcelableMedia.Type.IMAGE;
                 final ParcelableMedia[] media = {profileImage};
-                Bundle options = Utils.createMediaViewerActivityOption(view);
-                Utils.openMedia(activity, user.account_id, false, null, media, options);
+                IntentUtils.openMedia(activity, user.account_id, false, null, media, null, true);
                 break;
             }
             case R.id.profile_banner: {
@@ -1247,8 +1251,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 ParcelableMedia profileBanner = ParcelableMediaUtils.image(url);
                 profileBanner.type = ParcelableMedia.Type.IMAGE;
                 final ParcelableMedia[] media = {profileBanner};
-                Bundle options = Utils.createMediaViewerActivityOption(view);
-                Utils.openMedia(activity, user.account_id, false, null, media, options);
+                IntentUtils.openMedia(activity, user.account_id, false, null, media, null, true);
                 break;
             }
             case R.id.tweets_container: {
@@ -1576,7 +1579,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             final int barColor = (Integer) sArgbEvaluator.evaluate(factor, mActionBarShadowColor, stackedTabColor);
             final boolean actionItemIsDark = TwidereColorUtils.getYIQLuminance(barColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD;
             if (mPreviousActionBarItemIsDark == 0 || (actionItemIsDark ? 1 : -1) != mPreviousActionBarItemIsDark) {
-                StatusBarProxy.setStatusBarDarkIcon(activity.getWindow(), actionItemIsDark);
                 final int contrastForegroundColor = ThemeUtils.getContrastForegroundColor(activity, themeId, barColor);
                 final Toolbar actionBarView = activity.getActionBarToolbar();
                 if (actionBarView != null) {

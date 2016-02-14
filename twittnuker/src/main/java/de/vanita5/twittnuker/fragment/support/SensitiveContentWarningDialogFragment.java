@@ -32,10 +32,9 @@ import android.support.v7.app.AlertDialog;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
-
-import static de.vanita5.twittnuker.util.Utils.openMediaDirectly;
 
 public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFragment implements
         DialogInterface.OnClickListener {
@@ -51,9 +50,11 @@ public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFrag
                 final ParcelableMedia current = args.getParcelable(EXTRA_CURRENT_MEDIA);
                 final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
                 final Bundle option = args.getBundle(EXTRA_ACTIVITY_OPTIONS);
+                final boolean newDocument = args.getBoolean(EXTRA_NEW_DOCUMENT);
                 final ParcelableMedia[] media = Utils.newParcelableArray(args.getParcelableArray(EXTRA_MEDIA),
                         ParcelableMedia.CREATOR);
-                openMediaDirectly(context, accountId, status, null, current, media, option);
+                IntentUtils.openMediaDirectly(context, accountId, status, null, current, media,
+                        option, newDocument);
                 break;
             }
         }

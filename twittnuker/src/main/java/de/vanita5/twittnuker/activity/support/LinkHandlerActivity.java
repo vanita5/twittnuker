@@ -45,8 +45,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 
-import com.meizu.flyme.reflect.StatusBarProxy;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
@@ -60,7 +58,6 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereActionModeForChildListener;
-import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ActivitySupport;
 import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat;
@@ -386,7 +383,6 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
                 ? ThemeUtils.getActionBarAlpha(getCurrentThemeBackgroundAlpha()) : 0xFF;
         final int statusBarColor = ThemeUtils.getActionBarColor(this);
         mMainContent.setColor(statusBarColor, alpha);
-        StatusBarProxy.setStatusBarDarkIcon(getWindow(), TwidereColorUtils.getYIQLuminance(statusBarColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD);
     }
 
     private boolean showFragment(final int linkId, final Uri uri) {
