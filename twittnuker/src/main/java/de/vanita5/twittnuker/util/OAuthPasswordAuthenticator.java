@@ -102,12 +102,12 @@ public class OAuthPasswordAuthenticator implements Constants {
             if (!TextUtils.isEmpty(authorizeResponseData.oauthPin)) {
                 // Here we got OAuth PIN, just get access token directly
                 return oauth.getAccessToken(requestToken, authorizeResponseData.oauthPin);
-            } else if (authorizeResponseData.verification == null) {
+            } else if (authorizeResponseData.challenge == null) {
                 // No OAuth pin, or verification challenge, so treat as wrong password
                 throw new WrongUserPassException();
             }
             // Go to password verification flow
-            final String challengeType = authorizeResponseData.verification.challengeType;
+            final String challengeType = authorizeResponseData.challenge.challengeType;
             final String loginVerification = loginVerificationCallback.getLoginVerification(challengeType);
             final AuthorizeRequestData verificationData = getVerificationData(authorizeResponseData,
                     loginVerification);
@@ -128,7 +128,7 @@ public class OAuthPasswordAuthenticator implements Constants {
         try {
             final AuthorizeRequestData data = new AuthorizeRequestData();
             final MultiValueMap<String> params = new MultiValueMap<>();
-            final AuthorizeResponseData.Verification verification = authorizeResponseData.verification;
+            final AuthorizeResponseData.Verification verification = authorizeResponseData.challenge;
             params.add("authenticity_token", verification.authenticityToken);
             params.add("user_id", verification.userId);
             params.add("challenge_id", verification.challengeId);
@@ -238,7 +238,7 @@ public class OAuthPasswordAuthenticator implements Constants {
             final HtmlParsingConfiguration conf = new HtmlParsingConfiguration();
             final IAttoHandler handler = new AbstractStandardNonValidatingHtmlAttoHandler(conf) {
                 boolean isOAuthPinDivOpened;
-                boolean isLoginVerificationFormOpened;
+                boolean isChallengeFormOpened;
 
                 @Override
                 public void handleHtmlStandaloneElement(IHtmlElement element, boolean minimized,
@@ -256,7 +256,7 @@ public class OAuthPasswordAuthenticator implements Constants {
                             break;
                         }
                         case "form": {
-                            isLoginVerificationFormOpened = false;
+                            isChallengeFormOpened = false;
                             break;
                         }
                     }
@@ -267,51 +267,61 @@ public class OAuthPasswordAuthenticator implements Constants {
                                                   Map<String, String> attributes, int line, int col) {
                     switch (elementName) {
                         case "div": {
-                            if (attributes != null && "oauth_pin".equals(attributes.get("id"))) {
+                            if (attributes == null) break;
+                            if ("oauth_pin".equals(attributes.get("id"))) {
                                 isOAuthPinDivOpened = true;
                             }
+
                             break;
                         }
                         case "form": {
-                            if (attributes != null && "login-verification-form".equals(attributes.get("id"))) {
-                                isLoginVerificationFormOpened = true;
+                            if (attributes == null) break;
+                            final String id = attributes.get("id");
+                            if (id == null) break;
+                            switch (id) {
+                                case "login-verification-form":
+                                case "login-challenge-form": {
+                                    isChallengeFormOpened = true;
+                                    break;
+                                }
                             }
                             break;
                         }
                         case "input":
-                            if (isLoginVerificationFormOpened && attributes != null) {
+                            if (attributes == null) break;
+                            if (isChallengeFormOpened) {
                                 final String name = attributes.get("name");
                                 if (TextUtils.isEmpty(name)) break;
                                 final String value = attributes.get("value");
                                 switch (name) {
                                     case "authenticity_token": {
                                         ensureVerification();
-                                        data.verification.authenticityToken = value;
+                                        data.challenge.authenticityToken = value;
                                         break;
                                     }
                                     case "challenge_id": {
                                         ensureVerification();
-                                        data.verification.challengeId = value;
+                                        data.challenge.challengeId = value;
                                         break;
                                     }
                                     case "challenge_type": {
                                         ensureVerification();
-                                        data.verification.challengeType = value;
+                                        data.challenge.challengeType = value;
                                         break;
                                     }
                                     case "platform": {
                                         ensureVerification();
-                                        data.verification.platform = value;
+                                        data.challenge.platform = value;
                                         break;
                                     }
                                     case "user_id": {
                                         ensureVerification();
-                                        data.verification.userId = value;
+                                        data.challenge.userId = value;
                                         break;
                                     }
                                     case "redirect_after_login": {
                                         ensureVerification();
-                                        data.verification.redirectAfterLogin = value;
+                                        data.challenge.redirectAfterLogin = value;
                                         break;
                                     }
                                 }
@@ -321,8 +331,8 @@ public class OAuthPasswordAuthenticator implements Constants {
                 }
 
                 private void ensureVerification() {
-                    if (data.verification == null) {
-                        data.verification = new AuthorizeResponseData.Verification();
+                    if (data.challenge == null) {
+                        data.challenge = new AuthorizeResponseData.Verification();
                     }
                 }
 
@@ -488,7 +498,7 @@ public class OAuthPasswordAuthenticator implements Constants {
         String referer;
 
         public String oauthPin;
-        public Verification verification;
+        public Verification challenge;
 
         static class Verification {
 

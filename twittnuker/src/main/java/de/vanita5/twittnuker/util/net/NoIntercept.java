@@ -20,22 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment.support;
+package de.vanita5.twittnuker.util.net;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-
-import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
-import de.vanita5.twittnuker.loader.support.MutesUsersLoader;
-
-public class MutesUsersListFragment extends CursorSupportUsersListFragment {
-
-    @Override
-    public CursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
-        if (args == null) return null;
-        final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
-        return new MutesUsersLoader(context, account_id, getNextCursor(), getData(), fromUser);
-    }
-
+public class NoIntercept {
+    public static final NoIntercept INSTANCE = new NoIntercept();
 }

@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 
@@ -57,7 +58,7 @@ public class UsersListFragment extends ParcelableUsersFragment {
     }
 
     @Override
-    public Loader<List<ParcelableUser>> onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser) {
+    public Loader<List<ParcelableUser>> onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
         if (args == null) return null;
         if (args.containsKey(EXTRA_USERS))
             return new IntentExtrasUsersLoader(context, args, getData(), fromUser);

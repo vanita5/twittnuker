@@ -35,13 +35,18 @@ import com.squareup.leakcanary.ServiceHeapDumpListener;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.activity.support.ComposeActivity;
+
+import java.io.IOException;
+
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 public class DebugModeUtils {
 
     private static RefWatcher sRefWatcher;
 
-    public static void initForOkHttpClient(final OkHttpClient.Builder client) {
+    public static void initForOkHttpClient(final OkHttpClient.Builder builder) {
     }
 
     public static void initForApplication(final Application application) {

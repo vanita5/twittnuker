@@ -24,18 +24,19 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
 import de.vanita5.twittnuker.loader.support.StatusFavoritersLoader;
 
 public class StatusFavoritersListFragment extends CursorSupportUsersListFragment {
 
-	@Override
-	public IDsUsersLoader onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser) {
-		if (args == null) return null;
-		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		final long statusId = args.getLong(EXTRA_STATUS_ID, -1);
-		return new StatusFavoritersLoader(context, accountId, statusId, getNextCursor(), getData(), false);
-	}
+    @Override
+    public IDsUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
+        if (args == null) return null;
+        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final long statusId = args.getLong(EXTRA_STATUS_ID, -1);
+        return new StatusFavoritersLoader(context, accountId, statusId, getNextCursor(), getData(), false);
+    }
 
 }

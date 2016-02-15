@@ -761,6 +761,7 @@
     <string name="link_copied_to_clipboard">Link kopiert</string>
     <string name="login_verification">Login Verifizierung</string>
     <string name="login_verification_pin_hint">Warte auf den PIN Code und gib ihn hier ein, um dich einzuloggen.</string>
+    <string name="login_challenge_retype_phone_hint">Bitte gib die Handynummer, die mit deinem Twitter Account verknüpft ist, ein.</string>
     <string name="login_verification_push_hint">Warte auf die Verifizierungsanfrage von der Twitter App und bestätige sie, um dich einzuloggen.</string>
     <string name="login_verification_failed">Login Verifizierung fehlgeschlagen.</string>
     <string name="saved_searches_already_saved_hint">Du hast diese Suche schon gespeichert</string>

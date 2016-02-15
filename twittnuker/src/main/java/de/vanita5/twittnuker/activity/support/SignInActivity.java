@@ -96,7 +96,6 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereActionModeForChildListener;
-import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
@@ -945,6 +944,9 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
             if ("Push".equalsIgnoreCase(challengeType)) {
                 verificationHint.setText(R.string.login_verification_push_hint);
                 editVerification.setVisibility(View.GONE);
+            } else if ("RetypePhoneNumber".equalsIgnoreCase(challengeType)) {
+                verificationHint.setText(R.string.login_challenge_retype_phone_hint);
+                editVerification.setVisibility(View.VISIBLE);
             } else {
                 verificationHint.setText(R.string.login_verification_pin_hint);
                 editVerification.setVisibility(View.VISIBLE);

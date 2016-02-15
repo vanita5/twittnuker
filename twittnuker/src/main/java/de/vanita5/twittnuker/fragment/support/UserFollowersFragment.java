@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.UserFollowersLoader;
@@ -56,7 +57,7 @@ public class UserFollowersFragment extends CursorSupportUsersListFragment {
     };
 
     @Override
-    public CursorSupportUsersLoader onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser) {
+	public CursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
         if (args == null) return null;
         final long account_id = args.getLong(EXTRA_ACCOUNT_ID, -1);
         final long user_id = args.getLong(EXTRA_USER_ID, -1);

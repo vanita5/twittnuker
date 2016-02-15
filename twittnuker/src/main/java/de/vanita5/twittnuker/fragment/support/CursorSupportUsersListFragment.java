@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
@@ -98,5 +99,5 @@ public abstract class CursorSupportUsersListFragment extends ParcelableUsersFrag
     }
 
     @Override
-    protected abstract BaseCursorSupportUsersLoader onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser);
+    protected abstract BaseCursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser);
 }

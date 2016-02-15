@@ -24,17 +24,17 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
 import de.vanita5.twittnuker.loader.support.IncomingFriendshipsLoader;
 
 public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment {
 
-	@Override
-    public IDsUsersLoader onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser) {
-		if (args == null) return null;
-		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+    @Override
+    public IDsUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
+        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
         return new IncomingFriendshipsLoader(context, accountId, getNextCursor(), getData(), fromUser);
-	}
+    }
 
 }

@@ -24,22 +24,23 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.UserListSubscribersLoader;
 
 public class UserListSubscribersFragment extends CursorSupportUsersListFragment {
 
-	@Override
-	public CursorSupportUsersLoader onCreateUsersLoader(final Context context, final Bundle args, boolean fromUser) {
-		if (args == null) return null;
-		final long listId = args.getLong(EXTRA_LIST_ID, -1);
-		final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-		final long userId = args.getLong(EXTRA_USER_ID, -1);
-		final String screenName = args.getString(EXTRA_SCREEN_NAME);
-		final String listName = args.getString(EXTRA_LIST_NAME);
-		return new UserListSubscribersLoader(context, accountId, listId, userId, screenName, listName,
-				getNextCursor(), getData(), fromUser);
-	}
+    @Override
+    public CursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
+        if (args == null) return null;
+        final long listId = args.getLong(EXTRA_LIST_ID, -1);
+        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final long userId = args.getLong(EXTRA_USER_ID, -1);
+        final String screenName = args.getString(EXTRA_SCREEN_NAME);
+        final String listName = args.getString(EXTRA_LIST_NAME);
+        return new UserListSubscribersLoader(context, accountId, listId, userId, screenName, listName,
+                getNextCursor(), getData(), fromUser);
+    }
 
 }
