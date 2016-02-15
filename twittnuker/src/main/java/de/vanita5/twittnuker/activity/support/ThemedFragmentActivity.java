@@ -74,6 +74,7 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     @Inject
     protected Bus mBus;
 
+
     // Data fields
     private int mCurrentThemeResource, mCurrentThemeColor, mCurrentThemeBackgroundAlpha,
             mCurrentActionBarColor;

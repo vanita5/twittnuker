@@ -109,6 +109,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 import de.vanita5.twittnuker.receiver.NotificationReceiver;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
+import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ImagePreloader;
@@ -170,6 +171,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     UserColorNameManager mUserColorNameManager;
     @Inject
     BidiFormatter mBidiFormatter;
+    @Inject
+    ActivityTracker mActivityTracker;
 
     private Handler mHandler;
     private NotificationHelper mNotificationHelper;

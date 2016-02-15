@@ -30,9 +30,12 @@ import android.os.Bundle;
 import org.apache.commons.collections.primitives.ArrayIntList;
 import org.apache.commons.collections.primitives.IntList;
 
+import de.vanita5.twittnuker.activity.support.HomeActivity;
+
 public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
 
     private final IntList mInternalStack = new ArrayIntList();
+    private boolean mHomeActivityStarted;
 
     private boolean isSwitchingInSameTask(int hashCode) {
         return mInternalStack.lastIndexOf(hashCode) < mInternalStack.size() - 1;
@@ -54,6 +57,9 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityStarted(final Activity activity) {
         mInternalStack.add(System.identityHashCode(activity));
+        if (activity instanceof HomeActivity) {
+            mHomeActivityStarted = true;
+        }
     }
 
     @Override
@@ -69,6 +75,9 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityStopped(Activity activity) {
         final int hashCode = System.identityHashCode(activity);
+        if (activity instanceof HomeActivity) {
+            mHomeActivityStarted = false;
+        }
 
         mInternalStack.removeElement(hashCode);
     }
@@ -81,5 +90,9 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityDestroyed(Activity activity) {
 
+    }
+
+    public boolean isHomeActivityStarted() {
+        return mHomeActivityStarted;
     }
 }

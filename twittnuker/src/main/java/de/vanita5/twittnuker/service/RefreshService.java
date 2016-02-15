@@ -30,6 +30,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -37,6 +39,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.AccountPreferences;
+import de.vanita5.twittnuker.model.SimpleRefreshTaskParam;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -82,38 +86,76 @@ public class RefreshService extends Service implements Constants {
             } else if (BROADCAST_RESCHEDULE_TRENDS_REFRESHING.equals(action)) {
                 rescheduleTrendsRefreshing();
             } else if (isAutoRefreshAllowed()) {
-                final long[] accountIds = DataStoreUtils.getAccountIds(context);
-                final AccountPreferences[] accountPrefs = AccountPreferences.getAccountPreferences(context, accountIds);
                 if (BROADCAST_REFRESH_HOME_TIMELINE.equals(action)) {
-                    final long[] refreshIds = getRefreshableIds(accountPrefs, new HomeRefreshableFilter());
-                    final long[] sinceIds = DataStoreUtils.getNewestStatusIds(context, Statuses.CONTENT_URI, refreshIds);
-                    if (BuildConfig.DEBUG) {
-                        Log.d(LOGTAG, String.format("Auto refreshing home for %s", Arrays.toString(refreshIds)));
-                    }
                     if (!isHomeTimelineRefreshing()) {
-                        getHomeTimeline(refreshIds, null, sinceIds);
+                        mTwitterWrapper.getHomeTimelineAsync(new SimpleRefreshTaskParam() {
+                            private long[] accountIds;
+
+                            @NonNull
+                            @Override
+                            public long[] getAccountIds() {
+                                if (accountIds != null) return accountIds;
+                                final AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(context,
+                                        DataStoreUtils.getAccountIds(context));
+                                return accountIds = getRefreshableIds(prefs, HomeRefreshableFilter.INSTANCE);
+                            }
+
+                            @Nullable
+                            @Override
+                            public long[] getSinceIds() {
+                                return DataStoreUtils.getNewestStatusIds(context,
+                                        Statuses.CONTENT_URI, getAccountIds());
+                            }
+                        });
                     }
                 } else if (BROADCAST_REFRESH_NOTIFICATIONS.equals(action)) {
-                    final long[] refreshIds = getRefreshableIds(accountPrefs, new MentionsRefreshableFilter());
-                    if (BuildConfig.DEBUG) {
-                        Log.d(LOGTAG, String.format("Auto refreshing notifications for %s", Arrays.toString(refreshIds)));
-                    }
                     if (!isActivitiesAboutMeRefreshing()) {
-                        getActivitiesAboutMe(refreshIds, null, null);
+                        mTwitterWrapper.getActivitiesAboutMeAsync(new SimpleRefreshTaskParam() {
+                            private long[] accountIds;
+
+                            @NonNull
+                            @Override
+                            public long[] getAccountIds() {
+                                if (accountIds != null) return accountIds;
+                                final AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(context,
+                                        DataStoreUtils.getAccountIds(context));
+                                return accountIds = getRefreshableIds(prefs, MentionsRefreshableFilter.INSTANCE);
+                            }
+
+                            @Nullable
+                            @Override
+                            public long[] getSinceIds() {
+                                return DataStoreUtils.getNewestActivityMaxPositions(context,
+                                        Activities.AboutMe.CONTENT_URI, getAccountIds());
+                            }
+                        });
                     }
                 } else if (BROADCAST_REFRESH_DIRECT_MESSAGES.equals(action)) {
-                    final long[] refreshIds = getRefreshableIds(accountPrefs, new MessagesRefreshableFilter());
-                    final long[] sinceIds = DataStoreUtils.getNewestMessageIds(context,
-                            DirectMessages.Inbox.CONTENT_URI,
-                            refreshIds);
-                    if (BuildConfig.DEBUG) {
-                        Log.d(LOGTAG, String.format("Auto refreshing messages for %s", Arrays.toString(refreshIds)));
-                    }
                     if (!isReceivedDirectMessagesRefreshing()) {
-                        getReceivedDirectMessages(refreshIds, null, sinceIds);
+                        mTwitterWrapper.getReceivedDirectMessagesAsync(new SimpleRefreshTaskParam() {
+                            private long[] accountIds;
+
+                            @NonNull
+                            @Override
+                            public long[] getAccountIds() {
+                                if (accountIds != null) return accountIds;
+                                final AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(context,
+                                        DataStoreUtils.getAccountIds(context));
+                                return accountIds = getRefreshableIds(prefs, MessagesRefreshableFilter.INSTANCE);
+                            }
+
+                            @Nullable
+                            @Override
+                            public long[] getSinceIds() {
+                                return DataStoreUtils.getNewestMessageIds(context,
+                                        DirectMessages.Inbox.CONTENT_URI, getAccountIds());
+                            }
+                        });
                     }
                 } else if (BROADCAST_REFRESH_TRENDS.equals(action)) {
-                    final long[] refreshIds = getRefreshableIds(accountPrefs, new TrendsRefreshableFilter());
+                    final AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(context,
+                            DataStoreUtils.getAccountIds(context));
+                    final long[] refreshIds = getRefreshableIds(prefs, TrendsRefreshableFilter.INSTANCE);
                     if (BuildConfig.DEBUG) {
                         Log.d(LOGTAG, String.format("Auto refreshing trends for %s", Arrays.toString(refreshIds)));
                     }
@@ -193,23 +235,10 @@ public class RefreshService extends Service implements Constants {
         return isNetworkAvailable(this) && (isBatteryOkay(this) || !shouldStopAutoRefreshOnBatteryLow(this));
     }
 
-    private boolean getHomeTimeline(final long[] accountIds, final long[] maxIds, final long[] sinceIds) {
-        return mTwitterWrapper.getHomeTimelineAsync(accountIds, maxIds, sinceIds);
-    }
-
     private int getLocalTrends(final long[] accountIds) {
         final long account_id = getDefaultAccountId(this);
         final int woeid = mPreferences.getInt(KEY_LOCAL_TRENDS_WOEID, 1);
         return mTwitterWrapper.getLocalTrendsAsync(account_id, woeid);
-    }
-
-    private boolean getActivitiesAboutMe(final long[] accountIds, final long[] maxIds, final long[] sinceIds) {
-        mTwitterWrapper.getActivitiesAboutMeAsync(accountIds, maxIds, sinceIds);
-        return true;
-    }
-
-    private int getReceivedDirectMessages(final long[] accountIds, final long[] maxIds, final long[] sinceIds) {
-        return mTwitterWrapper.getReceivedDirectMessagesAsync(accountIds, maxIds, sinceIds);
     }
 
     private long[] getRefreshableIds(final AccountPreferences[] prefs, final RefreshableAccountFilter filter) {
@@ -302,7 +331,13 @@ public class RefreshService extends Service implements Constants {
         mAlarmManager.cancel(mPendingRefreshTrendsIntent);
     }
 
+    private interface RefreshableAccountFilter {
+        boolean isRefreshable(AccountPreferences pref);
+    }
+
     private static class HomeRefreshableFilter implements RefreshableAccountFilter {
+        public static final RefreshableAccountFilter INSTANCE = new HomeRefreshableFilter();
+
         @Override
         public boolean isRefreshable(final AccountPreferences pref) {
             return pref.isAutoRefreshHomeTimelineEnabled();
@@ -310,6 +345,8 @@ public class RefreshService extends Service implements Constants {
     }
 
     private static class MentionsRefreshableFilter implements RefreshableAccountFilter {
+
+        static final RefreshableAccountFilter INSTANCE = new MentionsRefreshableFilter();
 
         @Override
         public boolean isRefreshable(final AccountPreferences pref) {
@@ -319,17 +356,17 @@ public class RefreshService extends Service implements Constants {
     }
 
     private static class MessagesRefreshableFilter implements RefreshableAccountFilter {
+        public static final RefreshableAccountFilter INSTANCE = new MentionsRefreshableFilter();
+
         @Override
         public boolean isRefreshable(final AccountPreferences pref) {
             return pref.isAutoRefreshDirectMessagesEnabled();
         }
     }
 
-    private interface RefreshableAccountFilter {
-        boolean isRefreshable(AccountPreferences pref);
-    }
-
     private static class TrendsRefreshableFilter implements RefreshableAccountFilter {
+        public static final RefreshableAccountFilter INSTANCE = new TrendsRefreshableFilter();
+
         @Override
         public boolean isRefreshable(final AccountPreferences pref) {
             return pref.isAutoRefreshTrendsEnabled();

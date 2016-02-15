@@ -25,13 +25,31 @@ package de.vanita5.twittnuker.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-public interface RefreshTaskParam {
+public class BaseRefreshTaskParam implements RefreshTaskParam {
+
+    private final long[] accountIds, maxIds, sinceIds;
+
     @NonNull
-    long[] getAccountIds();
+    @Override
+    public long[] getAccountIds() {
+        return accountIds;
+    }
 
     @Nullable
-    long[] getMaxIds();
+    @Override
+    public long[] getMaxIds() {
+        return maxIds;
+    }
 
     @Nullable
-    long[] getSinceIds();
+    @Override
+    public long[] getSinceIds() {
+        return sinceIds;
+    }
+
+    public BaseRefreshTaskParam(long[] accountIds, long[] maxIds, long[] sinceIds) {
+        this.accountIds = accountIds;
+        this.maxIds = maxIds;
+        this.sinceIds = sinceIds;
+    }
 }
