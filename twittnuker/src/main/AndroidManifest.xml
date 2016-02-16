@@ -211,7 +211,7 @@
             android:name=".activity.support.BrowserSignInActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/browser_sign_in"
-            android:theme="@style/Theme.Twidere.Dark.Dialog"
+            android:theme="@style/Theme.Twidere.Dark"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.TWITTER_BROWSER_LOGIN" />
