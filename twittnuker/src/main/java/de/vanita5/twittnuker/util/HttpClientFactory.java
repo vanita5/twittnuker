@@ -29,7 +29,7 @@ import android.text.TextUtils;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mariotaku.restfu.http.RestHttpClient;
-import org.mariotaku.restfu.okhttp.OkHttpRestClient;
+import org.mariotaku.restfu.okhttp3.OkHttpRestClient;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
@@ -121,8 +121,7 @@ public class HttpClientFactory implements Constants {
     }
 
     public static void reloadConnectivitySettings(Context context) {
-        DependencyHolder holder = DependencyHolder.get(context);
-        holder.getConnectionPoll().evictAll();
+        final DependencyHolder holder = DependencyHolder.get(context);
         final RestHttpClient client = holder.getRestHttpClient();
         if (client instanceof OkHttpRestClient) {
             final OkHttpClient.Builder builder = new OkHttpClient.Builder();

@@ -43,7 +43,7 @@ import org.mariotaku.restfu.http.MultiValueMap;
 import org.mariotaku.restfu.http.RestHttpClient;
 import org.mariotaku.restfu.http.mime.FormBody;
 import org.mariotaku.restfu.http.mime.SimpleBody;
-import org.mariotaku.restfu.okhttp.OkHttpRestClient;
+import org.mariotaku.restfu.okhttp3.OkHttpRestClient;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.TwitterException;

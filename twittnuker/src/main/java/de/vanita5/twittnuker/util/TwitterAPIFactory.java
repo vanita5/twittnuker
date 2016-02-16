@@ -65,7 +65,6 @@ import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
-import de.vanita5.twittnuker.util.net.TwidereDns;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -162,7 +161,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         factory.setConstantPool(sConstantPoll);
         factory.setRestConverterFactory(new TwitterConverterFactory());
         factory.setHttpRequestFactory(new TwidereHttpRequestFactory(userAgent));
-        factory.setExceptionFactory(new TwidereExceptionFactory(holder.getDns()));
+        factory.setExceptionFactory(new TwidereExceptionFactory());
         return factory.build(cls);
     }
 
@@ -459,10 +458,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
 
     public static class TwidereExceptionFactory implements ExceptionFactory<TwitterException> {
 
-        private final TwidereDns dns;
-
-        TwidereExceptionFactory(TwidereDns dns) {
-            this.dns = dns;
+        TwidereExceptionFactory() {
         }
 
         @Override

@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -32,6 +31,8 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.text.Selection;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.ScrollingMovementMethod;
@@ -42,6 +43,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.mariotaku.restfu.RestAPIFactory;
+import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.http.Endpoint;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -53,10 +56,17 @@ import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
+
+import org.mariotaku.restfu.http.HttpRequest;
+import org.mariotaku.restfu.http.HttpResponse;
+import org.mariotaku.restfu.http.RestHttpClient;
 import org.xbill.DNS.ResolverConfig;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -98,18 +108,27 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
     private void appendMessage(LogText message) {
         SpannableString coloredText = SpannableString.valueOf(message.message);
         switch (message.state) {
-            case LogText.State.GOOD: {
-                coloredText.setSpan(new ForegroundColorSpan(Color.GREEN), 0, coloredText.length(),
+            case LogText.State.OK: {
+                coloredText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
+                                R.color.material_light_green)), 0, coloredText.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 break;
             }
-            case LogText.State.BAD: {
-                coloredText.setSpan(new ForegroundColorSpan(Color.RED), 0, coloredText.length(),
+            case LogText.State.ERROR: {
+                coloredText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
+                                R.color.material_red)), 0, coloredText.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                break;
+            }
+            case LogText.State.WARNING: {
+                coloredText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
+                                R.color.material_amber)), 0, coloredText.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 break;
             }
         }
         mLogTextView.append(coloredText);
+        Selection.setSelection(mLogTextView.getEditableText(), mLogTextView.length());
     }
 
     static class DiagnosticsTask extends AsyncTask<Object, LogText, Object> {
@@ -128,21 +147,10 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
 
         @Override
         protected Object doInBackground(Object... params) {
-            publishProgress(new LogText("Build information: "));
-            publishProgress(new LogText("version_code: " + BuildConfig.VERSION_CODE), LogText.LINEBREAK);
-            publishProgress(new LogText("version_name: " + BuildConfig.VERSION_NAME), LogText.LINEBREAK);
-            publishProgress(new LogText("flavor: " + BuildConfig.FLAVOR), LogText.LINEBREAK);
-            publishProgress(new LogText("debug: " + BuildConfig.DEBUG), LogText.LINEBREAK);
-            publishProgress(LogText.LINEBREAK);
-            publishProgress(new LogText("Basic system information: "));
-            publishProgress(new LogText(String.valueOf(mContext.getResources().getConfiguration())));
+            publishProgress(new LogText("**** NOTICE ****", LogText.State.WARNING));
             publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
-            publishProgress(new LogText("Active network info: "));
-            publishProgress(new LogText(String.valueOf(mConnectivityManager.getActiveNetworkInfo())));
-            publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
-            publishProgress(new LogText("**** NOTICE ****"));
-            publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
-            publishProgress(new LogText("Text below may have personal information, BE CAREFUL TO MAKE IT PUBLIC"));
+            publishProgress(new LogText("Text below may have personal information, BE CAREFUL TO MAKE IT PUBLIC",
+                    LogText.State.WARNING));
             publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
             DependencyHolder holder = DependencyHolder.get(mContext);
             final TwidereDns dns = holder.getDns();
@@ -184,11 +192,46 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
                     testDns(dns, host);
                     testNativeLookup(host);
                 } else {
-                    publishProgress(new LogText("API URL format is invalid", LogText.State.BAD));
+                    publishProgress(new LogText("API URL format is invalid", LogText.State.ERROR));
                     publishProgress(LogText.LINEBREAK);
                 }
 
                 publishProgress(LogText.LINEBREAK);
+
+                publishProgress(new LogText("Testing Network connectivity"));
+                publishProgress(LogText.LINEBREAK);
+
+                final String baseUrl = TwitterAPIFactory.getApiBaseUrl(credentials.api_url_format, "api");
+                RestHttpClient client = RestAPIFactory.getRestClient(twitter).getRestClient();
+                HttpResponse response = null;
+                try {
+                    publishProgress(new LogText("Connecting to " + baseUrl + "..."));
+                    HttpRequest.Builder builder = new HttpRequest.Builder();
+                    builder.method(GET.METHOD);
+                    builder.url(baseUrl);
+                    final long start = SystemClock.uptimeMillis();
+                    response = client.newCall(builder.build()).execute();
+                    publishProgress(new LogText(String.format(" OK (%d ms)", SystemClock.uptimeMillis()
+                            - start), LogText.State.OK));
+                } catch (IOException e) {
+                    publishProgress(new LogText("ERROR: " + e.getMessage(), LogText.State.ERROR));
+                }
+                publishProgress(LogText.LINEBREAK);
+                try {
+                    if (response != null) {
+                        publishProgress(new LogText("Reading response..."));
+                        final long start = SystemClock.uptimeMillis();
+                        final CountOutputStream os = new CountOutputStream();
+                        response.getBody().writeTo(os);
+                        publishProgress(new LogText(String.format(" %d bytes (%d ms)", os.getTotal(),
+                                SystemClock.uptimeMillis() - start), LogText.State.OK));
+                    }
+                } catch (IOException e) {
+                    publishProgress(new LogText("ERROR: " + e.getMessage(), LogText.State.ERROR));
+                } finally {
+                    Utils.closeSilently(response);
+                }
+                publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
 
                 publishProgress(new LogText("Testing API functionality"));
                 publishProgress(LogText.LINEBREAK);
@@ -222,6 +265,20 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
             testNativeLookup("twitter.com");
 
             publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
+
+            publishProgress(new LogText("Build information: "));
+            publishProgress(new LogText("version_code: " + BuildConfig.VERSION_CODE), LogText.LINEBREAK);
+            publishProgress(new LogText("version_name: " + BuildConfig.VERSION_NAME), LogText.LINEBREAK);
+            publishProgress(new LogText("flavor: " + BuildConfig.FLAVOR), LogText.LINEBREAK);
+            publishProgress(new LogText("debug: " + BuildConfig.DEBUG), LogText.LINEBREAK);
+            publishProgress(LogText.LINEBREAK);
+            publishProgress(new LogText("Basic system information: "));
+            publishProgress(new LogText(String.valueOf(mContext.getResources().getConfiguration())));
+            publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
+            publishProgress(new LogText("Active network info: "));
+            publishProgress(new LogText(String.valueOf(mConnectivityManager.getActiveNetworkInfo())));
+            publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
+
             publishProgress(new LogText("Done. You can send this log to me, and I'll contact you to solve related issue."));
             return null;
         }
@@ -232,9 +289,9 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
                 final long start = SystemClock.uptimeMillis();
                 publishProgress(new LogText(String.valueOf(dns.lookupResolver(host))));
                 publishProgress(new LogText(String.format(" OK (%d ms)", SystemClock.uptimeMillis()
-                        - start), LogText.State.GOOD));
+                        - start), LogText.State.OK));
             } catch (UnknownHostException e) {
-                publishProgress(new LogText("ERROR: " + e.getMessage(), LogText.State.BAD));
+                publishProgress(new LogText("ERROR: " + e.getMessage(), LogText.State.ERROR));
             }
             publishProgress(LogText.LINEBREAK);
         }
@@ -245,9 +302,9 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
                 final long start = SystemClock.uptimeMillis();
                 publishProgress(new LogText(Arrays.toString(InetAddress.getAllByName(host))));
                 publishProgress(new LogText(String.format(" OK (%d ms)", SystemClock.uptimeMillis()
-                        - start), LogText.State.GOOD));
+                        - start), LogText.State.OK));
             } catch (UnknownHostException e) {
-                publishProgress(new LogText("ERROR: " + e.getMessage(), LogText.State.BAD));
+                publishProgress(new LogText("ERROR: " + e.getMessage(), LogText.State.ERROR));
             }
             publishProgress(LogText.LINEBREAK);
         }
@@ -258,9 +315,9 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
                 final long start = SystemClock.uptimeMillis();
                 test.execute(twitter);
                 publishProgress(new LogText(String.format("OK (%d ms)", SystemClock.uptimeMillis()
-                        - start), LogText.State.GOOD));
+                        - start), LogText.State.OK));
             } catch (TwitterException e) {
-                publishProgress(new LogText("ERROR: " + e.getMessage(), LogText.State.BAD));
+                publishProgress(new LogText("ERROR: " + e.getMessage(), LogText.State.ERROR));
             }
             publishProgress(LogText.LINEBREAK);
         }
@@ -331,12 +388,25 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
             this.message = message;
         }
 
-        @IntDef({State.DEFAULT, State.GOOD, State.BAD})
+        @IntDef({State.DEFAULT, State.OK, State.ERROR, State.WARNING})
         @interface State {
             int DEFAULT = 0;
-            int GOOD = 1;
-            int BAD = 2;
+            int OK = 1;
+            int ERROR = 2;
+            int WARNING = 3;
         }
     }
 
+    private static class CountOutputStream extends OutputStream {
+        private long total;
+
+        public long getTotal() {
+            return total;
+        }
+
+        @Override
+        public void write(int oneByte) throws IOException {
+            total++;
+        }
+    }
 }

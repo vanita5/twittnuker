@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
 import de.vanita5.twittnuker.loader.support.IncomingFriendshipsLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.message.FollowRequestTaskEvent;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
 import java.util.List;
