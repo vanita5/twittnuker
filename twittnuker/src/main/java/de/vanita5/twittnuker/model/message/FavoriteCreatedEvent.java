@@ -20,18 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.message;
+package de.vanita5.twittnuker.model.message;
 
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 
-public class UserListCreatedEvent {
+public class FavoriteCreatedEvent {
 
     @NonNull
-    public final ParcelableUserList userList;
+    public final ParcelableStatus status;
 
-    public UserListCreatedEvent(@NonNull ParcelableUserList userList) {
-        this.userList = userList;
+    public FavoriteCreatedEvent(@NonNull ParcelableStatus status) {
+        this.status = status;
     }
 }

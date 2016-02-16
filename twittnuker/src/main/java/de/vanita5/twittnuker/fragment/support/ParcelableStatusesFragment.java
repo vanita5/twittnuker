@@ -33,11 +33,11 @@ import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
-import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
-import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
-import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
-import de.vanita5.twittnuker.util.message.StatusRetweetedEvent;
+import de.vanita5.twittnuker.model.message.FavoriteCreatedEvent;
+import de.vanita5.twittnuker.model.message.FavoriteDestroyedEvent;
+import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
+import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
+import de.vanita5.twittnuker.model.message.StatusRetweetedEvent;
 
 import java.util.HashSet;
 import java.util.List;

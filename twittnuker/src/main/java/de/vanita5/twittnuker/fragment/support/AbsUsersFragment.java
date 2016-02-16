@@ -34,7 +34,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 
 import de.vanita5.twittnuker.adapter.AbsUsersAdapter;
-import de.vanita5.twittnuker.adapter.AbsUsersAdapter.UserAdapterListener;
+import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserAdapterListener;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -74,7 +74,7 @@ abstract class AbsUsersFragment<Data> extends AbsContentListRecyclerViewFragment
         final AbsUsersAdapter<Data> adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();
-        adapter.setListener(this);
+        adapter.setUserAdapterListener(this);
 
         mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
                 this);
@@ -134,7 +134,7 @@ abstract class AbsUsersFragment<Data> extends AbsContentListRecyclerViewFragment
 
     @Override
     protected void setupRecyclerView(Context context, boolean compact) {
-
+        super.setupRecyclerView(context, true);
     }
 
 }

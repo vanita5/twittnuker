@@ -28,7 +28,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.adapter.AbsUsersAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -45,8 +44,14 @@ public abstract class ParcelableUsersFragment extends AbsUsersFragment<List<Parc
 
     @NonNull
     @Override
-    protected AbsUsersAdapter<List<ParcelableUser>> onCreateAdapter(Context context, boolean compact) {
+    protected ParcelableUsersAdapter onCreateAdapter(Context context, boolean compact) {
         return new ParcelableUsersAdapter(context);
+    }
+
+    @NonNull
+    @Override
+    public ParcelableUsersAdapter getAdapter() {
+        return (ParcelableUsersAdapter) super.getAdapter();
     }
 
     protected long getAccountId() {

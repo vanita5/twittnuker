@@ -57,7 +57,7 @@ import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.util.message.GetActivitiesTaskEvent;
+import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;

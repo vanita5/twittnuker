@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.message;
+package de.vanita5.twittnuker.model.message;
 
 import android.support.annotation.NonNull;
 
@@ -28,10 +28,10 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public class FavoriteDestroyedEvent {
 
-	@NonNull
-	public final ParcelableStatus status;
+    @NonNull
+    public final ParcelableStatus status;
 
-	public FavoriteDestroyedEvent(@NonNull ParcelableStatus status) {
-		this.status = status;
-	}
+    public FavoriteDestroyedEvent(@NonNull ParcelableStatus status) {
+        this.status = status;
+    }
 }

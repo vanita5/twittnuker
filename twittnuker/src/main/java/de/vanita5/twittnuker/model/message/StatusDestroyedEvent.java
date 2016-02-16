@@ -20,7 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.message;
+package de.vanita5.twittnuker.model.message;
 
-public class TaskStateChangedEvent {
+import de.vanita5.twittnuker.model.ParcelableStatus;
+
+public class StatusDestroyedEvent {
+
+    public final ParcelableStatus status;
+
+    public StatusDestroyedEvent(ParcelableStatus status) {
+        this.status = status;
+    }
 }

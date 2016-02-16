@@ -26,10 +26,30 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.squareup.otto.Subscribe;
+
+import de.vanita5.twittnuker.adapter.AbsUsersAdapter;
+import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
+import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
 import de.vanita5.twittnuker.loader.support.IncomingFriendshipsLoader;
+import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
-public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment {
+import java.util.List;
+
+public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment implements IUsersAdapter.RequestClickListener {
+    @Override
+    public void onStart() {
+        super.onStart();
+        mBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        mBus.unregister(this);
+        super.onStop();
+    }
 
     @Override
     public IDsUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
@@ -37,4 +57,38 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
         return new IncomingFriendshipsLoader(context, accountId, getNextCursor(), getData(), fromUser);
     }
 
+    @NonNull
+    @Override
+    protected ParcelableUsersAdapter onCreateAdapter(Context context, boolean compact) {
+        final ParcelableUsersAdapter adapter = super.onCreateAdapter(context, compact);
+        adapter.setRequestClickListener(this);
+        return adapter;
+    }
+
+    @Override
+    public void onAcceptClicked(UserViewHolder holder, int position) {
+        final AbsUsersAdapter<List<ParcelableUser>> adapter = getAdapter();
+        final ParcelableUser user = adapter.getUser(position);
+        if (user == null) return;
+        mTwitterWrapper.acceptFriendshipAsync(user.account_id, user.id);
+    }
+
+    @Override
+    public void onDenyClicked(UserViewHolder holder, int position) {
+        final AbsUsersAdapter<List<ParcelableUser>> adapter = getAdapter();
+        final ParcelableUser user = adapter.getUser(position);
+        if (user == null) return;
+        mTwitterWrapper.denyFriendshipAsync(user.account_id, user.id);
+    }
+
+    @Subscribe
+    public void onFollowRequestTaskEvent(FollowRequestTaskEvent event) {
+        final ParcelableUsersAdapter adapter = getAdapter();
+        final int position = adapter.findPosition(event.getAccountId(), event.getUserId());
+        if (event.isFinished() && event.isSucceeded()) {
+            adapter.removeUserAt(position);
+        } else {
+            adapter.notifyItemChanged(position);
+        }
+    }
 }

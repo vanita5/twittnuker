@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.loader.support.UserListsLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.message.UserListDestroyedEvent;
+import de.vanita5.twittnuker.model.message.UserListDestroyedEvent;
 
 import java.util.List;
 

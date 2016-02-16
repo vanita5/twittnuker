@@ -127,7 +127,7 @@ import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.util.message.UnreadCountUpdatedEvent;
+import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 
 import org.oshkimaadziig.george.androidutils.SpanFormatter;

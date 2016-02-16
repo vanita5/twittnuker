@@ -57,7 +57,7 @@ import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.imageloader.PauseRecyclerViewOnScrollListener;
-import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
+import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;

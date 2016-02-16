@@ -20,18 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.message;
+package de.vanita5.twittnuker.model.message;
 
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.api.twitter.model.Relationship;
 
-public class UserListDestroyedEvent {
+public class FriendshipUpdatedEvent {
 
+    public final long accountId;
+    public final long userId;
     @NonNull
-    public final ParcelableUserList userList;
+    public final Relationship relationship;
 
-    public UserListDestroyedEvent(@NonNull ParcelableUserList userList) {
-        this.userList = userList;
+    public FriendshipUpdatedEvent(long accountId, long userId, @NonNull Relationship relationship) {
+        this.accountId = accountId;
+        this.userId = userId;
+        this.relationship = relationship;
     }
 }

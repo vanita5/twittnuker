@@ -39,7 +39,7 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.adapter.TrendsAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri;

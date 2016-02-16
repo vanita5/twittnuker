@@ -20,21 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.message;
+package de.vanita5.twittnuker.model.message;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
 
-public class GetActivitiesTaskEvent {
+import de.vanita5.twittnuker.model.ParcelableUserList;
+
+public class UserListDestroyedEvent {
 
     @NonNull
-    public final Uri uri;
-    public final boolean running;
-    public final Exception exception;
+    public final ParcelableUserList userList;
 
-    public GetActivitiesTaskEvent(@NonNull Uri uri, boolean running, Exception exception) {
-        this.uri = uri;
-        this.running = running;
-        this.exception = exception;
+    public UserListDestroyedEvent(@NonNull ParcelableUserList userList) {
+        this.userList = userList;
     }
 }

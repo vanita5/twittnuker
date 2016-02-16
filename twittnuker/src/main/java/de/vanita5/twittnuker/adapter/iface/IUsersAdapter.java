@@ -26,22 +26,40 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.view.holder.UserViewHolder.UserClickListener;
+import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
-public interface IUsersAdapter<Data> extends IContentCardAdapter, UserClickListener {
+public interface IUsersAdapter<Data> extends IContentCardAdapter {
 
-	ParcelableUser getUser(int position);
+    ParcelableUser getUser(int position);
 
-	long getUserId(int position);
+    long getUserId(int position);
 
-	int getUsersCount();
+    int getUserCount();
 
-	void setData(Data data);
+    void setData(Data data);
 
-	boolean shouldShowAccountsColor();
+    UserAdapterListener getUserAdapterListener();
+
+    RequestClickListener getRequestClickListener();
+
+    boolean shouldShowAccountsColor();
 
     @NonNull
     @Override
-	MediaLoaderWrapper getMediaLoader();
+    MediaLoaderWrapper getMediaLoader();
 
+    interface UserAdapterListener {
+
+        void onUserClick(UserViewHolder holder, int position);
+
+        boolean onUserLongClick(UserViewHolder holder, int position);
+
+    }
+
+    interface RequestClickListener {
+
+        void onAcceptClicked(UserViewHolder holder, int position);
+
+        void onDenyClicked(UserViewHolder holder, int position);
+    }
 }

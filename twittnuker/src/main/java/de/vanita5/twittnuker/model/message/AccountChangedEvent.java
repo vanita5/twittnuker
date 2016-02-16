@@ -20,7 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.message;
+package de.vanita5.twittnuker.model.message;
 
-public class VideoLoadFinishedEvent {
+public class AccountChangedEvent {
+    public final long[] account_ids, activated_ids;
+
+    public AccountChangedEvent(long[] account_ids, long[] activated_ids) {
+        this.account_ids = account_ids;
+        this.activated_ids = activated_ids;
+    }
 }

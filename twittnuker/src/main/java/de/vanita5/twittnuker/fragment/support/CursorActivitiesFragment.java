@@ -55,13 +55,13 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
-import de.vanita5.twittnuker.util.message.AccountChangedEvent;
-import de.vanita5.twittnuker.util.message.FavoriteCreatedEvent;
-import de.vanita5.twittnuker.util.message.FavoriteDestroyedEvent;
-import de.vanita5.twittnuker.util.message.GetActivitiesTaskEvent;
-import de.vanita5.twittnuker.util.message.StatusDestroyedEvent;
-import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
-import de.vanita5.twittnuker.util.message.StatusRetweetedEvent;
+import de.vanita5.twittnuker.model.message.AccountChangedEvent;
+import de.vanita5.twittnuker.model.message.FavoriteCreatedEvent;
+import de.vanita5.twittnuker.model.message.FavoriteDestroyedEvent;
+import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent;
+import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
+import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
+import de.vanita5.twittnuker.model.message.StatusRetweetedEvent;
 
 import java.util.List;
 

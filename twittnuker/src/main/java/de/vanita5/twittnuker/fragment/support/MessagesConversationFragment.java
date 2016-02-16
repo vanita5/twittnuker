@@ -110,7 +110,7 @@ import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.view.ComposeEditText;
 
 import java.util.ArrayList;

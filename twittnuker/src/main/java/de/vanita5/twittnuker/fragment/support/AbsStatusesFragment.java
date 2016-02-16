@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -61,7 +60,7 @@ import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.imageloader.PauseRecyclerViewOnScrollListener;
-import de.vanita5.twittnuker.util.message.StatusListChangedEvent;
+import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 

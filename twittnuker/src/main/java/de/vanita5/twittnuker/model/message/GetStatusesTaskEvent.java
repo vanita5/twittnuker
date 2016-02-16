@@ -20,13 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.message;
+package de.vanita5.twittnuker.model.message;
 
-public class AccountChangedEvent {
-	public final long[] account_ids, activated_ids;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 
-	public AccountChangedEvent(long[] account_ids, long[] activated_ids) {
-		this.account_ids = account_ids;
-		this.activated_ids = activated_ids;
-	}
+public class GetStatusesTaskEvent {
+
+    @NonNull
+    public final Uri uri;
+    public final boolean running;
+    public final Exception exception;
+
+    public GetStatusesTaskEvent(@NonNull Uri uri, boolean running, Exception exception) {
+        this.uri = uri;
+        this.running = running;
+        this.exception = exception;
+    }
 }

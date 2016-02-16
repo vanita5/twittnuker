@@ -29,8 +29,11 @@ import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 
 import javax.inject.Inject;
 
@@ -41,6 +44,12 @@ public abstract class ManagedAsyncTask<Params, Progress, Result> extends AsyncTa
     protected AsyncTaskManager manager;
     @Inject
     protected Bus bus;
+    @Inject
+    protected UserColorNameManager mUserColorNameManager;
+    @Inject
+    protected SharedPreferencesWrapper mPreferences;
+    @Inject
+    protected AsyncTwitterWrapper mAsyncTwitterWrapper;
     private final Context context;
     private final String tag;
 

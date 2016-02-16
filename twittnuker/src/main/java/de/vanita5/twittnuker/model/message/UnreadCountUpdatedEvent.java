@@ -20,18 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.message;
+package de.vanita5.twittnuker.model.message;
 
-import android.support.annotation.NonNull;
+public class UnreadCountUpdatedEvent {
 
-import de.vanita5.twittnuker.model.ParcelableUser;
+    public final int position;
 
-public class FriendshipUserUpdatedEvent {
-
-	@NonNull
-	public final ParcelableUser user;
-
-	public FriendshipUserUpdatedEvent(@NonNull ParcelableUser user) {
-		this.user = user;
-	}
+    public UnreadCountUpdatedEvent(int position) {
+        this.position = position;
+    }
 }

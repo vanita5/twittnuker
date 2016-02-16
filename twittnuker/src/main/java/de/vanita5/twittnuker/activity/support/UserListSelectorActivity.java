@@ -57,7 +57,7 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.message.UserListCreatedEvent;
+import de.vanita5.twittnuker.model.message.UserListCreatedEvent;
 
 import java.util.ArrayList;
 import java.util.List;

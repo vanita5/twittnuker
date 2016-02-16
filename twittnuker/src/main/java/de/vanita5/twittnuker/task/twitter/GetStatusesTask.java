@@ -63,7 +63,7 @@ import de.vanita5.twittnuker.util.UriUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.util.message.GetStatusesTaskEvent;
+import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
 
 import java.util.ArrayList;
 import java.util.List;

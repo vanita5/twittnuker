@@ -68,7 +68,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
-import de.vanita5.twittnuker.util.message.GetMessagesTaskEvent;
+import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 
 import java.util.Collections;
 import java.util.HashSet;
