@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
@@ -18,13 +19,11 @@
   ~
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="de.vanita5.twittnuker"
-    android:installLocation="auto">
+    android:installLocation="auto" >
 
     <uses-sdk />
 
@@ -77,7 +76,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Twidere.Dark.NoActionBar"
-        tools:ignore="UnusedAttribute">
+        tools:ignore="UnusedAttribute" >
         tools:replace="allowBackup">
         <uses-library
             android:name="com.sec.android.app.multiwindow"
@@ -116,7 +115,7 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -131,7 +130,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Twidere.Dark.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.HOME" />
 
@@ -157,8 +156,8 @@
             android:launchMode="singleTop"
             android:parentActivityName=".activity.support.HomeActivity"
             android:theme="@style/Theme.Twidere.Dark.Dialog"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter android:label="@string/compose">
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter android:label="@string/compose" >
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="de.vanita5.twittnuker.COMPOSE" />
                 <action android:name="de.vanita5.twittnuker.REPLY" />
@@ -169,7 +168,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <intent-filter android:label="@string/app_name">
+            <intent-filter android:label="@string/app_name" >
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
 
@@ -188,7 +187,7 @@
             android:label="@string/search"
             android:launchMode="singleTop"
             android:theme="@style/Theme.Twidere.Dark.Dialog"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.GLOBAL_SEARCH" />
 
@@ -200,7 +199,7 @@
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/sign_in"
             android:theme="@style/Theme.Twidere.Dark.DialogWhenLarge.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.TWITTER_LOGIN" />
 
@@ -212,7 +211,7 @@
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/browser_sign_in"
             android:theme="@style/Theme.Twidere.Dark"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.TWITTER_BROWSER_LOGIN" />
 
@@ -225,7 +224,7 @@
             android:label="@string/settings"
             android:parentActivityName=".activity.support.HomeActivity"
             android:theme="@style/Theme.Twidere.Dark"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
                 <action android:name="de.vanita5.twittnuker.SETTINGS" />
@@ -247,7 +246,7 @@
             android:name=".activity.support.AccountSelectorActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/select_account"
-            android:theme="@style/Theme.Twidere.Dark.Dialog">
+            android:theme="@style/Theme.Twidere.Dark.Dialog" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.SELECT_ACCOUNT" />
 
@@ -264,7 +263,7 @@
             android:icon="@drawable/ic_action_twittnuker"
             android:parentActivityName=".activity.support.HomeActivity"
             android:theme="@style/Theme.Twidere.Dark.DialogWhenLarge.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.support.HomeActivity" />
@@ -285,7 +284,7 @@
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/media"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.Twidere.Viewer">
+            android:theme="@style/Theme.Twidere.Viewer" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.VIEW_MEDIA" />
 
@@ -303,7 +302,7 @@
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/pick_file"
             android:theme="@style/Theme.Twidere.Light.NoDisplay"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.PICK_FILE" />
                 <action android:name="de.vanita5.twittnuker.PICK_DIRECTORY" />
@@ -316,7 +315,7 @@
             android:exported="false"
             android:icon="@drawable/ic_action_twittnuker"
             android:theme="@style/Theme.Twidere.Light.NoDisplay"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="de.vanita5.twittnuker.PICK_IMAGE" />
@@ -331,7 +330,7 @@
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/add_tab"
             android:theme="@style/Theme.Twidere.Dark.Dialog"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.ADD_TAB" />
                 <action android:name="de.vanita5.twittnuker.EDIT_TAB" />
@@ -343,7 +342,7 @@
             android:name=".activity.CreateComposeShortcutActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/compose"
-            android:theme="@style/Theme.Twidere.Dark.NoDisplay">
+            android:theme="@style/Theme.Twidere.Dark.NoDisplay" >
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
 
@@ -358,7 +357,7 @@
             android:name=".activity.support.UserListSelectorActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/select_user_list"
-            android:theme="@style/Theme.Twidere.Dark.Dialog">
+            android:theme="@style/Theme.Twidere.Dark.Dialog" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.SELECT_USER" />
                 <action android:name="de.vanita5.twittnuker.SELECT_USER_LIST" />
@@ -382,7 +381,7 @@
         <activity
             android:name=".activity.support.ActivityPickerActivity"
             android:icon="@drawable/ic_action_twittnuker"
-            android:theme="@style/Theme.Twidere.Dark.Dialog">
+            android:theme="@style/Theme.Twidere.Dark.Dialog" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.PICK_ACTIVITY" />
 
@@ -394,7 +393,7 @@
             android:excludeFromRecents="true"
             android:icon="@drawable/ic_action_twittnuker"
             android:taskAffinity=":twittnuker_twitter_link_handler"
-            android:theme="@style/Theme.Twidere.Dark.NoDisplay">
+            android:theme="@style/Theme.Twidere.Dark.NoDisplay" >
             <intent-filter>
                 <data
                     android:host="twitter.com"
@@ -434,7 +433,7 @@
             android:excludeFromRecents="true"
             android:icon="@drawable/ic_action_twittnuker"
             android:taskAffinity=":twittnuker_assist_launcher"
-            android:theme="@style/Theme.Twidere.Dark.NoDisplay">
+            android:theme="@style/Theme.Twidere.Dark.NoDisplay" >
             <intent-filter>
                 <action android:name="android.intent.action.ASSIST" />
 
@@ -454,7 +453,7 @@
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/twidere_test"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -469,14 +468,13 @@
         <activity
             android:name=".activity.DonationsActivity"
             android:label="@string/donation"
-            android:theme="@style/Theme.Twidere.Dark.NoActionBar">
+            android:theme="@style/Theme.Twidere.Dark.NoActionBar" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.activity.DonationsActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
 
         <service
             android:name=".service.RefreshService"
@@ -489,21 +487,21 @@
             android:label="@string/label_streaming_service" />
         <service
             android:name=".service.TwittnukerGcmListenerService"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
             android:name=".service.TwittnukerInstanceIDListenerService"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
         <service
             android:name=".service.RegistrationIntentService"
-            android:exported="false"/>
+            android:exported="false" />
 
         <provider
             android:name=".provider.TwidereDataProvider"
@@ -520,7 +518,7 @@
             android:name="android.support.v4.content.FileProvider"
             android:authorities="twittnuker.file"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true" >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
@@ -528,18 +526,19 @@
         <provider
             android:name=".provider.CacheProvider"
             android:authorities="twittnuker.cache"
-            android:exported="false"/>
+            android:exported="false" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
+            android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="de.vanita5.twittnuker" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.ConnectivityStateReceiver">
+        <receiver android:name=".receiver.ConnectivityStateReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
@@ -547,14 +546,15 @@
 
         <areceiver
             android:name=".receiver.NotificationReceiver"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.NOTIFICATION_DELETED" />
             </intent-filter>
         </areceiver>
+
         <receiver
             android:name=".receiver.SecretCodeBroadcastReceiver"
-            android:label="@string/twidere_test">
+            android:label="@string/twidere_test" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SECRET_CODE" />
 
@@ -573,11 +573,12 @@
             </intent-filter>
         </receiver>
         -->
-        <receiver android:name=".receiver.NotificationActionReceiver">
+        <receiver android:name=".receiver.NotificationActionReceiver" >
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.PUSHNOTIFICATION_CLEARED" />
             </intent-filter>
         </receiver>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="b955b719fb7fabaa53d4e614c3975c88bc556ab4" />

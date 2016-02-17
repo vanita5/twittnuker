@@ -35,10 +35,12 @@ import org.mariotaku.restfu.RestConverter;
 import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.mime.Body;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
+import de.vanita5.twittnuker.util.BugReporter;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -105,7 +107,12 @@ public class TwitterConverterFactory extends RestConverter.SimpleFactory<Twitter
                 throw new RuntimeException(e);
             }
         } catch (TimeoutException e) {
-            throw new RuntimeException(e);
+            if (BuildConfig.DEBUG) {
+                throw new RuntimeException(e);
+            } else {
+                BugReporter.logException(e);
+                throw new RestConverter.ConvertException(e);
+            }
         }
         return new JsonConverter(mapper);
     }
