@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.api.twitter.model.CursorTimestampResponse;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.Utils;
@@ -76,6 +76,6 @@ public class GetActivitiesAboutMeTask extends GetActivitiesTask {
 
     @Override
     protected Uri getContentUri() {
-        return TwidereDataStore.Activities.AboutMe.CONTENT_URI;
+        return Activities.AboutMe.CONTENT_URI;
     }
 }

@@ -36,7 +36,6 @@ import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -68,7 +67,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -129,7 +127,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.CopyLinkActivity;
 import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
-import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
@@ -156,7 +153,6 @@ import de.vanita5.twittnuker.fragment.support.MutesUsersListFragment;
 import de.vanita5.twittnuker.fragment.support.SavedSearchesListFragment;
 import de.vanita5.twittnuker.fragment.support.ScheduledStatusesFragment;
 import de.vanita5.twittnuker.fragment.support.SearchFragment;
-import de.vanita5.twittnuker.fragment.support.SensitiveContentWarningDialogFragment;
 import de.vanita5.twittnuker.fragment.support.StatusFavoritersListFragment;
 import de.vanita5.twittnuker.fragment.support.StatusFragment;
 import de.vanita5.twittnuker.fragment.support.StatusRepliesListFragment;
@@ -178,7 +174,6 @@ import de.vanita5.twittnuker.fragment.support.UserProfileEditorFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
-import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.menu.SupportStatusShareProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -187,7 +182,6 @@ import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableLocation;
-import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -2508,9 +2502,11 @@ public final class Utils implements Constants {
         return pm.getDrawable(info.packageName, info.metaData.getInt(key), info.applicationInfo);
     }
 
-    public static boolean handleMenuItemClick(Context context, Fragment fragment, FragmentManager fm,
-                                              UserColorNameManager colorNameManager, AsyncTwitterWrapper twitter,
-                                              ParcelableStatus status, MenuItem item) {
+    public static boolean handleMenuItemClick(@NonNull Context context, @Nullable Fragment fragment,
+                                              @NonNull FragmentManager fm,
+                                              @NonNull UserColorNameManager colorNameManager,
+                                              @NonNull AsyncTwitterWrapper twitter,
+                                              @NonNull ParcelableStatus status, @NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.copy: {
                 if (ClipboardUtils.setText(context, status.text_plain)) {

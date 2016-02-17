@@ -22,17 +22,21 @@
 
 package de.vanita5.twittnuker.fragment.support;
 
+import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
 
 public class ActivitiesByFriendsFragment extends CursorActivitiesFragment {
 
-
     @Override
     public boolean getActivities(long[] accountIds, long[] maxIds, long[] sinceIds) {
+        mTwitterWrapper.getActivitiesByFriendsAsync(accountIds, maxIds, sinceIds);
         return false;
     }
 
@@ -44,7 +48,7 @@ public class ActivitiesByFriendsFragment extends CursorActivitiesFragment {
 
     @Override
     public Uri getContentUri() {
-        return TwidereDataStore.CONTENT_URI_EMPTY;
+        return Activities.ByFriends.CONTENT_URI;
     }
 
     @Override
@@ -61,6 +65,23 @@ public class ActivitiesByFriendsFragment extends CursorActivitiesFragment {
     protected void updateRefreshState() {
 
     }
+
+    @NonNull
+    @Override
+    protected ParcelableActivitiesAdapter onCreateAdapter(Context context, boolean compact) {
+        final ParcelableActivitiesAdapter adapter = new ParcelableActivitiesAdapter(context, compact,
+                true);
+        final Bundle arguments = getArguments();
+        if (arguments != null) {
+            final Bundle extras = arguments.getBundle(EXTRA_EXTRAS);
+            if (extras != null) {
+                adapter.setFollowingOnly(extras.getBoolean(EXTRA_MY_FOLLOWING_ONLY));
+                adapter.setMentionsOnly(extras.getBoolean(EXTRA_MENTIONS_ONLY));
+            }
+        }
+        return adapter;
+    }
+
 
     @Override
     public boolean isRefreshing() {

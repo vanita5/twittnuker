@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
 
@@ -59,6 +59,6 @@ public class GetActivitiesByFriendsTask extends GetActivitiesTask {
 
     @Override
     protected Uri getContentUri() {
-        return TwidereDataStore.Activities.ByFriends.CONTENT_URI;
+        return Activities.ByFriends.CONTENT_URI;
     }
 }

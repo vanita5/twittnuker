@@ -55,8 +55,6 @@ import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.FixedLinearLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutParams;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -66,7 +64,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
-import android.view.Gravity;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -112,6 +110,9 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.model.message.FavoriteCreatedEvent;
+import de.vanita5.twittnuker.model.message.FavoriteDestroyedEvent;
+import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
@@ -144,12 +145,10 @@ import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.model.message.FavoriteCreatedEvent;
-import de.vanita5.twittnuker.model.message.FavoriteDestroyedEvent;
-import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
+import de.vanita5.twittnuker.view.ExtendedRecyclerView;
 import de.vanita5.twittnuker.view.ForegroundColorView;
 import de.vanita5.twittnuker.view.StatusTextView;
 import de.vanita5.twittnuker.view.TwitterCardContainer;
@@ -180,7 +179,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     private RecyclerView mRecyclerView;
 
     private DividerItemDecoration mItemDecoration;
-    private PopupMenu mPopupMenu;
 
     private StatusAdapter mStatusAdapter;
     private LinearLayoutManager mLayoutManager;
@@ -192,7 +190,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     // Data fields
     private boolean mConversationLoaderInitialized;
     private boolean mActivityLoaderInitialized;
-    private ParcelableStatus mSelectedStatus;
 
     // Listeners
     private LoaderCallbacks<List<ParcelableStatus>> mConversationsLoaderCallback = new LoaderCallbacks<List<ParcelableStatus>>() {
@@ -289,15 +286,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         }
     };
-    private OnMenuItemClickListener mOnStatusMenuItemClickListener = new OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            final ParcelableStatus status = mSelectedStatus;
-            if (status == null) return false;
-            return Utils.handleMenuItemClick(getActivity(), StatusFragment.this,
-                    getFragmentManager(), mUserColorNameManager, mTwitterWrapper, status, item);
-        }
-    };
 
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -364,6 +352,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         mStatusAdapter = new StatusAdapter(this, compact);
         mStatusAdapter.setEventListener(this);
         mRecyclerView.setAdapter(mStatusAdapter);
+        registerForContextMenu(mRecyclerView);
 
         mScrollListener = new ContentListScrollListener(this);
         mScrollListener.setTouchSlop(ViewConfiguration.get(context).getScaledTouchSlop());
@@ -439,20 +428,10 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
     @Override
     public void onStatusMenuClick(IStatusViewHolder holder, View menuView, int position) {
-        //TODO show status menu
-        if (mPopupMenu != null) {
-            mPopupMenu.dismiss();
-        }
-        final PopupMenu popupMenu = new PopupMenu(mStatusAdapter.getContext(), menuView,
-                Gravity.NO_GRAVITY, R.attr.actionOverflowMenuStyle, 0);
-        popupMenu.setOnMenuItemClickListener(mOnStatusMenuItemClickListener);
-        popupMenu.inflate(R.menu.action_status);
-        final ParcelableStatus status = mStatusAdapter.getStatus(position);
-        Utils.setMenuForStatus(mStatusAdapter.getContext(), mPreferences, popupMenu.getMenu(), status,
-                mTwitterWrapper);
-        popupMenu.show();
-        mPopupMenu = popupMenu;
-        mSelectedStatus = status;
+        if (getActivity() == null) return;
+        final View view = mLayoutManager.findViewByPosition(position);
+        if (view == null) return;
+        mRecyclerView.showContextMenuForChild(view);
     }
 
     @Override
@@ -746,6 +725,33 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         mRecyclerView.removeOnScrollListener(mScrollListener);
         mBus.unregister(this);
         super.onStop();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        final MenuInflater inflater = new MenuInflater(getContext());
+        final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
+                (ExtendedRecyclerView.ContextMenuInfo) menuInfo;
+        final ParcelableStatus status = mStatusAdapter.getStatus(contextMenuInfo.getPosition());
+        inflater.inflate(R.menu.action_status, menu);
+        Utils.setMenuForStatus(getContext(), mPreferences, menu, status, mTwitterWrapper);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
+                (ExtendedRecyclerView.ContextMenuInfo) item.getMenuInfo();
+        final ParcelableStatus status = mStatusAdapter.getStatus(contextMenuInfo.getPosition());
+        if (status == null) return false;
+        if (item.getItemId() == R.id.share) {
+            final Intent shareIntent = Utils.createStatusShareIntent(getActivity(), status);
+            final Intent chooser = Intent.createChooser(shareIntent, getString(R.string.share_status));
+            Utils.addCopyLinkIntent(getContext(), chooser, LinkCreator.getTwitterStatusLink(status));
+            startActivity(chooser);
+            return true;
+        }
+        return Utils.handleMenuItemClick(getActivity(), this, getFragmentManager(),
+                mUserColorNameManager, mTwitterWrapper, status, item);
     }
 
     @Subscribe

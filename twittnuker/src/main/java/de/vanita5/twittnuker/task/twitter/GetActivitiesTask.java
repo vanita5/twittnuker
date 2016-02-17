@@ -42,9 +42,9 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
+import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
@@ -54,10 +54,8 @@ import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -173,16 +171,8 @@ public abstract class GetActivitiesTask extends TaskRunnable<RefreshTaskParam, O
 
     protected abstract void saveReadPosition(long accountId, Twitter twitter);
 
-    protected ResponseList<Activity> getActivities(@NonNull final Twitter twitter, final long accountId, final Paging paging) throws TwitterException {
-        if (Utils.shouldUsePrivateAPIs(context, accountId)) {
-            return twitter.getActivitiesAboutMe(paging);
-        }
-        final ResponseList<Activity> activities = new ResponseList<>();
-        for (Status status : twitter.getMentionsTimeline(paging)) {
-            activities.add(Activity.fromMention(accountId, status));
-        }
-        return activities;
-    }
+    protected abstract ResponseList<Activity> getActivities(@NonNull final Twitter twitter,
+                                                            final long accountId, final Paging paging) throws TwitterException;
 
     @Override
     public void callback(Object result) {

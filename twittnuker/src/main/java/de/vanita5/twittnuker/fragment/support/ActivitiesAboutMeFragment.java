@@ -67,7 +67,6 @@ public class ActivitiesAboutMeFragment extends CursorActivitiesFragment {
 
     @Override
     protected void updateRefreshState() {
-        setRefreshing(mTwitterWrapper.isMentionsTimelineRefreshing());
     }
 
     @Override
@@ -88,7 +87,7 @@ public class ActivitiesAboutMeFragment extends CursorActivitiesFragment {
     @NonNull
     @Override
     protected ParcelableActivitiesAdapter onCreateAdapter(Context context, boolean compact) {
-        final ParcelableActivitiesAdapter adapter = super.onCreateAdapter(context, compact);
+        final ParcelableActivitiesAdapter adapter = new ParcelableActivitiesAdapter(context, compact, false);
         final Bundle arguments = getArguments();
         if (arguments != null) {
             final Bundle extras = arguments.getBundle(EXTRA_EXTRAS);
@@ -109,7 +108,7 @@ public class ActivitiesAboutMeFragment extends CursorActivitiesFragment {
 
     @Override
     public boolean isRefreshing() {
-        return mTwitterWrapper.isMentionsTimelineRefreshing();
+        return false;
     }
 
 }

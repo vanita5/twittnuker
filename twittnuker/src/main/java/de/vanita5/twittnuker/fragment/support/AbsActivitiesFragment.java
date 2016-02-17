@@ -34,7 +34,10 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.squareup.otto.Subscribe;
@@ -48,16 +51,18 @@ import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
+import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.imageloader.PauseRecyclerViewOnScrollListener;
-import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
+import de.vanita5.twittnuker.view.ExtendedRecyclerView;
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
@@ -313,7 +318,13 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
 
     @Override
     public void onStatusMenuClick(IStatusViewHolder holder, View menuView, int position) {
-
+        if (getActivity() == null) return;
+        final LinearLayoutManager lm = getLayoutManager();
+        final View view = lm.findViewByPosition(position);
+        if (view == null || lm.getItemViewType(view) != AbsActivitiesAdapter.ITEM_VIEW_TYPE_STATUS) {
+            return;
+        }
+        getRecyclerView().showContextMenuForChild(view);
     }
 
     @Override
@@ -325,7 +336,9 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
     @Nullable
     private ParcelableStatus getActivityStatus(int position) {
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
-        return ParcelableActivity.getActivityStatus(adapter.getActivity(position));
+        final ParcelableActivity activity = adapter.getActivity(position);
+        if (activity == null) return null;
+        return ParcelableActivity.getActivityStatus(activity);
     }
 
     @Override
@@ -366,10 +379,10 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();
+        adapter.setListener(this);
+        registerForContextMenu(recyclerView);
         mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager,
                 adapter, this);
-
-        adapter.setListener(this);
         mPauseOnScrollListener = new PauseRecyclerViewOnScrollListener(adapter.getMediaLoader().getImageLoader(), false, true);
 
         final Bundle loaderArgs = new Bundle(getArguments());
@@ -464,6 +477,49 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
                         && itemViewType != AbsActivitiesAdapter.ITEM_VIEW_TYPE_EMPTY;
             }
         });
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        final AbsActivitiesAdapter<Data> adapter = getAdapter();
+        final MenuInflater inflater = new MenuInflater(getContext());
+        final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
+                (ExtendedRecyclerView.ContextMenuInfo) menuInfo;
+        final int position = contextMenuInfo.getPosition();
+        switch (adapter.getItemViewType(position)) {
+            case AbsActivitiesAdapter.ITEM_VIEW_TYPE_STATUS: {
+                final ParcelableStatus status = getActivityStatus(position);
+                if (status == null) return;
+                inflater.inflate(R.menu.action_status, menu);
+                Utils.setMenuForStatus(getContext(), mPreferences, menu, status, mTwitterWrapper);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        final AbsActivitiesAdapter<Data> adapter = getAdapter();
+        final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
+                (ExtendedRecyclerView.ContextMenuInfo) item.getMenuInfo();
+        final int position = contextMenuInfo.getPosition();
+
+        switch (adapter.getItemViewType(position)) {
+            case AbsActivitiesAdapter.ITEM_VIEW_TYPE_STATUS: {
+                final ParcelableStatus status = getActivityStatus(position);
+                if (status == null) return false;
+                if (item.getItemId() == R.id.share) {
+                    final Intent shareIntent = Utils.createStatusShareIntent(getActivity(), status);
+                    final Intent chooser = Intent.createChooser(shareIntent, getString(R.string.share_status));
+                    Utils.addCopyLinkIntent(getContext(), chooser, LinkCreator.getTwitterStatusLink(status));
+                    startActivity(chooser);
+                    return true;
+                }
+                return Utils.handleMenuItemClick(getActivity(), this, getFragmentManager(),
+                        mUserColorNameManager, mTwitterWrapper, status, item);
+            }
+        }
+        return false;
     }
 
     private String getCurrentReadPositionTag() {
