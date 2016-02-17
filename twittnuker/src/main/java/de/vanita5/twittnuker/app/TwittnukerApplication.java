@@ -37,6 +37,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.BuildConfig;
@@ -62,6 +63,7 @@ public class TwittnukerApplication extends Application implements Constants,
         OnSharedPreferenceChangeListener {
 
     private static final String KEY_KEYBOARD_SHORTCUT_INITIALIZED = "keyboard_shortcut_initialized";
+    private static TwittnukerApplication sInstance;
 
     private Handler mHandler;
     private SharedPreferences mPreferences;
@@ -102,6 +104,7 @@ public class TwittnukerApplication extends Application implements Constants,
 
     @Override
     public void onCreate() {
+        sInstance = this;
         if (BuildConfig.DEBUG) {
             StrictModeUtils.detectAllVmPolicy();
         }
@@ -235,4 +238,8 @@ public class TwittnukerApplication extends Application implements Constants,
         return mApplicationModule = new ApplicationModule(this);
     }
 
+    @Nullable
+    public static TwittnukerApplication getInstance() {
+        return sInstance;
+    }
 }

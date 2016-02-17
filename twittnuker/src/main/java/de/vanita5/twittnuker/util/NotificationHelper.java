@@ -67,13 +67,14 @@ import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
 import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
-import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
 
 public class NotificationHelper implements Constants {
 
     private Context mContext;
     @Inject
     ImageLoader mMediaLoader;
+    @Inject
+    ActivityTracker mActivityTracker;
     private ImagePreloader mImagePreloader;
     private SharedPreferencesWrapper mSharedPreferences;
 
@@ -513,7 +514,7 @@ public class NotificationHelper implements Constants {
         }
 
         int defaults = 0;
-        if (!isNotificationsSilent(mContext)) {
+        if (isNotificationAudible()) {
             if (AccountPreferences.isNotificationHasRingtone(notificationType)) {
                 final Uri ringtone = pref.getNotificationRingtone();
                 builder.setSound(ringtone);
@@ -549,7 +550,7 @@ public class NotificationHelper implements Constants {
         builder.setAutoCancel(true);
         builder.setWhen(System.currentTimeMillis());
         int defaults = 0;
-        if (!isNotificationsSilent(mContext)) {
+        if (isNotificationAudible()) {
             if (AccountPreferences.isNotificationHasRingtone(pref.getMentionsNotificationType())) { //TODO Settings for error messages
                 final Uri ringtone = pref.getNotificationRingtone();
                 builder.setSound(ringtone, Notification.STREAM_DEFAULT);
@@ -675,5 +676,9 @@ public class NotificationHelper implements Constants {
             profileImage = mMediaLoader.loadImageSync(profileImageUrl);
         }
         return (profileImage != null) ? Bitmap.createScaledBitmap(profileImage, w, h, true) : null;
+    }
+
+    private boolean isNotificationAudible() {
+        return !mActivityTracker.isHomeActivityStarted();
     }
 }

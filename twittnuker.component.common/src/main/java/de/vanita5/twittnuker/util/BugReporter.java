@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.util;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public abstract class BugReporter {
 
@@ -34,32 +33,24 @@ public abstract class BugReporter {
         sImplementation = impl;
     }
 
-    public static void log(@Nullable String message, @Nullable Throwable throwable) {
-        if (sImplementation == null) return;
-        sImplementation.logImpl(message, throwable);
-    }
-
-    public static void error(@Nullable String message, @Nullable Throwable throwable) {
-        if (sImplementation == null) return;
-        sImplementation.errorImpl(message, throwable);
-    }
-
-    public static void error(@NonNull String message) {
-        error(message, null);
-    }
-
     public static void init(Application application) {
         if (sImplementation == null) return;
         sImplementation.initImpl(application);
     }
 
-    public static void error(Throwable throwable) {
-        error(null, throwable);
+    public static void log(int priority, String tag, String msg) {
+        if (sImplementation == null) return;
+        sImplementation.logImpl(priority, tag, msg);
     }
 
-    protected abstract void logImpl(@Nullable String message, @Nullable Throwable throwable);
+    public static void logException(@NonNull Throwable throwable) {
+        if (sImplementation == null) return;
+        sImplementation.logExceptionImpl(throwable);
+    }
 
-    protected abstract void errorImpl(@Nullable String message, @Nullable Throwable throwable);
+    protected abstract void logImpl(int priority, String tag, String msg);
+
+    protected abstract void logExceptionImpl(@NonNull Throwable throwable);
 
     protected abstract void initImpl(Application application);
 }

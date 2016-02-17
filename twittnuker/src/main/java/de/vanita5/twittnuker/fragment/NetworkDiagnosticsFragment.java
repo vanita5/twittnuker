@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -46,6 +47,9 @@ import android.widget.TextView;
 import org.mariotaku.restfu.RestAPIFactory;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.http.Endpoint;
+import org.mariotaku.restfu.http.HttpRequest;
+import org.mariotaku.restfu.http.HttpResponse;
+import org.mariotaku.restfu.http.RestHttpClient;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
@@ -60,9 +64,6 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 
-import org.mariotaku.restfu.http.HttpRequest;
-import org.mariotaku.restfu.http.HttpResponse;
-import org.mariotaku.restfu.http.RestHttpClient;
 import org.xbill.DNS.ResolverConfig;
 
 import java.io.IOException;
@@ -106,22 +107,24 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
     }
 
     private void appendMessage(LogText message) {
+        final Activity activity = getActivity();
+        if (activity == null) return;
         SpannableString coloredText = SpannableString.valueOf(message.message);
         switch (message.state) {
             case LogText.State.OK: {
-                coloredText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
+                coloredText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity,
                                 R.color.material_light_green)), 0, coloredText.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 break;
             }
             case LogText.State.ERROR: {
-                coloredText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
+                coloredText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity,
                                 R.color.material_red)), 0, coloredText.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 break;
             }
             case LogText.State.WARNING: {
-                coloredText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
+                coloredText.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity,
                                 R.color.material_amber)), 0, coloredText.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 break;

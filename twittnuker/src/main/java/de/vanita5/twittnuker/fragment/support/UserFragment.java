@@ -90,6 +90,7 @@ import com.squareup.otto.Subscribe;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mariotaku.sqliteqb.library.Expression;
+
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
@@ -117,6 +118,10 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.SupportTabSpec;
+import de.vanita5.twittnuker.model.message.FriendshipUpdatedEvent;
+import de.vanita5.twittnuker.model.message.FriendshipUserUpdatedEvent;
+import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent;
+import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
@@ -139,10 +144,6 @@ import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
-import de.vanita5.twittnuker.model.message.FriendshipUpdatedEvent;
-import de.vanita5.twittnuker.model.message.FriendshipUserUpdatedEvent;
-import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent;
-import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.util.support.ActivitySupport;
 import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.support.ViewSupport;
@@ -1465,11 +1466,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         }
         mPagerAdapter.addTab(UserTimelineFragment.class, tabArgs, getString(R.string.statuses),
                 R.drawable.ic_action_quote, TAB_TYPE_STATUSES, TAB_POSITION_STATUSES, null);
-        if (TwitterAPIFactory.isOfficialKeyAccount(context, accountId)) {
-            mPagerAdapter.addTab(UserMediaTimelineFragment.class, tabArgs, getString(R.string.media),
-                    R.drawable.ic_action_gallery, TAB_TYPE_MEDIA, TAB_POSITION_MEDIA, null);
-        }
-        if (mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
+        mPagerAdapter.addTab(UserMediaTimelineFragment.class, tabArgs, getString(R.string.media),
+                R.drawable.ic_action_gallery, TAB_TYPE_MEDIA, TAB_POSITION_MEDIA, null);
+        if (mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK)) {
             mPagerAdapter.addTab(UserFavoritesFragment.class, tabArgs, getString(R.string.favorites),
                     R.drawable.ic_action_star, TAB_TYPE_FAVORITES, TAB_POSITION_FAVORITES, null);
         } else {

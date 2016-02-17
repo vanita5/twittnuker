@@ -31,14 +31,10 @@
         app:switchDefault="true"
         app:switchKey="notification"/>
 
-    <PreferenceCategory
-        android:key="cat_general"
-        android:title="@string/general">
-        <de.vanita5.twittnuker.preference.SilentNotificationsPreference
-            android:key="silent_notifications"
-            android:summary="@string/silent_notifications_summary"
-            android:title="@string/silent_notifications"/>
-    </PreferenceCategory>
+    <!--<PreferenceCategory-->
+        <!--android:key="cat_general"-->
+        <!--android:title="@string/general">-->
+    <!--</PreferenceCategory>-->
 
     <PreferenceCategory
         android:key="cat_push_notifications"

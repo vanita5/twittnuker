@@ -33,7 +33,6 @@ import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
-import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -61,10 +60,11 @@ public class TwitterException extends Exception implements TwitterResponse, Http
     private boolean causedByNetworkIssue;
 
     public TwitterException() {
+        super();
     }
 
-    public TwitterException(HttpResponse httpResponse) {
-        setHttpResponse(httpResponse);
+    public TwitterException(String detailMessage) {
+        super(detailMessage);
     }
 
     public TwitterException(final Throwable cause) {
@@ -74,39 +74,13 @@ public class TwitterException extends Exception implements TwitterResponse, Http
         }
     }
 
-    public TwitterException(final String message) {
-        this(message, (Throwable) null);
+    public TwitterException(String detailMessage, Throwable cause) {
+        super(detailMessage, cause);
+        if (cause instanceof TwitterException) {
+            ((TwitterException) cause).setNested();
+        }
     }
 
-    public TwitterException(final String message, final Throwable cause, final int statusCode) {
-        this(message, cause);
-        setStatusCode(statusCode);
-    }
-
-    public TwitterException(final String message, final HttpRequest req, final HttpResponse res) {
-        this(message);
-        setHttpResponse(res);
-        setHttpRequest(req);
-    }
-
-    public TwitterException(final String message, final Throwable cause, final HttpRequest req, final HttpResponse res) {
-        this(message, cause);
-        setHttpResponse(res);
-        setHttpRequest(req);
-    }
-
-    public TwitterException(final String message, final HttpResponse res) {
-        this(message, null, null, res);
-    }
-
-    public TwitterException(final String message, final Throwable cause, final HttpResponse res) {
-        this(message, cause, null, res);
-    }
-
-    public TwitterException(final String message, final Throwable cause) {
-        super(message, cause);
-        setCausedByNetworkIssue(cause instanceof IOException);
-    }
 
     public ErrorInfo[] getErrors() {
         if (errors != null && errorMessage != null && requestPath != null) {
@@ -151,7 +125,7 @@ public class TwitterException extends Exception implements TwitterResponse, Http
         return httpRequest;
     }
 
-    private void setHttpRequest(HttpRequest httpRequest) {
+    public void setHttpRequest(HttpRequest httpRequest) {
         this.httpRequest = httpRequest;
     }
 

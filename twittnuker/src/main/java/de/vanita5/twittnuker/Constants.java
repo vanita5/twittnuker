@@ -75,6 +75,7 @@ public interface Constants extends TwittnukerConstants {
     String TWITTNUKER_PREVIEW_NAME = "Twittnuker Project";
     String TWITTNUKER_PREVIEW_SCREEN_NAME = "twittnuker";
     String TWITTNUKER_PREVIEW_TEXT_HTML = "Twittnuker is an open source twitter client for Android, see <a href='https://github.com/vanita5/twittnuker'>https://github.com/vanita5/twittnuker<a/>";
+    String TWITTNUKER_PREVIEW_TEXT_UNESCAPED = "Twittnuker is an open source twitter client for Android, see github.com/vanita5/&#8230;";
     String TWITTNUKER_PREVIEW_SOURCE = "Twittnuker";
     String TWITTNUKER_PREVIEW_LOCATION = "Freiburg, Germany";
 

@@ -37,7 +37,9 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.view.MediaPreviewImageView;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 public class StaggeredGridParcelableStatusesAdapter extends AbsParcelableStatusesAdapter {
@@ -66,7 +68,7 @@ public class StaggeredGridParcelableStatusesAdapter extends AbsParcelableStatuse
         private final SimpleAspectRatioSource aspectRatioSource = new SimpleAspectRatioSource();
 
         private final AspectLockedFrameLayout mediaImageContainer;
-        private final ImageView mediaImageView;
+        private final MediaPreviewImageView mediaImageView;
         private final ImageView mediaProfileImageView;
         private final TextView mediaTextView;
         private final IStatusesAdapter<?> adapter;
@@ -77,7 +79,7 @@ public class StaggeredGridParcelableStatusesAdapter extends AbsParcelableStatuse
             this.adapter = adapter;
             mediaImageContainer = (AspectLockedFrameLayout) itemView.findViewById(R.id.media_image_container);
             mediaImageContainer.setAspectRatioSource(aspectRatioSource);
-            mediaImageView = (ImageView) itemView.findViewById(R.id.media_image);
+            mediaImageView = (MediaPreviewImageView) itemView.findViewById(R.id.media_image);
             mediaProfileImageView = (ImageView) itemView.findViewById(R.id.media_profile_image);
             mediaTextView = (TextView) itemView.findViewById(R.id.media_text);
         }
@@ -97,6 +99,8 @@ public class StaggeredGridParcelableStatusesAdapter extends AbsParcelableStatuse
             aspectRatioSource.setSize(firstMedia.width, firstMedia.height);
             mediaImageContainer.setTag(firstMedia);
             mediaImageContainer.requestLayout();
+
+            mediaImageView.setHasPlayIcon(ParcelableMediaUtils.hasPlayIcon(firstMedia.type));
             loader.displayProfileImage(mediaProfileImageView, status.user_profile_image_url);
             loader.displayPreviewImageWithCredentials(mediaImageView, firstMedia.preview_url,
                     status.account_id, adapter.getMediaLoadingHandler());

@@ -90,6 +90,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.model.UnreadItem;
+import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
@@ -127,7 +128,6 @@ import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 
 import org.oshkimaadziig.george.androidutils.SpanFormatter;
@@ -1011,6 +1011,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         return c;
     }
 
+    private boolean isNotificationAudible() {
+        return !mActivityTracker.isHomeActivityStarted();
+    }
+
     private void notifyContentObserver(final Uri uri) {
         mHandler.post(new Runnable() {
             @Override
@@ -1308,7 +1312,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         if (AccountPreferences.isNotificationHasLight(defaultFlags)) {
             notificationDefaults |= NotificationCompat.DEFAULT_LIGHTS;
         }
-        if (!Utils.isNotificationsSilent(getContext())) {
+        if (isNotificationAudible()) {
             if (AccountPreferences.isNotificationHasVibration(defaultFlags)) {
                 notificationDefaults |= NotificationCompat.DEFAULT_VIBRATE;
             } else {
