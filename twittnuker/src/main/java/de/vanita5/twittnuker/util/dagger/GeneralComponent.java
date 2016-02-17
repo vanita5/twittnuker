@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.task.twitter.GetStatusesTask;
 import de.vanita5.twittnuker.text.util.EmojiEditableFactory;
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
+import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.net.TwidereProxySelector;
 
 import javax.inject.Singleton;
@@ -144,4 +145,6 @@ public interface GeneralComponent {
     void inject(GetActivitiesTask task);
 
     void inject(GetDirectMessagesTask task);
+
+    void inject(NotificationHelper object);
 }

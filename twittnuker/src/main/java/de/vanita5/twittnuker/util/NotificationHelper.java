@@ -63,7 +63,7 @@ import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
 import de.vanita5.twittnuker.receiver.NotificationActionReceiver;
-import de.vanita5.twittnuker.util.dagger.DependencyHolder;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
 import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
@@ -80,8 +80,7 @@ public class NotificationHelper implements Constants {
 
     public NotificationHelper(final Context context) {
         this.mContext = context;
-        DependencyHolder holder = DependencyHolder.get(context);
-        mMediaLoader = holder.getImageLoader();
+        GeneralComponentHelper.build(context).inject(this);
         mImagePreloader = new ImagePreloader(context, mMediaLoader);
         mSharedPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
