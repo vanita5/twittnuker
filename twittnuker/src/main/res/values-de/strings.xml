@@ -781,6 +781,8 @@
     <string name="bandwidth_saving_mode">Bandbreite sparen</string>
     <string name="bandwidth_saving_mode_summary">Medienvorschau bei Mobilfunknetz deaktivieren</string>
     <string name="recent_media">Neue Medien</string>
+    <string name="reply_to_name_text"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
+    <string name="quote_name_text">Zitat <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

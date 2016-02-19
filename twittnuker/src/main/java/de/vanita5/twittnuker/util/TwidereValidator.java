@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.twitter.Validator;
@@ -35,10 +36,14 @@ public class TwidereValidator implements Constants {
     private final int mMaxTweetLength;
     private final Validator mValidator;
 
-    public TwidereValidator(final SharedPreferencesWrapper preferences) {
+    public TwidereValidator(@Nullable final SharedPreferencesWrapper preferences) {
         mValidator = new Validator();
-        final String textLimit = preferences.getString(KEY_STATUS_TEXT_LIMIT, null);
-            mMaxTweetLength = NumberUtils.toInt(textLimit, Validator.MAX_TWEET_LENGTH);
+        if (preferences != null) {
+            final String textLimit = preferences.getString(KEY_STATUS_TEXT_LIMIT, null);
+                mMaxTweetLength = NumberUtils.toInt(textLimit, Validator.MAX_TWEET_LENGTH);
+        } else {
+            mMaxTweetLength = Validator.MAX_TWEET_LENGTH;
+        }
     }
 
     public int getMaxTweetLength() {

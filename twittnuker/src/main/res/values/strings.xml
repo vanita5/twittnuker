@@ -813,6 +813,8 @@
     <string name="bandwidth_saving_mode">Bandwidth saving mode</string>
     <string name="bandwidth_saving_mode_summary">Disable media preview on metered network</string>
     <string name="recent_media">Recent media</string>
+    <string name="reply_to_name_text"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
+    <string name="quote_name_text">Quote <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
