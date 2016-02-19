@@ -32,8 +32,8 @@
         app:switchKey="notification"/>
 
     <!--<PreferenceCategory-->
-        <!--android:key="cat_general"-->
-        <!--android:title="@string/general">-->
+    <!--android:key="cat_general"-->
+    <!--android:title="@string/general">-->
     <!--</PreferenceCategory>-->
 
     <PreferenceCategory
@@ -68,12 +68,12 @@
             android:key="combined_notifications"
             android:summaryOff="@string/combined_notifications_summary_off"
             android:summaryOn="@string/combined_notifications_summary_on"
-            android:title="@string/combined_notifications" />
+            android:title="@string/combined_notifications"/>
 
         <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
             android:defaultValue="false"
-            android:key="pebble_notifications"
             android:dependency="stream_notifications"
+            android:key="pebble_notifications"
             android:summary="@string/pebble_notifications_summary"
             android:title="@string/pebble_notifications"/>
     </PreferenceCategory>
