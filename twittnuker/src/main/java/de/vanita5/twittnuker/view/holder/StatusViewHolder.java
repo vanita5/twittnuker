@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.view.holder;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
@@ -40,6 +41,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.graphic.LikeAnimationDrawable;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -418,13 +420,38 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         nameView.setNameFirst(nameFirst);
         quotedNameView.setNameFirst(nameFirst);
 
+        final int likeIcon, likeStyle;
         if (adapter.shouldUseStarsForLikes()) {
             favoriteCountView.setActivatedColor(ContextCompat.getColor(adapter.getContext(),
                     R.color.highlight_favorite));
-            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(favoriteCountView,
-                    R.drawable.ic_action_star, 0, 0, 0);
+            likeIcon = R.drawable.ic_action_star;
+            likeStyle = LikeAnimationDrawable.Style.FAVORITE;
+        } else {
+            likeIcon = R.drawable.ic_action_heart;
+            likeStyle = LikeAnimationDrawable.Style.LIKE;
         }
+        final LikeAnimationDrawable drawable = new LikeAnimationDrawable(adapter.getContext(),
+                likeIcon, favoriteCountView.getColor(), favoriteCountView.getActivatedColor(),
+                likeStyle);
+            TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(favoriteCountView,
+                drawable, null, null, null);
+        drawable.setCallback(favoriteCountView);
         timeView.setShowAbsoluteTime(adapter.isShowAbsoluteTime());
+    }
+
+    @Override
+    public void playLikeAnimation(@NonNull LikeAnimationDrawable.OnLikedListener listener) {
+        boolean handled = false;
+        for (Drawable drawable : favoriteCountView.getCompoundDrawables()) {
+            if (drawable instanceof LikeAnimationDrawable) {
+                ((LikeAnimationDrawable) drawable).setOnLikedListener(listener);
+                ((LikeAnimationDrawable) drawable).start();
+                handled = true;
+            }
+        }
+        if (!handled) {
+            listener.onLiked();
+        }
     }
 
     void displayExtraTypeIcon(String cardName, ParcelableMedia[] media, ParcelableLocation location, String placeFullName, boolean sensitive) {

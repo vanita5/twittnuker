@@ -945,8 +945,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected void onPreExecute() {
             super.onPreExecute();
             mCreatingFavoriteIds.put(account_id, status_id);
-
-
             bus.post(new StatusListChangedEvent());
         }
 

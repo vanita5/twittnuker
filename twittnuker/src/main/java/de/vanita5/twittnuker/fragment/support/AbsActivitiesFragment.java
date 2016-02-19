@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
+import de.vanita5.twittnuker.fragment.support.AbsStatusesFragment.DefaultOnLikedListener;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -104,11 +105,11 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         if (recyclerView == null || layoutManager == null) return false;
         final View focusedChild = RecyclerViewUtils.findRecyclerViewChild(recyclerView,
                 layoutManager.getFocusedChild());
-        int position = -1;
+        int position = RecyclerView.NO_POSITION;
         if (focusedChild != null && focusedChild.getParent() == recyclerView) {
             position = recyclerView.getChildLayoutPosition(focusedChild);
         }
-        if (position != -1) {
+        if (position != RecyclerView.NO_POSITION) {
             final ParcelableActivity activity = getAdapter().getActivity(position);
             if (activity == null) return false;
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -137,7 +138,9 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
                     if (status.is_favorite) {
                         twitter.destroyFavoriteAsync(activity.account_id, status.id);
                     } else {
-                        twitter.createFavoriteAsync(activity.account_id, status.id);
+                        final IStatusViewHolder holder = (IStatusViewHolder)
+                                recyclerView.findViewHolderForLayoutPosition(position);
+                        holder.playLikeAnimation(new DefaultOnLikedListener(twitter, status));
                     }
                     return true;
                 }
@@ -302,7 +305,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
                 if (status.is_favorite) {
                     twitter.destroyFavoriteAsync(status.account_id, status.id);
                 } else {
-                    twitter.createFavoriteAsync(status.account_id, status.id);
+                    holder.playLikeAnimation(new DefaultOnLikedListener(twitter, status));
                 }
                 break;
             }

@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.Preference;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,9 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
+import de.vanita5.twittnuker.graphic.LikeAnimationDrawable;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
+import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 public class CardPreviewPreference extends Preference implements Constants, OnSharedPreferenceChangeListener {
 
@@ -90,6 +93,19 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
         mCompactModeChanged = false;
         mHolder.setupViewOptions();
         mHolder.displaySampleStatus();
+        mHolder.setStatusClickListener(new IStatusViewHolder.SimpleStatusClickListener() {
+            @Override
+            public void onItemActionClick(RecyclerView.ViewHolder holder, int id, int position) {
+                if (id == R.id.favorite_count) {
+                    ((StatusViewHolder) holder).playLikeAnimation(new LikeAnimationDrawable.OnLikedListener() {
+                        @Override
+                        public boolean onLiked() {
+                            return false;
+                        }
+                    });
+                }
+            }
+        });
         super.onBindView(view);
     }
 
