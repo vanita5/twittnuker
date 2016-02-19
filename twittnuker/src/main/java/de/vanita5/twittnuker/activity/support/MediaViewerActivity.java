@@ -926,7 +926,6 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
             if (getUserVisibleHint()) {
                 mMediaPlayer = mp;
                 mMediaPlayerError = 0;
-                mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 mp.setScreenOnWhilePlaying(true);
                 updateVolume();
                 mp.setLooping(isLoopEnabled());

@@ -780,6 +780,7 @@
     <string name="builtin_dns_resolver">Interne DNS Auflösung</string>
     <string name="bandwidth_saving_mode">Bandbreite sparen</string>
     <string name="bandwidth_saving_mode_summary">Medienvorschau bei Mobilfunknetz deaktivieren</string>
+    <string name="recent_media">Neue Medien</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
