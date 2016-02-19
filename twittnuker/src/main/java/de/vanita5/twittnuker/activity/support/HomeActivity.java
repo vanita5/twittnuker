@@ -87,6 +87,8 @@ import de.vanita5.twittnuker.fragment.support.TrendsSuggestionsFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
+import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
@@ -97,13 +99,11 @@ import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
-import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
-import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.util.support.ActivitySupport;
 import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.support.ViewSupport;
@@ -117,8 +117,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
-import static de.vanita5.twittnuker.util.Utils.checkPlayServices;
 import static de.vanita5.twittnuker.util.DataStoreUtils.cleanDatabasesByItemLimit;
+import static de.vanita5.twittnuker.util.Utils.checkPlayServices;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
@@ -970,7 +970,8 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         @Override
         protected SparseIntArray doInBackground(final Object... params) {
             final SparseIntArray result = new SparseIntArray();
-            for (SupportTabSpec spec : mTabs) {
+            for (int i = 0, count = mTabs.size(); i < count; i++) {
+                SupportTabSpec spec = mTabs.get(i);
                 if (spec.type == null) continue;
                 switch (spec.type) {
                     case CustomTabType.HOME_TIMELINE: {
@@ -978,8 +979,8 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext,
                                 true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
-                        result.put(spec.position, DataStoreUtils.getStatusesCount(mContext,
-                                Statuses.CONTENT_URI, position, accountIds));
+                        result.put(i, DataStoreUtils.getStatusesCount(mContext, Statuses.CONTENT_URI,
+                                position, accountIds));
                         break;
                     }
                     case CustomTabType.NOTIFICATIONS_TIMELINE: {
@@ -998,7 +999,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                                         Activity.Action.REPLY, Activity.Action.QUOTE};
                             }
                         }
-                        result.put(spec.position, DataStoreUtils.getActivitiesCount(mContext,
+                        result.put(i, DataStoreUtils.getActivitiesCount(mContext,
                                 Activities.AboutMe.CONTENT_URI, extraWhere, extraWhereArgs,
                                 position, accountIds));
                         break;
