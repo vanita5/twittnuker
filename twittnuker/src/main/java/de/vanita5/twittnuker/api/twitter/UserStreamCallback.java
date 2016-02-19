@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.Warning;
 import de.vanita5.twittnuker.api.twitter.util.CRLFLineReader;
 import de.vanita5.twittnuker.api.twitter.util.JSONObjectType;
+import de.vanita5.twittnuker.util.LoganSquareMapperFinder;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -72,14 +73,14 @@ public abstract class UserStreamCallback implements RawCallback {
                     }
                     case STATUS: {
                         try {
-                            onStatus(LoganSquare.mapperFor(Status.class).parse(rootNode.traverse()));
+                            onStatus(LoganSquareMapperFinder.mapperFor(Status.class).parse(rootNode.traverse()));
                         } catch (NullPointerException e) {
                             Log.d("UserStreamCallback","Streaming NPE -- " + e.getMessage(), e);
                         }
                         break;
                     }
                     case DIRECT_MESSAGE: {
-                        onDirectMessage(LoganSquare.mapperFor(DirectMessage.class).parse(rootNode.traverse()));
+                        onDirectMessage(LoganSquareMapperFinder.mapperFor(DirectMessage.class).parse(rootNode.traverse()));
                         break;
                     }
                     case DELETE: {
@@ -150,7 +151,7 @@ public abstract class UserStreamCallback implements RawCallback {
 
 
     private static <T> T parse(final Class<T> cls, final TreeNode json) throws IOException {
-        return LoganSquare.mapperFor(cls).parse(json.traverse());
+        return LoganSquareMapperFinder.mapperFor(cls).parse(json.traverse());
     }
 
     @Override

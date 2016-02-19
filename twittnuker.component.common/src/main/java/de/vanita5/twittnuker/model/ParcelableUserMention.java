@@ -24,39 +24,33 @@ package de.vanita5.twittnuker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
-import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
-
-import java.io.IOException;
-import java.util.List;
 
 @JsonObject
 @ParcelablePlease(allFields = false)
 public class ParcelableUserMention implements Parcelable {
 
-	public static final Parcelable.Creator<ParcelableUserMention> CREATOR = new Parcelable.Creator<ParcelableUserMention>() {
-		@Override
-		public ParcelableUserMention createFromParcel(final Parcel in) {
-			return new ParcelableUserMention(in);
-		}
+    public static final Parcelable.Creator<ParcelableUserMention> CREATOR = new Parcelable.Creator<ParcelableUserMention>() {
+        @Override
+        public ParcelableUserMention createFromParcel(final Parcel in) {
+            return new ParcelableUserMention(in);
+        }
 
-		@Override
-		public ParcelableUserMention[] newArray(final int size) {
-			return new ParcelableUserMention[size];
-		}
-	};
+        @Override
+        public ParcelableUserMention[] newArray(final int size) {
+            return new ParcelableUserMention[size];
+        }
+    };
 
     @ParcelableThisPlease
     @JsonField(name = "id")
-	public long id;
+    public long id;
     @ParcelableThisPlease
     @JsonField(name = "name")
     public String name;
@@ -68,106 +62,62 @@ public class ParcelableUserMention implements Parcelable {
 
     }
 
-	public ParcelableUserMention(final Parcel in) {
-		id = in.readLong();
-		name = in.readString();
-		screen_name = in.readString();
-	}
-
-	public ParcelableUserMention(final UserMentionEntity entity) {
-		id = entity.getId();
-		name = entity.getName();
-		screen_name = entity.getScreenName();
-	}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof ParcelableUserMention)) return false;
-		final ParcelableUserMention other = (ParcelableUserMention) obj;
-		if (id != other.id) return false;
-		return true;
-	}
-
-    public static ParcelableUserMention[] fromSerializedJson(String string) {
-        if (string == null) return null;
-        final List<ParcelableUserMention> list;
-        try {
-            list = LoganSquare.parseList(string, ParcelableUserMention.class);
-        } catch (IOException e) {
-            return null;
-        }
-        if (list == null) return null;
-        return list.toArray(new ParcelableUserMention[list.size()]);
+    public ParcelableUserMention(final Parcel in) {
+        id = in.readLong();
+        name = in.readString();
+        screen_name = in.readString();
     }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ id >>> 32);
-		return result;
-	}
+    public ParcelableUserMention(final UserMentionEntity entity) {
+        id = entity.getId();
+        name = entity.getName();
+        screen_name = entity.getScreenName();
+    }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-	@Override
-	public String toString() {
-		return "ParcelableUserMention{id=" + id + ", name=" + name + ", screen_name=" + screen_name + "}";
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (!(obj instanceof ParcelableUserMention)) return false;
+        final ParcelableUserMention other = (ParcelableUserMention) obj;
+        if (id != other.id) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (id ^ id >>> 32);
+        return result;
     }
 
 
     @Override
-	public void writeToParcel(final Parcel dest, final int flags) {
-		dest.writeLong(id);
-		dest.writeString(name);
-		dest.writeString(screen_name);
-	}
-
-    @Deprecated
-	public static ParcelableUserMention[] fromJSONString(final String json) {
-		if (TextUtils.isEmpty(json)) return null;
-		try {
-            final List<ParcelableUserMention> list = LoganSquare.parseList(json, ParcelableUserMention.class);
-            return list.toArray(new ParcelableUserMention[list.size()]);
-        } catch (final IOException e) {
-			return null;
-		}
-	}
-
-    public static ParcelableUserMention[] fromStatus(final Status status) {
-        return fromUserMentionEntities(status.getUserMentionEntities());
+    public String toString() {
+        return "ParcelableUserMention{id=" + id + ", name=" + name + ", screen_name=" + screen_name + "}";
     }
 
-	public static ParcelableUserMention[] fromUserMentionEntities(final UserMentionEntity[] entities) {
-		if (entities == null) return null;
-		final ParcelableUserMention[] mentions = new ParcelableUserMention[entities.length];
-		for (int i = 0, j = entities.length; i < j; i++) {
-			mentions[i] = new ParcelableUserMention(entities[i]);
-		}
-		return mentions;
-	}
 
-	public static boolean hasMention(final ParcelableUserMention[] mentions, final long id) {
-		if (mentions == null) return false;
-		for (final ParcelableUserMention mention : mentions) {
-			if (mention.id == id) return true;
-		}
-		return false;
-	}
+    @Override
+    public void writeToParcel(final Parcel dest, final int flags) {
+        dest.writeLong(id);
+        dest.writeString(name);
+        dest.writeString(screen_name);
+    }
 
-	public static boolean hasMention(final String json, final long id) {
-		final ParcelableUserMention[] mentions = fromJSONString(json);
-		if (mentions == null) return false;
-		for (final ParcelableUserMention mention : mentions) {
-			if (mention.id == id) return true;
-		}
-		return false;
-	}
+    public static ParcelableUserMention[] fromUserMentionEntities(final UserMentionEntity[] entities) {
+        if (entities == null) return null;
+        final ParcelableUserMention[] mentions = new ParcelableUserMention[entities.length];
+        for (int i = 0, j = entities.length; i < j; i++) {
+            mentions[i] = new ParcelableUserMention(entities[i]);
+        }
+        return mentions;
+    }
 
 }
