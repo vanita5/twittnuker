@@ -67,7 +67,7 @@
             android:summary="@string/remember_position_summary"
             android:title="@string/remember_position" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="read_from_bottom"
             android:summary="@string/load_more_from_top_summary"
             android:title="@string/read_from_bottom" />

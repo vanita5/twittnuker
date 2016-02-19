@@ -206,7 +206,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
     public final void onLoadFinished(Loader<Data> loader, Data data) {
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
         final boolean rememberPosition = mPreferences.getBoolean(KEY_REMEMBER_POSITION, false);
-        final boolean readFromBottom = mPreferences.getBoolean(KEY_READ_FROM_BOTTOM, false);
+        final boolean readFromBottom = mPreferences.getBoolean(KEY_READ_FROM_BOTTOM, true);
         final long lastReadId;
         final int lastVisiblePos, lastVisibleTop;
         final String tag = getCurrentReadPositionTag();
