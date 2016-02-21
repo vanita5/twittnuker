@@ -211,7 +211,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -1163,9 +1162,7 @@ public final class Utils implements Constants {
     public static String getImageUploadStatus(@Nullable final CharSequence[] links,
                                               @Nullable final CharSequence text) {
         if (ArrayUtils.isEmpty(links) || text == null) return ParseUtils.parseString(text);
-        final String imageUploadFormat = DEFAULT_IMAGE_UPLOAD_FORMAT;
-        return imageUploadFormat.replace(FORMAT_PATTERN_LINK, TwidereArrayUtils.toString(links, ' ', false)).replace(
-                FORMAT_PATTERN_TEXT, text);
+        return text + " " + TwidereArrayUtils.toString(links, ' ', false);
     }
 
     public static File getInternalCacheDir(final Context context, final String cacheDirName) {
@@ -1422,11 +1419,6 @@ public final class Utils implements Constants {
         if (PATTERN_TWITTER_PROFILE_IMAGES.matcher(url).matches())
             return replaceLast(url, "_" + TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES, String.format("_%s", size));
         return url;
-    }
-
-    public static String getUnescapedStatusString(final String string) {
-        if (string == null) return null;
-        return string.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">");
     }
 
     @DrawableRes

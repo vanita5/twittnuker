@@ -121,7 +121,6 @@ import static de.vanita5.twittnuker.util.DataStoreUtils.cleanDatabasesByItemLimi
 import static de.vanita5.twittnuker.util.Utils.checkPlayServices;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
-import static de.vanita5.twittnuker.util.Utils.isDatabaseReady;
 import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 
@@ -350,11 +349,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
         super.onCreate(savedInstanceState);
-        if (!isDatabaseReady(this)) {
-            Toast.makeText(this, R.string.preparing_database_toast, Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
         mMultiSelectHandler = new MultiSelectEventHandler(this);
         mMultiSelectHandler.dispatchOnCreate();
         if (!DataStoreUtils.hasAccount(this)) {

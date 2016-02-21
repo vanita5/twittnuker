@@ -22,98 +22,30 @@
 
 package de.vanita5.twittnuker.preference;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.preference.spec.ServiceSpec;
 
-import java.util.ArrayList;
-
-public class MediaUploaderPreference extends DialogPreference implements Constants {
-
-    private final ServiceSpec TWITTER_SERVICE = new ServiceSpec(getContext().getString(R.string.image_uploader_default), null);
-    private final ServiceSpec TWIPPLE_SERVICE = new ServiceSpec(getContext().getString(R.string.image_uploader_twipple), SERVICE_UPLOADER_TWIPPLE); //FIXME
-
-    private final ServiceSpec[] AVAILABLE_SERVICES = {TWITTER_SERVICE};
-
-    private SharedPreferences mPreferences;
-
-    private ServiceSpec[] mAvailableImageUploaders;
+public class MediaUploaderPreference extends ServicePickerPreference implements Constants {
 
     public MediaUploaderPreference(final Context context) {
-        this(context, null);
+        super(context);
     }
 
     public MediaUploaderPreference(final Context context, final AttributeSet attrs) {
-        this(context, attrs, android.R.attr.preferenceStyle);
-    }
-
-    public MediaUploaderPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
+        super(context, attrs);
     }
 
     @Override
-    protected View onCreateView(ViewGroup parent) {
-        mPreferences = getSharedPreferences();
-        final String component = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
-        setSummary(getServiceName(component));
-        return super.onCreateView(parent);
+    protected String getIntentAction() {
+        return INTENT_ACTION_EXTENSION_UPLOAD_MEDIA;
     }
 
     @Override
-    public void onClick(final DialogInterface dialog, final int which) {
-        final SharedPreferences.Editor editor = getEditor();
-        if (editor == null) return;
-        final ServiceSpec spec = mAvailableImageUploaders[which];
-        if (spec != null) {
-            editor.putString(KEY_MEDIA_UPLOADER, spec.service);
-            editor.commit();
-        }
-        setSummary(spec.name);
-        dialog.dismiss();
-    }
-
-    @Override
-    public void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
-        super.onPrepareDialogBuilder(builder);
-        if (mPreferences == null) return;
-        final String component = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
-        final ArrayList<ServiceSpec> specs = new ArrayList<ServiceSpec>();
-        for (ServiceSpec spec : AVAILABLE_SERVICES) {
-            specs.add(spec);
-        }
-        mAvailableImageUploaders = specs.toArray(new ServiceSpec[specs.size()]);
-        builder.setSingleChoiceItems(mAvailableImageUploaders, getIndex(component), MediaUploaderPreference.this);
-        builder.setNegativeButton(android.R.string.cancel, null);
-    }
-
-    private int getIndex(final String cls) {
-        if (mAvailableImageUploaders == null) return -1;
-        if (cls == null) return 0;
-        final int count = mAvailableImageUploaders.length;
-        for (int i = 0; i < count; i++) {
-            final ServiceSpec spec = mAvailableImageUploaders[i];
-            if (cls.equals(spec.service)) return i;
-        }
-        return -1;
-    }
-
-    private String getServiceName(String service) {
-        if (service == null) return getContext().getString(R.string.image_uploader_default);
-        for (ServiceSpec spec : AVAILABLE_SERVICES) {
-            if (service.equals(spec.service)) {
-                return spec.name;
-            }
-        }
-        return "";
+    protected String getNoneEntry() {
+        return getContext().getString(R.string.media_uploader_default);
     }
 
 }

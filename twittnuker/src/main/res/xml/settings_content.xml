@@ -33,7 +33,7 @@
             android:defaultValue=""
             android:key="media_uploader"
             android:summary="%s"
-            android:title="@string/image_uploader" />
+            android:title="@string/media_uploader" />
 
         <!--<de.vanita5.twittnuker.preference.TimelineSyncPreference-->
             <!--android:defaultValue=""-->
