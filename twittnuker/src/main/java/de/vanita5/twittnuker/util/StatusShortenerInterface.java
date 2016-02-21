@@ -28,9 +28,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
 
 import de.vanita5.twittnuker.IStatusShortener;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.StatusShortenResult;
 
@@ -46,16 +47,27 @@ public final class StatusShortenerInterface extends AbsServiceInterface<IStatusS
     }
 
     @Override
-    public StatusShortenResult shorten(final ParcelableStatusUpdate status, final String overrideStatusText)
-            throws RemoteException {
+    public StatusShortenResult shorten(final ParcelableStatusUpdate status,
+                                       final ParcelableAccount currentAccount,
+                                       final String overrideStatusText) {
         final IStatusShortener iface = getInterface();
         if (iface == null) return null;
         try {
-            return iface.shorten(status, overrideStatusText);
+            return iface.shorten(status, currentAccount, overrideStatusText);
         } catch (final RemoteException e) {
-            Log.w(LOGTAG, e);
+            return null;
         }
-        return null;
+    }
+
+    @Override
+    public boolean callback(StatusShortenResult result, ParcelableStatus status) {
+        final IStatusShortener iface = getInterface();
+        if (iface == null) return false;
+        try {
+            return iface.callback(result, status);
+        } catch (final RemoteException e) {
+            return false;
+        }
     }
 
     public static StatusShortenerInterface getInstance(final Application application, final String shortener_name) {

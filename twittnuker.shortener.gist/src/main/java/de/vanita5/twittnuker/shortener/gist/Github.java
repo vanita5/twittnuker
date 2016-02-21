@@ -20,7 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.util;
+package de.vanita5.twittnuker.shortener.gist;
 
-public class ParcelableCardEntityUtils {
+import org.mariotaku.restfu.annotation.method.PATCH;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Headers;
+import org.mariotaku.restfu.annotation.param.KeyValue;
+import org.mariotaku.restfu.annotation.param.Path;
+import org.mariotaku.restfu.annotation.param.Raw;
+
+@Headers(@KeyValue(key = "Accept", value = "application/vnd.github.v3+json"))
+public interface Github {
+
+    @POST("/gists")
+    Gist createGist(@Raw NewGist newGist) throws GithubException;
+
+    @PATCH("/gists/{id}")
+    Gist updateGist(@Path("id") String id, @Raw NewGist newGist) throws GithubException;
+
 }

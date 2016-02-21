@@ -27,80 +27,84 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
+@ParcelablePlease
 @JsonObject
 public class StatusShortenResult implements Parcelable {
 
-	public static final Parcelable.Creator<StatusShortenResult> CREATOR = new Parcelable.Creator<StatusShortenResult>() {
+    @JsonField(name = "shortened")
+    @ParcelableThisPlease
+    public String shortened;
 
-		@Override
-		public StatusShortenResult createFromParcel(final Parcel source) {
-			return new StatusShortenResult(source);
-		}
+    @JsonField(name = "extra")
+    @ParcelableThisPlease
+    public String extra;
 
-		@Override
-		public StatusShortenResult[] newArray(final int size) {
-			return new StatusShortenResult[size];
-		}
-	};
+    @JsonField(name = "error_code")
+    @ParcelableThisPlease
+    public int error_code;
 
-	@JsonField(name = "shortened")
-	public String shortened;
+    @JsonField(name = "error_message")
+    @ParcelableThisPlease
+    public String error_message;
 
-	@JsonField(name = "error_code")
-	public int error_code;
+    public StatusShortenResult() {
+    }
 
-	@JsonField(name = "error_message")
-	public String error_message;
+    public StatusShortenResult(final int errorCode, final String errorMessage) {
+        if (errorCode == 0) throw new IllegalArgumentException("Error code must not be 0");
+        shortened = null;
+        error_code = errorCode;
+        error_message = errorMessage;
+    }
 
-	public StatusShortenResult() {
-	}
+    public StatusShortenResult(final String shortened) {
+        if (shortened == null)
+            throw new IllegalArgumentException("Shortened text must not be null");
+        this.shortened = shortened;
+        error_code = 0;
+        error_message = null;
+    }
 
-	public StatusShortenResult(final int errorCode, final String errorMessage) {
-		if (errorCode == 0) throw new IllegalArgumentException("Error code must not be 0");
-		shortened = null;
-		error_code = errorCode;
-		error_message = errorMessage;
-	}
+    @Override
+    public String toString() {
+        return "StatusShortenResult{" +
+                "shortened='" + shortened + '\'' +
+                ", extra='" + extra + '\'' +
+                ", error_code=" + error_code +
+                ", error_message='" + error_message + '\'' +
+                '}';
+    }
 
-	public StatusShortenResult(final Parcel src) {
-		shortened = src.readString();
-		error_code = src.readInt();
-		error_message = src.readString();
-	}
+    public static StatusShortenResult error(final int errorCode, final String errorMessage) {
+        return new StatusShortenResult(errorCode, errorMessage);
+    }
 
-	public StatusShortenResult(final String shortened) {
-		if (shortened == null)
-			throw new IllegalArgumentException("Shortened text must not be null");
-		this.shortened = shortened;
-		error_code = 0;
-		error_message = null;
-	}
+    public static StatusShortenResult shortened(final String shortened) {
+        return new StatusShortenResult(shortened);
+    }
 
-	@Override
-	public int describeContents() {
-		return 0;
-	}
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-	@Override
-	public String toString() {
-		return "StatusShortenResult{shortened=" + shortened + ", error_code=" + error_code + ", error_message="
-				+ error_message + "}";
-	}
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        StatusShortenResultParcelablePlease.writeToParcel(this, dest, flags);
+    }
 
-	@Override
-	public void writeToParcel(final Parcel dest, final int flags) {
-		dest.writeString(shortened);
-		dest.writeInt(error_code);
-		dest.writeString(error_message);
-	}
+    public static final Creator<StatusShortenResult> CREATOR = new Creator<StatusShortenResult>() {
+        public StatusShortenResult createFromParcel(Parcel source) {
+            StatusShortenResult target = new StatusShortenResult();
+            StatusShortenResultParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
 
-	public static StatusShortenResult getInstance(final int errorCode, final String errorMessage) {
-		return new StatusShortenResult(errorCode, errorMessage);
-	}
-
-	public static StatusShortenResult getInstance(final String shortened) {
-		return new StatusShortenResult(shortened);
-	}
-
+        public StatusShortenResult[] newArray(int size) {
+            return new StatusShortenResult[size];
+        }
+    };
 }

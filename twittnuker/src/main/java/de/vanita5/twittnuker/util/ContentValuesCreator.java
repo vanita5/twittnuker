@@ -298,13 +298,6 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     }
 
 
-    public static ContentValues createStatusDraft(final ParcelableStatusUpdate status) {
-        final ContentValues values = new ContentValues();
-        DraftItem item = new DraftItem(status);
-        DraftItemValuesCreator.writeTo(item, values);
-        return values;
-    }
-
     public static ContentValues[] createTrends(final List<Trends> trendsList) {
         if (trendsList == null) return new ContentValues[0];
         final List<ContentValues> resultList = new ArrayList<>();

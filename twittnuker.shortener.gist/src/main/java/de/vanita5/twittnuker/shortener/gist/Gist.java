@@ -28,10 +28,17 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 @JsonObject
 public class Gist {
 
-	@JsonField(name = "html_url")
-	String htmlUrl;
+    @JsonField(name = "html_url")
+    String htmlUrl;
 
-	public String getHtmlUrl() {
-		return htmlUrl;
-	}
+    @JsonField(name = "id")
+    String id;
+
+    public String getHtmlUrl() {
+        return htmlUrl;
+    }
+
+    public String getId() {
+        return id;
+    }
 }

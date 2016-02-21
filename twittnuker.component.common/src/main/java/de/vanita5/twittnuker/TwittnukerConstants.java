@@ -36,9 +36,9 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
         IntentConstants, SecretConstants {
 
     String TWITTNUKER_APP_NAME = "Twittnuker";
-    String TWITTNUKER_PACKAGE_NAME = "de.vanita5.twittnuker";
     String TWITTNUKER_PROJECT_URL = "https://github.com/vanita5/twittnuker";
     String TWITTNUKER_PROJECT_EMAIL = "mail@twittnuker.org";
+    String TWITTNUKER_PACKAGE_NAME = "de.vanita5.twittnuker";
 
     String LOGTAG = TWITTNUKER_APP_NAME;
 

@@ -100,7 +100,8 @@ import com.nostra13.universalimageloader.utils.IoUtils;
 import com.twitter.Extractor;
 
 import org.apache.commons.lang3.ObjectUtils;
-
+import org.mariotaku.restfu.RestFuUtils;
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
@@ -108,6 +109,7 @@ import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.DraftItem;
+import de.vanita5.twittnuker.model.DraftItemValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableLocation;
@@ -121,7 +123,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.text.MarkForDeleteSpan;
 import de.vanita5.twittnuker.text.style.EmojiSpan;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
-import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
@@ -146,6 +147,7 @@ import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.helper.SimpleItemTouchHelperCallback;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -165,7 +167,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
 
     // Constants
     private static final String FAKE_IMAGE_LINK = "https://www.example.com/fake_image.jpg";
-    private static final String EXTRA_IS_POSSIBLY_SENSITIVE = "is_possibly_sensitive";
     private static final String EXTRA_SHOULD_SAVE_ACCOUNTS = "should_save_accounts";
     private static final String EXTRA_ORIGINAL_TEXT = "original_text";
     private static final String EXTRA_SHARE_SCREENSHOT = "share_screenshot";
@@ -209,7 +210,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
     private ParcelableStatus mInReplyToStatus;
     private ParcelableUser mMentionUser;
     private String mOriginalText;
-    private long mInReplyToStatusId;
     private boolean mIsPossiblySensitive, mShouldSaveAccounts;
     private boolean mImageUploaderUsed, mStatusShortenerUsed;
     private boolean mNavigateBackPressed;
@@ -294,7 +294,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         outState.putParcelableArrayList(EXTRA_MEDIA, new ArrayList<Parcelable>(getMediaList()));
         outState.putBoolean(EXTRA_IS_POSSIBLY_SENSITIVE, mIsPossiblySensitive);
         outState.putParcelable(EXTRA_STATUS, mInReplyToStatus);
-        outState.putLong(EXTRA_STATUS_ID, mInReplyToStatusId);
         outState.putParcelable(EXTRA_USER, mMentionUser);
         outState.putParcelable(EXTRA_DRAFT, mDraftItem);
         outState.putBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS, mShouldSaveAccounts);
@@ -539,16 +538,17 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
 
     public void saveToDrafts() {
         final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
-        final ParcelableStatusUpdate.Builder builder = new ParcelableStatusUpdate.Builder();
-        builder.accounts(DataStoreUtils.getAccounts(this, mAccountsAdapter.getSelectedAccountIds()));
-        builder.text(text);
-        builder.inReplyToStatusId(mInReplyToStatusId);
-        builder.location(mRecentLocation);
-        builder.isPossiblySensitive(mIsPossiblySensitive);
-        if (hasMedia()) {
-            builder.media(getMedia());
+        final DraftItem draftItem = new DraftItem();
+        draftItem.account_ids = mAccountsAdapter.getSelectedAccountIds();
+        draftItem.text = text;
+        Bundle extras = new Bundle();
+        if (mInReplyToStatus != null) {
+            extras.putParcelable(EXTRA_IN_REPLY_TO_STATUS, mInReplyToStatus);
         }
-        final ContentValues values = ContentValuesCreator.createStatusDraft(builder.build());
+        extras.putBoolean(EXTRA_IS_POSSIBLY_SENSITIVE, mIsPossiblySensitive);
+        draftItem.media = getMedia();
+        draftItem.location = mRecentLocation;
+        final ContentValues values = DraftItemValuesCreator.create(draftItem);
         final Uri draftUri = getContentResolver().insert(Drafts.CONTENT_URI, values);
         displayNewDraftNotification(text, draftUri);
     }
@@ -630,7 +630,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                 addMedia(mediaList);
             }
             mInReplyToStatus = savedInstanceState.getParcelable(EXTRA_STATUS);
-            mInReplyToStatusId = savedInstanceState.getLong(EXTRA_STATUS_ID);
             mMentionUser = savedInstanceState.getParcelable(EXTRA_USER);
             mDraftItem = savedInstanceState.getParcelable(EXTRA_DRAFT);
             mShouldSaveAccounts = savedInstanceState.getBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS);
@@ -869,8 +868,12 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         if (draft.media != null) {
             addMedia(Arrays.asList(draft.media));
         }
-        mIsPossiblySensitive = draft.is_possibly_sensitive;
-        mInReplyToStatusId = draft.in_reply_to_status_id;
+        mRecentLocation = draft.location;
+        Bundle extras = draft.action_extras;
+        if (extras != null) {
+            mIsPossiblySensitive = extras.getBoolean(EXTRA_IS_POSSIBLY_SENSITIVE);
+            mInReplyToStatus = extras.getParcelable(EXTRA_IN_REPLY_TO_STATUS);
+        }
         return true;
     }
 
@@ -880,7 +883,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         mShouldSaveAccounts = false;
         mMentionUser = intent.getParcelableExtra(EXTRA_USER);
         mInReplyToStatus = intent.getParcelableExtra(EXTRA_STATUS);
-        mInReplyToStatusId = mInReplyToStatus != null ? mInReplyToStatus.id : -1;
         mReplyLabel.setVisibility(View.GONE);
         mReplyLabelDivider.setVisibility(View.GONE);
         switch (action) {
@@ -900,8 +902,8 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
             case INTENT_ACTION_REPLY_MULTIPLE: {
                 final String[] screenNames = intent.getStringArrayExtra(EXTRA_SCREEN_NAMES);
                 final long accountId = intent.getLongExtra(EXTRA_ACCOUNT_ID, -1);
-                final long inReplyToUserId = intent.getLongExtra(EXTRA_IN_REPLY_TO_ID, -1);
-                return handleReplyMultipleIntent(screenNames, accountId, inReplyToUserId);
+                final ParcelableStatus inReplyToStatus = intent.getParcelableExtra(EXTRA_IN_REPLY_TO_STATUS);
+                return handleReplyMultipleIntent(screenNames, accountId, inReplyToStatus);
             }
             case INTENT_ACTION_COMPOSE_TAKE_PHOTO: {
                 return takePhoto();
@@ -975,7 +977,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
     }
 
     private boolean handleReplyMultipleIntent(final String[] screenNames, final long accountId,
-                                              final long inReplyToStatusId) {
+                                              final ParcelableStatus inReplyToStatus) {
         if (screenNames == null || screenNames.length == 0 || accountId <= 0) return false;
         final String myScreenName = DataStoreUtils.getAccountScreenName(this, accountId);
         if (TextUtils.isEmpty(myScreenName)) return false;
@@ -987,7 +989,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         }
         mEditText.setSelection(mEditText.length());
         mAccountsAdapter.setSelectedAccountIds(accountId);
-        mInReplyToStatusId = inReplyToStatusId;
+        mInReplyToStatus = inReplyToStatus;
         return true;
     }
 
@@ -1235,18 +1237,21 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
         final long[] accountIds = mAccountsAdapter.getSelectedAccountIds();
         final ParcelableLocation statusLocation = attachLocation ? mRecentLocation : null;
-        final long inReplyToStatusId = mInReplyToStatusId;
         final boolean isPossiblySensitive = hasMedia && mIsPossiblySensitive;
-        mTwitterWrapper.updateStatusAsync(accountIds, text, statusLocation, getMedia(), inReplyToStatusId,
-                isPossiblySensitive);
-        if (mPreferences.getBoolean(KEY_NO_CLOSE_AFTER_TWEET_SENT, false)
-                && (mInReplyToStatus == null || mInReplyToStatusId <= 0)) {
+        ParcelableStatusUpdate update = new ParcelableStatusUpdate();
+        update.accounts = DataStoreUtils.getAccounts(this, accountIds);
+        update.text = text;
+        update.location = statusLocation;
+        update.media = getMedia();
+        update.in_reply_to_status = mInReplyToStatus;
+        update.is_possibly_sensitive = isPossiblySensitive;
+        mTwitterWrapper.updateStatusesAsync(update);
+        if (mPreferences.getBoolean(KEY_NO_CLOSE_AFTER_TWEET_SENT, false) && mInReplyToStatus == null) {
             mIsPossiblySensitive = false;
             mShouldSaveAccounts = true;
             mInReplyToStatus = null;
             mMentionUser = null;
             mDraftItem = null;
-            mInReplyToStatusId = -1;
             mOriginalText = null;
             mEditText.setText(null);
             clearMedia();
@@ -1523,7 +1528,8 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                 final ContentResolver resolver = activity.getContentResolver();
                 is = resolver.openInputStream(src);
                 os = resolver.openOutputStream(dst);
-                Utils.copyStream(is, os);
+                if (is == null || os == null) throw new FileNotFoundException();
+                RestFuUtils.copyStream(is, os);
                 if (ContentResolver.SCHEME_FILE.equals(src.getScheme()) && mDeleteSrc) {
                     final File file = new File(src.getPath());
                     if (!file.delete()) {
@@ -1531,7 +1537,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                     }
                 }
             } catch (final IOException e) {
-                Log.w(LOGTAG, e);
+                if (BuildConfig.DEBUG) {
+                    Log.w(LOGTAG, e);
+                }
                 return false;
             } finally {
                 Utils.closeSilently(os);

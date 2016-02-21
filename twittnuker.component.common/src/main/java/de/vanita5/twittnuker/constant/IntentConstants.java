@@ -136,6 +136,7 @@ public interface IntentConstants {
     String EXTRA_IN_REPLY_TO_ID = "in_reply_to_id";
     String EXTRA_IN_REPLY_TO_NAME = "in_reply_to_name";
     String EXTRA_IN_REPLY_TO_SCREEN_NAME = "in_reply_to_screen_name";
+    String EXTRA_IN_REPLY_TO_STATUS = "in_reply_to_status";
     String EXTRA_TEXT = "text";
     String EXTRA_TITLE = "title";
     String EXTRA_TYPE = "type";
@@ -227,6 +228,7 @@ public interface IntentConstants {
     String EXTRA_QUOTE_ORIGINAL_STATUS = "quote_original_status";
     String EXTRA_KEY = "key";
     String EXTRA_CARD = "card";
+    String EXTRA_IS_POSSIBLY_SENSITIVE = "is_possibly_sensitive";
 
     /* Twittnuker */
     String EXTRA_HOTOTIN_EXPANDED_TEXT = "hototin_expanded_text";

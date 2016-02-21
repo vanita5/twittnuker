@@ -63,8 +63,6 @@ import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.ListResponse;
-import de.vanita5.twittnuker.model.ParcelableLocation;
-import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -478,19 +476,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         intent.putExtra(EXTRA_IMAGE_URI, imageUri);
         mContext.startService(intent);
         return 0;
-    }
-
-    public int updateStatusAsync(final long[] accountIds, final String text, final ParcelableLocation location,
-                                 final ParcelableMediaUpdate[] media, final long inReplyToStatusId,
-                                 final boolean isPossiblySensitive) {
-        final ParcelableStatusUpdate.Builder builder = new ParcelableStatusUpdate.Builder();
-        builder.accounts(DataStoreUtils.getAccounts(mContext, accountIds));
-        builder.text(text);
-        builder.location(location);
-        builder.media(media);
-        builder.inReplyToStatusId(inReplyToStatusId);
-        builder.isPossiblySensitive(isPossiblySensitive);
-        return updateStatusesAsync(builder.build());
     }
 
     public int updateStatusesAsync(final ParcelableStatusUpdate... statuses) {

@@ -19,6 +19,7 @@ buildscript {
 }
 
 android {
+
     defaultConfig {
         applicationId "de.vanita5.twittnuker"
         minSdkVersion 14
@@ -47,6 +48,7 @@ android {
         }
         release {
             minifyEnabled true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-rules-test.pro'
             resValue("bool", "debug", "false")
@@ -54,7 +56,8 @@ android {
     }
     sourceSets {
         main {
-            res.srcDirs = [project.file("src/$name/res"), project.file("src/$name/res-svg2png")]
+//            res.srcDirs += project.files("src/$name/res-localized")
+            res.srcDirs += project.files("src/$name/res-svg2png")
         }
     }
     lintOptions {
@@ -99,7 +102,6 @@ dependencies {
     compile 'com.commonsware.cwac:layouts:0.4.2'
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.pnikosis:materialish-progress:1.7'
-    compile 'com.squareup.okhttp3:okhttp:3.1.2'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.7'
     compile 'com.github.johnpersano:supertoasts:1.3.4.1@aar'
     compile 'com.github.mariotaku:MessageBubbleView:1.2'
@@ -117,6 +119,7 @@ dependencies {
     compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.2'
     compile 'com.github.mariotaku:PickNCrop:0.9.3'
     compile 'com.github.mariotaku.RestFu:okhttp3:0.9.21'
+    compile 'com.squareup.okhttp3:okhttp:3.1.2'
     compile 'com.lnikkila:extendedtouchview:0.1.0'
     compile 'com.google.dagger:dagger:2.0.2'
     compile 'org.attoparser:attoparser:1.4.0.RELEASE'

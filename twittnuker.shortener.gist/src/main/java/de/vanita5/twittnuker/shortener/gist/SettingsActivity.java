@@ -19,18 +19,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.vanita5.twittnuker;
 
-import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
-import de.vanita5.twittnuker.model.StatusShortenResult;
+package de.vanita5.twittnuker.shortener.gist;
 
-interface IStatusShortener {
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 
-    StatusShortenResult shorten(in ParcelableStatusUpdate status,in ParcelableAccount currentAccount,
-                                String overrideStatusText);
 
-    boolean callback(in StatusShortenResult result, in ParcelableStatus status);
+public class SettingsActivity extends PreferenceActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.settings);
+    }
 
 }

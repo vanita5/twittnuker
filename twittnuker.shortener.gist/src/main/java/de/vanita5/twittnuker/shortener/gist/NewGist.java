@@ -20,25 +20,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'com.android.application'
+package de.vanita5.twittnuker.shortener.gist;
 
-android {
-    defaultConfig {
-        applicationId "de.vanita5.twittnuker.launcher.compose"
-        minSdkVersion 14
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@JsonObject
+public class NewGist {
+    @JsonField(name = "description")
+    String description;
+    @JsonField(name = "public")
+    boolean isPublic;
+    @JsonField(name = "files")
+    Map<String, GistFile> files;
+
+    public void setDescription(String description) {
+        this.description = description;
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public void putFile(String key, GistFile file) {
+        if (files == null) {
+            files = new HashMap<>();
         }
+        files.put(key, file);
     }
-}
-
-dependencies {
-    compile project(':twittnuker.component.common')
-    compile fileTree(dir: 'libs', include: ['*.jar'])
 }

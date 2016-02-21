@@ -24,19 +24,24 @@ package de.vanita5.twittnuker.model.util;
 
 import android.content.Context;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.DraftItem;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 
-public class ParcelableStatusUpdateUtils {
+public class ParcelableStatusUpdateUtils implements Constants {
+
     public static ParcelableStatusUpdate fromDraftItem(final Context context, final DraftItem draft) {
         ParcelableStatusUpdate statusUpdate = new ParcelableStatusUpdate();
         statusUpdate.accounts = DataStoreUtils.getAccounts(context, draft.account_ids);
         statusUpdate.text = draft.text;
         statusUpdate.location = draft.location;
         statusUpdate.media = draft.media;
-        statusUpdate.in_reply_to_status_id = draft.in_reply_to_status_id;
-        statusUpdate.is_possibly_sensitive = draft.is_possibly_sensitive;
+        if (draft.action_extras != null) {
+            statusUpdate.in_reply_to_status = draft.action_extras.getParcelable(EXTRA_IN_REPLY_TO_STATUS);
+            statusUpdate.is_possibly_sensitive = draft.action_extras.getBoolean(EXTRA_IS_POSSIBLY_SENSITIVE);
+        }
         return statusUpdate;
     }
+
 }
