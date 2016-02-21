@@ -80,8 +80,8 @@ import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage;
-import de.vanita5.twittnuker.model.DraftItem;
-import de.vanita5.twittnuker.model.DraftItemCursorIndices;
+import de.vanita5.twittnuker.model.Draft;
+import de.vanita5.twittnuker.model.DraftCursorIndices;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
@@ -505,8 +505,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final Expression where = Expression.equals(Drafts._ID, draftId);
         final Cursor c = getContentResolver().query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.getSQL(), null, null);
         if (c == null) return -1;
-        final DraftItemCursorIndices i = new DraftItemCursorIndices(c);
-        final DraftItem item;
+        final DraftCursorIndices i = new DraftCursorIndices(c);
+        final Draft item;
         try {
             if (!c.moveToFirst()) return -1;
             item = i.newObject(c);

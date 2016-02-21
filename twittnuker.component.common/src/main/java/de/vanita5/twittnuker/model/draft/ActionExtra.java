@@ -20,24 +20,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.util;
+package de.vanita5.twittnuker.model.draft;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.os.Bundle;
+import android.os.Parcelable;
 
-import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
-
-import java.lang.reflect.ParameterizedType;
-
-public class BundleConverter implements CursorFieldConverter<Bundle> {
-    @Override
-    public Bundle parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
-        return null;
-    }
-
-    @Override
-    public void writeField(ContentValues values, Bundle object, String columnName, ParameterizedType fieldType) {
-
-    }
+public interface ActionExtra extends Parcelable {
 }

@@ -108,8 +108,8 @@ import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
-import de.vanita5.twittnuker.model.DraftItem;
-import de.vanita5.twittnuker.model.DraftItemValuesCreator;
+import de.vanita5.twittnuker.model.Draft;
+import de.vanita5.twittnuker.model.DraftValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableLocation;
@@ -118,6 +118,7 @@ import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.text.MarkForDeleteSpan;
@@ -191,7 +192,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
     private StatusTextCountView mSendTextCountView;
     private RecyclerView mAccountSelector;
     private View mAccountSelectorContainer;
-    private DraftItem mDraftItem;
+    private Draft mDraft;
     private ShapedImageView mProfileImageView;
     private BadgeView mCountView;
     private View mAccountSelectorButton;
@@ -295,7 +296,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         outState.putBoolean(EXTRA_IS_POSSIBLY_SENSITIVE, mIsPossiblySensitive);
         outState.putParcelable(EXTRA_STATUS, mInReplyToStatus);
         outState.putParcelable(EXTRA_USER, mMentionUser);
-        outState.putParcelable(EXTRA_DRAFT, mDraftItem);
+        outState.putParcelable(EXTRA_DRAFT, mDraft);
         outState.putBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS, mShouldSaveAccounts);
         outState.putString(EXTRA_ORIGINAL_TEXT, mOriginalText);
         super.onSaveInstanceState(outState);
@@ -538,17 +539,35 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
 
     public void saveToDrafts() {
         final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
-        final DraftItem draftItem = new DraftItem();
-        draftItem.account_ids = mAccountsAdapter.getSelectedAccountIds();
-        draftItem.text = text;
-        Bundle extras = new Bundle();
-        if (mInReplyToStatus != null) {
-            extras.putParcelable(EXTRA_IN_REPLY_TO_STATUS, mInReplyToStatus);
+        final Draft draft = new Draft();
+
+        String action = getIntent().getAction();
+        if (action == null) {
+            action = INTENT_ACTION_COMPOSE;
         }
-        extras.putBoolean(EXTRA_IS_POSSIBLY_SENSITIVE, mIsPossiblySensitive);
-        draftItem.media = getMedia();
-        draftItem.location = mRecentLocation;
-        final ContentValues values = DraftItemValuesCreator.create(draftItem);
+        switch (action) {
+            case INTENT_ACTION_REPLY: {
+                draft.action_type = Draft.Action.REPLY;
+                break;
+            }
+            case INTENT_ACTION_QUOTE: {
+                draft.action_type = Draft.Action.QUOTE;
+                break;
+            }
+            default: {
+                draft.action_type = Draft.Action.UPDATE_STATUS;
+                break;
+            }
+        }
+        draft.account_ids = mAccountsAdapter.getSelectedAccountIds();
+        draft.text = text;
+        final UpdateStatusActionExtra extra = new UpdateStatusActionExtra();
+        extra.setInReplyToStatus(mInReplyToStatus);
+        extra.setIsPossiblySensitive(mIsPossiblySensitive);
+        draft.action_extras = extra;
+        draft.media = getMedia();
+        draft.location = mRecentLocation;
+        final ContentValues values = DraftValuesCreator.create(draft);
         final Uri draftUri = getContentResolver().insert(Drafts.CONTENT_URI, values);
         displayNewDraftNotification(text, draftUri);
     }
@@ -620,7 +639,6 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
 
         final Intent intent = getIntent();
 
-
         if (savedInstanceState != null) {
             // Restore from previous saved state
             mAccountsAdapter.setSelectedAccountIds(savedInstanceState.getLongArray(EXTRA_ACCOUNT_IDS));
@@ -631,7 +649,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
             }
             mInReplyToStatus = savedInstanceState.getParcelable(EXTRA_STATUS);
             mMentionUser = savedInstanceState.getParcelable(EXTRA_USER);
-            mDraftItem = savedInstanceState.getParcelable(EXTRA_DRAFT);
+            mDraft = savedInstanceState.getParcelable(EXTRA_DRAFT);
             mShouldSaveAccounts = savedInstanceState.getBoolean(EXTRA_SHOULD_SAVE_ACCOUNTS);
             mOriginalText = savedInstanceState.getString(EXTRA_ORIGINAL_TEXT);
         } else {
@@ -859,8 +877,33 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         return true;
     }
 
-    private boolean handleEditDraftIntent(final DraftItem draft) {
-        if (draft == null) return false;
+    private boolean handleEditDraftIntent(final Draft draft) {
+        if (draft == null)
+            return false;
+        if (draft.action_type == null) {
+            draft.action_type = Draft.Action.UPDATE_STATUS;
+        }
+        switch (draft.action_type) {
+            case Draft.Action.REPLY: {
+                if (draft.action_extras instanceof UpdateStatusActionExtra) {
+                    showReplyLabel(((UpdateStatusActionExtra) draft.action_extras).getInReplyToStatus());
+                } else {
+                    hideLabel();
+                }
+                break;
+            }
+            case Draft.Action.QUOTE: {
+                if (draft.action_extras instanceof UpdateStatusActionExtra) {
+                    showQuoteLabel(((UpdateStatusActionExtra) draft.action_extras).getInReplyToStatus());
+                } else {
+                    hideLabel();
+                }
+                break;
+            }
+            default: {
+                hideLabel();
+            }
+        }
         mEditText.setText(draft.text);
         final int selectionEnd = mEditText.length();
         mEditText.setSelection(selectionEnd);
@@ -869,10 +912,10 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
             addMedia(Arrays.asList(draft.media));
         }
         mRecentLocation = draft.location;
-        Bundle extras = draft.action_extras;
-        if (extras != null) {
-            mIsPossiblySensitive = extras.getBoolean(EXTRA_IS_POSSIBLY_SENSITIVE);
-            mInReplyToStatus = extras.getParcelable(EXTRA_IN_REPLY_TO_STATUS);
+        if (draft.action_extras instanceof UpdateStatusActionExtra) {
+            final UpdateStatusActionExtra extra = (UpdateStatusActionExtra) draft.action_extras;
+            mIsPossiblySensitive = extra.isPossiblySensitive();
+            mInReplyToStatus = extra.getInReplyToStatus();
         }
         return true;
     }
@@ -893,8 +936,8 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                 return handleQuoteIntent(mInReplyToStatus);
             }
             case INTENT_ACTION_EDIT_DRAFT: {
-                mDraftItem = intent.getParcelableExtra(EXTRA_DRAFT);
-                return handleEditDraftIntent(mDraftItem);
+                mDraft = intent.getParcelableExtra(EXTRA_DRAFT);
+                return handleEditDraftIntent(mDraft);
             }
             case INTENT_ACTION_MENTION: {
                 return handleMentionIntent(mMentionUser);
@@ -932,11 +975,35 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         mEditText.setText(Utils.getQuoteStatus(this, status.id, status.user_screen_name, status.text_plain));
         mEditText.setSelection(0);
         mAccountsAdapter.setSelectedAccountIds(status.account_id);
+        showQuoteLabel(status);
+        return true;
+    }
+
+    private void showQuoteLabel(ParcelableStatus status) {
+        if (status == null) {
+            hideLabel();
+            return;
+        }
         final String replyToName = mUserColorNameManager.getDisplayName(status, mNameFirst, false);
         mReplyLabel.setText(getString(R.string.quote_name_text, replyToName, status.text_unescaped));
         mReplyLabel.setVisibility(View.VISIBLE);
         mReplyLabelDivider.setVisibility(View.VISIBLE);
-        return true;
+    }
+
+    private void showReplyLabel(ParcelableStatus status) {
+        if (status == null) {
+            hideLabel();
+            return;
+        }
+        final String replyToName = mUserColorNameManager.getDisplayName(status, mNameFirst, false);
+        mReplyLabel.setText(getString(R.string.reply_to_name_text, replyToName, status.text_unescaped));
+        mReplyLabel.setVisibility(View.VISIBLE);
+        mReplyLabelDivider.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLabel() {
+        mReplyLabel.setVisibility(View.GONE);
+        mReplyLabelDivider.setVisibility(View.GONE);
     }
 
     private boolean handleReplyIntent(final ParcelableStatus status) {
@@ -969,10 +1036,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         final int selectionEnd = mEditText.length();
         mEditText.setSelection(selectionStart, selectionEnd);
         mAccountsAdapter.setSelectedAccountIds(status.account_id);
-        final String replyToName = mUserColorNameManager.getDisplayName(status, mNameFirst, false);
-        mReplyLabel.setText(getString(R.string.reply_to_name_text, replyToName, status.text_unescaped));
-        mReplyLabel.setVisibility(View.VISIBLE);
-        mReplyLabelDivider.setVisibility(View.VISIBLE);
+        showReplyLabel(status);
         return true;
     }
 
@@ -1051,7 +1115,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                     mInReplyToStatus.user_screen_name, mNameFirst, false);
             setTitle(getString(R.string.quote_user, displayName));
         } else if (INTENT_ACTION_EDIT_DRAFT.equals(action)) {
-            if (mDraftItem == null) return false;
+            if (mDraft == null) return false;
             setTitle(R.string.edit_draft);
         } else if (INTENT_ACTION_MENTION.equals(action)) {
             if (mMentionUser == null) return false;
@@ -1071,7 +1135,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
     private void setMenu() {
         if (mMenuBar == null) return;
         final Menu menu = mMenuBar.getMenu();
-        final boolean hasMedia = hasMedia(), hasInReplyTo = mInReplyToStatus != null;
+        final boolean hasMedia = hasMedia();
 
         /*
          * No media & Not reply: [[Take photo][Add image]][Attach location][Drafts]
@@ -1251,7 +1315,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
             mShouldSaveAccounts = true;
             mInReplyToStatus = null;
             mMentionUser = null;
-            mDraftItem = null;
+            mDraft = null;
             mOriginalText = null;
             mEditText.setText(null);
             clearMedia();

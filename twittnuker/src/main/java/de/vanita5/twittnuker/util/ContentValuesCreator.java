@@ -25,8 +25,6 @@ package de.vanita5.twittnuker.util;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
@@ -37,8 +35,7 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.Trend;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.DraftItem;
-import de.vanita5.twittnuker.model.DraftItemValuesCreator;
+import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -47,11 +44,11 @@ import de.vanita5.twittnuker.model.ParcelableDirectMessageValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
+import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -227,7 +224,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     public static ContentValues createMessageDraft(final long accountId, final long recipientId,
             final String text, final String imageUri) {
         final ContentValues values = new ContentValues();
-        values.put(Drafts.ACTION_TYPE, Drafts.ACTION_SEND_DIRECT_MESSAGE);
+        values.put(Drafts.ACTION_TYPE, Draft.Action.SEND_DIRECT_MESSAGE);
         values.put(Drafts.TEXT, text);
         values.put(Drafts.ACCOUNT_IDS, TwidereArrayUtils.toString(new long[]{accountId}, ',', false));
         values.put(Drafts.TIMESTAMP, System.currentTimeMillis());
@@ -236,13 +233,9 @@ public final class ContentValuesCreator implements TwittnukerConstants {
             values.put(Drafts.MEDIA, JsonSerializer.serialize(Arrays.asList(mediaArray),
                     ParcelableMediaUpdate.class));
         }
-        final JSONObject extras = new JSONObject();
-        try {
-            extras.put(EXTRA_RECIPIENT_ID, recipientId);
-        } catch (final JSONException e) {
-            e.printStackTrace();
-        }
-        values.put(Drafts.ACTION_EXTRAS, extras.toString());
+        final SendDirectMessageActionExtra extra = new SendDirectMessageActionExtra();
+        extra.setRecipientId(recipientId);
+        values.put(Drafts.ACTION_EXTRAS, JsonSerializer.serialize(extra));
         return values;
     }
 
