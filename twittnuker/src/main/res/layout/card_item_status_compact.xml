@@ -33,6 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?selectableItemBackground"
+        android:clipChildren="false"
         android:focusable="true"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/element_spacing_normal"
@@ -88,7 +89,7 @@
             android:layout_marginRight="@dimen/element_spacing_small"
             android:contentDescription="@string/profile_image"
             android:scaleType="centerCrop"
-            tools:visibility="visible" />
+            tools:visibility="gone"/>
 
         <de.vanita5.twittnuker.view.BoundsImageView
             android:id="@+id/profile_type"
@@ -239,6 +240,7 @@
             android:layout_marginTop="@dimen/element_spacing_minus_normal"
             android:layout_toLeftOf="@+id/item_menu"
             android:layout_toStartOf="@+id/item_menu"
+            android:clipChildren="false"
             android:gravity="center_vertical|start"
             android:orientation="horizontal"
             tools:visibility="visible">
@@ -281,8 +283,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_size_content_card"
                 android:layout_weight="0"
-                android:drawableLeft="@drawable/ic_action_heart"
-                android:drawableStart="@drawable/ic_action_heart"
                 android:focusable="false"
                 android:gravity="center"
                 android:paddingLeft="@dimen/element_spacing_normal"

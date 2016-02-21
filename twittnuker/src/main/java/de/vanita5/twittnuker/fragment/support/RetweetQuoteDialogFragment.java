@@ -46,8 +46,10 @@ import android.widget.EditText;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
+import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
+import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
@@ -241,7 +243,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
                 update.in_reply_to_status = status;
             }
             update.is_possibly_sensitive = status.is_possibly_sensitive;
-            twitter.updateStatusesAsync(update);
+            BackgroundOperationService.updateStatusesAsync(getContext(), Draft.Action.QUOTE, update);
         } else if (isMyRetweet(status)) {
             twitter.cancelRetweetAsync(status.account_id, status.id, status.my_retweet_id);
         } else {

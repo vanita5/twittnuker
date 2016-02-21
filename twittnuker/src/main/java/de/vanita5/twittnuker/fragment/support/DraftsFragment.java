@@ -72,6 +72,7 @@ import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.JsonSerializer;
@@ -283,7 +284,8 @@ public class DraftsFragment extends BaseSupportFragment implements Constants, Lo
                 case Draft.Action.UPDATE_STATUS:
                 case Draft.Action.REPLY:
                 case Draft.Action.QUOTE: {
-                    twitter.updateStatusesAsync(ParcelableStatusUpdateUtils.fromDraftItem(getActivity(), item));
+                    BackgroundOperationService.updateStatusesAsync(getContext(), item.action_type,
+                            ParcelableStatusUpdateUtils.fromDraftItem(getActivity(), item));
                     break;
                 }
                 case Draft.Action.SEND_DIRECT_MESSAGE_COMPAT:
