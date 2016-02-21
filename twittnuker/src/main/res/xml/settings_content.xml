@@ -42,7 +42,7 @@
             <!--android:summary="%s"-->
             <!--android:title="@string/timeline_sync_service"/>-->
 
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="true"
             android:key="twitter_optimized_searches"
             android:summary="@string/twitter_optimized_searches_summary"
@@ -61,12 +61,12 @@
             app:min="10"
             app:step="5" />
 
-        <CheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="true"
             android:key="remember_position"
             android:summary="@string/remember_position_summary"
             android:title="@string/remember_position" />
-        <CheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="true"
             android:key="read_from_bottom"
             android:summary="@string/load_more_from_top_summary"
@@ -94,12 +94,12 @@
     <PreferenceCategory
         android:key="category_safety"
         android:title="@string/safety">
-        <CheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="true"
             android:key="phishing_link_warning"
             android:summary="@string/phishing_link_warning_summary"
             android:title="@string/phishing_link_warning" />
-        <CheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="true"
             android:key="display_sensitive_contents"
             android:summary="@string/display_sensitive_contents_summary"

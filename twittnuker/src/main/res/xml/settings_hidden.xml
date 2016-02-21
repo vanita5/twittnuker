@@ -26,7 +26,7 @@
 
     <Preference android:layout="@layout/header_hidden_settings" />
 
-    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
         android:defaultValue="false"
         android:key="force_using_private_apis"
         android:title="@string/force_using_private_apis" />

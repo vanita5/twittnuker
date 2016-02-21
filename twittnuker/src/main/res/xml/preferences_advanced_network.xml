@@ -29,12 +29,12 @@
         android:key="category_connectivity"
         android:title="@string/connectivity">
 
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="false"
             android:key="builtin_dns_resolver"
             android:title="@string/builtin_dns_resolver"/>
 
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="false"
             android:dependency="builtin_dns_resolver"
             android:key="tcp_dns_query"
@@ -59,7 +59,7 @@
     <PreferenceCategory
         android:key="category_proxy"
         android:title="@string/proxy">
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="false"
             android:disableDependentsState="false"
             android:key="enable_proxy"

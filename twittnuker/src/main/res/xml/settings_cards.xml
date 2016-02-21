@@ -142,7 +142,7 @@
             android:name="notify_change"
             android:value="true" />
     </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
-    <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
         android:defaultValue="false"
         android:key="i_want_my_stars_back"
         android:order="34"
@@ -151,6 +151,6 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference>
+    </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
 
 </PreferenceScreen>

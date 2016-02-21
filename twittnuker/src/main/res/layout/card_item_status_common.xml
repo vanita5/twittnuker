@@ -25,7 +25,8 @@
        xmlns:app="http://schemas.android.com/apk/res-auto"
        xmlns:tools="http://schemas.android.com/tools"
        android:layout_width="match_parent"
-       android:layout_height="match_parent">
+       android:layout_height="match_parent"
+       tools:showIn="@layout/card_item_status">
 
     <de.vanita5.twittnuker.view.ColorLabelRelativeLayout
         android:id="@+id/item_content"
@@ -203,13 +204,13 @@
             android:id="@+id/quote_indicator"
             android:layout_width="@dimen/element_spacing_small"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/status_content_space"
+            android:layout_above="@+id/status_content_space"
             android:layout_alignTop="@+id/quoted_name"
             android:layout_marginLeft="@dimen/element_spacing_normal"
             android:layout_marginStart="@dimen/element_spacing_normal"
             android:background="?quoteIndicatorBackgroundColor"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="gone"/>
 
         <de.vanita5.twittnuker.view.NameView
             android:id="@+id/quoted_name"
@@ -227,7 +228,7 @@
             app:nv_primaryTextColor="?android:textColorPrimary"
             app:nv_primaryTextStyle="bold"
             app:nv_secondaryTextColor="?android:textColorSecondary"
-            tools:visibility="visible"/>
+            tools:visibility="gone"/>
 
         <de.vanita5.twittnuker.view.TimelineContentTextView
             android:id="@+id/quoted_text"
@@ -244,21 +245,22 @@
             android:textColor="?android:attr/textColorPrimary"
             android:visibility="gone"
             tools:text="@string/sample_status_text"
-            tools:visibility="visible" />
+            tools:visibility="gone"/>
 
         <de.vanita5.twittnuker.view.CardMediaContainer
             android:id="@+id/media_preview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/quoted_text"
-            android:layout_marginBottom="@dimen/element_spacing_normal"
             android:layout_marginTop="@dimen/element_spacing_normal"
             android:layout_toEndOf="@+id/quote_indicator"
             android:layout_toRightOf="@+id/quote_indicator"
             android:horizontalSpacing="@dimen/element_spacing_xsmall"
-            android:verticalSpacing="@dimen/element_spacing_xsmall">
+            android:verticalSpacing="@dimen/element_spacing_xsmall"
+            tools:visibility="gone">
 
             <!-- Child views will be inflated if media preview enabled in ViewHolder -->
+            <!--<include layout="@layout/layout_card_media_preview"/>-->
 
         </de.vanita5.twittnuker.view.CardMediaContainer>
 
@@ -267,7 +269,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/element_spacing_msmall"
             android:layout_below="@+id/media_preview"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/action_buttons"
@@ -276,7 +278,7 @@
             android:layout_alignLeft="@+id/profile_container"
             android:layout_alignStart="@+id/profile_container"
             android:layout_below="@+id/status_content_space"
-            android:layout_marginTop="@dimen/element_spacing_minus_mlarge"
+            android:layout_marginTop="@dimen/element_spacing_minus_msmall"
             android:clipChildren="false"
             android:gravity="center_vertical|start"
             android:orientation="horizontal">
@@ -322,7 +324,9 @@
                 android:paddingRight="@dimen/element_spacing_normal"
                 android:textAppearance="?android:textAppearanceSmall"
                 app:iabActivatedColor="@color/highlight_like"
-                app:iabColor="?android:textColorTertiary"/>
+                app:iabColor="?android:textColorTertiary"
+                tools:drawableLeft="@drawable/ic_action_heart"
+                tools:drawableStart="@drawable/ic_action_heart"/>
 
         </LinearLayout>
 

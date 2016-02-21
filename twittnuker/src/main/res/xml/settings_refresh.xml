@@ -35,27 +35,27 @@
         android:key="cat_streaming"
         android:title="@string/streaming">
 
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="true"
             android:key="stream_enabled"
             android:summary="@string/stream_enabled_summary"
             android:title="@string/stream_enabled" />
 
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="true"
             android:dependency="stream_enabled"
             android:key="stream_notification"
             android:summary="@string/stream_notification_summary"
             android:title="@string/stream_notification" />
 
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="false"
             android:dependency="stream_enabled"
             android:key="stream_autoscroll"
             android:summary="@string/stream_autoscroll_summary"
             android:title="@string/stream_autoscroll" />
 
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="true"
             android:dependency="stream_enabled"
             android:key="refresh_before_streaming"
@@ -63,7 +63,7 @@
             android:title="@string/refresh_before_streaming" />
 
 
-        <!--<de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference-->
+        <!--<de.vanita5.twittnuker.preference.AutoFixSwitchPreference-->
             <!--android:defaultValue="false"-->
             <!--android:dependency="stream_enabled"-->
             <!--android:key="stream_on_mobile"-->
@@ -82,7 +82,7 @@
             android:summary="%s"
             android:title="@string/refresh_interval" />
 
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="true"
             android:key="stop_auto_refresh_when_battery_low"
             android:summary="@string/stop_auto_refresh_when_battery_low_summary"
@@ -93,13 +93,13 @@
             android:summary="@string/home_refresh_summary"
             android:title="@string/home_refresh" />
 
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="false"
             android:enabled="false"
             android:key="refresh_on_start"
             android:summary="@string/refresh_on_start_workaround"
             android:title="@string/refresh_on_start" />
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
             android:defaultValue="false"
             android:key="refresh_after_tweet"
             android:summary="@string/refresh_after_status_updated_summary"
