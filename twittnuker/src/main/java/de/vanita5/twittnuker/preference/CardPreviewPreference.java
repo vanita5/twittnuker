@@ -35,7 +35,7 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
-import de.vanita5.twittnuker.graphic.LikeAnimationDrawable;
+import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 

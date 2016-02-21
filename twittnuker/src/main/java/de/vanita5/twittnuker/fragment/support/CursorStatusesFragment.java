@@ -53,8 +53,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.model.message.AccountChangedEvent;
-import de.vanita5.twittnuker.model.message.FavoriteCreatedEvent;
-import de.vanita5.twittnuker.model.message.FavoriteDestroyedEvent;
+import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
@@ -136,12 +135,9 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
         }
 
         @Subscribe
-        public void notifyFavoriteCreated(FavoriteCreatedEvent event) {
+        public void notifyFavoriteTask(FavoriteTaskEvent event) {
         }
 
-        @Subscribe
-        public void notifyFavoriteDestroyed(FavoriteDestroyedEvent event) {
-        }
 
         @Subscribe
         public void notifyStatusDestroyed(StatusDestroyedEvent event) {

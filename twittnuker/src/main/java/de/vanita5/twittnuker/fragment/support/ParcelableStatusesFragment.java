@@ -33,8 +33,7 @@ import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.message.FavoriteCreatedEvent;
-import de.vanita5.twittnuker.model.message.FavoriteDestroyedEvent;
+import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.message.StatusRetweetedEvent;
@@ -197,14 +196,12 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
     protected class ParcelableStatusesBusCallback {
 
         @Subscribe
-        public void notifyFavoriteCreated(FavoriteCreatedEvent event) {
-            updateFavoritedStatus(event.status);
+        public void notifyFavoriteTask(FavoriteTaskEvent event) {
+            if (event.isSucceeded()) {
+                updateFavoritedStatus(event.getStatus());
+            }
         }
 
-        @Subscribe
-        public void notifyFavoriteDestroyed(FavoriteDestroyedEvent event) {
-            updateFavoritedStatus(event.status);
-        }
 
         @Subscribe
         public void notifyStatusDestroyed(StatusDestroyedEvent event) {

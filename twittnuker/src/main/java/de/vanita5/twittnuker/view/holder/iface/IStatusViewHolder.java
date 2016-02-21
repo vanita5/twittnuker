@@ -29,7 +29,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
-import de.vanita5.twittnuker.graphic.LikeAnimationDrawable;
+import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.view.CardMediaContainer;

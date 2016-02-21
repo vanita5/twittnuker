@@ -51,8 +51,7 @@ import de.vanita5.twittnuker.loader.support.ExtendedObjectCursorLoader;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
 import de.vanita5.twittnuker.model.message.AccountChangedEvent;
-import de.vanita5.twittnuker.model.message.FavoriteCreatedEvent;
-import de.vanita5.twittnuker.model.message.FavoriteDestroyedEvent;
+import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
@@ -276,11 +275,7 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
         }
 
         @Subscribe
-        public void notifyFavoriteCreated(FavoriteCreatedEvent event) {
-        }
-
-        @Subscribe
-        public void notifyFavoriteDestroyed(FavoriteDestroyedEvent event) {
+        public void notifyFavoriteTask(FavoriteTaskEvent event) {
         }
 
         @Subscribe

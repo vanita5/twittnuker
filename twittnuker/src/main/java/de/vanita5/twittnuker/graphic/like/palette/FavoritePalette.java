@@ -20,18 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.message;
+package de.vanita5.twittnuker.graphic.like.palette;
 
-import android.support.annotation.NonNull;
+import android.animation.ArgbEvaluator;
 
-import de.vanita5.twittnuker.model.ParcelableStatus;
+public final class FavoritePalette implements Palette {
 
-public class FavoriteDestroyedEvent {
+    private final ArgbEvaluator evaluator = new ArgbEvaluator();
 
-    @NonNull
-    public final ParcelableStatus status;
+    @Override
+    public int getParticleColor(int count, int index, float progress) {
+        return (Integer) evaluator.evaluate(progress, 0xFFFF7020, 0xFFFD9050);
+    }
 
-    public FavoriteDestroyedEvent(@NonNull ParcelableStatus status) {
-        this.status = status;
+    @Override
+    public int getCircleColor(float progress) {
+        return (Integer) evaluator.evaluate(progress, 0xFFFF9C00, 0xFFFFB024);
     }
 }

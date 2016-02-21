@@ -20,18 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.message;
+package de.vanita5.twittnuker.graphic.like.layer;
 
-import android.support.annotation.NonNull;
+public interface Layer {
 
-import de.vanita5.twittnuker.model.ParcelableStatus;
+    float getProgress();
 
-public class FavoriteCreatedEvent {
-
-    @NonNull
-    public final ParcelableStatus status;
-
-    public FavoriteCreatedEvent(@NonNull ParcelableStatus status) {
-        this.status = status;
-    }
+    void setProgress(float progress);
 }

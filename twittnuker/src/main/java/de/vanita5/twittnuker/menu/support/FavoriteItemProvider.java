@@ -30,8 +30,8 @@ import android.support.v7.widget.ActionMenuView;
 import android.view.MenuItem;
 import android.view.View;
 
-import de.vanita5.twittnuker.graphic.LikeAnimationDrawable;
-import de.vanita5.twittnuker.graphic.LikeAnimationDrawable.Style;
+import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
+import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable.Style;
 
 import java.lang.ref.WeakReference;
 
