@@ -42,9 +42,11 @@ import org.mariotaku.restfu.http.mime.Body;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
+import de.vanita5.twittnuker.model.CacheMetadata;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
@@ -123,24 +125,9 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
             throw new IOException("Unable to get media, response code: " + resp.getStatus());
         }
         final Body body = resp.getBody();
-        final long length = body.length();
-        final InputStream stream = body.stream();
-        return new CacheDownloadLoader.DownloadResult() {
-            @Override
-            public void close() throws IOException {
-                body.close();
-            }
-
-            @Override
-            public long getLength() {
-                return length;
-            }
-
-            @Override
-            public InputStream getStream() {
-                return stream;
-            }
-        };
+        final CacheMetadata metadata = new CacheMetadata();
+        metadata.setContentType(body.contentType().getContentType());
+        return new TwidereDownloadResult(body, metadata);
     }
 
     private String getEndpoint(Uri uri) {
@@ -190,5 +177,38 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
             return Uri.parse(sb.toString());
         }
         return uri;
+    }
+
+    private static class TwidereDownloadResult implements CacheDownloadLoader.DownloadResult {
+        private final Body mBody;
+        private final CacheMetadata mMetadata;
+
+        public TwidereDownloadResult(Body body, CacheMetadata metadata) {
+            mBody = body;
+            mMetadata = metadata;
+        }
+
+        @Override
+        public void close() throws IOException {
+            mBody.close();
+        }
+
+        @Override
+        public long getLength() throws IOException {
+            return mBody.length();
+        }
+
+        @Override
+        public InputStream getStream() throws IOException {
+            return mBody.stream();
+        }
+
+        @Override
+        public byte[] getExtra() {
+            if (mMetadata == null) return null;
+            final String serialize = JsonSerializer.serialize(mMetadata, CacheMetadata.class);
+            if (serialize == null) return null;
+            return serialize.getBytes();
+        }
     }
 }
