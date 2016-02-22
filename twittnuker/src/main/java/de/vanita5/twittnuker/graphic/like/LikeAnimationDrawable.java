@@ -26,15 +26,15 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IntDef;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.NonNull;
 import android.util.Property;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -42,61 +42,27 @@ import android.view.animation.DecelerateInterpolator;
 import de.vanita5.twittnuker.graphic.iface.DoNotWrapDrawable;
 import de.vanita5.twittnuker.graphic.like.layer.AnimationLayerDrawable;
 import de.vanita5.twittnuker.graphic.like.layer.CircleLayerDrawable;
-import de.vanita5.twittnuker.graphic.like.layer.IconLayerDrawable;
-import de.vanita5.twittnuker.graphic.like.layer.Layer;
 import de.vanita5.twittnuker.graphic.like.layer.ParticleLayerDrawable;
+import de.vanita5.twittnuker.graphic.like.layer.ScalableDrawable;
 import de.vanita5.twittnuker.graphic.like.layer.ShineLayerDrawable;
 import de.vanita5.twittnuker.graphic.like.palette.FavoritePalette;
 import de.vanita5.twittnuker.graphic.like.palette.LikePalette;
-import de.vanita5.twittnuker.graphic.like.palette.Palette;
 
 import java.lang.ref.WeakReference;
 
 public class LikeAnimationDrawable extends Drawable implements Animatable, Drawable.Callback, DoNotWrapDrawable {
 
-    private static final Property<IconLayerDrawable, Float> ICON_SCALE = new Property<IconLayerDrawable, Float>(Float.class, "icon_scale") {
-        @Override
-        public void set(IconLayerDrawable object, Float value) {
-            object.setScale(value);
-        }
-
-        @Override
-        public boolean isReadOnly() {
-            return false;
-        }
-
-        @Override
-        public Float get(IconLayerDrawable object) {
-            return object.getScale();
-        }
-    };
-    private static final Property<Layer, Float> LAYER_PROGRESS = new Property<Layer, Float>(Float.class, "layer_progress") {
-        @Override
-        public void set(Layer object, Float value) {
-            object.setProgress(value);
-        }
-
-        @Override
-        public boolean isReadOnly() {
-            return false;
-        }
-
-        @Override
-        public Float get(Layer object) {
-            return object.getProgress();
-        }
-    };
-
+    @NonNull
     private LikeAnimationState mState;
     private boolean mMutated;
 
-    public LikeAnimationDrawable(final Context context, final int likeIcon, final int defaultColor,
-                                 final int likeColor, @Style final int style) {
-        mState = new LikeAnimationState(context, likeIcon, defaultColor, likeColor, style, this);
+    public LikeAnimationDrawable(final Drawable icon, final int defaultColor, final int activatedColor,
+                                 @Style final int style) {
+        mState = new LikeAnimationState(icon, defaultColor, activatedColor, style, this);
     }
 
 
-    public LikeAnimationDrawable(LikeAnimationState state) {
+    LikeAnimationDrawable(@NonNull LikeAnimationState state) {
         mState = state;
     }
 
@@ -108,7 +74,7 @@ public class LikeAnimationDrawable extends Drawable implements Animatable, Drawa
 
         final AnimationLayerDrawable particleLayer = mState.mParticleLayer;
         final AnimationLayerDrawable circleLayer = mState.mCircleLayer;
-        final IconLayerDrawable iconLayer = mState.mIconLayer;
+        final ScalableDrawable iconLayer = mState.mIconDrawable;
 
         switch (mState.mStyle) {
             case Style.LIKE: {
@@ -145,7 +111,7 @@ public class LikeAnimationDrawable extends Drawable implements Animatable, Drawa
             }
 
             private void resetState() {
-                iconLayer.setColorFilter(mState.mDefaultColor, PorterDuff.Mode.SRC_ATOP);
+                setColorFilter(mState.mDefaultColor, PorterDuff.Mode.SRC_ATOP);
                 particleLayer.setProgress(-1);
             }
         });
@@ -154,12 +120,12 @@ public class LikeAnimationDrawable extends Drawable implements Animatable, Drawa
     }
 
     private void setupFavoriteAnimation(final AnimatorSet animatorSet, final Layer particleLayer,
-                                        final Layer circleLayer, final IconLayerDrawable iconLayer) {
+                                        final Layer circleLayer, final ScalableDrawable iconLayer) {
         setupLikeAnimation(animatorSet, particleLayer, circleLayer, iconLayer);
     }
 
     private void setupLikeAnimation(final AnimatorSet animatorSet, final Layer particleLayer,
-                                    final Layer circleLayer, final IconLayerDrawable iconLayer) {
+                                    final Layer circleLayer, final ScalableDrawable iconLayer) {
         final long duration = mState.mDuration;
         final long scaleDownDuration = Math.round(1f / 24f * duration);
         final long ovalExpandDuration = Math.round(4f / 24f * duration);
@@ -169,42 +135,42 @@ public class LikeAnimationDrawable extends Drawable implements Animatable, Drawa
         final long particleExpandDuration = Math.round(12f / 24f * duration);
         final long circleExplodeDuration = Math.round(5f / 24f * duration);
 
-        final ObjectAnimator iconScaleDown = ObjectAnimator.ofFloat(iconLayer, ICON_SCALE, 1, 0);
+        final ObjectAnimator iconScaleDown = ObjectAnimator.ofFloat(iconLayer, IconScaleProperty.SINGLETON, 1, 0);
         iconScaleDown.setDuration(scaleDownDuration);
         iconScaleDown.setInterpolator(new AccelerateInterpolator(2));
         iconScaleDown.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                iconLayer.setColorFilter(mState.mDefaultColor, PorterDuff.Mode.SRC_ATOP);
+                setColorFilter(mState.mDefaultColor, PorterDuff.Mode.SRC_ATOP);
             }
 
         });
 
-        final ObjectAnimator ovalExpand = ObjectAnimator.ofFloat(circleLayer, LAYER_PROGRESS, 0, 0.5f);
+        final ObjectAnimator ovalExpand = ObjectAnimator.ofFloat(circleLayer, LayerProgressProperty.SINGLETON, 0, 0.5f);
         ovalExpand.setDuration(ovalExpandDuration);
 
 
-        final ObjectAnimator iconExpand = ObjectAnimator.ofFloat(iconLayer, ICON_SCALE, 0, 1.25f);
+        final ObjectAnimator iconExpand = ObjectAnimator.ofFloat(iconLayer, IconScaleProperty.SINGLETON, 0, 1.25f);
         iconExpand.setDuration(iconExpandDuration);
         iconExpand.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                iconLayer.setColorFilter(mState.mLikeColor, PorterDuff.Mode.SRC_ATOP);
+                setColorFilter(mState.mActivatedColor, PorterDuff.Mode.SRC_ATOP);
             }
 
         });
 
-        final ObjectAnimator particleExplode = ObjectAnimator.ofFloat(particleLayer, LAYER_PROGRESS, 0, 0.5f);
+        final ObjectAnimator particleExplode = ObjectAnimator.ofFloat(particleLayer, LayerProgressProperty.SINGLETON, 0, 0.5f);
         particleExplode.setDuration(iconExpandDuration);
 
-        final ObjectAnimator iconNormal = ObjectAnimator.ofFloat(iconLayer, ICON_SCALE, 1.25f, 1);
+        final ObjectAnimator iconNormal = ObjectAnimator.ofFloat(iconLayer, IconScaleProperty.SINGLETON, 1.25f, 1);
         iconNormal.setDuration(iconNormalDuration);
-        final ObjectAnimator circleExplode = ObjectAnimator.ofFloat(circleLayer, LAYER_PROGRESS, 0.5f, 0.95f, 0.95f, 1);
+        final ObjectAnimator circleExplode = ObjectAnimator.ofFloat(circleLayer, LayerProgressProperty.SINGLETON, 0.5f, 0.95f, 0.95f, 1);
         circleExplode.setDuration(circleExplodeDuration);
         circleExplode.setInterpolator(new DecelerateInterpolator());
 
 
-        final ObjectAnimator particleFade = ObjectAnimator.ofFloat(particleLayer, LAYER_PROGRESS, 0.5f, 1);
+        final ObjectAnimator particleFade = ObjectAnimator.ofFloat(particleLayer, LayerProgressProperty.SINGLETON, 0.5f, 1);
         particleFade.setDuration(particleExpandDuration);
 
 
@@ -243,19 +209,19 @@ public class LikeAnimationDrawable extends Drawable implements Animatable, Drawa
 
     @Override
     public int getIntrinsicWidth() {
-        return mState.mIconLayer.getIntrinsicWidth();
+        return mState.mIconDrawable.getIntrinsicWidth();
     }
 
     @Override
     public int getIntrinsicHeight() {
-        return mState.mIconLayer.getIntrinsicHeight();
+        return mState.mIconDrawable.getIntrinsicHeight();
     }
 
     @Override
     public void draw(Canvas canvas) {
         mState.mCircleLayer.draw(canvas);
         mState.mParticleLayer.draw(canvas);
-        mState.mIconLayer.draw(canvas);
+        mState.mIconDrawable.draw(canvas);
     }
 
     @Override
@@ -266,12 +232,12 @@ public class LikeAnimationDrawable extends Drawable implements Animatable, Drawa
 
     @Override
     public void setAlpha(int alpha) {
-        mState.mIconLayer.setAlpha(alpha);
+        mState.mIconDrawable.setAlpha(alpha);
     }
 
     @Override
     public void setColorFilter(ColorFilter colorFilter) {
-        mState.mIconLayer.setColorFilter(colorFilter);
+        mState.setIconColorFilter(colorFilter);
     }
 
     @Override
@@ -300,6 +266,11 @@ public class LikeAnimationDrawable extends Drawable implements Animatable, Drawa
     }
 
     @Override
+    public int getChangingConfigurations() {
+        return super.getChangingConfigurations() | mState.getChangingConfigurations();
+    }
+
+    @Override
     public Drawable mutate() {
         if (!mMutated && super.mutate() == this) {
             mState = new LikeAnimationState(mState, this);
@@ -322,39 +293,41 @@ public class LikeAnimationDrawable extends Drawable implements Animatable, Drawa
 
         // Default values
         private final int mDefaultColor;
-        private final int mLikeColor;
+        private final int mActivatedColor;
         @Style
         private final int mStyle;
         // Layers
         private final AnimationLayerDrawable mCircleLayer;
         private final AnimationLayerDrawable mParticleLayer;
-        private final IconLayerDrawable mIconLayer;
+        private final ScalableDrawable mIconDrawable;
 
         private long mDuration = 500;
 
         private AnimatorSet mCurrentAnimator;
         private WeakReference<OnLikedListener> mListenerRef;
 
-        public LikeAnimationState(final Context context, final int likeIcon, final int defaultColor,
-                                  final int likeColor, @Style final int style, Callback callback) {
+        public LikeAnimationState(final Drawable icon, final int defaultColor, final int activatedColor,
+                                  @Style final int style, Callback callback) {
             mDefaultColor = defaultColor;
-            mLikeColor = likeColor;
+            mActivatedColor = activatedColor;
             mStyle = style;
 
-            mIconLayer = new IconLayerDrawable(ContextCompat.getDrawable(context, likeIcon));
-            mIconLayer.setColorFilter(defaultColor, PorterDuff.Mode.SRC_ATOP);
+            final int intrinsicWidth = icon.getIntrinsicWidth();
+            final int intrinsicHeight = icon.getIntrinsicHeight();
+            mIconDrawable = new ScalableDrawable(icon);
+            setIconColorFilter(new PorterDuffColorFilter(defaultColor, PorterDuff.Mode.SRC_ATOP));
             final Palette palette;
             switch (style) {
                 case Style.FAVORITE: {
                     palette = new FavoritePalette();
-                    mParticleLayer = new ShineLayerDrawable(mIconLayer.getIntrinsicWidth(),
-                            mIconLayer.getIntrinsicHeight(), palette);
+                    mParticleLayer = new ShineLayerDrawable(intrinsicWidth, intrinsicHeight,
+                            palette);
                     break;
                 }
                 case Style.LIKE: {
                     palette = new LikePalette();
-                    mParticleLayer = new ParticleLayerDrawable(mIconLayer.getIntrinsicWidth(),
-                            mIconLayer.getIntrinsicHeight(), palette);
+                    mParticleLayer = new ParticleLayerDrawable(intrinsicWidth, intrinsicHeight,
+                            palette);
                     break;
                 }
                 default: {
@@ -362,24 +335,29 @@ public class LikeAnimationDrawable extends Drawable implements Animatable, Drawa
                 }
             }
             mParticleLayer.setProgress(-1);
-            mCircleLayer = new CircleLayerDrawable(mIconLayer.getIntrinsicWidth(), mIconLayer.getIntrinsicHeight(), palette);
+            mCircleLayer = new CircleLayerDrawable(intrinsicWidth, intrinsicHeight, palette);
 
-            mIconLayer.setCallback(callback);
+            mIconDrawable.setCallback(callback);
             mParticleLayer.setCallback(callback);
             mCircleLayer.setCallback(callback);
         }
 
         public LikeAnimationState(LikeAnimationState state, LikeAnimationDrawable owner) {
             mDefaultColor = state.mDefaultColor;
-            mLikeColor = state.mLikeColor;
+            mActivatedColor = state.mActivatedColor;
             mStyle = state.mStyle;
             mCircleLayer = (AnimationLayerDrawable) clone(state.mCircleLayer, owner);
             mParticleLayer = (AnimationLayerDrawable) clone(state.mParticleLayer, owner);
-            mIconLayer = (IconLayerDrawable) clone(state.mIconLayer, owner);
+            mIconDrawable = (ScalableDrawable) clone(state.mIconDrawable, owner);
         }
 
-        private Drawable clone(Drawable orig, LikeAnimationDrawable owner) {
+        public void setIconColorFilter(ColorFilter cf) {
+            mIconDrawable.setColorFilter(cf);
+        }
+
+        private static Drawable clone(Drawable orig, LikeAnimationDrawable owner) {
             final Drawable clone = orig.getConstantState().newDrawable();
+            clone.mutate();
             clone.setCallback(owner);
             clone.setBounds(orig.getBounds());
             return clone;
@@ -388,7 +366,7 @@ public class LikeAnimationDrawable extends Drawable implements Animatable, Drawa
         public void setBounds(int left, int top, int right, int bottom) {
             mCircleLayer.setBounds(left, top, right, bottom);
             mParticleLayer.setBounds(left, top, right, bottom);
-            mIconLayer.setBounds(left, top, right, bottom);
+            mIconDrawable.setBounds(left, top, right, bottom);
         }
 
         @Override
@@ -398,8 +376,74 @@ public class LikeAnimationDrawable extends Drawable implements Animatable, Drawa
 
         @Override
         public int getChangingConfigurations() {
-            return 0;
+            return mCircleLayer.getChangingConfigurations() |
+                    mParticleLayer.getChangingConfigurations() |
+                    mIconDrawable.getChangingConfigurations();
         }
     }
 
+    static final class IconScaleProperty extends Property<ScalableDrawable, Float> {
+        static final Property<ScalableDrawable, Float> SINGLETON = new IconScaleProperty();
+
+        private IconScaleProperty() {
+            super(Float.class, "icon_scale");
+        }
+
+        @Override
+        public void set(ScalableDrawable object, Float value) {
+            object.setScale(value);
+        }
+
+        @Override
+        public boolean isReadOnly() {
+            return false;
+        }
+
+        @Override
+        public Float get(ScalableDrawable object) {
+            return object.getScale();
+        }
+    }
+
+    static final class LayerProgressProperty extends Property<Layer, Float> {
+        static final Property<Layer, Float> SINGLETON = new LayerProgressProperty();
+
+        private LayerProgressProperty() {
+            super(Float.class, "layer_progress");
+        }
+
+        @Override
+        public void set(Layer object, Float value) {
+            object.setProgress(value);
+        }
+
+        @Override
+        public boolean isReadOnly() {
+            return false;
+        }
+
+        @Override
+        public Float get(Layer object) {
+            return object.getProgress();
+        }
+    }
+
+    /**
+     * Created by mariotaku on 16/2/22.
+     */
+    public interface Layer {
+
+        float getProgress();
+
+        void setProgress(float progress);
+    }
+
+    /**
+     * Created by mariotaku on 16/2/22.
+     */
+    public interface Palette {
+        int getParticleColor(int count, int index, float progress);
+
+        int getCircleColor(float progress);
+    }
 }

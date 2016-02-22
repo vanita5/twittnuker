@@ -24,7 +24,9 @@ package de.vanita5.twittnuker.graphic.like.palette;
 
 import android.animation.ArgbEvaluator;
 
-public final class FavoritePalette implements Palette {
+import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
+
+public final class FavoritePalette implements LikeAnimationDrawable.Palette {
 
     private final ArgbEvaluator evaluator = new ArgbEvaluator();
 

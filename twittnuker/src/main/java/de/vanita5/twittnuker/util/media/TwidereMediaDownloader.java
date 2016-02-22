@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 import de.vanita5.twittnuker.util.net.NoIntercept;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 public class TwidereMediaDownloader implements MediaDownloader, Constants {
 
@@ -122,7 +123,24 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
             throw new IOException("Unable to get media, response code: " + resp.getStatus());
         }
         final Body body = resp.getBody();
-        return new CacheDownloadLoader.DownloadResult(body.length(), body.stream());
+        final long length = body.length();
+        final InputStream stream = body.stream();
+        return new CacheDownloadLoader.DownloadResult() {
+            @Override
+            public void close() throws IOException {
+                body.close();
+            }
+
+            @Override
+            public long getLength() {
+                return length;
+            }
+
+            @Override
+            public InputStream getStream() {
+                return stream;
+            }
+        };
     }
 
     private String getEndpoint(Uri uri) {

@@ -39,6 +39,7 @@ import com.squareup.otto.Subscribe;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
@@ -47,17 +48,17 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosi
 import de.vanita5.twittnuker.loader.support.ExtendedObjectCursorLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-import de.vanita5.twittnuker.util.DataStoreUtils;
-import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.model.message.AccountChangedEvent;
 import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.message.StatusRetweetedEvent;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
+import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.ErrorInfoStore;
 
 import java.util.List;
 
@@ -136,6 +137,22 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
 
         @Subscribe
         public void notifyFavoriteTask(FavoriteTaskEvent event) {
+            if (event.isSucceeded()) {
+                final ParcelableStatus status = event.getStatus();
+                final List<ParcelableStatus> data = getAdapterData();
+                if (status == null || data == null || data.isEmpty()) return;
+                final AbsStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
+                final int firstVisiblePosition = getLayoutManager().findFirstVisibleItemPosition();
+                final int lastVisiblePosition = getLayoutManager().findLastVisibleItemPosition();
+                final int startIndex = adapter.getStatusStartIndex();
+                for (int i = firstVisiblePosition, j = lastVisiblePosition + 1; i < j; i++) {
+                    if (adapter.getAccountId(i) == status.account_id &&
+                            adapter.getStatusId(i) == status.id) {
+                        data.set(i - startIndex, status);
+                        return;
+                    }
+                }
+            }
         }
 
 

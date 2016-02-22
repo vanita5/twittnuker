@@ -25,7 +25,9 @@ package de.vanita5.twittnuker.graphic.like.palette;
 import android.animation.ArgbEvaluator;
 import android.graphics.Color;
 
-public final class LikePalette implements Palette {
+import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
+
+public final class LikePalette implements LikeAnimationDrawable.Palette {
 
     private final ArgbEvaluator evaluator = new ArgbEvaluator();
     private final float[] hsv = new float[3];

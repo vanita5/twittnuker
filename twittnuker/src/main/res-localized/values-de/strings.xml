@@ -783,6 +783,7 @@
     <string name="recent_media">Neue Medien</string>
     <string name="reply_to_name_text"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="quote_name_text">Zitat <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
+    <string name="unsupported_login_verification_type_name">Nicht unterstützte Login Verifizierung: <xliff:g id="name">%1$s</xliff:g>. Bitte melden!</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
