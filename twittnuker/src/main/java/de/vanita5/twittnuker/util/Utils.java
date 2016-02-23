@@ -121,6 +121,25 @@ import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.Selectable;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.CRC32;
+
+import javax.net.ssl.SSLException;
+
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -208,25 +227,6 @@ import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
-
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.CRC32;
-
-import javax.net.ssl.SSLException;
 
 import static android.text.TextUtils.isEmpty;
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
@@ -2194,8 +2194,7 @@ public final class Utils implements Constants {
             ActionProvider provider = MenuItemCompat.getActionProvider(favorite);
             final boolean useStar = preferences.getBoolean(KEY_I_WANT_MY_STARS_BACK);
             if (provider instanceof FavoriteItemProvider) {
-
-
+                ((FavoriteItemProvider) provider).setIsFavorite(favorite, isFavorite);
             } else {
                 if (useStar) {
                     final Drawable oldIcon = favorite.getIcon();

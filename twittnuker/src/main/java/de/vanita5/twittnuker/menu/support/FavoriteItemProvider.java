@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.menu.support;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ActionProvider;
@@ -88,6 +89,15 @@ public class FavoriteItemProvider extends ActionProvider {
         drawable.mutate();
         drawable.setCallback(new ViewCallback(menuBar));
         item.setIcon(drawable);
+    }
+
+    public void setIsFavorite(MenuItem item, boolean isFavorite) {
+        if (MenuItemCompat.getActionProvider(item) != this) throw new IllegalArgumentException();
+        final Drawable icon = item.getIcon();
+        if (icon instanceof LikeAnimationDrawable) {
+            icon.mutate();
+            icon.setColorFilter(isFavorite ? mActivatedColor : mDefaultColor, PorterDuff.Mode.SRC_ATOP);
+        }
     }
 
     private static class ViewCallback implements Drawable.Callback {
