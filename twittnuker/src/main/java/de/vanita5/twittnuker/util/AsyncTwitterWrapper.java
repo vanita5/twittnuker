@@ -933,7 +933,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 final ParcelableStatus status = result.getData();
                 taskEvent.setStatus(status);
                 taskEvent.setSucceeded(true);
-                Utils.showInfoMessage(mContext, R.string.status_favorited, false);
             } else {
                 taskEvent.setSucceeded(false);
                 Utils.showErrorMessage(mContext, R.string.action_favoriting, result.getException(), true);
