@@ -59,6 +59,8 @@ public interface Constants extends TwittnukerConstants {
     int LINK_ID_STATUS_REPLIES = 26;
     int LINK_ID_STATUS_FAVORITERS = 27;
     int LINK_ID_SEARCH = 28;
+    int LINK_ID_DIRECT_MESSAGES = 29;
+    int LINK_ID_INTERACTIONS = 30;
     int LINK_ID_MUTES_USERS = 41;
     int LINK_ID_MAP = 51;
     int LINK_ID_SCHEDULED_STATUSES = 61;
@@ -66,11 +68,6 @@ public interface Constants extends TwittnukerConstants {
     int LINK_ID_DRAFTS = 102;
     int LINK_ID_FILTERS = 103;
     int LINK_ID_PROFILE_EDITOR = 104;
-
-    String DIR_NAME_IMAGE_CACHE = "image_cache";
-    String DIR_NAME_FULL_IMAGE_CACHE = "full_image_cache";
-
-    String FRAGMENT_TAG_API_UPGRADE_NOTICE = "api_upgrade_notice";
 
     String TWITTNUKER_PREVIEW_NAME = "Twittnuker Project";
     String TWITTNUKER_PREVIEW_SCREEN_NAME = "twittnuker";

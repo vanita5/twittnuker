@@ -83,6 +83,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_STATUS = "status";
     String AUTHORITY_STATUSES = "statuses";
     String AUTHORITY_DIRECT_MESSAGES_CONVERSATION = "direct_messages_conversation";
+    String AUTHORITY_DIRECT_MESSAGES = "direct_messages";
     String AUTHORITY_SEARCH = "search";
     String AUTHORITY_MAP = "map";
     String AUTHORITY_SCHEDULED_STATUSES = "scheduled_statuses";
@@ -98,15 +99,13 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_SEARCH_TWEETS = "search_tweets";
     String AUTHORITY_TRENDS = "trends";
     String AUTHORITY_USER_MENTIONS = "user_mentions";
-    String AUTHORITY_ACTIVITIES_ABOUT_ME = "activities_about_me";
-    String AUTHORITY_ACTIVITIES_BY_FRIENDS = "activities_by_friends";
     String AUTHORITY_INCOMING_FRIENDSHIPS = "incoming_friendships";
     String AUTHORITY_STATUS_RETWEETERS = "status_retweeters";
     String AUTHORITY_STATUS_FAVORITERS = "status_favoriters";
     String AUTHORITY_STATUS_REPLIES = "status_replies";
     String AUTHORITY_RETWEETS_OF_ME = "retweets_of_me";
     String AUTHORITY_MUTES_USERS = "mutes_users";
-    String AUTHORITY_NOTIFICATIONS = "notifications";
+    String AUTHORITY_INTERACTIONS = "interactions";
     String AUTHORITY_ACCOUNTS = "accounts";
     String AUTHORITY_DRAFTS = "drafts";
     String AUTHORITY_FILTERS = "filters";

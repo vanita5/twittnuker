@@ -28,7 +28,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 
@@ -44,6 +43,7 @@ public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerCon
     @Nullable
     public final String type;
     public final Class<? extends Fragment> cls;
+    @Nullable
     public final Bundle args;
     public final int position;
     public final String tag;
@@ -54,7 +54,7 @@ public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerCon
     }
 
     public SupportTabSpec(final String name, final Object icon, @CustomTabType @Nullable final String type,
-                          final Class<? extends Fragment> cls, final Bundle args, final int position,
+                          final Class<? extends Fragment> cls, @Nullable final Bundle args, final int position,
                           final String tag) {
         if (cls == null) throw new IllegalArgumentException("Fragment cannot be null!");
         if (name == null && icon == null)

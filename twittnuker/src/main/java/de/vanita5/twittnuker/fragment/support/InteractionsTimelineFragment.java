@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
 
-public class ActivitiesAboutMeFragment extends CursorActivitiesFragment {
+public class InteractionsTimelineFragment extends CursorActivitiesFragment {
 
     @Override
     public boolean getActivities(long[] accountIds, long[] maxIds, long[] sinceIds) {

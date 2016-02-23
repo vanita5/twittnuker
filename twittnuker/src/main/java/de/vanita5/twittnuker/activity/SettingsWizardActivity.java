@@ -62,7 +62,7 @@ import de.vanita5.twittnuker.fragment.BaseFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
-import de.vanita5.twittnuker.fragment.support.ActivitiesAboutMeFragment;
+import de.vanita5.twittnuker.fragment.support.InteractionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
@@ -656,7 +656,7 @@ public class SettingsWizardActivity extends BaseThemedActivity implements Consta
         private boolean wasConfigured(final List<SupportTabSpec> tabs) {
             for (final SupportTabSpec spec : tabs) {
                 if (classEquals(spec.cls, HomeTimelineFragment.class)
-                        || classEquals(spec.cls, ActivitiesAboutMeFragment.class)
+                        || classEquals(spec.cls, InteractionsTimelineFragment.class)
                         || classEquals(spec.cls, DirectMessagesFragment.class)) return true;
             }
             return false;

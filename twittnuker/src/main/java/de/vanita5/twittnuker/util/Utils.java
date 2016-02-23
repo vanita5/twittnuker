@@ -145,9 +145,11 @@ import de.vanita5.twittnuker.fragment.support.AbsStatusesFragment.DefaultOnLiked
 import de.vanita5.twittnuker.fragment.support.AccountsManagerFragment;
 import de.vanita5.twittnuker.fragment.support.AddStatusFilterDialogFragment;
 import de.vanita5.twittnuker.fragment.support.DestroyStatusDialogFragment;
+import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.DraftsFragment;
 import de.vanita5.twittnuker.fragment.support.FiltersFragment;
 import de.vanita5.twittnuker.fragment.support.IncomingFriendshipsFragment;
+import de.vanita5.twittnuker.fragment.support.InteractionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.ListsFragment;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.support.MutesUsersListFragment;
@@ -254,6 +256,8 @@ public final class Utils implements Constants {
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_BLOCKS, null, LINK_ID_USER_BLOCKS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_DIRECT_MESSAGES_CONVERSATION, null,
                 LINK_ID_DIRECT_MESSAGES_CONVERSATION);
+        LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_DIRECT_MESSAGES, null, LINK_ID_DIRECT_MESSAGES);
+        LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_INTERACTIONS, null, LINK_ID_INTERACTIONS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST, null, LINK_ID_USER_LIST);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST_TIMELINE, null, LINK_ID_USER_LIST_TIMELINE);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST_MEMBERS, null, LINK_ID_USER_LIST_MEMBERS);
@@ -567,6 +571,14 @@ public final class Utils implements Constants {
                 } else if (paramScreenName != null) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 }
+                break;
+            }
+            case LINK_ID_DIRECT_MESSAGES: {
+                fragment = new DirectMessagesFragment();
+                break;
+            }
+            case LINK_ID_INTERACTIONS: {
+                fragment = new InteractionsTimelineFragment();
                 break;
             }
             case LINK_ID_USER_LIST: {
@@ -1961,6 +1973,26 @@ public final class Utils implements Constants {
         }
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         activity.startActivity(intent);
+    }
+
+    public static void openDirectMessages(final Context context, final long accountId) {
+        if (context == null) return;
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_DIRECT_MESSAGES);
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        context.startActivity(intent);
+    }
+
+    public static void openInteractions(final Context context, final long accountId) {
+        if (context == null) return;
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_INTERACTIONS);
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        context.startActivity(intent);
     }
 
     public static void openUserListSubscribers(final Activity activity, final long accountId, final long listId,

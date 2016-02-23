@@ -41,10 +41,9 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
-import de.vanita5.twittnuker.fragment.support.ActivitiesAboutMeFragment;
-import de.vanita5.twittnuker.fragment.support.ActivitiesByFriendsFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
+import de.vanita5.twittnuker.fragment.support.InteractionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.InvalidTabFragment;
 import de.vanita5.twittnuker.fragment.support.RetweetsOfMeFragment;
 import de.vanita5.twittnuker.fragment.support.StatusesSearchFragment;
@@ -76,7 +75,7 @@ public class CustomTabUtils implements Constants {
                 CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 0, false));
 
         CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.NOTIFICATIONS_TIMELINE, new CustomTabConfiguration(
-                ActivitiesAboutMeFragment.class, R.string.notifications, R.drawable.ic_action_at,
+                InteractionsTimelineFragment.class, R.string.interactions, R.drawable.ic_action_at,
                 CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 1, false,
                 ExtraConfiguration.newBoolean(EXTRA_MY_FOLLOWING_ONLY, R.string.following_only, false),
                 ExtraConfiguration.newBoolean(EXTRA_MENTIONS_ONLY, R.string.mentions_only, false)));

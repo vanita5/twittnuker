@@ -76,4 +76,6 @@
     <item name="inverse_selection" type="id"/>
     <item name="reset" type="id"/>
     <item name="info" type="id"/>
+    <item name="messages" type="id"/>
+    <item name="interactions" type="id"/>
 </resources>

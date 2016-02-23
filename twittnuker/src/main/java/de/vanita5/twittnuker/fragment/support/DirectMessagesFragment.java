@@ -38,6 +38,8 @@ import android.support.v4.util.LongSparseArray;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -49,11 +51,13 @@ import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
+import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.DirectMessageEntry;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.MessageEntriesAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
+import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
@@ -68,13 +72,10 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
-import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 
 public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<MessageEntriesAdapter>
         implements LoaderCallbacks<Cursor>, MessageEntriesAdapterListener, KeyboardShortcutCallback {
@@ -257,10 +258,15 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
         return true;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_direct_messages, menu);
+    }
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(getActivity() instanceof LinkHandlerActivity);
         final View view = getView();
         assert view != null;
         final Context viewContext = view.getContext();
@@ -307,11 +313,20 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.compose: {
-                openMessageConversation(getActivity(), -1, -1);
+                openNewMessageConversation();
                 break;
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void openNewMessageConversation() {
+        final long[] accountIds = getAccountIds();
+        if (accountIds.length == 1) {
+            Utils.openMessageConversation(getActivity(), accountIds[0], -1);
+        } else {
+            Utils.openMessageConversation(getActivity(), -1, -1);
+        }
     }
 
     @Override
@@ -324,11 +339,6 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
                 mNotificationManager.cancel(tag, NOTIFICATION_ID_DIRECT_MESSAGES);
             }
         }
-    }
-
-    protected long getAccountId() {
-        final Bundle args = getArguments();
-        return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
     }
 
     @NonNull
