@@ -2151,7 +2151,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (result.hasData()) {
                 final ParcelableStatus status = result.getData();
                 bus.post(new StatusRetweetedEvent(status));
-                Utils.showOkMessage(mContext, R.string.status_retweeted, false);
             } else {
                 Utils.showErrorMessage(mContext, R.string.action_retweeting, result.getException(), true);
             }
