@@ -59,6 +59,7 @@ import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
+import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -484,7 +485,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (getUserVisibleHint()) return;
+        if (!getUserVisibleHint()) return;
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
         final MenuInflater inflater = new MenuInflater(getContext());
         final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
@@ -495,7 +496,8 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
                 final ParcelableStatus status = getActivityStatus(position);
                 if (status == null) return;
                 inflater.inflate(R.menu.action_status, menu);
-                Utils.setMenuForStatus(getContext(), mPreferences, menu, status, mTwitterWrapper);
+                MenuUtils.setupForStatus(getContext(), mPreferences, menu, status, mUserColorNameManager,
+                        mTwitterWrapper);
                 break;
             }
         }
@@ -503,7 +505,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if (getUserVisibleHint()) return false;
+        if (!getUserVisibleHint()) return false;
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
         final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
                 (ExtendedRecyclerView.ContextMenuInfo) item.getMenuInfo();
@@ -520,7 +522,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
                     startActivity(chooser);
                     return true;
                 }
-                return Utils.handleMenuItemClick(getActivity(), this, getFragmentManager(),
+                return MenuUtils.handleStatusClick(getActivity(), this, getFragmentManager(),
                         mUserColorNameManager, mTwitterWrapper, status, item);
             }
         }

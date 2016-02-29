@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
+import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -426,19 +427,20 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (getUserVisibleHint()) return;
+        if (!getUserVisibleHint()) return;
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final MenuInflater inflater = new MenuInflater(getContext());
         final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
                 (ExtendedRecyclerView.ContextMenuInfo) menuInfo;
         final ParcelableStatus status = adapter.getStatus(contextMenuInfo.getPosition());
         inflater.inflate(R.menu.action_status, menu);
-        Utils.setMenuForStatus(getContext(), mPreferences, menu, status, mTwitterWrapper);
+        MenuUtils.setupForStatus(getContext(), mPreferences, menu, status, mUserColorNameManager,
+                mTwitterWrapper);
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if (getUserVisibleHint()) return false;
+        if (!getUserVisibleHint()) return false;
         final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
                 (ExtendedRecyclerView.ContextMenuInfo) item.getMenuInfo();
         final ParcelableStatus status = getAdapter().getStatus(contextMenuInfo.getPosition());
@@ -450,7 +452,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
             startActivity(chooser);
             return true;
         }
-        return Utils.handleMenuItemClick(getActivity(), AbsStatusesFragment.this,
+        return MenuUtils.handleStatusClick(getActivity(), AbsStatusesFragment.this,
                 getFragmentManager(), mUserColorNameManager, mTwitterWrapper, status, item);
     }
 
