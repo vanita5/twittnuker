@@ -27,8 +27,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
-import com.desmond.asyncmanager.TaskRunnable;
-
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
@@ -42,7 +40,7 @@ import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
-public class GetSavedSearchesTask extends TaskRunnable<long[], SingleResponse<Object>, Object>
+public class GetSavedSearchesTask extends AbstractTask<long[], SingleResponse<Object>, Object>
         implements Constants {
 
     private final Context mContext;

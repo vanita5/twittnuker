@@ -30,7 +30,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.util.Log;
 
-import com.desmond.asyncmanager.TaskRunnable;
 import com.squareup.otto.Bus;
 
 import org.mariotaku.sqliteqb.library.Expression;
@@ -48,6 +47,7 @@ import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
+import de.vanita5.twittnuker.task.AbstractTask;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
@@ -63,7 +63,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public abstract class GetActivitiesTask extends TaskRunnable<RefreshTaskParam, Object, Object> implements Constants {
+public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, Object, Object> implements Constants {
 
     protected final Context context;
     @Inject
@@ -175,14 +175,15 @@ public abstract class GetActivitiesTask extends TaskRunnable<RefreshTaskParam, O
                                                             final long accountId, final Paging paging) throws TwitterException;
 
     @Override
-    public void callback(Object result) {
+    public void afterExecute(Object result) {
         bus.post(new GetActivitiesTaskEvent(getContentUri(), false, null));
     }
 
     protected abstract Uri getContentUri();
 
     @UiThread
-    public void notifyStart() {
+    @Override
+    public void beforeExecute() {
         bus.post(new GetActivitiesTaskEvent(getContentUri(), true, null));
     }
 }

@@ -31,8 +31,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.util.Log;
 
-import com.desmond.asyncmanager.AsyncManager;
-import com.desmond.asyncmanager.TaskRunnable;
 import com.squareup.otto.Bus;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -49,8 +47,11 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
+import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
+import de.vanita5.twittnuker.task.AbstractTask;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
+import de.vanita5.twittnuker.task.util.TaskStarter;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
@@ -58,20 +59,18 @@ import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.UriUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public abstract class GetStatusesTask extends TaskRunnable<RefreshTaskParam,
+public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
         List<TwitterWrapper.StatusListResponse>, Object> implements Constants {
 
     protected final Context context;
@@ -155,7 +154,7 @@ public abstract class GetStatusesTask extends TaskRunnable<RefreshTaskParam,
 
 
     @Override
-    public void callback(List<TwitterWrapper.StatusListResponse> result) {
+    public void afterExecute(List<TwitterWrapper.StatusListResponse> result) {
         bus.post(new GetStatusesTaskEvent(getContentUri(), false, AsyncTwitterWrapper.getException(result)));
     }
 
@@ -199,7 +198,7 @@ public abstract class GetStatusesTask extends TaskRunnable<RefreshTaskParam,
                 // TODO cache related data and preload
                 final CacheUsersStatusesTask cacheTask = new CacheUsersStatusesTask(context);
                 cacheTask.setParams(new TwitterWrapper.StatusListResponse(accountId, statuses));
-                AsyncManager.runBackgroundTask(cacheTask);
+                TaskStarter.execute(cacheTask);
                 errorInfoStore.remove(getErrorInfoKey(), accountId);
             } catch (final TwitterException e) {
                 if (BuildConfig.DEBUG) {

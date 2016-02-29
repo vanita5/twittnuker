@@ -26,16 +26,60 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public interface IBaseFragment {
-	Bundle getExtraConfiguration();
+    Bundle getExtraConfiguration();
 
-	int getTabPosition();
+    int getTabPosition();
 
-	void requestFitSystemWindows();
+    void requestFitSystemWindows();
 
     void onBaseViewCreated(View view, Bundle savedInstanceState);
 
     interface SystemWindowsInsetsCallback {
-		boolean getSystemWindowsInsets(Rect insets);
-	}
+        boolean getSystemWindowsInsets(Rect insets);
+    }
+
+    void executeAfterFragmentResumed(Action action);
+
+    interface Action {
+        void execute(IBaseFragment fragment);
+    }
+
+    class ActionHelper {
+
+        private final IBaseFragment mFragment;
+
+        private boolean mFragmentResumed;
+        private Queue<Action> mActionQueue = new LinkedList<>();
+
+        public ActionHelper(IBaseFragment fragment) {
+            mFragment = fragment;
+        }
+
+        public void dispatchOnPause() {
+            mFragmentResumed = false;
+        }
+
+        public void dispatchOnResumeFragments() {
+            mFragmentResumed = true;
+            executePending();
+        }
+
+
+        private void executePending() {
+            if (!mFragmentResumed) return;
+            Action action;
+            while ((action = mActionQueue.poll()) != null) {
+                action.execute(mFragment);
+            }
+        }
+
+        public void executeAfterFragmentResumed(Action action) {
+            mActionQueue.add(action);
+            executePending();
+        }
+    }
 }

@@ -83,8 +83,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.desmond.asyncmanager.AsyncManager;
-import com.desmond.asyncmanager.TaskRunnable;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -126,6 +124,8 @@ import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
+import de.vanita5.twittnuker.task.AbstractTask;
+import de.vanita5.twittnuker.task.util.TaskStarter;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
@@ -382,7 +382,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
         final CacheUserInfoRunnable task = new CacheUserInfoRunnable(getContext().getApplicationContext());
         task.setParams(Pair.create(user, relationship));
-        AsyncManager.runBackgroundTask(task);
+        TaskStarter.execute(task);
         mFollowButton.setVisibility(View.VISIBLE);
     }
 
@@ -1740,7 +1740,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         }
     }
 
-    private static class CacheUserInfoRunnable extends TaskRunnable<Pair<ParcelableUser, Relationship>, Object, Object> {
+    private static class CacheUserInfoRunnable extends AbstractTask<Pair<ParcelableUser, Relationship>, Object, Object> {
         private final Context context;
 
         public CacheUserInfoRunnable(Context context) {
@@ -1748,7 +1748,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         }
 
         @Override
-        public Object doLongOperation(Pair<ParcelableUser, Relationship> args) throws InterruptedException {
+        public Object doLongOperation(Pair<ParcelableUser, Relationship> args) {
             final ContentResolver resolver = context.getContentResolver();
             final ParcelableUser user = args.first;
             resolver.insert(CachedUsers.CONTENT_URI, ContentValuesCreator.makeCachedUserContentValues(user));

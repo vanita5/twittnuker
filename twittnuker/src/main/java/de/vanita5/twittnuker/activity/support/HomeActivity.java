@@ -64,8 +64,6 @@ import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.Toast;
 
-import com.desmond.asyncmanager.AsyncManager;
-import com.desmond.asyncmanager.TaskRunnable;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -94,6 +92,8 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.RegistrationIntentService;
 import de.vanita5.twittnuker.service.StreamingService;
+import de.vanita5.twittnuker.task.AbstractTask;
+import de.vanita5.twittnuker.task.util.TaskStarter;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
@@ -120,7 +120,6 @@ import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.DataStoreUtils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.checkPlayServices;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
-import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 
@@ -369,7 +368,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         setSupportActionBar(mActionBar);
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
         final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
-        int tabDisplayOptionInt = getTabDisplayOptionInt(this);
+        int tabDisplayOptionInt = Utils.getTabDisplayOptionInt(this);
 
         mGCMRegistrationReceiver = new BroadcastReceiver() {
             @Override
@@ -619,9 +618,9 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         // Delete unused items in databases.
 
         final Context context = getApplicationContext();
-        AsyncManager.runBackgroundTask(new TaskRunnable() {
+        TaskStarter.execute(new AbstractTask() {
             @Override
-            public Object doLongOperation(Object o) throws InterruptedException {
+            public Object doLongOperation(Object o) {
                 cleanDatabasesByItemLimit(context);
                 return null;
             }

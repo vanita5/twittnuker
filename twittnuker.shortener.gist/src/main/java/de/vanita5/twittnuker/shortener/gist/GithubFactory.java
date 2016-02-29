@@ -22,31 +22,21 @@
 
 package de.vanita5.twittnuker.shortener.gist;
 
-import android.support.annotation.Nullable;
-
 import org.mariotaku.restfu.ExceptionFactory;
 import org.mariotaku.restfu.RestAPIFactory;
 import org.mariotaku.restfu.RestRequest;
-import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.http.Authorization;
 import org.mariotaku.restfu.http.Endpoint;
 import org.mariotaku.restfu.http.HttpRequest;
 import org.mariotaku.restfu.http.HttpResponse;
-import org.mariotaku.restfu.http.ValueMap;
-import org.mariotaku.restfu.okhttp3.OkHttpRestClient;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
-
-import okhttp3.OkHttpClient;
+import org.mariotaku.restfu.urlconnection.URLConnectionRestClient;
 
 public class GithubFactory {
 
     public static Github getInstance(final String apiKey) {
         final RestAPIFactory<GithubException> factory = new RestAPIFactory<>();
         factory.setEndpoint(new Endpoint("https://api.github.com/"));
-        factory.setHttpClient(new OkHttpRestClient(new OkHttpClient()));
+        factory.setHttpClient(new URLConnectionRestClient());
         factory.setAuthorization(new Authorization() {
             @Override
             public String getHeader(Endpoint endpoint, RestRequest restRequest) {

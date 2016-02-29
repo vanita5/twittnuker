@@ -484,6 +484,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (getUserVisibleHint()) return;
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
         final MenuInflater inflater = new MenuInflater(getContext());
         final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
@@ -502,6 +503,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        if (getUserVisibleHint()) return false;
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
         final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
                 (ExtendedRecyclerView.ContextMenuInfo) item.getMenuInfo();

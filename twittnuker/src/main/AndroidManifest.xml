@@ -374,7 +374,7 @@
             android:name=".activity.SettingsWizardActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/settings_wizard"
-            android:theme="@style/Theme.Twidere.Wizard" />
+            android:theme="@style/Theme.Twidere.Dark" />
         <activity
             android:name=".activity.support.DataExportActivity"
             android:label="@string/export_settings"

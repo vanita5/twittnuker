@@ -27,7 +27,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.desmond.asyncmanager.TaskRunnable;
 import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -40,6 +39,7 @@ import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
+import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
@@ -50,14 +50,13 @@ import de.vanita5.twittnuker.util.UriUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public abstract class GetDirectMessagesTask extends TaskRunnable<RefreshTaskParam,
+public abstract class GetDirectMessagesTask extends AbstractTask<RefreshTaskParam,
         List<TwitterWrapper.MessageListResponse>, Object> implements Constants {
 
     protected final Context context;
@@ -152,12 +151,12 @@ public abstract class GetDirectMessagesTask extends TaskRunnable<RefreshTaskPara
     }
 
 
-    public void notifyStart() {
+    public void beforeExecute() {
         bus.post(new GetMessagesTaskEvent(getDatabaseUri(), true, null));
     }
 
     @Override
-    public void callback(List<TwitterWrapper.MessageListResponse> result) {
+    protected void afterExecute(List<TwitterWrapper.MessageListResponse> result) {
         bus.post(new GetMessagesTaskEvent(getDatabaseUri(), false, AsyncTwitterWrapper.getException(result)));
     }
 }

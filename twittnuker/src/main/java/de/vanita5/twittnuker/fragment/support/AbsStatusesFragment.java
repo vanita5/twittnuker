@@ -426,6 +426,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (getUserVisibleHint()) return;
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final MenuInflater inflater = new MenuInflater(getContext());
         final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
@@ -437,6 +438,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        if (getUserVisibleHint()) return false;
         final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
                 (ExtendedRecyclerView.ContextMenuInfo) item.getMenuInfo();
         final ParcelableStatus status = getAdapter().getStatus(contextMenuInfo.getPosition());
