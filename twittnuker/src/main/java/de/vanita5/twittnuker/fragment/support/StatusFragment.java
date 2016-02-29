@@ -102,6 +102,7 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
 import de.vanita5.twittnuker.constant.IntentConstants;
+import de.vanita5.twittnuker.fragment.support.AbsStatusesFragment.DefaultOnLikedListener;
 import de.vanita5.twittnuker.loader.support.ConversationLoader;
 import de.vanita5.twittnuker.loader.support.ParcelableStatusLoader;
 import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
@@ -147,7 +148,6 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.CardMediaContainer;
@@ -414,7 +414,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 if (status.is_favorite) {
                     twitter.destroyFavoriteAsync(status.account_id, status.id);
                 } else {
-                    twitter.createFavoriteAsync(status.account_id, status.id);
+                    holder.playLikeAnimation(new DefaultOnLikedListener(twitter, status));
                 }
                 break;
             }
@@ -1208,7 +1208,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 RetweetQuoteDialogFragment.show(fm, status);
                 return true;
             }
-            return Utils.handleMenuItemClick(activity, fragment, fm, manager, twitter, status, item);
+            return Utils.handleMenuItemClick(activity, fragment, fm, manager, twitter,
+                    status, item);
         }
 
         private void initViews() {
