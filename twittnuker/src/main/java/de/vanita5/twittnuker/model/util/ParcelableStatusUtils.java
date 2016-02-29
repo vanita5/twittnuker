@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 
 import java.util.Date;
@@ -75,8 +76,8 @@ public class ParcelableStatusUtils {
         if (quoted != null) {
             final User quoted_user = quoted.getUser();
             result.quoted_id = quoted.getId();
-            result.quoted_text_html = TwitterContentUtils.formatStatusText(quoted);
-            result.quoted_text_plain = TwitterContentUtils.unescapeTwitterStatusText(quoted.getText());
+            result.quoted_text_html = InternalTwitterContentUtils.formatStatusText(quoted);
+            result.quoted_text_plain = InternalTwitterContentUtils.unescapeTwitterStatusText(quoted.getText());
             result.quoted_text_unescaped = HtmlEscapeHelper.toPlainText(result.quoted_text_html);
             result.quoted_timestamp = quoted.getCreatedAt().getTime();
             result.quoted_source = quoted.getSource();
@@ -124,9 +125,9 @@ public class ParcelableStatusUtils {
         result.user_is_protected = user.isProtected();
         result.user_is_verified = user.isVerified();
         result.user_is_following = user.isFollowing();
-        result.text_html = TwitterContentUtils.formatStatusText(status);
+        result.text_html = InternalTwitterContentUtils.formatStatusText(status);
         result.media = ParcelableMediaUtils.fromStatus(status);
-        result.text_plain = TwitterContentUtils.unescapeTwitterStatusText(status.getText());
+        result.text_plain = InternalTwitterContentUtils.unescapeTwitterStatusText(status.getText());
         result.source = status.getSource();
         result.location = ParcelableLocation.fromGeoLocation(status.getGeoLocation());
         result.is_favorite = status.isFavorited();
@@ -134,7 +135,7 @@ public class ParcelableStatusUtils {
         result.my_retweet_id = result.retweeted_by_user_id == accountId ? result.id : status.getCurrentUserRetweet();
         result.is_possibly_sensitive = status.isPossiblySensitive();
         result.mentions = ParcelableUserMention.fromUserMentionEntities(status.getUserMentionEntities());
-        result.card = ParcelableCardEntity.fromCardEntity(status.getCard(), accountId);
+        result.card = ParcelableCardEntityUtils.fromCardEntity(status.getCard(), accountId);
         result.place_full_name = getPlaceFullName(status.getPlace());
         result.card_name = result.card != null ? result.card.name : null;
         result.lang = status.getLang();

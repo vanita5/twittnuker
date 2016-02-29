@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
@@ -148,7 +149,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     public static ContentValues createCachedUser(final User user) {
         if (user == null) return null;
         final ContentValues values = new ContentValues();
-        ParcelableUserValuesCreator.writeTo(new ParcelableUser(user, -1), values);
+        ParcelableUserValuesCreator.writeTo(ParcelableUserUtils.fromUser(user, -1), values);
         return values;
     }
 
@@ -170,7 +171,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         } else {
             values.put(DirectMessages.CONVERSATION_ID, sender.getId());
         }
-        final String text_html = TwitterContentUtils.formatDirectMessageText(message);
+        final String text_html = InternalTwitterContentUtils.formatDirectMessageText(message);
         values.put(DirectMessages.TEXT_HTML, text_html);
         values.put(DirectMessages.TEXT_PLAIN, message.getText());
         values.put(DirectMessages.TEXT_UNESCAPED, toPlainText(text_html));

@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.api.twitter.model;
 import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 
 import java.util.Date;
 
@@ -34,7 +34,7 @@ public class StatusUtils {
     public static Status fromParcelableStatus(@NonNull ParcelableStatus parcelable) {
         Status status = new Status();
         status.id = parcelable.id;
-        status.text = TwitterContentUtils.escapeTwitterStatusText(parcelable.text_plain);
+        status.text = InternalTwitterContentUtils.escapeTwitterStatusText(parcelable.text_plain);
         status.createdAt = new Date(parcelable.timestamp);
         status.inReplyToStatusId = parcelable.in_reply_to_status_id;
         status.inReplyToUserId = parcelable.in_reply_to_user_id;
@@ -42,7 +42,7 @@ public class StatusUtils {
         if (parcelable.is_retweet) {
             Status retweet = status.retweetedStatus = new Status();
             retweet.id = parcelable.retweet_id;
-            retweet.text = TwitterContentUtils.escapeTwitterStatusText(parcelable.text_plain);
+            retweet.text = InternalTwitterContentUtils.escapeTwitterStatusText(parcelable.text_plain);
             retweet.createdAt = new Date(parcelable.retweet_timestamp);
             User retweetUser = retweet.user = new User();
             retweetUser.id = parcelable.user_id;
@@ -58,7 +58,7 @@ public class StatusUtils {
         } else if (parcelable.is_quote) {
             Status quote = status.quotedStatus = new Status();
             quote.id = parcelable.quoted_id;
-            quote.text = TwitterContentUtils.escapeTwitterStatusText(parcelable.quoted_text_plain);
+            quote.text = InternalTwitterContentUtils.escapeTwitterStatusText(parcelable.quoted_text_plain);
             quote.createdAt = new Date(parcelable.quoted_timestamp);
             User quotedUser = quote.user = new User();
             quotedUser.id = parcelable.quoted_user_id;

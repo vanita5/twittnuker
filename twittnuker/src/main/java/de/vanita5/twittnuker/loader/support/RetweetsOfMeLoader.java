@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 
 import java.util.List;
 
@@ -53,7 +53,7 @@ public class RetweetsOfMeLoader extends TwitterAPIStatusesLoader {
 
     @Override
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
-        return TwitterContentUtils.isFiltered(database, -1, status.text_plain, status.text_html, status.source,
+        return InternalTwitterContentUtils.isFiltered(database, -1, status.text_plain, status.text_html, status.source,
                 status.retweeted_by_user_id, status.quoted_user_id);
     }
 }

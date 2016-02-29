@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
@@ -60,7 +61,7 @@ public class ParcelableMediaUtils {
         }
         if (mediaEntities != null) {
             for (final MediaEntity media : mediaEntities) {
-                final String mediaURL = TwitterContentUtils.getMediaUrl(media);
+                final String mediaURL = InternalTwitterContentUtils.getMediaUrl(media);
                 if (mediaURL != null) {
                     list.add(ParcelableMediaUtils.fromMediaEntity(media));
                 }
@@ -83,9 +84,9 @@ public class ParcelableMediaUtils {
 
     private static ParcelableMedia fromMediaEntity(MediaEntity entity) {
         final ParcelableMedia media = new ParcelableMedia();
-        media.url = TwitterContentUtils.getMediaUrl(entity);
-        media.media_url = TwitterContentUtils.getMediaUrl(entity);
-        media.preview_url = TwitterContentUtils.getMediaUrl(entity);
+        media.url = InternalTwitterContentUtils.getMediaUrl(entity);
+        media.media_url = InternalTwitterContentUtils.getMediaUrl(entity);
+        media.preview_url = InternalTwitterContentUtils.getMediaUrl(entity);
         media.start = entity.getStart();
         media.end = entity.getEnd();
         media.type = ParcelableMediaUtils.getTypeInt(entity.getType());
@@ -154,7 +155,7 @@ public class ParcelableMediaUtils {
         if ("animated_gif".equals(name) || "player".equals(name)) {
             final ParcelableMedia media = new ParcelableMedia();
             final CardEntity.BindingValue playerStreamUrl = card.getBindingValue("player_stream_url");
-            media.card = ParcelableCardEntity.fromCardEntity(card, -1);
+            media.card = ParcelableCardEntityUtils.fromCardEntity(card, -1);
             CardEntity.StringValue appUrlResolved = (CardEntity.StringValue) card.getBindingValue("app_url_resolved");
             media.url = checkUrl(appUrlResolved) ? appUrlResolved.getValue() : card.getUrl();
             if ("animated_gif".equals(name)) {
@@ -199,7 +200,7 @@ public class ParcelableMediaUtils {
 
             final ParcelableMedia media = new ParcelableMedia();
             media.url = card.getUrl();
-            media.card = ParcelableCardEntity.fromCardEntity(card, -1);
+            media.card = ParcelableCardEntityUtils.fromCardEntity(card, -1);
             media.type = ParcelableMedia.Type.IMAGE;
             media.media_url = ((CardEntity.ImageValue) photoImageFullSize).getUrl();
             media.width = ((CardEntity.ImageValue) photoImageFullSize).getWidth();

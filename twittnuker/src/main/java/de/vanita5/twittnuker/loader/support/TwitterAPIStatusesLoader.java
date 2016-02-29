@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.LoganSquareMapperFinder;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -130,7 +131,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
             }
             statuses = getStatuses(twitter, paging);
             if (!TwitterAPIFactory.isOfficialTwitterInstance(context, twitter)) {
-                TwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
+                InternalTwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
             }
         } catch (final TwitterException e) {
             // mHandler.post(new ShowErrorRunnable(e));

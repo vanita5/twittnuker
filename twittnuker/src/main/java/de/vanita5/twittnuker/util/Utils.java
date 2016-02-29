@@ -121,25 +121,6 @@ import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.Selectable;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.CRC32;
-
-import javax.net.ssl.SSLException;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -212,6 +193,7 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
@@ -222,11 +204,29 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Conversati
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
-import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
+
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.CRC32;
+
+import javax.net.ssl.SSLException;
 
 import static android.text.TextUtils.isEmpty;
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
@@ -823,7 +823,7 @@ public final class Utils implements Constants {
         final String where = DirectMessages.ACCOUNT_ID + " = " + account_id + " AND " + DirectMessages.MESSAGE_ID
                 + " = " + message_id;
         for (final Uri uri : DIRECT_MESSAGES_URIS) {
-            final Cursor cur = ContentResolverUtils.query(resolver, uri, DirectMessages.COLUMNS, where, null, null);
+            final Cursor cur = resolver.query(uri, DirectMessages.COLUMNS, where, null, null);
             if (cur == null) {
                 continue;
             }
@@ -861,7 +861,7 @@ public final class Utils implements Constants {
         final String where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
                 Expression.equals(Statuses.STATUS_ID, statusId)).getSQL();
         for (final Uri uri : STATUSES_URIS) {
-            final Cursor cur = ContentResolverUtils.query(resolver, uri, Statuses.COLUMNS, where, null, null);
+            final Cursor cur = resolver.query(uri, Statuses.COLUMNS, where, null, null);
             if (cur == null) {
                 continue;
             }
@@ -1152,7 +1152,7 @@ public final class Utils implements Constants {
         if (ParseUtils.parseString(uri).startsWith(mediaUriStart)) {
 
             final String[] proj = {MediaStore.Images.Media.DATA};
-            final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), uri, proj, null, null, null);
+            final Cursor cur = context.getContentResolver().query(uri, proj, null, null, null);
 
             if (cur == null) return null;
 
@@ -1451,8 +1451,7 @@ public final class Utils implements Constants {
 
     public static boolean hasAccountSignedWithOfficialKeys(final Context context) {
         if (context == null) return false;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                Accounts.COLUMNS, null, null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, Accounts.COLUMNS, null, null, null);
         if (cur == null) return false;
         final String[] keySecrets = context.getResources().getStringArray(R.array.values_official_consumer_secret_crc32);
         final ParcelableCredentialsCursorIndices indices = new ParcelableCredentialsCursorIndices(cur);
@@ -1489,7 +1488,7 @@ public final class Utils implements Constants {
 
     public static void initAccountColor(final Context context) {
         if (context == null) return;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, new String[]{
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, new String[]{
                 Accounts.ACCOUNT_ID, Accounts.COLOR}, null, null, null);
         if (cur == null) return;
         final int id_idx = cur.getColumnIndex(Accounts.ACCOUNT_ID), color_idx = cur.getColumnIndex(Accounts.COLOR);
@@ -1534,7 +1533,8 @@ public final class Utils implements Constants {
         if (context == null) return false;
         final ContentResolver resolver = context.getContentResolver();
         final String where = Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL();
-        final Cursor cur = ContentResolverUtils.query(resolver, Accounts.CONTENT_URI, new String[0], where, null, null);
+        final String[] projection = new String[0];
+        final Cursor cur = resolver.query(Accounts.CONTENT_URI, projection, where, null, null);
         try {
             return cur != null && cur.getCount() > 0;
         } finally {
@@ -1548,8 +1548,8 @@ public final class Utils implements Constants {
         if (context == null) return false;
         final ContentResolver resolver = context.getContentResolver();
         final String where = Expression.equalsArgs(Accounts.SCREEN_NAME).getSQL();
-        final Cursor cur = ContentResolverUtils.query(resolver, Accounts.CONTENT_URI, new String[0], where,
-                new String[]{screen_name}, null);
+        final String[] projection = new String[0];
+        final Cursor cur = resolver.query(Accounts.CONTENT_URI, projection, where, new String[]{screen_name}, null);
         try {
             return cur != null && cur.getCount() > 0;
         } finally {
@@ -2695,7 +2695,7 @@ public final class Utils implements Constants {
         final Cursor c = cr.query(ConversationEntries.CONTENT_URI, null, where.getSQL(), null, null);
         if (c == null) return null;
         try {
-            if (c.moveToFirst()) return ParcelableUser.fromDirectMessageConversationEntry(c);
+            if (c.moveToFirst()) return ParcelableUserUtils.fromDirectMessageConversationEntry(c);
         } finally {
             c.close();
         }

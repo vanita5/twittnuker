@@ -117,6 +117,7 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
@@ -127,6 +128,7 @@ import de.vanita5.twittnuker.util.ContentListScrollListener;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.IntentUtils;
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
@@ -2002,7 +2004,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         }
 
         public void setTranslationResult(@Nullable TranslationResult translation) {
-            if (mStatus == null || translation == null || TwitterContentUtils.getOriginalId(mStatus)
+            if (mStatus == null || translation == null || InternalTwitterContentUtils.getOriginalId(mStatus)
                     != translation.getId()) {
                 mTranslationResult = null;
             } else {
@@ -2369,7 +2371,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final List<ParcelableUser> retweeters = new ArrayList<>();
             try {
                 for (Status status : twitter.getRetweets(mStatusId, paging)) {
-                    retweeters.add(new ParcelableUser(status.getUser(), mAccountId));
+                    retweeters.add(ParcelableUserUtils.fromUser(status.getUser(), mAccountId));
                 }
                 activitySummary.setRetweeters(retweeters);
                 final ContentValues statusValues = new ContentValues();

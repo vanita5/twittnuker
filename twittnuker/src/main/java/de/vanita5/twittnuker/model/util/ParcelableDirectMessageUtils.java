@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.model.util;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 
 import java.util.Date;
@@ -44,7 +45,7 @@ public class ParcelableDirectMessageUtils {
         result.timestamp = getTime(message.getCreatedAt());
         result.sender_id = sender.getId();
         result.recipient_id = recipient.getId();
-        result.text_html = TwitterContentUtils.formatDirectMessageText(message);
+        result.text_html = InternalTwitterContentUtils.formatDirectMessageText(message);
         result.text_plain = message.getText();
         result.sender_name = sender.getName();
         result.recipient_name = recipient.getName();

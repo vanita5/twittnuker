@@ -28,7 +28,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.AsyncTask;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
@@ -45,7 +44,6 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -94,7 +92,8 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
     @Override
     protected void onAttachedToHierarchy(@NonNull final PreferenceManager preferenceManager) {
         super.onAttachedToHierarchy(preferenceManager);
-        AsyncTaskUtils.executeTask(new LoadAccountsTask(this));
+        if (getPreferenceCount() > 0) return;
+        setAccountsData(DataStoreUtils.getAccountsList(getContext(), false));
     }
 
     protected abstract void setupPreference(AccountItemPreference preference, ParcelableAccount account);
@@ -170,26 +169,6 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
                 ((TextView) summaryView).setSingleLine(true);
             }
         }
-    }
-
-    private static class LoadAccountsTask extends AsyncTask<Object, Object, List<ParcelableAccount>> {
-
-        private final AccountsListPreference mPreference;
-
-        public LoadAccountsTask(final AccountsListPreference preference) {
-            mPreference = preference;
-        }
-
-        @Override
-        protected List<ParcelableAccount> doInBackground(final Object... params) {
-            return DataStoreUtils.getAccountsList(mPreference.getContext(), false);
-        }
-
-        @Override
-        protected void onPostExecute(final List<ParcelableAccount> result) {
-            mPreference.setAccountsData(result);
-        }
-
     }
 
 }

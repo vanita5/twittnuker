@@ -31,43 +31,43 @@ public class LongSparseMap<T> {
 
     private final LongSparseArray<CompactHashSet<T>> internalArray;
 
-	public LongSparseMap() {
-		internalArray = new LongSparseArray<>();
-	}
+    public LongSparseMap() {
+        internalArray = new LongSparseArray<>();
+    }
 
-	public boolean put(long key, T value) {
-		final int idx = internalArray.indexOfKey(key);
+    public boolean put(long key, T value) {
+        final int idx = internalArray.indexOfKey(key);
         final CompactHashSet<T> set;
-		if (idx < 0) {
+        if (idx < 0) {
             set = new CompactHashSet<>();
-			internalArray.put(key, set);
-		} else {
-			set = internalArray.valueAt(idx);
-		}
-		return set.add(value);
-	}
+            internalArray.put(key, set);
+        } else {
+            set = internalArray.valueAt(idx);
+        }
+        return set.add(value);
+    }
 
     @Nullable
     public Set<T> get(long key) {
         return internalArray.get(key);
     }
 
-	public boolean clear(long key) {
-		final int idx = internalArray.indexOfKey(key);
-		if (idx < 0) return false;
-		internalArray.valueAt(idx).clear();
-		return true;
-	}
+    public boolean clear(long key) {
+        final int idx = internalArray.indexOfKey(key);
+        if (idx < 0) return false;
+        internalArray.valueAt(idx).clear();
+        return true;
+    }
 
-	public boolean remove(long key, T value) {
-		final int idx = internalArray.indexOfKey(key);
-		return idx >= 0 && internalArray.valueAt(idx).remove(value);
-	}
+    public boolean remove(long key, T value) {
+        final int idx = internalArray.indexOfKey(key);
+        return idx >= 0 && internalArray.valueAt(idx).remove(value);
+    }
 
-	public boolean has(long key, T value) {
-		final int idx = internalArray.indexOfKey(key);
-		return idx >= 0 && internalArray.valueAt(idx).contains(value);
-	}
+    public boolean has(long key, T value) {
+        final int idx = internalArray.indexOfKey(key);
+        return idx >= 0 && internalArray.valueAt(idx).contains(value);
+    }
 
     public long[] keys() {
         final long[] keys = new long[internalArray.size()];

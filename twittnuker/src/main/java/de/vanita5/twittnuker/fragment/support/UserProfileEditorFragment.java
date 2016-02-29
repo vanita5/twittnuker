@@ -62,6 +62,7 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileBannerImageTask;
@@ -486,7 +487,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
                     // User profile unchanged
                     return SingleResponse.getInstance();
                 }
-                return SingleResponse.getInstance(new ParcelableUser(user, mAccountId));
+                return SingleResponse.getInstance(ParcelableUserUtils.fromUser(user, mAccountId));
             } catch (TwitterException e) {
                 return SingleResponse.getInstance(e);
             }

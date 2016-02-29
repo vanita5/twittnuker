@@ -30,6 +30,7 @@ import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 import java.util.Collections;
@@ -61,7 +62,7 @@ public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
             if (hasId(user.getId())) {
                 continue;
             }
-            data.add(new ParcelableUser(user, mAccountId, pos));
+            data.add(ParcelableUserUtils.fromUser(user, mAccountId, pos));
             pos++;
         }
         Collections.sort(data);

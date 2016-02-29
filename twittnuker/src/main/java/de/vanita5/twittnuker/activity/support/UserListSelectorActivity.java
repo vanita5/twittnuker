@@ -54,10 +54,11 @@ import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.model.message.UserListCreatedEvent;
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.model.message.UserListCreatedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -360,7 +361,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
                 final ResponseList<User> lists = twitter.searchUsers(mName, paging);
                 final List<ParcelableUser> data = new ArrayList<>();
                 for (final User item : lists) {
-                    data.add(new ParcelableUser(item, mAccountId));
+                    data.add(ParcelableUserUtils.fromUser(item, mAccountId));
                 }
                 return SingleResponse.getInstance(data);
             } catch (final TwitterException e) {

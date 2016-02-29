@@ -74,7 +74,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
-import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -246,8 +245,7 @@ public class DataStoreUtils implements Constants {
     public static long[] getFilteredUserIds(Context context) {
         if (context == null) return new long[0];
         final ContentResolver resolver = context.getContentResolver();
-        final Cursor cur = ContentResolverUtils.query(resolver, Filters.Users.CONTENT_URI,
-                new String[]{Filters.Users.USER_ID}, null, null, null);
+        final Cursor cur = resolver.query(Filters.Users.CONTENT_URI, new String[]{Filters.Users.USER_ID}, null, null, null);
         if (cur == null) return new long[0];
         try {
             final long[] ids = new long[cur.getCount()];
@@ -321,8 +319,7 @@ public class DataStoreUtils implements Constants {
         if (context == null) return null;
         final String cached = sAccountScreenNames.get(accountId);
         if (!isEmpty(cached)) return cached;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{Accounts.SCREEN_NAME}, Accounts.ACCOUNT_ID + " = " + accountId, null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, new String[]{Accounts.SCREEN_NAME}, Accounts.ACCOUNT_ID + " = " + accountId, null, null);
         if (cur == null) return null;
         try {
             if (cur.getCount() > 0 && cur.moveToFirst()) {
@@ -345,8 +342,7 @@ public class DataStoreUtils implements Constants {
         final String[] cols = new String[]{Accounts.SCREEN_NAME};
         final String where = accountIds != null ? Expression.in(new Column(Accounts.ACCOUNT_ID),
                 new RawItemArray(accountIds)).getSQL() : null;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, cols, where,
-                null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, cols, where, null, null);
         if (cur == null) return new String[0];
         try {
             cur.moveToFirst();
@@ -365,8 +361,7 @@ public class DataStoreUtils implements Constants {
     @NonNull
     public static long[] getActivatedAccountIds(final Context context) {
         if (context == null) return new long[0];
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{Accounts.ACCOUNT_ID}, Accounts.IS_ACTIVATED + " = 1", null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, new String[]{Accounts.ACCOUNT_ID}, Accounts.IS_ACTIVATED + " = 1", null, null);
         if (cur == null) return new long[0];
         try {
             cur.moveToFirst();
@@ -539,9 +534,7 @@ public class DataStoreUtils implements Constants {
         if (context == null) return Color.TRANSPARENT;
         final Integer cached = sAccountColors.get(accountId);
         if (cached != null) return cached;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{Accounts.COLOR}, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(),
-                null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, new String[]{Accounts.COLOR}, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(), null, null);
         if (cur == null) return Color.TRANSPARENT;
         try {
             if (cur.getCount() > 0 && cur.moveToFirst()) {
@@ -559,8 +552,7 @@ public class DataStoreUtils implements Constants {
         if (context == null || accountIds == null) return new int[0];
         final String[] cols = new String[]{Accounts.ACCOUNT_ID, Accounts.COLOR};
         final String where = Expression.in(new Column(Accounts.ACCOUNT_ID), new RawItemArray(accountIds)).getSQL();
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, cols, where,
-                null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, cols, where, null, null);
         if (cur == null) return new int[0];
         try {
             final int[] colors = new int[cur.getCount()];
@@ -586,9 +578,7 @@ public class DataStoreUtils implements Constants {
 
     public static long getAccountId(final Context context, final String screenName) {
         if (context == null || isEmpty(screenName)) return -1;
-        final Cursor cur = ContentResolverUtils
-                .query(context.getContentResolver(), Accounts.CONTENT_URI, new String[]{Accounts.ACCOUNT_ID},
-                        Expression.equalsArgs(Accounts.SCREEN_NAME).getSQL(), new String[]{screenName}, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, new String[]{Accounts.ACCOUNT_ID}, Expression.equalsArgs(Accounts.SCREEN_NAME).getSQL(), new String[]{screenName}, null);
         if (cur == null) return -1;
         try {
             if (cur.getCount() > 0 && cur.moveToFirst()) return cur.getLong(0);
@@ -601,8 +591,7 @@ public class DataStoreUtils implements Constants {
     @NonNull
     public static long[] getAccountIds(final Context context) {
         if (context == null) return new long[0];
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{Accounts.ACCOUNT_ID}, null, null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, new String[]{Accounts.ACCOUNT_ID}, null, null, null);
         if (cur == null) return new long[0];
         try {
             cur.moveToFirst();
@@ -620,8 +609,7 @@ public class DataStoreUtils implements Constants {
 
     public static boolean hasAccount(final Context context) {
         if (context == null) return false;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{SQLFunctions.COUNT()}, null, null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, new String[]{SQLFunctions.COUNT()}, null, null, null);
         if (cur == null) return false;
         try {
             cur.moveToFirst();
@@ -635,8 +623,7 @@ public class DataStoreUtils implements Constants {
         if (context == null) return null;
         final String cached = sAccountNames.get(accountId);
         if (!isEmpty(cached)) return cached;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{Accounts.NAME}, Accounts.ACCOUNT_ID + " = " + accountId, null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, new String[]{Accounts.NAME}, Accounts.ACCOUNT_ID + " = " + accountId, null, null);
         if (cur == null) return null;
         try {
             if (cur.getCount() > 0 && cur.moveToFirst()) {
@@ -733,9 +720,7 @@ public class DataStoreUtils implements Constants {
         if (sortExpression != null) {
             builder.orderBy(sortExpression);
         }
-        final Cursor cur = ContentResolverUtils.query(resolver,
-                Uri.withAppendedPath(TwidereDataStore.CONTENT_URI_RAW_QUERY, builder.buildSQL()),
-                null, null, selectionArgs, null);
+        final Cursor cur = resolver.query(Uri.withAppendedPath(TwidereDataStore.CONTENT_URI_RAW_QUERY, builder.buildSQL()), null, null, selectionArgs, null);
         if (cur == null) return messageIds;
         try {
             while (cur.moveToNext()) {
@@ -754,7 +739,7 @@ public class DataStoreUtils implements Constants {
                           @Nullable final String selection, @Nullable final String[] selectionArgs) {
         final ContentResolver resolver = context.getContentResolver();
         final String[] projection = new String[]{SQLFunctions.COUNT()};
-        final Cursor cur = ContentResolverUtils.query(resolver, uri, projection, selection, selectionArgs, null);
+        final Cursor cur = resolver.query(uri, projection, selection, selectionArgs, null);
         if (cur == null) return -1;
         try {
             if (cur.moveToFirst()) {
@@ -768,8 +753,7 @@ public class DataStoreUtils implements Constants {
 
     public static ParcelableAccount getAccount(final Context context, final long accountId) {
         if (context == null) return null;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                Accounts.COLUMNS, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(), null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, Accounts.COLUMNS, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(), null, null);
         if (cur == null) return null;
         try {
             if (cur.moveToFirst()) {
@@ -802,8 +786,7 @@ public class DataStoreUtils implements Constants {
         if (context == null) return new ParcelableAccount[0];
         final String where = accountIds != null ? Expression.in(new Column(Accounts.ACCOUNT_ID),
                 new RawItemArray(accountIds)).getSQL() : null;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                Accounts.COLUMNS_NO_CREDENTIALS, where, null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, Accounts.COLUMNS_NO_CREDENTIALS, where, null, null);
         if (cur == null) return new ParcelableAccount[0];
         return getAccounts(cur, new ParcelableAccountCursorIndices(cur));
     }
@@ -838,9 +821,8 @@ public class DataStoreUtils implements Constants {
                                                           final boolean officialKeyOnly) {
         if (context == null) return Collections.emptyList();
         final ArrayList<ParcelableAccount> accounts = new ArrayList<>();
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(),
-                Accounts.CONTENT_URI, Accounts.COLUMNS,
-                activatedOnly ? Accounts.IS_ACTIVATED + " = 1" : null, null, Accounts.SORT_POSITION);
+        final String selection = activatedOnly ? Accounts.IS_ACTIVATED + " = 1" : null;
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, Accounts.COLUMNS, selection, null, Accounts.SORT_POSITION);
         if (cur == null) return accounts;
         final ParcelableCredentialsCursorIndices indices = new ParcelableCredentialsCursorIndices(cur);
         cur.moveToFirst();
@@ -863,9 +845,7 @@ public class DataStoreUtils implements Constants {
     @Nullable
     public static ParcelableCredentials getCredentials(final Context context, final long accountId) {
         if (context == null || accountId < 0) return null;
-        Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                Accounts.COLUMNS, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(), null,
-                null);
+        Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, Accounts.COLUMNS, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(), null, null);
         if (cur == null) return null;
         try {
             if (cur.moveToFirst()) {
@@ -891,9 +871,8 @@ public class DataStoreUtils implements Constants {
                                                                  final boolean officialKeyOnly) {
         if (context == null) return Collections.emptyList();
         final ArrayList<ParcelableCredentials> accounts = new ArrayList<>();
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(),
-                Accounts.CONTENT_URI, Accounts.COLUMNS,
-                activatedOnly ? Accounts.IS_ACTIVATED + " = 1" : null, null, Accounts.SORT_POSITION);
+        final String selection = activatedOnly ? Accounts.IS_ACTIVATED + " = 1" : null;
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, Accounts.COLUMNS, selection, null, Accounts.SORT_POSITION);
         if (cur == null) return accounts;
         ParcelableCredentialsCursorIndices indices = new ParcelableCredentialsCursorIndices(cur);
         cur.moveToFirst();

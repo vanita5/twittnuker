@@ -55,6 +55,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
@@ -193,7 +194,7 @@ public abstract class GetStatusesTask extends TaskRunnable<RefreshTaskParam,
                     sinceId = -1;
                 }
                 final List<Status> statuses = getStatuses(twitter, paging);
-                TwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
+                InternalTwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
                 storeStatus(accountId, statuses, sinceId, maxId, true);
                 // TODO cache related data and preload
                 final CacheUsersStatusesTask cacheTask = new CacheUsersStatusesTask(context);

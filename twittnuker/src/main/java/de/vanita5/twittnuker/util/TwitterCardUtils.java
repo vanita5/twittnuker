@@ -28,11 +28,11 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
-
 import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils;
 
 public class TwitterCardUtils {
 
@@ -66,8 +66,8 @@ public class TwitterCardUtils {
 
 
     public static Point getCardSize(ParcelableCardEntity card) {
-        final int playerWidth = card.getAsInteger("player_width", -1);
-        final int playerHeight = card.getAsInteger("player_height", -1);
+        final int playerWidth = ParcelableCardEntityUtils.getAsInteger(card, "player_width", -1);
+        final int playerHeight = ParcelableCardEntityUtils.getAsInteger(card, "player_height", -1);
         if (playerWidth > 0 && playerHeight > 0) {
             return new Point(playerWidth, playerHeight);
         }
@@ -79,7 +79,7 @@ public class TwitterCardUtils {
         switch (status.card_name) {
             case CARD_NAME_PLAYER: {
                 if (!ArrayUtils.isEmpty(status.media)) {
-                    String appUrlResolved = status.card.getString("app_url_resolved");
+                    String appUrlResolved = ParcelableCardEntityUtils.getString(status.card, "app_url_resolved");
                     String cardUrl = status.card.url;
                     for (ParcelableMedia media : status.media) {
                         if (media.url.equals(appUrlResolved) || media.url.equals(cardUrl)) {
@@ -87,7 +87,7 @@ public class TwitterCardUtils {
                         }
                     }
                 }
-                return TextUtils.isEmpty(status.card.getString("player_stream_url"));
+                return TextUtils.isEmpty(ParcelableCardEntityUtils.getString(status.card, "player_stream_url"));
             }
             case CARD_NAME_AUDIO: {
                 return true;

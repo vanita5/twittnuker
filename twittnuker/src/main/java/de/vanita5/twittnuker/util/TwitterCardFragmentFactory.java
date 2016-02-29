@@ -30,6 +30,7 @@ import de.vanita5.twittnuker.fragment.support.card.CardBrowserFragment;
 import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils;
 
 public abstract class TwitterCardFragmentFactory {
 
@@ -46,7 +47,7 @@ public abstract class TwitterCardFragmentFactory {
     @Nullable
     public static Fragment createGenericPlayerFragment(@Nullable ParcelableCardEntity card, Bundle args) {
         if (card == null) return null;
-        final String playerUrl = card.getString("player_url");
+        final String playerUrl = ParcelableCardEntityUtils.getString(card, "player_url");
         if (playerUrl == null) return null;
         return CardBrowserFragment.show(playerUrl, args);
     }

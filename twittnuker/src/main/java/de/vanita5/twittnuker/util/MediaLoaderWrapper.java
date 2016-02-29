@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.util.media.MediaExtra;
 
 import javax.inject.Singleton;
 
-import static de.vanita5.twittnuker.util.TwitterContentUtils.getBestBannerUrl;
+import static de.vanita5.twittnuker.util.InternalTwitterContentUtils.getBestBannerUrl;
 
 @Singleton
 public class MediaLoaderWrapper implements Constants {
