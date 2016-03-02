@@ -236,7 +236,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         // The last activity is activityEndExclusiveIndex - 1
         final int activityEndExclusiveIndex = activityStartIndex + adapter.getActivityCount();
 
-        if (activityEndExclusiveIndex >= 0) {
+        if (activityEndExclusiveIndex >= 0 && rememberPosition && tag != null) {
             final long lastItemId = adapter.getTimestamp(activityEndExclusiveIndex);
             // Activity corresponds to last read timestamp was deleted, use last item timestamp
             // instead

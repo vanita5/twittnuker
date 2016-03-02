@@ -65,17 +65,16 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
     private final TabPagerIndicatorAdapter mIndicatorAdapter;
     private final TabLayoutManager mLayoutManager;
     private final DividerItemDecoration mItemDecoration;
-	private ViewPager mViewPager;
+    private ViewPager mViewPager;
     private PagerAdapter mPagerProvider;
 
-	private OnPageChangeListener mPageChangeListener;
+    private OnPageChangeListener mPageChangeListener;
     private int mOption;
-    private boolean mTabExpandEnabled;
     private int mHorizontalPadding, mVerticalPadding;
     private int mColumns;
 
-	public TabPagerIndicator(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
+    public TabPagerIndicator(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         ViewCompat.setLayoutDirection(this, ViewCompat.LAYOUT_DIRECTION_LTR);
         final Resources res = getResources();
         mIndicatorAdapter = new TabPagerIndicatorAdapter(this);
@@ -84,7 +83,7 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
         ViewCompat.setOverScrollMode(this, ViewCompat.OVER_SCROLL_NEVER);
         setHorizontalScrollBarEnabled(false);
         setVerticalScrollBarEnabled(false);
-        setLayoutManager(mLayoutManager = new TabLayoutManager(this));
+        setLayoutManager(mLayoutManager = new TabLayoutManager(context));
         setItemContext(context);
         setAdapter(mIndicatorAdapter);
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TabPagerIndicator);
@@ -103,16 +102,16 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
         mItemDecoration.setDecorationStart(0);
         mItemDecoration.setDecorationEndOffset(1);
         a.recycle();
-	}
+    }
 
-	public TabPagerIndicator(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public TabPagerIndicator(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
 
-	public TabPagerIndicator(Context context) {
-		this(context, null);
-	}
+    public TabPagerIndicator(Context context) {
+        this(context, null);
+    }
 
     public int getCount() {
         return mIndicatorAdapter.getItemCount();
@@ -138,12 +137,12 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
         return mStripHeight;
     }
 
-	@Override
-	public void notifyDataSetChanged() {
+    @Override
+    public void notifyDataSetChanged() {
         mIndicatorAdapter.notifyDataSetChanged();
-	}
+    }
 
-	@Override
+    @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         if (mPageChangeListener == null) return;
         mPageChangeListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
@@ -216,59 +215,59 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
     }
 
     @Override
-	public void setCurrentItem(int item) {
+    public void setCurrentItem(int item) {
         mViewPager.setCurrentItem(item);
-	}
+    }
 
-	@Override
-	public void setOnPageChangeListener(OnPageChangeListener listener) {
-		mPageChangeListener = listener;
-	}
+    @Override
+    public void setOnPageChangeListener(OnPageChangeListener listener) {
+        mPageChangeListener = listener;
+    }
 
-	@Override
-	public void setViewPager(ViewPager view) {
-		setViewPager(view, view.getCurrentItem());
-	}
+    @Override
+    public void setViewPager(ViewPager view) {
+        setViewPager(view, view.getCurrentItem());
+    }
 
-	@Override
-	public void setViewPager(ViewPager view, int initialPosition) {
-		final PagerAdapter adapter = view.getAdapter();
-		if (!(adapter instanceof TabProvider)) {
-			throw new IllegalArgumentException();
-		}
-		mViewPager = view;
+    @Override
+    public void setViewPager(ViewPager view, int initialPosition) {
+        final PagerAdapter adapter = view.getAdapter();
+        if (!(adapter instanceof TabProvider)) {
+            throw new IllegalArgumentException();
+        }
+        mViewPager = view;
         mPagerProvider = adapter;
-		view.setOnPageChangeListener(this);
+        view.setOnPageChangeListener(this);
         mIndicatorAdapter.setTabProvider((TabProvider) adapter);
-	}
+    }
 
     private int getTabHorizontalPadding() {
         return mHorizontalPadding;
-	}
+    }
 
     private int getTabVerticalPadding() {
         return mVerticalPadding;
-	}
+    }
 
     private boolean isIconDisplayed() {
         return (mOption & ICON) != 0;
-	}
+    }
 
     private boolean isLabelDisplayed() {
         return (mOption & LABEL) != 0;
-	}
+    }
 
     private boolean isTabExpandEnabled() {
-        return mTabExpandEnabled;
-	}
+        return mLayoutManager.isTabExpandEnabled();
+    }
 
     public void setTabExpandEnabled(boolean expandEnabled) {
-        mTabExpandEnabled = expandEnabled;
-	}
+        mLayoutManager.setTabExpandEnabled(expandEnabled);
+    }
 
     private void setHorizontalPadding(int padding) {
         mHorizontalPadding = padding;
-	}
+    }
 
     private void setTabShowDivider(boolean showDivider) {
         if (showDivider) {
@@ -402,7 +401,7 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
             super(context, attrs);
             mStripPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             setWillNotDraw(false);
-		}
+        }
 
         public void setIsCurrent(boolean isCurrent) {
             if (mIsCurrent == isCurrent) return;
@@ -421,16 +420,16 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
             if (mStripHeight == stripHeight) return;
             mStripHeight = stripHeight;
             invalidate();
-		}
+        }
 
-		@Override
+        @Override
         protected void onDraw(Canvas canvas) {
             if (mIsCurrent) {
                 final int width = canvas.getWidth(), height = canvas.getHeight();
                 canvas.drawRect(0, height - mStripHeight, width, height, mStripPaint);
-		    }
+            }
             super.onDraw(canvas);
-		}
+        }
     }
 
     private static class TabItemHolder extends ViewHolder implements OnClickListener, OnLongClickListener {
@@ -496,11 +495,11 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
 
         public void setStripHeight(int stripHeight) {
             itemView.setStripHeight(stripHeight);
-		}
+        }
 
         public void setTabData(Drawable icon, CharSequence title, boolean activated) {
             itemView.setContentDescription(title);
-			iconView.setImageDrawable(icon);
+            iconView.setImageDrawable(icon);
             labelView.setText(title);
             itemView.setIsCurrent(activated);
         }
@@ -508,24 +507,24 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
 
     private static class TabLayoutManager extends FixedLinearLayoutManager {
 
-        private final TabPagerIndicator mIndicator;
+        private boolean mTabExpandEnabled;
 
-        public TabLayoutManager(TabPagerIndicator indicator) {
-            super(indicator.getContext(), HORIZONTAL, false);
-            mIndicator = indicator;
+        public TabLayoutManager(Context context) {
+            super(context, HORIZONTAL, false);
+            setAutoMeasureEnabled(true);
         }
 
         @Override
         public void measureChildWithMargins(View child, int widthUsed, int heightUsed) {
             // first get default measured size
             super.measureChildWithMargins(child, widthUsed, heightUsed);
-            if (!mIndicator.isTabExpandEnabled()) return;
-            final int count = mIndicator.getCount();
+            if (!isTabExpandEnabled()) return;
+            final int count = getItemCount();
             if (count == 0) return;
-            final int parentHeight = mIndicator.getHeight(), parentWidth = mIndicator.getWidth();
+            final int parentHeight = getHeight(), parentWidth = getWidth();
             final int decoratedWidth = getDecoratedMeasuredWidth(child);
             final int decoratorWidth = decoratedWidth - child.getMeasuredWidth();
-            final int width = Math.max(parentWidth / count - decoratorWidth, decoratedWidth);
+            final int width = parentWidth / count - decoratorWidth;
             final int heightMeasureSpec = MeasureSpec.makeMeasureSpec(parentHeight, MeasureSpec.EXACTLY);
             final int widthMeasureSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
             child.measure(widthMeasureSpec, heightMeasureSpec);
@@ -534,6 +533,14 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
         @Override
         protected boolean isLayoutRTL() {
             return false;
+        }
+
+        public boolean isTabExpandEnabled() {
+            return mTabExpandEnabled;
+        }
+
+        public void setTabExpandEnabled(boolean tabExpandEnabled) {
+            mTabExpandEnabled = tabExpandEnabled;
         }
     }
 
@@ -630,8 +637,8 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
         public void setTabProvider(TabProvider tabProvider) {
             mTabProvider = tabProvider;
 //            notifyDataSetChanged();
-		}
-	}
+        }
+    }
 
     private boolean isTabSelected(int position) {
         final int current = getCurrentItem();
