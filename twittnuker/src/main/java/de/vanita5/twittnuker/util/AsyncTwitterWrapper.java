@@ -70,6 +70,7 @@ import de.vanita5.twittnuker.model.message.FollowRequestTaskEvent;
 import de.vanita5.twittnuker.model.message.FriendshipUpdatedEvent;
 import de.vanita5.twittnuker.model.message.FriendshipUserUpdatedEvent;
 import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent;
+import de.vanita5.twittnuker.model.message.SavedSearchDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.message.StatusRetweetedEvent;
@@ -1709,6 +1710,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (result.hasData()) {
                 final String message = mContext.getString(R.string.search_name_deleted, result.getData().getQuery());
                 Utils.showOkMessage(mContext, message, false);
+                bus.post(new SavedSearchDestroyedEvent(mAccountId, mSearchId));
             } else {
                 Utils.showErrorMessage(mContext, R.string.action_deleting_search, result.getException(), false);
             }

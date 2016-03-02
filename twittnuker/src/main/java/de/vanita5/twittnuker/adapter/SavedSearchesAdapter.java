@@ -34,47 +34,59 @@ import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 
 public class SavedSearchesAdapter extends BaseAdapter {
 
-	private ResponseList<SavedSearch> mData;
-	private final LayoutInflater mInflater;
+    private ResponseList<SavedSearch> mData;
+    private final LayoutInflater mInflater;
 
-	public SavedSearchesAdapter(final Context context) {
-		mInflater = LayoutInflater.from(context);
-	}
+    public SavedSearchesAdapter(final Context context) {
+        mInflater = LayoutInflater.from(context);
+    }
 
-	public SavedSearch findItem(final long id) {
-		for (int i = 0, count = getCount(); i < count; i++) {
-			if (id != -1 && id == getItemId(i)) return getItem(i);
-		}
-		return null;
-	}
+    public SavedSearch findItem(final long id) {
+        for (int i = 0, count = getCount(); i < count; i++) {
+            if (id != -1 && id == getItemId(i)) return getItem(i);
+        }
+        return null;
+    }
 
-	@Override
-	public int getCount() {
-		return mData != null ? mData.size() : 0;
-	}
+    @Override
+    public int getCount() {
+        return mData != null ? mData.size() : 0;
+    }
 
-	@Override
-	public SavedSearch getItem(final int position) {
-		return mData != null ? mData.get(position) : null;
-	}
+    @Override
+    public SavedSearch getItem(final int position) {
+        return mData != null ? mData.get(position) : null;
+    }
 
-	@Override
-	public long getItemId(final int position) {
-		return mData != null ? mData.get(position).getId() : -1;
-	}
+    @Override
+    public long getItemId(final int position) {
+        return mData != null ? mData.get(position).getId() : -1;
+    }
 
-	@Override
-	public View getView(final int position, final View convertView, final ViewGroup parent) {
-		final View view = convertView != null ? convertView : mInflater.inflate(
-				android.R.layout.simple_list_item_1, null);
-		final TextView text = (TextView) view.findViewById(android.R.id.text1);
-		text.setText(getItem(position).getName());
-		return view;
-	}
+    @Override
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
+        final View view = convertView != null ? convertView : mInflater.inflate(
+                android.R.layout.simple_list_item_1, null);
+        final TextView text = (TextView) view.findViewById(android.R.id.text1);
+        text.setText(getItem(position).getName());
+        return view;
+    }
 
-	public void setData(final ResponseList<SavedSearch> data) {
-		mData = data;
-		notifyDataSetChanged();
-	}
+    public void setData(final ResponseList<SavedSearch> data) {
+        mData = data;
+        notifyDataSetChanged();
+    }
 
+    public boolean removeItem(long accountId, long searchId) {
+        if (mData == null) return false;
+        for (int i = 0, mDataSize = mData.size(); i < mDataSize; i++) {
+            SavedSearch search = mData.get(i);
+            if (search.getId() == searchId) {
+                mData.remove(i);
+                notifyDataSetChanged();
+                return true;
+            }
+        }
+        return false;
+    }
 }
