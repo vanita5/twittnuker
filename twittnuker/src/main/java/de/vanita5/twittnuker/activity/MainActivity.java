@@ -47,7 +47,7 @@ public class MainActivity extends Activity implements Constants {
     }
 
     @Override
-    public void setTheme(int resid) {
+    public void setTheme(int resId) {
         super.setTheme(ThemeUtils.getNoActionBarThemeResource(this));
     }
 }

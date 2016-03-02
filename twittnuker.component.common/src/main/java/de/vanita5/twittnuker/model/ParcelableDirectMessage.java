@@ -37,7 +37,6 @@ import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 @ParcelablePlease(allFields = false)
 @JsonObject

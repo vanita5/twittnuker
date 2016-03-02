@@ -111,6 +111,7 @@ public class TwitterException extends Exception implements TwitterResponse, Http
     /**
      * {@inheritDoc}
      */
+    @AccessLevel
     @Override
     public int getAccessLevel() {
         return InternalParseUtil.toAccessLevel(httpResponse);

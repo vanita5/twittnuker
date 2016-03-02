@@ -20,29 +20,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.text;
+package de.vanita5.twittnuker.api.twitter.model;
 
-import android.graphics.Paint.FontMetricsInt;
-import android.text.Spanned;
-import android.text.style.LineHeightSpan;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-public class ParagraphSpacingSpan implements LineHeightSpan {
+@JsonObject
+public class DeletionEvent {
 
-	private final float spacingMultiplier;
+    @JsonField(name = "id")
+    long id;
+    @JsonField(name = "user_id")
+    long userId;
+    @JsonField(name = "timestamp_ms")
+    long timestampMs;
 
-	public ParagraphSpacingSpan(float spacingMultiplier) {
-		this.spacingMultiplier = spacingMultiplier;
-	}
+    public long getId() {
+        return id;
+    }
 
-	@Override
-	public void chooseHeight(CharSequence text, int start, int end,
-							 int spanstartv, int v, FontMetricsInt fm) {
-		Spanned spanned = (Spanned) text;
-		int en = spanned.getSpanEnd(this);
-		if (end - 1 == en) {
-			final int extra = Math.round((fm.bottom - fm.top) * (spacingMultiplier - 1));
-			fm.descent += extra;
-			fm.bottom += extra;
-		}
-	}
+    public long getUserId() {
+        return userId;
+    }
+
+    public long getTimestampMs() {
+        return timestampMs;
+    }
+
 }

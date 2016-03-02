@@ -52,20 +52,24 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.api.twitter.model.DeletionEvent;
 import de.vanita5.twittnuker.api.twitter.model.Warning;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterUserStream;
 import de.vanita5.twittnuker.api.twitter.UserStreamCallback;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.StatusDeletionNotice;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
@@ -75,7 +79,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
-import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
@@ -350,16 +353,16 @@ public class StreamingService extends Service implements Constants {
         }
 
         @Override
-        public void onDeletionNotice(final long directMessageId, final long userId) {
-            final String where = DirectMessages.MESSAGE_ID + " = " + directMessageId;
+        public void onDirectMessageDeleted(final DeletionEvent event) {
+            final String where = Expression.equals(DirectMessages.MESSAGE_ID, event.getId()).getSQL();
             for (final Uri uri : MESSAGES_URIS) {
                 resolver.delete(uri, where, null);
             }
         }
 
         @Override
-        public void onDeletionNotice(final StatusDeletionNotice statusDeletionNotice) {
-            final long statusId = statusDeletionNotice.getStatusId();
+        public void onStatusDeleted(final DeletionEvent event) {
+            final long statusId = event.getId();
             resolver.delete(Statuses.CONTENT_URI, Expression.equals(Statuses.STATUS_ID, statusId).getSQL(), null);
             resolver.delete(Activities.AboutMe.CONTENT_URI, Expression.equals(Activities.AboutMe.STATUS_ID, statusId).getSQL(), null);
         }
@@ -486,18 +489,20 @@ public class StreamingService extends Service implements Constants {
             final String where = Statuses.ACCOUNT_ID + " = " + account.account_id + " AND " + Statuses.STATUS_ID + " = "
                     + status.getId();
             resolver.delete(Statuses.CONTENT_URI, where, null);
-//            resolver.delete(Activities.AboutMe.CONTENT_URI, where, null);
+            resolver.delete(Activities.AboutMe.CONTENT_URI, where, null);
             resolver.insert(Statuses.CONTENT_URI, values);
             final Status rt = status.getRetweetedStatus();
             if (rt != null && rt.getText().contains("@" + account.screen_name) || rt == null
                     && status.getText().contains("@" + account.screen_name)) {
 
-//                Activity activity = Activity.fromMention(account.account_id, status);
-//                final ParcelableActivity parcelableActivity = new ParcelableActivity(activity, account.account_id, false);
-//                parcelableActivity.timestamp = status.getCreatedAt() != null ? status.getCreatedAt().getTime(): System.currentTimeMillis();
-//                final ContentValues activityValues = ParcelableActivityValuesCreator.create(parcelableActivity);
-//                resolver.insert(Activities.AboutMe.CONTENT_URI, activityValues);
+                Activity activity = Activity.fromMention(account.account_id, status);
+                final ParcelableActivity parcelableActivity = ParcelableActivityUtils.fromActivity(activity, account.account_id, false);
+                parcelableActivity.timestamp = status.getCreatedAt() != null ? status.getCreatedAt().getTime(): System.currentTimeMillis();
+                final ContentValues activityValues = ParcelableActivityValuesCreator.create(parcelableActivity);
+                resolver.insert(Activities.AboutMe.CONTENT_URI, activityValues);
             }
+
+            //Retweet
             if (rt != null && rt.getUser().getId() == account.account_id) {
                 createNotification(status.getUser().getScreenName(),
                         NotificationContent.NOTIFICATION_TYPE_RETWEET,
@@ -520,9 +525,9 @@ public class StreamingService extends Service implements Constants {
         }
 
         @Override
-        public void onUnfavorite(final User source, final User target, final Status unfavoritedStatus) {
+        public void onUnfavorite(final User source, final User target, final Status targetStatus) {
             final String message = String.format("%s unfavorited %s's tweet: %s", source.getScreenName(),
-                    target.getScreenName(), unfavoritedStatus.getText());
+                    target.getScreenName(), targetStatus.getText());
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
 

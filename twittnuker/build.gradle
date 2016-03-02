@@ -114,7 +114,6 @@ dependencies {
     compile 'commons-primitives:commons-primitives:1.0'
     compile 'com.bluelinelabs:logansquare:1.3.4'
     compile 'org.jraf:android-switch-backport:2.0.1'
-    compile 'com.github.mariotaku:jackson-jr-trees:7fe682ee09'
     compile 'com.makeramen:roundedimageview:2.1.1'
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'
     compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.2'

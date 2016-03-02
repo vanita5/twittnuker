@@ -22,14 +22,27 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-/**
- * Created by mariotaku on 15/5/26.
- */
 @JsonObject
-public class StatusDeletionNotice {
-    public long getStatusId() {
-        return 0;
+public class StatusFavoriteEvent {
+    @JsonField(name = "source")
+    User source;
+    @JsonField(name = "target")
+    User target;
+    @JsonField(name = "target_object")
+    Status targetObject;
+
+    public User getSource() {
+        return source;
+    }
+
+    public User getTarget() {
+        return target;
+    }
+
+    public Status getTargetObject() {
+        return targetObject;
     }
 }

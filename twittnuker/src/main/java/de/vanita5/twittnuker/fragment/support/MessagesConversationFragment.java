@@ -90,6 +90,7 @@ import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserCursorIndices;
+import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -110,7 +111,6 @@ import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.view.ComposeEditText;
 
 import java.util.ArrayList;
@@ -308,8 +308,11 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
                     final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
                     final long userId = args.getLong(EXTRA_RECIPIENT_ID, -1);
                     final int accountPos = accountsSpinnerAdapter.findItemPosition(accountId);
-                    account = accountPos < 0 ? DataStoreUtils.getCredentials(activity, accountId)
-                            : accountsSpinnerAdapter.getItem(accountPos);
+                    if (accountPos >= 0) {
+                        mAccountSpinner.setSelection(accountPos);
+                    }
+                    account = accountPos >= 0 ? accountsSpinnerAdapter.getItem(accountPos) :
+                            DataStoreUtils.getCredentials(activity, accountId);
                     recipient = Utils.getUserForConversation(activity, accountId, userId);
                 } else {
                     account = null;

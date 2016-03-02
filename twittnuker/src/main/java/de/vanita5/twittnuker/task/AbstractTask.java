@@ -25,6 +25,9 @@ package de.vanita5.twittnuker.task;
 import android.support.annotation.MainThread;
 import android.support.annotation.WorkerThread;
 
+/**
+ * Abstract Task class can be used with different implementations
+ */
 public abstract class AbstractTask<Params, Result, Callback> {
 
     private Params mParams;

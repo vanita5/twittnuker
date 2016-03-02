@@ -172,3 +172,5 @@
 -keepclassmembers class org.mariotaku.twidere.activity.support.BrowserSignInActivity.InjectorJavaScriptInterface {
     public *;
 }
+
+-dontwarn de.vanita5.twittnuker.api.twitter.model.TwitterResponse$AccessLevel

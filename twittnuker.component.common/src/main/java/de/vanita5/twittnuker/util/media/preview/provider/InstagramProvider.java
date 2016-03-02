@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.util.media.preview.provider;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
@@ -39,6 +38,7 @@ public class InstagramProvider implements Provider {
         final String authority = PreviewMediaExtractor.getAuthority(link);
         if (authority == null) return false;
         switch (authority) {
+            //noinspection SpellCheckingInspection
             case "instagr.am":
             case "instagram.com":
             case "www.instagram.com": {

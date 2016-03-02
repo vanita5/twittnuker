@@ -26,7 +26,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -69,7 +68,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.net.ConnectivityManagerCompat;
@@ -79,7 +77,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ShareActionProvider;
 import android.system.ErrnoException;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -95,7 +92,6 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -125,8 +121,6 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.CopyLinkActivity;
-import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
-import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
@@ -143,8 +137,6 @@ import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.support.AbsStatusesFragment.DefaultOnLikedListener;
 import de.vanita5.twittnuker.fragment.support.AccountsManagerFragment;
-import de.vanita5.twittnuker.fragment.support.AddStatusFilterDialogFragment;
-import de.vanita5.twittnuker.fragment.support.DestroyStatusDialogFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.DraftsFragment;
 import de.vanita5.twittnuker.fragment.support.FiltersFragment;
@@ -176,8 +168,6 @@ import de.vanita5.twittnuker.fragment.support.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserProfileEditorFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
-import de.vanita5.twittnuker.graphic.ActionIconDrawable;
-import de.vanita5.twittnuker.menu.SupportStatusShareProvider;
 import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -204,7 +194,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Conversati
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
-import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
@@ -420,6 +409,7 @@ public final class Utils implements Constants {
         if (extras != null) {
             args.putAll(extras);
         }
+        boolean isAccountIdRequired = true;
         switch (linkId) {
             case LINK_ID_ACCOUNTS: {
                 fragment = new AccountsManagerFragment();
@@ -563,6 +553,7 @@ public final class Utils implements Constants {
             }
             case LINK_ID_DIRECT_MESSAGES_CONVERSATION: {
                 fragment = new MessagesConversationFragment();
+                isAccountIdRequired = false;
                 final String paramRecipientId = uri.getQueryParameter(QUERY_PARAM_RECIPIENT_ID);
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
                 final long conversationId = NumberUtils.toLong(paramRecipientId, -1);
@@ -729,7 +720,7 @@ public final class Utils implements Constants {
             final String paramAccountName = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_NAME);
             if (paramAccountName != null) {
                 args.putLong(EXTRA_ACCOUNT_ID, DataStoreUtils.getAccountId(context, paramAccountName));
-            } else {
+            } else if (isAccountIdRequired) {
                 final long accountId = getDefaultAccountId(context);
                 if (isMyAccount(context, accountId)) {
                     args.putLong(EXTRA_ACCOUNT_ID, accountId);
@@ -1632,9 +1623,11 @@ public final class Utils implements Constants {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
-        if (accountId > 0 && recipientId > 0) {
+        if (accountId > 0) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
-            builder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(recipientId));
+            if (recipientId > 0) {
+                builder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(recipientId));
+            }
         }
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         intent.setPackage(BuildConfig.APPLICATION_ID);

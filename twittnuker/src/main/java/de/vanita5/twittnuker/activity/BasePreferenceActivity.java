@@ -46,7 +46,6 @@ import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.support.ViewSupport;
@@ -257,7 +256,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     }
 
     @Override
-    public void setTheme(int resid) {
+    public void setTheme(int resId) {
         super.setTheme(mCurrentThemeResource = getThemeResourceId());
         if (shouldApplyWindowBackground()) {
             ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource,
@@ -266,14 +265,14 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     }
 
     @Override
-    protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resid, boolean first) {
+    protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resId, boolean first) {
         mCurrentThemeColor = getThemeColor();
         mCurrentActionBarColor = getActionBarColor();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
         mProfileImageStyle = Utils.getProfileImageStyle(this);
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         mCurrentThemeFontFamily = getThemeFontFamily();
-        super.onApplyThemeResource(theme, resid, first);
+        super.onApplyThemeResource(theme, resId, first);
     }
 
     @Override

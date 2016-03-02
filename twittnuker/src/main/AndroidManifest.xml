@@ -77,7 +77,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Twidere.Dark.NoActionBar"
-        tools:ignore="UnusedAttribute" >
+        tools:ignore="UnusedAttribute|GoogleAppIndexingWarning"
         tools:replace="allowBackup">
         <uses-library
             android:name="com.sec.android.app.multiwindow"

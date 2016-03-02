@@ -22,11 +22,13 @@
 
 package de.vanita5.twittnuker.service;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.Build;
 
+@SuppressLint("Registered")
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class BackgroundJobService extends JobService {
     @Override

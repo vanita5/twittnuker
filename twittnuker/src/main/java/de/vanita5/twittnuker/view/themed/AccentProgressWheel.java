@@ -31,17 +31,22 @@ import com.pnikosis.materialishprogress.ProgressWheel;
 
 import de.vanita5.twittnuker.view.iface.IThemeAccentView;
 
+/**
+ * ProgressWheel view that supports theme color settings
+ *
+ * Created by mariotaku on 15/4/25.
+ */
 public class AccentProgressWheel extends ProgressWheel implements IThemeAccentView {
-	public AccentProgressWheel(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public AccentProgressWheel(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public AccentProgressWheel(Context context) {
-		super(context);
-	}
+    public AccentProgressWheel(Context context) {
+        super(context);
+    }
 
-	@Override
+    @Override
     public void setAccentTintColor(@NonNull ColorStateList color) {
-		setBarColor(color.getDefaultColor());
-	}
+        setBarColor(color.getDefaultColor());
+    }
 }

@@ -36,8 +36,6 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
-import de.vanita5.twittnuker.api.twitter.model.MediaEntity.Size;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

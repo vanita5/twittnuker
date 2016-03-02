@@ -33,7 +33,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.MenuUtils;
 
-import static de.vanita5.twittnuker.util.MenuUtils.addIntentToMenu;
 import static de.vanita5.twittnuker.util.Utils.createStatusShareIntent;
 
 public class SupportStatusShareProvider extends ActionProvider implements Constants {

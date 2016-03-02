@@ -24,8 +24,6 @@ package de.vanita5.twittnuker.api.twitter.model;
 
 import org.mariotaku.restfu.http.HttpResponse;
 
-import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
-import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
 /**
@@ -33,6 +31,7 @@ import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
  */
 public class TwitterResponseObject implements TwitterResponse {
 
+    @AccessLevel
     private int accessLevel;
     private RateLimitStatus rateLimitStatus;
 
@@ -42,6 +41,7 @@ public class TwitterResponseObject implements TwitterResponse {
         accessLevel = InternalParseUtil.toAccessLevel(resp);
     }
 
+    @AccessLevel
     @Override
     public final int getAccessLevel() {
         return accessLevel;
