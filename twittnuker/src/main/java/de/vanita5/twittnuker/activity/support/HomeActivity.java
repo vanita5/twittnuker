@@ -120,6 +120,7 @@ import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.DataStoreUtils.cleanDatabasesByItemLimit;
 import static de.vanita5.twittnuker.util.Utils.checkPlayServices;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
+import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
 import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 
@@ -368,7 +369,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         setSupportActionBar(mActionBar);
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
         final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
-        int tabDisplayOptionInt = Utils.getTabDisplayOptionInt(this);
+        int tabDisplayOptionInt = getTabDisplayOptionInt(this);
 
         mGCMRegistrationReceiver = new BroadcastReceiver() {
             @Override
@@ -950,7 +951,8 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         }
     }
 
-    private static class UpdateUnreadCountTask extends AsyncTask<Object, Object, SparseIntArray> {
+    private static class UpdateUnreadCountTask extends AsyncTask<Object, UpdateUnreadCountTask.TabBadge,
+            SparseIntArray> {
         private final Context mContext;
         private final ReadStateManager mReadStateManager;
         private final TabPagerIndicator mIndicator;
@@ -967,17 +969,22 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         @Override
         protected SparseIntArray doInBackground(final Object... params) {
             final SparseIntArray result = new SparseIntArray();
-            for (int i = 0, count = mTabs.size(); i < count; i++) {
+            for (int i = 0, j = mTabs.size(); i < j; i++) {
                 SupportTabSpec spec = mTabs.get(i);
-                if (spec.type == null) continue;
+                if (spec.type == null) {
+                    publishProgress(new TabBadge(i, -1));
+                    continue;
+                }
                 switch (spec.type) {
                     case CustomTabType.HOME_TIMELINE: {
                         final long[] accountIds = Utils.getAccountIds(spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext,
                                 true, spec.tag, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
-                        result.put(i, DataStoreUtils.getStatusesCount(mContext, Statuses.CONTENT_URI,
-                                position, accountIds));
+                        final int count = DataStoreUtils.getStatusesCount(mContext, Statuses.CONTENT_URI,
+                                position, accountIds);
+                        result.put(i, count);
+                        publishProgress(new TabBadge(i, count));
                         break;
                     }
                     case CustomTabType.NOTIFICATIONS_TIMELINE: {
@@ -988,20 +995,29 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
                         Expression extraWhere = null;
                         String[] extraWhereArgs = null;
+                        boolean followingOnly = false;
                         if (spec.args != null) {
                             Bundle extras = spec.args.getBundle(EXTRA_EXTRAS);
-                            if (extras != null && extras.getBoolean(EXTRA_MENTIONS_ONLY)) {
-                                extraWhere = Expression.inArgs(Activities.ACTION, 3);
-                                extraWhereArgs = new String[]{Activity.Action.MENTION,
-                                        Activity.Action.REPLY, Activity.Action.QUOTE};
+                            if (extras != null) {
+                                if (extras.getBoolean(EXTRA_MENTIONS_ONLY)) {
+                                    extraWhere = Expression.inArgs(Activities.ACTION, 3);
+                                    extraWhereArgs = new String[]{Activity.Action.MENTION,
+                                            Activity.Action.REPLY, Activity.Action.QUOTE};
+                                }
+                                if (extras.getBoolean(EXTRA_MY_FOLLOWING_ONLY)) {
+                                    followingOnly = true;
+                                }
                             }
                         }
-                        result.put(i, DataStoreUtils.getActivitiesCount(mContext,
+                        final int count = DataStoreUtils.getActivitiesCount(mContext,
                                 Activities.AboutMe.CONTENT_URI, extraWhere, extraWhereArgs,
-                                position, accountIds));
+                                position, followingOnly, accountIds);
+                        publishProgress(new TabBadge(i, count));
+                        result.put(i, count);
                         break;
                     }
-                    case CustomTabType.DIRECT_MESSAGES: {
+                    default: {
+                        publishProgress(new TabBadge(i, -1));
                         break;
                     }
                 }
@@ -1017,6 +1033,22 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             }
         }
 
+        @Override
+        protected void onProgressUpdate(TabBadge... values) {
+            for (TabBadge value : values) {
+                mIndicator.setBadge(value.index, value.count);
+            }
+        }
+
+        static class TabBadge {
+            int index;
+            int count;
+
+            public TabBadge(int index, int count) {
+                this.index = index;
+                this.count = count;
+            }
+        }
     }
 
 
