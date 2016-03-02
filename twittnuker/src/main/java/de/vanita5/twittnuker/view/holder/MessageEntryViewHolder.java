@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Conversati
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
+import de.vanita5.twittnuker.view.NameView;
 import de.vanita5.twittnuker.view.ShortTimeView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
@@ -45,7 +46,8 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 public class MessageEntryViewHolder extends ViewHolder implements OnClickListener {
 
     public final ImageView profileImageView;
-    public final TextView nameView, screenNameView, textView;
+    public final NameView nameView;
+    public final TextView textView;
     public final ShortTimeView timeView;
     private final MessageEntriesAdapter adapter;
     private final IColorLabelView content;
@@ -55,8 +57,7 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
         this.adapter = adapter;
         content = (IColorLabelView) itemView.findViewById(R.id.content);
         profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
-        nameView = (TextView) itemView.findViewById(R.id.name);
-        screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
+        nameView = (NameView) itemView.findViewById(R.id.name);
         textView = (TextView) itemView.findViewById(R.id.text);
         timeView = (ShortTimeView) itemView.findViewById(R.id.time);
 
@@ -78,8 +79,9 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
         final String name = cursor.getString(ConversationEntries.IDX_NAME);
         final String screenName = cursor.getString(ConversationEntries.IDX_SCREEN_NAME);
 
-        nameView.setText(name);
-        screenNameView.setText("@" + screenName);
+        nameView.setName(name);
+        nameView.setScreenName("@" + screenName);
+        nameView.updateText(adapter.getBidiFormatter());
         textView.setText(toPlainText(cursor.getString(ConversationEntries.IDX_TEXT)));
         timeView.setTime(timestamp);
         if (isOutgoing) {
@@ -88,7 +90,6 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
             timeView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
         nameView.setTypeface(null, isUnread && !isOutgoing ? Typeface.BOLD : Typeface.NORMAL);
-        screenNameView.setTypeface(null, isUnread && !isOutgoing ? Typeface.BOLD : Typeface.NORMAL);
         textView.setTypeface(null, isUnread && !isOutgoing ? Typeface.BOLD : Typeface.NORMAL);
         if (adapter.shouldShowAccountsColor()) {
             content.drawEnd(DataStoreUtils.getAccountColor(context, accountId));
@@ -118,8 +119,8 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
     }
 
     public void setTextSize(final float textSize) {
-        nameView.setTextSize(textSize * 1.1f);
-        screenNameView.setTextSize(textSize);
+        nameView.setPrimaryTextSize(textSize * 1.1f);
+        nameView.setSecondaryTextSize(textSize);
         textView.setTextSize(textSize);
         timeView.setTextSize(textSize * 0.85f);
     }
