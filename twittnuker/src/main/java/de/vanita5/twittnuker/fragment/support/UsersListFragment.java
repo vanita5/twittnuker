@@ -42,6 +42,7 @@ public class UsersListFragment extends ParcelableUsersFragment {
 
     @Override
     public boolean isRefreshing() {
+        if (getContext() == null || isDetached()) return false;
         return false;
     }
 
@@ -59,7 +60,6 @@ public class UsersListFragment extends ParcelableUsersFragment {
 
     @Override
     public Loader<List<ParcelableUser>> onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
-        if (args == null) return null;
         if (args.containsKey(EXTRA_USERS))
             return new IntentExtrasUsersLoader(context, args, getData(), fromUser);
         return null;
