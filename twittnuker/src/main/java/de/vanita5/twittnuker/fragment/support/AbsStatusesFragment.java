@@ -221,7 +221,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         if (statusEndExclusiveIndex >= 0 && rememberPosition && tag != null) {
             final long lastItemId = adapter.getStatusId(statusEndExclusiveIndex - 1);
             // Status corresponds to last read id was deleted, use last item id instead
-            if (lastItemId > 0 && lastReadId < lastItemId) {
+            if (lastItemId > 0 && lastReadId > 0 && lastReadId < lastItemId) {
                 lastReadId = lastItemId;
             }
         }
@@ -410,6 +410,11 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         return null;
     }
 
+    @Nullable
+    protected String getReadPositionTagWithArguments() {
+        return getReadPositionTag();
+    }
+
     protected abstract boolean hasMoreData(Data data);
 
     protected abstract Loader<Data> onCreateStatusesLoader(final Context context, final Bundle args,
@@ -417,7 +422,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
 
     protected abstract void onLoadingFinished();
 
-    protected void saveReadPosition(int position) {
+    protected final void saveReadPosition(int position) {
         final String readPositionTag = getReadPositionTagWithAccounts();
         if (readPositionTag == null) return;
         if (position == RecyclerView.NO_POSITION) return;
@@ -473,7 +478,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
     }
 
     private String getReadPositionTagWithAccounts() {
-        return Utils.getReadPositionTagWithAccounts(getReadPositionTag(), getAccountIds());
+        return Utils.getReadPositionTagWithAccounts(getReadPositionTagWithArguments(), getAccountIds());
     }
 
     public static final class DefaultOnLikedListener implements LikeAnimationDrawable.OnLikedListener {

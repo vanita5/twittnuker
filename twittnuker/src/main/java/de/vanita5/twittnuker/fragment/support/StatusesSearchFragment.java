@@ -31,6 +31,8 @@ import android.support.v4.content.Loader;
 import de.vanita5.twittnuker.loader.support.TweetSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 public class StatusesSearchFragment extends ParcelableStatusesFragment {
@@ -66,5 +68,24 @@ public class StatusesSearchFragment extends ParcelableStatusesFragment {
         return new String[]{AUTHORITY_SEARCH_TWEETS, "account" + account_id, "query" + query};
     }
 
+
+    @Override
+    protected String getReadPositionTagWithArguments() {
+        final Bundle args = getArguments();
+        assert args != null;
+        final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
+        StringBuilder sb = new StringBuilder("search_");
+        if (tabPosition < 0) return null;
+        final String query = args.getString(EXTRA_QUERY);
+        if (query == null) return null;
+        final String encodedQuery;
+        try {
+            encodedQuery = URLEncoder.encode(query, "UTF-8").replaceAll("[^\\w\\d]", "_");
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
+        sb.append(encodedQuery);
+        return sb.toString();
+    }
 
 }

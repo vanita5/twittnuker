@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.loader.support.UserTimelineLoader;
@@ -57,5 +58,25 @@ public class UserTimelineFragment extends ParcelableStatusesFragment {
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         return new String[]{AUTHORITY_USER_TIMELINE, "account" + accountId, "user" + userId + "name" + screenName};
+    }
+
+    @Override
+    protected String getReadPositionTagWithArguments() {
+        final Bundle args = getArguments();
+        assert args != null;
+        final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
+        StringBuilder sb = new StringBuilder("user_timeline_");
+        if (tabPosition < 0) return null;
+
+        final long userId = args.getLong(EXTRA_USER_ID, -1);
+        final String screenName = args.getString(EXTRA_SCREEN_NAME);
+        if (userId > 0) {
+            sb.append(userId);
+        } else if (screenName != null) {
+            sb.append(screenName);
+        } else {
+            return null;
+        }
+        return sb.toString();
     }
 }
