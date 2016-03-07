@@ -31,9 +31,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.text.TextUtils;
@@ -84,6 +86,7 @@ import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.util.AbsServiceInterface;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
@@ -505,6 +508,23 @@ public class BackgroundOperationService extends IntentService implements Constan
             if (!ServicePickerPreference.isNoneValue(shortenerComponent)) {
                 shortener = StatusShortenerInterface.getInstance(app, shortenerComponent);
                 if (shortener == null) throw new ShortenerNotFoundException(this);
+                try {
+                    shortener.checkService(new AbsServiceInterface.CheckServiceAction() {
+                        @Override
+                        public void check(@Nullable Bundle metaData) throws AbsServiceInterface.CheckServiceException {
+                            if (metaData == null) throw new ExtensionVersionMismatchException();
+                            final String extensionVersion = metaData.getString(METADATA_KEY_EXTENSION_VERSION_STATUS_SHORTENER);
+                            if (!TextUtils.equals(extensionVersion, getString(R.string.status_shortener_service_interface_version))) {
+                                throw new ExtensionVersionMismatchException();
+                            }
+                        }
+                    });
+                } catch (AbsServiceInterface.CheckServiceException e) {
+                    if (e instanceof ExtensionVersionMismatchException) {
+                        throw new ShortenException(getString(R.string.shortener_version_incompatible));
+                    }
+                    throw new ShortenException(e);
+                }
             }
 
             final boolean hasMedia = statusUpdate.media != null && statusUpdate.media.length > 0;
@@ -567,7 +587,8 @@ public class BackgroundOperationService extends IntentService implements Constan
                     StatusShortenResult shortenedResult = null;
                     if (shouldShorten && shortener != null) {
                         try {
-                            shortenedResult = shortener.shorten(statusUpdate, account, statusText);
+                            shortenedResult = shortener.shorten(statusUpdate, account.account_id,
+                                    statusText);
                         } catch (final Exception e) {
                             throw new ShortenException(getString(R.string.error_message_tweet_shorten_failed), e);
                         }
@@ -668,7 +689,8 @@ public class BackgroundOperationService extends IntentService implements Constan
     }
 
     private static Notification updateSendDirectMessageNotification(final Context context,
-                                                                    final NotificationCompat.Builder builder, final int progress, final String message) {
+                                                                    final NotificationCompat.Builder builder,
+                                                                    final int progress, final String message) {
         builder.setContentTitle(context.getString(R.string.sending_direct_message));
         if (message != null) {
             builder.setContentText(message);
@@ -865,5 +887,9 @@ public class BackgroundOperationService extends IntentService implements Constan
         public UploadException(String message) {
             super(message);
         }
+    }
+
+    static class ExtensionVersionMismatchException extends AbsServiceInterface.CheckServiceException {
+
     }
 }

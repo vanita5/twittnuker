@@ -21,16 +21,10 @@
  */
 package de.vanita5.twittnuker;
 
-import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
-import de.vanita5.twittnuker.model.StatusShortenResult;
-
 interface IStatusShortener {
 
-    StatusShortenResult shorten(in ParcelableStatusUpdate status,in ParcelableAccount currentAccount,
-                                String overrideStatusText);
+	String shorten(String statusJson, long currentAccountId, String overrideStatusText);
 
-    boolean callback(in StatusShortenResult result, in ParcelableStatus status);
+	boolean callback(String resultJson, String statusJson);
 
 }

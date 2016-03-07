@@ -26,6 +26,9 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -35,9 +38,11 @@ import de.vanita5.twittnuker.model.MediaUploadResult;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.UploaderMediaItem;
 
+import java.util.List;
+
 public final class MediaUploaderInterface extends AbsServiceInterface<IMediaUploader> implements IMediaUploader {
-    protected MediaUploaderInterface(Context context, String shortenerName) {
-        super(context, shortenerName);
+    protected MediaUploaderInterface(Context context, String uploaderName, Bundle metaData) {
+        super(context, uploaderName, metaData);
     }
 
     public static MediaUploaderInterface getInstance(final Application application, final String uploaderName) {
@@ -45,8 +50,10 @@ public final class MediaUploaderInterface extends AbsServiceInterface<IMediaUplo
         final Intent intent = new Intent(INTENT_ACTION_EXTENSION_UPLOAD_MEDIA);
         final ComponentName component = ComponentName.unflattenFromString(uploaderName);
         intent.setComponent(component);
-        if (application.getPackageManager().queryIntentServices(intent, 0).size() != 1) return null;
-        return new MediaUploaderInterface(application, uploaderName);
+        final PackageManager pm = application.getPackageManager();
+        final List<ResolveInfo> services = pm.queryIntentServices(intent, PackageManager.GET_META_DATA);
+        if (services.size() != 1) return null;
+        return new MediaUploaderInterface(application, uploaderName, services.get(0).serviceInfo.metaData);
     }
 
     @Override

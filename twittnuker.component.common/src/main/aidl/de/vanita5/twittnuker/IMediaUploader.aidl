@@ -27,6 +27,6 @@ import de.vanita5.twittnuker.model.UploaderMediaItem;
 
 interface IMediaUploader {
 
-	MediaUploadResult upload(in ParcelableStatusUpdate status, in UploaderMediaItem[] media);
+    MediaUploadResult upload(in ParcelableStatusUpdate status, in UploaderMediaItem[] media);
 
 }

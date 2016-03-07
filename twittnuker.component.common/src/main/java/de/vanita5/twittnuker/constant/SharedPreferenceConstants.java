@@ -316,6 +316,8 @@ public interface SharedPreferenceConstants {
     String KEY_API_LAST_CHANGE = "api_last_change";
     @Preference(type = LONG, exportable = false)
     String KEY_DEFAULT_ACCOUNT_ID = "default_account_id";
+    @Preference(type = BOOLEAN, exportable = true, defaultBoolean = true)
+    String KEY_RETRY_ON_NETWORK_ISSUE = "retry_on_network_issue";
 
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_HIDE_CARD_ACTIONS = "hide_card_actions";

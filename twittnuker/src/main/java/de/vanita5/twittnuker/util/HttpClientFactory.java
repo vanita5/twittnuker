@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -33,9 +32,11 @@ import org.mariotaku.restfu.okhttp3.OkHttpRestClient;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
+import de.vanita5.twittnuker.util.net.TwidereDns;
 import de.vanita5.twittnuker.util.net.TwidereProxySelector;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.concurrent.TimeUnit;
 
@@ -53,14 +54,14 @@ import static android.text.TextUtils.isEmpty;
 public class HttpClientFactory implements Constants {
 
     public static RestHttpClient createRestHttpClient(final Context context,
-                                                      final SharedPreferences prefs, final Dns dns,
+                                                      final SharedPreferencesWrapper prefs, final Dns dns,
                                                       final ConnectionPool connectionPool) {
         final OkHttpClient.Builder builder = new OkHttpClient.Builder();
         initOkHttpClient(context, prefs, builder, dns, connectionPool);
         return new OkHttpRestClient(builder.build());
     }
 
-    public static void initOkHttpClient(final Context context, final SharedPreferences prefs,
+    public static void initOkHttpClient(final Context context, final SharedPreferencesWrapper prefs,
                                         final OkHttpClient.Builder builder, final Dns dns,
                                         final ConnectionPool connectionPool) {
         updateHttpClientConfiguration(context, builder, prefs, dns, connectionPool);
@@ -70,11 +71,11 @@ public class HttpClientFactory implements Constants {
     @SuppressLint("SSLCertificateSocketFactoryGetInsecure")
     public static void updateHttpClientConfiguration(final Context context,
                                                      final OkHttpClient.Builder builder,
-                                                     final SharedPreferences prefs, final Dns dns,
+                                                     final SharedPreferencesWrapper prefs, final Dns dns,
                                                      final ConnectionPool connectionPool) {
         final boolean enableProxy = prefs.getBoolean(KEY_ENABLE_PROXY, false);
         builder.connectTimeout(prefs.getInt(KEY_CONNECTION_TIMEOUT, 10), TimeUnit.SECONDS);
-        builder.retryOnConnectionFailure(true);
+        builder.retryOnConnectionFailure(prefs.getBoolean(KEY_RETRY_ON_NETWORK_ISSUE));
         builder.connectionPool(connectionPool);
         if (enableProxy) {
             final String proxyType = prefs.getString(KEY_PROXY_TYPE, null);
@@ -84,7 +85,11 @@ public class HttpClientFactory implements Constants {
                     TwidereMathUtils.RANGE_INCLUSIVE_INCLUSIVE)) {
                 final Proxy.Type type = getProxyType(proxyType);
                 if (type != Proxy.Type.DIRECT) {
-                    builder.proxySelector(new TwidereProxySelector(context, type, proxyHost, proxyPort));
+                    if (TwidereDns.isValidIpAddress(proxyHost)) {
+                        builder.proxy(new Proxy(type, InetSocketAddress.createUnresolved(proxyHost, proxyPort)));
+                    } else {
+                        builder.proxySelector(new TwidereProxySelector(context, type, proxyHost, proxyPort));
+                    }
                 }
             }
             final String username = prefs.getString(KEY_PROXY_USERNAME, null);
