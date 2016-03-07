@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
  * Created by mariotaku on 15/5/26.
  */
 @JsonObject
-@CursorObject
+@CursorObject(valuesCreator = true)
 @ParcelablePlease
 public class ParcelableCredentials extends ParcelableAccount implements Parcelable {
 
@@ -100,6 +100,10 @@ public class ParcelableCredentials extends ParcelableAccount implements Parcelab
     @CursorField(Accounts.NO_VERSION_SUFFIX)
     public boolean no_version_suffix;
 
+    @ParcelableThisPlease
+    @JsonField(name = "account_extras")
+    @CursorField(Accounts.ACCOUNT_EXTRAS)
+    public String account_extras;
 
     ParcelableCredentials() {
     }
@@ -117,6 +121,7 @@ public class ParcelableCredentials extends ParcelableAccount implements Parcelab
                 ", api_url_format='" + api_url_format + '\'' +
                 ", same_oauth_signing_url=" + same_oauth_signing_url +
                 ", no_version_suffix=" + no_version_suffix +
+                ", account_extras='" + account_extras + '\'' +
                 "} " + super.toString();
     }
 
