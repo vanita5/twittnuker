@@ -89,7 +89,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.task.AbstractTask;
 import de.vanita5.twittnuker.task.GetActivitiesAboutMeTask;
-import de.vanita5.twittnuker.task.GetActivitiesByFriendsTask;
 import de.vanita5.twittnuker.task.GetDirectMessagesTask;
 import de.vanita5.twittnuker.task.GetHomeTimelineTask;
 import de.vanita5.twittnuker.task.GetLocalTrendsTask;
@@ -518,12 +517,6 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     public void getActivitiesAboutMeAsync(final RefreshTaskParam param) {
         final GetActivitiesTask task = new GetActivitiesAboutMeTask(getContext());
         task.setParams(param);
-        TaskStarter.execute(task);
-    }
-
-    public void getActivitiesByFriendsAsync(long[] accountIds, long[] maxIds, long[] sinceIds) {
-        final GetActivitiesTask task = new GetActivitiesByFriendsTask(getContext());
-        task.setParams(new BaseRefreshTaskParam(accountIds, maxIds, sinceIds));
         TaskStarter.execute(task);
     }
 

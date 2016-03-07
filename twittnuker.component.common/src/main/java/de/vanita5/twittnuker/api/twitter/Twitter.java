@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.api.twitter;
 
+import de.vanita5.twittnuker.api.statusnet.api.StatusNetResources;
 import de.vanita5.twittnuker.api.twitter.api.DirectMessagesResources;
 import de.vanita5.twittnuker.api.twitter.api.FavoritesResources;
 import de.vanita5.twittnuker.api.twitter.api.FriendsFollowersResources;
@@ -42,13 +43,10 @@ import de.vanita5.twittnuker.api.twitter.api.TrendsResources;
 import de.vanita5.twittnuker.api.twitter.api.TweetResources;
 import de.vanita5.twittnuker.api.twitter.api.UsersResources;
 
-/**
- * @author Yusuke Yamamoto - yusuke at mac.com
- * @since Twitter4J 2.2.0
- */
 public interface Twitter extends SearchResource, TimelineResources,
-		TweetResources, UsersResources, ListsResources, DirectMessagesResources, FriendsFollowersResources,
-		FavoritesResources, SpamReportingResources, SavedSearchesResources, TrendsResources, PlacesGeoResources,
-        HelpResources, PrivateActivityResources, PrivateTweetResources, PrivateTimelinesResources,
-        PrivateFriendsFollowersResources, PrivateDirectMessagesResources, PrivateScheduleResources {
+        TweetResources, UsersResources, ListsResources, DirectMessagesResources, FriendsFollowersResources,
+        FavoritesResources, SpamReportingResources, SavedSearchesResources, TrendsResources, PlacesGeoResources,
+        HelpResources, StatusNetResources, PrivateActivityResources, PrivateTweetResources,
+        PrivateTimelinesResources, PrivateFriendsFollowersResources, PrivateDirectMessagesResources,
+        PrivateScheduleResources {
 }

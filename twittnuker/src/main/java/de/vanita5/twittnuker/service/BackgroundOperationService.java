@@ -512,18 +512,18 @@ public class BackgroundOperationService extends IntentService implements Constan
                     shortener.checkService(new AbsServiceInterface.CheckServiceAction() {
                         @Override
                         public void check(@Nullable Bundle metaData) throws AbsServiceInterface.CheckServiceException {
-                            if (metaData == null) throw new ExtensionVersionMismatchException();
-                            final String extensionVersion = metaData.getString(METADATA_KEY_EXTENSION_VERSION_STATUS_SHORTENER);
-                            if (!TextUtils.equals(extensionVersion, getString(R.string.status_shortener_service_interface_version))) {
-                                throw new ExtensionVersionMismatchException();
-                            }
+//                            if (metaData == null) throw new ExtensionVersionMismatchException();
+//                            final String extensionVersion = metaData.getString(METADATA_KEY_EXTENSION_VERSION_STATUS_SHORTENER);
+//                            if (!TextUtils.equals(extensionVersion, getString(R.string.status_shortener_service_interface_version))) {
+//                                throw new ExtensionVersionMismatchException();
+//                            }
                         }
                     });
                 } catch (AbsServiceInterface.CheckServiceException e) {
-                    if (e instanceof ExtensionVersionMismatchException) {
-                        throw new ShortenException(getString(R.string.shortener_version_incompatible));
-                    }
-                    throw new ShortenException(e);
+//                    if (e instanceof ExtensionVersionMismatchException) {
+//                        throw new ShortenException(getString(R.string.shortener_version_incompatible));
+//                    }
+//                    throw new ShortenException(e);
                 }
             }
 
