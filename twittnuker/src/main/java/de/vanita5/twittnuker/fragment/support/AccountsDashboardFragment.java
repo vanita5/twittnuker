@@ -104,7 +104,6 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TransitionUtils;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
@@ -574,7 +573,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
             // Single account tab, return true if is current account
             if (tabAccountId == accountId) return true;
             // Check activated account if empty
-            return isActivated;
+            return tabAccountId <= 0 && isActivated;
         } else if (ArrayUtils.contains(accountIds, accountId)) {
             return true;
         }

@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter.support;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
@@ -46,16 +47,16 @@ import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
 import static de.vanita5.twittnuker.util.Utils.announceForAccessibilityCompat;
 
 public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter implements TabProvider, TabListener,
-		Constants {
+        Constants {
 
     private static final String EXTRA_ADAPTER_POSITION = "adapter_position";
 
     private final ArrayList<SupportTabSpec> mTabs = new ArrayList<>();
 
-	private final Context mContext;
-	private final PagerIndicator mIndicator;
+    private final Context mContext;
+    private final PagerIndicator mIndicator;
 
-	private final int mColumns;
+    private final int mColumns;
 
     public SupportTabsAdapter(final Context context, final FragmentManager fm) {
         this(context, fm, null);
@@ -65,46 +66,46 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
         this(context, fm, indicator, 1);
     }
 
-	public SupportTabsAdapter(final Context context, final FragmentManager fm, final PagerIndicator indicator,
-			final int columns) {
-		super(fm);
-		mContext = context;
-		mIndicator = indicator;
-		mColumns = columns;
-		clear();
-	}
+    public SupportTabsAdapter(final Context context, final FragmentManager fm, final PagerIndicator indicator,
+                              final int columns) {
+        super(fm);
+        mContext = context;
+        mIndicator = indicator;
+        mColumns = columns;
+        clear();
+    }
 
     public void addTab(final Class<? extends Fragment> cls, final Bundle args, final String name,
                        final Integer icon, final int position, final String tag) {
         addTab(new SupportTabSpec(name, icon, cls, args, position, tag));
-	}
+    }
 
     public void addTab(final Class<? extends Fragment> cls, final Bundle args, final String name,
                        final Integer icon, final String type, final int position, final String tag) {
         addTab(new SupportTabSpec(name, icon, type, cls, args, position, tag));
     }
 
-	public void addTab(final SupportTabSpec spec) {
-		mTabs.add(spec);
-		notifyDataSetChanged();
-	}
+    public void addTab(final SupportTabSpec spec) {
+        mTabs.add(spec);
+        notifyDataSetChanged();
+    }
 
-	public void addTabs(final Collection<? extends SupportTabSpec> specs) {
-		mTabs.addAll(specs);
-		notifyDataSetChanged();
-	}
+    public void addTabs(final Collection<? extends SupportTabSpec> specs) {
+        mTabs.addAll(specs);
+        notifyDataSetChanged();
+    }
 
-	public void clear() {
-		mTabs.clear();
-		notifyDataSetChanged();
-	}
+    public void clear() {
+        mTabs.clear();
+        notifyDataSetChanged();
+    }
 
-	@Override
-	public int getCount() {
-		return mTabs.size();
-	}
+    @Override
+    public int getCount() {
+        return mTabs.size();
+    }
 
-	@Override
+    @Override
     public int getItemPosition(Object object) {
         if (!(object instanceof Fragment)) return POSITION_NONE;
         final Bundle args = ((Fragment) object).getArguments();
@@ -131,54 +132,55 @@ public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter im
     }
 
     @Override
-	public Fragment getItem(final int position) {
-		final Fragment fragment = Fragment.instantiate(mContext, mTabs.get(position).cls.getName());
+    public Fragment getItem(final int position) {
+        final Fragment fragment = Fragment.instantiate(mContext, mTabs.get(position).cls.getName());
         fragment.setArguments(getPageArguments(mTabs.get(position).args, position));
-		return fragment;
-	}
+        return fragment;
+    }
 
-	@Override
+    @Override
     public void startUpdate(ViewGroup container) {
         super.startUpdate(container);
     }
 
     @Override
-	public Drawable getPageIcon(final int position) {
-		return getTabIconDrawable(mContext, mTabs.get(position).icon);
-	}
+    public Drawable getPageIcon(final int position) {
+        return getTabIconDrawable(mContext, mTabs.get(position).icon);
+    }
 
-	public SupportTabSpec getTab(final int position) {
-		return position >= 0 && position < mTabs.size() ? mTabs.get(position) : null;
-	}
+    @NonNull
+    public SupportTabSpec getTab(final int position) {
+        return mTabs.get(position);
+    }
 
     public List<SupportTabSpec> getTabs() {
         return mTabs;
     }
 
-	@Override
-	public void onPageReselected(final int position) {
-		if (!(mContext instanceof SupportFragmentCallback)) return;
-		final Fragment f = ((SupportFragmentCallback) mContext).getCurrentVisibleFragment();
-		if (f instanceof RefreshScrollTopInterface) {
-			((RefreshScrollTopInterface) f).scrollToStart();
-		}
-	}
+    @Override
+    public void onPageReselected(final int position) {
+        if (!(mContext instanceof SupportFragmentCallback)) return;
+        final Fragment f = ((SupportFragmentCallback) mContext).getCurrentVisibleFragment();
+        if (f instanceof RefreshScrollTopInterface) {
+            ((RefreshScrollTopInterface) f).scrollToStart();
+        }
+    }
 
-	@Override
-	public void onPageSelected(final int position) {
+    @Override
+    public void onPageSelected(final int position) {
         if (mIndicator == null || position < 0 || position >= getCount()) return;
-		announceForAccessibilityCompat(mContext, (View) mIndicator, getPageTitle(position), getClass());
-	}
+        announceForAccessibilityCompat(mContext, (View) mIndicator, getPageTitle(position), getClass());
+    }
 
-	@Override
-	public boolean onTabLongClick(final int position) {
-		if (!(mContext instanceof SupportFragmentCallback)) return false;
-		if (((SupportFragmentCallback) mContext).triggerRefresh(position)) return true;
-		final Fragment f = ((SupportFragmentCallback) mContext).getCurrentVisibleFragment();
+    @Override
+    public boolean onTabLongClick(final int position) {
+        if (!(mContext instanceof SupportFragmentCallback)) return false;
+        if (((SupportFragmentCallback) mContext).triggerRefresh(position)) return true;
+        final Fragment f = ((SupportFragmentCallback) mContext).getCurrentVisibleFragment();
         if (f instanceof RefreshScrollTopInterface)
             return ((RefreshScrollTopInterface) f).triggerRefresh();
-		return false;
-	}
+        return false;
+    }
 
     public void setTabLabel(int position, CharSequence label) {
         for (SupportTabSpec spec : mTabs) {

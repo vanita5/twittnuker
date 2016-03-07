@@ -37,6 +37,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.CustomTabType;
@@ -300,5 +302,14 @@ public class CustomTabUtils implements Constants {
 
     public static boolean isTabTypeValid(final String tabType) {
         return tabType != null && CUSTOM_TABS_CONFIGURATION_MAP.containsKey(getTabTypeAlias(tabType));
+    }
+
+    public static boolean hasAccountId(@NonNull Bundle args, long[] activatedAccountIds, long accountId) {
+        if (args.containsKey(EXTRA_ACCOUNT_ID)) {
+            return args.getLong(EXTRA_ACCOUNT_ID) == accountId;
+        } else if (args.containsKey(EXTRA_ACCOUNT_IDS)) {
+            return ArrayUtils.contains(args.getLongArray(EXTRA_ACCOUNT_IDS), accountId);
+        }
+        return ArrayUtils.contains(activatedAccountIds, accountId);
     }
 }

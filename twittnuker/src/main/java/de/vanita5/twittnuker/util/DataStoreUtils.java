@@ -28,6 +28,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -50,6 +51,8 @@ import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -955,4 +958,30 @@ public class DataStoreUtils implements Constants {
         return accounts;
     }
 
+    public static int getInteractionsCount(final Context context, final ReadStateManager readStateManager,
+                                           @CustomTabType final String tag, @Nullable final Bundle extraArgs,
+                                           final long[] accountIds) {
+        final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(context,
+                true, tag, accountIds);
+        final long position = readStateManager.getPosition(tagWithAccounts);
+
+        Expression extraWhere = null;
+        String[] extraWhereArgs = null;
+        boolean followingOnly = false;
+        if (extraArgs != null) {
+            Bundle extras = extraArgs.getBundle(EXTRA_EXTRAS);
+            if (extras != null) {
+                if (extras.getBoolean(EXTRA_MENTIONS_ONLY)) {
+                    extraWhere = Expression.inArgs(Activities.ACTION, 3);
+                    extraWhereArgs = new String[]{Activity.Action.MENTION,
+                            Activity.Action.REPLY, Activity.Action.QUOTE};
+                }
+                if (extras.getBoolean(EXTRA_MY_FOLLOWING_ONLY)) {
+                    followingOnly = true;
+                }
+            }
+        }
+        return getActivitiesCount(context, Activities.AboutMe.CONTENT_URI, extraWhere, extraWhereArgs,
+                position, followingOnly, accountIds);
+    }
 }
