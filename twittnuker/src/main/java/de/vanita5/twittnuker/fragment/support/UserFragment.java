@@ -1260,7 +1260,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 break;
             }
             case R.id.tweets_container: {
-                Utils.openUserLists(getActivity(), user.account_id, user.id, user.screen_name);
+                Utils.openUserTimeline(getActivity(), user.account_id, user.id, user.screen_name);
                 break;
             }
             case R.id.followers_container: {

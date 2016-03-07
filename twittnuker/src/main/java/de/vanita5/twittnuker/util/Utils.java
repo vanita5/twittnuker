@@ -1951,6 +1951,23 @@ public final class Utils implements Constants {
         activity.startActivity(intent);
     }
 
+    public static void openUserTimeline(final Context context, final long accountId,
+                                        final long userId, final String screenName) {
+        if (context == null) return;
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_USER_TIMELINE);
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+        if (userId > 0) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
+        }
+        if (screenName != null) {
+            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
+        }
+        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        context.startActivity(intent);
+    }
+
     public static void openUserLists(final Activity activity, final long account_id, final long user_id,
                                      final String screen_name) {
         if (activity == null) return;
