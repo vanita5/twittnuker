@@ -25,20 +25,30 @@ package de.vanita5.twittnuker.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import java.util.Arrays;
 
 @ParcelablePlease
+@JsonObject
 public class MediaUploadResult implements Parcelable {
 
     @ParcelableThisPlease
+    @JsonField(name = "media_uris")
     public String[] media_uris;
     @ParcelableThisPlease
+    @JsonField(name = "error_code")
     public int error_code;
     @ParcelableThisPlease
+    @JsonField(name = "error_message")
     public String error_message;
+    @ParcelableThisPlease
+    @JsonField(name = "extras")
+    public String extras;
+
     public static final Creator<MediaUploadResult> CREATOR = new Creator<MediaUploadResult>() {
         public MediaUploadResult createFromParcel(Parcel source) {
             MediaUploadResult target = new MediaUploadResult();
@@ -51,6 +61,9 @@ public class MediaUploadResult implements Parcelable {
         }
     };
 
+    MediaUploadResult() {
+    }
+
     public MediaUploadResult(final int errorCode, final String errorMessage) {
         if (errorCode == 0) throw new IllegalArgumentException("Error code must not be 0");
         media_uris = null;
@@ -58,22 +71,11 @@ public class MediaUploadResult implements Parcelable {
         error_message = errorMessage;
     }
 
-    MediaUploadResult() {
-    }
-
     public MediaUploadResult(final String[] mediaUris) {
         if (mediaUris == null) throw new IllegalArgumentException("Media uris must not be null");
         media_uris = mediaUris;
         error_code = 0;
         error_message = null;
-    }
-
-    public static MediaUploadResult getInstance(final int errorCode, final String errorMessage) {
-        return new MediaUploadResult(errorCode, errorMessage);
-    }
-
-    public static MediaUploadResult getInstance(final String... mediaUris) {
-        return new MediaUploadResult(mediaUris);
     }
 
     @Override
@@ -90,5 +92,13 @@ public class MediaUploadResult implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         MediaUploadResultParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static MediaUploadResult getInstance(final int errorCode, final String errorMessage) {
+        return new MediaUploadResult(errorCode, errorMessage);
+    }
+
+    public static MediaUploadResult getInstance(final String... mediaUris) {
+        return new MediaUploadResult(mediaUris);
     }
 }

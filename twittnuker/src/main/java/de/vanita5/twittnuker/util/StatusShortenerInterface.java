@@ -31,7 +31,9 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.IStatusShortener;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
@@ -60,8 +62,11 @@ public final class StatusShortenerInterface extends AbsServiceInterface<IStatusS
             final String resultJson = iface.shorten(statusJson, currentAccountId, overrideStatusText);
             return JsonSerializer.parse(resultJson, StatusShortenResult.class);
         } catch (final RemoteException e) {
-            return null;
+            if (BuildConfig.DEBUG) {
+                Log.w(LOGTAG, e);
+            }
         }
+        return null;
     }
 
     public boolean callback(StatusShortenResult result, ParcelableStatus status) {
@@ -72,8 +77,11 @@ public final class StatusShortenerInterface extends AbsServiceInterface<IStatusS
             final String statusJson = JsonSerializer.serialize(status, ParcelableStatus.class);
             return iface.callback(resultJson, statusJson);
         } catch (final RemoteException e) {
-            return false;
+            if (BuildConfig.DEBUG) {
+                Log.w(LOGTAG, e);
+            }
         }
+        return false;
     }
 
     public static StatusShortenerInterface getInstance(final Application application, final String shortenerName) {

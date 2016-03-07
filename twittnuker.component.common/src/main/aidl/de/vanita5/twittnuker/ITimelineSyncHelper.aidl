@@ -19,12 +19,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package de.vanita5.twittnuker;
 
-interface IStatusShortener {
+interface ITimelineSyncHelper {
 
-    String shorten(String statusJson, long currentAccountId, String overrideStatusText);
+    boolean put(long accountId, String key, long value);
 
-    boolean callback(String resultJson, String statusJson);
-
+    long  get(long accountId, String key);
 }

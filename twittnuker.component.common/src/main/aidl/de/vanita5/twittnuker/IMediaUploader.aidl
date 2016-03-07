@@ -21,12 +21,10 @@
  */
 package de.vanita5.twittnuker;
 
-import de.vanita5.twittnuker.model.MediaUploadResult;
-import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
-import de.vanita5.twittnuker.model.UploaderMediaItem;
-
 interface IMediaUploader {
 
-    MediaUploadResult upload(in ParcelableStatusUpdate status, in UploaderMediaItem[] media);
+    String upload(String statusJson, String mediaJson);
+
+    boolean callback(String resultJson, String statusJson);
 
 }
