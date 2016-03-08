@@ -65,6 +65,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.commonsware.cwac.layouts.AspectLockedFrameLayout;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.pnikosis.materialishprogress.ProgressWheel;
 import com.sprylab.android.widget.TextureVideoView;
 
@@ -92,6 +93,8 @@ import de.vanita5.twittnuker.util.PermissionUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
+import de.vanita5.twittnuker.util.imageviewer.RapidImageDecoder;
+import de.vanita5.twittnuker.util.imageviewer.RapidImageRegionDecoder;
 import de.vanita5.twittnuker.util.media.MediaExtra;
 
 import java.io.File;
@@ -853,6 +856,12 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
             if (getUserVisibleHint() && activity != null) {
                 activity.supportInvalidateOptionsMenu();
             }
+        }
+
+        @Override
+        protected void setupImageView(SubsamplingScaleImageView imageView) {
+            imageView.setRegionDecoderClass(RapidImageRegionDecoder.class);
+            imageView.setBitmapDecoderClass(RapidImageDecoder.class);
         }
     }
 
