@@ -213,7 +213,7 @@ public class TwittnukerApplication extends Application implements Constants,
                 break;
             }
             case KEY_EMOJI_SUPPORT: {
-                DependencyHolder.get(this).getExternalThemeManager().initEmojiSupport();
+                DependencyHolder.get(this).getExternalThemeManager().reloadEmojiPreferences();
                 break;
             }
         }
