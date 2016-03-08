@@ -20,22 +20,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.statusnet.api;
+package de.vanita5.twittnuker.api.statusnet.model;
 
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Query;
-import de.vanita5.twittnuker.api.statusnet.model.StatusNetConfig;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Status;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-public interface StatusNetResources {
-
-    @GET("/statusnet/config.json")
-    StatusNetConfig getConfig() throws TwitterException;
-
-    @GET("/search.json")
-    ResponseList<Status> searchStatuses(@Query("q") String query, @Query Paging paging) throws TwitterException;
-
+@JsonObject
+public class StatusNetConfig {
 }

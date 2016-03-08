@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -86,6 +87,9 @@ public class LinkCreator implements Constants {
     }
 
     public static Uri getTwitterStatusLink(ParcelableStatus status) {
+        if (status.extras != null && !TextUtils.isEmpty(status.extras.external_url)) {
+            return Uri.parse(status.extras.external_url);
+        }
         return getTwitterStatusLink(status.user_screen_name, status.id);
     }
 }
