@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
 import java.util.List;
 
@@ -67,6 +68,7 @@ public class UserListTimelineLoader extends TwitterAPIStatusesLoader {
         throw new TwitterException("User id or screen name is required for list name");
     }
 
+    @WorkerThread
     @Override
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
         return InternalTwitterContentUtils.isFiltered(database, status, true);

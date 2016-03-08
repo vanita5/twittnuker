@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -51,6 +52,7 @@ public class RetweetsOfMeLoader extends TwitterAPIStatusesLoader {
         return twitter.getRetweetsOfMe(paging);
     }
 
+    @WorkerThread
     @Override
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
         return InternalTwitterContentUtils.isFiltered(database, -1, status.text_plain, status.text_html, status.source,

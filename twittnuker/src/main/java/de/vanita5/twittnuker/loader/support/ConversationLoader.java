@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -33,6 +34,7 @@ import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.Nullables;
 import de.vanita5.twittnuker.util.ParcelUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -100,9 +102,10 @@ public class ConversationLoader extends TwitterAPIStatusesLoader {
         return statuses;
     }
 
+    @WorkerThread
     @Override
     protected boolean shouldFilterStatus(SQLiteDatabase database, ParcelableStatus status) {
-        return false;
+        return InternalTwitterContentUtils.isFiltered(database, status, false);
     }
 
 }

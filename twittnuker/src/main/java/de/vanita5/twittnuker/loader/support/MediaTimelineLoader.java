@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -37,7 +38,6 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -98,6 +98,7 @@ public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
         throw new TwitterException("Wrong user");
     }
 
+    @WorkerThread
     @Override
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
         final long retweetUserId = status.is_retweet ? status.user_id : -1;
