@@ -1170,7 +1170,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setContentText(notificationContent);
             builder.setCategory(NotificationCompat.CATEGORY_SOCIAL);
             builder.setContentIntent(getContentIntent(context, CustomTabType.HOME_TIMELINE,
-                    NotificationType.HOME_TIMELINE, accountId));
+                    NotificationType.HOME_TIMELINE, accountId, statusId));
             builder.setDeleteIntent(getMarkReadDeleteIntent(context, NotificationType.HOME_TIMELINE,
                     accountId, statusId, false));
             builder.setNumber(statusesCount);
@@ -1259,7 +1259,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             style.setBigContentTitle(title);
             builder.setNumber(displayCount);
             builder.setContentIntent(getContentIntent(context, CustomTabType.NOTIFICATIONS_TIMELINE,
-                    NotificationType.INTERACTIONS, accountId));
+                    NotificationType.INTERACTIONS, accountId, timestamp));
             if (timestamp != -1) {
                 builder.setDeleteIntent(getMarkReadDeleteIntent(context,
                         NotificationType.INTERACTIONS, accountId, timestamp, false));
@@ -1273,7 +1273,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
     private PendingIntent getContentIntent(final Context context, @CustomTabType final String type,
                                            @NotificationType final String notificationType,
-                                           final long accountId) {
+                                           final long accountId, final long readPosition) {
         // Setup click intent
         final Intent homeIntent = new Intent(context, HomeActivity.class);
         final Uri.Builder homeLinkBuilder = new Uri.Builder();
@@ -1283,6 +1283,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         homeLinkBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
         homeLinkBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
         homeLinkBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, notificationType);
+        if (readPosition > 0) {
+            homeLinkBuilder.appendQueryParameter(QUERY_PARAM_READ_POSITION, String.valueOf(readPosition));
+        }
         homeIntent.setData(homeLinkBuilder.build());
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         return PendingIntent.getActivity(context, 0, homeIntent, 0);
@@ -1452,7 +1455,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             builder.setContentText(notificationContent);
             builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
             builder.setContentIntent(getContentIntent(context, CustomTabType.DIRECT_MESSAGES,
-                    NotificationType.DIRECT_MESSAGES, accountId));
+                    NotificationType.DIRECT_MESSAGES, accountId, -1));
             builder.setDeleteIntent(getMarkReadDeleteIntent(context,
                     NotificationType.DIRECT_MESSAGES, accountId, positions));
             builder.setNumber(messagesCount);

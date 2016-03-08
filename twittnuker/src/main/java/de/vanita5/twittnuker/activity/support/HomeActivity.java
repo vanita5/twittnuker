@@ -43,7 +43,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayoutAccessor;
@@ -66,16 +65,14 @@ import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
 import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
@@ -88,7 +85,6 @@ import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.RegistrationIntentService;
 import de.vanita5.twittnuker.service.StreamingService;
@@ -757,16 +753,27 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                     }
                 }
             }
-            if (initialTab == -1 && !restoreInstanceState) {
-                switch (tabType) {
-                    case CustomTabType.NOTIFICATIONS_TIMELINE: {
-                        Utils.openInteractions(this, NumberUtils.toLong(uri.getQueryParameter(EXTRA_ACCOUNT_ID), -1));
-                        break;
+
+            final long readPosition = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_READ_POSITION), -1);
+            switch (tabType) {
+                case CustomTabType.HOME_TIMELINE: {
+                    final String tag = Utils.getReadPositionTagWithAccounts(ReadPositionTag.HOME_TIMELINE, accountId);
+                    mReadStateManager.setPosition(tag, readPosition, false);
+                    break;
+                }
+                case CustomTabType.NOTIFICATIONS_TIMELINE: {
+                    if (initialTab == -1 && !restoreInstanceState) {
+                        Utils.openInteractions(this, accountId);
                     }
-                    case CustomTabType.DIRECT_MESSAGES: {
-                        Utils.openDirectMessages(this, NumberUtils.toLong(uri.getQueryParameter(EXTRA_ACCOUNT_ID), -1));
-                        break;
+                    final String tag = Utils.getReadPositionTagWithAccounts(ReadPositionTag.ACTIVITIES_ABOUT_ME, accountId);
+                    mReadStateManager.setPosition(tag, accountId, readPosition, false);
+                    break;
+                }
+                case CustomTabType.DIRECT_MESSAGES: {
+                    if (initialTab == -1 && !restoreInstanceState) {
+                        Utils.openDirectMessages(this, accountId);
                     }
+                    break;
                 }
             }
         }
