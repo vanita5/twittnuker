@@ -88,12 +88,10 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
     protected View onCreateView(final ViewGroup parent) {
         super.onCreateView(parent);
         final Context context = getContext();
-        final int themeResource = ThemeUtils.getNoActionBarThemeResource(context);
-        final Context theme = new ContextThemeWrapper(context, themeResource);
-        final LayoutInflater inflater = LayoutInflater.from(theme);
+        final LayoutInflater inflater = LayoutInflater.from(context);
         try {
             final View view = inflater.inflate(R.layout.theme_preview, parent, false);
-            setPreviewView(theme, view.findViewById(R.id.theme_preview_content), themeResource);
+            setPreviewView(context, view.findViewById(R.id.theme_preview_content));
             return view;
         } catch (InflateException e) {
             if (e.getCause() instanceof InvocationTargetException) {
@@ -103,7 +101,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
         }
     }
 
-    private static void setPreviewView(final Context context, final View view, final int themeRes) {
+    private static void setPreviewView(final Context context, final View view) {
         if (view instanceof IExtendedView) {
             ((IExtendedView) view).setTouchInterceptor(new DummyTouchInterceptor());
         }
@@ -118,11 +116,10 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
         final int cardBackgroundColor = ThemeUtils.getCardBackgroundColor(context, ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context));
         final int actionBarColor = ThemeUtils.getActionBarColor(context);
 
-        final int themeId = ThemeUtils.getNoActionBarThemeResource(context);
         final String backgroundOption = ThemeUtils.getThemeBackgroundOption(context);
-        ThemeUtils.applyWindowBackground(context, windowBackgroundView, themeId, backgroundOption,
+        ThemeUtils.applyWindowBackground(context, windowBackgroundView, backgroundOption,
                 ThemeUtils.getUserThemeBackgroundAlpha(context));
-        ViewSupport.setBackground(actionBarView, ThemeUtils.getActionBarBackground(context, themeRes,
+        ViewSupport.setBackground(actionBarView, ThemeUtils.getActionBarBackground(context,
                 actionBarColor, backgroundOption, true));
         ViewCompat.setElevation(actionBarView, ThemeUtils.getSupportActionBarElevation(context));
         ViewSupport.setBackground(actionBarOverlay, ThemeUtils.getWindowContentOverlay(context));
