@@ -125,11 +125,6 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
     }
 
     @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getQuickSearchBarThemeResource(this);
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.search_submit: {

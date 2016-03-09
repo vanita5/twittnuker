@@ -287,8 +287,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         final Toolbar toolbar = peekActionBarToolbar();
         if (toolbar != null) {
             final int actionBarColor = getCurrentActionBarColor();
-            final int themeId = getCurrentThemeResourceId();
-            final int itemColor = ThemeUtils.getContrastForegroundColor(this, themeId, actionBarColor);
+            final int itemColor = ThemeUtils.getContrastForegroundColor(this, actionBarColor);
             ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(toolbar, ActionMenuView.class), itemColor, itemColor);
         }
         return result;
@@ -334,7 +333,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         ViewCompat.setElevation(actionBarContainer, ThemeUtils.getSupportActionBarElevation(this));
         ViewSupport.setOutlineProvider(actionBarContainer, ViewOutlineProviderCompat.BACKGROUND);
         final View windowOverlay = findViewById(R.id.window_overlay);
-        ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this, getCurrentThemeResourceId()));
+        ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this));
 
         if (savedInstanceState != null) {
             mAPIUrlFormat = savedInstanceState.getString(Accounts.API_URL_FORMAT);
@@ -543,9 +542,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         if (actionBar == null) return;
 
         final int actionBarColor = getCurrentActionBarColor();
-        final int themeId = getCurrentThemeResourceId();
         final String option = getThemeBackgroundOption();
-        ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, isActionBarOutlineEnabled());
+        ThemeUtils.applyActionBarBackground(actionBar, this, actionBarColor, option, isActionBarOutlineEnabled());
     }
 
     private void setupTintStatusBar() {

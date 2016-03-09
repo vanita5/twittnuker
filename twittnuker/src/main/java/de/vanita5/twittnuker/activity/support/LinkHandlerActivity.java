@@ -109,11 +109,6 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
     }
 
     @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getNoActionBarThemeResource(this);
-    }
-
-    @Override
     public void onBackPressed() {
         if (mTwidereActionModeForChildListener.finishExisting()) {
             return;
@@ -229,7 +224,7 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
         ViewCompat.setElevation(actionBarContainer, ThemeUtils.getSupportActionBarElevation(this));
         ViewSupport.setOutlineProvider(actionBarContainer, ViewOutlineProviderCompat.BACKGROUND);
         final View windowOverlay = findViewById(R.id.window_overlay);
-        ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this, getCurrentThemeResourceId()));
+        ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this));
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -276,8 +271,7 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
         final Toolbar toolbar = peekActionBarToolbar();
         if (toolbar != null) {
             final int actionBarColor = getCurrentActionBarColor();
-            final int themeId = getCurrentThemeResourceId();
-            final int itemColor = ThemeUtils.getContrastForegroundColor(this, themeId, actionBarColor);
+            final int itemColor = ThemeUtils.getContrastForegroundColor(this, actionBarColor);
             ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(toolbar, ActionMenuView.class), itemColor, itemColor);
         }
     }
@@ -343,20 +337,19 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
     @SuppressLint("AppCompatMethod")
     private void setActionBarTheme(ActionBar actionBar, int linkId, Uri data) {
         final int actionBarColor = getActionBarColor();
-        final int themeId = getCurrentThemeResourceId();
         final String option = getThemeBackgroundOption();
-        int actionBarItemsColor = ThemeUtils.getContrastForegroundColor(this, themeId, actionBarColor);
+        int actionBarItemsColor = ThemeUtils.getContrastForegroundColor(this, actionBarColor);
         final ActionBarContainer actionBarContainer = (ActionBarContainer) findViewById(R.id.twidere_action_bar_container);
         switch (linkId) {
             case LINK_ID_SEARCH:
             case LINK_ID_USER_LISTS:
             case LINK_ID_USER_LIST:
             case LINK_ID_FILTERS: {
-                ThemeUtils.applyActionBarBackground(actionBarContainer, this, themeId, actionBarColor, option, false);
+                ThemeUtils.applyActionBarBackground(actionBarContainer, this, actionBarColor, option, false);
                 break;
             }
             default: {
-                ThemeUtils.applyActionBarBackground(actionBarContainer, this, themeId, actionBarColor, option, true);
+                ThemeUtils.applyActionBarBackground(actionBarContainer, this, actionBarColor, option, true);
                 break;
             }
         }
@@ -575,7 +568,7 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
     @Override
     protected void onResume() {
         super.onResume();
-        if (ThemeUtils.isColoredActionBar(getCurrentThemeResourceId())) {
+        if (ThemeUtils.isColoredActionBar(this)) {
             ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null,
                     getCurrentActionBarColor()));
         }

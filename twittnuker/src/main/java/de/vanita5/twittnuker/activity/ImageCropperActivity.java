@@ -43,7 +43,8 @@ import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 public class ImageCropperActivity extends CropImageActivity implements IThemedActivity {
 
     // Data fields
-    private int mCurrentThemeResource, mCurrentThemeColor, mCurrentActionBarColor, mCurrentThemeBackgroundAlpha;
+    private int mCurrentThemeColor, mCurrentActionBarColor;
+    private int mCurrentThemeBackgroundAlpha;
     @ShapedImageView.ShapeStyle
     private int mProfileImageStyle;
     private String mCurrentThemeBackgroundOption;
@@ -67,16 +68,15 @@ public class ImageCropperActivity extends CropImageActivity implements IThemedAc
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
         final int themeColor = getThemeColor();
-        final int themeResId = getCurrentThemeResourceId();
         final String backgroundOption = getCurrentThemeBackgroundOption();
         mMainContent.setDrawColor(true);
         mMainContent.setDrawShadow(false);
         mMainContent.setColor(themeColor);
-        ViewSupport.setBackground(mDoneCancelBar, ThemeUtils.getActionBarBackground(this, themeResId,
+        ViewSupport.setBackground(mDoneCancelBar, ThemeUtils.getActionBarBackground(this,
                 themeColor, backgroundOption, true));
         ViewCompat.setElevation(mDoneCancelBar, ThemeUtils.getSupportActionBarElevation(this));
         final View windowOverlay = findViewById(R.id.window_overlay);
-        ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this, themeResId));
+        ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this));
     }
 
     @Override
@@ -97,14 +97,9 @@ public class ImageCropperActivity extends CropImageActivity implements IThemedAc
 
     @Override
     public void setTheme(final int resId) {
-        super.setTheme(mCurrentThemeResource = getThemeResourceId());
-        ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource,
+        super.setTheme(resId);
+        ThemeUtils.applyWindowBackground(this, getWindow(),
                 mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
-    }
-
-    @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getNoActionBarThemeResource(this);
     }
 
     @Override
@@ -130,11 +125,6 @@ public class ImageCropperActivity extends CropImageActivity implements IThemedAc
     @Override
     public int getCurrentActionBarColor() {
         return mCurrentActionBarColor;
-    }
-
-    @Override
-    public final int getCurrentThemeResourceId() {
-        return mCurrentThemeResource;
     }
 
     @Override

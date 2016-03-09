@@ -31,14 +31,8 @@ import org.mariotaku.pickncrop.library.ImagePickerActivity;
 
 import de.vanita5.twittnuker.activity.ImageCropperActivity;
 import de.vanita5.twittnuker.util.RestFuNetworkStreamDownloader;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class ThemedImagePickerActivity extends ImagePickerActivity {
-
-    @Override
-    public void setTheme(final int resid) {
-        super.setTheme(ThemeUtils.getNoDisplayThemeResource(this));
-    }
 
     public static ThemedIntentBuilder withThemed(Context context) {
         return new ThemedIntentBuilder(context);

@@ -34,21 +34,17 @@ public interface IThemedActivity {
 
     int getCurrentActionBarColor();
 
-    int getCurrentThemeResourceId();
-	
     int getThemeBackgroundAlpha();
 
     String getThemeBackgroundOption();
 
     int getThemeColor();
 
-	int getActionBarColor();
+    int getActionBarColor();
 
-	String getThemeFontFamily();
+    String getThemeFontFamily();
 
     String getCurrentThemeFontFamily();
-
-    int getThemeResourceId();
 
     @ShapedImageView.ShapeStyle
     int getCurrentProfileImageStyle();

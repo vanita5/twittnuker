@@ -38,9 +38,9 @@ import de.vanita5.twittnuker.util.Utils;
 
 public class SettingsDetailsFragment extends BasePreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         final PreferenceManager preferenceManager = getPreferenceManager();
         final PreferenceScreen defaultScreen = getPreferenceScreen();
         final PreferenceScreen preferenceScreen;
@@ -49,35 +49,35 @@ public class SettingsDetailsFragment extends BasePreferenceFragment implements S
             preferenceScreen = defaultScreen;
         } else {
             preferenceScreen = preferenceManager.createPreferenceScreen(getActivity());
-		}
+        }
         setPreferenceScreen(preferenceScreen);
-		final Bundle args = getArguments();
-		final Object rawResId = args.get(EXTRA_RESID);
-		final int resId;
-		if (rawResId instanceof Integer) {
-			resId = (Integer) rawResId;
-		} else if (rawResId instanceof String) {
-			resId = Utils.getResId(getActivity(), (String) rawResId);
-		} else {
-			resId = 0;
-		}
-		if (resId != 0) {
-			addPreferencesFromResource(resId);
-		}
+        final Bundle args = getArguments();
+        final Object rawResId = args.get(EXTRA_RESID);
+        final int resId;
+        if (rawResId instanceof Integer) {
+            resId = (Integer) rawResId;
+        } else if (rawResId instanceof String) {
+            resId = Utils.getResId(getActivity(), (String) rawResId);
+        } else {
+            resId = 0;
+        }
+        if (resId != 0) {
+            addPreferencesFromResource(resId);
+        }
         final Context context = preferenceScreen.getContext();
         if (args.containsKey(EXTRA_SETTINGS_INTENT_ACTION)) {
             final Intent hiddenEntryIntent = new Intent(args.getString(EXTRA_SETTINGS_INTENT_ACTION));
-			final PackageManager pm = context.getPackageManager();
-			for (ResolveInfo info : pm.queryIntentActivities(hiddenEntryIntent, PackageManager.MATCH_DEFAULT_ONLY)) {
-				final Preference preference = new Preference(context);
+            final PackageManager pm = context.getPackageManager();
+            for (ResolveInfo info : pm.queryIntentActivities(hiddenEntryIntent, PackageManager.MATCH_DEFAULT_ONLY)) {
+                final Preference preference = new Preference(context);
                 final Intent intent = new Intent(hiddenEntryIntent);
-				intent.setPackage(info.resolvePackageName);
-				intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
-				preference.setIntent(intent);
-				preference.setTitle(info.loadLabel(pm));
-				preferenceScreen.addPreference(preference);
-			}
-		}
+                intent.setPackage(info.resolvePackageName);
+                intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
+                preference.setIntent(intent);
+                preference.setTitle(info.loadLabel(pm));
+                preferenceScreen.addPreference(preference);
+            }
+        }
     }
 
     @Override
@@ -105,7 +105,9 @@ public class SettingsDetailsFragment extends BasePreferenceFragment implements S
                 SettingsActivity.setShouldNotifyChange(activity);
             }
             if (extras.containsKey(EXTRA_RESTART_ACTIVITY)) {
-                Utils.restartActivity(activity);
+                Utils.restartActivity(getActivity());
+            } else if (extras.containsKey(EXTRA_RECREATE_ACTIVITY)) {
+                activity.recreate();
             }
         }
     }

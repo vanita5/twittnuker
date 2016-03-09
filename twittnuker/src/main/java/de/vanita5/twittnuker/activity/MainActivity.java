@@ -30,7 +30,6 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class MainActivity extends Activity implements Constants {
 
@@ -46,8 +45,4 @@ public class MainActivity extends Activity implements Constants {
         finish();
     }
 
-    @Override
-    public void setTheme(int resId) {
-        super.setTheme(ThemeUtils.getNoActionBarThemeResource(this));
-    }
 }

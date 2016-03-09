@@ -36,7 +36,6 @@ import android.widget.Toast;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.support.FileSelectorDialogFragment;
 import de.vanita5.twittnuker.util.PermissionUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.io.File;
 
@@ -46,11 +45,6 @@ public class FileSelectorActivity extends BaseSupportDialogActivity implements F
 
 
     private Runnable mResumeFragmentsRunnable;
-
-    @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getNoDisplayThemeResource(this);
-    }
 
     @Override
     public void onCancelled(final DialogFragment df) {

@@ -48,38 +48,37 @@ import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
 public class HomeActionButtonCompat extends FrameLayout implements IHomeActionButton {
 
-	private final ImageView mIconView;
+    private final ImageView mIconView;
     private final FloatingActionDrawable mBackground;
 
-	public HomeActionButtonCompat(final Context context) {
-		this(context, null);
-	}
+    public HomeActionButtonCompat(final Context context) {
+        this(context, null);
+    }
 
-	public HomeActionButtonCompat(final Context context, final AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public HomeActionButtonCompat(final Context context, final AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-	public HomeActionButtonCompat(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
+    public HomeActionButtonCompat(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
         if (isInEditMode()) {
             inflate(context, R.layout.action_item_home_actions_compat, this);
         } else if (context instanceof IThemedActivity) {
-            int themeResourceId = ((IThemedActivity) context).getCurrentThemeResourceId();
             int actionBarColor = ((IThemedActivity) context).getCurrentActionBarColor();
-            inflate(ThemeUtils.getActionBarThemedContext(context, themeResourceId, actionBarColor),
+            inflate(ThemeUtils.getActionBarThemedContext(context, actionBarColor),
                     R.layout.action_item_home_actions_compat, this);
         } else {
             inflate(ThemeUtils.getActionBarThemedContext(context), R.layout.action_item_home_actions_compat,
                     this);
         }
-		mIconView = (ImageView) findViewById(android.R.id.icon);
+        mIconView = (ImageView) findViewById(android.R.id.icon);
         final Resources resources = getResources();
         final int radius = resources.getDimensionPixelSize(R.dimen.element_spacing_small);
         mBackground = new FloatingActionDrawable(this, radius);
         ViewSupport.setBackground(this, mBackground);
-	}
+    }
 
-	@Override
+    @Override
     public void setButtonColor(int color) {
         mBackground.setColor(color);
     }
@@ -184,7 +183,7 @@ public class HomeActionButtonCompat extends FrameLayout implements IHomeActionBu
             mColorPaint.setColor(color);
             updateBitmap();
             invalidateSelf();
-		}
+        }
 
         private void updateBitmap() {
             final Rect bounds = mBounds;
@@ -201,7 +200,7 @@ public class HomeActionButtonCompat extends FrameLayout implements IHomeActionBu
             paint.setShadowLayer(0, 0, 0, 0);
             paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
             canvas.drawOval(rect, paint);
-	    }
-	}
+        }
+    }
 
 }

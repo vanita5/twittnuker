@@ -28,16 +28,10 @@ import android.os.Bundle;
 
 import de.vanita5.twittnuker.fragment.support.ColorPickerDialogFragment;
 import de.vanita5.twittnuker.fragment.support.ColorPickerDialogFragment.Callback;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class ColorPickerDialogActivity extends BaseSupportDialogActivity implements Callback {
 
     public static final int RESULT_CLEARED = -2;
-
-    @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getNoDisplayThemeResource(this);
-    }
 
     @Override
     public void onCancelled() {

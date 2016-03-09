@@ -28,6 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
@@ -58,7 +59,9 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         IThemedActivity, KeyboardShortcutsHandler.KeyboardShortcutCallback {
 
     private TintedStatusFrameLayout mMainContent;
-    private int mCurrentThemeResource, mCurrentThemeColor, mCurrentActionBarColor, mCurrentThemeBackgroundAlpha;
+    // Data fields
+    private int mCurrentThemeColor, mCurrentActionBarColor;
+    private int mCurrentThemeBackgroundAlpha;
     @ShapeStyle
     private int mProfileImageStyle;
     private String mCurrentThemeBackgroundOption;
@@ -92,11 +95,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     @Override
     public int getCurrentActionBarColor() {
         return mCurrentActionBarColor;
-    }
-
-    @Override
-    public final int getCurrentThemeResourceId() {
-        return mCurrentThemeResource;
     }
 
     @Override
@@ -135,7 +133,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     @Override
     public void onSupportActionModeStarted(android.support.v7.view.ActionMode mode) {
         super.onSupportActionModeStarted(mode);
-        ThemeUtils.applySupportActionModeColor(mode, this, getCurrentThemeResourceId(),
+        ThemeUtils.applySupportActionModeColor(mode, this,
                 getCurrentThemeColor(), getThemeBackgroundOption(), true);
     }
 
@@ -234,8 +232,7 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         final View actionBarView = getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
         if (actionBarView instanceof Toolbar) {
             final int actionBarColor = getCurrentActionBarColor();
-            final int themeId = getCurrentThemeResourceId();
-            final int itemColor = ThemeUtils.getContrastForegroundColor(this, themeId, actionBarColor);
+            final int itemColor = ThemeUtils.getContrastForegroundColor(this, actionBarColor);
             final Toolbar toolbar = (Toolbar) actionBarView;
             final int popupColor = ThemeUtils.getThemeForegroundColor(toolbar.getContext(), toolbar.getPopupTheme());
             ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(actionBarView, ActionMenuView.class), itemColor, popupColor);
@@ -257,11 +254,17 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
 
     @Override
     public void setTheme(int resId) {
-        super.setTheme(mCurrentThemeResource = getThemeResourceId());
+        super.setTheme(resId);
         if (shouldApplyWindowBackground()) {
-            ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource,
+            ThemeUtils.applyWindowBackground(this, getWindow(),
                     mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
         }
+    }
+
+    @Override
+    public void setSupportActionBar(@Nullable Toolbar toolbar) {
+        super.setSupportActionBar(toolbar);
+        ThemeUtils.applyToolbarItemColor(this, toolbar, mCurrentThemeColor);
     }
 
     @Override
@@ -290,9 +293,8 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         if (actionBar == null) return;
 
         final int actionBarColor = getCurrentActionBarColor();
-        final int themeId = getCurrentThemeResourceId();
         final String option = getThemeBackgroundOption();
-        ThemeUtils.applyActionBarBackground(actionBar, this, themeId, actionBarColor, option, isActionBarOutlineEnabled());
+        ThemeUtils.applyActionBarBackground(actionBar, this, actionBarColor, option, isActionBarOutlineEnabled());
     }
 
     private void setupTintStatusBar() {

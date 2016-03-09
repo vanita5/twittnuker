@@ -98,15 +98,6 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
         return ThemeUtils.getActionBarColor(this);
     }
 
-    @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getNoActionBarThemeResource(this);
-    }
-
-    public TwittnukerApplication getTwittnukerApplication() {
-        return (TwittnukerApplication) getApplication();
-    }
-
     public boolean isVisible() {
         return mIsVisible;
     }

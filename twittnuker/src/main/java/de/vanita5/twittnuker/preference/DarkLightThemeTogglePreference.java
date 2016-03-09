@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.AttributeSet;
 
 import org.jraf.android.backport.switchwidget.SwitchPreference;
@@ -34,26 +33,25 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class DarkLightThemeTogglePreference extends SwitchPreference implements Constants {
 
-	public DarkLightThemeTogglePreference(final Context context) {
-		this(context, null);
-	}
+    public DarkLightThemeTogglePreference(final Context context) {
+        this(context, null);
+    }
 
-	public DarkLightThemeTogglePreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, R.attr.asb_switchPreferenceStyle);
-	}
+    public DarkLightThemeTogglePreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.asb_switchPreferenceStyle);
+    }
 
-	public DarkLightThemeTogglePreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public DarkLightThemeTogglePreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
-	protected boolean getPersistedBoolean(final boolean defaultReturnValue) {
-		final SharedPreferences preferences = getSharedPreferences();
-		return ThemeUtils.isDarkTheme(getPersistedString(VALUE_THEME_NAME_LIGHT));
-	}
+    @Override
+    protected boolean getPersistedBoolean(final boolean defaultReturnValue) {
+        return ThemeUtils.isDarkTheme(getPersistedString(VALUE_THEME_NAME_LIGHT));
+    }
 
-	@Override
-	protected boolean persistBoolean(final boolean value) {
-		return persistString(value ? VALUE_THEME_NAME_DARK : VALUE_THEME_NAME_LIGHT);
-	}
+    @Override
+    protected boolean persistBoolean(final boolean value) {
+        return persistString(value ? VALUE_THEME_NAME_DARK : VALUE_THEME_NAME_LIGHT);
+    }
 }

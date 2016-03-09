@@ -185,11 +185,6 @@ public class SettingsWizardActivity extends BaseThemedActivity implements Consta
         return ThemeUtils.getActionBarColor(this);
     }
 
-    @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getNoActionBarThemeResource(this);
-    }
-
     @NonNull
     @Override
     public LayoutInflater getLayoutInflater() {

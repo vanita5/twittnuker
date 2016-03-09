@@ -44,17 +44,12 @@ public class BaseSupportDialogActivity extends ThemedFragmentActivity implements
 
     @Override
     public int getThemeColor() {
-        return ThemeUtils.getThemeColor(this, getThemeResourceId());
+        return ThemeUtils.getThemeColor(this);
     }
 
     @Override
     public int getActionBarColor() {
         return ThemeUtils.getActionBarColor(this);
-    }
-
-    @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getDialogThemeResource(this);
     }
 
     private AppCompatDelegate mDelegate;

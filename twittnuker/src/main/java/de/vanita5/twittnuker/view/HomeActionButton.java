@@ -47,7 +47,6 @@ import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.util.support.graphics.OutlineCompat;
 import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
 import de.vanita5.twittnuker.view.iface.IHomeActionButton;
-
 import me.uucky.colorpicker.internal.EffectViewHelper;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -73,78 +72,77 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
     }
 
     private final EffectViewHelper mHelper;
-	private final ImageView mIconView;
+    private final ImageView mIconView;
 
-	public HomeActionButton(final Context context) {
-		this(context, null);
-	}
+    public HomeActionButton(final Context context) {
+        this(context, null);
+    }
 
-	public HomeActionButton(final Context context, final AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public HomeActionButton(final Context context, final AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-	public HomeActionButton(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
+    public HomeActionButton(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
         final Resources resources = context.getResources();
         final float elevation = resources.getDisplayMetrics().density * 4;
         mHelper = new EffectViewHelper(this, new PressElevationProperty(elevation), 200);
         if (isInEditMode()) {
             inflate(context, R.layout.action_item_home_actions, this);
         } else if (context instanceof IThemedActivity) {
-            int themeResourceId = ((IThemedActivity) context).getCurrentThemeResourceId();
             int actionBarColor = ((IThemedActivity) context).getCurrentActionBarColor();
-            inflate(ThemeUtils.getActionBarThemedContext(context, themeResourceId, actionBarColor),
+            inflate(ThemeUtils.getActionBarThemedContext(context, actionBarColor),
                     R.layout.action_item_home_actions, this);
         } else {
             inflate(ThemeUtils.getActionBarThemedContext(context), R.layout.action_item_home_actions,
                     this);
         }
-		mIconView = (ImageView) findViewById(android.R.id.icon);
+        mIconView = (ImageView) findViewById(android.R.id.icon);
         ViewSupport.setOutlineProvider(this, new HomeActionButtonOutlineProvider());
-		setClipToOutline(true);
+        setClipToOutline(true);
         setButtonColor(Color.WHITE);
-	}
+    }
 
-	@Override
+    @Override
     public void setButtonColor(int color) {
         if (isInEditMode()) {
             final ShapeDrawable sd = new ShapeDrawable(new OvalShape());
             sd.getPaint().setColor(color);
             ViewSupport.setBackground(this, sd);
         } else {
-			ViewSupport.setBackground(this, new ColorDrawable(color));
-		}
+            ViewSupport.setBackground(this, new ColorDrawable(color));
+        }
     }
 
     @Override
-	public void setIcon(final Bitmap bm) {
-		mIconView.setImageBitmap(bm);
-	}
+    public void setIcon(final Bitmap bm) {
+        mIconView.setImageBitmap(bm);
+    }
 
-	@Override
-	public void setIcon(final Drawable drawable) {
-		mIconView.setImageDrawable(drawable);
-	}
+    @Override
+    public void setIcon(final Drawable drawable) {
+        mIconView.setImageDrawable(drawable);
+    }
 
-	@Override
-	public void setIcon(final int resId) {
-		mIconView.setImageResource(resId);
+    @Override
+    public void setIcon(final int resId) {
+        mIconView.setImageResource(resId);
     }
 
     @Override
     public void setIconColor(int color, Mode mode) {
         mIconView.setColorFilter(color, mode);
-	}
+    }
 
-	@Override
-	public void setTitle(final CharSequence title) {
-		setContentDescription(title);
-	}
+    @Override
+    public void setTitle(final CharSequence title) {
+        setContentDescription(title);
+    }
 
-	@Override
-	public void setTitle(final int title) {
-		setTitle(getResources().getText(title));
-	}
+    @Override
+    public void setTitle(final int title) {
+        setTitle(getResources().getText(title));
+    }
 
     @Override
     public void setPressed(boolean pressed) {
@@ -154,14 +152,14 @@ public class HomeActionButton extends FrameLayout implements IHomeActionButton {
 
     private static class HomeActionButtonOutlineProvider extends ViewOutlineProviderCompat {
 
-		@Override
+        @Override
         public void getOutline(View view, OutlineCompat outline) {
-			final int width = view.getWidth(), height = view.getHeight();
-			final int size = Math.min(width, height);
-			final int left = (width - size) / 2, top = (height - size) / 2;
-			outline.setOval(left, top, left + size, top + size);
-		}
-	}
+            final int width = view.getWidth(), height = view.getHeight();
+            final int size = Math.min(width, height);
+            final int left = (width - size) / 2, top = (height - size) / 2;
+            outline.setOval(left, top, left + size, top + size);
+        }
+    }
 
 
 }
