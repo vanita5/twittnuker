@@ -26,10 +26,6 @@
 
     <Preference android:layout="@layout/header_hidden_settings" />
 
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
-        android:defaultValue="false"
-        android:key="force_using_private_apis"
-        android:title="@string/force_using_private_apis" />
     <de.vanita5.twittnuker.preference.SeekBarDialogPreference
         android:defaultValue="10"
         android:key="connection_timeout"
@@ -38,11 +34,6 @@
         app:min="5"
         app:progressTextSuffix="s" />
 
-    <de.vanita5.twittnuker.preference.AutoFixEditTextPreference
-        android:defaultValue="140"
-        android:inputType="number"
-        android:key="status_text_limit"
-        android:title="@string/status_text_limit" />
 
     <Preference android:title="@string/settings_wizard">
         <intent

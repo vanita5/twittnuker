@@ -32,18 +32,30 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 @ParcelablePlease
 @JsonObject
-public class GNUSocialAccountExtra implements Parcelable, AccountExtras {
+public class StatusNetAccountExtra implements Parcelable, AccountExtras {
+
+    public static final Creator<StatusNetAccountExtra> CREATOR = new Creator<StatusNetAccountExtra>() {
+        public StatusNetAccountExtra createFromParcel(Parcel source) {
+            StatusNetAccountExtra target = new StatusNetAccountExtra();
+            StatusNetAccountExtraParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        public StatusNetAccountExtra[] newArray(int size) {
+            return new StatusNetAccountExtra[size];
+        }
+    };
 
     @ParcelableThisPlease
-    @JsonField(name = "character_limit")
-    int characterLimit;
+    @JsonField(name = "text_limit")
+    int textLimit;
 
-    public int getCharacterLimit() {
-        return characterLimit;
+    public int getTextLimit() {
+        return textLimit;
     }
 
-    public void setCharacterLimit(int characterLimit) {
-        this.characterLimit = characterLimit;
+    public void setTextLimit(int textLimit) {
+        this.textLimit = textLimit;
     }
 
     @Override
@@ -53,18 +65,6 @@ public class GNUSocialAccountExtra implements Parcelable, AccountExtras {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        GNUSocialAccountExtraParcelablePlease.writeToParcel(this, dest, flags);
+        StatusNetAccountExtraParcelablePlease.writeToParcel(this, dest, flags);
     }
-
-    public static final Creator<GNUSocialAccountExtra> CREATOR = new Creator<GNUSocialAccountExtra>() {
-        public GNUSocialAccountExtra createFromParcel(Parcel source) {
-            GNUSocialAccountExtra target = new GNUSocialAccountExtra();
-            GNUSocialAccountExtraParcelablePlease.readFromParcel(target, source);
-            return target;
-        }
-
-        public GNUSocialAccountExtra[] newArray(int size) {
-            return new GNUSocialAccountExtra[size];
-        }
-    };
 }
