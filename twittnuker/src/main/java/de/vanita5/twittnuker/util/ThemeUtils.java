@@ -516,11 +516,9 @@ public class ThemeUtils implements Constants {
         return textAppearance;
     }
 
-    public static int getUserAccentColor(final Context context) {
-        if (context == null) return Color.TRANSPARENT;
+    public static int getUserAccentColor(@NonNull final Context context) {
         final SharedPreferencesWrapper pref = getSharedPreferencesWrapper(context);
-        final Resources res = context.getResources();
-        final int def = res.getColor(R.color.branding_color);
+        final int def = ContextCompat.getColor(context, R.color.branding_color);
         return pref.getInt(KEY_THEME_COLOR, def);
     }
 
@@ -561,11 +559,9 @@ public class ThemeUtils implements Constants {
                 ThemeBackgroundPreference.MIN_ALPHA, ThemeBackgroundPreference.MAX_ALPHA);
     }
 
-    public static int getActionBarColor(final Context context) {
-        if (context == null) return MATERIAL_DARK;
+    public static int getActionBarColor(@NonNull final Context context) {
         final SharedPreferencesWrapper pref = getSharedPreferencesWrapper(context);
-        final Resources res = context.getResources();
-        final int def = res.getColor(R.color.twittnuker_material_dark);
+        final int def = ContextCompat.getColor(context, R.color.twittnuker_material_dark);
         return pref.getInt(KEY_ACTION_BAR_COLOR, def);
     }
 
