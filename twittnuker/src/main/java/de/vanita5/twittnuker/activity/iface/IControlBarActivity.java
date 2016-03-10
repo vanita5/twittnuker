@@ -56,6 +56,7 @@ public interface IControlBarActivity {
 
         private final IControlBarActivity mActivity;
         private int mControlAnimationDirection;
+        private ObjectAnimator mCurrentControlAnimation;
 
         public ControlBarShowHideHelper(IControlBarActivity activity) {
             mActivity = activity;
@@ -88,7 +89,10 @@ public interface IControlBarActivity {
         }
 
         public void setControlBarVisibleAnimate(final boolean visible, final ControlBarAnimationListener listener) {
-            if (mControlAnimationDirection != 0) return;
+            if (mCurrentControlAnimation != null) {
+                mCurrentControlAnimation.cancel();
+                mCurrentControlAnimation = null;
+            }
             final ObjectAnimator animator;
             final float offset = mActivity.getControlBarOffset();
             if (visible) {
@@ -107,6 +111,7 @@ public interface IControlBarActivity {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mControlAnimationDirection = 0;
+                    mCurrentControlAnimation = null;
                     if (listener != null) {
                         listener.onControlBarVisibleAnimationFinish(visible);
                     }
@@ -115,6 +120,7 @@ public interface IControlBarActivity {
                 @Override
                 public void onAnimationCancel(Animator animation) {
                     mControlAnimationDirection = 0;
+                    mCurrentControlAnimation = null;
                 }
 
                 @Override
@@ -124,6 +130,7 @@ public interface IControlBarActivity {
             });
             animator.setDuration(DURATION);
             animator.start();
+            mCurrentControlAnimation = animator;
             mControlAnimationDirection = visible ? 1 : -1;
         }
     }

@@ -50,7 +50,6 @@ import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.fragment.support.SearchFragment;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
@@ -537,14 +536,14 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
     @Override
     public void setControlBarVisibleAnimate(boolean visible) {
         // Currently only search page needs this pattern, so we only enable this feature for it.
-        if (!(getCurrentVisibleFragment() instanceof SearchFragment)) return;
+        if (!(getCurrentVisibleFragment() instanceof HideUiOnScroll)) return;
         mControlBarShowHideHelper.setControlBarVisibleAnimate(visible);
     }
 
     @Override
     public void setControlBarVisibleAnimate(boolean visible, ControlBarShowHideHelper.ControlBarAnimationListener listener) {
         // Currently only search page needs this pattern, so we only enable this feature for it.
-        if (!(getCurrentVisibleFragment() instanceof SearchFragment)) return;
+        if (!(getCurrentVisibleFragment() instanceof HideUiOnScroll)) return;
         mControlBarShowHideHelper.setControlBarVisibleAnimate(visible, listener);
     }
 
@@ -555,7 +554,9 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
 
     @Override
     public void setControlBarOffset(float offset) {
-        mActionBarContainer.setTranslationY(-Math.round((1 - offset) * getControlBarHeight()));
+        final int translationY = -Math.round((1 - offset) * getControlBarHeight());
+        mActionBarContainer.setTranslationY(translationY);
+        mTwidereActionModeForChildListener.setModeTranslationY(translationY);
         notifyControlBarOffsetChanged();
     }
 
@@ -576,5 +577,9 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
 
     public ActionBarContainer getActionBarContainer() {
         return mActionBarContainer;
+    }
+
+    public interface HideUiOnScroll {
+
     }
 }

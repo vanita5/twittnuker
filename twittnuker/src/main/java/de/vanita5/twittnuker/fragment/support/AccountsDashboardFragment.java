@@ -157,6 +157,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
     };
     private boolean mSwitchAccountAnimationPlaying;
     private boolean mUseStarsForLikes;
+    private boolean mLoaderInitialized;
 
     @NonNull
     public long[] getActivatedAccountIds() {
@@ -489,9 +490,18 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         mListView.setOnItemClickListener(this);
         mPreferences.registerOnSharedPreferenceChangeListener(this);
 
-        getLoaderManager().initLoader(0, null, this);
+        loadAccounts();
 
         updateSystemWindowsInsets();
+    }
+
+    public void loadAccounts() {
+        if (!mLoaderInitialized) {
+            mLoaderInitialized = true;
+            getLoaderManager().initLoader(0, null, this);
+        } else {
+            getLoaderManager().restartLoader(0, null, this);
+        }
     }
 
     @Override

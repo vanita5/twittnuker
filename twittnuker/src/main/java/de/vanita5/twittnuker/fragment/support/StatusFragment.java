@@ -128,7 +128,7 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.CheckUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
-import de.vanita5.twittnuker.util.ContentListScrollListener;
+import de.vanita5.twittnuker.util.ContentScrollHandler;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.IntentUtils;
@@ -142,6 +142,7 @@ import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Nullables;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
+import de.vanita5.twittnuker.util.RecyclerViewScrollHandler;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
 import de.vanita5.twittnuker.util.StatusActionModeCallback;
 import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
@@ -170,7 +171,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class StatusFragment extends BaseSupportFragment implements LoaderCallbacks<SingleResponse<ParcelableStatus>>,
-        OnMediaClickListener, StatusAdapterListener, KeyboardShortcutCallback, ContentListScrollListener.ContentListSupport {
+        OnMediaClickListener, StatusAdapterListener, KeyboardShortcutCallback, ContentScrollHandler.ContentListSupport {
 
     // Constants
     private static final int LOADER_ID_DETAIL_STATUS = 1;
@@ -193,7 +194,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
     private LoadTranslationTask mLoadTranslationTask;
     private RecyclerViewNavigationHelper mNavigationHelper;
-    private ContentListScrollListener mScrollListener;
+    private RecyclerViewScrollHandler mScrollListener;
 
     // Data fields
     private boolean mConversationLoaderInitialized;
@@ -363,7 +364,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         mRecyclerView.setAdapter(mStatusAdapter);
         registerForContextMenu(mRecyclerView);
 
-        mScrollListener = new ContentListScrollListener(this, new ContentListScrollListener.RecyclerViewCallback(mRecyclerView));
+        mScrollListener = new RecyclerViewScrollHandler(this,
+                new RecyclerViewScrollHandler.RecyclerViewCallback(mRecyclerView));
         mScrollListener.setTouchSlop(ViewConfiguration.get(context).getScaledTouchSlop());
 
         mNavigationHelper = new RecyclerViewNavigationHelper(mRecyclerView, mLayoutManager,

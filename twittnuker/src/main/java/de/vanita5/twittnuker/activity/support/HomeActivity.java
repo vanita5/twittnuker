@@ -121,7 +121,7 @@ import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
 import static de.vanita5.twittnuker.util.Utils.openSearch;
 
 public class HomeActivity extends BaseAppCompatActivity implements OnClickListener, OnPageChangeListener,
-        SupportFragmentCallback, OnLongClickListener {
+        SupportFragmentCallback, OnLongClickListener, DrawerLayout.DrawerListener {
     private final Handler mHandler = new Handler();
 
     private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
@@ -851,6 +851,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
 
     private void setupSlidingMenu() {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow_start, GravityCompat.START);
+        mDrawerLayout.addDrawerListener(this);
         final Window window = getWindow();
         ThemeUtils.applyWindowBackground(this, mHomeContent,
                 getThemeBackgroundOption(), getCurrentThemeBackgroundAlpha());
@@ -899,6 +900,29 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         final FrameLayout.LayoutParams lp = (LayoutParams) mActionsButton.getLayoutParams();
         lp.gravity = Gravity.BOTTOM | (leftsideComposeButton ? Gravity.LEFT : Gravity.RIGHT);
         mActionsButton.setLayoutParams(lp);
+    }
+
+    @Override
+    public void onDrawerSlide(View drawerView, float slideOffset) {
+
+    }
+
+    @Override
+    public void onDrawerOpened(View drawerView) {
+
+    }
+
+    @Override
+    public void onDrawerClosed(View drawerView) {
+
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
+        final Fragment fragment = getLeftDrawerFragment();
+        if (fragment instanceof AccountsDashboardFragment) {
+            ((AccountsDashboardFragment) fragment).loadAccounts();
+        }
     }
 
     private void startStreamingService() {

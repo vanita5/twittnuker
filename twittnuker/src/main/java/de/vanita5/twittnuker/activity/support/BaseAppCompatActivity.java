@@ -35,7 +35,6 @@ import com.squareup.otto.Bus;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
@@ -76,7 +75,6 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     private ArrayList<ControlBarOffsetListener> mControlBarOffsetListeners = new ArrayList<>();
 
     // Data fields
-    private boolean mInstanceStateSaved;
     private boolean mIsVisible;
     private Rect mSystemWindowsInsets;
     private int mKeyMetaState;
@@ -174,26 +172,9 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mInstanceStateSaved = false;
-    }
-
-    @Override
     protected void onPause() {
         mActionHelper.dispatchOnPause();
         super.onPause();
-    }
-
-    @Override
-    protected void onSaveInstanceState(final Bundle outState) {
-        mInstanceStateSaved = true;
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void startActivityForResult(final Intent intent, final int requestCode) {
-        super.startActivityForResult(intent, requestCode);
     }
 
     @Override

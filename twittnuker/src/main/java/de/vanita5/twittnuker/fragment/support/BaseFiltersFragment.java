@@ -49,6 +49,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
@@ -58,6 +59,7 @@ import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter;
@@ -119,8 +121,25 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
     }
 
     @Override
+    public void setControlVisible(boolean visible) {
+        super.setControlVisible(visible || !isQuickReturnEnabled());
+    }
+
+    private boolean isQuickReturnEnabled() {
+        final int firstVisiblePosition = getListView().getFirstVisiblePosition();
+        return mActionMode == null && firstVisiblePosition >= 1;
+    }
+
+    @Override
     public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
         mActionMode = mode;
+        final FragmentActivity activity = getActivity();
+        if (activity instanceof IThemedActivity) {
+            ThemeUtils.applySupportActionModeColor(mode,
+                    ((IThemedActivity) activity).getCurrentThemeColor(),
+                    ((IThemedActivity) activity).getThemeBackgroundOption(), true);
+        }
+        setControlVisible(true);
         mode.getMenuInflater().inflate(R.menu.action_multi_select_items, menu);
         return true;
     }
@@ -128,6 +147,11 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
     @Override
     public boolean onPrepareActionMode(final ActionMode mode, final Menu menu) {
         updateTitle(mode);
+        final FragmentActivity activity = getActivity();
+        if (activity instanceof IThemedActivity) {
+            ThemeUtils.applySupportActionModeItemColor(mode,
+                    ((IThemedActivity) activity).getCurrentThemeColor());
+        }
         return true;
     }
 
@@ -157,7 +181,13 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
 
     @Override
     public void onDestroyActionMode(final ActionMode mode) {
+        mActionMode = null;
+    }
 
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+        setControlVisible(firstVisibleItem < 1);
     }
 
     @Override

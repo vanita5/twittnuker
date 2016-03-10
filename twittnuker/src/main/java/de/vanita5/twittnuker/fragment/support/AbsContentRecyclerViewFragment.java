@@ -43,7 +43,8 @@ import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
-import de.vanita5.twittnuker.util.ContentListScrollListener;
+import de.vanita5.twittnuker.util.ContentScrollHandler;
+import de.vanita5.twittnuker.util.RecyclerViewScrollHandler;
 import de.vanita5.twittnuker.util.SimpleDrawerCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
@@ -55,7 +56,7 @@ import de.vanita5.twittnuker.view.themed.AccentSwipeRefreshLayout;
 public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAdapter, L extends RecyclerView.LayoutManager>
         extends BaseSupportFragment implements SwipeRefreshLayout.OnRefreshListener,
         HeaderDrawerLayout.DrawerCallback, RefreshScrollTopInterface, IControlBarActivity.ControlBarOffsetListener,
-        ContentListScrollListener.ContentListSupport, IControlBarActivity.ControlBarShowHideHelper.ControlBarAnimationListener {
+        ContentScrollHandler.ContentListSupport, IControlBarActivity.ControlBarShowHideHelper.ControlBarAnimationListener {
 
     private View mProgressContainer;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -69,7 +70,7 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
 
     // Callbacks and listeners
     private SimpleDrawerCallback mDrawerCallback;
-    private ContentListScrollListener mScrollListener;
+    private RecyclerViewScrollHandler mScrollListener;
 
     // Data fields
     private Rect mSystemWindowsInsets = new Rect();
@@ -248,7 +249,7 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
         setupRecyclerView(context, compact);
         mRecyclerView.setAdapter(mAdapter);
 
-        mScrollListener = new ContentListScrollListener(this, new ContentListScrollListener.RecyclerViewCallback(mRecyclerView));
+        mScrollListener = new RecyclerViewScrollHandler(this, new RecyclerViewScrollHandler.RecyclerViewCallback(mRecyclerView));
         mRecyclerView.setOnTouchListener(mScrollListener.getOnTouchListener());
         mScrollListener.setTouchSlop(ViewConfiguration.get(context).getScaledTouchSlop());
     }
