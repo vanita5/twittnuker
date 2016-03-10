@@ -170,7 +170,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
 
             if (highlightOption != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
                 final Spanned text = HtmlSpanBuilder.fromHtml(TWITTNUKER_PREVIEW_TEXT_HTML);
-                textView.setText(linkify.applyAllLinks(text, 0, false));
+                textView.setText(linkify.applyAllLinks(text, 0, false, false));
             } else {
                 textView.setText(toPlainText(TWITTNUKER_PREVIEW_TEXT_HTML));
             }
