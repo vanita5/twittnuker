@@ -262,8 +262,7 @@
                 android:paddingLeft="@dimen/element_spacing_msmall"
                 android:paddingRight="@dimen/element_spacing_msmall"
                 android:textAppearance="?android:textAppearanceSmall"
-                app:iabActivatedColor="@color/highlight_reply"
-                app:iabColor="?android:textColorTertiary"/>
+                app:iabActivatedColor="@color/highlight_reply"/>
 
             <de.vanita5.twittnuker.view.ActionIconThemedTextView
                 android:id="@+id/retweet_count"
@@ -279,8 +278,7 @@
                 android:paddingLeft="@dimen/element_spacing_msmall"
                 android:paddingRight="@dimen/element_spacing_msmall"
                 android:textAppearance="?android:textAppearanceSmall"
-                app:iabActivatedColor="@color/highlight_retweet"
-                app:iabColor="?android:textColorTertiary"/>
+                app:iabActivatedColor="@color/highlight_retweet"/>
 
             <de.vanita5.twittnuker.view.ActionIconThemedTextView
                 android:id="@+id/favorite_count"
@@ -295,7 +293,6 @@
                 android:paddingRight="@dimen/element_spacing_msmall"
                 android:textAppearance="?android:textAppearanceSmall"
                 app:iabActivatedColor="@color/highlight_like"
-                app:iabColor="?android:textColorTertiary"
                 tools:drawableLeft="@drawable/ic_action_heart"
                 tools:drawableStart="@drawable/ic_action_heart"/>
 
@@ -310,7 +307,6 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/action_buttons"
-            android:color="?android:textColorTertiary"
             android:focusable="false"
             android:src="@drawable/ic_action_more_horizontal"
             tools:visibility="visible" />
