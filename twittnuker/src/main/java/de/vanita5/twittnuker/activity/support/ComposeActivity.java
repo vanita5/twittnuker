@@ -27,7 +27,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
-import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -1080,9 +1079,10 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
     }
 
     private void notifyAccountSelectionChanged() {
-        final ParcelableAccount[] accounts = mAccountsAdapter.getSelectedAccounts();
+        final ParcelableCredentials[] accounts = mAccountsAdapter.getSelectedAccounts();
         setSelectedAccounts(accounts);
         mEditText.setAccountId(accounts.length > 0 ? accounts[0].account_id : Utils.getDefaultAccountId(this));
+        mSendTextCountView.setMaxLength(TwidereValidator.getTextLimit(accounts));
         setMenu();
 //        mAccountActionProvider.setSelectedAccounts(mAccountsAdapter.getSelectedAccounts());
     }
@@ -1257,7 +1257,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         if (isFinishing()) return;
         final boolean hasMedia = hasMedia();
         final String text = mEditText != null ? ParseUtils.parseString(mEditText.getText()) : null;
-        final int tweetLength = mValidator.getTweetLength(text), maxLength = mValidator.getMaxTweetLength();
+        final int tweetLength = mValidator.getTweetLength(text), maxLength = mSendTextCountView.getMaxLength();
         if (!mStatusShortenerUsed && tweetLength > maxLength) {
             mEditText.setError(getString(R.string.error_message_status_too_long));
             final int textLength = mEditText.length();
