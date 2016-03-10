@@ -35,12 +35,10 @@ import de.vanita5.twittnuker.api.twitter.model.ExtendedEntitySupport;
 import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
-import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 import java.util.ArrayList;
@@ -205,6 +203,7 @@ public class ParcelableMediaUtils {
             media.media_url = ((CardEntity.ImageValue) photoImageFullSize).getUrl();
             media.width = ((CardEntity.ImageValue) photoImageFullSize).getWidth();
             media.height = ((CardEntity.ImageValue) photoImageFullSize).getHeight();
+            media.open_browser = true;
             final CardEntity.BindingValue summaryPhotoImage = card.getBindingValue("summary_photo_image");
             if (summaryPhotoImage instanceof CardEntity.ImageValue) {
                 media.preview_url = ((CardEntity.ImageValue) summaryPhotoImage).getUrl();

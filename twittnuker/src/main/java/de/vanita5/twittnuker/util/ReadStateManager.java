@@ -30,6 +30,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.NotificationType;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.model.StringLongPair;
@@ -170,8 +171,32 @@ public class ReadStateManager implements Constants {
     public static String getReadPositionTagForNotificationType(@NotificationType String notificationType) {
         if (notificationType == null) return null;
         switch (notificationType) {
+            case NotificationType.HOME_TIMELINE: {
+                return ReadPositionTag.HOME_TIMELINE;
+            }
+            case NotificationType.DIRECT_MESSAGES: {
+                return ReadPositionTag.DIRECT_MESSAGES;
+            }
             case NotificationType.INTERACTIONS: {
                 return ReadPositionTag.ACTIVITIES_ABOUT_ME;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    @ReadPositionTag
+    public static String getReadPositionTagForTabType(@CustomTabType String tabType) {
+        if (tabType == null) return null;
+        switch (tabType) {
+            case CustomTabType.HOME_TIMELINE: {
+                return ReadPositionTag.HOME_TIMELINE;
+            }
+            case CustomTabType.NOTIFICATIONS_TIMELINE: {
+                return ReadPositionTag.ACTIVITIES_ABOUT_ME;
+            }
+            case CustomTabType.DIRECT_MESSAGES: {
+                return ReadPositionTag.DIRECT_MESSAGES;
             }
         }
         return null;

@@ -98,6 +98,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ActivitySupport;
@@ -111,14 +112,6 @@ import de.vanita5.twittnuker.view.iface.IHomeActionButton;
 
 import java.util.Collections;
 import java.util.List;
-
-import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
-import static de.vanita5.twittnuker.util.DataStoreUtils.cleanDatabasesByItemLimit;
-import static de.vanita5.twittnuker.util.Utils.checkPlayServices;
-import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
-import static de.vanita5.twittnuker.util.Utils.getTabDisplayOptionInt;
-import static de.vanita5.twittnuker.util.Utils.openMessageConversation;
-import static de.vanita5.twittnuker.util.Utils.openSearch;
 
 public class HomeActivity extends BaseAppCompatActivity implements OnClickListener, OnPageChangeListener,
         SupportFragmentCallback, OnLongClickListener, DrawerLayout.DrawerListener {
@@ -365,7 +358,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         setSupportActionBar(mActionBar);
         sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
         final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
-        int tabDisplayOptionInt = getTabDisplayOptionInt(this);
+        int tabDisplayOptionInt = Utils.getTabDisplayOptionInt(this);
 
         mGCMRegistrationReceiver = new BroadcastReceiver() {
             @Override
@@ -449,7 +442,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         if (TextUtils.isEmpty(mPreferences.getString(KEY_PUSH_API_URL, null))) return;
         if (mPreferences.getBoolean(GCM_TOKEN_SENT, false)) return;
 
-        if (checkPlayServices(this)) {
+        if (Utils.checkPlayServices(this)) {
             Intent gcmRegIntent = new Intent(this, RegistrationIntentService.class);
             startService(gcmRegIntent);
         }
@@ -612,7 +605,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         TaskStarter.execute(new AbstractTask() {
             @Override
             public Object doLongOperation(Object o) {
-                cleanDatabasesByItemLimit(context);
+                DataStoreUtils.cleanDatabasesByItemLimit(context);
                 return null;
             }
         });
@@ -724,9 +717,9 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             if (appSearchData != null && appSearchData.containsKey(EXTRA_ACCOUNT_ID)) {
                 accountId = appSearchData.getLong(EXTRA_ACCOUNT_ID, -1);
             } else {
-                accountId = getDefaultAccountId(this);
+                accountId = Utils.getDefaultAccountId(this);
             }
-            openSearch(this, accountId, query);
+            Utils.openSearch(this, accountId, query);
             return -1;
         }
         final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
@@ -757,7 +750,8 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             final long readPosition = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_READ_POSITION), -1);
             switch (tabType) {
                 case CustomTabType.HOME_TIMELINE: {
-                    final String tag = Utils.getReadPositionTagWithAccounts(ReadPositionTag.HOME_TIMELINE, accountId);
+                    final String tag = Utils.getReadPositionTagWithAccounts(ReadPositionTag.HOME_TIMELINE,
+                            accountId);
                     mReadStateManager.setPosition(tag, readPosition, false);
                     break;
                 }
@@ -765,8 +759,9 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                     if (initialTab == -1 && !restoreInstanceState) {
                         Utils.openInteractions(this, accountId);
                     }
-                    final String tag = Utils.getReadPositionTagWithAccounts(ReadPositionTag.ACTIVITIES_ABOUT_ME, accountId);
-                    mReadStateManager.setPosition(tag, accountId, readPosition, false);
+                    final String tag = Utils.getReadPositionTagWithAccounts(ReadPositionTag.ACTIVITIES_ABOUT_ME,
+                            accountId);
+                    mReadStateManager.setPosition(tag, readPosition, false);
                     break;
                 }
                 case CustomTabType.DIRECT_MESSAGES: {
@@ -826,12 +821,19 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         final int actionItemColor = ThemeUtils.getContrastForegroundColor(this, actionBarColor);
         final int[] foregroundColors = new int[2];
         ThemeUtils.getColorForegroundAndInverse(this, foregroundColors);
-        //No need to differentiate between dark and light theme due to custom action bar color preference
-        homeActionButton.setButtonColor(actionBarColor);
-        homeActionButton.setIconColor(actionItemColor, Mode.SRC_ATOP);
-        mTabIndicator.setStripColor(themeColor);
-        mTabIndicator.setIconColor(actionItemColor);
-        mTabIndicator.setLabelColor(actionItemColor);
+        if (ThemeUtils.isDarkTheme(this)) {
+            homeActionButton.setButtonColor(actionBarColor);
+            homeActionButton.setIconColor(actionItemColor, Mode.SRC_ATOP);
+            mTabIndicator.setStripColor(themeColor);
+            mTabIndicator.setIconColor(foregroundColors[0]);
+            mTabIndicator.setLabelColor(foregroundColors[0]);
+        } else {
+            homeActionButton.setButtonColor(actionBarColor);
+            homeActionButton.setIconColor(actionItemColor, Mode.SRC_ATOP);
+            mTabIndicator.setStripColor(themeColor);
+            mTabIndicator.setIconColor(actionItemColor);
+            mTabIndicator.setLabelColor(actionItemColor);
+        }
         mHomeContent.setDrawColor(true);
         mHomeContent.setDrawShadow(false);
         mHomeContent.setColor(actionBarColor, actionBarAlpha);
@@ -863,9 +865,9 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         final int position = mViewPager.getCurrentItem();
         if (mPagerAdapter.getCount() == 0) return;
         final SupportTabSpec tab = mPagerAdapter.getTab(position);
-        if (classEquals(DirectMessagesFragment.class, tab.cls)) {
-            openMessageConversation(this, -1, -1);
-        } else if (classEquals(TrendsSuggestionsFragment.class, tab.cls)) {
+        if (DirectMessagesFragment.class == tab.cls) {
+            Utils.openMessageConversation(this, -1, -1);
+        } else if (TrendsSuggestionsFragment.class == tab.cls) {
             openSearchView(null);
         } else {
             startActivity(new Intent(INTENT_ACTION_COMPOSE));
@@ -878,10 +880,10 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         final int position = mViewPager.getCurrentItem();
         if (mPagerAdapter.getCount() == 0) return;
         final SupportTabSpec tab = mPagerAdapter.getTab(position);
-        if (classEquals(DirectMessagesFragment.class, tab.cls)) {
+        if (DirectMessagesFragment.class == tab.cls) {
             icon = R.drawable.ic_action_add;
             title = R.string.new_direct_message;
-        } else if (classEquals(TrendsSuggestionsFragment.class, tab.cls)) {
+        } else if (TrendsSuggestionsFragment.class == tab.cls) {
             icon = R.drawable.ic_action_search;
             title = android.R.string.search_go;
         } else {
@@ -991,7 +993,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                     case CustomTabType.HOME_TIMELINE: {
                         final long[] accountIds = Utils.getAccountIds(spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext,
-                                true, spec.tag, accountIds);
+                                true, ReadPositionTag.HOME_TIMELINE, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
                         final int count = DataStoreUtils.getStatusesCount(mContext, Statuses.CONTENT_URI,
                                 position, accountIds);
@@ -1001,8 +1003,11 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                     }
                     case CustomTabType.NOTIFICATIONS_TIMELINE: {
                         final long[] accountIds = Utils.getAccountIds(spec.args);
-                        final int count = DataStoreUtils.getInteractionsCount(mContext, mReadStateManager,
-                                spec.tag, spec.args, accountIds);
+                        final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext,
+                                true, ReadPositionTag.ACTIVITIES_ABOUT_ME, accountIds);
+                        final long position = mReadStateManager.getPosition(tagWithAccounts);
+                        final int count = DataStoreUtils.getInteractionsCount(mContext, spec.args,
+                                accountIds, position);
                         publishProgress(new TabBadge(i, count));
                         result.put(i, count);
                         break;

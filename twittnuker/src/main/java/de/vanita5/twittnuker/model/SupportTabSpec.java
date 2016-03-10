@@ -32,7 +32,6 @@ import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 
 import static de.vanita5.twittnuker.util.CompareUtils.bundleEquals;
-import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
 import static de.vanita5.twittnuker.util.CompareUtils.objectEquals;
 
 public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerConstants {
@@ -77,7 +76,7 @@ public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerCon
     public boolean equals(final Object o) {
         if (!(o instanceof SupportTabSpec)) return false;
         final SupportTabSpec spec = (SupportTabSpec) o;
-        return objectEquals(name, spec.name) && objectEquals(icon, spec.icon) && classEquals(cls, spec.cls)
+        return objectEquals(name, spec.name) && objectEquals(icon, spec.icon) && cls == spec.cls
                 && bundleEquals(args, spec.args) && position == spec.position;
     }
 

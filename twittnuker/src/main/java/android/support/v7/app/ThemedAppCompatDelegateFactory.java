@@ -38,45 +38,45 @@ import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
 public class ThemedAppCompatDelegateFactory implements Constants {
 
 
-	/**
-	 * Create a {@link android.support.v7.app.AppCompatDelegate} to use with {@code activity}.
-	 *
-	 * @param callback An optional callback for AppCompat specific events
-	 */
+    /**
+     * Create a {@link android.support.v7.app.AppCompatDelegate} to use with {@code activity}.
+     *
+     * @param callback An optional callback for AppCompat specific events
+     */
     public static ThemedAppCompatDelegate create(@NonNull final IThemedActivity themed,
                                                  @NonNull final AppCompatCallback callback) {
-		final Activity activity = (Activity) themed;
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        final Activity activity = (Activity) themed;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             return new ThemedAppCompatDelegate(themed, activity, activity.getWindow(), callback);
-		} else {
-			throw new UnsupportedOperationException();
-		}
-	}
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
 
     public static final class ThemedAppCompatDelegate extends AppCompatDelegateImplV11 {
 
-		private final IThemedActivity themed;
+        private final IThemedActivity themed;
         private KeyListener keyListener;
 
         private ThemedAppCompatDelegate(@NonNull final IThemedActivity themed, @NonNull final Context context,
                                         @NonNull final Window window, @NonNull final AppCompatCallback callback) {
-			super(context, window, callback);
-			this.themed = themed;
-		}
+            super(context, window, callback);
+            this.themed = themed;
+        }
 
-		@Override
-		public void installViewFactory() {
-			final LayoutInflater inflater = LayoutInflater.from(mContext);
-			if (inflater.getFactory() == null) {
-				LayoutInflaterCompat.setFactory(inflater, new ThemedLayoutInflaterFactory(themed, this));
-			}
-		}
+        @Override
+        public void installViewFactory() {
+            final LayoutInflater inflater = LayoutInflater.from(mContext);
+            if (inflater.getFactory() == null) {
+                LayoutInflaterCompat.setFactory(inflater, new ThemedLayoutInflaterFactory(themed, this));
+            }
+        }
 
         @Override
         boolean onKeyDown(int keyCode, KeyEvent event) {
             if (keyListener != null && keyListener.onKeyDown(keyCode, event)) return true;
             return super.onKeyDown(keyCode, event);
-		}
+        }
 
         @Override
         boolean onKeyUp(int keyCode, KeyEvent event) {

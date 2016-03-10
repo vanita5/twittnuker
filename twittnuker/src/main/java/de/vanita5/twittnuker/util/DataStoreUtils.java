@@ -51,7 +51,6 @@ import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
@@ -962,13 +961,8 @@ public class DataStoreUtils implements Constants {
         return accounts;
     }
 
-    public static int getInteractionsCount(final Context context, final ReadStateManager readStateManager,
-                                           @CustomTabType final String tag, @Nullable final Bundle extraArgs,
-                                           final long[] accountIds) {
-        final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(context,
-                true, tag, accountIds);
-        final long position = readStateManager.getPosition(tagWithAccounts);
-
+    public static int getInteractionsCount(final Context context, @Nullable final Bundle extraArgs,
+                                           final long[] accountIds, final long position) {
         Expression extraWhere = null;
         String[] extraWhereArgs = null;
         boolean followingOnly = false;
