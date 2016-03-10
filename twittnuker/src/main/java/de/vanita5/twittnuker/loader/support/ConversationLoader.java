@@ -37,7 +37,6 @@ import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.Nullables;
 import de.vanita5.twittnuker.util.ParcelUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.util.ArrayList;
@@ -63,7 +62,7 @@ public class ConversationLoader extends TwitterAPIStatusesLoader {
     @Override
     public List<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
         final ParcelableStatus status = mStatus;
-        if (Utils.shouldForceUsingPrivateAPIs(getContext()) || TwitterAPIFactory.isOfficialTwitterInstance(getContext(), twitter)) {
+        if (Utils.isOfficialCredentials(getContext(), getAccountId())) {
             return twitter.showConversation(status.id, paging);
         }
         final List<Status> statuses = new ArrayList<>();

@@ -37,7 +37,6 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -64,7 +63,7 @@ public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
     @NonNull
     @Override
     protected ResponseList<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
-        if (Utils.shouldForceUsingPrivateAPIs(getContext()) || TwitterAPIFactory.isOfficialTwitterInstance(getContext(), twitter)) {
+        if (Utils.isOfficialCredentials(getContext(), getAccountId())) {
             if (mUserId != -1)
                 return twitter.getMediaTimeline(mUserId, paging);
             if (mUserScreenName != null)
