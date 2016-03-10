@@ -52,7 +52,9 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter, IGapSupport
 
     TwidereLinkify getTwidereLinkify();
 
-    boolean isCardActionsHidden();
+    boolean isCardActionsShown(int position);
+
+    void showCardActions(int position);
 
     boolean isMediaPreviewEnabled();
 
