@@ -163,9 +163,13 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         if (adapter.isMediaPreviewEnabled()) {
             mediaPreview.setVisibility(View.VISIBLE);
             statusContentSpace.setVisibility(showCardActions ? View.VISIBLE : View.GONE);
+            actionButtons.setVisibility(showCardActions ? View.VISIBLE : View.GONE);
+            itemMenu.setVisibility(showCardActions ? View.VISIBLE : View.GONE);
         } else {
             mediaPreview.setVisibility(View.GONE);
             statusContentSpace.setVisibility(showCardActions ? View.GONE : View.VISIBLE);
+            actionButtons.setVisibility(showCardActions ? View.VISIBLE : View.GONE);
+            itemMenu.setVisibility(showCardActions ? View.VISIBLE : View.GONE);
         }
         mediaPreview.displayMedia(R.drawable.nyan_stars_background);
         extraTypeView.setImageResource(R.drawable.ic_action_gallery);
