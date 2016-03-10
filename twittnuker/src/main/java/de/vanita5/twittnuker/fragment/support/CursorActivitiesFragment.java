@@ -208,6 +208,9 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
         TaskStarter.execute(new AbstractTask<Object, long[][], CursorActivitiesFragment>() {
             @Override
             public long[][] doLongOperation(Object o) {
+                if (getActivity() == null) {
+                    return null;
+                }
                 final long[][] result = new long[3][];
                 result[0] = getAccountIds();
                 result[2] = getNewestActivityIds(result[0]);
@@ -216,6 +219,7 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
 
             @Override
             public void afterExecute(CursorActivitiesFragment fragment, long[][] result) {
+                if (result == null) return;
                 fragment.getActivities(result[0], result[1], result[2]);
             }
         }.setResultHandler(this));

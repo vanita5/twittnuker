@@ -182,6 +182,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
+import de.vanita5.twittnuker.model.TwitterAccountExtra;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
@@ -926,8 +927,15 @@ public final class Utils implements Constants {
         return hasNavBar(context);
     }
 
-    public static boolean isOfficialCredentials(final Context context, final ParcelableCredentials account) {
-        if (account == null) return false;
+    public static boolean isOfficialCredentials(@NonNull final Context context,
+                                                @NonNull final ParcelableCredentials account) {
+        if (ParcelableCredentials.ACCOUNT_TYPE_TWITTER.equals(account.account_type)) {
+            final TwitterAccountExtra extra = JsonSerializer.parse(account.account_extras,
+                    TwitterAccountExtra.class);
+            if (extra != null) {
+                return extra.isOfficialCredentials();
+            }
+        }
         final boolean isOAuth = account.auth_type == ParcelableCredentials.AUTH_TYPE_OAUTH
                 || account.auth_type == ParcelableCredentials.AUTH_TYPE_XAUTH;
         final String consumerKey = account.consumer_key, consumerSecret = account.consumer_secret;

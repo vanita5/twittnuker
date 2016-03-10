@@ -395,7 +395,8 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        MenuUtils.setMenuItemAvailability(menu, R.id.delete_all, mRecipient != null && Utils.isOfficialCredentials(getActivity(), mAccount));
+        MenuUtils.setMenuItemAvailability(menu, R.id.delete_all, mRecipient != null
+                && Utils.isOfficialCredentials(getActivity(), mAccount));
         updateRecipientInfo();
     }
 
@@ -403,7 +404,8 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_all: {
-
+                if (mAccount == null || mRecipient == null) return true;
+                mTwitterWrapper.destroyMessageConversationAsync(mAccount.account_id, mRecipient.id);
                 return true;
             }
         }

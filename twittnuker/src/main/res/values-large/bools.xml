@@ -23,7 +23,6 @@
 
 <resources>
 
-    <bool name="shadow_slidable">false</bool>
     <bool name="relative_behind_width">false</bool>
 
 </resources>

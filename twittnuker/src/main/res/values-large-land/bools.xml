@@ -23,6 +23,4 @@
 
 <resources>
 
-	<bool name="shadow_slidable">false</bool>
-
 </resources>

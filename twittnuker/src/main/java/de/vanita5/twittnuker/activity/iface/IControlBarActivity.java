@@ -89,9 +89,12 @@ public interface IControlBarActivity {
         }
 
         public void setControlBarVisibleAnimate(final boolean visible, final ControlBarAnimationListener listener) {
-            if (mCurrentControlAnimation != null) {
+            final int newDirection = visible ? 1 : -1;
+            if (mControlAnimationDirection == newDirection) return;
+            if (mCurrentControlAnimation != null && mControlAnimationDirection != 0) {
                 mCurrentControlAnimation.cancel();
                 mCurrentControlAnimation = null;
+                mControlAnimationDirection = newDirection;
             }
             final ObjectAnimator animator;
             final float offset = mActivity.getControlBarOffset();
@@ -131,7 +134,7 @@ public interface IControlBarActivity {
             animator.setDuration(DURATION);
             animator.start();
             mCurrentControlAnimation = animator;
-            mControlAnimationDirection = visible ? 1 : -1;
+            mControlAnimationDirection = newDirection;
         }
     }
 }
