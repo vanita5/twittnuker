@@ -169,7 +169,7 @@
 # Marshmallow removed Notification.setLatestEventInfo()
 -dontwarn android.app.Notification
 
--keepclassmembers class org.mariotaku.twidere.activity.support.BrowserSignInActivity.InjectorJavaScriptInterface {
+-keepclassmembers class de.vanita5.twittnuker.activity.support.BrowserSignInActivity.InjectorJavaScriptInterface {
     public *;
 }
 

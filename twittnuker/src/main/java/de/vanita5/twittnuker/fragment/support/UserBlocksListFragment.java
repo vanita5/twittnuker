@@ -33,8 +33,10 @@ public class UserBlocksListFragment extends CursorSupportUsersListFragment {
 
     @Override
     public CursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
-        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
-        return new UserBlocksLoader(context, accountId, getNextCursor(), getData(), fromUser);
+        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final UserBlocksLoader loader = new UserBlocksLoader(context, accountKey, getData(), fromUser);
+        loader.setCursor(getNextCursor());
+        return loader;
     }
 
 }

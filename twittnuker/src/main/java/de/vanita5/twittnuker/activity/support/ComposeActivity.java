@@ -106,7 +106,7 @@ import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
-import de.vanita5.twittnuker.model.AccountId;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.DraftValuesCreator;
@@ -586,7 +586,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
             finish();
             return;
         }
-        final long[] defaultAccountIds = DataStoreUtils.getAccountIds(accounts);
+        final long[] defaultAccountIds = DataStoreUtils.getAccountKeys(accounts);
         mMenuBar.setOnMenuItemClickListener(this);
         setupEditText();
         mAccountSelectorContainer.setOnClickListener(this);
@@ -1090,9 +1090,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         final ParcelableCredentials[] accounts = mAccountsAdapter.getSelectedAccounts();
         setSelectedAccounts(accounts);
         if (ArrayUtils.isEmpty(accounts)) {
-            mEditText.setAccountId(Utils.getDefaultAccountId(this));
+            mEditText.setAccountKey(Utils.getDefaultAccountKey(this));
         } else {
-            mEditText.setAccountId(new AccountId(accounts[0]));
+            mEditText.setAccountKey(new AccountKey(accounts[0]));
         }
         mSendTextCountView.setMaxLength(TwidereValidator.getTextLimit(accounts));
         setMenu();

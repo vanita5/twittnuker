@@ -371,7 +371,7 @@ public class BackgroundOperationService extends IntentService implements Constan
             boolean failed = false;
             Exception exception = null;
             final Expression where = Expression.equals(Drafts._ID, draftId);
-            final List<Long> failedAccountIds = TwidereListUtils.fromArray(DataStoreUtils.getAccountIds(item.accounts));
+            final List<Long> failedAccountIds = TwidereListUtils.fromArray(DataStoreUtils.getAccountKeys(item.accounts));
 
             for (final SingleResponse<ParcelableStatus> response : result) {
                 final ParcelableStatus data = response.getData();
@@ -598,7 +598,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                             throw new UploadException(uploadResult.error_message);
 
                         // Replace status text to uploaded
-                        statusText = getImageUploadStatus(uploadResult.media_uris,
+                        statusText = getImageUploadStatus(this, uploadResult.media_uris,
                                 statusText);
                     }
 

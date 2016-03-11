@@ -32,7 +32,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
-import de.vanita5.twittnuker.model.AccountId;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 
 import java.text.ParseException;
@@ -42,13 +42,13 @@ import java.util.Map;
 public class ParcelableCardEntityUtils implements TwittnukerConstants {
 
     @Nullable
-    public static ParcelableCardEntity fromCardEntity(@Nullable CardEntity card, AccountId accountId) {
+    public static ParcelableCardEntity fromCardEntity(@Nullable CardEntity card, AccountKey accountKey) {
         if (card == null) return null;
         final ParcelableCardEntity obj = new ParcelableCardEntity();
         obj.name = card.getName();
         obj.url = card.getUrl();
-        obj.users = ParcelableUserUtils.fromUsers(card.getUsers(), accountId);
-        obj.account_id = accountId.getId();
+        obj.users = ParcelableUserUtils.fromUsers(card.getUsers(), accountKey);
+        obj.account_id = accountKey.getId();
         obj.values = from(card.getBindingValues());
         return obj;
     }

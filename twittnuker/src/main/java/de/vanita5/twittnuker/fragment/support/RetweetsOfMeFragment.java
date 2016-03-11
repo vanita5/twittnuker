@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.loader.support.RetweetsOfMeLoader;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;
@@ -37,11 +38,11 @@ public class RetweetsOfMeFragment extends ParcelableStatusesFragment {
     protected Loader<List<ParcelableStatus>> onCreateStatusesLoader(final Context context,
                                                                     final Bundle args,
                                                                     final boolean fromUser) {
-        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long maxId = args.getLong(EXTRA_MAX_ID, -1);
         final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
         final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
-        return new RetweetsOfMeLoader(context, accountId, sinceId, maxId, getAdapterData(),
+        return new RetweetsOfMeLoader(context, accountKey, sinceId, maxId, getAdapterData(),
                 getSavedStatusesFileArgs(), tabPosition, fromUser);
     }
 

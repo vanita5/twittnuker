@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
@@ -54,10 +55,11 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
 
     private final boolean mOmitIntentExtra, mLoadFromCache;
     private final Bundle mExtras;
-    private final long mAccountId, mUserId;
+    private final AccountKey mAccountId;
+    private final long mUserId;
     private final String mScreenName;
 
-    public ParcelableUserLoader(final Context context, final long accountId, final long userId,
+    public ParcelableUserLoader(final Context context, final AccountKey accountId, final long userId,
                                 final String screenName, final Bundle extras, final boolean omitIntentExtra,
                                 final boolean loadFromCache) {
         super(context);
@@ -83,7 +85,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
                 return SingleResponse.getInstance(user);
             }
         }
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, mAccountId, accountHost, true);
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, mAccountId, true);
         if (twitter == null) return SingleResponse.getInstance();
         if (mLoadFromCache) {
             final Expression where;

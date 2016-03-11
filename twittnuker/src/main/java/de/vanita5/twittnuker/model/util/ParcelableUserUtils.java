@@ -29,7 +29,7 @@ import android.support.annotation.Nullable;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.AccountId;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
@@ -40,17 +40,17 @@ import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 public class ParcelableUserUtils implements TwittnukerConstants{
 
-    public static ParcelableUser fromUser(@NonNull User user, @Nullable AccountId accountId) {
-        return fromUser(user, accountId, 0);
+    public static ParcelableUser fromUser(@NonNull User user, @Nullable AccountKey accountKey) {
+        return fromUser(user, accountKey, 0);
     }
 
-    public static ParcelableUser fromUser(@NonNull User user, @Nullable AccountId accountId, long position) {
+    public static ParcelableUser fromUser(@NonNull User user, @Nullable AccountKey accountKey, long position) {
         final UrlEntity[] urlEntities = user.getUrlEntities();
         final ParcelableUser obj = new ParcelableUser();
         obj.position = position;
-        if (accountId != null) {
-            obj.account_id = accountId.getId();
-            obj.account_host = accountId.getHost();
+        if (accountKey != null) {
+            obj.account_id = accountKey.getId();
+            obj.account_host = accountKey.getHost();
         }
         obj.id = user.getId();
         obj.created_at = user.getCreatedAt().getTime();
@@ -113,12 +113,12 @@ public class ParcelableUserUtils implements TwittnukerConstants{
         return new ParcelableUser(accountId, id, name, screenName, profileImageUrl);
     }
 
-    public static ParcelableUser[] fromUsers(final User[] users, AccountId accountId) {
+    public static ParcelableUser[] fromUsers(final User[] users, AccountKey accountKey) {
         if (users == null) return null;
         int size = users.length;
         final ParcelableUser[] result = new ParcelableUser[size];
         for (int i = 0; i < size; i++) {
-            result[i] = fromUser(users[i], accountId);
+            result[i] = fromUser(users[i], accountKey);
         }
         return result;
     }

@@ -29,7 +29,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.AccountId;
+import de.vanita5.twittnuker.model.AccountKey;
 
 
 public class ErrorInfoStore {
@@ -57,6 +57,15 @@ public class ErrorInfoStore {
         return get(key + "_" + extraId);
     }
 
+    public int get(String key, AccountKey extraId) {
+        final String host = extraId.getHost();
+        if (host == null) {
+            return get(key, extraId.getId());
+        } else {
+            return get(key + "_" + extraId.getId() + "_" + host);
+        }
+    }
+
     public void put(String key, int code) {
         mPreferences.edit().putInt(key, code).apply();
     }
@@ -65,7 +74,7 @@ public class ErrorInfoStore {
         put(key + "_" + extraId, code);
     }
 
-    public void put(String key, AccountId extraId, int code) {
+    public void put(String key, AccountKey extraId, int code) {
         final String host = extraId.getHost();
         if (host == null) {
             put(key, extraId.getId(), code);
@@ -97,7 +106,7 @@ public class ErrorInfoStore {
         remove(key + "_" + extraId);
     }
 
-    public void remove(String key, AccountId extraId) {
+    public void remove(String key, AccountKey extraId) {
         final String host = extraId.getHost();
         if (host == null) {
             remove(key, extraId.getId());

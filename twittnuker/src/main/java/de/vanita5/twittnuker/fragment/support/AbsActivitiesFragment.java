@@ -49,10 +49,12 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosi
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.fragment.support.AbsStatusesFragment.DefaultOnLikedListener;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
-import de.vanita5.twittnuker.model.AccountId;
+import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -92,7 +94,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         mStatusesBusCallback = createMessageBusCallback();
     }
 
-    public abstract boolean getActivities(long[] accountIds, long[] maxIds, long[] sinceIds);
+    public abstract boolean getActivities(RefreshTaskParam param);
 
     @Override
     public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
@@ -137,7 +139,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
                 case ACTION_STATUS_FAVORITE: {
                     final AsyncTwitterWrapper twitter = mTwitterWrapper;
                     if (status.is_favorite) {
-                        twitter.destroyFavoriteAsync(new AccountId(activity.account_id,
+                        twitter.destroyFavoriteAsync(new AccountKey(activity.account_id,
                                 activity.account_host), status.id);
                     } else {
                         final IStatusViewHolder holder = (IStatusViewHolder)
@@ -286,9 +288,9 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
     public void onGapClick(GapViewHolder holder, int position) {
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
         final ParcelableActivity activity = adapter.getActivity(position);
-        final long[] accountIds = {activity.account_id};
+        final AccountKey[] accountIds = {new AccountKey(activity.account_id, activity.account_host)};
         final long[] maxIds = {activity.min_position};
-        getActivities(accountIds, maxIds, null);
+        getActivities(new BaseRefreshTaskParam(accountIds, maxIds, null));
     }
 
     @Override
@@ -320,7 +322,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
                 final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (twitter == null) return;
                 if (status.is_favorite) {
-                    twitter.destroyFavoriteAsync(new AccountId(status.account_id,
+                    twitter.destroyFavoriteAsync(new AccountKey(status.account_id,
                             status.account_host), status.id);
                 } else {
                     holder.playLikeAnimation(new DefaultOnLikedListener(twitter, status));
@@ -419,7 +421,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         return new StatusesBusCallback();
     }
 
-    protected abstract AccountId[] getAccountIds();
+    protected abstract AccountKey[] getAccountKeys();
 
     protected Data getAdapterData() {
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
@@ -452,7 +454,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         final ParcelableActivity activity = adapter.getActivity(position);
         if (activity == null) return;
         if (mReadStateManager.setPosition(readPositionTag, activity.timestamp)) {
-            mTwitterWrapper.setActivitiesAboutMeUnreadAsync(getAccountIds(), activity.timestamp);
+            mTwitterWrapper.setActivitiesAboutMeUnreadAsync(getAccountKeys(), activity.timestamp);
         }
         mReadStateManager.setPosition(getCurrentReadPositionTag(), activity.timestamp, true);
     }
@@ -556,7 +558,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
     }
 
     private String getReadPositionTagWithAccounts() {
-        return Utils.getReadPositionTagWithAccounts(getReadPositionTag(), getAccountIds());
+        return Utils.getReadPositionTagWithAccounts(getReadPositionTag(), getAccountKeys());
     }
 
     protected final class StatusesBusCallback {

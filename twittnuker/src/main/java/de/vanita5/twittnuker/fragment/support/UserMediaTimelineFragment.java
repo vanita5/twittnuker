@@ -42,6 +42,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosi
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.loader.support.MediaTimelineLoader;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.Utils;
@@ -117,14 +118,14 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
     @Override
     public Loader<List<ParcelableStatus>> onCreateLoader(int id, Bundle args) {
         final Context context = getActivity();
-        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long maxId = args.getLong(EXTRA_MAX_ID, -1);
         final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
         final boolean fromUser = args.getBoolean(EXTRA_FROM_USER);
-        return new MediaTimelineLoader(context, accountId, userId, screenName, sinceId, maxId,
+        return new MediaTimelineLoader(context, accountKey, userId, screenName, sinceId, maxId,
                 getAdapter().getData(), null, tabPosition, fromUser);
     }
 

@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 public class UserListMembersLoader extends CursorSupportUsersLoader {
@@ -40,10 +41,10 @@ public class UserListMembersLoader extends CursorSupportUsersLoader {
     private final long mUserId;
     private final String mScreenName, mListName;
 
-    public UserListMembersLoader(final Context context, final long accountId, final long listId,
+    public UserListMembersLoader(final Context context, final AccountKey accountKey, final long listId,
                                  final long userId, final String screenName, final String listName,
-                                 final long cursor, final List<ParcelableUser> data, boolean fromUser) {
-        super(context, accountId, data, fromUser);
+                                 final List<ParcelableUser> data, boolean fromUser) {
+        super(context, accountKey, data, fromUser);
         mListId = listId;
         mUserId = userId;
         mScreenName = screenName;

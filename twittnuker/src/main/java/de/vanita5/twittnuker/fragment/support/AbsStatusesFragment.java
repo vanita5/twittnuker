@@ -49,8 +49,11 @@ import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter.StatusAdapterListene
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
+import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.IntentUtils;
@@ -86,7 +89,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         mStatusesBusCallback = createMessageBusCallback();
     }
 
-    public abstract boolean getStatuses(long[] accountIds, long[] maxIds, long[] sinceIds);
+    public abstract boolean getStatuses(RefreshTaskParam param);
 
     @Override
     public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
@@ -129,7 +132,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
                 case ACTION_STATUS_FAVORITE: {
                     final AsyncTwitterWrapper twitter = mTwitterWrapper;
                     if (status.is_favorite) {
-                        twitter.destroyFavoriteAsync(new AccountId(status.account_id,
+                        twitter.destroyFavoriteAsync(new AccountKey(status.account_id,
                                 status.account_host), status.id);
                     } else {
                         final IStatusViewHolder holder = (IStatusViewHolder)
@@ -262,9 +265,9 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(position);
         if (status == null) return;
-        final long[] accountIds = {status.account_id};
+        final AccountKey[] accountIds = {new AccountKey(status.account_id, status.account_host)};
         final long[] maxIds = {status.id};
-        getStatuses(accountIds, maxIds, null);
+        getStatuses(new BaseRefreshTaskParam(accountIds, maxIds, null));
     }
 
     @Override
@@ -304,7 +307,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
                 final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (twitter == null) return;
                 if (status.is_favorite) {
-                    twitter.destroyFavoriteAsync(new AccountId(status.account_id,
+                    twitter.destroyFavoriteAsync(new AccountKey(status.account_id,
                             status.account_host), status.id);
                 } else {
                     holder.playLikeAnimation(new DefaultOnLikedListener(twitter, status));
@@ -401,7 +404,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         return new StatusesBusCallback();
     }
 
-    protected abstract long[] getAccountIds();
+    protected abstract AccountKey[] getAccountKeys();
 
     protected Data getAdapterData() {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
@@ -487,7 +490,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
     }
 
     private String getReadPositionTagWithAccounts() {
-        return Utils.getReadPositionTagWithAccounts(getReadPositionTagWithArguments(), getAccountIds());
+        return Utils.getReadPositionTagWithAccounts(getReadPositionTagWithArguments(), getAccountKeys());
     }
 
     public static final class DefaultOnLikedListener implements LikeAnimationDrawable.OnLikedListener {
@@ -503,7 +506,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         public boolean onLiked() {
             final ParcelableStatus status = mStatus;
             if (status.is_favorite) return false;
-            mTwitter.createFavoriteAsync(new AccountId(status.account_id, status.account_host),
+            mTwitter.createFavoriteAsync(new AccountKey(status.account_id, status.account_host),
                     status.id);
             return true;
         }

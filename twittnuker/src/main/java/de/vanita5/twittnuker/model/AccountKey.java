@@ -25,29 +25,35 @@ package de.vanita5.twittnuker.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
+@JsonObject
 @ParcelablePlease
-public class AccountId implements Comparable<AccountId>, Parcelable {
+public class AccountKey implements Comparable<AccountKey>, Parcelable {
 
+    @JsonField(name = "id")
     @ParcelableThisPlease
     long id;
+    @JsonField(name = "host")
     @ParcelableThisPlease
     String host;
 
-    public AccountId(long id, String host) {
+    public AccountKey(long id, String host) {
         this.id = id;
         this.host = host;
     }
 
-    public AccountId(ParcelableAccount account) {
+    public AccountKey(ParcelableAccount account) {
         this.id = account.account_id;
         this.host = account.account_host;
     }
 
-    AccountId() {
+    AccountKey() {
 
     }
 
@@ -65,7 +71,25 @@ public class AccountId implements Comparable<AccountId>, Parcelable {
         return String.valueOf(id);
     }
 
-    public static long[] getIds(AccountId[] ids) {
+    @Nullable
+    public static AccountKey valueOf(@Nullable String str) {
+        if (str == null) return null;
+        int idxOfAt = str.indexOf("@");
+        try {
+            if (idxOfAt != -1) {
+                final String idStr = str.substring(0, idxOfAt);
+                return new AccountKey(Long.parseLong(idStr),
+                        str.substring(idxOfAt + 1, str.length()));
+
+            } else {
+                return new AccountKey(Long.parseLong(str), null);
+            }
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public static long[] getIds(AccountKey[] ids) {
         long[] result = new long[ids.length];
         for (int i = 0, idsLength = ids.length; i < idsLength; i++) {
             result[i] = ids[i].getId();
@@ -74,7 +98,7 @@ public class AccountId implements Comparable<AccountId>, Parcelable {
     }
 
     @Override
-    public int compareTo(@NonNull AccountId another) {
+    public int compareTo(@NonNull AccountKey another) {
         if (this.id == another.id) {
             if (this.host != null && another.host != null) {
                 return this.host.compareTo(another.host);
@@ -93,9 +117,9 @@ public class AccountId implements Comparable<AccountId>, Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AccountId accountId = (AccountId) o;
+        AccountKey accountKey = (AccountKey) o;
 
-        return id == accountId.id;
+        return id == accountKey.id;
 
     }
 
@@ -111,18 +135,18 @@ public class AccountId implements Comparable<AccountId>, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        AccountIdParcelablePlease.writeToParcel(this, dest, flags);
+        AccountKeyParcelablePlease.writeToParcel(this, dest, flags);
     }
 
-    public static final Creator<AccountId> CREATOR = new Creator<AccountId>() {
-        public AccountId createFromParcel(Parcel source) {
-            AccountId target = new AccountId();
-            AccountIdParcelablePlease.readFromParcel(target, source);
+    public static final Creator<AccountKey> CREATOR = new Creator<AccountKey>() {
+        public AccountKey createFromParcel(Parcel source) {
+            AccountKey target = new AccountKey();
+            AccountKeyParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
-        public AccountId[] newArray(int size) {
-            return new AccountId[size];
+        public AccountKey[] newArray(int size) {
+            return new AccountKey[size];
         }
     };
 }

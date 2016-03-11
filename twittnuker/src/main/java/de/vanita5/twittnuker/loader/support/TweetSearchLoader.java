@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -44,11 +45,11 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
     private final String mQuery;
     private final boolean mGapEnabled;
 
-    public TweetSearchLoader(final Context context, final long accountId, @NonNull final String query,
+    public TweetSearchLoader(final Context context, final AccountKey accountKey, @NonNull final String query,
                              final long sinceId, final long maxId, final List<ParcelableStatus> data,
                              final String[] savedStatusesArgs, final int tabPosition, boolean fromUser,
                              boolean makeGap) {
-        super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
+        super(context, accountKey, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
         mQuery = query;
         mGapEnabled = makeGap;
     }
@@ -57,7 +58,7 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
     @Override
     public List<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
         final String processedQuery = processQuery(mQuery);
-        if (TwitterAPIFactory.isTwitterCredentials(getContext(), getAccountId())) {
+        if (TwitterAPIFactory.isTwitterCredentials(getContext(), getAccountKey())) {
             final SearchQuery query = new SearchQuery(processedQuery);
             query.paging(paging);
             return twitter.search(query);
@@ -67,7 +68,7 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 
     @NonNull
     protected String processQuery(@NonNull final String query) {
-        if (TwitterAPIFactory.isTwitterCredentials(getContext(), getAccountId())) {
+        if (TwitterAPIFactory.isTwitterCredentials(getContext(), getAccountKey())) {
             return String.format("%s exclude:retweets", query);
         }
         return query;

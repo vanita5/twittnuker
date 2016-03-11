@@ -44,7 +44,7 @@ public class CreateUserListDialogFragment extends BaseSupportDialogFragment impl
             case DialogInterface.BUTTON_POSITIVE: {
                 final AlertDialog alertDialog = (AlertDialog) dialog;
                 final Bundle args = getArguments();
-                final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+                final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
                 final MaterialEditText mEditName = (MaterialEditText) alertDialog.findViewById(R.id.name);
                 final MaterialEditText mEditDescription = (MaterialEditText) alertDialog.findViewById(R.id.description);
                 final CheckBox mPublicCheckBox = (CheckBox) alertDialog.findViewById(R.id.is_public);
@@ -52,7 +52,7 @@ public class CreateUserListDialogFragment extends BaseSupportDialogFragment impl
                 final String description = ParseUtils.parseString(mEditDescription.getText());
                 final boolean isPublic = mPublicCheckBox.isChecked();
                 if (TextUtils.isEmpty(name)) return;
-                mTwitterWrapper.createUserListAsync(accountId, name, isPublic, description);
+                mTwitterWrapper.createUserListAsync(accountKey, name, isPublic, description);
                 break;
             }
         }

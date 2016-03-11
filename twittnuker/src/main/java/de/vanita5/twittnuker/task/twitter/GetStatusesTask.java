@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.model.AccountId;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
@@ -167,15 +167,15 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
 
     @Override
     public List<TwitterWrapper.StatusListResponse> doLongOperation(final RefreshTaskParam param) {
-        final AccountId[] accountIds = param.getAccountIds();
+        final AccountKey[] accountKeys = param.getAccountKeys();
         final long[] maxIds = param.getMaxIds();
         final long[] sinceIds = param.getSinceIds();
         final List<TwitterWrapper.StatusListResponse> result = new ArrayList<>();
         int idx = 0;
         final int loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
-        for (final AccountId accountId : accountIds) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId.getId(),
-                    accountId.getHost(), true);
+        for (final AccountKey accountKey : accountKeys) {
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountKey.getId(),
+                    accountKey.getHost(), true);
             if (twitter == null) continue;
             try {
                 final Paging paging = new Paging();
@@ -198,21 +198,21 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
                 }
                 final List<Status> statuses = getStatuses(twitter, paging);
                 InternalTwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
-                storeStatus(accountId.getId(), accountId.getHost(), statuses, sinceId, maxId, true);
+                storeStatus(accountKey.getId(), accountKey.getHost(), statuses, sinceId, maxId, true);
                 // TODO cache related data and preload
                 final CacheUsersStatusesTask cacheTask = new CacheUsersStatusesTask(context);
-                cacheTask.setParams(new TwitterWrapper.StatusListResponse(accountId, statuses));
+                cacheTask.setParams(new TwitterWrapper.StatusListResponse(accountKey, statuses));
                 TaskStarter.execute(cacheTask);
-                errorInfoStore.remove(getErrorInfoKey(), accountId.getId());
+                errorInfoStore.remove(getErrorInfoKey(), accountKey.getId());
             } catch (final TwitterException e) {
                 if (BuildConfig.DEBUG) {
                     Log.w(LOGTAG, e);
                 }
                 if (e.isCausedByNetworkIssue()) {
-                    errorInfoStore.put(getErrorInfoKey(), accountId.getId(),
+                    errorInfoStore.put(getErrorInfoKey(), accountKey.getId(),
                             ErrorInfoStore.CODE_NETWORK_ERROR);
                 }
-                result.add(new TwitterWrapper.StatusListResponse(accountId, e));
+                result.add(new TwitterWrapper.StatusListResponse(accountKey, e));
             }
             idx++;
         }

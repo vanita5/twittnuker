@@ -174,11 +174,11 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
             }
             publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
 
-            for (long accountId : DataStoreUtils.getAccountIds(mContext)) {
-                final ParcelableCredentials credentials = DataStoreUtils.getCredentials(mContext, accountId);
-                final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, accountId, accountHost, false);
+            for (AccountKey accountKey : DataStoreUtils.getAccountKeys(mContext)) {
+                final ParcelableCredentials credentials = DataStoreUtils.getCredentials(mContext, accountKey);
+                final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, accountKey, false);
                 if (credentials == null || twitter == null) continue;
-                publishProgress(new LogText("Testing connection for account " + accountId));
+                publishProgress(new LogText("Testing connection for account " + accountKey));
                 publishProgress(LogText.LINEBREAK);
                 publishProgress(new LogText("api_url_format: " + credentials.api_url_format), LogText.LINEBREAK);
                 publishProgress(new LogText("same_oauth_signing_url: " + credentials.same_oauth_signing_url), LogText.LINEBREAK);

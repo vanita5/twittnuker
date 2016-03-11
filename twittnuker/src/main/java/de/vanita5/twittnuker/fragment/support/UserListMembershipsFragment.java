@@ -26,21 +26,22 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.loader.support.UserListMembershipsLoader;
-import de.vanita5.twittnuker.model.ParcelableUserList;
-
 import java.util.List;
+
+import de.vanita5.twittnuker.loader.support.UserListMembershipsLoader;
+import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.ParcelableUserList;
 
 public class UserListMembershipsFragment extends ParcelableUserListsFragment {
 
-	@Override
+    @Override
     public Loader<List<ParcelableUserList>> onCreateUserListsLoader(final Context context,
                                                                     final Bundle args, final boolean fromUser) {
-        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         final long cursor = args.getLong(EXTRA_NEXT_CURSOR, -1);
         return new UserListMembershipsLoader(getActivity(), accountId, userId, screenName, cursor, getData());
-	}
+    }
 
 }

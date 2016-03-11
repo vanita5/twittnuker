@@ -36,6 +36,7 @@ import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.OrderBy;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -61,8 +62,7 @@ public class UserAutoCompleteAdapter extends SimpleCursorAdapter implements Cons
     private final boolean mDisplayProfileImage;
 
     private int mIdIdx, mNameIdx, mScreenNameIdx, mProfileImageIdx;
-    private long mAccountId;
-    private char mToken;
+    private AccountKey mAccountKey;
 
     public UserAutoCompleteAdapter(final Context context) {
         super(context, R.layout.list_item_auto_complete, null, FROM, TO, 0);
@@ -126,8 +126,8 @@ public class UserAutoCompleteAdapter extends SimpleCursorAdapter implements Cons
     }
 
 
-    public void setAccountId(long accountId) {
-        mAccountId = accountId;
+    public void setAccountKey(AccountKey accountKey) {
+        mAccountKey = accountKey;
     }
 
     @Override

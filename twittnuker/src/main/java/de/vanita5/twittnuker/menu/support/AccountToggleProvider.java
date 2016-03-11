@@ -32,19 +32,20 @@ import android.view.SubMenu;
 import android.view.View;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 
 public class AccountToggleProvider extends ActionProvider implements TwittnukerConstants {
 
-	public static final int MENU_GROUP = 201;
+    public static final int MENU_GROUP = 201;
 
-	private ParcelableAccount[] mAccounts;
+    private ParcelableAccount[] mAccounts;
 
-	private boolean mExclusive;
+    private boolean mExclusive;
 
     public AccountToggleProvider(final Context context) {
-		super(context);
-	}
+        super(context);
+    }
 
     public ParcelableAccount[] getAccounts() {
         return mAccounts;
@@ -55,16 +56,16 @@ public class AccountToggleProvider extends ActionProvider implements TwittnukerC
     }
 
     @NonNull
-    public long[] getActivatedAccountIds() {
-        if (mAccounts == null) return new long[0];
-        long[] temp = new long[mAccounts.length];
+    public AccountKey[] getActivatedAccountIds() {
+        if (mAccounts == null) return new AccountKey[0];
+        AccountKey[] temp = new AccountKey[mAccounts.length];
         int len = 0;
         for (ParcelableAccount account : mAccounts) {
             if (account.is_activated) {
-                temp[len++] = account.account_id;
+                temp[len++] = new AccountKey(account.account_id, account.account_host);
             }
         }
-        final long[] result = new long[len];
+        final AccountKey[] result = new AccountKey[len];
         System.arraycopy(temp, 0, result, 0, len);
         return result;
     }
@@ -77,7 +78,7 @@ public class AccountToggleProvider extends ActionProvider implements TwittnukerC
         mExclusive = exclusive;
     }
 
-	@Override
+    @Override
     public View onCreateActionView() {
         return null;
     }
@@ -88,36 +89,36 @@ public class AccountToggleProvider extends ActionProvider implements TwittnukerC
     }
 
     @Override
-	public boolean hasSubMenu() {
-		return true;
-	}
+    public boolean hasSubMenu() {
+        return true;
+    }
 
-	@Override
-	public void onPrepareSubMenu(final SubMenu subMenu) {
+    @Override
+    public void onPrepareSubMenu(final SubMenu subMenu) {
         subMenu.removeGroup(MENU_GROUP);
-		if (mAccounts == null) return;
+        if (mAccounts == null) return;
         for (int i = 0, j = mAccounts.length; i < j; i++) {
             final ParcelableAccount account = mAccounts[i];
             final MenuItem item = subMenu.add(MENU_GROUP, Menu.NONE, i, account.name);
-			final Intent intent = new Intent();
-			intent.putExtra(EXTRA_ACCOUNT, account);
-			item.setIntent(intent);
-		}
-		subMenu.setGroupCheckable(MENU_GROUP, true, mExclusive);
-		for (int i = 0, j = subMenu.size(); i < j; i++) {
-			final MenuItem item = subMenu.getItem(i);
+            final Intent intent = new Intent();
+            intent.putExtra(EXTRA_ACCOUNT, account);
+            item.setIntent(intent);
+        }
+        subMenu.setGroupCheckable(MENU_GROUP, true, mExclusive);
+        for (int i = 0, j = subMenu.size(); i < j; i++) {
+            final MenuItem item = subMenu.getItem(i);
             if (mAccounts[i].is_activated) {
-				item.setChecked(true);
-			}
-		}
-	}
+                item.setChecked(true);
+            }
+        }
+    }
 
     public void setAccountActivated(long accountId, boolean isChecked) {
         if (mAccounts == null) return;
         for (final ParcelableAccount account : mAccounts) {
             if (account.account_id == accountId) {
                 account.is_activated = isChecked;
-			}
+            }
         }
     }
 }

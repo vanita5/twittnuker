@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.Trend;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.AccountId;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
@@ -135,9 +135,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     }
 
     public static ContentValues createCachedRelationship(final Relationship relationship,
-                                                         final long accountId) {
+                                                         final AccountKey accountKey) {
         final ContentValues values = new ContentValues();
-        values.put(CachedRelationships.ACCOUNT_ID, accountId);
+        values.put(CachedRelationships.ACCOUNT_ID, accountKey.getId());
+        values.put(CachedRelationships.ACCOUNT_HOST, accountKey.getHost());
         values.put(CachedRelationships.USER_ID, relationship.getTargetUserId());
         values.put(CachedRelationships.FOLLOWING, relationship.isSourceFollowingTarget());
         values.put(CachedRelationships.FOLLOWED_BY, relationship.isSourceFollowedByTarget());
@@ -264,9 +265,9 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     }
 
     @NonNull
-    public static ContentValues createStatus(final Status orig, final AccountId accountId) {
+    public static ContentValues createStatus(final Status orig, final AccountKey accountKey) {
         return ParcelableStatusValuesCreator.create(ParcelableStatusUtils.fromStatus(orig,
-                accountId, false));
+                accountKey, false));
     }
 
     @NonNull

@@ -31,15 +31,16 @@ import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
 public abstract class CursorSupportUsersLoader extends BaseCursorSupportUsersLoader {
 
-    public CursorSupportUsersLoader(final Context context, final long accountId,
+    public CursorSupportUsersLoader(final Context context, final AccountKey accountKey,
                                     final List<ParcelableUser> data, boolean fromUser) {
-        super(context, accountId, data, fromUser);
+        super(context, accountKey, data, fromUser);
     }
 
     @NonNull

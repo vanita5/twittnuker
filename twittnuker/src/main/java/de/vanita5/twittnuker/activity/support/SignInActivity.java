@@ -88,6 +88,7 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.StatusNetAccountExtra;
@@ -119,7 +120,7 @@ import java.lang.ref.WeakReference;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createAccount;
-import static de.vanita5.twittnuker.util.DataStoreUtils.getActivatedAccountIds;
+import static de.vanita5.twittnuker.util.DataStoreUtils.getActivatedAccountKeys;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
@@ -235,8 +236,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home: {
-                final long[] account_ids = getActivatedAccountIds(this);
-                if (account_ids.length > 0) {
+                final AccountKey[] accountKeys = getActivatedAccountKeys(this);
+                if (accountKeys.length > 0) {
                     onBackPressed();
                 }
                 break;
@@ -1072,7 +1073,9 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
             if (values != null && accountType != null) {
                 values.put(Accounts.ACCOUNT_TYPE, accountType.first);
                 values.put(Accounts.ACCOUNT_EXTRAS, accountType.second);
-                final ParcelableUser parcelableUser = ParcelableUserUtils.fromUser(user, user.getId());
+                final AccountKey accountKey = new AccountKey(user.getId(),
+                        ParcelableUserUtils.getUserHost(user.getOstatusUri()));
+                final ParcelableUser parcelableUser = ParcelableUserUtils.fromUser(user, accountKey);
                 values.put(Accounts.ACCOUNT_HOST, ParcelableUserUtils.getUserHost(parcelableUser));
                 values.put(Accounts.ACCOUNT_USER, JsonSerializer.serialize(parcelableUser, ParcelableUser.class));
             }

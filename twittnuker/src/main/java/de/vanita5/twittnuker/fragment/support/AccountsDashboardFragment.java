@@ -90,6 +90,7 @@ import de.vanita5.twittnuker.activity.support.QuickSearchBarActivity;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.menu.support.AccountToggleProvider;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
@@ -161,11 +162,11 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
     private boolean mLoaderInitialized;
 
     @NonNull
-    public long[] getActivatedAccountIds() {
+    public AccountKey[] getActivatedAccountIds() {
         if (mAccountActionProvider != null) {
             return mAccountActionProvider.getActivatedAccountIds();
         }
-        return DataStoreUtils.getActivatedAccountIds(getActivity());
+        return DataStoreUtils.getActivatedAccountKeys(getActivity());
     }
 
     @Override

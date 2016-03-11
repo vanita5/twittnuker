@@ -32,8 +32,8 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 
 import java.util.List;
@@ -44,14 +44,14 @@ public class UserTimelineLoader extends TwitterAPIStatusesLoader {
     private final String mUserScreenName;
     private final boolean mIsMyTimeline;
 
-    public UserTimelineLoader(final Context context, final long accountId, final long userId,
+    public UserTimelineLoader(final Context context, final AccountKey accountId, final long userId,
                               final String screenName, final long sinceId, final long maxId,
                               final List<ParcelableStatus> data, final String[] savedStatusesArgs,
                               final int tabPosition, boolean fromUser) {
         super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
         mUserId = userId;
         mUserScreenName = screenName;
-        mIsMyTimeline = userId > 0 ? accountId == userId : accountId == DataStoreUtils.getAccountId(context, screenName);
+        mIsMyTimeline = accountId.getId() == userId;
     }
 
     @NonNull
@@ -68,8 +68,9 @@ public class UserTimelineLoader extends TwitterAPIStatusesLoader {
     @WorkerThread
     @Override
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
+        if (mIsMyTimeline) return false;
         final long retweetUserId = status.is_retweet ? status.user_id : -1;
-        return !mIsMyTimeline && InternalTwitterContentUtils.isFiltered(database, retweetUserId, status.text_plain,
+        return InternalTwitterContentUtils.isFiltered(database, retweetUserId, status.text_plain,
                 status.text_html, status.source, -1, status.quoted_user_id);
     }
 }

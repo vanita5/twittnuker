@@ -31,7 +31,7 @@ import android.text.TextUtils;
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
-import de.vanita5.twittnuker.model.AccountId;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -75,8 +75,8 @@ public class ParcelableAccountUtils {
         return null;
     }
 
-    public static ParcelableAccount getAccount(final Context context, final AccountId accountId) {
-        return getAccount(context, accountId.getId(), accountId.getHost());
+    public static ParcelableAccount getAccount(final Context context, final AccountKey accountKey) {
+        return getAccount(context, accountKey.getId(), accountKey.getHost());
     }
 
     @NonNull

@@ -35,8 +35,10 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.UserListMembersLoader;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.model.util.ParcelableUserListUtils;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
@@ -61,14 +63,15 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment {
 
     @Override
     public CursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
-        if (args == null) return null;
         final long listId = args.getLong(EXTRA_LIST_ID, -1);
-        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final AccountKey accountId = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         final String listName = args.getString(EXTRA_LIST_NAME);
-        return new UserListMembersLoader(context, accountId, listId, userId, screenName, listName,
-                getNextCursor(), getData(), fromUser);
+        final UserListMembersLoader loader = new UserListMembersLoader(context, accountId, listId,
+                userId, screenName, listName, getData(), fromUser);
+        loader.setCursor(getNextCursor());
+        return loader;
     }
 
     @Override
@@ -82,7 +85,7 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment {
         super.onActivityCreated(savedInstanceState);
         if (mUserList == null && args != null) {
             final long listId = args.getLong(EXTRA_LIST_ID, -1);
-            final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+            final AccountKey accountId = args.getParcelable(EXTRA_ACCOUNT_KEY);
             final long userId = args.getLong(EXTRA_USER_ID, -1);
             final String screenName = args.getString(EXTRA_SCREEN_NAME);
             final String listName = args.getString(EXTRA_LIST_NAME);
@@ -111,35 +114,36 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment {
 
     private class GetUserListTask extends AsyncTask<Object, Object, SingleResponse<ParcelableUserList>> {
 
-        private final long accountId, userId;
-        private final long listId;
-        private final String screenName, listName;
+        private final AccountKey mAccountKey;
+        private final long mUserId;
+        private final long mListId;
+        private final String mScreenName, mListName;
 
-        private GetUserListTask(final long accountId, final long listId, final String listName, final long userId,
+        private GetUserListTask(final AccountKey accountKey, final long listId, final String listName, final long userId,
                                 final String screenName) {
-            this.accountId = accountId;
-            this.userId = userId;
-            this.listId = listId;
-            this.screenName = screenName;
-            this.listName = listName;
+            this.mAccountKey = accountKey;
+            this.mUserId = userId;
+            this.mListId = listId;
+            this.mScreenName = screenName;
+            this.mListName = listName;
         }
 
         @Override
         @NonNull
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getActivity(), accountId, accountHost, true);
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getActivity(), mAccountKey, true);
             if (twitter == null) return SingleResponse.getInstance();
             try {
                 final UserList list;
-                if (listId > 0) {
-                    list = twitter.showUserList(listId);
-                } else if (userId > 0) {
-                    list = twitter.showUserList(listName, userId);
-                } else if (screenName != null) {
-                    list = twitter.showUserList(listName, screenName);
+                if (mListId > 0) {
+                    list = twitter.showUserList(mListId);
+                } else if (mUserId > 0) {
+                    list = twitter.showUserList(mListName, mUserId);
+                } else if (mScreenName != null) {
+                    list = twitter.showUserList(mListName, mScreenName);
                 } else
                     throw new TwitterException("list_id or list_name and user_id (or screen_name) required");
-                return SingleResponse.getInstance(new ParcelableUserList(list, accountId));
+                return SingleResponse.getInstance(ParcelableUserListUtils.from(list, mAccountKey));
             } catch (final TwitterException e) {
                 return SingleResponse.getInstance(e);
             }

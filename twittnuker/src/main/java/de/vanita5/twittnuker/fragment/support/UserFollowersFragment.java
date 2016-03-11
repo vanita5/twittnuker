@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.UserFollowersLoader;
+import de.vanita5.twittnuker.model.AccountKey;
 
 import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
 
@@ -59,7 +60,7 @@ public class UserFollowersFragment extends CursorSupportUsersListFragment {
     @Override
     public CursorSupportUsersLoader onCreateUsersLoader(final Context context,
                                                         @NonNull final Bundle args, boolean fromUser) {
-        final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
+        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         final UserFollowersLoader loader = new UserFollowersLoader(context, accountId, userId,

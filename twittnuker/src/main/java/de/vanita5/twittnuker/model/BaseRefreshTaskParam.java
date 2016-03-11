@@ -27,14 +27,14 @@ import android.support.annotation.Nullable;
 
 public class BaseRefreshTaskParam implements RefreshTaskParam {
 
-    private final de.vanita5.twittnuker.model.AccountId[] accountIds;
+    private final AccountKey[] mAccountKeys;
     private final long[] maxIds;
     private final long[] sinceIds;
 
     @NonNull
     @Override
-    public de.vanita5.twittnuker.model.AccountId[] getAccountIds() {
-        return accountIds;
+    public AccountKey[] getAccountKeys() {
+        return mAccountKeys;
     }
 
     @Nullable
@@ -49,8 +49,8 @@ public class BaseRefreshTaskParam implements RefreshTaskParam {
         return sinceIds;
     }
 
-    public BaseRefreshTaskParam(de.vanita5.twittnuker.model.AccountId[] accountIds, long[] maxIds, long[] sinceIds) {
-        this.accountIds = accountIds;
+    public BaseRefreshTaskParam(AccountKey[] accountKeys, long[] maxIds, long[] sinceIds) {
+        this.mAccountKeys = accountKeys;
         this.maxIds = maxIds;
         this.sinceIds = sinceIds;
     }

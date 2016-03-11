@@ -57,6 +57,9 @@ import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.DirectMessageEntry;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.MessageEntriesAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
+import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
+import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -152,7 +155,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
     @Override
     public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
         final Uri uri = DirectMessages.ConversationEntries.CONTENT_URI;
-        final long[] accountIds = getAccountIds();
+        final AccountKey[] accountIds = getAccountKeys();
         final Expression account_where = Expression.in(new Column(Statuses.ACCOUNT_ID), new RawItemArray(accountIds));
         return new CursorLoader(getActivity(), uri, null, account_where.getSQL(), null, null);
     }
@@ -166,7 +169,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
         adapter.setCursor(cursor);
         adapter.setLoadMoreIndicatorPosition(IndicatorPosition.NONE);
         adapter.setLoadMoreSupportedPosition(hasMoreData(cursor) ? IndicatorPosition.END : IndicatorPosition.NONE);
-        final long[] accountIds = getAccountIds();
+        final AccountKey[] accountIds = getAccountKeys();
         adapter.setShowAccountsColor(accountIds.length > 1);
         setRefreshEnabled(true);
 
@@ -233,25 +236,24 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
 
     @Override
     public boolean triggerRefresh() {
-        AsyncTaskUtils.executeTask(new AsyncTask<Object, Object, long[][]>() {
+        AsyncTaskUtils.executeTask(new AsyncTask<Object, Object, RefreshTaskParam>() {
 
             @Override
-            protected long[][] doInBackground(final Object... params) {
+            protected RefreshTaskParam doInBackground(final Object... params) {
                 final Context context = getContext();
                 if (context == null) return null;
-                final long[][] result = new long[2][];
-                result[0] = getAccountIds();
-                result[1] = DataStoreUtils.getNewestMessageIds(context,
-                        DirectMessages.Inbox.CONTENT_URI, result[0]);
-                return result;
+                AccountKey[] accountIds = getAccountKeys();
+                long[] ids = DataStoreUtils.getNewestMessageIds(context,
+                        DirectMessages.Inbox.CONTENT_URI, accountIds);
+                return new BaseRefreshTaskParam(accountIds, ids, null);
             }
 
             @Override
-            protected void onPostExecute(final long[][] result) {
+            protected void onPostExecute(final RefreshTaskParam result) {
                 final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (twitter == null || result == null) return;
-                twitter.getReceivedDirectMessagesAsync(result[0], null, result[1]);
-                twitter.getSentDirectMessagesAsync(result[0], null, null);
+                twitter.getReceivedDirectMessagesAsync(result);
+                twitter.getSentDirectMessagesAsync(new BaseRefreshTaskParam(result.getAccountKeys(), null, null));
             }
 
         });
@@ -321,7 +323,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
     }
 
     public void openNewMessageConversation() {
-        final long[] accountIds = getAccountIds();
+        final AccountKey[] accountIds = getAccountKeys();
         if (accountIds.length == 1) {
             Utils.openMessageConversation(getActivity(), accountIds[0], -1);
         } else {
@@ -334,24 +336,25 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
         super.setUserVisibleHint(isVisibleToUser);
         final FragmentActivity activity = getActivity();
         if (isVisibleToUser && activity != null) {
-            for (long accountId : getAccountIds()) {
-                final String tag = "messages_" + accountId;
+            for (AccountKey accountKey : getAccountKeys()) {
+                final String tag = "messages_" + accountKey;
                 mNotificationManager.cancel(tag, NOTIFICATION_ID_DIRECT_MESSAGES);
             }
         }
     }
 
     @NonNull
-    protected long[] getAccountIds() {
+    protected AccountKey[] getAccountKeys() {
         final Bundle args = getArguments();
-        if (args != null && args.getLong(EXTRA_ACCOUNT_ID) > 0) {
-            return new long[]{args.getLong(EXTRA_ACCOUNT_ID)};
+        AccountKey[] accountKeys = Utils.getAccountKeys(args);
+        if (accountKeys != null) {
+            return accountKeys;
         }
         final FragmentActivity activity = getActivity();
         if (activity instanceof HomeActivity) {
-            return ((HomeActivity) activity).getActivatedAccountIds();
+            return ((HomeActivity) activity).getActivatedAccountKeys();
         }
-        return DataStoreUtils.getActivatedAccountIds(getActivity());
+        return DataStoreUtils.getActivatedAccountKeys(getActivity());
     }
 
     protected void updateRefreshState() {
@@ -380,27 +383,27 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
         if (isRefreshing()) return;
         setLoadMoreIndicatorPosition(IndicatorPosition.END);
         setRefreshEnabled(false);
-        AsyncTaskUtils.executeTask(new AsyncTask<Object, Object, long[][]>() {
+        AsyncTaskUtils.executeTask(new AsyncTask<Object, Object, RefreshTaskParam[]>() {
 
             @Override
-            protected long[][] doInBackground(final Object... params) {
+            protected RefreshTaskParam[] doInBackground(final Object... params) {
                 final Context context = getContext();
                 if (context == null) return null;
-                final long[][] result = new long[3][];
-                result[0] = getAccountIds();
-                result[1] = DataStoreUtils.getOldestMessageIds(context,
-                        DirectMessages.Inbox.CONTENT_URI, result[0]);
-                result[2] = DataStoreUtils.getOldestMessageIds(context,
-                        DirectMessages.Outbox.CONTENT_URI, result[0]);
+                RefreshTaskParam[] result = new RefreshTaskParam[2];
+                AccountKey[] accountKeys = getAccountKeys();
+                result[0] = new BaseRefreshTaskParam(accountKeys, DataStoreUtils.getOldestMessageIds(context,
+                        DirectMessages.Inbox.CONTENT_URI, accountKeys), null);
+                result[1] = new BaseRefreshTaskParam(accountKeys, DataStoreUtils.getOldestMessageIds(context,
+                        DirectMessages.Outbox.CONTENT_URI, accountKeys), null);
                 return result;
             }
 
             @Override
-            protected void onPostExecute(final long[][] result) {
+            protected void onPostExecute(final RefreshTaskParam[] result) {
                 final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (twitter == null || result == null) return;
-                twitter.getReceivedDirectMessagesAsync(result[0], result[1], null);
-                twitter.getSentDirectMessagesAsync(result[0], result[2], null);
+                twitter.getReceivedDirectMessagesAsync(result[0]);
+                twitter.getSentDirectMessagesAsync(result[1]);
             }
 
         });

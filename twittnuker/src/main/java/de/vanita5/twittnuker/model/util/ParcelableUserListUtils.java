@@ -24,21 +24,21 @@ package de.vanita5.twittnuker.model.util;
 
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
-import de.vanita5.twittnuker.model.AccountId;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 
 public class ParcelableUserListUtils {
-    public static ParcelableUserList from(UserList list, AccountId accountId) {
-        return from(list, accountId, 0, false);
+    public static ParcelableUserList from(UserList list, AccountKey accountKey) {
+        return from(list, accountKey, 0, false);
     }
 
-    public static ParcelableUserList from(UserList list, AccountId accountId, long position, boolean isFollowing) {
+    public static ParcelableUserList from(UserList list, AccountKey accountKey, long position, boolean isFollowing) {
         ParcelableUserList obj = new ParcelableUserList();
         final User user = list.getUser();
         obj.position = position;
-        obj.account_id = accountId.getId();
-        obj.account_host = accountId.getHost();
+        obj.account_id = accountKey.getId();
+        obj.account_host = accountKey.getHost();
         obj.id = list.getId();
         obj.is_public = UserList.Mode.PUBLIC.equals(list.getMode());
         obj.is_following = isFollowing;
@@ -53,12 +53,12 @@ public class ParcelableUserListUtils {
         return obj;
     }
 
-    public static ParcelableUserList[] fromUserLists(UserList[] userLists, long accountId) {
+    public static ParcelableUserList[] fromUserLists(UserList[] userLists, AccountKey accountKey) {
         if (userLists == null) return null;
         int size = userLists.length;
         final ParcelableUserList[] result = new ParcelableUserList[size];
         for (int i = 0; i < size; i++) {
-            result[i] = new ParcelableUserList(userLists[i], accountId);
+            result[i] = from(userLists[i], accountKey);
         }
         return result;
     }

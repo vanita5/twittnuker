@@ -25,18 +25,18 @@ package de.vanita5.twittnuker.model.message;
 import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.api.twitter.model.Relationship;
-import de.vanita5.twittnuker.model.AccountId;
+import de.vanita5.twittnuker.model.AccountKey;
 
 public class FriendshipUpdatedEvent {
 
     @NonNull
-    public final AccountId accountId;
+    public final AccountKey mAccountKey;
     public final long userId;
     @NonNull
     public final Relationship relationship;
 
-    public FriendshipUpdatedEvent(@NonNull AccountId accountId, long userId, @NonNull Relationship relationship) {
-        this.accountId = accountId;
+    public FriendshipUpdatedEvent(@NonNull AccountKey accountKey, long userId, @NonNull Relationship relationship) {
+        this.mAccountKey = accountKey;
         this.userId = userId;
         this.relationship = relationship;
     }

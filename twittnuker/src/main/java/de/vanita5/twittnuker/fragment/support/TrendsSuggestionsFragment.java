@@ -37,25 +37,24 @@ import android.widget.ListView;
 import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.adapter.TrendsAdapter;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 
-import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
 import static de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri;
+import static de.vanita5.twittnuker.util.Utils.getDefaultAccountKey;
 import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
 
 public class TrendsSuggestionsFragment extends AbsContentListViewFragment<TrendsAdapter>
         implements LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
-
-
-    private long mAccountId;
+    private AccountKey mAccountId;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAccountId = getDefaultAccountId(getActivity());
+        mAccountId = getDefaultAccountKey(getActivity());
         getListView().setOnItemClickListener(this);
         getLoaderManager().initLoader(0, null, this);
         showProgress();

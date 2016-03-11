@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
@@ -33,7 +34,7 @@ import java.util.Locale;
 
 public class UserMentionsLoader extends TweetSearchLoader {
 
-    public UserMentionsLoader(final Context context, final long accountId, final String screenName,
+    public UserMentionsLoader(final Context context, final AccountKey accountId, final String screenName,
                               final long maxId, final long sinceId, final List<ParcelableStatus> data,
                               final String[] savedStatusesArgs, final int tabPosition, boolean fromUser,
                               boolean makeGap) {
@@ -45,7 +46,7 @@ public class UserMentionsLoader extends TweetSearchLoader {
     @Override
     protected String processQuery(@NonNull final String query) {
         final String screenName = query.startsWith("@") ? query.substring(1) : query;
-        if (TwitterAPIFactory.isTwitterCredentials(getContext(), getAccountId())) {
+        if (TwitterAPIFactory.isTwitterCredentials(getContext(), getAccountKey())) {
             return String.format(Locale.ROOT, "to:%s exclude:retweets", screenName);
         }
         return String.format(Locale.ROOT, "@%s -RT", screenName);
