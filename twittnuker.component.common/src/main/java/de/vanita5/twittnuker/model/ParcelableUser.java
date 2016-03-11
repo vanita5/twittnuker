@@ -35,7 +35,6 @@ import org.mariotaku.library.objectcursor.annotation.AfterCursorObjectCreated;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
 
-import de.vanita5.twittnuker.model.ParcelableStatus.Extras;
 import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 
@@ -312,6 +311,9 @@ public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
         @JsonField(name = "profile_image_url_profile_size")
         @ParcelableThisPlease
         public String profile_image_url_profile_size;
+        @JsonField(name = "groups_count")
+        @ParcelableThisPlease
+        public long groups_count = -1;
 
         @Override
         public int describeContents() {

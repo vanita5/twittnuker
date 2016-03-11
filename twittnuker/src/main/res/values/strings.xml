@@ -757,6 +757,7 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Translate from <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Translation</string>
+    <string name="groups">Groups</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

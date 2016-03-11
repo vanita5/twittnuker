@@ -23,13 +23,11 @@
 package de.vanita5.twittnuker.model.util;
 
 import android.database.Cursor;
-import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
@@ -84,6 +82,7 @@ public class ParcelableUserUtils implements TwittnukerConstants{
         extras.statusnet_profile_url = user.getStatusnetProfileUrl();
         extras.profile_image_url_original = user.getProfileImageUrlOriginal();
         extras.profile_image_url_profile_size = user.getProfileImageUrlProfileSize();
+        extras.groups_count = user.getGroupsCount();
         obj.extras = extras;
         obj.user_type = getUserType(extras.ostatus_uri);
         return obj;

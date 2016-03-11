@@ -76,6 +76,9 @@ public class User extends TwitterResponseObject implements Comparable<User> {
     @JsonField(name = "listed_count")
     long listedCount = -1;
 
+    @JsonField(name = "groups_count")
+    long groupsCount = -1;
+
     @JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
     Date createdAt;
 
@@ -302,6 +305,9 @@ public class User extends TwitterResponseObject implements Comparable<User> {
         return listedCount;
     }
 
+    public long getGroupsCount() {
+        return groupsCount;
+    }
 
     public String getLocation() {
         return location;

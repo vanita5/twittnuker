@@ -790,6 +790,7 @@
     <string name="unsupported_login_verification_type_name">Nicht unterstützte Login Verifizierung: <xliff:g id="name">%1$s</xliff:g>. Bitte melden!</string>
     <string name="translate_from_language">Übersetze von <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Übersetzung</string>
+    <string name="groups">Gruppen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
