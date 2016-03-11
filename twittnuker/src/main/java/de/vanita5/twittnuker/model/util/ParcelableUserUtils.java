@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.model.util;
 
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
@@ -84,13 +85,18 @@ public class ParcelableUserUtils implements TwittnukerConstants{
         extras.profile_image_url_profile_size = user.getProfileImageUrlProfileSize();
         extras.groups_count = user.getGroupsCount();
         obj.extras = extras;
-        obj.user_type = getUserType(extras.ostatus_uri);
+        obj.user_host = getUserHost(extras.ostatus_uri);
         return obj;
     }
 
-    private static String getUserType(String uri) {
+    public static String getUserHost(@Nullable String uri) {
         if (uri == null) return USER_TYPE_TWITTER_COM;
         return PreviewMediaExtractor.getAuthority(uri);
+    }
+
+    public static String getUserHost(ParcelableUser user) {
+        if (user.extras == null) return USER_TYPE_TWITTER_COM;
+        return getUserHost(user.extras.ostatus_uri);
     }
 
     public static ParcelableUser fromDirectMessageConversationEntry(final Cursor cursor) {

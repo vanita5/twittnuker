@@ -83,11 +83,18 @@ public class ParcelableAccount implements Parcelable {
     @CursorField(Accounts.ACCOUNT_TYPE)
     public String account_type;
 
+    @ParcelableThisPlease
+    @JsonField(name = "account_host")
+    @CursorField(Accounts.ACCOUNT_HOST)
+    public String account_host;
+
     @Nullable
     @ParcelableThisPlease
     @JsonField(name = "account_user")
     @CursorField(value = Accounts.ACCOUNT_USER, converter = LoganSquareCursorFieldConverter.class)
     public ParcelableUser account_user;
+
+    public boolean is_dummy;
 
     public static final Creator<ParcelableAccount> CREATOR = new Creator<ParcelableAccount>() {
         public ParcelableAccount createFromParcel(Parcel source) {
@@ -100,7 +107,6 @@ public class ParcelableAccount implements Parcelable {
             return new ParcelableAccount[size];
         }
     };
-    public boolean is_dummy;
 
     ParcelableAccount() {
     }
@@ -122,6 +128,8 @@ public class ParcelableAccount implements Parcelable {
                 ", color=" + color +
                 ", is_activated=" + is_activated +
                 ", account_type='" + account_type + '\'' +
+                ", account_host='" + account_host + '\'' +
+                ", account_user=" + account_user +
                 ", is_dummy=" + is_dummy +
                 '}';
     }
