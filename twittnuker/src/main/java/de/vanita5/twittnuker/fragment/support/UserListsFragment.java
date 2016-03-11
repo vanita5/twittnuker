@@ -35,6 +35,7 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsUserListsAdapter;
 import de.vanita5.twittnuker.loader.support.UserListsLoader;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -50,7 +51,7 @@ public class UserListsFragment extends ParcelableUserListsFragment {
         final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
-        return new UserListsLoader(getActivity(), accountId, userId, screenName, true, getData());
+        return new UserListsLoader(getActivity(), accountKey, userId, screenName, true, getData());
     }
 
     @Override

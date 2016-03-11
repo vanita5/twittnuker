@@ -192,7 +192,7 @@ public class KeyboardShortcutsHandler implements Constants, KeyboardShortcutCons
                 return true;
             }
             case ACTION_MESSAGE: {
-                Utils.openMessageConversation(context, -1, -1);
+                Utils.openMessageConversation(context, null, -1);
                 return true;
             }
         }

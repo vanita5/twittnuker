@@ -36,7 +36,7 @@ public class StatusFavoritersListFragment extends CursorSupportUsersListFragment
     public IDsUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
         final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long statusId = args.getLong(EXTRA_STATUS_ID, -1);
-        final StatusFavoritersLoader loader = new StatusFavoritersLoader(context, accountId,
+        final StatusFavoritersLoader loader = new StatusFavoritersLoader(context, accountKey,
                 statusId, getData(), false);
         loader.setCursor(getNextCursor());
         return loader;

@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.DataStoreUtils;
@@ -51,10 +52,11 @@ public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
 
     private User mUser;
 
-    public MediaTimelineLoader(final Context context, final long accountId, final long userId, final String screenName,
-                               final long sinceId, final long maxId, final List<ParcelableStatus> data, final String[] savedStatusesArgs,
+    public MediaTimelineLoader(final Context context, final AccountKey accountKey, final long userId,
+                               final String screenName, final long sinceId, final long maxId,
+                               final List<ParcelableStatus> data, final String[] savedStatusesArgs,
                                final int tabPosition, final boolean fromUser) {
-        super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
+        super(context, accountKey, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
         mUserId = userId;
         mUserScreenName = screenName;
     }
@@ -109,7 +111,7 @@ public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
 
     private boolean isMyTimeline() {
         if (mUserId > 0) {
-            return getAccountKey() == mUserId;
+            return getAccountKey().getId() == mUserId;
         } else {
             final String accountScreenName = DataStoreUtils.getAccountScreenName(getContext(), getAccountKey());
             return accountScreenName != null && accountScreenName.equalsIgnoreCase(mUserScreenName);

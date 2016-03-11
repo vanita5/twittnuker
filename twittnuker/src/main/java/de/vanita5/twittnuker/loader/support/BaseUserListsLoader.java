@@ -33,7 +33,9 @@ import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.loader.support.iface.ICursorSupportLoader;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.util.ParcelableUserListUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
@@ -45,19 +47,19 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
         implements TwittnukerConstants, ICursorSupportLoader {
 
     protected final NoDuplicatesArrayList<ParcelableUserList> mData = new NoDuplicatesArrayList<>();
-    protected final long mAccountId;
+    protected final AccountKey mAccountId;
     private final long mCursor;
 
     private long mNextCursor, mPrevCursor;
 
-    public BaseUserListsLoader(final Context context, final long accountId, final long cursor,
+    public BaseUserListsLoader(final Context context, final AccountKey accountKey, final long cursor,
                                final List<ParcelableUserList> data) {
         super(context);
         if (data != null) {
             mData.addAll(data);
         }
         mCursor = cursor;
-        mAccountId = accountId;
+        mAccountId = accountKey;
     }
 
     @Override
@@ -79,7 +81,7 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
 
     @Override
     public List<ParcelableUserList> loadInBackground() {
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, accountHost, true);
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, true);
         List<UserList> listLoaded = null;
         try {
             listLoaded = getUserLists(twitter);
@@ -94,12 +96,12 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
                 final int dataSize = mData.size();
                 for (int i = 0; i < listSize; i++) {
                     final UserList list = listLoaded.get(i);
-                    mData.add(new ParcelableUserList(list, mAccountId, dataSize + i, isFollowing(list)));
+                    mData.add(ParcelableUserListUtils.from(list, mAccountId, dataSize + i, isFollowing(list)));
                 }
             } else {
                 for (int i = 0; i < listSize; i++) {
                     final UserList list = listLoaded.get(i);
-                    mData.add(new ParcelableUserList(listLoaded.get(i), mAccountId, i, isFollowing(list)));
+                    mData.add(ParcelableUserListUtils.from(listLoaded.get(i), mAccountId, i, isFollowing(list)));
                 }
             }
         }

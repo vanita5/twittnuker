@@ -55,6 +55,7 @@ import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -158,12 +159,13 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
             valuesList.add(values);
         }
         if (deleteBound[0] > 0 && deleteBound[1] > 0) {
-            Expression where = Expression.and(
-                    Expression.equals(Activities.ACCOUNT_ID, accountKey),
+            final Expression where = Expression.and(
+                    Utils.getAccountCompareExpression(),
                     Expression.greaterEquals(Activities.MIN_POSITION, deleteBound[0]),
                     Expression.lesserEquals(Activities.MAX_POSITION, deleteBound[1])
             );
-            int rowsDeleted = cr.delete(getContentUri(), where.getSQL(), null);
+            final String[] whereArgs = {String.valueOf(accountKey.getId()), accountKey.getHost()};
+            int rowsDeleted = cr.delete(getContentUri(), where.getSQL(), whereArgs);
             boolean insertGap = valuesList.size() >= loadItemLimit && !noItemsBefore
                     && rowsDeleted <= 0;
             if (insertGap && !valuesList.isEmpty()) {
@@ -173,10 +175,13 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
         ContentResolverUtils.bulkInsert(cr, getContentUri(), valuesList);
     }
 
-    protected abstract void saveReadPosition(long accountId, Twitter twitter);
+    protected abstract void saveReadPosition(@NonNull final AccountKey accountId,
+                                             @NonNull final Twitter twitter);
 
     protected abstract ResponseList<Activity> getActivities(@NonNull final Twitter twitter,
-                                                            final long accountId, final Paging paging) throws TwitterException;
+                                                            @NonNull final AccountKey accountId,
+                                                            @NonNull final Paging paging)
+            throws TwitterException;
 
     @Override
     public void afterExecute(Object result) {

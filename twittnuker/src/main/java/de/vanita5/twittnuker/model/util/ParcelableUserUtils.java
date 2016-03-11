@@ -96,7 +96,9 @@ public class ParcelableUserUtils implements TwittnukerConstants{
 
     public static String getUserHost(@Nullable String uri) {
         if (uri == null) return USER_TYPE_TWITTER_COM;
-        return PreviewMediaExtractor.getAuthority(uri);
+        final String authority = PreviewMediaExtractor.getAuthority(uri);
+        if (authority == null) return null;
+        return authority.replaceAll("[^\\w\\d]", "-");
     }
 
     public static String getUserHost(ParcelableUser user) {

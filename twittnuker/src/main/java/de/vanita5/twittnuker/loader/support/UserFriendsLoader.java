@@ -27,10 +27,10 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.DataStoreUtils;
@@ -42,10 +42,10 @@ public class UserFriendsLoader extends CursorSupportUsersLoader {
     private final long mUserId;
     private final String mScreenName;
 
-    public UserFriendsLoader(final Context context, final long accountId, final long userId,
+    public UserFriendsLoader(final Context context, final AccountKey accountKey, final long userId,
                              final String screenName, final List<ParcelableUser> userList,
                              boolean fromUser) {
-        super(context, accountId, userList, fromUser);
+        super(context, accountKey, userList, fromUser);
         mUserId = userId;
         mScreenName = screenName;
     }

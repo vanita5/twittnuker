@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.loader.support.UserListTimelineLoader;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class UserListTimelineFragment extends ParcelableStatusesFragment {
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         final String listName = args.getString(EXTRA_LIST_NAME);
         final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
-        return new UserListTimelineLoader(getActivity(), accountId, listId, userId, screenName,
+        return new UserListTimelineLoader(getActivity(), accountKey, listId, userId, screenName,
                 listName, sinceId, maxId, getAdapterData(), getSavedStatusesFileArgs(), tabPosition, fromUser);
     }
 
@@ -61,7 +62,7 @@ public class UserListTimelineFragment extends ParcelableStatusesFragment {
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         final String listName = args.getString(EXTRA_LIST_NAME);
-        return new String[]{AUTHORITY_USER_LIST_TIMELINE, "account" + accountId, "list_id" + listId,
+        return new String[]{AUTHORITY_USER_LIST_TIMELINE, "account" + accountKey, "list_id" + listId,
                 "list_name" + listName, "user_id" + userId, "screen_name" + screenName};
     }
 

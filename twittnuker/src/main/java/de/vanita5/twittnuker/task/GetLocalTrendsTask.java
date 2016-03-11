@@ -29,6 +29,7 @@ import android.support.annotation.NonNull;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 
 import java.util.List;
@@ -37,8 +38,8 @@ public class GetLocalTrendsTask extends GetTrendsTask {
 
     private final int woeid;
 
-    public GetLocalTrendsTask(final Context context, final long accountId, final int woeid) {
-        super(context, accountId);
+    public GetLocalTrendsTask(final Context context, final AccountKey accountKey, final int woeid) {
+        super(context, accountKey);
         this.woeid = woeid;
     }
 

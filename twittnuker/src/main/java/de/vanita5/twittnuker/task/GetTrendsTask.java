@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -42,18 +43,18 @@ import java.util.List;
 public abstract class GetTrendsTask extends AbstractTask<Object, Object, Object> {
 
     private final Context mContext;
-    private final long mAccountId;
+    private final AccountKey mAccountId;
 
-    public GetTrendsTask(Context context, final long accountId) {
+    public GetTrendsTask(Context context, final AccountKey accountKey) {
         this.mContext = context;
-        this.mAccountId = accountId;
+        this.mAccountId = accountKey;
     }
 
     public abstract List<Trends> getTrends(@NonNull Twitter twitter) throws TwitterException;
 
     @Override
     public Object doLongOperation(final Object param) {
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountId, accountHost, false);
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountId, false);
         if (twitter == null) return null;
         try {
             final List<Trends> trends = getTrends(twitter);

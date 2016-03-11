@@ -25,14 +25,15 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
+
+import java.util.List;
 
 public class UserListSubscribersLoader extends CursorSupportUsersLoader {
 
@@ -40,10 +41,10 @@ public class UserListSubscribersLoader extends CursorSupportUsersLoader {
     private final long mUserId;
     private final String mScreenName, mListName;
 
-    public UserListSubscribersLoader(final Context context, final long accountId, final long listId,
-                                     final long userId, final String screenName, final String listName, final long cursor,
+    public UserListSubscribersLoader(final Context context, final AccountKey accountKey, final long listId,
+                                     final long userId, final String screenName, final String listName,
                                      final List<ParcelableUser> data, boolean fromUser) {
-        super(context, accountId, data, fromUser);
+        super(context, accountKey, data, fromUser);
         mListId = listId;
         mUserId = userId;
         mScreenName = screenName;

@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.support.SensitiveContentWarningDialogFragment;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -144,23 +145,25 @@ public class IntentUtils implements Constants {
     public static void openMedia(final Context context, final ParcelableDirectMessage message,
                                  final ParcelableMedia current, @Nullable final Bundle options,
                                  final boolean newDocument) {
-        openMedia(context, message.account_id, false, null, message, current, message.media, options, newDocument);
+        openMedia(context, new AccountKey(message.account_id, message.account_host), false, null,
+                message, current, message.media, options, newDocument);
     }
 
     public static void openMedia(final Context context, final ParcelableStatus status,
                                  final ParcelableMedia current, final Bundle options,
                                  final boolean newDocument) {
-        openMedia(context, status.account_id, status.is_possibly_sensitive, status, null, current,
-                getPrimaryMedia(status), options, newDocument);
+        openMedia(context, new AccountKey(status.account_id, status.account_host),
+                status.is_possibly_sensitive, status, null, current, getPrimaryMedia(status),
+                options, newDocument);
     }
 
-    public static void openMedia(final Context context, final long accountId, final boolean isPossiblySensitive,
+    public static void openMedia(final Context context, final AccountKey accountKey, final boolean isPossiblySensitive,
                                  final ParcelableMedia current, final ParcelableMedia[] media,
                                  final Bundle options, final boolean newDocument) {
-        openMedia(context, accountId, isPossiblySensitive, null, null, current, media, options, newDocument);
+        openMedia(context, accountKey, isPossiblySensitive, null, null, current, media, options, newDocument);
     }
 
-    public static void openMedia(final Context context, final long accountId, final boolean isPossiblySensitive,
+    public static void openMedia(final Context context, final AccountKey accountKey, final boolean isPossiblySensitive,
                                  final ParcelableStatus status, final ParcelableDirectMessage message,
                                  final ParcelableMedia current, final ParcelableMedia[] media,
                                  final Bundle options, final boolean newDocument) {
@@ -172,7 +175,7 @@ public class IntentUtils implements Constants {
             final FragmentManager fm = activity.getSupportFragmentManager();
             final DialogFragment fragment = new SensitiveContentWarningDialogFragment();
             final Bundle args = new Bundle();
-            args.putLong(EXTRA_ACCOUNT_ID, accountId);
+            args.putParcelable(EXTRA_ACCOUNT_KEY, accountKey);
             args.putParcelable(EXTRA_CURRENT_MEDIA, current);
             if (status != null) {
                 args.putParcelable(EXTRA_STATUS, status);
@@ -187,15 +190,15 @@ public class IntentUtils implements Constants {
             fragment.setArguments(args);
             fragment.show(fm, "sensitive_content_warning");
         } else {
-            openMediaDirectly(context, accountId, status, message, current, media, options,
+            openMediaDirectly(context, accountKey, status, message, current, media, options,
                     newDocument);
         }
     }
 
-    public static void openMediaDirectly(final Context context, final long accountId,
+    public static void openMediaDirectly(final Context context, final AccountKey accountKey,
                                          final ParcelableStatus status, final ParcelableMedia current,
                                          final Bundle options, final boolean newDocument) {
-        openMediaDirectly(context, accountId, status, null, current, getPrimaryMedia(status),
+        openMediaDirectly(context, accountKey, status, null, current, getPrimaryMedia(status),
                 options, newDocument);
     }
 
@@ -207,29 +210,29 @@ public class IntentUtils implements Constants {
         }
     }
 
-    public static void openMediaDirectly(final Context context, final long accountId,
+    public static void openMediaDirectly(final Context context, final AccountKey accountKey,
                                          final ParcelableDirectMessage message, final ParcelableMedia current,
                                          final ParcelableMedia[] media, final Bundle options,
                                          final boolean newDocument) {
-        openMediaDirectly(context, accountId, null, message, current, media, options, newDocument);
+        openMediaDirectly(context, accountKey, null, message, current, media, options, newDocument);
     }
 
-    public static void openMediaDirectly(final Context context, final long accountId,
+    public static void openMediaDirectly(final Context context, final AccountKey accountKey,
                                          final ParcelableStatus status, final ParcelableDirectMessage message,
                                          final ParcelableMedia current, final ParcelableMedia[] media,
                                          final Bundle options, final boolean newDocument) {
         if (context == null || media == null) return;
         final Intent intent = new Intent(context, MediaViewerActivity.class);
-        intent.putExtra(EXTRA_ACCOUNT_ID, accountId);
+        intent.putExtra(EXTRA_ACCOUNT_ID, accountKey);
         intent.putExtra(EXTRA_CURRENT_MEDIA, current);
         intent.putExtra(EXTRA_MEDIA, media);
         if (status != null) {
             intent.putExtra(EXTRA_STATUS, status);
-            intent.setData(getMediaViewerUri("status", status.id, accountId));
+            intent.setData(getMediaViewerUri("status", status.id, accountKey));
         }
         if (message != null) {
             intent.putExtra(EXTRA_MESSAGE, message);
-            intent.setData(getMediaViewerUri("message", message.id, accountId));
+            intent.setData(getMediaViewerUri("message", message.id, accountKey));
         }
         if (newDocument && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
@@ -241,13 +244,15 @@ public class IntentUtils implements Constants {
         }
     }
 
-    public static Uri getMediaViewerUri(String type, long id, long accountId) {
+    public static Uri getMediaViewerUri(String type, long id, AccountKey accountKey) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority("media");
         builder.appendPath(type);
         builder.appendPath(String.valueOf(id));
-        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(accountId));
+        if (accountKey != null) {
+            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
+        }
         return builder.build();
     }
 }

@@ -53,6 +53,7 @@ import de.vanita5.twittnuker.fragment.support.TrendsSuggestionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
@@ -303,12 +304,14 @@ public class CustomTabUtils implements Constants {
         return tabType != null && CUSTOM_TABS_CONFIGURATION_MAP.containsKey(getTabTypeAlias(tabType));
     }
 
-    public static boolean hasAccountId(@NonNull Bundle args, long[] activatedAccountIds, long accountId) {
-        if (args.containsKey(EXTRA_ACCOUNT_ID)) {
-            return args.getLong(EXTRA_ACCOUNT_ID) == accountId;
-        } else if (args.containsKey(EXTRA_ACCOUNT_IDS)) {
-            return ArrayUtils.contains(args.getLongArray(EXTRA_ACCOUNT_IDS), accountId);
+    public static boolean hasAccountId(@NonNull Bundle args, AccountKey[] activatedAccountKeys, AccountKey accountKey) {
+        final AccountKey[] accountKeys = Utils.getAccountKeys(args);
+        if (accountKeys != null) {
+            return ArrayUtils.contains(accountKeys, accountKey);
         }
-        return ArrayUtils.contains(activatedAccountIds, accountId);
+        if (activatedAccountKeys != null) {
+            return ArrayUtils.contains(activatedAccountKeys, accountKey);
+        }
+        return false;
     }
 }

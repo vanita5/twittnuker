@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;
@@ -40,14 +41,14 @@ public class UserFavoritesLoader extends TwitterAPIStatusesLoader {
 
     private final long mUserId;
     private final String mUserScreenName;
-    private int mTotalItemsCount;
 
-    public UserFavoritesLoader(final Context context, final long accountId, final long userId,
-                               final String screen_name, final long sinceId, final long maxId, final List<ParcelableStatus> data,
-                               final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
-        super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
+    public UserFavoritesLoader(final Context context, final AccountKey accountKey, final long userId,
+                               final String screenName, final long sinceId, final long maxId,
+                               final List<ParcelableStatus> data, final String[] savedStatusesArgs,
+                               final int tabPosition, boolean fromUser) {
+        super(context, accountKey, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
         mUserId = userId;
-        mUserScreenName = screen_name;
+        mUserScreenName = screenName;
     }
 
     @NonNull
@@ -57,10 +58,6 @@ public class UserFavoritesLoader extends TwitterAPIStatusesLoader {
             return twitter.getFavorites(mUserId, paging);
         else if (mUserScreenName != null) return twitter.getFavorites(mUserScreenName, paging);
         throw new IllegalArgumentException();
-    }
-
-    public int getTotalItemsCount() {
-        return mTotalItemsCount;
     }
 
     @WorkerThread

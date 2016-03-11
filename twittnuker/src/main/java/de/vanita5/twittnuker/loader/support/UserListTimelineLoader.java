@@ -27,15 +27,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
+
+import java.util.List;
 
 public class UserListTimelineLoader extends TwitterAPIStatusesLoader {
 
@@ -43,11 +44,11 @@ public class UserListTimelineLoader extends TwitterAPIStatusesLoader {
     private final String mScreenName, mListName;
     private final long mListId;
 
-    public UserListTimelineLoader(final Context context, final long accountId, final long listId,
+    public UserListTimelineLoader(final Context context, final AccountKey accountKey, final long listId,
                                   final long userId, final String screenName, final String listName,
                                   final long sinceId, final long maxId, final List<ParcelableStatus> data,
                                   final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
-        super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
+        super(context, accountKey, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
         mListId = listId;
         mUserId = userId;
         mScreenName = screenName;

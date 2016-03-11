@@ -29,6 +29,7 @@ import de.vanita5.twittnuker.api.twitter.model.IDs;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
@@ -37,9 +38,9 @@ public class StatusFavoritersLoader extends IDsUsersLoader {
 
     private final long mStatusId;
 
-    public StatusFavoritersLoader(final Context context, final long accountId, final long statusId,
+    public StatusFavoritersLoader(final Context context, final AccountKey accountKey, final long statusId,
                                   final List<ParcelableUser> data, boolean fromUser) {
-        super(context, accountId, data, fromUser);
+        super(context, accountKey, data, fromUser);
         mStatusId = statusId;
     }
 

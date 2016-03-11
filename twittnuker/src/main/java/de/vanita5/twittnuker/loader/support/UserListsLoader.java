@@ -24,40 +24,40 @@ package de.vanita5.twittnuker.loader.support;
 
 import android.content.Context;
 
-import de.vanita5.twittnuker.model.ParcelableUserList;
-
 import java.util.List;
 
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.ParcelableUserList;
 
 public class UserListsLoader extends BaseUserListsLoader {
 
-	private final long mUserId;
-	private final String mScreenName;
+    private final long mUserId;
+    private final String mScreenName;
     private final boolean mReverse;
 
-    public UserListsLoader(final Context context, final long accountId, final long userId,
+    public UserListsLoader(final Context context, final AccountKey accountKey, final long userId,
                            final String screenName, final boolean reverse, final List<ParcelableUserList> data) {
-		super(context, accountId, 0, data);
-		mUserId = userId;
-		mScreenName = screenName;
+        super(context, accountKey, 0, data);
+        mUserId = userId;
+        mScreenName = screenName;
         mReverse = reverse;
-	}
+    }
 
-	@Override
-	public ResponseList<UserList> getUserLists(final Twitter twitter) throws TwitterException {
-		if (twitter == null) return null;
-		if (mUserId > 0)
+    @Override
+    public ResponseList<UserList> getUserLists(final Twitter twitter) throws TwitterException {
+        if (twitter == null) return null;
+        if (mUserId > 0)
             return twitter.getUserLists(mUserId, mReverse);
         else if (mScreenName != null) return twitter.getUserLists(mScreenName, mReverse);
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	protected boolean isFollowing(final UserList list) {
-		return true;
-	}
+    @Override
+    protected boolean isFollowing(final UserList list) {
+        return true;
+    }
 }

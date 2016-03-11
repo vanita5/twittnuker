@@ -33,7 +33,9 @@ import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
@@ -66,12 +68,14 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
     }
 
     @Override
-    public boolean getStatuses(long[] accountIds, final long[] maxIds, final long[] sinceIds) {
+    public boolean getStatuses(RefreshTaskParam param) {
         final Bundle args = new Bundle(getArguments());
+        long[] maxIds = param.getMaxIds();
         if (maxIds != null) {
             args.putLong(EXTRA_MAX_ID, maxIds[0]);
             args.putBoolean(EXTRA_MAKE_GAP, false);
         }
+        long[] sinceIds = param.getSinceIds();
         if (sinceIds != null) {
             args.putLong(EXTRA_SINCE_ID, sinceIds[0]);
         }
@@ -130,8 +134,10 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
         super.onLoadMoreContents(position);
         if (position == 0) return;
         final IStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
-        final long[] maxIds = new long[]{adapter.getStatusId(adapter.getStatusCount() - 1)};
-        getStatuses(null, maxIds, null);
+        final ParcelableStatus status = adapter.getStatus(adapter.getItemCount() - 1);
+        AccountKey[] accountKeys = {new AccountKey(status.account_id, status.account_host)};
+        final long[] maxIds = {status.id};
+        getStatuses(new BaseRefreshTaskParam(accountKeys, maxIds, null));
     }
 
     public final void replaceStatus(final ParcelableStatus status) {
@@ -152,9 +158,9 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
         final AccountKey[] accountIds = getAccountKeys();
         if (adapter.getStatusCount() > 0) {
             final long[] sinceIds = new long[]{adapter.getStatus(0).id};
-            getStatuses(accountIds, null, sinceIds);
+            getStatuses(new BaseRefreshTaskParam(accountIds, null, sinceIds));
         } else {
-            getStatuses(accountIds, null, null);
+            getStatuses(new BaseRefreshTaskParam(accountIds, null, null));
         }
         return true;
     }
