@@ -991,7 +991,6 @@ public class ThemeUtils implements Constants {
                 break;
             }
         }
-        delegate.applyDayNight();
     }
 
 

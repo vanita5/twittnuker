@@ -183,6 +183,7 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
 import de.vanita5.twittnuker.model.TwitterAccountExtra;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
@@ -927,9 +928,10 @@ public final class Utils implements Constants {
         return hasNavBar(context);
     }
 
-    public static boolean isOfficialCredentials(@NonNull final Context context,
-                                                @NonNull final long accountId) {
-        return isOfficialCredentials(context, DataStoreUtils.getCredentials(context, accountId));
+    public static boolean isOfficialCredentials(@NonNull final Context context, final long accountId) {
+        final ParcelableCredentials credentials = DataStoreUtils.getCredentials(context, accountId);
+        if (credentials == null) return false;
+        return isOfficialCredentials(context, credentials);
     }
 
     public static boolean isOfficialCredentials(@NonNull final Context context,
@@ -941,8 +943,7 @@ public final class Utils implements Constants {
                 return extra.isOfficialCredentials();
             }
         }
-        final boolean isOAuth = account.auth_type == ParcelableCredentials.AUTH_TYPE_OAUTH
-                || account.auth_type == ParcelableCredentials.AUTH_TYPE_XAUTH;
+        final boolean isOAuth = ParcelableCredentialsUtils.isOAuth(account.auth_type);
         final String consumerKey = account.consumer_key, consumerSecret = account.consumer_secret;
         return isOAuth && TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret);
     }
@@ -2633,10 +2634,6 @@ public final class Utils implements Constants {
         return plugged == BatteryManager.BATTERY_PLUGGED_AC
                 || plugged == BatteryManager.BATTERY_PLUGGED_USB
                 || plugged == BatteryManager.BATTERY_PLUGGED_WIRELESS;
-    }
-
-    public static boolean shouldUsePrivateAPIs(Context context, long accountId) {
-        return TwitterAPIFactory.isOfficialKeyAccount(context, accountId);
     }
 
     public static boolean isMediaPreviewEnabled(Context context, SharedPreferencesWrapper preferences) {
