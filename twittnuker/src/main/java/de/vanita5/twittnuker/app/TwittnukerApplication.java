@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.ExternalThemeManager;
 import de.vanita5.twittnuker.util.HttpClientFactory;
 import de.vanita5.twittnuker.util.StrictModeUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereBugReporter;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
@@ -79,6 +80,11 @@ public class TwittnukerApplication extends Application implements Constants,
         return (TwittnukerApplication) context.getApplicationContext();
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        //MultiDex.install(this);
+    }
 
     public Handler getHandler() {
         return mHandler;
@@ -227,15 +233,15 @@ public class TwittnukerApplication extends Application implements Constants,
     }
 
     private void resetTheme(SharedPreferences preferences) {
-        switch (Utils.getNonEmptyString(preferences, KEY_THEME, VALUE_THEME_NAME_LIGHT)) {
-            case VALUE_THEME_NAME_DARK: {
-                ((UiModeManager) getSystemService(UI_MODE_SERVICE)).setNightMode(UiModeManager.MODE_NIGHT_YES);
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                break;
-            }
-            case VALUE_THEME_NAME_AUTO: {
+        switch (ThemeUtils.getLocalNightMode(preferences)) {
+            case AppCompatDelegate.MODE_NIGHT_AUTO: {
                 ((UiModeManager) getSystemService(UI_MODE_SERVICE)).setNightMode(UiModeManager.MODE_NIGHT_AUTO);
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+                break;
+            }
+            case AppCompatDelegate.MODE_NIGHT_YES: {
+                ((UiModeManager) getSystemService(UI_MODE_SERVICE)).setNightMode(UiModeManager.MODE_NIGHT_YES);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 break;
             }
             default: {

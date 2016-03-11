@@ -106,6 +106,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereActionModeForChildListener;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
 import de.vanita5.twittnuker.util.view.ConsumerKeySecretValidator;
@@ -362,15 +363,15 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         ViewCompat.setBackgroundTintList(mSignInButton, color);
         setSignInButton();
 
-        //Uncomment if needed (API Keys Token Limit)
-//        final String consumerKey = mPreferences.getString(KEY_CONSUMER_KEY, null);
-//        final String consumerSecret = mPreferences.getString(KEY_CONSUMER_SECRET, null);
-//        if (savedInstanceState == null && !mPreferences.getBoolean(KEY_CONSUMER_KEY_SECRET_SET, false)
-//                && !Utils.isCustomConsumerKeySecret(consumerKey, consumerSecret)) {
-//            final SetConsumerKeySecretDialogFragment df = new SetConsumerKeySecretDialogFragment();
-//            df.setCancelable(false);
-//            df.show(getSupportFragmentManager(), "set_consumer_key_secret");
-//        }
+        final String consumerKey = mPreferences.getString(KEY_CONSUMER_KEY, null);
+        final String consumerSecret = mPreferences.getString(KEY_CONSUMER_SECRET, null);
+        if (BuildConfig.SHOW_CUSTOM_TOKEN_DIALOG && savedInstanceState == null &&
+                !mPreferences.getBoolean(KEY_CONSUMER_KEY_SECRET_SET, false) &&
+                !Utils.isCustomConsumerKeySecret(consumerKey, consumerSecret)) {
+            final SetConsumerKeySecretDialogFragment df = new SetConsumerKeySecretDialogFragment();
+            df.setCancelable(false);
+            df.show(getSupportFragmentManager(), "set_consumer_key_secret");
+        }
     }
 
     private void doLogin() {
