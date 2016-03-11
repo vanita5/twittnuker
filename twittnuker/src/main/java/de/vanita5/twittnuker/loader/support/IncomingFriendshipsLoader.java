@@ -35,9 +35,9 @@ import java.util.List;
 
 public class IncomingFriendshipsLoader extends IDsUsersLoader {
 
-    public IncomingFriendshipsLoader(final Context context, final long accountId, final long maxId,
+    public IncomingFriendshipsLoader(final Context context, final long accountId,
                                      final List<ParcelableUser> data, boolean fromUser) {
-        super(context, accountId, maxId, data, fromUser);
+        super(context, accountId, data, fromUser);
     }
 
     @NonNull

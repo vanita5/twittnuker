@@ -29,6 +29,8 @@ import android.support.v4.util.ArrayMap;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 
@@ -36,7 +38,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 
-public class ParcelableCardEntityUtils {
+public class ParcelableCardEntityUtils implements TwittnukerConstants {
 
     @Nullable
     public static ParcelableCardEntity fromCardEntity(@Nullable CardEntity card, long accountId) {
@@ -44,7 +46,7 @@ public class ParcelableCardEntityUtils {
         final ParcelableCardEntity obj = new ParcelableCardEntity();
         obj.name = card.getName();
         obj.url = card.getUrl();
-        obj.users = ParcelableUserUtils.fromUsersArray(card.getUsers(), accountId);
+        obj.users = ParcelableUserUtils.fromUsers(card.getUsers(), accountId);
         obj.account_id = accountId;
         obj.values = from(card.getBindingValues());
         return obj;

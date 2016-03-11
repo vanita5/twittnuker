@@ -64,7 +64,6 @@ import de.vanita5.twittnuker.api.twitter.util.TwitterConverterFactory;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
-import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
@@ -141,7 +140,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
     @WorkerThread
     public static <T> T getInstance(final Context context, final Endpoint endpoint,
                                     final Authorization auth, final Map<String, String> extraRequestParams,
-                                    final Class<T> cls) {
+                                    final Class<T> cls, boolean twitterExtraQueries) {
         final RestAPIFactory<TwitterException> factory = new RestAPIFactory<>();
         final String userAgent;
         if (auth instanceof OAuthAuthorization) {
@@ -160,7 +159,11 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         factory.setHttpClient(holder.getRestHttpClient());
         factory.setAuthorization(auth);
         factory.setEndpoint(endpoint);
-        factory.setConstantPool(sConstantPoll);
+        if (twitterExtraQueries) {
+            factory.setConstantPool(sConstantPoll);
+        } else {
+            factory.setConstantPool(new SimpleValueMap());
+        }
         final TwitterConverterFactory converterFactory = new TwitterConverterFactory();
         factory.setRestConverterFactory(converterFactory);
         factory.setHttpRequestFactory(new TwidereHttpRequestFactory(userAgent));
@@ -171,7 +174,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
     @WorkerThread
     public static <T> T getInstance(final Context context, final Endpoint endpoint,
                                     final Authorization auth, final Class<T> cls) {
-        return getInstance(context, endpoint, auth, null, cls);
+        return getInstance(context, endpoint, auth, null, cls, true);
     }
 
     @WorkerThread
@@ -185,7 +188,17 @@ public class TwitterAPIFactory implements TwittnukerConstants {
     public static <T> T getInstance(final Context context, final Endpoint endpoint,
                                     final ParcelableCredentials credentials,
                                     final Map<String, String> extraRequestParams, final Class<T> cls) {
-        return getInstance(context, endpoint, getAuthorization(credentials), extraRequestParams, cls);
+        return getInstance(context, endpoint, getAuthorization(credentials), extraRequestParams, cls,
+                isTwitterCredentials(credentials));
+    }
+
+    public static boolean isTwitterCredentials(Context context, long accountId) {
+        return isTwitterCredentials(DataStoreUtils.getCredentials(context, accountId));
+    }
+
+    public static boolean isTwitterCredentials(ParcelableCredentials credentials) {
+        return credentials.account_type == null ||
+                ParcelableCredentials.ACCOUNT_TYPE_TWITTER.equals(credentials.account_type);
     }
 
     @WorkerThread

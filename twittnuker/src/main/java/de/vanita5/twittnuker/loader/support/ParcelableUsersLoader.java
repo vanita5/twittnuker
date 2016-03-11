@@ -25,27 +25,27 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
+import java.util.Collections;
+import java.util.List;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
-import java.util.Collections;
-import java.util.List;
-
 public abstract class ParcelableUsersLoader extends AsyncTaskLoader<List<ParcelableUser>> implements IExtendedLoader, Constants {
 
-	private final List<ParcelableUser> mData = Collections
-			.synchronizedList(new NoDuplicatesArrayList<ParcelableUser>());
+    private final List<ParcelableUser> mData = Collections
+            .synchronizedList(new NoDuplicatesArrayList<ParcelableUser>());
     private boolean mFromUser;
 
     public ParcelableUsersLoader(final Context context, final List<ParcelableUser> data, boolean fromUser) {
-		super(context);
+        super(context);
         setFromUser(fromUser);
-		if (data != null) {
-			mData.addAll(data);
-		}
-	}
+        if (data != null) {
+            mData.addAll(data);
+        }
+    }
 
     @Override
     public void setFromUser(boolean fromUser) {
@@ -57,20 +57,20 @@ public abstract class ParcelableUsersLoader extends AsyncTaskLoader<List<Parcela
         return mFromUser;
     }
 
-	@Override
-	public void onStartLoading() {
-		forceLoad();
-	}
+    @Override
+    public void onStartLoading() {
+        forceLoad();
+    }
 
-	protected List<ParcelableUser> getData() {
-		return mData;
-	}
+    protected List<ParcelableUser> getData() {
+        return mData;
+    }
 
-	protected boolean hasId(final long id) {
-		for (final ParcelableUser user : mData) {
-			if (user.id == id) return true;
-		}
-		return false;
-	}
+    protected boolean hasId(final long id) {
+        for (final ParcelableUser user : mData) {
+            if (user.id == id) return true;
+        }
+        return false;
+    }
 
 }

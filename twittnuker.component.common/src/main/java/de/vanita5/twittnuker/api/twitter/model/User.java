@@ -198,6 +198,14 @@ public class User extends TwitterResponseObject implements Comparable<User> {
     @JsonField(name = "needs_phone_verification")
     boolean needsPhoneVerification;
 
+    @JsonField(name = "statusnet_profile_url")
+    String statusnetProfileUrl;
+    @JsonField(name = "ostatus_uri")
+    String ostatusUri;
+    @JsonField(name = "profile_image_url_original")
+    String profileImageUrlOriginal;
+    @JsonField(name = "profile_image_url_profile_size")
+    String profileImageUrlProfileSize;
 
     public boolean canMediaTag() {
         return canMediaTag;
@@ -443,6 +451,30 @@ public class User extends TwitterResponseObject implements Comparable<User> {
         return createdAt;
     }
 
+    public String getOstatusUri() {
+        return ostatusUri;
+    }
+
+    public String getStatusnetProfileUrl() {
+        return statusnetProfileUrl;
+    }
+
+    public boolean isCanMediaTag() {
+        return canMediaTag;
+    }
+
+    public boolean isHasCustomTimelines() {
+        return hasCustomTimelines;
+    }
+
+    public String getProfileImageUrlProfileSize() {
+        return profileImageUrlProfileSize;
+    }
+
+    public String getProfileImageUrlOriginal() {
+        return profileImageUrlOriginal;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -472,13 +504,16 @@ public class User extends TwitterResponseObject implements Comparable<User> {
                 ", isTranslator=" + isTranslator +
                 ", isTranslationEnabled=" + isTranslationEnabled +
                 ", profileBackgroundColor='" + profileBackgroundColor + '\'' +
+                ", backgroundcolor='" + backgroundcolor + '\'' +
                 ", profileBackgroundImageUrl='" + profileBackgroundImageUrl + '\'' +
                 ", profileBackgroundImageUrlHttps='" + profileBackgroundImageUrlHttps + '\'' +
                 ", profileBackgroundTile=" + profileBackgroundTile +
                 ", profileImageUrl='" + profileImageUrl + '\'' +
                 ", profileImageUrlHttps='" + profileImageUrlHttps + '\'' +
                 ", profileBannerUrl='" + profileBannerUrl + '\'' +
+                ", coverPhoto='" + coverPhoto + '\'' +
                 ", profileLinkColor='" + profileLinkColor + '\'' +
+                ", linkcolor='" + linkcolor + '\'' +
                 ", profileSidebarBorderColor='" + profileSidebarBorderColor + '\'' +
                 ", profileSidebarFillColor='" + profileSidebarFillColor + '\'' +
                 ", profileTextColor='" + profileTextColor + '\'' +
@@ -493,6 +528,10 @@ public class User extends TwitterResponseObject implements Comparable<User> {
                 ", notifications=" + notifications +
                 ", isSuspended=" + isSuspended +
                 ", needsPhoneVerification=" + needsPhoneVerification +
+                ", statusnetProfileUrl='" + statusnetProfileUrl + '\'' +
+                ", ostatusUri='" + ostatusUri + '\'' +
+                ", profileImageUrlOriginal='" + profileImageUrlOriginal + '\'' +
+                ", profileImageUrlProfileSize='" + profileImageUrlProfileSize + '\'' +
                 "} " + super.toString();
     }
 

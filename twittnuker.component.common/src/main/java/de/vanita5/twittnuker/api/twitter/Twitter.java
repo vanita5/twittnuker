@@ -22,19 +22,13 @@
 
 package de.vanita5.twittnuker.api.twitter;
 
-import de.vanita5.twittnuker.api.statusnet.api.StatusNetResources;
+import de.vanita5.twittnuker.api.statusnet.StatusNet;
 import de.vanita5.twittnuker.api.twitter.api.DirectMessagesResources;
 import de.vanita5.twittnuker.api.twitter.api.FavoritesResources;
 import de.vanita5.twittnuker.api.twitter.api.FriendsFollowersResources;
 import de.vanita5.twittnuker.api.twitter.api.HelpResources;
-import de.vanita5.twittnuker.api.twitter.api.ListsResources;
+import de.vanita5.twittnuker.api.twitter.api.ListResources;
 import de.vanita5.twittnuker.api.twitter.api.PlacesGeoResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateActivityResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateDirectMessagesResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateFriendsFollowersResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateScheduleResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateTimelinesResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateTweetResources;
 import de.vanita5.twittnuker.api.twitter.api.SavedSearchesResources;
 import de.vanita5.twittnuker.api.twitter.api.SearchResource;
 import de.vanita5.twittnuker.api.twitter.api.SpamReportingResources;
@@ -44,9 +38,7 @@ import de.vanita5.twittnuker.api.twitter.api.TweetResources;
 import de.vanita5.twittnuker.api.twitter.api.UsersResources;
 
 public interface Twitter extends SearchResource, TimelineResources,
-        TweetResources, UsersResources, ListsResources, DirectMessagesResources, FriendsFollowersResources,
+        TweetResources, UsersResources, ListResources, DirectMessagesResources, FriendsFollowersResources,
         FavoritesResources, SpamReportingResources, SavedSearchesResources, TrendsResources, PlacesGeoResources,
-        HelpResources, StatusNetResources, PrivateActivityResources, PrivateTweetResources,
-        PrivateTimelinesResources, PrivateFriendsFollowersResources, PrivateDirectMessagesResources,
-        PrivateScheduleResources {
+        HelpResources, TwitterPrivate, StatusNet {
 }

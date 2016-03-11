@@ -89,8 +89,10 @@ import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.StatusNetAccountExtra;
 import de.vanita5.twittnuker.model.TwitterAccountExtra;
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
@@ -139,7 +141,6 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
     private EditText mEditUsername, mEditPassword;
     private Button mSignInButton, mSignUpButton;
     private LinearLayout mSignInSignUpContainer, mUsernamePasswordContainer;
-    private SharedPreferences mPreferences;
     private ContentResolver mResolver;
     private AbstractSignInTask mTask;
     private TintedStatusLayout mMainContent;
@@ -320,7 +321,6 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
     protected void onCreate(final Bundle savedInstanceState) {
         setupWindow();
         super.onCreate(savedInstanceState);
-        mPreferences = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
         mResolver = getContentResolver();
         setContentView(R.layout.activity_sign_in);
         setSupportActionBar((Toolbar) findViewById(R.id.action_bar));
@@ -406,6 +406,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
 
 
     private void saveEditedText() {
+        if (mEditUsername == null || mEditPassword == null) return;
         mUsername = ParseUtils.parseString(mEditUsername.getText());
         mPassword = ParseUtils.parseString(mEditPassword.getText());
     }
@@ -785,7 +786,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
             final String versionSuffix = noVersionSuffix ? null : "1.1";
             final Endpoint endpoint = new Endpoint(TwitterAPIFactory.getApiUrl(apiUrlFormat, "api", versionSuffix));
             final Authorization auth = new BasicAuthorization(username, password);
-            final Twitter twitter = TwitterAPIFactory.getInstance(activity, endpoint, auth, Twitter.class);
+            final Twitter twitter = TwitterAPIFactory.getInstance(activity, endpoint, auth,
+                    Twitter.class);
             User user;
             try {
                 user = twitter.verifyCredentials();
@@ -1070,6 +1072,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
             if (values != null && accountType != null) {
                 values.put(Accounts.ACCOUNT_TYPE, accountType.first);
                 values.put(Accounts.ACCOUNT_EXTRAS, accountType.second);
+                values.put(Accounts.ACCOUNT_USER, JsonSerializer.serialize(ParcelableUserUtils.fromUser(user,
+                        user.getId()), ParcelableUser.class));
             }
             return values;
         }

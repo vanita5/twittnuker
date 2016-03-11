@@ -20,32 +20,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.loader.support;
+package de.vanita5.twittnuker.api.statusnet.api;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-
-import java.util.List;
-
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.param.Query;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.ParcelableUser;
 
-public class MutesUsersLoader extends CursorSupportUsersLoader {
+public interface UserResources {
 
-    public MutesUsersLoader(final Context context, final long accountId, final long cursor,
-                            final List<ParcelableUser> data, boolean fromUser) {
-        super(context, accountId, data, fromUser);
-    }
+    @GET("/statuses/friends.json")
+    PageableResponseList<User> getStatusesFriendsList(@Query("user_id") long userId, @Query Paging paging) throws TwitterException;
 
-    @NonNull
-    @Override
-    protected final PageableResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, final Paging paging)
-            throws TwitterException {
-        return twitter.getMutesUsersList(paging);
-    }
+    @GET("/statuses/friends.json")
+    PageableResponseList<User> getStatusesFriendsList(@Query("screen_name") String screenName, @Query Paging paging) throws TwitterException;
+
+    @GET("/statuses/followers.json")
+    PageableResponseList<User> getStatusesFollowersList(@Query("user_id") long userId, @Query Paging paging) throws TwitterException;
+
+    @GET("/statuses/followers.json")
+    PageableResponseList<User> getStatusesFollowersList(@Query("screen_name") String screenName, @Query Paging paging) throws TwitterException;
 
 }

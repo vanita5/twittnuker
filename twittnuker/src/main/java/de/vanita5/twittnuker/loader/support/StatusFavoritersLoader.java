@@ -25,22 +25,21 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.model.ParcelableUser;
-
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.model.IDs;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.model.ParcelableUser;
+
+import java.util.List;
 
 public class StatusFavoritersLoader extends IDsUsersLoader {
 
     private final long mStatusId;
 
     public StatusFavoritersLoader(final Context context, final long accountId, final long statusId,
-                                  final long cursor, final List<ParcelableUser> data, boolean fromUser) {
-        super(context, accountId, cursor, data, fromUser);
+                                  final List<ParcelableUser> data, boolean fromUser) {
+        super(context, accountId, data, fromUser);
         mStatusId = statusId;
     }
 

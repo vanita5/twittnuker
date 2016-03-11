@@ -62,8 +62,10 @@ public class UserFollowersFragment extends CursorSupportUsersListFragment {
         final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
-        return new UserFollowersLoader(context, accountId, userId, screenName, getNextCursor(),
-                getData(), fromUser);
+        final UserFollowersLoader loader = new UserFollowersLoader(context, accountId, userId,
+                screenName, getData(), fromUser);
+        loader.setCursor(getNextCursor());
+        return loader;
     }
 
     @Override

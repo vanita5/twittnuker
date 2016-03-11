@@ -35,7 +35,5 @@ public interface StatusNetResources {
     @GET("/statusnet/config.json")
     StatusNetConfig getStatusNetConfig() throws TwitterException;
 
-    @GET("/search.json")
-    ResponseList<Status> searchStatuses(@Query("q") String query, @Query Paging paging) throws TwitterException;
 
 }

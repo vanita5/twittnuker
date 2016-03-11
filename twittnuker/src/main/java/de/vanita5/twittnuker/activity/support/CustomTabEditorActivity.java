@@ -227,7 +227,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
             text1.setText(user.name);
             text2.setText("@" + user.screen_name);
             if (displayProfileImage) {
-                mImageLoader.displayProfileImage(icon, user.profile_image_url);
+                mImageLoader.displayProfileImage(icon, user);
             }
         } else if (value instanceof ParcelableUserList) {
             final ParcelableUserList userList = (ParcelableUserList) value;

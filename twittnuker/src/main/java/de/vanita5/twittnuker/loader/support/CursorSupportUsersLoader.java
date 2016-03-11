@@ -27,8 +27,9 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
+import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
@@ -36,13 +37,13 @@ import java.util.List;
 
 public abstract class CursorSupportUsersLoader extends BaseCursorSupportUsersLoader {
 
-    public CursorSupportUsersLoader(final Context context, final long accountId, final long cursor,
+    public CursorSupportUsersLoader(final Context context, final long accountId,
                                     final List<ParcelableUser> data, boolean fromUser) {
-        super(context, accountId, cursor, data, fromUser);
+        super(context, accountId, data, fromUser);
     }
 
     @NonNull
-    protected abstract PageableResponseList<User> getCursoredUsers(@NonNull Twitter twitter, Paging paging)
+    protected abstract ResponseList<User> getCursoredUsers(@NonNull Twitter twitter, Paging paging)
             throws TwitterException;
 
     @NonNull
@@ -52,9 +53,13 @@ public abstract class CursorSupportUsersLoader extends BaseCursorSupportUsersLoa
         paging.count(getCount());
         if (getCursor() > 0) {
             paging.setCursor(getCursor());
+        } else if (getPage() >= -1) {
+            paging.setPage(getPage());
         }
-        final PageableResponseList<User> users = getCursoredUsers(twitter, paging);
-        setCursorIds(users);
+        final ResponseList<User> users = getCursoredUsers(twitter, paging);
+        if (users instanceof CursorSupport) {
+            setCursorIds(((CursorSupport) users));
+        }
         return users;
     }
 

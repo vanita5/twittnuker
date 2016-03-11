@@ -230,6 +230,7 @@ public interface IntentConstants {
     String EXTRA_KEY = "key";
     String EXTRA_CARD = "card";
     String EXTRA_IS_POSSIBLY_SENSITIVE = "is_possibly_sensitive";
+    String EXTRA_REFERRAL = "referral";
 
     /* Twittnuker */
     String EXTRA_HOTOTIN_EXPANDED_TEXT = "hototin_expanded_text";

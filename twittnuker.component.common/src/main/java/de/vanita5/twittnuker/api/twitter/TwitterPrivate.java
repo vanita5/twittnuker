@@ -20,30 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.api.twitter;
 
-public class PageableResponseList<T> extends ResponseList<T> implements TwitterResponse, CursorSupport {
+import de.vanita5.twittnuker.api.twitter.api.PrivateActivityResources;
+import de.vanita5.twittnuker.api.twitter.api.PrivateDirectMessagesResources;
+import de.vanita5.twittnuker.api.twitter.api.PrivateFriendsFollowersResources;
+import de.vanita5.twittnuker.api.twitter.api.PrivateScheduleResources;
+import de.vanita5.twittnuker.api.twitter.api.PrivateTimelinesResources;
+import de.vanita5.twittnuker.api.twitter.api.PrivateTweetResources;
 
-    long previousCursor;
-    long nextCursor;
-
-    @Override
-    public long getNextCursor() {
-        return nextCursor;
-    }
-
-    @Override
-    public long getPreviousCursor() {
-        return previousCursor;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return getNextCursor() != 0;
-    }
-
-    @Override
-    public boolean hasPrevious() {
-        return getPreviousCursor() != 0;
-    }
+public interface TwitterPrivate extends PrivateActivityResources, PrivateTweetResources,
+        PrivateTimelinesResources, PrivateFriendsFollowersResources, PrivateDirectMessagesResources,
+        PrivateScheduleResources {
 }

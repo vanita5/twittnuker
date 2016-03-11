@@ -20,30 +20,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.model;
+package de.vanita5.twittnuker.api.statusnet;
 
-public class PageableResponseList<T> extends ResponseList<T> implements TwitterResponse, CursorSupport {
+import de.vanita5.twittnuker.api.statusnet.api.GroupResources;
+import de.vanita5.twittnuker.api.statusnet.api.SearchResources;
+import de.vanita5.twittnuker.api.statusnet.api.StatusNetResources;
+import de.vanita5.twittnuker.api.statusnet.api.UserResources;
 
-    long previousCursor;
-    long nextCursor;
-
-    @Override
-    public long getNextCursor() {
-        return nextCursor;
-    }
-
-    @Override
-    public long getPreviousCursor() {
-        return previousCursor;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return getNextCursor() != 0;
-    }
-
-    @Override
-    public boolean hasPrevious() {
-        return getPreviousCursor() != 0;
-    }
+public interface StatusNet extends StatusNetResources, GroupResources, SearchResources, UserResources {
 }

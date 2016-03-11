@@ -112,6 +112,7 @@ import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.message.FriendshipUpdatedEvent;
@@ -221,6 +222,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private boolean mNameFirst;
     private int mPreviousTabItemIsDark, mPreviousActionBarItemIsDark;
     private boolean mHideBirthdayView;
+    private boolean mFirstCreate;
 
     private final LoaderCallbacks<SingleResponse<UserRelationship>> mFriendshipLoaderCallbacks =
             new LoaderCallbacks<SingleResponse<UserRelationship>>() {
@@ -506,6 +508,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     public void displayUser(final ParcelableUser user) {
+        if (mFirstCreate && user != null && !user.equals(mUser)) {
+
+        }
         mUser = user;
         final FragmentActivity activity = getActivity();
         if (user == null || user.id <= 0 || activity == null) return;
@@ -552,7 +557,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mFollowersCount.setText(Utils.getLocalizedNumber(mLocale, user.followers_count));
         mFriendsCount.setText(Utils.getLocalizedNumber(mLocale, user.friends_count));
 
-        mMediaLoader.displayProfileImage(mProfileImageView, Utils.getOriginalTwitterProfileImage(user.profile_image_url));
+        mMediaLoader.displayOriginalProfileImage(mProfileImageView, user);
         if (userColor != 0) {
             setUiColor(userColor);
         } else if (user.link_color != 0) {
@@ -711,6 +716,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mFirstCreate = savedInstanceState == null;
         final FragmentActivity activity = getActivity();
         setHasOptionsMenu(true);
         mUserColorNameManager.registerColorChangedListener(this);
@@ -829,13 +835,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     @Override
-    public void onSaveInstanceState(final Bundle outState) {
-        outState.putParcelable(EXTRA_USER, getUser());
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public void onStop() {
+        final Context context = getContext();
         mBus.unregister(this);
         super.onStop();
     }
@@ -844,6 +845,12 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     public void onResume() {
         super.onResume();
         setUiColor(mUiColor);
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
+        outState.putParcelable(EXTRA_USER, getUser());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -1063,6 +1070,18 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             }
             case R.id.scheduled_statuses: {
                 Utils.openScheduledStatuses(getActivity(), user.account_id);
+                return true;
+            }
+            case R.id.open_in_browser: {
+                if (user.extras != null && user.extras.statusnet_profile_url != null) {
+                    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(user.extras.statusnet_profile_url));
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    startActivity(intent);
+                } else {
+                    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/" + user.screen_name));
+                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                    startActivity(intent);
+                }
                 return true;
             }
             default: {
@@ -1737,7 +1756,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         public Object doLongOperation(Pair<ParcelableUser, Relationship> args) {
             final ContentResolver resolver = context.getContentResolver();
             final ParcelableUser user = args.first;
-            resolver.insert(CachedUsers.CONTENT_URI, ContentValuesCreator.makeCachedUserContentValues(user));
+            resolver.insert(CachedUsers.CONTENT_URI, ParcelableUserValuesCreator.create(user));
             resolver.insert(CachedRelationships.CONTENT_URI, CachedRelationshipValuesCreator.create(
                     new CachedRelationship(user.account_id, user.id, args.second)));
             return null;

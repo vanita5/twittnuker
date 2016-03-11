@@ -34,9 +34,11 @@ import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -46,24 +48,24 @@ public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
 
     private final long mUserId;
     private final String mUserScreenName;
-    private final boolean mTwitterOptimizedSearches;
 
     private User mUser;
 
     public MediaTimelineLoader(final Context context, final long accountId, final long userId, final String screenName,
                                final long sinceId, final long maxId, final List<ParcelableStatus> data, final String[] savedStatusesArgs,
-                               final int tabPosition, final boolean fromUser,
-                               final boolean twitterOptimizedSearches) {
+                               final int tabPosition, final boolean fromUser) {
         super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
         mUserId = userId;
         mUserScreenName = screenName;
-        mTwitterOptimizedSearches = twitterOptimizedSearches;
     }
 
     @NonNull
     @Override
     protected ResponseList<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
-        if (Utils.isOfficialCredentials(getContext(), getAccountId())) {
+        final Context context = getContext();
+        final ParcelableCredentials credentials = DataStoreUtils.getCredentials(context, getAccountId());
+        if (credentials == null) throw new TwitterException("Null credentials");
+        if (Utils.isOfficialCredentials(context, credentials)) {
             if (mUserId != -1)
                 return twitter.getMediaTimeline(mUserId, paging);
             if (mUserScreenName != null)
@@ -79,7 +81,7 @@ public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
                 screenName = mUser.getScreenName();
             }
             final SearchQuery query;
-            if (mTwitterOptimizedSearches) {
+            if (TwitterAPIFactory.isTwitterCredentials(credentials)) {
                 query = new SearchQuery("from:" + screenName + " filter:media exclude:retweets");
             } else {
                 query = new SearchQuery("@" + screenName + " pic.twitter.com -RT");

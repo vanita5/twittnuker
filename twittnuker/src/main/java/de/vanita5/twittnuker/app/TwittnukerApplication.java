@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.app;
 
 import android.app.Application;
-import android.app.UiModeManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -235,17 +234,14 @@ public class TwittnukerApplication extends Application implements Constants,
     private void resetTheme(SharedPreferences preferences) {
         switch (ThemeUtils.getLocalNightMode(preferences)) {
             case AppCompatDelegate.MODE_NIGHT_AUTO: {
-                ((UiModeManager) getSystemService(UI_MODE_SERVICE)).setNightMode(UiModeManager.MODE_NIGHT_AUTO);
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
                 break;
             }
             case AppCompatDelegate.MODE_NIGHT_YES: {
-                ((UiModeManager) getSystemService(UI_MODE_SERVICE)).setNightMode(UiModeManager.MODE_NIGHT_YES);
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 break;
             }
             default: {
-                ((UiModeManager) getSystemService(UI_MODE_SERVICE)).setNightMode(UiModeManager.MODE_NIGHT_NO);
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 break;
             }
