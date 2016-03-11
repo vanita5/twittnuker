@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util.media;
 public class MediaExtra {
     long accountId;
     String fallbackUrl;
+    boolean skipUrlReplacing;
 
     public long getAccountId() {
         return accountId;
@@ -40,5 +41,13 @@ public class MediaExtra {
 
     public void setFallbackUrl(String fallbackUrl) {
         this.fallbackUrl = fallbackUrl;
+    }
+
+    public boolean isSkipUrlReplacing() {
+        return skipUrlReplacing;
+    }
+
+    public void setSkipUrlReplacing(boolean skipUrlReplacing) {
+        this.skipUrlReplacing = skipUrlReplacing;
     }
 }

@@ -93,9 +93,8 @@ import de.vanita5.twittnuker.util.PermissionUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.util.imageviewer.RapidImageDecoder;
-import de.vanita5.twittnuker.util.imageviewer.RapidImageRegionDecoder;
 import de.vanita5.twittnuker.util.media.MediaExtra;
+import de.vanita5.twittnuker.util.media.preview.provider.TwitterMediaProvider;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -826,6 +825,13 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         protected Object getDownloadExtra() {
             final MediaExtra mediaExtra = new MediaExtra();
             mediaExtra.setAccountId(getArguments().getLong(EXTRA_ACCOUNT_ID, -1));
+            final Uri origDownloadUri = super.getDownloadUri();
+            final Uri downloadUri = getDownloadUri();
+            if (origDownloadUri != null && downloadUri != null) {
+                final String fallbackUrl = origDownloadUri.toString();
+                mediaExtra.setFallbackUrl(fallbackUrl);
+                mediaExtra.setSkipUrlReplacing(!fallbackUrl.equals(downloadUri.toString()));
+            }
             return mediaExtra;
         }
 
@@ -844,6 +850,36 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
             }
         }
 
+        @Nullable
+        @Override
+        protected Uri getDownloadUri() {
+            final Uri downloadUri = super.getDownloadUri();
+            if (downloadUri == null) return null;
+            return replaceTwitterMediaUri(downloadUri);
+        }
+
+        static Uri replaceTwitterMediaUri(Uri downloadUri) {
+            String uriString = downloadUri.toString();
+            if (TwitterMediaProvider.isSupported(uriString)) {
+                final String suffix = ".jpg";
+                int lastIndexOfJpegSuffix = uriString.lastIndexOf(suffix);
+                if (lastIndexOfJpegSuffix == -1) return downloadUri;
+                final int endOfSuffix = lastIndexOfJpegSuffix + suffix.length();
+                if (endOfSuffix == uriString.length()) {
+                    return Uri.parse(uriString.substring(0, lastIndexOfJpegSuffix) + ".png");
+                } else {
+                    // Seems :orig suffix won't work jpegs -> pngs
+                    String sizeSuffix = uriString.substring(endOfSuffix);
+                    if (":orig".equals(sizeSuffix)) {
+                        sizeSuffix = ":large";
+                    }
+                    return Uri.parse(uriString.substring(0, lastIndexOfJpegSuffix) + ".png" +
+                            sizeSuffix);
+                }
+            }
+            return downloadUri;
+        }
+
         @Override
         public boolean hasDownloadedData() {
             return super.hasDownloadedData() && mMediaLoadState != State.ERROR;
@@ -860,8 +896,7 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
 
         @Override
         protected void setupImageView(SubsamplingScaleImageView imageView) {
-            imageView.setRegionDecoderClass(RapidImageRegionDecoder.class);
-            imageView.setBitmapDecoderClass(RapidImageDecoder.class);
+            imageView.setMaxScale(getResources().getDisplayMetrics().density);
         }
     }
 

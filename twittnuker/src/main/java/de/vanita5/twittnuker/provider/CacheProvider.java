@@ -37,7 +37,6 @@ import android.webkit.MimeTypeMap;
 import com.bluelinelabs.logansquare.JsonMapper;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 
-import org.mariotaku.mediaviewer.library.CacheDownloadLoader;
 import org.mariotaku.restfu.RestFuUtils;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
@@ -85,7 +84,11 @@ public class CacheProvider extends ContentProvider implements TwittnukerConstant
             throw new IllegalArgumentException(uri.toString());
         if (!TwittnukerConstants.AUTHORITY_TWITTNUKER_CACHE.equals(uri.getAuthority()))
             throw new IllegalArgumentException(uri.toString());
-        return CacheDownloadLoader.getExtraKey(ByteString.decodeBase64(uri.getLastPathSegment()).utf8());
+        return getExtraKey(ByteString.decodeBase64(uri.getLastPathSegment()).utf8());
+    }
+
+    public static String getExtraKey(String key) {
+        return key + ".extra";
     }
 
     @Override

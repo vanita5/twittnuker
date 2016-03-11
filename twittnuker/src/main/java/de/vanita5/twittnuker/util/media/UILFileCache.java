@@ -30,6 +30,7 @@ import com.nostra13.universalimageloader.utils.IoUtils;
 import org.mariotaku.mediaviewer.library.FileCache;
 import de.vanita5.twittnuker.provider.CacheProvider;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,13 +54,17 @@ public class UILFileCache implements FileCache {
     }
 
     @Override
-    public void save(final String key, final InputStream is, final CopyListener listener) throws IOException {
+    public void save(final String key, final InputStream is, byte[] extra,
+                     final CopyListener listener) throws IOException {
         cache.save(key, is, new IoUtils.CopyListener() {
             @Override
             public boolean onBytesCopied(final int current, final int total) {
                 return listener == null || listener.onCopied(current);
             }
         });
+        if (extra != null) {
+            cache.save(CacheProvider.getExtraKey(key), new ByteArrayInputStream(extra), null);
+        }
     }
 
     @Override
