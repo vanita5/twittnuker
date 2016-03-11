@@ -34,8 +34,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 
 import de.vanita5.twittnuker.adapter.AbsUsersAdapter;
-import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserAdapterListener;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
+import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserAdapterListener;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.IntentUtils;
@@ -115,7 +115,13 @@ abstract class AbsUsersFragment<Data> extends AbsContentListRecyclerViewFragment
     public void onUserClick(UserViewHolder holder, int position) {
         final ParcelableUser user = getAdapter().getUser(position);
         final FragmentActivity activity = getActivity();
-        IntentUtils.openUserProfile(activity, user.account_id, user.id, user.screen_name, null, true);
+        IntentUtils.openUserProfile(activity, user.account_id, user.id, user.screen_name, null,
+                true, getUserReferral());
+    }
+
+    @UserFragment.Referral
+    protected String getUserReferral() {
+        return null;
     }
 
 

@@ -50,13 +50,13 @@ import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
-import de.vanita5.twittnuker.fragment.support.AbsStatusesFragment;
 import de.vanita5.twittnuker.fragment.support.AddStatusFilterDialogFragment;
 import de.vanita5.twittnuker.fragment.support.DestroyStatusDialogFragment;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.menu.SupportStatusShareProvider;
 import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
+import de.vanita5.twittnuker.model.AccountId;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
@@ -136,7 +136,8 @@ public class MenuUtils implements Constants {
                                       @NonNull final ParcelableStatus status,
                                       @NonNull UserColorNameManager manager,
                                       @NonNull final AsyncTwitterWrapper twitter) {
-        final ParcelableCredentials account = DataStoreUtils.getCredentials(context, status.account_id);
+        final ParcelableCredentials account = DataStoreUtils.getCredentials(context, new AccountId(status.account_id,
+                status.account_host));
         if (account == null) return;
         setupForStatus(context, preferences, menu, status, account, manager, twitter);
     }
@@ -275,17 +276,17 @@ public class MenuUtils implements Constants {
                 Utils.favorite(status, twitter, item);
                 break;
             }
-            case R.id.love: {
-                Utils.retweet(status, twitter);
-                Utils.favorite(status, twitter, item);
-                break;
-            }
             case R.id.delete: {
                 DestroyStatusDialogFragment.show(fm, status);
                 break;
             }
             case R.id.add_to_filter: {
                 AddStatusFilterDialogFragment.show(fm, status);
+                break;
+            }
+            case R.id.love: {
+                Utils.retweet(status, twitter);
+                Utils.favorite(status, twitter, item);
                 break;
             }
             case R.id.set_color: {

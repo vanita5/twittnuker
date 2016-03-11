@@ -28,13 +28,12 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
-import de.vanita5.twittnuker.util.DataStoreUtils;
 
 public class ParcelableStatusUpdateUtils implements Constants {
 
     public static ParcelableStatusUpdate fromDraftItem(final Context context, final Draft draft) {
         ParcelableStatusUpdate statusUpdate = new ParcelableStatusUpdate();
-        statusUpdate.accounts = DataStoreUtils.getAccounts(context, draft.account_ids);
+        statusUpdate.accounts = ParcelableAccountUtils.getAccounts(context, draft.account_ids);
         statusUpdate.text = draft.text;
         statusUpdate.location = draft.location;
         statusUpdate.media = draft.media;

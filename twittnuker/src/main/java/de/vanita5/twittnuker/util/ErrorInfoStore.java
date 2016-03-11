@@ -29,6 +29,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.model.AccountId;
 
 
 public class ErrorInfoStore {
@@ -64,6 +65,15 @@ public class ErrorInfoStore {
         put(key + "_" + extraId, code);
     }
 
+    public void put(String key, AccountId extraId, int code) {
+        final String host = extraId.getHost();
+        if (host == null) {
+            put(key, extraId.getId(), code);
+        } else {
+            put(key + "_" + extraId.getId() + "_" + host, code);
+        }
+    }
+
     @Nullable
     public static DisplayErrorInfo getErrorInfo(@NonNull Context context, int code) {
         switch (code) {
@@ -85,6 +95,15 @@ public class ErrorInfoStore {
 
     public void remove(String key, long extraId) {
         remove(key + "_" + extraId);
+    }
+
+    public void remove(String key, AccountId extraId) {
+        final String host = extraId.getHost();
+        if (host == null) {
+            remove(key, extraId.getId());
+        } else {
+            remove(key + "_" + extraId.getId() + "_" + host);
+        }
     }
 
     public void remove(String key) {

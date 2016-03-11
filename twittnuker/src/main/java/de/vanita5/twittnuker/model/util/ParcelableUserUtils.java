@@ -23,11 +23,13 @@
 package de.vanita5.twittnuker.model.util;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.AccountId;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
@@ -38,15 +40,18 @@ import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 public class ParcelableUserUtils implements TwittnukerConstants{
 
-    public static ParcelableUser fromUser(User user, long accountId) {
+    public static ParcelableUser fromUser(@NonNull User user, @Nullable AccountId accountId) {
         return fromUser(user, accountId, 0);
     }
 
-    public static ParcelableUser fromUser(User user, long accountId, long position) {
+    public static ParcelableUser fromUser(@NonNull User user, @Nullable AccountId accountId, long position) {
         final UrlEntity[] urlEntities = user.getUrlEntities();
         final ParcelableUser obj = new ParcelableUser();
         obj.position = position;
-        obj.account_id = accountId;
+        if (accountId != null) {
+            obj.account_id = accountId.getId();
+            obj.account_host = accountId.getHost();
+        }
         obj.id = user.getId();
         obj.created_at = user.getCreatedAt().getTime();
         obj.is_protected = user.isProtected();
@@ -108,7 +113,7 @@ public class ParcelableUserUtils implements TwittnukerConstants{
         return new ParcelableUser(accountId, id, name, screenName, profileImageUrl);
     }
 
-    public static ParcelableUser[] fromUsers(final User[] users, long accountId) {
+    public static ParcelableUser[] fromUsers(final User[] users, AccountId accountId) {
         if (users == null) return null;
         int size = users.length;
         final ParcelableUser[] result = new ParcelableUser[size];

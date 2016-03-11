@@ -72,6 +72,7 @@ import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
+import de.vanita5.twittnuker.model.AccountId;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -350,9 +351,10 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
                 break;
             }
             case R.id.profile_image: {
-                if (mUserList == null) return;
-                IntentUtils.openUserProfile(getActivity(), mUserList.account_id,
-                        mUserList.user_id, mUserList.user_screen_name, null, true);
+                final ParcelableUserList userList = mUserList;
+                if (userList == null) return;
+                IntentUtils.openUserProfile(getActivity(), userList.account_id, userList.user_id,
+                        userList.user_screen_name, null, true, null);
                 break;
             }
         }
@@ -362,12 +364,12 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
     @Override
     public Loader<SingleResponse<ParcelableUserList>> onCreateLoader(final int id, final Bundle args) {
         setProgressBarIndeterminateVisibility(true);
-        final long accountId = args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
-        final long userId = args != null ? args.getLong(EXTRA_USER_ID, -1) : -1;
-        final long listId = args != null ? args.getLong(EXTRA_LIST_ID, -1) : -1;
-        final String listName = args != null ? args.getString(EXTRA_LIST_NAME) : null;
-        final String screenName = args != null ? args.getString(EXTRA_SCREEN_NAME) : null;
-        final boolean omitIntentExtra = args == null || args.getBoolean(EXTRA_OMIT_INTENT_EXTRA, true);
+        final AccountId accountId = args.getParcelable(EXTRA_ACCOUNT_ID);
+        final long userId = args.getLong(EXTRA_USER_ID, -1);
+        final long listId = args.getLong(EXTRA_LIST_ID, -1);
+        final String listName = args.getString(EXTRA_LIST_NAME);
+        final String screenName = args.getString(EXTRA_SCREEN_NAME);
+        final boolean omitIntentExtra = args.getBoolean(EXTRA_OMIT_INTENT_EXTRA, true);
         return new ParcelableUserListLoader(getActivity(), omitIntentExtra, getArguments(), accountId, listId,
                 listName, userId, screenName);
     }
@@ -436,13 +438,12 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
             DialogInterface.OnClickListener {
 
         private String mName, mDescription;
-        private long mAccountId;
+        private AccountId mAccountId;
         private long mListId;
         private boolean mIsPublic;
 
         @Override
         public void onClick(final DialogInterface dialog, final int which) {
-            if (mAccountId <= 0) return;
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE: {
                     final AlertDialog alertDialog = (AlertDialog) dialog;
@@ -468,7 +469,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final Bundle bundle = savedInstanceState == null ? getArguments() : savedInstanceState;
-            mAccountId = bundle != null ? bundle.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
+            mAccountId = bundle != null ? bundle.<AccountId>getParcelable(EXTRA_ACCOUNT_ID) : null;
             mListId = bundle != null ? bundle.getLong(EXTRA_LIST_ID, -1) : -1;
             mName = bundle != null ? bundle.getString(EXTRA_LIST_NAME) : null;
             mDescription = bundle != null ? bundle.getString(EXTRA_DESCRIPTION) : null;
@@ -504,7 +505,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 
         @Override
         public void onSaveInstanceState(final Bundle outState) {
-            outState.putLong(EXTRA_ACCOUNT_ID, mAccountId);
+            outState.putParcelable(EXTRA_ACCOUNT_ID, mAccountId);
             outState.putLong(EXTRA_LIST_ID, mListId);
             outState.putString(EXTRA_LIST_NAME, mName);
             outState.putString(EXTRA_DESCRIPTION, mDescription);
@@ -518,12 +519,13 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
 
         private final boolean mOmitIntentExtra;
         private final Bundle mExtras;
-        private final long mAccountId, mUserId;
+        private final AccountId mAccountId;
+        private final long mUserId;
         private final long mListId;
         private final String mScreenName, mListName;
 
         private ParcelableUserListLoader(final Context context, final boolean omitIntentExtra, final Bundle extras,
-                                         final long accountId, final long listId, final String listName, final long userId,
+                                         final AccountId accountId, final long listId, final String listName, final long userId,
                                          final String screenName) {
             super(context);
             mOmitIntentExtra = omitIntentExtra;
@@ -541,7 +543,8 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
                 final ParcelableUserList cache = mExtras.getParcelable(EXTRA_USER_LIST);
                 if (cache != null) return SingleResponse.getInstance(cache);
             }
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, true);
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId,
+                    true);
             if (twitter == null) return SingleResponse.getInstance();
             try {
                 final UserList list;
@@ -553,7 +556,7 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
                     list = twitter.showUserList(mListName, mScreenName);
                 } else
                     return SingleResponse.getInstance();
-                return SingleResponse.getInstance(new ParcelableUserList(list, mAccountId));
+                return SingleResponse.getInstance(ParcelableUserListUtils.from(list, mAccountId));
             } catch (final TwitterException e) {
                 return SingleResponse.getInstance(e);
             }

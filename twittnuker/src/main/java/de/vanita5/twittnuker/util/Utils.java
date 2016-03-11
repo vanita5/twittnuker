@@ -135,7 +135,7 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
-import de.vanita5.twittnuker.fragment.support.AbsStatusesFragment.DefaultOnLikedListener;
+import de.vanita5.twittnuker.fragment.support.AbsStatusesFragment;
 import de.vanita5.twittnuker.fragment.support.AccountsManagerFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.DraftsFragment;
@@ -169,6 +169,7 @@ import de.vanita5.twittnuker.fragment.support.UserProfileEditorFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UsersListFragment;
 import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
+import de.vanita5.twittnuker.model.AccountId;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -461,6 +462,7 @@ public final class Utils implements Constants {
                 if (!args.containsKey(EXTRA_USER_ID)) {
                     args.putLong(EXTRA_USER_ID, NumberUtils.toLong(param_user_id, -1));
                 }
+                args.putString(EXTRA_REFERRAL, intent.getStringExtra(EXTRA_REFERRAL));
                 break;
             }
             case LINK_ID_USER_LIST_MEMBERSHIPS: {
@@ -723,9 +725,9 @@ public final class Utils implements Constants {
             if (paramAccountName != null) {
                 args.putLong(EXTRA_ACCOUNT_ID, DataStoreUtils.getAccountId(context, paramAccountName));
             } else if (isAccountIdRequired) {
-                final long accountId = getDefaultAccountId(context);
+                final AccountId accountId = getDefaultAccountId(context);
                 if (isMyAccount(context, accountId)) {
-                    args.putLong(EXTRA_ACCOUNT_ID, accountId);
+                    args.putLong(EXTRA_ACCOUNT_ID, accountId.getId());
                 }
             }
         }
@@ -744,11 +746,11 @@ public final class Utils implements Constants {
 
 
     public static String getReadPositionTagWithAccounts(@ReadPositionTag String tag, Bundle args) {
-        final long[] accountIds = getAccountIds(args);
+        final AccountId[] accountIds = getAccountIds(args);
         return getReadPositionTagWithAccounts(tag, accountIds);
     }
 
-    public static long[] getAccountIds(Bundle args) {
+    public static AccountId[] getAccountIds(Bundle args) {
         final long[] accountIds;
         if (args.containsKey(EXTRA_ACCOUNT_IDS)) {
             accountIds = args.getLongArray(EXTRA_ACCOUNT_IDS);
@@ -762,11 +764,10 @@ public final class Utils implements Constants {
 
     @Nullable
     public static String getReadPositionTagWithAccounts(@Nullable final String tag,
-                                                        final long... accountIds) {
+                                                        final AccountId... accountIds) {
         if (tag == null) return null;
-        if (accountIds == null || accountIds.length == 0 || (accountIds.length == 1 && accountIds[0] < 0))
-            return tag;
-        final long[] accountIdsClone = accountIds.clone();
+        if (ArrayUtils.isEmpty(accountIds)) return tag;
+        final AccountId[] accountIdsClone = accountIds.clone();
         Arrays.sort(accountIdsClone);
         return tag + "_" + TwidereArrayUtils.toString(accountIdsClone, '_', false);
     }
@@ -777,7 +778,7 @@ public final class Utils implements Constants {
                                                         long... accountIds) {
         if (tag == null) return null;
         if (accountIds == null || accountIds.length == 0 || (accountIds.length == 1 && accountIds[0] < 0)) {
-            final long[] activatedIds = DataStoreUtils.getActivatedAccountIds(context);
+            final AccountId[] activatedIds = DataStoreUtils.getActivatedAccountIds(context);
             Arrays.sort(activatedIds);
             return tag + "_" + TwidereArrayUtils.toString(activatedIds, '_', false);
         }
@@ -829,7 +830,8 @@ public final class Utils implements Constants {
     }
 
     @NonNull
-    public static ParcelableStatus findStatus(final Context context, final long accountId, final long statusId)
+    public static ParcelableStatus findStatus(final Context context, final AccountId accountId,
+                                              final String accountHost, final long statusId)
             throws TwitterException {
         if (context == null) throw new NullPointerException();
         final ParcelableStatus cached = findStatusInDatabases(context, accountId, statusId);
@@ -837,7 +839,7 @@ public final class Utils implements Constants {
         final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId, true);
         if (twitter == null) throw new TwitterException("Account does not exist");
         final Status status = twitter.showStatus(statusId);
-        final String where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
+        final String where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId.getId()),
                 Expression.equals(Statuses.STATUS_ID, statusId)).getSQL();
         final ContentResolver resolver = context.getContentResolver();
         resolver.delete(CachedStatuses.CONTENT_URI, where, null);
@@ -846,12 +848,12 @@ public final class Utils implements Constants {
     }
 
     @Nullable
-    public static ParcelableStatus findStatusInDatabases(final Context context, final long accountId,
+    public static ParcelableStatus findStatusInDatabases(final Context context, final AccountId accountId,
                                                          final long statusId) {
         if (context == null) return null;
         final ContentResolver resolver = context.getContentResolver();
         ParcelableStatus status = null;
-        final String where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId),
+        final String where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountId.getId()),
                 Expression.equals(Statuses.STATUS_ID, statusId)).getSQL();
         for (final Uri uri : STATUSES_URIS) {
             final Cursor cur = resolver.query(uri, Statuses.COLUMNS, where, null, null);
@@ -928,7 +930,7 @@ public final class Utils implements Constants {
         return hasNavBar(context);
     }
 
-    public static boolean isOfficialCredentials(@NonNull final Context context, final long accountId) {
+    public static boolean isOfficialCredentials(@NonNull final Context context, final AccountId accountId) {
         final ParcelableCredentials credentials = DataStoreUtils.getCredentials(context, accountId);
         if (credentials == null) return false;
         return isOfficialCredentials(context, credentials);
@@ -1074,21 +1076,30 @@ public final class Utils implements Constants {
         return new Columns(columns);
     }
 
-    public static long getDefaultAccountId(final Context context) {
-        if (context == null) return -1;
-        final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+    @Nullable
+    public static AccountId getDefaultAccountId(final Context context) {
+        if (context == null) return null;
+        final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
+                Context.MODE_PRIVATE);
         final long accountId = prefs.getLong(KEY_DEFAULT_ACCOUNT_ID, -1);
-        final long[] accountIds = DataStoreUtils.getAccountIds(context);
+        final String accountHost = prefs.getString(KEY_DEFAULT_ACCOUNT_HOST, null);
+        final AccountId[] accountIds = DataStoreUtils.getAccountIds(context);
+        int idMatchIdx = -1;
+        for (int i = 0, accountIdsLength = accountIds.length; i < accountIdsLength; i++) {
+            AccountId id = accountIds[i];
+            if (accountId == id.getId()) {
+                idMatchIdx = i;
+                if (TextUtils.equals(accountHost, id.getHost())) return id;
+            }
+        }
+        if (idMatchIdx != -1) {
+            return accountIds[idMatchIdx];
+        }
         if (accountIds.length > 0 && !ArrayUtils.contains(accountIds, accountId)) {
              /* TODO: this is just a quick fix */
             return accountIds[0];
         }
-        return accountId;
-    }
-
-    public static String getDefaultAccountScreenName(final Context context) {
-        if (context == null) return null;
-        return DataStoreUtils.getAccountScreenName(context, getDefaultAccountId(context));
+        return null;
     }
 
     public static int getDefaultTextSize(final Context context) {
@@ -1176,7 +1187,8 @@ public final class Utils implements Constants {
         return null;
     }
 
-    public static String getImageUploadStatus(@Nullable final CharSequence[] links,
+    public static String getImageUploadStatus(@NonNull final Context context,
+                                              @Nullable final CharSequence[] links,
                                               @Nullable final CharSequence text) {
         if (ArrayUtils.isEmpty(links) || text == null) return ParseUtils.parseString(text);
         return text + " " + TwidereArrayUtils.toString(links, ' ', false);
@@ -1478,7 +1490,7 @@ public final class Utils implements Constants {
     }
 
     public static boolean hasAutoRefreshAccounts(final Context context) {
-        final long[] accountIds = DataStoreUtils.getAccountIds(context);
+        final AccountId[] accountIds = DataStoreUtils.getAccountIds(context);
         return !ArrayUtils.isEmpty(AccountPreferences.getAutoRefreshEnabledAccountIds(context, accountIds));
     }
 
@@ -1529,10 +1541,10 @@ public final class Utils implements Constants {
         }
     }
 
-    public static boolean isMyAccount(final Context context, final long accountId) {
-        if (context == null) return false;
+    public static boolean isMyAccount(final Context context, @Nullable final AccountId accountId) {
+        if (context == null || accountId == null) return false;
         final ContentResolver resolver = context.getContentResolver();
-        final String where = Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL();
+        final String where = Expression.equals(Accounts.ACCOUNT_ID, accountId.getId()).getSQL();
         final String[] projection = new String[0];
         final Cursor cur = resolver.query(Accounts.CONTENT_URI, projection, where, null, null);
         try {
@@ -1588,9 +1600,9 @@ public final class Utils implements Constants {
 
     public static boolean isUserLoggedIn(final Context context, final long accountId) {
         if (context == null) return false;
-        final long[] ids = DataStoreUtils.getAccountIds(context);
-        for (final long id : ids) {
-            if (id == accountId) return true;
+        final AccountId[] ids = DataStoreUtils.getAccountIds(context);
+        for (final AccountId id : ids) {
+            if (id.getId() == accountId) return true;
         }
         return false;
     }
@@ -2456,9 +2468,11 @@ public final class Utils implements Constants {
 
     public static void retweet(ParcelableStatus status, AsyncTwitterWrapper twitter) {
         if (isMyRetweet(status)) {
-            twitter.cancelRetweetAsync(status.account_id, status.id, status.my_retweet_id);
+            twitter.cancelRetweetAsync(new AccountId(status.account_id, status.account_host),
+                    status.id, status.my_retweet_id);
         } else {
-            twitter.retweetStatusAsync(status.account_id, status.id);
+            twitter.retweetStatusAsync(new AccountId(status.account_id, status.account_host),
+                    status.id);
         }
     }
 
@@ -2469,9 +2483,10 @@ public final class Utils implements Constants {
             ActionProvider provider = MenuItemCompat.getActionProvider(item);
             if (provider instanceof FavoriteItemProvider) {
                 ((FavoriteItemProvider) provider).invokeItem(item,
-                        new DefaultOnLikedListener(twitter, status));
+                        new AbsStatusesFragment.DefaultOnLikedListener(twitter, status));
             } else {
-                twitter.createFavoriteAsync(status.account_id, status.id);
+                twitter.createFavoriteAsync(new AccountId(status.account_id, status.account_host),
+                        status.id);
             }
         }
     }
@@ -2640,6 +2655,12 @@ public final class Utils implements Constants {
         if (!preferences.getBoolean(KEY_MEDIA_PREVIEW)) return false;
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return !ConnectivityManagerCompat.isActiveNetworkMetered(cm) || !preferences.getBoolean(KEY_BANDWIDTH_SAVING_MODE);
+    }
+
+    public static Expression getAccountCompareExpression() {
+        return Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_ID),
+                Expression.or(Expression.isNull(new Column(Statuses.ACCOUNT_HOST)),
+                        Expression.equalsArgs(Statuses.ACCOUNT_HOST)));
     }
 
     static class UtilsL {

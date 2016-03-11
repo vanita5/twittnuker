@@ -61,6 +61,7 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.api.twitter.util.TwitterConverterFactory;
+import de.vanita5.twittnuker.model.AccountId;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
@@ -106,18 +107,20 @@ public class TwitterAPIFactory implements TwittnukerConstants {
     public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities,
                                                     final boolean includeRetweets) {
         if (context == null) return null;
-        return getTwitterInstance(context, Utils.getDefaultAccountId(context), includeEntities, includeRetweets);
+        final AccountId accountId = Utils.getDefaultAccountId(context);
+        if (accountId == null) return null;
+        return getTwitterInstance(context, accountId, includeEntities, includeRetweets);
     }
 
     @WorkerThread
-    public static Twitter getTwitterInstance(final Context context, final long accountId,
+    public static Twitter getTwitterInstance(final Context context, final AccountId accountId,
                                              final boolean includeEntities) {
         return getTwitterInstance(context, accountId, includeEntities, true);
     }
 
     @Nullable
     @WorkerThread
-    public static Twitter getTwitterInstance(final Context context, final long accountId,
+    public static Twitter getTwitterInstance(final Context context, final AccountId accountId,
                                              final boolean includeEntities,
                                              final boolean includeRetweets) {
         return getTwitterInstance(context, accountId, includeEntities, includeRetweets, Twitter.class);
@@ -125,11 +128,12 @@ public class TwitterAPIFactory implements TwittnukerConstants {
 
     @Nullable
     @WorkerThread
-    public static <T> T getTwitterInstance(final Context context, final long accountId,
-                                           final boolean includeEntities,
-                                           final boolean includeRetweets, Class<T> cls) {
+    public static <T> T getTwitterInstance(final Context context, final AccountId accountId,
+                                           final boolean includeEntities, final boolean includeRetweets,
+                                           Class<T> cls) {
         if (context == null) return null;
-        final ParcelableCredentials credentials = DataStoreUtils.getCredentials(context, accountId);
+        final ParcelableCredentials credentials = DataStoreUtils.getCredentials(context,
+                accountId.getId(), accountId.getHost());
         final HashMap<String, String> extraParams = new HashMap<>();
         extraParams.put("include_entities", String.valueOf(includeEntities));
         extraParams.put("include_retweets", String.valueOf(includeRetweets));

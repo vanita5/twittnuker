@@ -27,11 +27,12 @@ import android.support.annotation.Nullable;
 
 public interface RefreshTaskParam {
     @NonNull
-    long[] getAccountIds();
+    de.vanita5.twittnuker.model.AccountId[] getAccountIds();
 
     @Nullable
     long[] getMaxIds();
 
     @Nullable
     long[] getSinceIds();
+
 }

@@ -31,6 +31,7 @@ import android.support.annotation.Nullable;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
@@ -56,7 +57,8 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
         switch (type) {
             case TwidereLinkify.LINK_TYPE_MENTION: {
-                IntentUtils.openUserProfile(context, accountId, -1, link, null, true);
+                IntentUtils.openUserProfile(context, accountId, -1, link, null, true,
+                        UserFragment.Referral.USER_MENTION);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_HASHTAG: {
@@ -84,7 +86,8 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
                 break;
             }
             case TwidereLinkify.LINK_TYPE_USER_ID: {
-                IntentUtils.openUserProfile(context, accountId, NumberUtils.toLong(link, -1), null, null, true);
+                IntentUtils.openUserProfile(context, accountId, NumberUtils.toLong(link, -1), null,
+                        null, true, UserFragment.Referral.USER_MENTION);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_STATUS: {

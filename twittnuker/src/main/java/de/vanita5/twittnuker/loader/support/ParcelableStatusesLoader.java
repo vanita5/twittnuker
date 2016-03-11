@@ -26,31 +26,31 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
 
+import java.util.List;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
 
-import java.util.List;
-
 public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<ParcelableStatus>>
         implements Constants, IExtendedLoader {
 
     private final List<ParcelableStatus> mData = new NoDuplicatesArrayList<>();
-	private final boolean mFirstLoad;
-	private final int mTabPosition;
+    private final boolean mFirstLoad;
+    private final int mTabPosition;
     private boolean mFromUser;
 
     public ParcelableStatusesLoader(final Context context, final List<ParcelableStatus> data,
                                     final int tabPosition, final boolean fromUser) {
-		super(context);
-		mFirstLoad = data == null;
-		if (data != null) {
-			mData.addAll(data);
-		}
+        super(context);
+        mFirstLoad = data == null;
+        if (data != null) {
+            mData.addAll(data);
+        }
         mTabPosition = tabPosition;
         mFromUser = fromUser;
-	}
+    }
 
     @Override
     public boolean isFromUser() {
@@ -63,11 +63,11 @@ public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<Parc
     }
 
     protected boolean containsStatus(final long statusId) {
-		for (final ParcelableStatus status : mData) {
+        for (final ParcelableStatus status : mData) {
             if (status.id == statusId) return true;
-		}
-		return false;
-	}
+        }
+        return false;
+    }
 
     protected boolean deleteStatus(final List<ParcelableStatus> statuses, final long status_id) {
         if (statuses == null || statuses.isEmpty()) return false;
@@ -77,27 +77,27 @@ public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<Parc
                 statuses.remove(i);
                 result = true;
             }
-		}
-		return result;
-	}
+        }
+        return result;
+    }
 
     @Nullable
-	protected List<ParcelableStatus> getData() {
-		return mData;
-	}
+    protected List<ParcelableStatus> getData() {
+        return mData;
+    }
 
-	protected int getTabPosition() {
-		return mTabPosition;
-	}
+    protected int getTabPosition() {
+        return mTabPosition;
+    }
 
-	protected boolean isFirstLoad() {
-		return mFirstLoad;
-	}
+    protected boolean isFirstLoad() {
+        return mFirstLoad;
+    }
 
-	@Override
-	protected void onStartLoading() {
-		forceLoad();
-	}
+    @Override
+    protected void onStartLoading() {
+        forceLoad();
+    }
 
 
 }

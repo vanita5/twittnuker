@@ -435,7 +435,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                                                                       final long accountId, final long recipientId,
                                                                       final String text, final String imageUri) {
         final Twitter twitter = TwitterAPIFactory.getTwitterInstance(this, accountId, true, true);
-        final TwitterUpload twitterUpload = TwitterAPIFactory.getTwitterInstance(this, accountId, true, true, TwitterUpload.class);
+        final TwitterUpload twitterUpload = TwitterAPIFactory.getTwitterInstance(this, accountId, accountHost, true, true, TwitterUpload.class);
         if (twitter == null || twitterUpload == null) return SingleResponse.getInstance();
         try {
             final ParcelableDirectMessage directMessage;
@@ -572,7 +572,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                     final Twitter twitter = TwitterAPIFactory.getTwitterInstance(this, account.account_id,
                             true, true);
                     final TwitterUpload upload = TwitterAPIFactory.getTwitterInstance(this, account.account_id,
-                            true, true, TwitterUpload.class);
+                            accountHost, true, true, TwitterUpload.class);
 
                     // Shouldn't happen
                     if (twitter == null || upload == null || credentials == null) {
@@ -680,7 +680,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                                 notReplyToOther = true;
                             }
                         }
-                        final ParcelableStatus result = ParcelableStatusUtils.fromStatus(resultStatus, account.account_id, false);
+                        final ParcelableStatus result = ParcelableStatusUtils.fromStatus(resultStatus, account.account_id, accountHost, false);
                         if (shouldShorten && shortener != null && shortenedResult != null) {
                             shortener.callback(shortenedResult, result);
                         }

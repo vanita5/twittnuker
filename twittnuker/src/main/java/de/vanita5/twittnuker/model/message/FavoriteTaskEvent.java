@@ -25,12 +25,13 @@ package de.vanita5.twittnuker.model.message;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 
+import de.vanita5.twittnuker.model.AccountId;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public class FavoriteTaskEvent {
 
     private int action;
-    private long accountId;
+    private AccountId accountId;
     private long statusId;
 
     @Nullable
@@ -38,7 +39,7 @@ public class FavoriteTaskEvent {
     private boolean finished;
     private boolean succeeded;
 
-    public FavoriteTaskEvent(@Action final int action, final long accountId, final long statusId) {
+    public FavoriteTaskEvent(@Action final int action, final AccountId accountId, final long statusId) {
         this.action = action;
         this.accountId = accountId;
         this.statusId = statusId;
@@ -48,7 +49,7 @@ public class FavoriteTaskEvent {
         return action;
     }
 
-    public long getAccountId() {
+    public AccountId getAccountId() {
         return accountId;
     }
 

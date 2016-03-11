@@ -33,9 +33,6 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 
-import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT;
-import static de.vanita5.twittnuker.util.Utils.findStatus;
-
 public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<ParcelableStatus>> {
 
     private final boolean mOmitIntentExtra;
@@ -63,7 +60,7 @@ public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<Parce
             }
         }
         try {
-            final ParcelableStatus status = findStatus(getContext(), mAccountId, mStatusId);
+            final ParcelableStatus status = findStatus(getContext(), mAccountId, accountHost, mStatusId);
             final ParcelableCredentials credentials = DataStoreUtils.getCredentials(getContext(), mAccountId);
             final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(status);
             final Bundle extras = response.getExtras();

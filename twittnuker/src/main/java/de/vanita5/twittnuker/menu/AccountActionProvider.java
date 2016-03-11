@@ -33,7 +33,7 @@ import android.view.View;
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 
 public class AccountActionProvider extends ActionProvider implements TwittnukerConstants {
 
@@ -50,7 +50,7 @@ public class AccountActionProvider extends ActionProvider implements TwittnukerC
     }
 
     public AccountActionProvider(final Context context) {
-        this(context, DataStoreUtils.getAccounts(context, false, false));
+        this(context, ParcelableAccountUtils.getAccounts(context, false, false));
     }
 
 

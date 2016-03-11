@@ -106,6 +106,7 @@ import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.model.AccountId;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.DraftValuesCreator;
@@ -118,6 +119,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
@@ -1087,7 +1089,11 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
     private void notifyAccountSelectionChanged() {
         final ParcelableCredentials[] accounts = mAccountsAdapter.getSelectedAccounts();
         setSelectedAccounts(accounts);
-        mEditText.setAccountId(accounts.length > 0 ? accounts[0].account_id : Utils.getDefaultAccountId(this));
+        if (ArrayUtils.isEmpty(accounts)) {
+            mEditText.setAccountId(Utils.getDefaultAccountId(this));
+        } else {
+            mEditText.setAccountId(new AccountId(accounts[0]));
+        }
         mSendTextCountView.setMaxLength(TwidereValidator.getTextLimit(accounts));
         setMenu();
 //        mAccountActionProvider.setSelectedAccounts(mAccountsAdapter.getSelectedAccounts());
@@ -1287,7 +1293,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         } else {
             action = getDraftAction(getIntent().getAction());
         }
-        update.accounts = DataStoreUtils.getAccounts(this, accountIds);
+        update.accounts = ParcelableAccountUtils.getAccounts(this, accountIds);
         update.text = text;
         update.location = statusLocation;
         update.media = getMedia();
