@@ -98,7 +98,6 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ActivitySupport;
@@ -744,31 +743,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                         initialTab = i;
                         break;
                     }
-                }
-            }
-
-            final long readPosition = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_READ_POSITION), -1);
-            switch (tabType) {
-                case CustomTabType.HOME_TIMELINE: {
-                    final String tag = Utils.getReadPositionTagWithAccounts(ReadPositionTag.HOME_TIMELINE,
-                            accountId);
-                    mReadStateManager.setPosition(tag, readPosition, false);
-                    break;
-                }
-                case CustomTabType.NOTIFICATIONS_TIMELINE: {
-                    if (initialTab == -1 && !restoreInstanceState) {
-                        Utils.openInteractions(this, accountId);
-                    }
-                    final String tag = Utils.getReadPositionTagWithAccounts(ReadPositionTag.ACTIVITIES_ABOUT_ME,
-                            accountId);
-                    mReadStateManager.setPosition(tag, readPosition, false);
-                    break;
-                }
-                case CustomTabType.DIRECT_MESSAGES: {
-                    if (initialTab == -1 && !restoreInstanceState) {
-                        Utils.openDirectMessages(this, accountId);
-                    }
-                    break;
                 }
             }
         }

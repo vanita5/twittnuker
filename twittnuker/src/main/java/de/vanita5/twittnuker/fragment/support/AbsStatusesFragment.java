@@ -179,10 +179,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         super.setUserVisibleHint(isVisibleToUser);
 
         if (isVisibleToUser) {
-            final LinearLayoutManager layoutManager = getLayoutManager();
-            if (layoutManager != null) {
-                saveReadPosition(layoutManager.findFirstVisibleItemPosition());
-            }
+            saveReadPosition();
         }
     }
 
@@ -277,6 +274,13 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         IntentUtils.openMedia(getActivity(), status, media, null, true);
     }
 
+    protected void saveReadPosition() {
+        final LinearLayoutManager layoutManager = getLayoutManager();
+        if (layoutManager != null) {
+            saveReadPosition(layoutManager.findFirstVisibleItemPosition());
+        }
+    }
+
     @Override
     public void onStatusActionClick(IStatusViewHolder holder, int id, int position) {
         final AbsStatusesAdapter<Data> adapter = getAdapter();
@@ -351,6 +355,9 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         final RecyclerView recyclerView = getRecyclerView();
         recyclerView.removeOnScrollListener(mPauseOnScrollListener);
         recyclerView.removeOnScrollListener(mOnScrollListener);
+        if (getUserVisibleHint()) {
+            saveReadPosition();
+        }
         super.onStop();
     }
 
