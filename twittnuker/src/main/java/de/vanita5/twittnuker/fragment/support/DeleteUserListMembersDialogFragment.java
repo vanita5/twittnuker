@@ -34,7 +34,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -53,8 +52,7 @@ public class DeleteUserListMembersDialogFragment extends BaseSupportDialogFragme
                 final ParcelableUserList userList = getUserList();
                 final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (users == null || userList == null || twitter == null) return;
-                twitter.deleteUserListMembersAsync(new AccountKey(userList.account_id,
-                        userList.account_host), userList.id, users);
+                twitter.deleteUserListMembersAsync(userList.account_key, userList.id, users);
                 break;
             default:
                 break;

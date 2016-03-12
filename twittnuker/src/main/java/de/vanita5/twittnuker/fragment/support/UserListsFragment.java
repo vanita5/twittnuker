@@ -37,9 +37,9 @@ import de.vanita5.twittnuker.adapter.AbsUserListsAdapter;
 import de.vanita5.twittnuker.loader.support.UserListsLoader;
 import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.message.UserListDestroyedEvent;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.model.message.UserListDestroyedEvent;
 
 import java.util.List;
 
@@ -71,7 +71,7 @@ public class UserListsFragment extends ParcelableUserListsFragment {
             case R.id.new_user_list: {
                 final DialogFragment f = new CreateUserListDialogFragment();
                 final Bundle args = new Bundle();
-                args.putLong(EXTRA_ACCOUNT_ID, getAccountId());
+                args.putParcelable(EXTRA_ACCOUNT_KEY, getAccountKey());
                 f.setArguments(args);
                 f.show(getFragmentManager(), null);
                 return true;
@@ -83,9 +83,10 @@ public class UserListsFragment extends ParcelableUserListsFragment {
     @Override
     public void onPrepareOptionsMenu(final Menu menu) {
         final MenuItem item = menu.findItem(R.id.new_user_list);
-        if (item == null) return;
-        final long accountId = getAccountId(), userId = getUserId();
-        if (accountId == userId) {
+        final AccountKey accountId = getAccountKey();
+        if (accountId == null || item == null) return;
+        final long userId = getUserId();
+        if (accountId.getId() == userId) {
             MenuUtils.setMenuItemAvailability(menu, R.id.new_user_list, true);
         } else {
             MenuUtils.setMenuItemAvailability(menu, R.id.new_user_list, Utils.isMyAccount(getActivity(), getScreenName()));

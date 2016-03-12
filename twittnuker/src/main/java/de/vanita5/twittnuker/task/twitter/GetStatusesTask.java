@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
+import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.task.AbstractTask;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
@@ -122,11 +123,11 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
             statusIds[i] = id;
         }
         // Delete all rows conflicting before new data inserted.
-        final Expression accountWhere = Utils.getAccountCompareExpression();
+        final Expression accountWhere = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY);
         final Expression statusWhere = Expression.in(new Columns.Column(Statuses.STATUS_ID),
                 new RawItemArray(statusIds));
         final String countWhere = Expression.and(accountWhere, statusWhere).getSQL();
-        String[] whereArgs = {String.valueOf(accountKey.getId()), accountKey.getHost()};
+        final String[] whereArgs = {accountKey.toString()};
         final String[] projection = {SQLFunctions.COUNT()};
         final int rowsDeleted;
         final Cursor countCur = resolver.query(uri, projection, countWhere, whereArgs, null);
