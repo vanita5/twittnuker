@@ -68,6 +68,7 @@ import de.vanita5.twittnuker.activity.support.SignInActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox;
@@ -326,14 +327,16 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
             final ContentResolver resolver = getContentResolver();
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE: {
-                    final String[] whereArgs = {String.valueOf(accountId.getId()), accountId.getHost()};
-                    resolver.delete(Accounts.CONTENT_URI, Utils.getAccountCompareExpression().getSQL(), whereArgs);
+                    final String where = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY)
+                            .getSQL();
+                    final String[] whereArgs = {accountId.toString()};
+                    resolver.delete(Accounts.CONTENT_URI, where, whereArgs);
                     // Also delete tweets related to the account we previously
                     // deleted.
-                    resolver.delete(Statuses.CONTENT_URI, Utils.getAccountCompareExpression().getSQL(), whereArgs);
-                    resolver.delete(Mentions.CONTENT_URI, Utils.getAccountCompareExpression().getSQL(), whereArgs);
-                    resolver.delete(Inbox.CONTENT_URI, Utils.getAccountCompareExpression().getSQL(), whereArgs);
-                    resolver.delete(Outbox.CONTENT_URI, Utils.getAccountCompareExpression().getSQL(), whereArgs);
+                    resolver.delete(Statuses.CONTENT_URI, where, whereArgs);
+                    resolver.delete(Mentions.CONTENT_URI, where, whereArgs);
+                    resolver.delete(Inbox.CONTENT_URI, where, whereArgs);
+                    resolver.delete(Outbox.CONTENT_URI, where, whereArgs);
                     break;
                 }
             }

@@ -56,7 +56,9 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -175,7 +177,7 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
             publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
 
             for (AccountKey accountKey : DataStoreUtils.getAccountKeys(mContext)) {
-                final ParcelableCredentials credentials = DataStoreUtils.getCredentials(mContext, accountKey);
+                final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(mContext, accountKey);
                 final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, accountKey, false);
                 if (credentials == null || twitter == null) continue;
                 publishProgress(new LogText("Testing connection for account " + accountKey));

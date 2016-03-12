@@ -51,9 +51,9 @@ import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MenuUtils;
@@ -110,7 +110,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         final IStatusViewHolder holder = new StatusViewHolder(adapter, view.findViewById(R.id.item_content));
         final ParcelableStatus status = getStatus();
         assert status != null;
-        final ParcelableCredentials credentials = DataStoreUtils.getCredentials(wrapped, status.account_key);
+        final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(wrapped, status.account_key);
         assert credentials != null;
 
         builder.setView(view);

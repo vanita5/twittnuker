@@ -56,9 +56,9 @@ import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.menu.SupportStatusShareProvider;
 import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
-import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 
 import java.util.List;
@@ -136,7 +136,7 @@ public class MenuUtils implements Constants {
                                       @NonNull final ParcelableStatus status,
                                       @NonNull UserColorNameManager manager,
                                       @NonNull final AsyncTwitterWrapper twitter) {
-        final ParcelableCredentials account = DataStoreUtils.getCredentials(context,
+        final ParcelableCredentials account = ParcelableCredentialsUtils.getCredentials(context,
                 status.account_key);
         if (account == null) return;
         setupForStatus(context, preferences, menu, status, account, manager, twitter);

@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
-import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 
 import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT;
 import static de.vanita5.twittnuker.util.Utils.findStatus;
@@ -60,13 +60,13 @@ public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<Parce
             if (cache != null) {
                 final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(cache);
                 final Bundle extras = response.getExtras();
-                extras.putParcelable(EXTRA_ACCOUNT, DataStoreUtils.getCredentials(getContext(), mAccountId));
+                extras.putParcelable(EXTRA_ACCOUNT, ParcelableCredentialsUtils.getCredentials(getContext(), mAccountId));
                 return response;
             }
         }
         try {
             final ParcelableStatus status = findStatus(getContext(), mAccountId, mStatusId);
-            final ParcelableCredentials credentials = DataStoreUtils.getCredentials(getContext(), mAccountId);
+            final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(getContext(), mAccountId);
             final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(status);
             final Bundle extras = response.getExtras();
             extras.putParcelable(EXTRA_ACCOUNT, credentials);

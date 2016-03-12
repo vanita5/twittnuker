@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -65,7 +66,7 @@ public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
     @Override
     protected ResponseList<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
         final Context context = getContext();
-        final ParcelableCredentials credentials = DataStoreUtils.getCredentials(context, getAccountKey());
+        final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context, getAccountKey());
         if (credentials == null) throw new TwitterException("Null credentials");
         if (Utils.isOfficialCredentials(context, credentials)) {
             if (mUserId != -1)

@@ -121,6 +121,7 @@ import de.vanita5.twittnuker.model.message.FriendshipUpdatedEvent;
 import de.vanita5.twittnuker.model.message.FriendshipUserUpdatedEvent;
 import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent;
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
@@ -1004,7 +1005,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(user.account_key));
                 builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(user.id));
                 final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-                intent.putExtra(EXTRA_ACCOUNT, DataStoreUtils.getCredentials(getActivity(), user.account_key));
+                intent.putExtra(EXTRA_ACCOUNT, ParcelableCredentialsUtils.getCredentials(getActivity(), user.account_key));
                 intent.putExtra(EXTRA_USER, user);
                 startActivity(intent);
                 break;

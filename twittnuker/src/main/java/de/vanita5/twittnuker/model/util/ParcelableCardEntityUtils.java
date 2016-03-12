@@ -42,13 +42,13 @@ import java.util.Map;
 public class ParcelableCardEntityUtils implements TwittnukerConstants {
 
     @Nullable
-    public static ParcelableCardEntity fromCardEntity(@Nullable CardEntity card, AccountKey accountKey) {
+    public static ParcelableCardEntity fromCardEntity(@Nullable CardEntity card, @Nullable AccountKey accountKey) {
         if (card == null) return null;
         final ParcelableCardEntity obj = new ParcelableCardEntity();
         obj.name = card.getName();
         obj.url = card.getUrl();
         obj.users = ParcelableUserUtils.fromUsers(card.getUsers(), accountKey);
-        obj.account_id = accountKey.getId();
+        obj.account_key = accountKey;
         obj.values = from(card.getBindingValues());
         return obj;
     }

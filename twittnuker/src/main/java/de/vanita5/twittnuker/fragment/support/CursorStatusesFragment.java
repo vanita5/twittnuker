@@ -35,6 +35,7 @@ import android.support.v4.content.Loader;
 
 import com.squareup.otto.Subscribe;
 
+import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
@@ -60,6 +61,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
@@ -103,7 +105,8 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
         final String table = getTableNameByUri(uri);
         final String sortOrder = Statuses.DEFAULT_SORT_ORDER;
         final AccountKey[] accountKeys = getAccountKeys();
-        final Expression accountWhere = Expression.in(new Column(Statuses.ACCOUNT_KEY), new RawItemArray(accountKeys));
+        final Expression accountWhere = Expression.in(new Column(Statuses.ACCOUNT_KEY),
+                new ArgsArray(accountKeys.length));
         final Expression filterWhere = getFiltersWhere(table), where;
         if (filterWhere != null) {
             where = Expression.and(accountWhere, filterWhere);
@@ -114,8 +117,10 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
         final AbsStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
         adapter.setShowAccountsColor(accountKeys.length > 1);
         final String[] projection = Statuses.COLUMNS;
+        final String[] selectionArgs = TwidereArrayUtils.toStringArray(accountKeys, 0,
+                accountKeys.length);
         return new ExtendedObjectCursorLoader<>(context, ParcelableStatusCursorIndices.class, uri,
-                projection, selection, null, sortOrder, fromUser);
+                projection, selection, selectionArgs, sortOrder, fromUser);
     }
 
     @Override

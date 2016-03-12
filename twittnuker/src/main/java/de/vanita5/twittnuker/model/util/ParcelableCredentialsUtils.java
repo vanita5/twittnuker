@@ -22,7 +22,16 @@
 
 package de.vanita5.twittnuker.model.util;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 
 public class ParcelableCredentialsUtils {
     public static boolean isOAuth(int authType) {
@@ -33,5 +42,22 @@ public class ParcelableCredentialsUtils {
             }
         }
         return false;
+    }
+
+    @Nullable
+    public static ParcelableCredentials getCredentials(@NonNull final Context context,
+                                                       @NonNull final AccountKey accountKey) {
+        final Cursor c = DataStoreUtils.getAccountCursor(context,
+                Accounts.COLUMNS, accountKey);
+        if (c == null) return null;
+        try {
+            final ParcelableCredentialsCursorIndices i = new ParcelableCredentialsCursorIndices(c);
+            if (c.moveToFirst()) {
+                return i.newObject(c);
+            }
+        } finally {
+            c.close();
+        }
+        return null;
     }
 }

@@ -184,6 +184,7 @@ import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
@@ -930,7 +931,7 @@ public final class Utils implements Constants {
     }
 
     public static boolean isOfficialCredentials(@NonNull final Context context, final AccountKey accountKey) {
-        final ParcelableCredentials credentials = DataStoreUtils.getCredentials(context, accountKey);
+        final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context, accountKey);
         if (credentials == null) return false;
         return isOfficialCredentials(context, credentials);
     }
@@ -2072,13 +2073,13 @@ public final class Utils implements Constants {
     }
 
     @Nullable
-    public static ParcelableUser getUserForConversation(Context context, AccountKey accountKey,
-                                                        long conversationId) {
+    public static ParcelableUser getUserForConversation(@NonNull final Context context,
+                                                        @NonNull final AccountKey accountKey,
+                                                        final long conversationId) {
         final ContentResolver cr = context.getContentResolver();
-        final Expression where = Expression.and(getAccountCompareExpression(),
+        final Expression where = Expression.and(Expression.equalsArgs(ConversationEntries.ACCOUNT_KEY),
                 Expression.equalsArgs(ConversationEntries.CONVERSATION_ID));
-        final String[] whereArgs = {String.valueOf(accountKey.getId()), accountKey.getHost(),
-                String.valueOf(conversationId)};
+        final String[] whereArgs = {accountKey.toString(), String.valueOf(conversationId)};
         final Cursor c = cr.query(ConversationEntries.CONTENT_URI, null, where.getSQL(), whereArgs,
                 null);
         if (c == null) return null;
@@ -2186,8 +2187,17 @@ public final class Utils implements Constants {
         return isOutOfMemory(cause);
     }
 
-    public static boolean hasOfficialAPIAccess(Context context, SharedPreferences preferences, ParcelableCredentials account) {
-        return isOfficialCredentials(context, account);
+    public static boolean hasOfficialAPIAccess(@NonNull Context context, @NonNull ParcelableCredentials account) {
+        if (ParcelableCredentials.ACCOUNT_TYPE_TWITTER.equals(account.account_type)) {
+            final TwitterAccountExtra extra = JsonSerializer.parse(account.account_extras,
+                    TwitterAccountExtra.class);
+            if (extra != null) {
+                return extra.isOfficialCredentials();
+            }
+        }
+        final boolean isOAuth = ParcelableCredentialsUtils.isOAuth(account.auth_type);
+        final String consumerKey = account.consumer_key, consumerSecret = account.consumer_secret;
+        return isOAuth && TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret);
     }
 
     public static int getNotificationId(int baseId, @Nullable AccountKey accountId) {
@@ -2214,7 +2224,7 @@ public final class Utils implements Constants {
     }
 
     public static Expression getAccountCompareExpression() {
-        return Expression.equalsArgs(Statuses.ACCOUNT_KEY);
+        return Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY);
     }
 
     static class UtilsL {

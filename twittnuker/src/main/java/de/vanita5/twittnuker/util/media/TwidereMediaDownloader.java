@@ -45,7 +45,7 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
 import de.vanita5.twittnuker.model.CacheMetadata;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
-import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
@@ -109,7 +109,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         final Authorization auth;
         final ParcelableCredentials account;
         if (extra instanceof MediaExtra) {
-            account = DataStoreUtils.getCredentials(mContext, ((MediaExtra) extra).getAccountKey());
+            account = ParcelableCredentialsUtils.getCredentials(mContext, ((MediaExtra) extra).getAccountKey());
             auth = TwitterAPIFactory.getAuthorization(account);
         } else {
             account = null;

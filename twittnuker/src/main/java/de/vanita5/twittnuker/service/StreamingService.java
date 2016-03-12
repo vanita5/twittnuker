@@ -73,6 +73,7 @@ import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
+import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -491,7 +492,7 @@ public class StreamingService extends Service implements Constants {
                 statusStreamStarted = true;
                 values.put(Statuses.IS_GAP, true);
             }
-            final String where = Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_KEY),
+            final String where = Expression.and(Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY),
                     Expression.equalsArgs(Statuses.STATUS_ID)).getSQL();
             final String[] whereArgs = {account.account_key.toString(), String.valueOf(status.getId())};
             resolver.delete(Statuses.CONTENT_URI, where, whereArgs);

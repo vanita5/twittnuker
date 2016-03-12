@@ -94,6 +94,7 @@ import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.model.UnreadItem;
 import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
+import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedImages;
@@ -916,7 +917,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         if (o_status instanceof ParcelableStatus) {
             ParcelableStatus status = (ParcelableStatus) o_status;
             notification = new NotificationContent();
-            notification.setAccountId(status.account_id);
+            notification.setAccountId(status.account_key.getId());
             notification.setObjectId(String.valueOf(status.id));
             notification.setObjectUserId(String.valueOf(status.user_id));
             notification.setFromUser(status.user_screen_name);
@@ -928,7 +929,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         } else if (o_status instanceof ParcelableDirectMessage) {
             ParcelableDirectMessage dm = (ParcelableDirectMessage) o_status;
             notification = new NotificationContent();
-            notification.setAccountId(dm.account_id);
+            notification.setAccountId(dm.account_key.getId());
             notification.setObjectId(String.valueOf(dm.id));
             notification.setObjectUserId(String.valueOf(dm.sender_id));
             notification.setFromUser(dm.sender_screen_name);
@@ -1204,10 +1205,10 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         if (context == null) return;
         final AccountKey accountKey = pref.getAccountKey();
         final String where = Expression.and(
-                Utils.getAccountCompareExpression(),
-                Expression.greaterThan(Activities.TIMESTAMP, position)
+                Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY),
+                Expression.greaterThanArgs(Activities.TIMESTAMP)
         ).getSQL();
-        final String[] whereArgs = {String.valueOf(accountKey.getId()), accountKey.getHost()};
+        final String[] whereArgs = {accountKey.toString(), String.valueOf(position)};
         Cursor c = query(Activities.AboutMe.CONTENT_URI, Activities.COLUMNS, where, whereArgs,
                 new OrderBy(Activities.TIMESTAMP, false).getSQL());
         if (c == null) return;
@@ -1382,12 +1383,12 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         }
         orExpressions.add(Expression.notIn(new Column(DirectMessages.SENDER_ID), new RawItemArray(senderIds.toArray())));
         final Expression selection = Expression.and(
-                Utils.getAccountCompareExpression(),
+                Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY),
                 Expression.greaterThan(DirectMessages.MESSAGE_ID, prevOldestId),
                 Expression.or(orExpressions.toArray(new Expression[orExpressions.size()]))
         );
         final String filteredSelection = selection.getSQL();
-        final String[] selectionArgs = {String.valueOf(accountKey.getId()), accountKey.getHost()};
+        final String[] selectionArgs = {accountKey.toString()};
         final String[] userProjection = {DirectMessages.SENDER_ID, DirectMessages.SENDER_NAME,
                 DirectMessages.SENDER_SCREEN_NAME};
         final String[] messageProjection = {DirectMessages.MESSAGE_ID, DirectMessages.SENDER_ID,

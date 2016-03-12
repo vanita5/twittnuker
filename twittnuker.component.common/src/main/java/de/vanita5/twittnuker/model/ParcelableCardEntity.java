@@ -36,6 +36,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
+import de.vanita5.twittnuker.model.util.AccountKeyConverter;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,11 +58,8 @@ public final class ParcelableCardEntity implements Parcelable {
         }
     };
     @ParcelableThisPlease
-    @JsonField(name = "account_id")
-    public long account_id;
-    @ParcelableThisPlease
-    @JsonField(name = "account_host")
-    public String account_host;
+    @JsonField(name = "account_id", typeConverter = AccountKeyConverter.class)
+    public AccountKey account_key;
     @ParcelableThisPlease
     @JsonField(name = "name")
     public String name;
@@ -89,7 +87,7 @@ public final class ParcelableCardEntity implements Parcelable {
     @Override
     public String toString() {
         return "ParcelableCardEntity{" +
-                "account_id=" + account_id +
+                "account_key=" + account_key +
                 ", name='" + name + '\'' +
                 ", url='" + url + '\'' +
                 ", users=" + Arrays.toString(users) +

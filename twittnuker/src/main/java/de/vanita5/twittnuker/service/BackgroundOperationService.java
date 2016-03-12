@@ -81,6 +81,7 @@ import de.vanita5.twittnuker.model.UploaderMediaItem;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableDirectMessageUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
@@ -92,7 +93,6 @@ import de.vanita5.twittnuker.util.AbsServiceInterface;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaUploaderInterface;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -569,7 +569,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                     shortener.waitForService();
                 }
                 for (final ParcelableAccount account : statusUpdate.accounts) {
-                    final ParcelableCredentials credentials = DataStoreUtils.getCredentials(this,
+                    final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(this,
                             account.account_key);
                     // Get Twitter instance corresponding to account
                     final Twitter twitter = TwitterAPIFactory.getTwitterInstance(this,

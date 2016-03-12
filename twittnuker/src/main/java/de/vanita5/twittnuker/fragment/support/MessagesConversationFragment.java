@@ -92,6 +92,7 @@ import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserCursorIndices;
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -313,7 +314,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
                         mAccountSpinner.setSelection(accountPos);
                     }
                     account = accountPos >= 0 ? accountsSpinnerAdapter.getItem(accountPos) :
-                            DataStoreUtils.getCredentials(activity, accountKey);
+                            ParcelableCredentialsUtils.getCredentials(activity, accountKey);
                     recipient = Utils.getUserForConversation(activity, accountKey, userId);
                 } else {
                     account = null;

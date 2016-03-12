@@ -31,7 +31,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.LongSparseArray;
 import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
 
@@ -84,6 +83,7 @@ import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -812,10 +812,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
     class CreateBlockTask extends ManagedAsyncTask<Object, Object, SingleResponse<ParcelableUser>> {
 
+        @NonNull
         private final AccountKey mAccountKey;
         private final long mUserId;
 
-        public CreateBlockTask(final AccountKey accountKey, final long userId) {
+        public CreateBlockTask(@NonNull final AccountKey accountKey, final long userId) {
             super(mContext);
             this.mAccountKey = accountKey;
             this.mUserId = userId;
@@ -830,11 +831,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 Utils.setLastSeen(mContext, user.getId(), -1);
                 for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
                     final Expression where = Expression.and(
-                            Utils.getAccountCompareExpression(),
+                            Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY),
                             Expression.equalsArgs(Statuses.USER_ID)
                     );
-                    final String[] whereArgs = {String.valueOf(mAccountKey.getId()),
-                            mAccountKey.getHost(), String.valueOf(mUserId)};
+                    final String[] whereArgs = {mAccountKey.toString(), String.valueOf(mUserId)};
                     mResolver.delete(uri, where.getSQL(), whereArgs);
 
                 }
