@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.adapter.AbsUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserAdapterListener;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
@@ -115,8 +116,8 @@ abstract class AbsUsersFragment<Data> extends AbsContentListRecyclerViewFragment
     public void onUserClick(UserViewHolder holder, int position) {
         final ParcelableUser user = getAdapter().getUser(position);
         final FragmentActivity activity = getActivity();
-        IntentUtils.openUserProfile(activity, user.account_id, user.id, user.screen_name, null,
-                true, getUserReferral());
+        IntentUtils.openUserProfile(activity, new AccountKey(user.account_id, user.account_host),
+                user.id, user.screen_name, null, true, getUserReferral());
     }
 
     @UserFragment.Referral

@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 
@@ -40,10 +41,11 @@ import java.util.List;
 
 public class RetweetsOfMeLoader extends TwitterAPIStatusesLoader {
 
-    public RetweetsOfMeLoader(final Context context, final long accountId, final long sinceId, final long maxId,
+    public RetweetsOfMeLoader(final Context context, final AccountKey accountKey,
+                              final long sinceId, final long maxId,
                               final List<ParcelableStatus> data, final String[] savedStatusesArgs,
                               final int tabPosition, boolean fromUser) {
-        super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
+        super(context, accountKey, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
     }
 
     @NonNull

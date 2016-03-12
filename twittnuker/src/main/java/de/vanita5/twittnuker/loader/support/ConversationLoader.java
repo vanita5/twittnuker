@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
@@ -53,7 +54,8 @@ public class ConversationLoader extends TwitterAPIStatusesLoader {
     public ConversationLoader(final Context context, @NonNull final ParcelableStatus status,
                               final long sinceId, final long maxId, final List<ParcelableStatus> data,
                               final boolean fromUser) {
-        super(context, status.account_id, sinceId, maxId, data, null, -1, fromUser);
+        super(context, new AccountKey(status.account_id, status.account_host), sinceId, maxId, data,
+                null, -1, fromUser);
         mStatus = Nullables.assertNonNull(ParcelUtils.clone(status));
         ParcelableStatusUtils.makeOriginalStatus(mStatus);
     }

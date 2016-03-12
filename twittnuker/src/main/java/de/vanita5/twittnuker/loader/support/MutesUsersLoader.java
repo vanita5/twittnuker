@@ -32,13 +32,14 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 public class MutesUsersLoader extends CursorSupportUsersLoader {
 
-    public MutesUsersLoader(final Context context, final long accountId, final long cursor,
+    public MutesUsersLoader(final Context context, final AccountKey accountKey,
                             final List<ParcelableUser> data, boolean fromUser) {
-        super(context, accountId, data, fromUser);
+        super(context, accountKey, data, fromUser);
     }
 
     @NonNull

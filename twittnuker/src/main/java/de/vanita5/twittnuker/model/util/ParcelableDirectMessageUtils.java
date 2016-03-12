@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.model.util;
 
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
@@ -33,9 +34,14 @@ import java.util.Date;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
 public class ParcelableDirectMessageUtils {
-    public static ParcelableDirectMessage fromDirectMessage(DirectMessage message, long accountId, boolean isOutgoing) {
+    public static ParcelableDirectMessage fromDirectMessage(DirectMessage message, AccountKey accountKey, boolean isOutgoing) {
+        return fromDirectMessage(message, accountKey.getId(), accountKey.getHost(), isOutgoing);
+    }
+
+    public static ParcelableDirectMessage fromDirectMessage(DirectMessage message, long accountId, String accountHost, boolean isOutgoing) {
         ParcelableDirectMessage result = new ParcelableDirectMessage();
         result.account_id = accountId;
+        result.account_host = accountHost;
         result.is_outgoing = isOutgoing;
         final User sender = message.getSender(), recipient = message.getRecipient();
         assert sender != null && recipient != null;

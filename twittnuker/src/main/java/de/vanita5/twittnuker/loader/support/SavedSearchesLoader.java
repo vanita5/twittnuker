@@ -30,22 +30,24 @@ import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
 
 public class SavedSearchesLoader extends AsyncTaskLoader<ResponseList<SavedSearch>> {
 
-    private final long mAccountId;
+    private final AccountKey mAccountId;
 
-    public SavedSearchesLoader(final Context context, final long account_id) {
+    public SavedSearchesLoader(final Context context, final AccountKey accountKey) {
         super(context);
-        mAccountId = account_id;
+        mAccountId = accountKey;
     }
 
     @Override
     public ResponseList<SavedSearch> loadInBackground() {
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, accountHost, false);
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId,
+                false);
         if (twitter == null) return null;
         try {
             return twitter.getSavedSearches();

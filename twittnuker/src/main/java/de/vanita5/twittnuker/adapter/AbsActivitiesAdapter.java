@@ -39,6 +39,7 @@ import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.fragment.support.CursorActivitiesFragment;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -438,8 +439,9 @@ public abstract class AbsActivitiesAdapter<Data> extends LoadMoreSupportAdapter<
             final ParcelableActivity activity = adapter.getActivity(position);
             final ParcelableStatus status = ParcelableActivity.getActivityStatus(activity);
             assert status != null;
-            IntentUtils.openUserProfile(context, status.account_id, status.user_id,
-                    status.user_screen_name, null, true, UserFragment.Referral.TIMELINE_STATUS);
+            IntentUtils.openUserProfile(context, new AccountKey(status.account_id,
+                    status.account_host), status.user_id, status.user_screen_name, null, true,
+                    UserFragment.Referral.TIMELINE_STATUS);
         }
 
         @Override

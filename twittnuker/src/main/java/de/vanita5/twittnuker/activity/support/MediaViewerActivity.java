@@ -81,6 +81,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.provider.CacheProvider;
@@ -824,7 +825,7 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         @Override
         protected Object getDownloadExtra() {
             final MediaExtra mediaExtra = new MediaExtra();
-            mediaExtra.setAccountId(getArguments().getLong(EXTRA_ACCOUNT_ID, -1));
+            mediaExtra.setAccountKey(getArguments().<AccountKey>getParcelable(EXTRA_ACCOUNT_KEY));
             final Uri origDownloadUri = super.getDownloadUri();
             final Uri downloadUri = getDownloadUri();
             if (origDownloadUri != null && downloadUri != null) {

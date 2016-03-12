@@ -33,14 +33,15 @@ import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
 
 public class InteractionsTimelineFragment extends CursorActivitiesFragment {
 
     @Override
-    public boolean getActivities(long[] accountIds, long[] maxIds, long[] sinceIds) {
-        mTwitterWrapper.getActivitiesAboutMeAsync(accountIds, maxIds, sinceIds);
+    public boolean getActivities(RefreshTaskParam param) {
+        mTwitterWrapper.getActivitiesAboutMeAsync(param);
         return true;
     }
 

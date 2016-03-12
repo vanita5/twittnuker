@@ -94,15 +94,14 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
     @NonNull
     protected abstract Uri getContentUri();
 
-    private void storeStatus(final long accountId, final String accountHost,
-                             final List<Status> statuses,
+    private void storeStatus(final AccountKey accountKey, final List<Status> statuses,
                              final long sinceId, final long maxId, final boolean notify) {
-        if (statuses == null || statuses.isEmpty() || accountId <= 0) {
+        if (statuses == null || statuses.isEmpty() || accountKey == null) {
             return;
         }
         final Uri uri = getContentUri();
         final ContentResolver resolver = context.getContentResolver();
-        final boolean noItemsBefore = DataStoreUtils.getStatusCount(context, uri, accountId) <= 0;
+        final boolean noItemsBefore = DataStoreUtils.getStatusCount(context, uri, accountKey) <= 0;
         final ContentValues[] values = new ContentValues[statuses.size()];
         final long[] statusIds = new long[statuses.size()];
         long minId = -1;
@@ -110,7 +109,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
         boolean hasIntersection = false;
         for (int i = 0, j = statuses.size(); i < j; i++) {
             final Status status = statuses.get(i);
-            values[i] = ContentValuesCreator.createStatus(status, accountId, accountHost);
+            values[i] = ContentValuesCreator.createStatus(status, accountKey);
             values[i].put(Statuses.INSERTED_DATE, System.currentTimeMillis());
             final long id = status.getId();
             if (sinceId > 0 && id <= sinceId) {
@@ -123,13 +122,14 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
             statusIds[i] = id;
         }
         // Delete all rows conflicting before new data inserted.
-        final Expression accountWhere = Expression.equals(Statuses.ACCOUNT_ID, accountId);
+        final Expression accountWhere = Utils.getAccountCompareExpression();
         final Expression statusWhere = Expression.in(new Columns.Column(Statuses.STATUS_ID),
                 new RawItemArray(statusIds));
         final String countWhere = Expression.and(accountWhere, statusWhere).getSQL();
+        String[] whereArgs = {String.valueOf(accountKey.getId()), accountKey.getHost()};
         final String[] projection = {SQLFunctions.COUNT()};
         final int rowsDeleted;
-        final Cursor countCur = resolver.query(uri, projection, countWhere, null, null);
+        final Cursor countCur = resolver.query(uri, projection, countWhere, whereArgs, null);
         try {
             if (countCur != null && countCur.moveToFirst()) {
                 rowsDeleted = countCur.getInt(0);
@@ -174,8 +174,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
         int idx = 0;
         final int loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
         for (final AccountKey accountKey : accountKeys) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountKey.getId(),
-                    accountKey.getHost(), true);
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountKey, true);
             if (twitter == null) continue;
             try {
                 final Paging paging = new Paging();
@@ -198,7 +197,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
                 }
                 final List<Status> statuses = getStatuses(twitter, paging);
                 InternalTwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
-                storeStatus(accountKey.getId(), accountKey.getHost(), statuses, sinceId, maxId, true);
+                storeStatus(accountKey, statuses, sinceId, maxId, true);
                 // TODO cache related data and preload
                 final CacheUsersStatusesTask cacheTask = new CacheUsersStatusesTask(context);
                 cacheTask.setParams(new TwitterWrapper.StatusListResponse(accountKey, statuses));

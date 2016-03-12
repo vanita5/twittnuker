@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.Loader;
 
@@ -258,6 +259,11 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
             public long[] getMaxIds() {
                 return getOldestStatusIds(getAccountKeys());
             }
+
+            @Override
+            public boolean hasMaxIds() {
+                return true;
+            }
         });
     }
 
@@ -269,6 +275,11 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
             @Override
             public AccountKey[] getAccountKeys() {
                 return CursorStatusesFragment.this.getAccountKeys();
+            }
+
+            @Override
+            public boolean hasMaxIds() {
+                return false;
             }
 
             @Nullable

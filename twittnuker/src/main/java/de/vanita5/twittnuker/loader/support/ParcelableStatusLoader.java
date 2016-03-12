@@ -28,19 +28,24 @@ import android.support.v4.content.AsyncTaskLoader;
 
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.constant.IntentConstants;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT;
+import static de.vanita5.twittnuker.util.Utils.findStatus;
+
 public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<ParcelableStatus>> {
 
     private final boolean mOmitIntentExtra;
     private final Bundle mExtras;
-    private final long mAccountId, mStatusId;
+    private final AccountKey mAccountId;
+    private final long mStatusId;
 
     public ParcelableStatusLoader(final Context context, final boolean omitIntentExtra, final Bundle extras,
-                                  final long accountId, final long statusId) {
+                                  final AccountKey accountId, final long statusId) {
         super(context);
         mOmitIntentExtra = omitIntentExtra;
         mExtras = extras;
@@ -60,7 +65,7 @@ public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<Parce
             }
         }
         try {
-            final ParcelableStatus status = findStatus(getContext(), mAccountId, accountHost, mStatusId);
+            final ParcelableStatus status = findStatus(getContext(), mAccountId, mStatusId);
             final ParcelableCredentials credentials = DataStoreUtils.getCredentials(getContext(), mAccountId);
             final SingleResponse<ParcelableStatus> response = SingleResponse.getInstance(status);
             final Bundle extras = response.getExtras();

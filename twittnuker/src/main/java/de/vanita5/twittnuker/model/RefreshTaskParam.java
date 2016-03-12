@@ -35,4 +35,8 @@ public interface RefreshTaskParam {
     @Nullable
     long[] getSinceIds();
 
+    boolean hasMaxIds();
+
+    boolean hasSinceIds();
+
 }

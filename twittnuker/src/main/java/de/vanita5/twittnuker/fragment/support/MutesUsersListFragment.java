@@ -35,7 +35,9 @@ public class MutesUsersListFragment extends CursorSupportUsersListFragment {
     @Override
     public CursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
         final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
-        return new MutesUsersLoader(context, accountId, getNextCursor(), getData(), fromUser);
+        final MutesUsersLoader loader = new MutesUsersLoader(context, accountKey, getData(), fromUser);
+        loader.setCursor(getNextCursor());
+        return loader;
     }
 
 }

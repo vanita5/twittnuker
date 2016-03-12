@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IDirectMessagesAdapter;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -208,7 +209,7 @@ public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHold
         }
 
         @Override
-        public void onMediaClick(View view, ParcelableMedia media, long accountId, long extraId) {
+        public void onMediaClick(View view, ParcelableMedia media, AccountKey accountKey, long extraId) {
             final MessageConversationAdapter adapter = adapterRef.get();
             IntentUtils.openMedia(adapter.getContext(), adapter.getDirectMessage((int) extraId), media,
                     null, true);

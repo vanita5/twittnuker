@@ -452,15 +452,15 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     @Override
     public void onUserProfileClick(IStatusViewHolder holder, ParcelableStatus status, int position) {
         final FragmentActivity activity = getActivity();
-        IntentUtils.openUserProfile(activity, status.account_id, status.user_id,
-                status.user_screen_name, null, true, UserFragment.Referral.TIMELINE_STATUS);
+        IntentUtils.openUserProfile(activity, new AccountKey(status.account_id, status.account_host),
+                status.user_id, status.user_screen_name, null, true, UserFragment.Referral.TIMELINE_STATUS);
     }
 
     @Override
-    public void onMediaClick(View view, ParcelableMedia media, long accountId, long extraId) {
+    public void onMediaClick(View view, ParcelableMedia media, AccountKey accountKey, long extraId) {
         final ParcelableStatus status = mStatusAdapter.getStatus();
         if (status == null) return;
-        IntentUtils.openMediaDirectly(getActivity(), accountId, status, media, null, true);
+        IntentUtils.openMediaDirectly(getActivity(), accountKey, status, media, null, true);
     }
 
     @Override
@@ -529,9 +529,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     @Override
     public Loader<SingleResponse<ParcelableStatus>> onCreateLoader(final int id, final Bundle args) {
         final Bundle fragmentArgs = getArguments();
-        final long accountId = fragmentArgs.getLong(EXTRA_ACCOUNT_ID, -1);
+        final AccountKey accountKey = fragmentArgs.getParcelable(EXTRA_ACCOUNT_KEY);
         final long statusId = fragmentArgs.getLong(EXTRA_STATUS_ID, -1);
-        return new ParcelableStatusLoader(getActivity(), false, fragmentArgs, accountId, statusId);
+        return new ParcelableStatusLoader(getActivity(), false, fragmentArgs, accountKey, statusId);
     }
 
     @Override
@@ -651,7 +651,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     private void loadConversation(ParcelableStatus status, long sinceId, long maxId) {
         if (status == null) return;
         final Bundle args = new Bundle();
-        args.putLong(EXTRA_ACCOUNT_ID, status.account_id);
+        args.putParcelable(EXTRA_ACCOUNT_KEY, new AccountKey(status.account_id, status.account_host));
         args.putLong(EXTRA_STATUS_ID, status.is_retweet ? status.retweet_id : status.id);
         args.putLong(EXTRA_SINCE_ID, sinceId);
         args.putLong(EXTRA_MAX_ID, maxId);
@@ -994,7 +994,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 final CharSequence quotedText = HtmlSpanBuilder.fromHtml(status.quoted_text_html,
                         status.text_unescaped);
                 if (quotedText instanceof Spanned) {
-                    quotedTextView.setText(linkify.applyAllLinks(quotedText, status.account_id,
+                    quotedTextView.setText(linkify.applyAllLinks(quotedText,
+                            new AccountKey(status.account_id, status.account_host),
                             layoutPosition, status.is_possibly_sensitive, skipLinksInText));
                 }
 
@@ -1048,8 +1049,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final CharSequence text = HtmlSpanBuilder.fromHtml(status.text_html,
                     status.text_unescaped);
             if (text instanceof Spanned) {
-                textView.setText(linkify.applyAllLinks(text, status.account_id, layoutPosition,
-                        status.is_possibly_sensitive, skipLinksInText));
+                textView.setText(linkify.applyAllLinks(text, new AccountKey(status.account_id,
+                        status.account_host), layoutPosition, status.is_possibly_sensitive, skipLinksInText));
             }
 
             final ParcelableLocation location;
@@ -1103,8 +1104,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 mediaPreviewContainer.setVisibility(View.VISIBLE);
                 mediaPreview.setVisibility(View.VISIBLE);
                 mediaPreviewLoad.setVisibility(View.GONE);
-                mediaPreview.displayMedia(media, loader, status.account_id, -1, adapter.getFragment(),
-                        adapter.getMediaLoadingHandler());
+                mediaPreview.displayMedia(media, loader, new AccountKey(status.account_id,
+                        status.account_host), -1, adapter.getFragment(), adapter.getMediaLoadingHandler());
             } else {
                 mediaPreviewContainer.setVisibility(View.VISIBLE);
                 mediaPreview.setVisibility(View.GONE);
@@ -1168,6 +1169,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final ParcelableStatus status = adapter.getStatus(getLayoutPosition());
             final StatusFragment fragment = adapter.getFragment();
             if (status == null || fragment == null) return;
+            final AccountKey accountKey = new AccountKey(status.account_id, status.account_host);
             switch (v.getId()) {
                 case R.id.media_preview_load: {
                     if (adapter.isSensitiveContentEnabled() || !status.is_possibly_sensitive) {
@@ -1180,13 +1182,13 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 }
                 case R.id.profile_container: {
                     final FragmentActivity activity = fragment.getActivity();
-                    IntentUtils.openUserProfile(activity, status.account_id, status.user_id,
+                    IntentUtils.openUserProfile(activity, accountKey, status.user_id,
                             status.user_screen_name, null, true, UserFragment.Referral.STATUS);
                     break;
                 }
                 case R.id.retweeted_by: {
                     if (status.retweet_id > 0) {
-                        IntentUtils.openUserProfile(adapter.getContext(), status.account_id,
+                        IntentUtils.openUserProfile(adapter.getContext(), accountKey,
                                 status.retweeted_by_user_id, status.retweeted_by_user_screen_name,
                                 null, true, UserFragment.Referral.STATUS);
                     }
@@ -1199,13 +1201,13 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                     break;
                 }
                 case R.id.quoted_name_container: {
-                    IntentUtils.openUserProfile(adapter.getContext(), status.account_id,
+                    IntentUtils.openUserProfile(adapter.getContext(), accountKey,
                             status.quoted_user_id, status.quoted_user_screen_name, null, true,
                             UserFragment.Referral.STATUS);
                     break;
                 }
                 case R.id.quote_original_link: {
-                    Utils.openStatus(adapter.getContext(), status.account_id, status.quoted_id);
+                    Utils.openStatus(adapter.getContext(), accountKey, status.quoted_id);
                     break;
                 }
                 case R.id.translate_label: {
@@ -1568,7 +1570,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             }
 
             @Override
-            public void onLinkClick(String link, String orig, long accountId, long extraId, int type, boolean sensitive, int start, int end) {
+            public void onLinkClick(final String link, final String orig, final AccountKey accountKey,
+                                    long extraId, int type, boolean sensitive, int start, int end) {
                 final ParcelableStatus status = adapter.getStatus();
                 ParcelableMedia current;
                 if ((current = ParcelableMediaUtils.findByUrl(status.media, link)) != null &&
@@ -1585,7 +1588,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                     expandOrOpenMedia(null);
                     return;
                 }
-                super.onLinkClick(link, orig, accountId, extraId, type, sensitive, start, end);
+                super.onLinkClick(link, orig, accountKey, extraId, type, sensitive, start, end);
             }
 
             private void expandOrOpenMedia(ParcelableMedia current) {

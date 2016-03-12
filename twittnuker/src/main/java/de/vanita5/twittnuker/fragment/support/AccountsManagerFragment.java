@@ -66,6 +66,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.SignInActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -167,8 +168,9 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         final ParcelableAccount account = mAdapter.getAccount(position);
-        IntentUtils.openUserProfile(getActivity(), account.account_id, account.account_id, account.screen_name,
-                null, true, UserFragment.Referral.SELF_PROFILE);
+        IntentUtils.openUserProfile(getActivity(), new AccountKey(account.account_id,
+                account.account_host), account.account_id, account.screen_name, null, true,
+                UserFragment.Referral.SELF_PROFILE);
     }
 
     @Override
