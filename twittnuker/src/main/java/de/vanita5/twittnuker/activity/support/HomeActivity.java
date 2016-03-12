@@ -65,8 +65,6 @@ import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
-import org.apache.commons.lang3.math.NumberUtils;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.SettingsWizardActivity;
@@ -94,6 +92,7 @@ import de.vanita5.twittnuker.task.util.TaskStarter;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
@@ -356,7 +355,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         }
         setContentView(R.layout.activity_home);
         setSupportActionBar(mActionBar);
-        sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONCREATE));
         final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
         int tabDisplayOptionInt = Utils.getTabDisplayOptionInt(this);
 
@@ -456,7 +454,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         } else {
             ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null, getActionBarColor()));
         }
-        sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONRESUME));
         registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
         invalidateOptionsMenu();
         updateActionsButtonStyle();
@@ -472,7 +469,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     @Override
     protected void onPause() {
         unregisterReceiver(mGCMRegistrationReceiver);
-        sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONPAUSE));
         super.onPause();
     }
 
@@ -609,7 +605,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                 return null;
             }
         });
-        sendBroadcast(new Intent(BROADCAST_HOME_ACTIVITY_ONDESTROY));
         super.onDestroy();
     }
 
@@ -719,14 +714,11 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             } else {
                 accountKey = Utils.getDefaultAccountKey(this);
             }
-            Utils.openSearch(this, accountKey, query);
+            IntentUtils.openSearch(this, accountKey, query);
             return -1;
         }
         final boolean refreshOnStart = mPreferences.getBoolean(KEY_REFRESH_ON_START, false);
-        final long[] refreshedIds = intent.getLongArrayExtra(EXTRA_REFRESH_IDS);
-        if (refreshedIds != null) {
-            mTwitterWrapper.refreshAll(refreshedIds);
-        } else if (handleExtraIntent && refreshOnStart) {
+        if (handleExtraIntent && refreshOnStart) {
             mTwitterWrapper.refreshAll();
         }
 
@@ -841,7 +833,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         if (mPagerAdapter.getCount() == 0) return;
         final SupportTabSpec tab = mPagerAdapter.getTab(position);
         if (DirectMessagesFragment.class == tab.cls) {
-            Utils.openMessageConversation(this, null, -1);
+            IntentUtils.openMessageConversation(this, null, -1);
         } else if (TrendsSuggestionsFragment.class == tab.cls) {
             openSearchView(null);
         } else {

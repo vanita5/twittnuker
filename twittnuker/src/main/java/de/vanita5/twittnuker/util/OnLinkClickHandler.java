@@ -63,7 +63,7 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
                 break;
             }
             case TwidereLinkify.LINK_TYPE_HASHTAG: {
-                Utils.openTweetSearch(context, accountKey, "#" + link);
+                IntentUtils.openTweetSearch(context, accountKey, "#" + link);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_ENTITY_URL: {
@@ -79,11 +79,11 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
                 if (mentionList.length != 2) {
                     break;
                 }
-                Utils.openUserListDetails(context, accountKey, -1, -1, mentionList[0], mentionList[1]);
+                IntentUtils.openUserListDetails(context, accountKey, -1, -1, mentionList[0], mentionList[1]);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_CASHTAG: {
-                Utils.openTweetSearch(context, accountKey, link);
+                IntentUtils.openTweetSearch(context, accountKey, link);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_USER_ID: {
@@ -92,14 +92,10 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
                 break;
             }
             case TwidereLinkify.LINK_TYPE_STATUS: {
-                Utils.openStatus(context, accountKey, NumberUtils.toLong(link, -1));
+                IntentUtils.openStatus(context, accountKey, NumberUtils.toLong(link, -1));
                 break;
             }
         }
-    }
-
-    protected boolean isPrivateData() {
-        return false;
     }
 
     protected void openMedia(AccountKey accountKey, long extraId, boolean sensitive, String link, int start, int end) {

@@ -45,7 +45,7 @@ import de.vanita5.twittnuker.loader.support.MediaTimelineLoader;
 import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
@@ -192,7 +192,7 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
 
     @Override
     public void onStatusClick(IStatusViewHolder holder, int position) {
-        Utils.openStatus(getContext(), getAdapter().getStatus(position), null);
+        IntentUtils.openStatus(getContext(), getAdapter().getStatus(position), null);
     }
 
     @Override

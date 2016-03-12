@@ -37,10 +37,10 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosi
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.loader.support.iface.ICursorSupportLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 
 abstract class AbsUserListsFragment<Data> extends AbsContentListRecyclerViewFragment<AbsUserListsAdapter<Data>>
@@ -121,7 +121,7 @@ abstract class AbsUserListsFragment<Data> extends AbsContentListRecyclerViewFrag
     public void onUserListClick(UserListViewHolder holder, int position) {
         final ParcelableUserList userList = getAdapter().getUserList(position);
         if (userList == null) return;
-        Utils.openUserListDetails(getActivity(), userList);
+        IntentUtils.openUserListDetails(getActivity(), userList);
     }
 
     public long getPrevCursor() {

@@ -33,18 +33,21 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
 import de.vanita5.twittnuker.model.draft.ActionExtra;
+import de.vanita5.twittnuker.model.util.AccountKeysCursorFieldConverter;
 import de.vanita5.twittnuker.model.util.DraftExtrasConverter;
 import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
-import de.vanita5.twittnuker.model.util.LongArrayConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 @ParcelablePlease
 @CursorObject(valuesCreator = true)
 public class Draft implements Parcelable {
 
     @ParcelableThisPlease
-    @CursorField(value = Drafts.ACCOUNT_IDS, converter = LongArrayConverter.class)
-    public long[] account_ids;
+    @CursorField(value = Drafts.ACCOUNT_IDS, converter = AccountKeysCursorFieldConverter.class)
+    public AccountKey[] account_ids;
     @ParcelableThisPlease
     @CursorField(value = Drafts._ID, excludeWrite = true)
     public long _id;
@@ -97,6 +100,7 @@ public class Draft implements Parcelable {
     };
 
     @StringDef({Action.UPDATE_STATUS, Action.REPLY, Action.QUOTE, Action.SEND_DIRECT_MESSAGE})
+    @Retention(RetentionPolicy.CLASS)
     public @interface Action {
 
         String UPDATE_STATUS = "update_status";

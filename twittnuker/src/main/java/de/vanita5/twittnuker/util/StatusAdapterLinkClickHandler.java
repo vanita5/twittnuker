@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util;
 import android.support.v7.widget.RecyclerView;
 
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
@@ -38,7 +39,8 @@ public class StatusAdapterLinkClickHandler<D> extends OnLinkClickHandler {
     }
 
     @Override
-    protected void openMedia(long accountId, long extraId, boolean sensitive, String link, int start, int end) {
+    protected void openMedia(final AccountKey accountKey, final long extraId, final boolean sensitive,
+                             final String link, final int start, final int end) {
         if (extraId == RecyclerView.NO_POSITION) return;
         final ParcelableStatus status = adapter.getStatus((int) extraId);
         final ParcelableMedia current = StatusLinkClickHandler.findByLink(status.media, link);

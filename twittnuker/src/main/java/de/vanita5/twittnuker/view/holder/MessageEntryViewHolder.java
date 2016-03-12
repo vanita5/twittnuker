@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -71,7 +72,8 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
         final MediaLoaderWrapper loader = adapter.getMediaLoader();
         final UserColorNameManager manager = adapter.getUserColorNameManager();
 
-        final long accountId = cursor.getLong(ConversationEntries.IDX_ACCOUNT_ID);
+        final AccountKey accountKey = new AccountKey(cursor.getLong(ConversationEntries.IDX_ACCOUNT_ID),
+                cursor.getString(ConversationEntries.IDX_ACCOUNT_HOST));
         final long conversationId = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);
         final long timestamp = cursor.getLong(ConversationEntries.IDX_MESSAGE_TIMESTAMP);
         final boolean isOutgoing = cursor.getInt(ConversationEntries.IDX_IS_OUTGOING) == 1;
@@ -92,7 +94,7 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
         nameView.setTypeface(null, isUnread && !isOutgoing ? Typeface.BOLD : Typeface.NORMAL);
         textView.setTypeface(null, isUnread && !isOutgoing ? Typeface.BOLD : Typeface.NORMAL);
         if (adapter.shouldShowAccountsColor()) {
-            content.drawEnd(DataStoreUtils.getAccountColor(context, accountId));
+            content.drawEnd(DataStoreUtils.getAccountColor(context, accountKey));
         } else {
             content.drawEnd();
         }

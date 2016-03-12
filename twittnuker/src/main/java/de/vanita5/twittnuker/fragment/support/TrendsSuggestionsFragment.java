@@ -44,7 +44,7 @@ import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 
 import static de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri;
 import static de.vanita5.twittnuker.util.Utils.getDefaultAccountKey;
-import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
+import static de.vanita5.twittnuker.util.IntentUtils.openTweetSearch;
 
 public class TrendsSuggestionsFragment extends AbsContentListViewFragment<TrendsAdapter>
         implements LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {

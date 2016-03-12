@@ -54,7 +54,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.util.LongSparseArray;
 import android.support.v7.view.SupportMenuInflater;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.ActionMenuView.OnMenuItemClickListener;
@@ -524,7 +523,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         final Draft draft = new Draft();
 
         draft.action_type = getDraftAction(getIntent().getAction());
-        draft.account_ids = AccountKey.getIds(mAccountsAdapter.getSelectedAccountKeys());
+        draft.account_ids = mAccountsAdapter.getSelectedAccountKeys();
         draft.text = text;
         final UpdateStatusActionExtra extra = new UpdateStatusActionExtra();
         extra.setInReplyToStatus(mInReplyToStatus);
@@ -589,7 +588,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
             finish();
             return;
         }
-        final AccountKey[] defaultAccountIds = DataStoreUtils.getAccountKeys(accounts);
+        final AccountKey[] defaultAccountIds = ParcelableAccountUtils.getAccountKeys(accounts);
         mMenuBar.setOnMenuItemClickListener(this);
         setupEditText();
         mAccountSelectorContainer.setOnClickListener(this);
@@ -828,12 +827,12 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         if (intent == null) return false;
         final String action = intent.getAction();
         final boolean hasAccountIds;
-        if (intent.hasExtra(EXTRA_ACCOUNT_IDS)) {
+        if (intent.hasExtra(EXTRA_ACCOUNT_KEYS)) {
             final AccountKey[] accountKeys = Utils.newParcelableArray(
                     intent.getParcelableArrayExtra(EXTRA_ACCOUNT_KEYS), AccountKey.CREATOR);
             mAccountsAdapter.setSelectedAccountIds(accountKeys);
             hasAccountIds = true;
-        } else if (intent.hasExtra(EXTRA_ACCOUNT_ID)) {
+        } else if (intent.hasExtra(EXTRA_ACCOUNT_KEY)) {
             final AccountKey accountKey = intent.getParcelableExtra(EXTRA_ACCOUNT_KEY);
             mAccountsAdapter.setSelectedAccountIds(accountKey);
             hasAccountIds = true;
@@ -1336,7 +1335,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
     private void updateTextCount() {
         if (mSendTextCountView == null || mEditText == null) return;
         final String textOrig = ParseUtils.parseString(mEditText.getText());
-        final String text = hasMedia() && textOrig != null ? mImageUploaderUsed ? Utils.getImageUploadStatus(
+        final String text = hasMedia() && textOrig != null ? mImageUploaderUsed ? Utils.getImageUploadStatus(this,
                 new String[]{FAKE_IMAGE_LINK}, textOrig) : textOrig + " " + FAKE_IMAGE_LINK : textOrig;
         final int validatedCount = text != null ? mValidator.getTweetLength(text) : 0;
         mSendTextCountView.setTextCount(validatedCount);

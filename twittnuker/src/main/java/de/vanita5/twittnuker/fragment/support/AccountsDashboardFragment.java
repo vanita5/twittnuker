@@ -79,7 +79,6 @@ import com.commonsware.cwac.merge.MergeAdapter;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
@@ -281,17 +280,21 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
             mNoAccountContainer.setVisibility(View.VISIBLE);
             mAccountProfileContainer.setVisibility(View.INVISIBLE);
         }
-        long defaultId = -1;
+        AccountKey defaultId = null;
         for (ParcelableAccount account : accounts) {
             if (account.is_activated) {
-                defaultId = account.account_id;
+                defaultId = new AccountKey(account.account_id, account.account_host);
                 break;
             }
         }
         mUseStarsForLikes = mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK);
 
         mAccountsAdapter.setAccounts(accounts);
-        mAccountsAdapter.setSelectedAccountId(mPreferences.getLong(KEY_DEFAULT_ACCOUNT_ID, defaultId));
+        AccountKey accountKey = AccountKey.valueOf(mPreferences.getString(KEY_DEFAULT_ACCOUNT_KEY, null));
+        if (accountKey == null) {
+            accountKey = defaultId;
+        }
+        mAccountsAdapter.setSelectedAccountId(accountKey);
 
         mAccountOptionsAdapter.setSelectedAccount(mAccountsAdapter.getSelectedAccount());
 
@@ -316,10 +319,11 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
             final ParcelableAccount account = mAccountsAdapter.getSelectedAccount();
             if (account == null || !(item instanceof OptionItem)) return;
             final OptionItem option = (OptionItem) item;
+            final AccountKey accountKey = new AccountKey(account.account_id, account.account_host);
             switch (option.id) {
                 case R.id.search: {
                     final Intent intent = new Intent(getActivity(), QuickSearchBarActivity.class);
-                    intent.putExtra(EXTRA_ACCOUNT_ID, account.account_id);
+                    intent.putExtra(EXTRA_ACCOUNT_KEY, accountKey);
                     startActivity(intent);
                     closeAccountsDrawer();
                     break;
@@ -327,28 +331,28 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
                 case R.id.compose: {
                     final Intent composeIntent = new Intent(INTENT_ACTION_COMPOSE);
                     composeIntent.setClass(getActivity(), ComposeActivity.class);
-                    composeIntent.putExtra(EXTRA_ACCOUNT_IDS, new long[]{account.account_id});
+                    composeIntent.putExtra(EXTRA_ACCOUNT_KEY, accountKey);
                     startActivity(composeIntent);
                     break;
                 }
                 case R.id.favorites: {
-                    Utils.openUserFavorites(getActivity(), account.account_id, account.account_id, account.screen_name);
+                    IntentUtils.openUserFavorites(getActivity(), accountKey, account.account_id, account.screen_name);
                     break;
                 }
                 case R.id.lists: {
-                    Utils.openUserLists(getActivity(), account.account_id, account.account_id, account.screen_name);
+                    IntentUtils.openUserLists(getActivity(), accountKey, account.account_id, account.screen_name);
                     break;
                 }
                 case R.id.messages: {
-                    Utils.openDirectMessages(getActivity(), account.account_id);
+                    IntentUtils.openDirectMessages(getActivity(), accountKey);
                     break;
                 }
                 case R.id.interactions: {
-                    Utils.openInteractions(getActivity(), account.account_id);
+                    IntentUtils.openInteractions(getActivity(), accountKey);
                     break;
                 }
                 case R.id.edit: {
-                    Utils.openProfileEditor(getActivity(), account.account_id);
+                    Utils.openProfileEditor(getActivity(), accountKey);
                     break;
                 }
             }
@@ -401,7 +405,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-        if (KEY_DEFAULT_ACCOUNT_ID.equals(key)) {
+        if (KEY_DEFAULT_ACCOUNT_KEY.equals(key)) {
             updateDefaultAccountState();
         }
     }
@@ -464,7 +468,8 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
                             if (account == null) return true;
                             final Intent composeIntent = new Intent(INTENT_ACTION_COMPOSE);
                             composeIntent.setClass(getActivity(), ComposeActivity.class);
-                            composeIntent.putExtra(EXTRA_ACCOUNT_IDS, new long[]{account.account_id});
+                            composeIntent.putExtra(EXTRA_ACCOUNT_KEY,
+                                    new AccountKey(account.account_id, account.account_host));
                             startActivity(composeIntent);
                             return true;
                         }
@@ -580,15 +585,10 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 
     private boolean hasAccountInTab(SupportTabSpec tab, long accountId, boolean isActivated) {
         if (tab.args == null) return false;
-        long[] accountIds = tab.args.getLongArray(EXTRA_ACCOUNT_IDS);
-        if (ArrayUtils.isEmpty(accountIds)) {
-            long tabAccountId = tab.args.getLong(EXTRA_ACCOUNT_ID);
-            // Single account tab, return true if is current account
-            if (tabAccountId == accountId) return true;
-            // Check activated account if empty
-            return tabAccountId <= 0 && isActivated;
-        } else if (ArrayUtils.contains(accountIds, accountId)) {
-            return true;
+        final AccountKey[] accountKeys = Utils.getAccountKeys(tab.args);
+        if (accountKeys == null) return isActivated;
+        for (AccountKey accountKey : accountKeys) {
+            if (accountId == accountKey.getId()) return true;
         }
         return false;
     }
@@ -688,9 +688,10 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 
             private void finishAnimation() {
                 final Editor editor = mPreferences.edit();
-                editor.putLong(KEY_DEFAULT_ACCOUNT_ID, account.account_id);
+                final AccountKey accountKey = new AccountKey(account.account_id, account.account_host);
+                editor.putString(KEY_DEFAULT_ACCOUNT_KEY, accountKey.toString());
                 editor.apply();
-                mAccountsAdapter.setSelectedAccountId(account.account_id);
+                mAccountsAdapter.setSelectedAccountId(accountKey);
                 mAccountOptionsAdapter.setSelectedAccount(account);
                 updateAccountActions();
                 updateAccountOptionsSeparatorLabel(clickedDrawable);
@@ -826,16 +827,17 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
             return mInternalAccounts[0];
         }
 
-        public long getSelectedAccountId() {
+        @Nullable
+        public AccountKey getSelectedAccountId() {
             final ParcelableAccount selectedAccount = getSelectedAccount();
-            if (selectedAccount == null) return -1;
-            return selectedAccount.account_id;
+            if (selectedAccount == null) return null;
+            return new AccountKey(selectedAccount.account_id, selectedAccount.account_host);
         }
 
-        public void setSelectedAccountId(long accountId) {
+        public void setSelectedAccountId(@Nullable AccountKey accountKey) {
             final ParcelableAccount selectedAccount = getSelectedAccount();
-            if (selectedAccount == null) return;
-            swap(accountId, selectedAccount.account_id);
+            if (selectedAccount == null || accountKey == null) return;
+            swap(accountKey, new AccountKey(selectedAccount.account_id, selectedAccount.account_host));
         }
 
         @Override
@@ -894,14 +896,14 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
             return mInternalAccounts;
         }
 
-        private void swap(long fromId, long toId) {
+        private void swap(AccountKey fromId, AccountKey toId) {
             int fromIdx = -1, toIdx = -1;
             for (int i = 0, j = mInternalAccounts.length; i < j; i++) {
                 final ParcelableAccount account = mInternalAccounts[i];
-                if (account.account_id == fromId) {
+                if (fromId.isAccount(account.account_id, account.account_host)) {
                     fromIdx = i;
                 }
-                if (account.account_id == toId) {
+                if (toId.isAccount(account.account_id, account.account_host)) {
                     toIdx = i;
                 }
             }

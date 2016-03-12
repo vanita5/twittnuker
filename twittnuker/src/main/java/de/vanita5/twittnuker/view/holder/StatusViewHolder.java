@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -170,7 +171,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
             final CharSequence text = HtmlSpanBuilder.fromHtml(TWITTNUKER_PREVIEW_TEXT_HTML,
                     TWITTNUKER_PREVIEW_TEXT_UNESCAPED);
             if (text instanceof Spanned) {
-            textView.setText(linkify.applyAllLinks(text, -1, -1, false,
+                textView.setText(linkify.applyAllLinks(text, null, -1, false,
                         adapter.getLinkHighlightingStyle(), true));
             }
         } else {
@@ -218,6 +219,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         final BidiFormatter formatter = adapter.getBidiFormatter();
         final Context context = adapter.getContext();
         final boolean nameFirst = adapter.isNameFirst();
+        final AccountKey accountKey = new AccountKey(status.account_id, status.account_host);
 
 
         final boolean showCardActions = isCardActionsShown();
@@ -288,7 +290,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
                 final CharSequence text = HtmlSpanBuilder.fromHtml(status.quoted_text_html,
                         status.quoted_text_unescaped);
                 if (text instanceof Spanned) {
-                    quotedTextView.setText(linkify.applyAllLinks(text, status.account_id,
+                    quotedTextView.setText(linkify.applyAllLinks(text, accountKey,
                             getLayoutPosition(), status.is_possibly_sensitive,
                             adapter.getLinkHighlightingStyle(), skipLinksInText));
                 }
@@ -348,7 +350,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         }
 
         if (adapter.shouldShowAccountsColor()) {
-            itemContent.drawEnd(DataStoreUtils.getAccountColor(context, status.account_id));
+            itemContent.drawEnd(DataStoreUtils.getAccountColor(context, accountKey));
         } else {
             itemContent.drawEnd();
         }
@@ -371,9 +373,9 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
                         View.GONE : View.VISIBLE);
             }
 
-            mediaPreview.displayMedia(status.media, loader, status.account_id, -1, this,
+            mediaPreview.displayMedia(status.media, loader, accountKey, -1, this,
                         adapter.getMediaLoadingHandler());
-            quoteMediaPreview.displayMedia(status.quoted_media, loader, status.account_id, -1, this,
+            quoteMediaPreview.displayMedia(status.quoted_media, loader, accountKey, -1, this,
                     adapter.getMediaLoadingHandler());
         } else {
             mediaPreview.setVisibility(View.GONE);
@@ -390,7 +392,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         } else {
             final CharSequence text = HtmlSpanBuilder.fromHtml(status.text_html, status.text_unescaped);
             if (text instanceof Spanned) {
-                textView.setText(linkify.applyAllLinks(text, status.account_id, getLayoutPosition(),
+                textView.setText(linkify.applyAllLinks(text, accountKey, getLayoutPosition(),
                         status.is_possibly_sensitive, adapter.getLinkHighlightingStyle(), skipLinksInText));
             }
         }
@@ -403,11 +405,11 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
             replyCountView.setVisibility(View.GONE);
         }
 
-        if (twitter.isDestroyingStatus(status.account_id, status.my_retweet_id)) {
+        if (twitter.isDestroyingStatus(accountKey, status.my_retweet_id)) {
             retweetIconView.setActivated(false);
             retweetCount = Math.max(0, status.retweet_count - 1);
         } else {
-            final boolean creatingRetweet = twitter.isCreatingRetweet(status.account_id, status.id);
+            final boolean creatingRetweet = twitter.isCreatingRetweet(accountKey, status.id);
             retweetIconView.setActivated(creatingRetweet || status.retweeted ||
                     Utils.isMyRetweet(status.account_id, status.retweeted_by_user_id, status.my_retweet_id));
             retweetCount = status.retweet_count + (creatingRetweet ? 1 : 0);
@@ -419,11 +421,11 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
             retweetCountView.setText(null);
             retweetCountView.setVisibility(View.GONE);
         }
-        if (twitter.isDestroyingFavorite(status.account_id, status.id)) {
+        if (twitter.isDestroyingFavorite(accountKey, status.id)) {
             favoriteIconView.setActivated(false);
             favoriteCount = Math.max(0, status.favorite_count - 1);
         } else {
-            final boolean creatingFavorite = twitter.isCreatingFavorite(status.account_id, status.id);
+            final boolean creatingFavorite = twitter.isCreatingFavorite(accountKey, status.id);
             favoriteIconView.setActivated(creatingFavorite || status.is_favorite);
             favoriteCount = status.favorite_count + (creatingFavorite ? 1 : 0);
         }
@@ -456,7 +458,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
     }
 
     @Override
-    public void onMediaClick(View view, ParcelableMedia media, long accountId, long extraId) {
+    public void onMediaClick(View view, ParcelableMedia media, AccountKey accountId, long extraId) {
         if (statusClickListener == null) return;
         final int position = getLayoutPosition();
         statusClickListener.onMediaClick(this, view, media, position);

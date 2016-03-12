@@ -86,7 +86,6 @@ public interface IntentConstants {
     String BROADCAST_USER_LIST_MEMBERS_ADDED = INTENT_PACKAGE_PREFIX + "USER_LIST_MEMBER_ADDED";
     String BROADCAST_USER_LIST_SUBSCRIBED = INTENT_PACKAGE_PREFIX + "USER_LIST_SUBSRCIBED";
     String BROADCAST_USER_LIST_UNSUBSCRIBED = INTENT_PACKAGE_PREFIX + "USER_LIST_UNSUBSCRIBED";
-    String BROADCAST_FILTERS_UPDATED = INTENT_PACKAGE_PREFIX + "FILTERS_UPDATED";
     String BROADCAST_REFRESH_HOME_TIMELINE = INTENT_PACKAGE_PREFIX + "REFRESH_HOME_TIMELINE";
     String BROADCAST_REFRESH_NOTIFICATIONS = INTENT_PACKAGE_PREFIX + "REFRESH_NOTIFICATIONS";
     String BROADCAST_REFRESH_DIRECT_MESSAGES = INTENT_PACKAGE_PREFIX + "REFRESH_DIRECT_MESSAGES";
@@ -99,15 +98,6 @@ public interface IntentConstants {
             + "RESCHEDULE_DIRECT_MESSAGES_REFRESHING";
     String BROADCAST_RESCHEDULE_TRENDS_REFRESHING = INTENT_PACKAGE_PREFIX
             + "RESCHEDULE_TRENDS_REFRESHING";
-    String BROADCAST_MULTI_BLOCKSTATE_CHANGED = INTENT_PACKAGE_PREFIX + "MULTI_BLOCKSTATE_CHANGED";
-    String BROADCAST_MULTI_MUTESTATE_CHANGED = INTENT_PACKAGE_PREFIX + "MULTI_MUTESTATE_CHANGED";
-    String BROADCAST_HOME_ACTIVITY_ONCREATE = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONCREATE";
-    String BROADCAST_HOME_ACTIVITY_ONRESUME = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONRESUME";
-    String BROADCAST_HOME_ACTIVITY_ONPAUSE = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONPAUSE";
-    String BROADCAST_HOME_ACTIVITY_ONDESTROY = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONDESTROY";
-    String BROADCAST_DATABASE_READY = INTENT_PACKAGE_PREFIX + "DATABASE_READY";
-    String BROADCAST_HOTOTIN_EXPANDED = INTENT_PACKAGE_PREFIX + "HOTOTIN_EXPANDED";
-    String BROADCAST_TWITLONGER_EXPANDED = INTENT_PACKAGE_PREFIX + "TWITLONGER_EXPANDED";
     String BROADCAST_REFRESH_STREAMING_SERVICE = INTENT_PACKAGE_PREFIX + "REFRESH_STREAMING_SERVICE";
 
     String EXTRA_LATITUDE = "latitude";
@@ -118,12 +108,10 @@ public interface IntentConstants {
     String EXTRA_ACCOUNT_KEY = "account_key";
     String EXTRA_ACCOUNT_KEYS = "account_keys";
     String EXTRA_ACCOUNT_ID = "account_id";
-    String EXTRA_ACCOUNT_HOST = "account_host";
     String EXTRA_ACCOUNT_IDS = "account_ids";
     String EXTRA_PAGE = "page";
     String EXTRA_DATA = "data";
     String EXTRA_QUERY = "query";
-    String EXTRA_QUERY_TYPE = "query_type";
     String EXTRA_USER_ID = "user_id";
     String EXTRA_USER_IDS = "user_ids";
     String EXTRA_LIST_ID = "list_id";
@@ -168,8 +156,6 @@ public interface IntentConstants {
     String EXTRA_USER_LIST = "user_list";
     String EXTRA_APPEND_TEXT = "append_text";
     String EXTRA_NAME = "name";
-    String EXTRA_TEXT1 = "text1";
-    String EXTRA_TEXT2 = "text2";
     String EXTRA_POSITION = "position";
     String EXTRA_ARGUMENTS = "arguments";
     String EXTRA_ICON = "icon";
@@ -177,10 +163,8 @@ public interface IntentConstants {
     String EXTRA_RESID = "resid";
     String EXTRA_SETTINGS_INTENT_ACTION = "settings_intent_action";
     String EXTRA_IMAGE_URI = "image_uri";
-    String EXTRA_ATTACHED_IMAGE_TYPE = "attached_image_type";
     String EXTRA_ACTIVATED_ONLY = "activated_only";
     String EXTRA_TAB_POSITION = "tab_position";
-    String EXTRA_HAS_RUNNING_TASK = "has_running_task";
     String EXTRA_OAUTH_VERIFIER = "oauth_verifier";
     String EXTRA_REQUEST_TOKEN = "request_token";
     String EXTRA_REQUEST_TOKEN_SECRET = "request_token_secret";
@@ -223,7 +207,6 @@ public interface IntentConstants {
     String EXTRA_FROM_USER = "from_user";
     String EXTRA_SHOW_MEDIA_PREVIEW = "show_media_preview";
     String EXTRA_SHOW_EXTRA_TYPE = "show_extra_type";
-    String EXTRA_BITMAP = "bitmap";
     String EXTRA_SOURCE = "source";
     String EXTRA_DESTINATION = "destination";
     String EXTRA_ACTIVITY_OPTIONS = "activity_options";

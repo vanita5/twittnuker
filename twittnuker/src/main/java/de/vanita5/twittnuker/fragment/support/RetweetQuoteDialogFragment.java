@@ -46,6 +46,7 @@ import android.widget.EditText;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -248,7 +249,8 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
             final String commentText = editComment.getText() + " " + statusLink;
             ParcelableStatusUpdate update = new ParcelableStatusUpdate();
             update.text = commentText;
-            update.accounts = ParcelableAccountUtils.getAccounts(getContext(), status.account_id);
+            update.accounts = ParcelableAccountUtils.getAccounts(getContext(), new AccountKey(status.account_id,
+                    status.account_host));
             if (linkToQuotedStatus.isChecked()) {
                 update.in_reply_to_status = status;
             }

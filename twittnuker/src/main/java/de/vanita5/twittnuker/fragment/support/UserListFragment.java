@@ -181,9 +181,9 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
                 if (resultCode == Activity.RESULT_OK) {
                     if (data == null || !data.hasExtra(EXTRA_ID)) return;
                     final ParcelableUserList userList = mUserList;
-                    final long accountId = data.getLongExtra(EXTRA_ID, -1);
-                    Utils.openUserListDetails(getActivity(), accountId, userList.id, userList.user_id,
-                            userList.user_screen_name, userList.name);
+                    final AccountKey accountKey = data.getParcelableExtra(EXTRA_KEY);
+                    IntentUtils.openUserListDetails(getActivity(), accountKey, userList.id,
+                            userList.user_id, userList.user_screen_name, userList.name);
                 }
                 break;
             }

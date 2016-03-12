@@ -74,7 +74,6 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SwipeDismissListViewTouchListener;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.view.ExtendedRelativeLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
@@ -192,7 +191,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
             }
             case SuggestionsAdapter.VIEW_TYPE_SAVED_SEARCH:
             case SuggestionsAdapter.VIEW_TYPE_SEARCH_HISTORY: {
-                Utils.openSearch(this, getSelectedAccountKey(), item.title);
+                IntentUtils.openSearch(this, getSelectedAccountKey(), item.title);
                 finish();
                 break;
             }
@@ -235,7 +234,8 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         mAccountSpinner.setOnItemSelectedListener(this);
         if (savedInstanceState == null) {
             final Intent intent = getIntent();
-            final int index = accountsSpinnerAdapter.findItemPosition(intent.getLongExtra(EXTRA_ACCOUNT_ID, -1));
+            final AccountKey accountKey = intent.getParcelableExtra(EXTRA_ACCOUNT_KEY);
+            final int index = accountsSpinnerAdapter.findItemPosition(System.identityHashCode(accountKey));
             if (index != -1) {
                 mAccountSpinner.setSelection(index);
             }
@@ -293,7 +293,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         if (isFinishing()) return;
         final String query = ParseUtils.parseString(mSearchQuery.getText());
         if (TextUtils.isEmpty(query)) return;
-        Utils.openSearch(this, getSelectedAccountKey(), query);
+        IntentUtils.openSearch(this, getSelectedAccountKey(), query);
         finish();
     }
 

@@ -41,6 +41,8 @@ import android.widget.Toast;
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
+import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 
@@ -122,7 +124,9 @@ public class AccountSelectorActivity extends BaseSupportDialogActivity implement
     @Override
     public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
         final Intent data = new Intent();
-        data.putExtra(EXTRA_ID, mAdapter.getAccount(position).account_id);
+        final ParcelableAccount account = mAdapter.getAccount(position);
+        data.putExtra(EXTRA_ID, account.account_id);
+        data.putExtra(EXTRA_KEY, new AccountKey(account.account_id, account.account_host));
         setResult(RESULT_OK, data);
         finish();
     }

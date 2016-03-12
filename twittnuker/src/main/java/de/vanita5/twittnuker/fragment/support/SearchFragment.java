@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCal
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -76,8 +77,8 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
     private int mControlBarOffsetPixels;
     private int mControlBarHeight;
 
-    public long getAccountId() {
-        return getArguments().getLong(EXTRA_ACCOUNT_ID);
+    public AccountKey getAccountKey() {
+        return getArguments().getParcelable(EXTRA_ACCOUNT_KEY);
     }
 
     @Override
@@ -230,7 +231,7 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
                 final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 final Bundle args = getArguments();
                 if (twitter != null && args != null) {
-                    twitter.createSavedSearchAsync(getAccountId(), getQuery());
+                    twitter.createSavedSearchAsync(getAccountKey(), getQuery());
                 }
                 return true;
             }
@@ -238,7 +239,7 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
                 final Intent intent = new Intent(getActivity(), ComposeActivity.class);
                 intent.setAction(INTENT_ACTION_COMPOSE);
                 intent.putExtra(Intent.EXTRA_TEXT, String.format("#%s ", getQuery()));
-                intent.putExtra(EXTRA_ACCOUNT_ID, getAccountId());
+                intent.putExtra(EXTRA_ACCOUNT_KEY, getAccountKey());
                 startActivity(intent);
                 break;
             }

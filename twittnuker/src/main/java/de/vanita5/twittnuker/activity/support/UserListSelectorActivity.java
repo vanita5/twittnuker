@@ -93,7 +93,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
             case R.id.create_list: {
                 final DialogFragment f = new CreateUserListDialogFragment();
                 final Bundle args = new Bundle();
-                args.putParcelable(EXTRA_ACCOUNT_KEY, getAccountId());
+                args.putParcelable(EXTRA_ACCOUNT_KEY, getAccountKey());
                 f.setArguments(args);
                 f.show(getSupportFragmentManager(), null);
                 break;
@@ -146,7 +146,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Intent intent = getIntent();
-        if (!intent.hasExtra(EXTRA_ACCOUNT_ID)) {
+        if (!intent.hasExtra(EXTRA_ACCOUNT_KEY)) {
             finish();
             return;
         }
@@ -167,7 +167,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
             }
         }
         final UserAutoCompleteAdapter adapter = new UserAutoCompleteAdapter(this);
-        adapter.setAccountKey(getAccountId());
+        adapter.setAccountKey(getAccountKey());
         mEditScreenName.setAdapter(adapter);
         mEditScreenName.setText(mScreenName);
         mUserListsListView.setAdapter(mUserListsAdapter = new SimpleParcelableUserListsAdapter(this));
@@ -206,14 +206,14 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
         getUserLists(mScreenName);
     }
 
-    private AccountKey getAccountId() {
+    private AccountKey getAccountKey() {
         return getIntent().getParcelableExtra(EXTRA_ACCOUNT_KEY);
     }
 
     private void getUserLists(final String screenName) {
         if (screenName == null) return;
         mScreenName = screenName;
-        final GetUserListsTask task = new GetUserListsTask(this, getAccountId(), screenName);
+        final GetUserListsTask task = new GetUserListsTask(this, getAccountKey(), screenName);
         AsyncTaskUtils.executeTask(task);
     }
 
@@ -222,7 +222,7 @@ public class UserListSelectorActivity extends BaseSupportDialogActivity implemen
     }
 
     private void searchUser(final String name) {
-        final SearchUsersTask task = new SearchUsersTask(this, getAccountId(), name);
+        final SearchUsersTask task = new SearchUsersTask(this, getAccountKey(), name);
         AsyncTaskUtils.executeTask(task);
     }
 
