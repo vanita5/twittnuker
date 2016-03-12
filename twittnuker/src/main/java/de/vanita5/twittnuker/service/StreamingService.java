@@ -38,6 +38,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.util.LongSparseArray;
+import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -94,7 +95,7 @@ import java.util.List;
 
 public class StreamingService extends Service implements Constants {
 
-    private final LongSparseArray<UserStreamCallback> mCallbacks = new LongSparseArray<>();
+    private final SimpleArrayMap<AccountKey, UserStreamCallback> mCallbacks = new SimpleArrayMap<>();
     private ContentResolver mResolver;
 
     private SharedPreferences mPreferences;
@@ -220,7 +221,7 @@ public class StreamingService extends Service implements Constants {
         final AccountKey[] accountKeys = new AccountKey[accountsList.size()];
         for (int i = 0, j = accountKeys.length; i < j; i++) {
             final ParcelableCredentials credentials = accountsList.get(i);
-            accountKeys[i] = new AccountKey(credentials.account_key, credentials.account_host);
+            accountKeys[i] = credentials.account_key;
         }
         if (BuildConfig.DEBUG) {
             Log.d(Constants.LOGTAG, "Setting up twitter stream instances");
@@ -240,9 +241,9 @@ public class StreamingService extends Service implements Constants {
             final Authorization authorization = TwitterAPIFactory.getAuthorization(account);
             final TwitterUserStream twitter = TwitterAPIFactory.getInstance(this, endpoint, authorization, TwitterUserStream.class);
             final TwidereUserStreamCallback callback = new TwidereUserStreamCallback(this, account, mPreferences);
-            refreshBefore(new AccountKey[]{new AccountKey(account.account_key, account.account_host)});
+            refreshBefore(new AccountKey[]{account.account_key});
             mCallbacks.put(account.account_key, callback);
-            Log.d(Constants.LOGTAG, String.format("Stream %d starts...", account.account_key));
+            Log.d(Constants.LOGTAG, String.format("Stream %s starts...", account.account_key));
             new Thread() {
                 @Override
                 public void run() {
@@ -325,9 +326,9 @@ public class StreamingService extends Service implements Constants {
                                         ParcelableStatus status, User sourceUser) {
             if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATIONS, true)) {
                 AccountPreferences pref = new AccountPreferences(context,
-                        new AccountKey(account.account_key, account.account_host));
+                        account.account_key);
                 NotificationContent notification = new NotificationContent();
-                notification.setAccountId(account.account_key);
+                notification.setAccountId(account.account_key.getId());
                 notification.setObjectId(status != null ? String.valueOf(status.id) : null);
                 notification.setObjectUserId(status != null ? String.valueOf(status.user_id) : null);
                 notification.setFromUser(fromUser);
@@ -379,16 +380,16 @@ public class StreamingService extends Service implements Constants {
                 resolver.delete(uri, where, null);
             }
             final User sender = directMessage.getSender(), recipient = directMessage.getRecipient();
-            if (sender.getId() == account.account_key) {
+            if (sender.getId() == account.account_key.getId()) {
                 final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage,
-                        account.account_key, account.account_host, true);
+                        account.account_key, true);
                 if (values != null) {
                     resolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
                 }
             }
-            if (recipient.getId() == account.account_key) {
+            if (recipient.getId() == account.account_key.getId()) {
                 final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage,
-                        account.account_key, account.account_host, false);
+                        account.account_key, false);
                 final Uri.Builder builder = DirectMessages.Inbox.CONTENT_URI.buildUpon();
                 builder.appendQueryParameter(QUERY_PARAM_NOTIFY, "true");
                 if (values != null) {
@@ -447,18 +448,18 @@ public class StreamingService extends Service implements Constants {
 //            ContentValues values = ParcelableActivityValuesCreator.create(activity);
 //            resolver.insert(Activities.AboutMe.CONTENT_URI, values);
 
-            if (favoritedStatus.getUser().getId() == account.account_key) {
+            if (favoritedStatus.getUser().getId() == account.account_key.getId()) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
                         Utils.parseURLEntities(favoritedStatus.getText(), favoritedStatus.getUrlEntities()),
                         ParcelableStatusUtils.fromStatus(favoritedStatus,
-                                new AccountKey(account.account_key, account.account_host), false),
+                                account.account_key, false),
                         source);
             }
         }
 
         @Override
         public void onFollow(final User source, final User followedUser) {
-            if (followedUser.getId() == account.account_key) {
+            if (followedUser.getId() == account.account_key.getId()) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER,
                         null, null, source);
             }
@@ -485,36 +486,36 @@ public class StreamingService extends Service implements Constants {
 
         @Override
         public void onStatus(final Status status) {
-            final ContentValues values = ContentValuesCreator.createStatus(status,
-                    new AccountKey(account.account_key, account.account_host));
+            final ContentValues values = ContentValuesCreator.createStatus(status, account.account_key);
             if (!statusStreamStarted && !mPreferences.getBoolean(KEY_REFRESH_BEFORE_STREAMING, true)) {
                 statusStreamStarted = true;
                 values.put(Statuses.IS_GAP, true);
             }
-            final String where = Statuses.ACCOUNT_KEY + " = " + account.account_key + " AND " + Statuses.STATUS_ID + " = "
-                    + status.getId();
-            resolver.delete(Statuses.CONTENT_URI, where, null);
-            resolver.delete(Activities.AboutMe.CONTENT_URI, where, null);
+            final String where = Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_KEY),
+                    Expression.equalsArgs(Statuses.STATUS_ID)).getSQL();
+            final String[] whereArgs = {account.account_key.toString(), String.valueOf(status.getId())};
+            resolver.delete(Statuses.CONTENT_URI, where, whereArgs);
+            resolver.delete(Activities.AboutMe.CONTENT_URI, where, whereArgs);
             resolver.insert(Statuses.CONTENT_URI, values);
             final Status rt = status.getRetweetedStatus();
             if (rt != null && rt.getText().contains("@" + account.screen_name) || rt == null
                     && status.getText().contains("@" + account.screen_name)) {
 
-                Activity activity = Activity.fromMention(account.account_key, status);
+                Activity activity = Activity.fromMention(account.account_key.getId(), status);
                 final ParcelableActivity parcelableActivity = ParcelableActivityUtils.fromActivity(activity,
-                        new AccountKey(account.account_key, account.account_host), false);
+                        account.account_key, false);
                 parcelableActivity.timestamp = status.getCreatedAt() != null ? status.getCreatedAt().getTime(): System.currentTimeMillis();
                 final ContentValues activityValues = ParcelableActivityValuesCreator.create(parcelableActivity);
                 resolver.insert(Activities.AboutMe.CONTENT_URI, activityValues);
             }
 
             //Retweet
-            if (rt != null && rt.getUser().getId() == account.account_key) {
+            if (rt != null && rt.getUser().getId() == account.account_key.getId()) {
                 createNotification(status.getUser().getScreenName(),
                         NotificationContent.NOTIFICATION_TYPE_RETWEET,
                         Utils.parseURLEntities(rt.getText(), rt.getUrlEntities()),
                         ParcelableStatusUtils.fromStatus(status,
-                                new AccountKey(account.account_key, account.account_host), false), status.getUser());
+                                account.account_key, false), status.getUser());
                 //TODO insert retweet activity
             }
         }

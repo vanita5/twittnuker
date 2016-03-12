@@ -136,8 +136,8 @@ public class MenuUtils implements Constants {
                                       @NonNull final ParcelableStatus status,
                                       @NonNull UserColorNameManager manager,
                                       @NonNull final AsyncTwitterWrapper twitter) {
-        final ParcelableCredentials account = DataStoreUtils.getCredentials(context, new AccountKey(status.account_id,
-                status.account_host));
+        final ParcelableCredentials account = DataStoreUtils.getCredentials(context,
+                status.account_key);
         if (account == null) return;
         setupForStatus(context, preferences, menu, status, account, manager, twitter);
     }
@@ -159,10 +159,9 @@ public class MenuUtils implements Constants {
         final int likeHighlight = ContextCompat.getColor(context, R.color.highlight_like);
         final int loveHighlight = ContextCompat.getColor(context, R.color.highlight_love);
         final boolean isMyRetweet;
-        final AccountKey accountKey = new AccountKey(status.account_id, status.account_host);
-        if (twitter.isCreatingRetweet(accountKey, status.id)) {
+        if (twitter.isCreatingRetweet(status.account_key, status.id)) {
             isMyRetweet = true;
-        } else if (twitter.isDestroyingStatus(accountKey, status.id)) {
+        } else if (twitter.isDestroyingStatus(status.account_key, status.id)) {
             isMyRetweet = false;
         } else {
             isMyRetweet = status.retweeted || Utils.isMyRetweet(status);
@@ -179,9 +178,9 @@ public class MenuUtils implements Constants {
         final MenuItem favorite = menu.findItem(R.id.favorite);
         boolean isFavorite = false;
         if (favorite != null) {
-            if (twitter.isCreatingFavorite(accountKey, status.id)) {
+            if (twitter.isCreatingFavorite(status.account_key, status.id)) {
                 isFavorite = true;
-            } else if (twitter.isDestroyingFavorite(accountKey, status.id)) {
+            } else if (twitter.isDestroyingFavorite(status.account_key, status.id)) {
                 isFavorite = false;
             } else {
                 isFavorite = status.is_favorite;

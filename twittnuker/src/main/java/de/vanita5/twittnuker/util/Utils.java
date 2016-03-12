@@ -2019,27 +2019,25 @@ public final class Utils implements Constants {
     }
 
     public static void retweet(ParcelableStatus status, AsyncTwitterWrapper twitter) {
-        final AccountKey accountKey = new AccountKey(status.account_key, status.account_host);
         if (isMyRetweet(status)) {
-            twitter.cancelRetweetAsync(accountKey,
+            twitter.cancelRetweetAsync(status.account_key,
                     status.id, status.my_retweet_id);
         } else {
-            twitter.retweetStatusAsync(accountKey,
+            twitter.retweetStatusAsync(status.account_key,
                     status.id);
         }
     }
 
     public static void favorite(ParcelableStatus status, AsyncTwitterWrapper twitter, MenuItem item) {
-        final AccountKey accountKey = new AccountKey(status.account_key, status.account_host);
         if (status.is_favorite) {
-            twitter.destroyFavoriteAsync(accountKey, status.id);
+            twitter.destroyFavoriteAsync(status.account_key, status.id);
         } else {
             ActionProvider provider = MenuItemCompat.getActionProvider(item);
             if (provider instanceof FavoriteItemProvider) {
                 ((FavoriteItemProvider) provider).invokeItem(item,
                         new AbsStatusesFragment.DefaultOnLikedListener(twitter, status));
             } else {
-                twitter.createFavoriteAsync(accountKey, status.id);
+                twitter.createFavoriteAsync(status.account_key, status.id);
             }
         }
     }

@@ -34,14 +34,10 @@ import java.util.Date;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
 public class ParcelableDirectMessageUtils {
-    public static ParcelableDirectMessage fromDirectMessage(DirectMessage message, AccountKey accountKey, boolean isOutgoing) {
-        return fromDirectMessage(message, accountKey.getId(), accountKey.getHost(), isOutgoing);
-    }
 
-    public static ParcelableDirectMessage fromDirectMessage(DirectMessage message, long accountId, String accountHost, boolean isOutgoing) {
+    public static ParcelableDirectMessage fromDirectMessage(DirectMessage message, AccountKey accountKey, boolean isOutgoing) {
         ParcelableDirectMessage result = new ParcelableDirectMessage();
-        result.account_key = accountId;
-        result.account_host = accountHost;
+        result.account_key = accountKey;
         result.is_outgoing = isOutgoing;
         final User sender = message.getSender(), recipient = message.getRecipient();
         assert sender != null && recipient != null;

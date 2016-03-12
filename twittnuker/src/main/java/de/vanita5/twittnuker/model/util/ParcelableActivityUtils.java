@@ -74,11 +74,11 @@ public class ParcelableActivityUtils {
         return activity.after_filtered_sources = result;
     }
 
-    public static ParcelableActivity fromActivity(final Activity activity, final AccountKey accountKey,
+    public static ParcelableActivity fromActivity(final Activity activity,
+                                                  final AccountKey accountKey,
                                                   final boolean isGap) {
         ParcelableActivity result = new ParcelableActivity();
-        result.account_key = accountKey.getId();
-        result.account_host = accountKey.getHost();
+        result.account_key = accountKey;
         result.timestamp = activity.getCreatedAt().getTime();
         result.action = activity.getAction();
         result.max_position = activity.getMaxPosition();

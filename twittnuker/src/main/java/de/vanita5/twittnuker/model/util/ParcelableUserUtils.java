@@ -48,10 +48,7 @@ public class ParcelableUserUtils implements TwittnukerConstants{
         final UrlEntity[] urlEntities = user.getUrlEntities();
         final ParcelableUser obj = new ParcelableUser();
         obj.position = position;
-        if (accountKey != null) {
-            obj.account_key = accountKey.getId();
-            obj.account_host = accountKey.getHost();
-        }
+        obj.account_key = accountKey;
         obj.id = user.getId();
         obj.created_at = user.getCreatedAt().getTime();
         obj.is_protected = user.isProtected();
@@ -107,7 +104,7 @@ public class ParcelableUserUtils implements TwittnukerConstants{
     }
 
     public static ParcelableUser fromDirectMessageConversationEntry(final Cursor cursor) {
-        final long accountId = cursor.getLong(DirectMessages.ConversationEntries.IDX_ACCOUNT_KEY);
+        final AccountKey accountId = AccountKey.valueOf(cursor.getString(DirectMessages.ConversationEntries.IDX_ACCOUNT_KEY));
         final long id = cursor.getLong(DirectMessages.ConversationEntries.IDX_CONVERSATION_ID);
         final String name = cursor.getString(DirectMessages.ConversationEntries.IDX_NAME);
         final String screenName = cursor.getString(DirectMessages.ConversationEntries.IDX_SCREEN_NAME);
