@@ -27,6 +27,8 @@ import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 
 import org.mariotaku.library.objectcursor.ObjectCursor;
+
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 
@@ -65,10 +67,9 @@ public abstract class AbsParcelableStatusesAdapter extends AbsStatusesAdapter<Li
         if (mData instanceof ObjectCursor) {
             final Cursor cursor = ((ObjectCursor) mData).getCursor(dataPosition);
             final ParcelableStatusCursorIndices indices = (ParcelableStatusCursorIndices) ((ObjectCursor) mData).getIndices();
-            final long account_id = cursor.getLong(indices.account_id);
-            final String account_host = cursor.getString(indices.account_host);
+            final AccountKey accountKey = AccountKey.valueOf(cursor.getString(indices.account_key));
             final long id = cursor.getLong(indices.id);
-            return ParcelableStatus.calculateHashCode(account_id, account_host, id);
+            return ParcelableStatus.calculateHashCode(accountKey, id);
         }
         return System.identityHashCode(mData.get(dataPosition));
     }
@@ -86,15 +87,15 @@ public abstract class AbsParcelableStatusesAdapter extends AbsStatusesAdapter<Li
     }
 
     @Override
-    public long getAccountId(int adapterPosition) {
+    public AccountKey getAccountKey(int adapterPosition) {
         int dataPosition = adapterPosition - getStatusStartIndex();
-        if (dataPosition < 0 || dataPosition >= getStatusCount()) return RecyclerView.NO_ID;
+        if (dataPosition < 0 || dataPosition >= getStatusCount()) return null;
         if (mData instanceof ObjectCursor) {
             final Cursor cursor = ((ObjectCursor) mData).getCursor(dataPosition);
             final ParcelableStatusCursorIndices indices = (ParcelableStatusCursorIndices) ((ObjectCursor) mData).getIndices();
-            return cursor.getLong(indices.account_id);
+            return AccountKey.valueOf(cursor.getString(indices.account_key));
         }
-        return mData.get(dataPosition).account_id;
+        return mData.get(dataPosition).account_key;
     }
 
     @Override

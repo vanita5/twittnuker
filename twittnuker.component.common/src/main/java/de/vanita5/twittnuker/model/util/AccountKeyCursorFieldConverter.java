@@ -20,35 +20,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.model.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public class TwidereListUtils {
+import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
+import de.vanita5.twittnuker.model.AccountKey;
 
-    public static List<Long> fromArray(final long[] array) {
-        if (array == null) return null;
-        final List<Long> list = new ArrayList<>();
-        for (final long item : array) {
-            list.add(item);
-        }
-        return list;
+import java.lang.reflect.ParameterizedType;
+
+public class AccountKeyCursorFieldConverter implements CursorFieldConverter<AccountKey> {
+    @Override
+    public AccountKey parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
+        return AccountKey.valueOf(cursor.getString(columnIndex));
     }
 
-    public static <T> String toString(final List<T> list, final char delimiter, final boolean includeSpace) {
-        final StringBuilder builder = new StringBuilder();
-        final int size = list.size();
-        for (int i = 0; i < size; i++) {
-            if (i > 0) {
-                builder.append(delimiter);
-                if (includeSpace) {
-                    builder.append(" ");
-                }
-            }
-            builder.append(list.get(i));
-        }
-        return builder.toString();
+    @Override
+    public void writeField(ContentValues values, AccountKey object, String columnName, ParameterizedType fieldType) {
+        if (object == null) return;
+        values.put(columnName, object.toString());
     }
 
 }

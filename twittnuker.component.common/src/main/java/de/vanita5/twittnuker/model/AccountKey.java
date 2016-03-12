@@ -64,11 +64,6 @@ public class AccountKey implements Comparable<AccountKey>, Parcelable {
         this.host = host;
     }
 
-    public AccountKey(ParcelableAccount account) {
-        this.id = account.account_id;
-        this.host = account.account_host;
-    }
-
     AccountKey() {
 
     }

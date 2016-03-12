@@ -32,7 +32,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -49,8 +48,7 @@ public class DestroyFriendshipDialogFragment extends BaseSupportDialogFragment i
                 final ParcelableUser user = getUser();
                 final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (user == null || twitter == null) return;
-                twitter.destroyFriendshipAsync(new AccountKey(user.account_id, user.account_host),
-                        user.id);
+                twitter.destroyFriendshipAsync(user.account_key, user.id);
                 break;
             default:
                 break;

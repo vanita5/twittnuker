@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 @CursorObject(valuesCreator = true)
 public class CachedRelationship {
 
-    @CursorField(CachedRelationships.ACCOUNT_ID)
+    @CursorField(CachedRelationships.ACCOUNT_KEY)
     public long account_id;
 
     @CursorField(CachedRelationships.USER_ID)

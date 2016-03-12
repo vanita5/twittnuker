@@ -26,8 +26,6 @@ import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
@@ -39,7 +37,6 @@ import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -53,7 +50,6 @@ import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
@@ -71,74 +67,10 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
 public final class ContentValuesCreator implements TwittnukerConstants {
 
-    public static ContentValues createAccount(final String basicUsername, final String basicPassword,
-                                              final User user, final int color, final String apiUrlFormat,
-                                              final boolean noVersionSuffix) {
-        if (user == null || user.getId() <= 0) return null;
-        final ContentValues values = new ContentValues();
-        if (basicUsername == null || basicPassword == null) return null;
-        values.put(Accounts.BASIC_AUTH_USERNAME, basicUsername);
-        values.put(Accounts.BASIC_AUTH_PASSWORD, basicPassword);
-        values.put(Accounts.AUTH_TYPE, ParcelableCredentials.AUTH_TYPE_BASIC);
-        values.put(Accounts.ACCOUNT_ID, user.getId());
-        values.put(Accounts.SCREEN_NAME, user.getScreenName());
-        values.put(Accounts.NAME, user.getName());
-        values.put(Accounts.PROFILE_IMAGE_URL, TwitterContentUtils.getProfileImageUrl(user));
-        values.put(Accounts.PROFILE_BANNER_URL, user.getProfileBannerImageUrl());
-        values.put(Accounts.COLOR, color);
-        values.put(Accounts.IS_ACTIVATED, 1);
-        values.put(Accounts.API_URL_FORMAT, apiUrlFormat);
-        values.put(Accounts.NO_VERSION_SUFFIX, noVersionSuffix);
-        return values;
-    }
-
-    public static ContentValues createAccount(final OAuthAuthorization auth, final User user,
-                                              final int authType, final int color,
-                                              final String apiUrlFormat, final boolean sameOAuthSigningUrl,
-                                              final boolean noVersionSuffix) {
-        if (user == null || auth == null) return null;
-        final ContentValues values = new ContentValues();
-        final OAuthToken accessToken = auth.getOauthToken();
-        values.put(Accounts.OAUTH_TOKEN, accessToken.getOauthToken());
-        values.put(Accounts.OAUTH_TOKEN_SECRET, accessToken.getOauthTokenSecret());
-        values.put(Accounts.CONSUMER_KEY, auth.getConsumerKey());
-        values.put(Accounts.CONSUMER_SECRET, auth.getConsumerSecret());
-        values.put(Accounts.AUTH_TYPE, authType);
-        values.put(Accounts.ACCOUNT_ID, user.getId());
-        values.put(Accounts.SCREEN_NAME, user.getScreenName());
-        values.put(Accounts.NAME, user.getName());
-        values.put(Accounts.PROFILE_IMAGE_URL, TwitterContentUtils.getProfileImageUrl(user));
-        values.put(Accounts.PROFILE_BANNER_URL, user.getProfileBannerImageUrl());
-        values.put(Accounts.COLOR, color);
-        values.put(Accounts.IS_ACTIVATED, 1);
-        values.put(Accounts.API_URL_FORMAT, apiUrlFormat);
-        values.put(Accounts.SAME_OAUTH_SIGNING_URL, sameOAuthSigningUrl);
-        values.put(Accounts.NO_VERSION_SUFFIX, noVersionSuffix);
-        return values;
-    }
-
-    public static ContentValues createAccount(final User user, final int color, final String apiUrlFormat,
-                                              final boolean noVersionSuffix) {
-        if (user == null || user.getId() <= 0) return null;
-        final ContentValues values = new ContentValues();
-        values.put(Accounts.AUTH_TYPE, ParcelableCredentials.AUTH_TYPE_TWIP_O_MODE);
-        values.put(Accounts.ACCOUNT_ID, user.getId());
-        values.put(Accounts.SCREEN_NAME, user.getScreenName());
-        values.put(Accounts.NAME, user.getName());
-        values.put(Accounts.PROFILE_IMAGE_URL, TwitterContentUtils.getProfileImageUrl(user));
-        values.put(Accounts.PROFILE_BANNER_URL, user.getProfileBannerImageUrl());
-        values.put(Accounts.COLOR, color);
-        values.put(Accounts.IS_ACTIVATED, 1);
-        values.put(Accounts.API_URL_FORMAT, apiUrlFormat);
-        values.put(Accounts.NO_VERSION_SUFFIX, noVersionSuffix);
-        return values;
-    }
-
     public static ContentValues createCachedRelationship(final Relationship relationship,
                                                          final AccountKey accountKey) {
         final ContentValues values = new ContentValues();
-        values.put(CachedRelationships.ACCOUNT_ID, accountKey.getId());
-        values.put(CachedRelationships.ACCOUNT_HOST, accountKey.getHost());
+        values.put(CachedRelationships.ACCOUNT_KEY, accountKey.toString());
         values.put(CachedRelationships.USER_ID, relationship.getTargetUserId());
         values.put(CachedRelationships.FOLLOWING, relationship.isSourceFollowingTarget());
         values.put(CachedRelationships.FOLLOWED_BY, relationship.isSourceFollowedByTarget());
@@ -155,16 +87,16 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         return values;
     }
 
-    public static ContentValues createDirectMessage(final DirectMessage message, final long accountId,
-                                                    final String accountHost, final boolean isOutgoing) {
+    public static ContentValues createDirectMessage(final DirectMessage message,
+                                                    final AccountKey accountKey,
+                                                    final boolean isOutgoing) {
         if (message == null) return null;
         final ContentValues values = new ContentValues();
         final User sender = message.getSender(), recipient = message.getRecipient();
         if (sender == null || recipient == null) return null;
         final String sender_profile_image_url = TwitterContentUtils.getProfileImageUrl(sender);
         final String recipient_profile_image_url = TwitterContentUtils.getProfileImageUrl(recipient);
-        values.put(DirectMessages.ACCOUNT_ID, accountId);
-        values.put(DirectMessages.ACCOUNT_HOST, accountHost);
+        values.put(DirectMessages.ACCOUNT_KEY, accountKey.toString());
         values.put(DirectMessages.MESSAGE_ID, message.getId());
         values.put(DirectMessages.MESSAGE_TIMESTAMP, message.getCreatedAt().getTime());
         values.put(DirectMessages.SENDER_ID, sender.getId());
@@ -244,11 +176,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         return values;
     }
 
-    public static ContentValues createSavedSearch(final SavedSearch savedSearch, final long accountId,
-                                                  final String accountHost) {
+    public static ContentValues createSavedSearch(final SavedSearch savedSearch,
+                                                  final AccountKey accountKey) {
         final ContentValues values = new ContentValues();
-        values.put(SavedSearches.ACCOUNT_ID, accountId);
-        values.put(SavedSearches.ACCOUNT_HOST, accountHost);
+        values.put(SavedSearches.ACCOUNT_KEY, accountKey.toString());
         values.put(SavedSearches.SEARCH_ID, savedSearch.getId());
         values.put(SavedSearches.CREATED_AT, savedSearch.getCreatedAt().getTime());
         values.put(SavedSearches.NAME, savedSearch.getName());
@@ -257,10 +188,10 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     }
 
     public static ContentValues[] createSavedSearches(final List<SavedSearch> savedSearches,
-                                                      final long accountId, final String accountHost) {
+                                                      final AccountKey accountKey) {
         final ContentValues[] resultValuesArray = new ContentValues[savedSearches.size()];
         for (int i = 0, j = savedSearches.size(); i < j; i++) {
-            resultValuesArray[i] = createSavedSearch(savedSearches.get(i), accountId, accountHost);
+            resultValuesArray[i] = createSavedSearch(savedSearches.get(i), accountKey);
     }
         return resultValuesArray;
     }

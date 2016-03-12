@@ -64,7 +64,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -175,11 +174,9 @@ import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
-import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
 import de.vanita5.twittnuker.model.TwitterAccountExtra;
@@ -809,15 +806,17 @@ public final class Utils implements Constants {
         return buf.toString();
     }
 
-    public static ParcelableDirectMessage findDirectMessageInDatabases(final Context context, final long account_id,
-                                                                       final long message_id) {
+    public static ParcelableDirectMessage findDirectMessageInDatabases(final Context context,
+                                                                       final AccountKey accountKey,
+                                                                       final long messageId) {
         if (context == null) return null;
         final ContentResolver resolver = context.getContentResolver();
         ParcelableDirectMessage message = null;
-        final String where = DirectMessages.ACCOUNT_ID + " = " + account_id + " AND " + DirectMessages.MESSAGE_ID
-                + " = " + message_id;
+        final String where = Expression.and(Expression.equalsArgs(DirectMessages.ACCOUNT_KEY),
+                Expression.equalsArgs(DirectMessages.MESSAGE_ID)).getSQL();
+        final String[] whereArgs = {accountKey.toString(), String.valueOf(messageId)};
         for (final Uri uri : DIRECT_MESSAGES_URIS) {
-            final Cursor cur = resolver.query(uri, DirectMessages.COLUMNS, where, null, null);
+            final Cursor cur = resolver.query(uri, DirectMessages.COLUMNS, where, whereArgs, null);
             if (cur == null) {
                 continue;
             }
@@ -839,7 +838,7 @@ public final class Utils implements Constants {
         final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountKey, true);
         if (twitter == null) throw new TwitterException("Account does not exist");
         final Status status = twitter.showStatus(statusId);
-        final String where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountKey.getId()),
+        final String where = Expression.and(Expression.equals(Statuses.ACCOUNT_KEY, accountKey.getId()),
                 Expression.equals(Statuses.STATUS_ID, statusId)).getSQL();
         final ContentResolver resolver = context.getContentResolver();
         resolver.delete(CachedStatuses.CONTENT_URI, where, null);
@@ -853,7 +852,7 @@ public final class Utils implements Constants {
         if (context == null) return null;
         final ContentResolver resolver = context.getContentResolver();
         ParcelableStatus status = null;
-        final String where = Expression.and(Expression.equals(Statuses.ACCOUNT_ID, accountKey.getId()),
+        final String where = Expression.and(Expression.equals(Statuses.ACCOUNT_KEY, accountKey.getId()),
                 Expression.equals(Statuses.STATUS_ID, statusId)).getSQL();
         for (final Uri uri : STATUSES_URIS) {
             final Cursor cur = resolver.query(uri, Statuses.COLUMNS, where, null, null);
@@ -1532,8 +1531,8 @@ public final class Utils implements Constants {
     public static boolean isMyAccount(@NonNull final Context context, final long accountId,
                                       final String accountHost) {
         final ContentResolver resolver = context.getContentResolver();
-        final String where = Expression.equalsArgs(Accounts.ACCOUNT_ID).getSQL();
-        final String[] projection = new String[]{Accounts.ACCOUNT_HOST};
+        final String where = Expression.equalsArgs(Accounts.ACCOUNT_KEY).getSQL();
+        final String[] projection = new String[]{};
         final String[] whereArgs = {String.valueOf(accountId)};
         final Cursor cur = resolver.query(Accounts.CONTENT_URI, projection, where, whereArgs, null);
         if (cur == null) return false;
@@ -1560,7 +1559,7 @@ public final class Utils implements Constants {
     }
 
     public static boolean isMyRetweet(final ParcelableStatus status) {
-        return status != null && isMyRetweet(status.account_id, status.retweeted_by_user_id, status.my_retweet_id);
+        return status != null && isMyRetweet(status.account_key.getId(), status.retweeted_by_user_id, status.my_retweet_id);
     }
 
     public static boolean isMyRetweet(final long accountId, final long retweetedById, final long myRetweetId) {
@@ -1743,7 +1742,7 @@ public final class Utils implements Constants {
 
     static boolean isMyStatus(ParcelableStatus status) {
         if (isMyRetweet(status)) return true;
-        return status.account_id == status.user_id;
+        return status.account_key.getId() == status.user_id;
     }
 
     public static boolean shouldStopAutoRefreshOnBatteryLow(final Context context) {
@@ -2020,7 +2019,7 @@ public final class Utils implements Constants {
     }
 
     public static void retweet(ParcelableStatus status, AsyncTwitterWrapper twitter) {
-        final AccountKey accountKey = new AccountKey(status.account_id, status.account_host);
+        final AccountKey accountKey = new AccountKey(status.account_key, status.account_host);
         if (isMyRetweet(status)) {
             twitter.cancelRetweetAsync(accountKey,
                     status.id, status.my_retweet_id);
@@ -2031,7 +2030,7 @@ public final class Utils implements Constants {
     }
 
     public static void favorite(ParcelableStatus status, AsyncTwitterWrapper twitter, MenuItem item) {
-        final AccountKey accountKey = new AccountKey(status.account_id, status.account_host);
+        final AccountKey accountKey = new AccountKey(status.account_key, status.account_host);
         if (status.is_favorite) {
             twitter.destroyFavoriteAsync(accountKey, status.id);
         } else {
@@ -2217,9 +2216,7 @@ public final class Utils implements Constants {
     }
 
     public static Expression getAccountCompareExpression() {
-        return Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_ID),
-                Expression.or(Expression.isNull(new Column(Statuses.ACCOUNT_HOST)),
-                        Expression.equalsArgs(Statuses.ACCOUNT_HOST)));
+        return Expression.equalsArgs(Statuses.ACCOUNT_KEY);
     }
 
     static class UtilsL {

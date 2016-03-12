@@ -35,6 +35,7 @@ import org.mariotaku.library.objectcursor.annotation.AfterCursorObjectCreated;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
 
+import de.vanita5.twittnuker.model.util.AccountKeyConverter;
 import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 
@@ -45,11 +46,8 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
 
     @ParcelableThisPlease
-    @JsonField(name = "account_id")
-    public long account_id;
-    @ParcelableThisPlease
-    @JsonField(name = "account_host")
-    public String account_host;
+    @JsonField(name = "account_id", typeConverter = AccountKeyConverter.class)
+    public AccountKey account_key;
 
     @ParcelableThisPlease
     public int account_color;
@@ -197,9 +195,9 @@ public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
     public ParcelableUser() {
     }
 
-    public ParcelableUser(final long account_id, final long id, final String name,
+    public ParcelableUser(final AccountKey account_key, final long id, final String name,
                           final String screen_name, final String profile_image_url) {
-        this.account_id = account_id;
+        this.account_key = account_key;
         this.id = id;
         this.name = name;
         this.screen_name = screen_name;
@@ -235,25 +233,32 @@ public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (!(obj instanceof ParcelableUser)) return false;
-        final ParcelableUser other = (ParcelableUser) obj;
-        if (account_id != other.account_id) return false;
-        if (id != other.id) return false;
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ParcelableUser user = (ParcelableUser) o;
+
+        if (id != user.id) return false;
+        return account_key.equals(user.account_key);
+
     }
 
     @Override
     public int hashCode() {
-        return calculateHashCode(account_id, id);
+        return calculateHashCode(account_key, id);
+    }
+
+    public static int calculateHashCode(AccountKey account_key, long id) {
+        int result = account_key.hashCode();
+        result = 31 * result + (int) (id ^ (id >>> 32));
+        return result;
     }
 
     @Override
     public String toString() {
         return "ParcelableUser{" +
-                "account_id=" + account_id +
+                "account_id=" + account_key +
                 ", account_color=" + account_color +
                 ", id=" + id +
                 ", created_at=" + created_at +

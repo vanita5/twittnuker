@@ -106,7 +106,7 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
         final String table = getTableNameByUri(uri);
         final String sortOrder = getSortOrder();
         final AccountKey[] accountIds = getAccountKeys();
-        final Expression accountWhere = Expression.in(new Column(Activities.ACCOUNT_ID),
+        final Expression accountWhere = Expression.in(new Column(Activities.ACCOUNT_KEY),
                 new RawItemArray(accountIds));
         final Expression filterWhere = getFiltersWhere(table), where;
         if (filterWhere != null) {
@@ -283,6 +283,7 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
 
         @Subscribe
         public void notifyFavoriteTask(FavoriteTaskEvent event) {
+
         }
 
         @Subscribe

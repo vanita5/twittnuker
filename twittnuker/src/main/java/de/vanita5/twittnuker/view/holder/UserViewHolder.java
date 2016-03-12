@@ -119,7 +119,7 @@ public class UserViewHolder extends ViewHolder implements OnClickListener, OnLon
             loader.cancelDisplayTask(profileImageView);
         }
 
-        if (twitter.isProcessingFollowRequest(user.account_id, user.id)) {
+        if (twitter.isProcessingFollowRequest(user.account_key, user.id)) {
             processingRequestProgress.setVisibility(View.VISIBLE);
             acceptRequestButton.setVisibility(View.GONE);
             denyRequestButton.setVisibility(View.GONE);

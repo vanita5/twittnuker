@@ -82,7 +82,7 @@ public class IntentUtils implements Constants {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(TwittnukerConstants.SCHEME_TWITTNUKER);
         builder.authority(TwittnukerConstants.AUTHORITY_USER);
-        builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_ACCOUNT_ID, String.valueOf(user.account_id));
+        builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_ACCOUNT_ID, String.valueOf(user.account_key));
         if (user.id > 0) {
             builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_USER_ID, String.valueOf(user.id));
         }
@@ -147,6 +147,13 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
+    public static void openMedia(@NonNull final Context context, final ParcelableDirectMessage message,
+                                 final ParcelableMedia current, @Nullable final Bundle options,
+                                 final boolean newDocument) {
+        openMedia(context, message.account_key, false, null, message, current, message.media,
+                options, newDocument);
+    }
+
     public static void openUserTimeline(@NonNull  final Context context, @Nullable  final AccountKey accountKey,
                                         final long userId, final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
@@ -165,19 +172,11 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openMedia(@NonNull final Context context, final ParcelableDirectMessage message,
-                                 final ParcelableMedia current, @Nullable final Bundle options,
-                                 final boolean newDocument) {
-        openMedia(context, new AccountKey(message.account_id, message.account_host), false, null,
-                message, current, message.media, options, newDocument);
-    }
-
     public static void openMedia(@NonNull final Context context, final ParcelableStatus status,
                                  final ParcelableMedia current, final Bundle options,
                                  final boolean newDocument) {
-        openMedia(context, new AccountKey(status.account_id, status.account_host),
-                status.is_possibly_sensitive, status, null, current, getPrimaryMedia(status),
-                options, newDocument);
+        openMedia(context, status.account_key, status.is_possibly_sensitive, status, null, current,
+                getPrimaryMedia(status), options, newDocument);
     }
 
     public static void openMedia(@NonNull final Context context, @Nullable final AccountKey accountKey, final boolean isPossiblySensitive,
@@ -397,7 +396,7 @@ public class IntentUtils implements Constants {
     }
 
     public static void openStatus(@NonNull final Context context, @NonNull final ParcelableStatus status, Bundle activityOptions) {
-        final AccountKey accountKey = new AccountKey(status.account_id, status.account_host);
+        final AccountKey accountKey = status.account_key;
         final long statusId = status.id;
         final Bundle extras = new Bundle();
         extras.putParcelable(EXTRA_STATUS, status);

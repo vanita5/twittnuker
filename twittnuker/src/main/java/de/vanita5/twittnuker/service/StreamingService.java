@@ -220,7 +220,7 @@ public class StreamingService extends Service implements Constants {
         final AccountKey[] accountKeys = new AccountKey[accountsList.size()];
         for (int i = 0, j = accountKeys.length; i < j; i++) {
             final ParcelableCredentials credentials = accountsList.get(i);
-            accountKeys[i] = new AccountKey(credentials.account_id, credentials.account_host);
+            accountKeys[i] = new AccountKey(credentials.account_key, credentials.account_host);
         }
         if (BuildConfig.DEBUG) {
             Log.d(Constants.LOGTAG, "Setting up twitter stream instances");
@@ -231,8 +231,8 @@ public class StreamingService extends Service implements Constants {
         for (int i = 0, j = accountsList.size(); i < j; i++) {
             final ParcelableCredentials account = accountsList.get(i);
 
-            if (mCallbacks.indexOfKey(account.account_id) >= 0) {
-                Log.d(Constants.LOGTAG, String.format("Stream Callback %d already exists!!!", account.account_id));
+            if (mCallbacks.indexOfKey(account.account_key) >= 0) {
+                Log.d(Constants.LOGTAG, String.format("Stream Callback %d already exists!!!", account.account_key));
                 return false;
             }
 
@@ -240,9 +240,9 @@ public class StreamingService extends Service implements Constants {
             final Authorization authorization = TwitterAPIFactory.getAuthorization(account);
             final TwitterUserStream twitter = TwitterAPIFactory.getInstance(this, endpoint, authorization, TwitterUserStream.class);
             final TwidereUserStreamCallback callback = new TwidereUserStreamCallback(this, account, mPreferences);
-            refreshBefore(new AccountKey[]{new AccountKey(account.account_id, account.account_host)});
-            mCallbacks.put(account.account_id, callback);
-            Log.d(Constants.LOGTAG, String.format("Stream %d starts...", account.account_id));
+            refreshBefore(new AccountKey[]{new AccountKey(account.account_key, account.account_host)});
+            mCallbacks.put(account.account_key, callback);
+            Log.d(Constants.LOGTAG, String.format("Stream %d starts...", account.account_key));
             new Thread() {
                 @Override
                 public void run() {
@@ -325,9 +325,9 @@ public class StreamingService extends Service implements Constants {
                                         ParcelableStatus status, User sourceUser) {
             if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATIONS, true)) {
                 AccountPreferences pref = new AccountPreferences(context,
-                        new AccountKey(account.account_id, account.account_host));
+                        new AccountKey(account.account_key, account.account_host));
                 NotificationContent notification = new NotificationContent();
-                notification.setAccountId(account.account_id);
+                notification.setAccountId(account.account_key);
                 notification.setObjectId(status != null ? String.valueOf(status.id) : null);
                 notification.setObjectUserId(status != null ? String.valueOf(status.user_id) : null);
                 notification.setFromUser(fromUser);
@@ -374,21 +374,21 @@ public class StreamingService extends Service implements Constants {
         public void onDirectMessage(final DirectMessage directMessage) {
             if (directMessage == null || directMessage.getId() <= 0) return;
             for (final Uri uri : MESSAGES_URIS) {
-                final String where = DirectMessages.ACCOUNT_ID + " = " + account.account_id + " AND "
+                final String where = DirectMessages.ACCOUNT_KEY + " = " + account.account_key + " AND "
                         + DirectMessages.MESSAGE_ID + " = " + directMessage.getId();
                 resolver.delete(uri, where, null);
             }
             final User sender = directMessage.getSender(), recipient = directMessage.getRecipient();
-            if (sender.getId() == account.account_id) {
+            if (sender.getId() == account.account_key) {
                 final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage,
-                        account.account_id, account.account_host, true);
+                        account.account_key, account.account_host, true);
                 if (values != null) {
                     resolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
                 }
             }
-            if (recipient.getId() == account.account_id) {
+            if (recipient.getId() == account.account_key) {
                 final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage,
-                        account.account_id, account.account_host, false);
+                        account.account_key, account.account_host, false);
                 final Uri.Builder builder = DirectMessages.Inbox.CONTENT_URI.buildUpon();
                 builder.appendQueryParameter(QUERY_PARAM_NOTIFY, "true");
                 if (values != null) {
@@ -447,18 +447,18 @@ public class StreamingService extends Service implements Constants {
 //            ContentValues values = ParcelableActivityValuesCreator.create(activity);
 //            resolver.insert(Activities.AboutMe.CONTENT_URI, values);
 
-            if (favoritedStatus.getUser().getId() == account.account_id) {
+            if (favoritedStatus.getUser().getId() == account.account_key) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
                         Utils.parseURLEntities(favoritedStatus.getText(), favoritedStatus.getUrlEntities()),
                         ParcelableStatusUtils.fromStatus(favoritedStatus,
-                                new AccountKey(account.account_id, account.account_host), false),
+                                new AccountKey(account.account_key, account.account_host), false),
                         source);
             }
         }
 
         @Override
         public void onFollow(final User source, final User followedUser) {
-            if (followedUser.getId() == account.account_id) {
+            if (followedUser.getId() == account.account_key) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER,
                         null, null, source);
             }
@@ -486,12 +486,12 @@ public class StreamingService extends Service implements Constants {
         @Override
         public void onStatus(final Status status) {
             final ContentValues values = ContentValuesCreator.createStatus(status,
-                    new AccountKey(account.account_id, account.account_host));
+                    new AccountKey(account.account_key, account.account_host));
             if (!statusStreamStarted && !mPreferences.getBoolean(KEY_REFRESH_BEFORE_STREAMING, true)) {
                 statusStreamStarted = true;
                 values.put(Statuses.IS_GAP, true);
             }
-            final String where = Statuses.ACCOUNT_ID + " = " + account.account_id + " AND " + Statuses.STATUS_ID + " = "
+            final String where = Statuses.ACCOUNT_KEY + " = " + account.account_key + " AND " + Statuses.STATUS_ID + " = "
                     + status.getId();
             resolver.delete(Statuses.CONTENT_URI, where, null);
             resolver.delete(Activities.AboutMe.CONTENT_URI, where, null);
@@ -500,21 +500,21 @@ public class StreamingService extends Service implements Constants {
             if (rt != null && rt.getText().contains("@" + account.screen_name) || rt == null
                     && status.getText().contains("@" + account.screen_name)) {
 
-                Activity activity = Activity.fromMention(account.account_id, status);
+                Activity activity = Activity.fromMention(account.account_key, status);
                 final ParcelableActivity parcelableActivity = ParcelableActivityUtils.fromActivity(activity,
-                        new AccountKey(account.account_id, account.account_host), false);
+                        new AccountKey(account.account_key, account.account_host), false);
                 parcelableActivity.timestamp = status.getCreatedAt() != null ? status.getCreatedAt().getTime(): System.currentTimeMillis();
                 final ContentValues activityValues = ParcelableActivityValuesCreator.create(parcelableActivity);
                 resolver.insert(Activities.AboutMe.CONTENT_URI, activityValues);
             }
 
             //Retweet
-            if (rt != null && rt.getUser().getId() == account.account_id) {
+            if (rt != null && rt.getUser().getId() == account.account_key) {
                 createNotification(status.getUser().getScreenName(),
                         NotificationContent.NOTIFICATION_TYPE_RETWEET,
                         Utils.parseURLEntities(rt.getText(), rt.getUrlEntities()),
                         ParcelableStatusUtils.fromStatus(status,
-                                new AccountKey(account.account_id, account.account_host), false), status.getUser());
+                                new AccountKey(account.account_key, account.account_host), false), status.getUser());
                 //TODO insert retweet activity
             }
         }

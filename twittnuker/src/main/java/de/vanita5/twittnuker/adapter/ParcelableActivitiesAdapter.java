@@ -28,6 +28,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
 import org.mariotaku.library.objectcursor.ObjectCursor;
+
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder;
@@ -58,12 +60,11 @@ public class ParcelableActivitiesAdapter extends AbsActivitiesAdapter<List<Parce
         if (mData instanceof ObjectCursor) {
             final Cursor cursor = ((ObjectCursor) mData).getCursor(dataPosition);
             final ParcelableActivityCursorIndices indices = (ParcelableActivityCursorIndices) ((ObjectCursor) mData).getIndices();
-            final long account_id = cursor.getLong(indices.account_id);
+            final AccountKey accountKey = AccountKey.valueOf(cursor.getString(indices.account_key));
             final long timestamp = cursor.getLong(indices.timestamp);
-            final long max_position = cursor.getLong(indices.max_position);
-            final long min_position = cursor.getLong(indices.min_position);
-            return ParcelableActivity.calculateHashCode(account_id, timestamp, max_position,
-                    min_position);
+            final long maxPosition = cursor.getLong(indices.max_position);
+            final long minPosition = cursor.getLong(indices.min_position);
+            return ParcelableActivity.calculateHashCode(accountKey, timestamp, maxPosition, minPosition);
         }
         return System.identityHashCode(mData.get(dataPosition));
     }

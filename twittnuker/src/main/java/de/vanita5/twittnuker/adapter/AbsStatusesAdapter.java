@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
@@ -301,9 +302,11 @@ public abstract class AbsStatusesAdapter<D> extends LoadMoreSupportAdapter<ViewH
 
     @Nullable
     @Override
-    public ParcelableStatus findStatusById(long accountId, long statusId) {
+    public ParcelableStatus findStatusById(AccountKey accountKey, long statusId) {
         for (int i = 0, j = getStatusCount(); i < j; i++) {
-            if (accountId == getAccountId(i) && statusId == getStatusId(i)) return getStatus(i);
+            if (accountKey.equals(getAccountKey(i)) && statusId == getStatusId(i)) {
+                return getStatus(i);
+            }
         }
         return null;
     }

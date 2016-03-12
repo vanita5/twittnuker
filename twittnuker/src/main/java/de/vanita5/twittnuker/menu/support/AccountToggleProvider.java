@@ -62,7 +62,7 @@ public class AccountToggleProvider extends ActionProvider implements TwittnukerC
         int len = 0;
         for (ParcelableAccount account : mAccounts) {
             if (account.is_activated) {
-                temp[len++] = new AccountKey(account.account_id, account.account_host);
+                temp[len++] = account.account_key;
             }
         }
         final AccountKey[] result = new AccountKey[len];
@@ -113,10 +113,10 @@ public class AccountToggleProvider extends ActionProvider implements TwittnukerC
         }
     }
 
-    public void setAccountActivated(long accountId, boolean isChecked) {
+    public void setAccountActivated(AccountKey accountId, boolean isChecked) {
         if (mAccounts == null) return;
         for (final ParcelableAccount account : mAccounts) {
-            if (account.account_id == accountId) {
+            if (account.account_key == accountId) {
                 account.is_activated = isChecked;
             }
         }

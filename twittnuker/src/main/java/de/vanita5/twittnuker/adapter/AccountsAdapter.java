@@ -33,6 +33,7 @@ import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -57,9 +58,9 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             final Object tag = buttonView.getTag();
-            if (!(tag instanceof Long) || mOnAccountToggleListener == null) return;
-            final long accountId = (Long) tag;
-            mOnAccountToggleListener.onAccountToggle(accountId, isChecked);
+            if (!(tag instanceof String) || mOnAccountToggleListener == null) return;
+            final AccountKey accountKey = AccountKey.valueOf((String) tag);
+            mOnAccountToggleListener.onAccountToggle(accountKey, isChecked);
         }
     };
 
@@ -88,7 +89,7 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
         }
         holder.toggle.setChecked(cursor.getShort(mIndices.is_activated) == 1);
         holder.toggle.setOnCheckedChangeListener(mCheckedChangeListener);
-        holder.toggle.setTag(cursor.getLong(mIndices.account_id));
+        holder.toggle.setTag(cursor.getString(mIndices.account_key));
         holder.toggleContainer.setVisibility(mSwitchEnabled ? View.VISIBLE : View.GONE);
         holder.setSortEnabled(mSortEnabled);
         super.bindView(view, context, cursor);
@@ -183,6 +184,6 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
     }
 
     public interface OnAccountToggleListener {
-        void onAccountToggle(long accountId, boolean state);
+        void onAccountToggle(AccountKey accountId, boolean state);
     }
 }

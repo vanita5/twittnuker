@@ -23,7 +23,7 @@ package de.vanita5.twittnuker;
 
 interface IStatusShortener {
 
-    String shorten(String statusJson, long currentAccountId, String overrideStatusText);
+	String shorten(String statusJson, String currentAccountId, String overrideStatusText);
 
     boolean callback(String resultJson, String statusJson);
 

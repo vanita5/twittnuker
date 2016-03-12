@@ -22,33 +22,17 @@
 
 package de.vanita5.twittnuker.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
-public class TwidereListUtils {
-
-    public static List<Long> fromArray(final long[] array) {
-        if (array == null) return null;
-        final List<Long> list = new ArrayList<>();
-        for (final long item : array) {
-            list.add(item);
+public class TwidereCollectionUtils {
+    public static String[] toStringArray(final Collection<?> list) {
+        if (list == null) return null;
+        final int length = list.size();
+        final String[] stringArray = new String[length];
+        int idx = 0;
+        for (Object o : list) {
+            stringArray[idx++] = ParseUtils.parseString(o);
         }
-        return list;
+        return stringArray;
     }
-
-    public static <T> String toString(final List<T> list, final char delimiter, final boolean includeSpace) {
-        final StringBuilder builder = new StringBuilder();
-        final int size = list.size();
-        for (int i = 0; i < size; i++) {
-            if (i > 0) {
-                builder.append(delimiter);
-                if (includeSpace) {
-                    builder.append(" ");
-                }
-            }
-            builder.append(list.get(i));
-        }
-        return builder.toString();
-    }
-
 }

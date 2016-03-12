@@ -46,8 +46,7 @@ public class DestroyStatusDialogFragment extends BaseSupportDialogFragment imple
                 final ParcelableStatus status = getStatus();
                 final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (status == null || twitter == null) return;
-                twitter.destroyStatusAsync(new AccountId(status.account_id, status.account_host),
-                        status.id);
+                twitter.destroyStatusAsync(status.account_key, status.id);
                 break;
             default:
                 break;

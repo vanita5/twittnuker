@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.ReadStateManager.OnReadStateChangeListener;
@@ -216,7 +217,7 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     private boolean isUnread(Cursor c) {
         if (mPositionPairs == null) return true;
-        final long accountId = c.getLong(ConversationEntries.IDX_ACCOUNT_ID);
+        final long accountId = c.getLong(ConversationEntries.IDX_ACCOUNT_KEY);
         final long conversationId = c.getLong(ConversationEntries.IDX_CONVERSATION_ID);
         final long messageId = c.getLong(ConversationEntries.IDX_MESSAGE_ID);
         final String key = accountId + "-" + conversationId;
@@ -244,14 +245,12 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     public static class DirectMessageEntry {
 
-        public final long account_id;
-        public final String account_host;
+        public final AccountKey account_key;
         public final long conversation_id;
         public final String screen_name, name;
 
         DirectMessageEntry(Cursor cursor) {
-            account_id = cursor.getLong(ConversationEntries.IDX_ACCOUNT_ID);
-            account_host = cursor.getString(ConversationEntries.IDX_ACCOUNT_HOST);
+            account_key = AccountKey.valueOf(cursor.getString(ConversationEntries.IDX_ACCOUNT_KEY));
             conversation_id = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);
             screen_name = cursor.getString(ConversationEntries.IDX_SCREEN_NAME);
             name = cursor.getString(ConversationEntries.IDX_NAME);

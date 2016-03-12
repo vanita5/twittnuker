@@ -139,8 +139,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
                 case ACTION_STATUS_FAVORITE: {
                     final AsyncTwitterWrapper twitter = mTwitterWrapper;
                     if (status.is_favorite) {
-                        twitter.destroyFavoriteAsync(new AccountKey(activity.account_id,
-                                activity.account_host), status.id);
+                        twitter.destroyFavoriteAsync(status.account_key, status.id);
                     } else {
                         final IStatusViewHolder holder = (IStatusViewHolder)
                                 recyclerView.findViewHolderForLayoutPosition(position);
@@ -288,7 +287,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
     public void onGapClick(GapViewHolder holder, int position) {
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
         final ParcelableActivity activity = adapter.getActivity(position);
-        final AccountKey[] accountIds = {new AccountKey(activity.account_id, activity.account_host)};
+        final AccountKey[] accountIds = {activity.account_key};
         final long[] maxIds = {activity.min_position};
         getActivities(new BaseRefreshTaskParam(accountIds, maxIds, null));
     }
@@ -322,8 +321,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
                 final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (twitter == null) return;
                 if (status.is_favorite) {
-                    twitter.destroyFavoriteAsync(new AccountKey(status.account_id,
-                            status.account_host), status.id);
+                    twitter.destroyFavoriteAsync(status.account_key, status.id);
                 } else {
                     holder.playLikeAnimation(new DefaultOnLikedListener(twitter, status));
                 }
