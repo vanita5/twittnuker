@@ -122,6 +122,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
+import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
@@ -975,7 +976,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 retweetedByView.setVisibility(View.GONE);
             }
 
-            profileContainer.drawEnd(DataStoreUtils.getAccountColor(context, status.account_key));
+            profileContainer.drawEnd(status.account_color);
 
             final int layoutPosition = getLayoutPosition();
             final boolean skipLinksInText = status.extras != null && status.extras.support_entities;
@@ -2463,7 +2464,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                     ParcelableActivityCursorIndices ci = new ParcelableActivityCursorIndices(activityCursor);
                     while (!activityCursor.isAfterLast()) {
                         final ParcelableActivity activity = ci.newObject(activityCursor);
-                        ParcelableStatus activityStatus = ParcelableActivity.getActivityStatus(activity);
+                        ParcelableStatus activityStatus = ParcelableActivityUtils.getActivityStatus(activity);
                         if (activityStatus != null) {
                             activityStatus.favorite_count = activitySummary.favoriteCount;
                             activityStatus.reply_count = activitySummary.replyCount;

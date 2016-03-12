@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
+import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
@@ -205,7 +206,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     @NonNull
     public static ContentValues createActivity(final ParcelableActivity activity) {
         final ContentValues values = new ContentValues();
-        final ParcelableStatus status = ParcelableActivity.getActivityStatus(activity);
+        final ParcelableStatus status = ParcelableActivityUtils.getActivityStatus(activity);
         if (status != null) {
             createStatusActivity(status, values);
         }

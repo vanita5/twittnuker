@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -51,16 +52,19 @@ public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
 
     @Override
     public List<ParcelableUser> loadInBackground() {
-        if (mAccountKey == null) return null;
+        if (mAccountKey == null) {
+            return ListResponse.getListInstance(new TwitterException("No Account"));
+        }
         final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountKey, true);
-        if (twitter == null) return null;
+        if (twitter == null)
+            return ListResponse.getListInstance(new TwitterException("No Account"));
         final List<ParcelableUser> data = getData();
         final List<User> users;
         try {
             users = getUsers(twitter);
         } catch (final TwitterException e) {
             Log.w(LOGTAG, e);
-            return data;
+            return ListResponse.getListInstance(data);
         }
         int pos = data.size();
         for (final User user : users) {
@@ -71,7 +75,7 @@ public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
             pos++;
         }
         Collections.sort(data);
-        return data;
+        return ListResponse.getListInstance(data);
     }
 
     @Nullable

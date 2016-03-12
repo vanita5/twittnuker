@@ -119,7 +119,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
                 openActivity(activity);
                 return true;
             }
-            final ParcelableStatus status = ParcelableActivity.getActivityStatus(activity);
+            final ParcelableStatus status = ParcelableActivityUtils.getActivityStatus(activity);
             if (status == null) return false;
             if (action == null) {
                 action = handler.getKeyAction(CONTEXT_TAG_STATUS, keyCode, event, metaState);
@@ -153,7 +153,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
     }
 
     private void openActivity(ParcelableActivity activity) {
-        final ParcelableStatus status = ParcelableActivity.getActivityStatus(activity);
+        final ParcelableStatus status = ParcelableActivityUtils.getActivityStatus(activity);
         if (status != null) {
             IntentUtils.openStatus(getContext(), status, null);
         } else {
@@ -295,7 +295,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
     @Override
     public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int position) {
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
-        final ParcelableStatus status = ParcelableActivity.getActivityStatus(adapter.getActivity(position));
+        final ParcelableStatus status = ParcelableActivityUtils.getActivityStatus(adapter.getActivity(position));
         if (status == null) return;
         IntentUtils.openMedia(getActivity(), status, media, null, true);
     }
@@ -351,6 +351,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
     @Override
     public void onStatusClick(IStatusViewHolder holder, int position) {
         final ParcelableStatus status = getActivityStatus(position);
+        if (status == null) return;
         IntentUtils.openStatus(getContext(), status, null);
     }
 
@@ -359,7 +360,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
         final ParcelableActivity activity = adapter.getActivity(position);
         if (activity == null) return null;
-        return ParcelableActivity.getActivityStatus(activity);
+        return ParcelableActivityUtils.getActivityStatus(activity);
     }
 
     @Override

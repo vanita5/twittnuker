@@ -22,11 +22,15 @@
 
 package de.vanita5.twittnuker.model.util;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import org.apache.commons.collections.primitives.ArrayLongList;
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.model.AccountKey;
 import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 public class ParcelableActivityUtils {
@@ -101,4 +105,21 @@ public class ParcelableActivityUtils {
     }
 
 
+    @Nullable
+    public static ParcelableStatus getActivityStatus(@NonNull ParcelableActivity activity) {
+        if (Activity.Action.MENTION.equals(activity.action)) {
+            final ParcelableStatus status = activity.target_object_statuses[0];
+            status.account_color = activity.account_color;
+            return status;
+        } else if (Activity.Action.REPLY.equals(activity.action)) {
+            final ParcelableStatus status = activity.target_statuses[0];
+            status.account_color = activity.account_color;
+            return status;
+        } else if (Activity.Action.QUOTE.equals(activity.action)) {
+            final ParcelableStatus status = activity.target_statuses[0];
+            status.account_color = activity.account_color;
+            return status;
+        }
+        return null;
+    }
 }

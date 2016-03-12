@@ -45,9 +45,9 @@ import android.view.View;
 
 import com.squareup.otto.Subscribe;
 
+import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
-import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
@@ -73,6 +73,7 @@ import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
+import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
 
@@ -156,8 +157,10 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
     public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
         final Uri uri = DirectMessages.ConversationEntries.CONTENT_URI;
         final AccountKey[] accountIds = getAccountKeys();
-        final Expression account_where = Expression.in(new Column(Statuses.ACCOUNT_KEY), new RawItemArray(accountIds));
-        return new CursorLoader(getActivity(), uri, null, account_where.getSQL(), null, null);
+        final String selection = Expression.in(new Column(Statuses.ACCOUNT_KEY),
+                new ArgsArray(accountIds.length)).getSQL();
+        final String[] selectionArgs = TwidereArrayUtils.toStringArray(accountIds, 0, accountIds.length);
+        return new CursorLoader(getActivity(), uri, null, selection, selectionArgs, null);
     }
 
     @Override
@@ -346,7 +349,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
     @NonNull
     protected AccountKey[] getAccountKeys() {
         final Bundle args = getArguments();
-        AccountKey[] accountKeys = Utils.getAccountKeys(args);
+        AccountKey[] accountKeys = Utils.getAccountKeys(getContext(), args);
         if (accountKeys != null) {
             return accountKeys;
         }

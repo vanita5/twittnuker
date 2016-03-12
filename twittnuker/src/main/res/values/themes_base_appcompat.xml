@@ -26,7 +26,6 @@
     <style name="Theme.Compat.Base" parent="Theme.AppCompat">
         <!-- Window attributes -->
         <item name="android:windowBackground">@color/background_color_window_dark</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
 
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_dark</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_light</item>
@@ -35,7 +34,6 @@
     <style name="Theme.Compat.Base.NoActionBar" parent="Theme.AppCompat.NoActionBar">
         <!-- Window attributes -->
         <item name="android:windowBackground">@color/background_color_window_dark</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
 
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_dark</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_light</item>
@@ -50,7 +48,6 @@
     <style name="Theme.Compat.Base.DialogWhenLarge" parent="Theme.AppCompat.DialogWhenLarge">
         <!-- Window attributes -->
         <item name="windowNormalBackground">@color/background_color_window_dark</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
 
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_dark</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_light</item>
@@ -59,7 +56,6 @@
     <style name="Theme.Compat.Base.Light" parent="Theme.AppCompat.Light">
         <!-- Window attributes -->
         <item name="android:windowBackground">@color/background_color_window_light</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
 
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>
@@ -68,7 +64,6 @@
     <style name="Theme.Compat.Base.Light.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Window attributes -->
         <item name="android:windowBackground">@color/background_color_window_light</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
 
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>
@@ -83,7 +78,6 @@
     <style name="Theme.Compat.Base.Light.DialogWhenLarge" parent="Theme.AppCompat.Light.DialogWhenLarge">
         <!-- Window attributes -->
         <item name="windowNormalBackground">@color/background_color_window_light</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
 
         <item name="android:textColorTertiary">@color/tertiary_text_mtrl_light</item>
         <item name="android:textColorTertiaryInverse">@color/tertiary_text_mtrl_dark</item>

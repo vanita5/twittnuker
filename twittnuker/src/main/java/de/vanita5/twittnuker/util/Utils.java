@@ -181,6 +181,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
 import de.vanita5.twittnuker.model.TwitterAccountExtra;
+import de.vanita5.twittnuker.model.util.AccountKeyUtils;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
@@ -737,26 +738,27 @@ public final class Utils implements Constants {
     }
 
     @Nullable
-    public static AccountKey[] getAccountKeys(@Nullable Bundle args) {
+    public static AccountKey[] getAccountKeys(@NonNull Context context, @Nullable Bundle args) {
         if (args == null) return null;
         if (args.containsKey(EXTRA_ACCOUNT_KEYS)) {
             return newParcelableArray(args.getParcelableArray(EXTRA_ACCOUNT_KEYS), AccountKey.CREATOR);
         } else if (args.containsKey(EXTRA_ACCOUNT_KEY)) {
             final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
-            if (accountKey == null) return null;
+            if (accountKey == null) return new AccountKey[0];
             return new AccountKey[]{accountKey};
         } else if (args.containsKey(EXTRA_ACCOUNT_IDS)) {
             final long[] accountIds = args.getLongArray(EXTRA_ACCOUNT_IDS);
             if (accountIds == null) return null;
-            final AccountKey[] accountKeys = new AccountKey[accountIds.length];
-            for (int i = 0, accountIdsLength = accountIds.length; i < accountIdsLength; i++) {
-                accountKeys[i] = new AccountKey(accountIds[i], null);
-            }
+            final AccountKey[] accountKeys = AccountKeyUtils.findByIds(context, accountIds);
+            args.putParcelableArray(EXTRA_ACCOUNT_KEYS, accountKeys);
             return accountKeys;
         } else if (args.containsKey(EXTRA_ACCOUNT_ID)) {
             final long accountId = args.getLong(EXTRA_ACCOUNT_ID, -1);
             if (accountId <= 0) return null;
-            return new AccountKey[]{new AccountKey(accountId, null)};
+            final AccountKey accountKey = AccountKeyUtils.findById(context, accountId);
+            args.putParcelable(EXTRA_ACCOUNT_KEY, accountKey);
+            if (accountKey == null) return new AccountKey[0];
+            return new AccountKey[]{accountKey};
         }
         return null;
     }

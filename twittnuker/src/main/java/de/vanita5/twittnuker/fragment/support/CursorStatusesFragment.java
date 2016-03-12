@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.fragment.support;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,10 +36,10 @@ import android.support.v4.content.Loader;
 
 import com.squareup.otto.Subscribe;
 
+import org.mariotaku.library.objectcursor.ObjectCursor;
 import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
-import org.mariotaku.sqliteqb.library.RawItemArray;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
@@ -47,6 +48,7 @@ import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.loader.support.ExtendedObjectCursorLoader;
 import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 import de.vanita5.twittnuker.model.SimpleRefreshTaskParam;
@@ -56,6 +58,7 @@ import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.message.StatusRetweetedEvent;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
@@ -119,8 +122,8 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
         final String[] projection = Statuses.COLUMNS;
         final String[] selectionArgs = TwidereArrayUtils.toStringArray(accountKeys, 0,
                 accountKeys.length);
-        return new ExtendedObjectCursorLoader<>(context, ParcelableStatusCursorIndices.class, uri,
-                projection, selection, selectionArgs, sortOrder, fromUser);
+        return new CursorStatusesLoader(context, uri,
+                projection, selection, selectionArgs, sortOrder, fromUser, accountKeys);
     }
 
     @Override
@@ -186,7 +189,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
     @Override
     protected AccountKey[] getAccountKeys() {
         final Bundle args = getArguments();
-        final AccountKey[] accountKeys = Utils.getAccountKeys(args);
+        final AccountKey[] accountKeys = Utils.getAccountKeys(getContext(), args);
         if (accountKeys != null) {
             return accountKeys;
         }
@@ -333,4 +336,45 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
 
     protected abstract void updateRefreshState();
 
+    public static class CursorStatusesLoader extends ExtendedObjectCursorLoader<ParcelableStatus> {
+        private final AccountKey[] mAccountKeys;
+
+        public CursorStatusesLoader(Context context, Uri uri, String[] projection,
+                                    String selection, String[] selectionArgs, String sortOrder,
+                                    boolean fromUser, AccountKey[] accountKeys) {
+            super(context, ParcelableStatusCursorIndices.class, uri, projection, selection, selectionArgs, sortOrder, fromUser);
+            mAccountKeys = accountKeys;
+        }
+
+
+        @Override
+        protected ObjectCursor<ParcelableStatus> createObjectCursor(final Cursor cursor,
+                                                                    final ObjectCursor.CursorIndices<ParcelableStatus> indices) {
+            final ParcelableAccount[] accounts = ParcelableAccountUtils.getAccounts(getContext(), mAccountKeys);
+            return new StatusCursor(cursor, indices, accounts);
+        }
+
+
+        public static class StatusCursor extends ObjectCursor<ParcelableStatus> {
+
+            private final ParcelableAccount[] accounts;
+
+            public StatusCursor(Cursor cursor, CursorIndices<ParcelableStatus> indies, ParcelableAccount[] accounts) {
+                super(cursor, indies);
+                this.accounts = accounts;
+            }
+
+            @Override
+            protected ParcelableStatus get(Cursor cursor, CursorIndices<ParcelableStatus> indices) {
+                final ParcelableStatus activity = super.get(cursor, indices);
+                for (ParcelableAccount account : accounts) {
+                    if (account.account_key.equals(activity.account_key)) {
+                        activity.account_color = account.color;
+                        break;
+                    }
+                }
+                return activity;
+            }
+        }
+    }
 }
