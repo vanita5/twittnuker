@@ -27,30 +27,24 @@ import android.database.Cursor;
 import android.text.TextUtils;
 
 import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
-import de.vanita5.twittnuker.annotation.CustomTabType;
-import de.vanita5.twittnuker.model.tab.Arguments;
-import de.vanita5.twittnuker.model.tab.Extras;
-import de.vanita5.twittnuker.model.tab.UserArguments;
-import de.vanita5.twittnuker.model.tab.UserMentionTabExtras;
+
+import de.vanita5.twittnuker.model.tab.extra.TabExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
+import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
 
 import java.lang.reflect.ParameterizedType;
 
-public class TabExtrasFieldConverter implements CursorFieldConverter<Extras> {
+public class TabExtrasFieldConverter implements CursorFieldConverter<TabExtras> {
     @Override
-    public Extras parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
-        final String tabType = cursor.getString(cursor.getColumnIndex(Tabs.TYPE));
+    public TabExtras parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
+        final String tabType = CustomTabUtils.getTabTypeAlias(cursor.getString(cursor.getColumnIndex(Tabs.TYPE)));
         if (TextUtils.isEmpty(tabType)) return null;
-        switch (tabType) {
-            case CustomTabType.NOTIFICATIONS_TIMELINE:
-                return JsonSerializer.parse(cursor.getString(columnIndex), UserMentionTabExtras.class);
-        }
-        return null;
+        return CustomTabUtils.parseTabExtras(tabType, cursor.getString(columnIndex));
     }
 
     @Override
-    public void writeField(ContentValues values, Extras object, String columnName, ParameterizedType fieldType) {
+    public void writeField(ContentValues values, TabExtras object, String columnName, ParameterizedType fieldType) {
         if (object == null) return;
         values.put(columnName, JsonSerializer.serialize(object));
     }

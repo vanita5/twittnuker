@@ -81,7 +81,8 @@ public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements C
         icon.setImageDrawable(null);
 
         if (Suggestions.AutoComplete.TYPE_USERS.equals(cursor.getString(mTypeIdx))) {
-            text1.setText(cursor.getString(mTitleIdx));
+            text1.setText(
+                    cursor.getString(mTitleIdx));
             text2.setText(String.format("@%s", cursor.getString(mSummaryIdx)));
             if (mDisplayProfileImage) {
                 final String profileImageUrl = cursor.getString(mIconIdx);
@@ -147,7 +148,7 @@ public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements C
                 return null;
             }
         }
-        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(mAccountKey.getId()));
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, String.valueOf(mAccountKey));
         return mContext.getContentResolver().query(builder.build(), Suggestions.AutoComplete.COLUMNS,
                 null, null, null);
     }

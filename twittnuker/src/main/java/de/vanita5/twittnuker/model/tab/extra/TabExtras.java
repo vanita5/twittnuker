@@ -20,10 +20,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.tab;
+package de.vanita5.twittnuker.model.tab.extra;
+
+import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 @JsonObject
-public class Extras {
+public abstract class TabExtras implements Parcelable {
 }

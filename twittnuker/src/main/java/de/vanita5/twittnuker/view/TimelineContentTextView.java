@@ -91,4 +91,13 @@ public class TimelineContentTextView extends ThemedTextView {
             return super.onTouchEvent(event);
         }
     }
+
+    @Override
+    public int getBaseline() {
+        try {
+            return super.getBaseline();
+        } catch (IndexOutOfBoundsException e) {
+            return -1;
+        }
+    }
 }

@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -53,11 +52,6 @@ public abstract class ParcelableUsersFragment extends AbsUsersFragment<List<Parc
     @Override
     public ParcelableUsersAdapter getAdapter() {
         return (ParcelableUsersAdapter) super.getAdapter();
-    }
-
-    protected long getAccountId() {
-        final Bundle args = getArguments();
-        return args != null ? args.getLong(EXTRA_ACCOUNT_ID, -1) : -1;
     }
 
     @Override

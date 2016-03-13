@@ -24,6 +24,7 @@ package de.vanita5.twittnuker;
 
 import android.content.ContentResolver;
 
+import de.vanita5.twittnuker.constant.CompatibilityConstants;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 
@@ -33,7 +34,7 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
  * @author mariotaku
  */
 public interface TwittnukerConstants extends SharedPreferenceConstants,
-        IntentConstants, SecretConstants {
+        IntentConstants, SecretConstants, CompatibilityConstants {
 
     String TWITTNUKER_APP_NAME = "Twittnuker";
     String TWITTNUKER_PROJECT_URL = "https://github.com/vanita5/twittnuker";
@@ -112,8 +113,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_QUOTE = "quote";
 
     String QUERY_PARAM_ACCOUNT_KEY = "account_key";
-    String QUERY_PARAM_ACCOUNT_ID = "account_id";
-    String QUERY_PARAM_ACCOUNT_IDS = "account_ids";
     String QUERY_PARAM_ACCOUNT_NAME = "account_name";
     String QUERY_PARAM_STATUS_ID = "status_id";
     String QUERY_PARAM_USER_ID = "user_id";

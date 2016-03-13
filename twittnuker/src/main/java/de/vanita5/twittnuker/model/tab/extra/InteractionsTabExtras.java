@@ -20,17 +20,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.tab;
+package de.vanita5.twittnuker.model.tab.extra;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
+@ParcelablePlease
 @JsonObject
-public class UserMentionTabExtras extends Extras {
+public class InteractionsTabExtras extends TabExtras implements Parcelable {
 
+    @ParcelableThisPlease
     @JsonField(name = "my_following_only")
     boolean myFollowingOnly;
 
+    @ParcelableThisPlease
     @JsonField(name = "mentions_only")
     boolean mentionsOnly;
 
@@ -49,4 +57,26 @@ public class UserMentionTabExtras extends Extras {
     public void setMentionsOnly(boolean mentionsOnly) {
         this.mentionsOnly = mentionsOnly;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        InteractionsTabExtrasParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static final Creator<InteractionsTabExtras> CREATOR = new Creator<InteractionsTabExtras>() {
+        public InteractionsTabExtras createFromParcel(Parcel source) {
+            InteractionsTabExtras target = new InteractionsTabExtras();
+            InteractionsTabExtrasParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        public InteractionsTabExtras[] newArray(int size) {
+            return new InteractionsTabExtras[size];
+        }
+    };
 }

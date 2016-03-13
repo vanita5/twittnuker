@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.util.Pair;
+
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
@@ -33,6 +35,8 @@ import org.mariotaku.sqliteqb.library.Selectable;
 import org.mariotaku.sqliteqb.library.Table;
 import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
+
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -47,18 +51,18 @@ public class TwidereQueryBuilder {
 
     public static final class CachedUsersQueryBuilder {
 
-        public static SQLSelectQuery withRelationship(final String[] projection,
-                                                      final String selection,
-                                                      final String sortOrder,
-                                                      final long accountId) {
+        public static Pair<SQLSelectQuery, String[]> withRelationship(final String[] projection,
+                                                                      final String selection,
+                                                                      final String sortOrder,
+                                                                      final UserKey accountKey) {
             return withRelationship(Utils.getColumnsFromProjection(projection), selection,
-                    sortOrder, accountId);
+                    sortOrder, accountKey);
         }
 
-        public static SQLSelectQuery withRelationship(final Selectable select,
+        public static Pair<SQLSelectQuery, String[]> withRelationship(final Selectable select,
                                                       final String selection,
                                                       final String sortOrder,
-                                                      final long accountId) {
+                                                      final UserKey accountKey) {
             final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
             qb.select(select).from(new Tables(CachedUsers.TABLE_NAME));
             final Column relationshipsUserId = new Column(new Table(CachedRelationships.TABLE_NAME),
@@ -69,7 +73,7 @@ public class TwidereQueryBuilder {
                     CachedRelationships.ACCOUNT_KEY);
             final Expression on = Expression.and(
                     Expression.equals(relationshipsUserId, usersUserId),
-                    Expression.equals(relationshipsAccountId, accountId)
+                    Expression.equalsArgs(relationshipsAccountId.getSQL())
             );
             qb.join(new Join(false, Operation.LEFT, new Table(CachedRelationships.TABLE_NAME), on));
             if (selection != null) {
@@ -78,11 +82,12 @@ public class TwidereQueryBuilder {
             if (sortOrder != null) {
                 qb.orderBy(new OrderBy(sortOrder));
             }
-            return qb.build();
+            return Pair.create(qb.build(), new String[]{accountKey.toString()});
         }
 
-        public static SQLSelectQuery withScore(final String[] projection, final String selection,
-                                               final String sortOrder, final long accountId, final int limit) {
+        public static Pair<SQLSelectQuery, String[]> withScore(final String[] projection, final String selection,
+                                                               final String sortOrder, final UserKey accountKey,
+                                                               final int limit) {
             final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
             final Selectable select = Utils.getColumnsFromProjection(projection);
             final Column[] columns = new Column[CachedUsers.COLUMNS.length + 1];
@@ -100,7 +105,8 @@ public class TwidereQueryBuilder {
                             CachedRelationships.MUTING));
             columns[columns.length - 1] = new Column(expr, "score");
             qb.select(select);
-            qb.from(withRelationship(new Columns(columns), null, null, accountId));
+            final Pair<SQLSelectQuery, String[]> pair = withRelationship(new Columns(columns), null, null, accountKey);
+            qb.from(pair.first);
             if (selection != null) {
                 qb.where(new Expression(selection));
             }
@@ -110,7 +116,7 @@ public class TwidereQueryBuilder {
             if (limit > 0) {
                 qb.limit(limit);
             }
-            return qb.build();
+            return Pair.create(qb.build(), pair.second);
         }
 
         private static Object[] valueOrZero(String... columns) {
@@ -146,13 +152,13 @@ public class TwidereQueryBuilder {
             return qb.build();
         }
 
-        public static SQLSelectQuery buildByScreenName(final String[] projection, final long account_id,
+        public static Pair<SQLSelectQuery, String[]> byScreenName(final String[] projection, final UserKey accountKey,
                                                        final String screen_name, final String selection, final String sortOrder) {
             final Selectable select = Utils.getColumnsFromProjection(projection);
             final SQLSelectQuery.Builder qb = SQLQueryBuilder.select(select);
             qb.select(select);
             qb.from(new Tables(DirectMessages.TABLE_NAME));
-            final Expression accountIdWhere = Expression.equals(DirectMessages.ACCOUNT_KEY, account_id);
+            final Expression accountIdWhere = Expression.equalsArgs(DirectMessages.ACCOUNT_KEY);
             final Expression incomingWhere = Expression.and(Expression.notEquals(DirectMessages.IS_OUTGOING, 1),
                     Expression.equals(new Column(DirectMessages.SENDER_SCREEN_NAME), screen_name));
             final Expression outgoingWhere = Expression.and(Expression.equals(DirectMessages.IS_OUTGOING, 1),
@@ -163,7 +169,7 @@ public class TwidereQueryBuilder {
                 qb.where(Expression.and(accountIdWhere, incomingWhere, outgoingWhere));
             }
             qb.orderBy(new OrderBy(sortOrder != null ? sortOrder : Conversation.DEFAULT_SORT_ORDER));
-            return qb.build();
+            return Pair.create(qb.build(), new String[]{accountKey.toString()});
         }
 
     }

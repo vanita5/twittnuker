@@ -72,10 +72,11 @@ import de.vanita5.twittnuker.preference.WizardPageNavPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
+import de.vanita5.twittnuker.util.InternalParseUtils;
+import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.LinePageIndicator;
 
@@ -610,7 +611,7 @@ public class SettingsWizardActivity extends BaseThemedActivity implements Consta
                 if (type != null) {
                     final ContentValues values = new ContentValues();
                     values.put(Tabs.TYPE, type);
-                    values.put(Tabs.ARGUMENTS, ParseUtils.bundleToJSON(spec.args));
+                    values.put(Tabs.ARGUMENTS, InternalParseUtils.bundleToJSON(spec.args));
                     values.put(Tabs.NAME, ParseUtils.parseString(spec.name));
                     if (spec.icon instanceof Integer) {
                         values.put(Tabs.ICON, CustomTabUtils.findTabIconKey((Integer) spec.icon));

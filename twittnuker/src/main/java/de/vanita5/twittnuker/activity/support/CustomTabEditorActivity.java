@@ -61,6 +61,7 @@ import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.InternalParseUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -173,8 +174,8 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
                     data.putExtra(EXTRA_TYPE, mTabType);
                     data.putExtra(EXTRA_NAME, ParseUtils.parseString(mEditTabName.getText()));
                     data.putExtra(EXTRA_ICON, getIconKey());
-                    data.putExtra(EXTRA_ARGUMENTS, ParseUtils.bundleToJSON(args));
-                    data.putExtra(EXTRA_EXTRAS, ParseUtils.bundleToJSON(mExtrasBundle));
+                    data.putExtra(EXTRA_ARGUMENTS, InternalParseUtils.bundleToJSON(args));
+                    data.putExtra(EXTRA_EXTRAS, InternalParseUtils.bundleToJSON(mExtrasBundle));
                     setResult(RESULT_OK, data);
                     finish();
                 } else {
@@ -183,7 +184,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
                     data.putExtra(EXTRA_NAME, ParseUtils.parseString(mEditTabName.getText()));
                     data.putExtra(EXTRA_ICON, getIconKey());
                     data.putExtra(EXTRA_ID, mTabId);
-                    data.putExtra(EXTRA_EXTRAS, ParseUtils.bundleToJSON(mExtrasBundle));
+                    data.putExtra(EXTRA_EXTRAS, InternalParseUtils.bundleToJSON(mExtrasBundle));
                     setResult(RESULT_OK, data);
                     finish();
                 }
@@ -227,7 +228,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
         if (value instanceof ParcelableUser) {
             final ParcelableUser user = (ParcelableUser) value;
             text1.setText(user.name);
-            text2.setText("@" + user.screen_name);
+            text2.setText(String.format("@%s", user.screen_name));
             if (displayProfileImage) {
                 mImageLoader.displayProfileImage(icon, user);
             }
@@ -336,7 +337,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
             iconKey = intent.getStringExtra(EXTRA_ICON);
             mEditTabName.setText(intent.getStringExtra(EXTRA_NAME));
             if (savedInstanceState == null && intent.hasExtra(EXTRA_EXTRAS)) {
-                mExtrasBundle.putAll(ParseUtils.jsonToBundle(intent.getStringExtra(EXTRA_EXTRAS)));
+                mExtrasBundle.putAll(InternalParseUtils.jsonToBundle(intent.getStringExtra(EXTRA_EXTRAS)));
             }
         }
         final int selection = mTabIconsAdapter.getIconPosition(iconKey);
@@ -483,7 +484,8 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
             final int value = item.getValue();
             if (value > 0) {
                 final String key = item.getKey();
-                text1.setText(key.substring(0, 1).toUpperCase(Locale.US) + key.substring(1, key.length()));
+                final String name = key.substring(0, 1).toUpperCase(Locale.US) + key.substring(1, key.length());
+                text1.setText(name);
             } else {
                 text1.setText(R.string.customize);
             }

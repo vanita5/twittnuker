@@ -53,11 +53,17 @@ import de.vanita5.twittnuker.fragment.support.TrendsSuggestionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.TabCursorIndices;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.tab.argument.TabArguments;
+import de.vanita5.twittnuker.model.tab.argument.TextQueryArguments;
+import de.vanita5.twittnuker.model.tab.argument.UserArguments;
+import de.vanita5.twittnuker.model.tab.argument.UserListArguments;
+import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras;
+import de.vanita5.twittnuker.model.tab.extra.TabExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 
 import java.io.File;
@@ -171,11 +177,18 @@ public class CustomTabUtils implements Constants {
             final int position = cur.getInt(indices.position);
             final String iconType = cur.getString(indices.icon);
             final String name = cur.getString(indices.name);
-            final Bundle args = ParseUtils.jsonToBundle(cur.getString(idxArguments));
+            final Bundle args = new Bundle();
+            final TabArguments tabArguments = parseTabArguments(type, cur.getString(idxArguments));
+            if (tabArguments != null) {
+                tabArguments.copyToBundle(args);
+            }
             @ReadPositionTag
             final String tag = getTagByType(type);
             args.putInt(EXTRA_TAB_POSITION, position);
-            args.putBundle(EXTRA_EXTRAS, ParseUtils.jsonToBundle(cur.getString(idxExtras)));
+            final TabExtras tabExtras = parseTabExtras(type, cur.getString(idxExtras));
+            if (tabExtras != null) {
+                args.putParcelable(EXTRA_EXTRAS, tabExtras);
+            }
             final CustomTabConfiguration conf = getTabConfiguration(type);
             final Class<? extends Fragment> cls = conf != null ? conf.getFragmentClass() : InvalidTabFragment.class;
             final String tabTypeName = getTabTypeName(context, type);
@@ -190,9 +203,42 @@ public class CustomTabUtils implements Constants {
     }
 
     @Nullable
+    public static TabArguments parseTabArguments(@NonNull @CustomTabType String type, String json) {
+        switch (type) {
+            case CustomTabType.HOME_TIMELINE:
+            case CustomTabType.NOTIFICATIONS_TIMELINE:
+            case CustomTabType.DIRECT_MESSAGES:
+            case CustomTabType.RETWEETS_OF_ME: {
+                return JsonSerializer.parse(json, TabArguments.class);
+            }
+            case CustomTabType.USER_TIMELINE:
+            case CustomTabType.FAVORITES: {
+                return JsonSerializer.parse(json, UserArguments.class);
+            }
+            case CustomTabType.LIST_TIMELINE: {
+                return JsonSerializer.parse(json, UserListArguments.class);
+            }
+            case CustomTabType.SEARCH_STATUSES: {
+                return JsonSerializer.parse(json, TextQueryArguments.class);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static TabExtras parseTabExtras(@NonNull @CustomTabType String type, String json) {
+        switch (type) {
+            case CustomTabType.NOTIFICATIONS_TIMELINE: {
+                return JsonSerializer.parse(json, InteractionsTabExtras.class);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
     @ReadPositionTag
-    private static String getTagByType(@NonNull @CustomTabType String tabType) {
-        switch (getTabTypeAlias(tabType)) {
+    public static String getTagByType(@NonNull @CustomTabType String tabType) {
+        switch (tabType) {
             case CustomTabType.HOME_TIMELINE:
                 return ReadPositionTag.HOME_TIMELINE;
             case "activities_about_me":

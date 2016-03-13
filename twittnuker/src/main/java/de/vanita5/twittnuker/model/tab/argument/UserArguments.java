@@ -20,34 +20,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.tab;
+package de.vanita5.twittnuker.model.tab.argument;
+
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.model.UserKey;
-
 @JsonObject
-public class Arguments {
-    @JsonField(name = "account_id")
-    long accountId;
+public class UserArguments extends TabArguments {
+    @JsonField(name = "user_id")
+    long userId;
 
-    @JsonField(name = "account_key")
-    UserKey accountKey;
-
-    public long getAccountId() {
-        return accountId;
+    @Override
+    public void copyToBundle(@NonNull Bundle bundle) {
+        super.copyToBundle(bundle);
+        bundle.putLong(EXTRA_USER_ID, userId);
     }
 
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
-    }
-
-    public UserKey getAccountKey() {
-        return accountKey;
-    }
-
-    public void setAccountKey(UserKey accountKey) {
-        this.accountKey = accountKey;
+    @Override
+    public String toString() {
+        return "UserArguments{" +
+                "userId=" + userId +
+                "} " + super.toString();
     }
 }

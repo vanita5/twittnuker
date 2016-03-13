@@ -20,13 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.tab;
+package de.vanita5.twittnuker.constant;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
+public interface CompatibilityConstants {
 
-@JsonObject
-public class UserListArguments extends Arguments {
-    @JsonField(name = "list_id")
-    long listId;
+    String QUERY_PARAM_ACCOUNT_ID = "account_id";
+    String QUERY_PARAM_ACCOUNT_IDS = "account_ids";
+
+
+    String EXTRA_ACCOUNT_ID = "account_id";
+    String EXTRA_ACCOUNT_IDS = "account_ids";
+
 }
