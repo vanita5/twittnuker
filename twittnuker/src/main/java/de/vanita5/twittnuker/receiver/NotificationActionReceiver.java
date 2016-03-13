@@ -30,6 +30,7 @@ import android.content.Intent;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.Utils;
@@ -45,7 +46,8 @@ public class NotificationActionReceiver extends BroadcastReceiver implements Con
             case INTENT_ACTION_PUSH_NOTIFICATION_CLEARED: {
                 NotificationHelper notificationHelper = new NotificationHelper(context);
                 final long accountId = intent.getLongExtra(EXTRA_USER_ID, -1);
-                notificationHelper.deleteCachedNotifications(accountId, null);
+                notificationHelper.deleteCachedNotifications(
+                        new UserKey(accountId, null), null);
                 break;
             }
             case INTENT_ACTION_RETWEET: {

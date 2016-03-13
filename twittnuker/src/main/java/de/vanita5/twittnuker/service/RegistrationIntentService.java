@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.push.PushBackendServer;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 
@@ -84,8 +85,9 @@ public class RegistrationIntentService extends IntentService implements Constant
         //We do this once for every account.
         //The backend server only accepts our reg id if at least one account
         //is configured server-side.
-        for (long userId : DataStoreUtils.getAccountIds(this)) {
-            if (backend.register(String.valueOf(userId), token)) {
+
+        for (UserKey userKey : DataStoreUtils.getAccountKeys(this)) {
+            if (backend.register(String.valueOf(userKey.getId()), token)) {
                 mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, true).apply();
                 break;
             }

@@ -39,7 +39,7 @@ public class NotificationContent {
 
     public static final String NOTIFICATION_TYPE_ERROR_420 = "type_error_420";
 
-    private long accountId;
+    private UserKey accountKey;
     private long timestamp;
 
     private String objectId;
@@ -53,12 +53,12 @@ public class NotificationContent {
     private ParcelableStatus originalStatus;
     private ParcelableDirectMessage originalMessage;
 
-    public long getAccountId() {
-        return accountId;
+    public UserKey getAccountKey() {
+        return accountKey;
     }
 
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
+    public void setAccountKey(UserKey accountKey) {
+        this.accountKey = accountKey;
     }
 
     public String getFromUser() {
@@ -140,7 +140,7 @@ public class NotificationContent {
 
         NotificationContent that = (NotificationContent) o;
 
-        if (accountId != that.accountId) return false;
+        if (accountKey != null ? !accountKey.equals(that.accountKey) : that.accountKey != null) return false;
         if (objectId != null ? !objectId.equals(that.objectId) : that.objectId != null)
             return false;
         if (objectUserId != null ? !objectUserId.equals(that.objectUserId) : that.objectUserId != null)
@@ -154,7 +154,7 @@ public class NotificationContent {
 
     @Override
     public int hashCode() {
-        int result = (int) (accountId ^ (accountId >>> 32));
+        int result = accountKey != null ? accountKey.hashCode() : 0;
         result = 31 * result + (objectId != null ? objectId.hashCode() : 0);
         result = 31 * result + (objectUserId != null ? objectUserId.hashCode() : 0);
         result = 31 * result + (fromUser != null ? fromUser.hashCode() : 0);

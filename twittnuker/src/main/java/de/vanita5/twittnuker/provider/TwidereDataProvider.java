@@ -919,7 +919,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         if (o_status instanceof ParcelableStatus) {
             ParcelableStatus status = (ParcelableStatus) o_status;
             notification = new NotificationContent();
-            notification.setAccountId(status.account_key.getId());
+            notification.setAccountKey(status.account_key);
             notification.setObjectId(String.valueOf(status.id));
             notification.setObjectUserId(String.valueOf(status.user_key.getId()));
             notification.setFromUser(status.user_screen_name);
@@ -931,7 +931,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         } else if (o_status instanceof ParcelableDirectMessage) {
             ParcelableDirectMessage dm = (ParcelableDirectMessage) o_status;
             notification = new NotificationContent();
-            notification.setAccountId(dm.account_key.getId());
+            notification.setAccountKey(dm.account_key);
             notification.setObjectId(String.valueOf(dm.id));
             notification.setObjectUserId(String.valueOf(dm.sender_id));
             notification.setFromUser(dm.sender_screen_name);
@@ -1082,7 +1082,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 //                                DataStoreUtils.getAccountKeys(context));
 //                        for (final AccountPreferences pref : prefs) {
 //                            if (!pref.isHomeTimelineNotificationEnabled()) continue;
-//                            final long positionTag = getPositionTag(CustomTabType.HOME_TIMELINE, pref.getAccountId());
+//                            final long positionTag = getPositionTag(CustomTabType.HOME_TIMELINE, pref.getAccountKey());
 //                            showTimelineNotification(pref, positionTag);
 //                        }
                         notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE);

@@ -328,9 +328,9 @@ public class StreamingService extends Service implements Constants {
                 AccountPreferences pref = new AccountPreferences(context,
                         account.account_key);
                 NotificationContent notification = new NotificationContent();
-                notification.setAccountId(account.account_key.getId());
+                notification.setAccountKey(account.account_key);
                 notification.setObjectId(status != null ? String.valueOf(status.id) : null);
-                notification.setObjectUserId(status != null ? String.valueOf(status.user_id) : null);
+                notification.setObjectUserId(status != null ? String.valueOf(status.user_key.getId()) : null);
                 notification.setFromUser(fromUser);
                 notification.setType(type);
                 notification.setMessage(msg);

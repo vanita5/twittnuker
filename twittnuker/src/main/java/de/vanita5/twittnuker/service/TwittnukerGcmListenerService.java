@@ -27,8 +27,11 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.util.NotificationHelper;
 
 public class TwittnukerGcmListenerService extends GcmListenerService {
@@ -60,18 +63,18 @@ public class TwittnukerGcmListenerService extends GcmListenerService {
         Log.d(TAG, "Push Notification " + type);
 
         //TODO show notification
-        long accountId = -1;
+        UserKey accountKey = null;
         try {
-            accountId = Long.parseLong(data.getString("account"));
+            accountKey = new UserKey(Long.parseLong(data.getString("account")), TwittnukerConstants.USER_TYPE_TWITTER_COM);
         } catch (NumberFormatException e) {
             Log.e(TAG, e.getMessage());
             return;
         }
 
-        AccountPreferences accountPreferences = new AccountPreferences(this, accountId);
+        AccountPreferences accountPreferences = new AccountPreferences(this, accountKey);
 
         NotificationContent content = new NotificationContent();
-        content.setAccountId(accountId);
+        content.setAccountKey(accountKey);
         content.setObjectId(data.getString("object_id"));
         content.setObjectUserId(data.getString("object_user_id"));
         content.setFromUser(data.getString("fromuser"));
