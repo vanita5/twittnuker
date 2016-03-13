@@ -29,27 +29,26 @@ import android.support.annotation.Nullable;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
-import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 public class ParcelableUserUtils implements TwittnukerConstants{
 
-    public static ParcelableUser fromUser(@NonNull User user, @Nullable AccountKey accountKey) {
+    public static ParcelableUser fromUser(@NonNull User user, @Nullable UserKey accountKey) {
         return fromUser(user, accountKey, 0);
     }
 
-    public static ParcelableUser fromUser(@NonNull User user, @Nullable AccountKey accountKey, long position) {
+    public static ParcelableUser fromUser(@NonNull User user, @Nullable UserKey accountKey, long position) {
         final UrlEntity[] urlEntities = user.getUrlEntities();
         final ParcelableUser obj = new ParcelableUser();
         obj.position = position;
         obj.account_key = accountKey;
-        obj.id = user.getId();
+        obj.key = UserKeyUtils.fromUser(user);
         obj.created_at = user.getCreatedAt().getTime();
         obj.is_protected = user.isProtected();
         obj.is_verified = user.isVerified();
@@ -87,32 +86,24 @@ public class ParcelableUserUtils implements TwittnukerConstants{
         extras.profile_image_url_profile_size = user.getProfileImageUrlProfileSize();
         extras.groups_count = user.getGroupsCount();
         obj.extras = extras;
-        obj.user_host = getUserHost(extras.ostatus_uri);
         return obj;
-    }
-
-    public static String getUserHost(@Nullable String uri) {
-        if (uri == null) return USER_TYPE_TWITTER_COM;
-        final String authority = PreviewMediaExtractor.getAuthority(uri);
-        if (authority == null) return null;
-        return authority.replaceAll("[^\\w\\d\\.]", "-");
     }
 
     public static String getUserHost(ParcelableUser user) {
         if (user.extras == null) return USER_TYPE_TWITTER_COM;
-        return getUserHost(user.extras.ostatus_uri);
+        return UserKeyUtils.getUserHost(user.extras.ostatus_uri);
     }
 
     public static ParcelableUser fromDirectMessageConversationEntry(final Cursor cursor) {
-        final AccountKey accountId = AccountKey.valueOf(cursor.getString(DirectMessages.ConversationEntries.IDX_ACCOUNT_KEY));
-        final long id = cursor.getLong(DirectMessages.ConversationEntries.IDX_CONVERSATION_ID);
+        final UserKey accountId = UserKey.valueOf(cursor.getString(DirectMessages.ConversationEntries.IDX_ACCOUNT_KEY));
+        final UserKey id = UserKey.valueOf(cursor.getString(DirectMessages.ConversationEntries.IDX_CONVERSATION_ID));
         final String name = cursor.getString(DirectMessages.ConversationEntries.IDX_NAME);
         final String screenName = cursor.getString(DirectMessages.ConversationEntries.IDX_SCREEN_NAME);
         final String profileImageUrl = cursor.getString(DirectMessages.ConversationEntries.IDX_PROFILE_IMAGE_URL);
         return new ParcelableUser(accountId, id, name, screenName, profileImageUrl);
     }
 
-    public static ParcelableUser[] fromUsers(final User[] users, AccountKey accountKey) {
+    public static ParcelableUser[] fromUsers(final User[] users, UserKey accountKey) {
         if (users == null) return null;
         int size = users.length;
         final ParcelableUser[] result = new ParcelableUser[size];

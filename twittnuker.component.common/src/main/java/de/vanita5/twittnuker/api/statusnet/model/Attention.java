@@ -20,34 +20,53 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.tab;
+package de.vanita5.twittnuker.api.statusnet.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.model.UserKey;
-
 @JsonObject
-public class Arguments {
-    @JsonField(name = "account_id")
-    long accountId;
+public class Attention {
 
-    @JsonField(name = "account_key")
-    UserKey accountKey;
+    @JsonField(name = "fullname")
+    String fullName;
+    @JsonField(name = "id")
+    long id;
+    @JsonField(name = "ostatus_uri")
+    String ostatusUri;
+    @JsonField(name = "profileurl")
+    String profileUrl;
+    @JsonField(name = "screen_name")
+    String screenName;
 
-    public long getAccountId() {
-        return accountId;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
+    public long getId() {
+        return id;
     }
 
-    public UserKey getAccountKey() {
-        return accountKey;
+    public String getOstatusUri() {
+        return ostatusUri;
     }
 
-    public void setAccountKey(UserKey accountKey) {
-        this.accountKey = accountKey;
+    public String getProfileUrl() {
+        return profileUrl;
+    }
+
+    public String getScreenName() {
+        return screenName;
+    }
+
+    @Override
+    public String toString() {
+        return "Attention{" +
+                "fullName='" + fullName + '\'' +
+                ", id='" + id + '\'' +
+                ", ostatusUri='" + ostatusUri + '\'' +
+                ", profileUrl='" + profileUrl + '\'' +
+                ", screenName='" + screenName + '\'' +
+                '}';
     }
 }

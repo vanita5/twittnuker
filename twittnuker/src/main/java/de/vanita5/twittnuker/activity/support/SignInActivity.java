@@ -88,11 +88,12 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.StatusNetAccountExtra;
 import de.vanita5.twittnuker.model.TwitterAccountExtra;
+import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
@@ -235,7 +236,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home: {
-                final AccountKey[] accountKeys = getActivatedAccountKeys(this);
+                final UserKey[] accountKeys = getActivatedAccountKeys(this);
                 if (accountKeys.length > 0) {
                     onBackPressed();
                 }
@@ -1096,8 +1097,8 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
             if (accountType != null) {
                 values.put(Accounts.ACCOUNT_TYPE, accountType.first);
                 values.put(Accounts.ACCOUNT_EXTRAS, accountType.second);
-                final AccountKey accountKey = new AccountKey(user.getId(),
-                        ParcelableUserUtils.getUserHost(user.getOstatusUri()));
+                final UserKey accountKey = new UserKey(user.getId(),
+                        UserKeyUtils.getUserHost(user.getOstatusUri()));
                 final ParcelableUser parcelableUser = ParcelableUserUtils.fromUser(user, accountKey);
                 values.put(Accounts.ACCOUNT_USER, JsonSerializer.serialize(parcelableUser, ParcelableUser.class));
             }

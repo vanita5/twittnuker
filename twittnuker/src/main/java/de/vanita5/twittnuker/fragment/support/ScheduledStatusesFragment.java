@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
 import de.vanita5.twittnuker.api.twitter.model.ScheduledStatus;
 import de.vanita5.twittnuker.loader.support.ScheduledStatusesLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class ScheduledStatusesFragment extends AbsContentListRecyclerViewFragmen
 
     @Override
     public Loader<List<ScheduledStatus>> onCreateLoader(int id, Bundle args) {
-        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
         final long maxId = args.getLong(EXTRA_MAX_ID, -1);
         final String[] states = {ScheduledStatus.State.SCHEDULED, ScheduledStatus.State.FAILED};

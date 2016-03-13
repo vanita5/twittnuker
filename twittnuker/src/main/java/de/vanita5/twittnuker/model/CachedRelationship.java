@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 public class CachedRelationship {
 
     @CursorField(CachedRelationships.ACCOUNT_KEY)
-    public AccountKey account_key;
+    public UserKey account_key;
 
     @CursorField(CachedRelationships.USER_ID)
     public long user_id;
@@ -60,7 +60,7 @@ public class CachedRelationship {
 
     }
 
-    public CachedRelationship(AccountKey accountId, long userId, @NonNull Relationship relationship) {
+    public CachedRelationship(UserKey accountId, long userId, @NonNull Relationship relationship) {
         account_key = accountId;
         user_id = userId;
         following = relationship.isSourceFollowingTarget();

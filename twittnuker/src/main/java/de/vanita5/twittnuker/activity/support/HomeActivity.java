@@ -79,7 +79,7 @@ import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.TrendsSuggestionsFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
@@ -158,7 +158,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     }
 
     @NonNull
-    public AccountKey[] getActivatedAccountKeys() {
+    public UserKey[] getActivatedAccountKeys() {
         final Fragment fragment = getLeftDrawerFragment();
         if (fragment instanceof AccountsDashboardFragment) {
             return ((AccountsDashboardFragment) fragment).getActivatedAccountIds();
@@ -713,7 +713,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         if (Intent.ACTION_SEARCH.equals(action)) {
             final String query = intent.getStringExtra(SearchManager.QUERY);
             final Bundle appSearchData = intent.getBundleExtra(SearchManager.APP_DATA);
-            final AccountKey accountKey;
+            final UserKey accountKey;
             if (appSearchData != null && appSearchData.containsKey(EXTRA_ACCOUNT_KEY)) {
                 accountKey = appSearchData.getParcelable(EXTRA_ACCOUNT_KEY);
             } else {
@@ -732,7 +732,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         final String tabType = uri != null ? Utils.matchTabType(uri) : null;
         int initialTab = -1;
         if (tabType != null) {
-            final AccountKey accountId = AccountKey.valueOf(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY));
+            final UserKey accountId = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY));
             for (int i = 0, j = mPagerAdapter.getCount(); i < j; i++) {
                 final SupportTabSpec tab = mPagerAdapter.getTab(i);
                 if (tabType.equals(CustomTabUtils.getTabTypeAlias(tab.type))) {
@@ -963,7 +963,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                 }
                 switch (spec.type) {
                     case CustomTabType.HOME_TIMELINE: {
-                        final AccountKey[] accountKeys = Utils.getAccountKeys(mContext, spec.args);
+                        final UserKey[] accountKeys = Utils.getAccountKeys(mContext, spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext,
                                 true, ReadPositionTag.HOME_TIMELINE, accountKeys);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
@@ -974,7 +974,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                         break;
                     }
                     case CustomTabType.NOTIFICATIONS_TIMELINE: {
-                        final AccountKey[] accountIds = Utils.getAccountKeys(mContext, spec.args);
+                        final UserKey[] accountIds = Utils.getAccountKeys(mContext, spec.args);
                         final String tagWithAccounts = Utils.getReadPositionTagWithAccounts(mContext,
                                 true, ReadPositionTag.ACTIVITIES_ABOUT_ME, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);

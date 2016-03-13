@@ -22,18 +22,17 @@
 
 package de.vanita5.twittnuker.model.util;
 
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 
-public class AccountKeysCursorFieldConverter extends AbsObjectArrayConverter<AccountKey> {
-
+public class UserKeysCursorFieldConverter extends AbsObjectArrayConverter<UserKey> {
 
     @Override
-    protected AccountKey[] newArray(int size) {
-        return new AccountKey[size];
+    protected UserKey[] newArray(int size) {
+        return new UserKey[size];
     }
 
     @Override
-    protected AccountKey parseItem(String s) {
-        return AccountKey.valueOf(s);
+    protected UserKey parseItem(String s) {
+        return UserKey.valueOf(s);
     }
 }

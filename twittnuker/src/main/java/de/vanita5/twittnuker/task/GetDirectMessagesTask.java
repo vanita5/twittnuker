@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -82,12 +82,12 @@ public abstract class GetDirectMessagesTask extends AbstractTask<RefreshTaskPara
 
     @Override
     public List<TwitterWrapper.MessageListResponse> doLongOperation(final RefreshTaskParam param) {
-        final AccountKey[] accountKeys = param.getAccountKeys();
+        final UserKey[] accountKeys = param.getAccountKeys();
         final long[] sinceIds = param.getSinceIds(), maxIds = param.getMaxIds();
         final List<TwitterWrapper.MessageListResponse> result = new ArrayList<>();
         int idx = 0;
         final int loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
-        for (final AccountKey accountKey : accountKeys) {
+        for (final UserKey accountKey : accountKeys) {
             final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountKey, true);
             if (twitter == null) continue;
             try {
@@ -128,7 +128,7 @@ public abstract class GetDirectMessagesTask extends AbstractTask<RefreshTaskPara
 
     }
 
-    private boolean storeMessages(AccountKey accountKey, List<DirectMessage> messages, boolean isOutgoing, boolean notify) {
+    private boolean storeMessages(UserKey accountKey, List<DirectMessage> messages, boolean isOutgoing, boolean notify) {
         if (messages == null) return true;
         final Uri uri = getDatabaseUri();
         final ContentValues[] valuesArray = new ContentValues[messages.size()];

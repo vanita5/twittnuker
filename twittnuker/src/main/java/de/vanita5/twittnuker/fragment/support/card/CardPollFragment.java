@@ -54,7 +54,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.CardDataMap;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils;
@@ -138,7 +138,7 @@ public class CardPollFragment extends BaseSupportFragment implements
         final int selectedChoice = ParcelableCardEntityUtils.getAsInteger(card, "selected_choice", -1);
         final Date endDatetimeUtc = ParcelableCardEntityUtils.getAsDate(card, "end_datetime_utc", new Date());
         final boolean hasChoice = selectedChoice != -1;
-        final boolean isMyPoll = status.account_key.getId() == status.user_id;
+        final boolean isMyPoll = status.account_key.equals(status.user_key);
         final boolean showResult = countsAreFinal || isMyPoll || hasChoice;
         for (int i = 0; i < choicesCount; i++) {
             final int choiceIndex = i + 1;
@@ -327,11 +327,11 @@ public class CardPollFragment extends BaseSupportFragment implements
     }
 
     public static class ParcelableCardEntityLoader extends AsyncTaskLoader<ParcelableCardEntity> {
-        private final AccountKey mAccountKey;
+        private final UserKey mAccountKey;
         private final String mCardUri;
         private final String mCardName;
 
-        public ParcelableCardEntityLoader(Context context, AccountKey accountKey,
+        public ParcelableCardEntityLoader(Context context, UserKey accountKey,
                                           String cardUri, String cardName) {
             super(context);
             mAccountKey = accountKey;

@@ -35,7 +35,7 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AbsUserListsAdapter;
 import de.vanita5.twittnuker.loader.support.UserListsLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.message.UserListDestroyedEvent;
 import de.vanita5.twittnuker.util.MenuUtils;
@@ -48,7 +48,7 @@ public class UserListsFragment extends ParcelableUserListsFragment {
     @Override
     public Loader<List<ParcelableUserList>> onCreateUserListsLoader(final Context context,
                                                                     final Bundle args, final boolean fromUser) {
-        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         return new UserListsLoader(getActivity(), accountKey, userId, screenName, true, getData());
@@ -83,7 +83,7 @@ public class UserListsFragment extends ParcelableUserListsFragment {
     @Override
     public void onPrepareOptionsMenu(final Menu menu) {
         final MenuItem item = menu.findItem(R.id.new_user_list);
-        final AccountKey accountId = getAccountKey();
+        final UserKey accountId = getAccountKey();
         if (accountId == null || item == null) return;
         final long userId = getUserId();
         if (accountId.getId() == userId) {

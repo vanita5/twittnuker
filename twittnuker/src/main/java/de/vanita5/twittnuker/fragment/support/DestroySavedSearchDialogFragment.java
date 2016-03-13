@@ -31,7 +31,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -44,7 +44,7 @@ public class DestroySavedSearchDialogFragment extends BaseSupportDialogFragment 
     public void onClick(final DialogInterface dialog, final int which) {
         switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
-                final AccountKey accountKey = getAccountKey();
+                final UserKey accountKey = getAccountKey();
                 final long searchId = getSearchId();
                 final AsyncTwitterWrapper twitter = mTwitterWrapper;
                 if (searchId <= 0 || twitter == null) return;
@@ -70,7 +70,7 @@ public class DestroySavedSearchDialogFragment extends BaseSupportDialogFragment 
         return builder.create();
     }
 
-    private AccountKey getAccountKey() {
+    private UserKey getAccountKey() {
         final Bundle args = getArguments();
         return args.getParcelable(EXTRA_ACCOUNT_KEY);
     }
@@ -88,7 +88,7 @@ public class DestroySavedSearchDialogFragment extends BaseSupportDialogFragment 
     }
 
     public static DestroySavedSearchDialogFragment show(final FragmentManager fm,
-                                                        final AccountKey accountKey,
+                                                        final UserKey accountKey,
                                                         final long searchId, final String name) {
         final Bundle args = new Bundle();
         args.putParcelable(EXTRA_ACCOUNT_KEY, accountKey);

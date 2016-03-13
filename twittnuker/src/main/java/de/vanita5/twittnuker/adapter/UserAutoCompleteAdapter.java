@@ -36,7 +36,7 @@ import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.OrderBy;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -62,7 +62,7 @@ public class UserAutoCompleteAdapter extends SimpleCursorAdapter implements Cons
     private final boolean mDisplayProfileImage;
 
     private int mIdIdx, mNameIdx, mScreenNameIdx, mProfileImageIdx;
-    private AccountKey mAccountKey;
+    private UserKey mAccountKey;
 
     public UserAutoCompleteAdapter(final Context context) {
         super(context, R.layout.list_item_auto_complete, null, FROM, TO, 0);
@@ -80,7 +80,7 @@ public class UserAutoCompleteAdapter extends SimpleCursorAdapter implements Cons
         icon.setImageDrawable(null);
 
         text1.setText(cursor.getString(mNameIdx));
-        text2.setText('@' + cursor.getString(mScreenNameIdx));
+        text2.setText(String.format("@%s", cursor.getString(mScreenNameIdx)));
         if (mDisplayProfileImage) {
             final String profileImageUrl = cursor.getString(mProfileImageIdx);
             mProfileImageLoader.displayProfileImage(icon, profileImageUrl);
@@ -120,20 +120,20 @@ public class UserAutoCompleteAdapter extends SimpleCursorAdapter implements Cons
                 CachedUsers.NAME};
         final boolean[] ascending = {false, false, true, true};
         final OrderBy orderBy = new OrderBy(order, ascending);
-        final Uri uri = Uri.withAppendedPath(CachedUsers.CONTENT_URI_WITH_SCORE, String.valueOf(mAccountId));
+        final Uri uri = Uri.withAppendedPath(CachedUsers.CONTENT_URI_WITH_SCORE, String.valueOf(mAccountKey));
         return mContext.getContentResolver().query(uri, CachedUsers.COLUMNS, usersSelection.getSQL(),
                 selectionArgs, orderBy.getSQL());
     }
 
 
-    public void setAccountKey(AccountKey accountKey) {
+    public void setAccountKey(UserKey accountKey) {
         mAccountKey = accountKey;
     }
 
     @Override
     public Cursor swapCursor(final Cursor cursor) {
         if (cursor != null) {
-            mIdIdx = cursor.getColumnIndex(CachedUsers.USER_ID);
+            mIdIdx = cursor.getColumnIndex(CachedUsers.USER_KEY);
             mNameIdx = cursor.getColumnIndex(CachedUsers.NAME);
             mScreenNameIdx = cursor.getColumnIndex(CachedUsers.SCREEN_NAME);
             mProfileImageIdx = cursor.getColumnIndex(CachedUsers.PROFILE_IMAGE_URL);

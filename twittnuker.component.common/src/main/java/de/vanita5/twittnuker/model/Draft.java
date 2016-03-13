@@ -47,7 +47,7 @@ public class Draft implements Parcelable {
 
     @ParcelableThisPlease
     @CursorField(value = Drafts.ACCOUNT_IDS, converter = AccountKeysCursorFieldConverter.class)
-    public AccountKey[] account_ids;
+    public UserKey[] account_ids;
     @ParcelableThisPlease
     @CursorField(value = Drafts._ID, excludeWrite = true)
     public long _id;

@@ -27,7 +27,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -82,7 +82,7 @@ public class HomeTimelineFragment extends CursorStatusesFragment {
         super.setUserVisibleHint(isVisibleToUser);
         final FragmentActivity activity = getActivity();
         if (isVisibleToUser && activity != null) {
-            for (AccountKey accountId : getAccountKeys()) {
+            for (UserKey accountId : getAccountKeys()) {
                 final String tag = "home_" + accountId;
                 mNotificationManager.cancel(tag, NOTIFICATION_ID_HOME_TIMELINE);
             }

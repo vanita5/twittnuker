@@ -33,7 +33,7 @@ import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -59,7 +59,7 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             final Object tag = buttonView.getTag();
             if (!(tag instanceof String) || mOnAccountToggleListener == null) return;
-            final AccountKey accountKey = AccountKey.valueOf((String) tag);
+            final UserKey accountKey = UserKey.valueOf((String) tag);
             mOnAccountToggleListener.onAccountToggle(accountKey, isChecked);
         }
     };
@@ -184,6 +184,6 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
     }
 
     public interface OnAccountToggleListener {
-        void onAccountToggle(AccountKey accountId, boolean state);
+        void onAccountToggle(UserKey accountId, boolean state);
     }
 }

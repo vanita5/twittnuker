@@ -29,14 +29,14 @@ import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.IDs;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
 public class IncomingFriendshipsLoader extends IDsUsersLoader {
 
-    public IncomingFriendshipsLoader(final Context context, final AccountKey accountKey,
+    public IncomingFriendshipsLoader(final Context context, final UserKey accountKey,
                                      final List<ParcelableUser> data, boolean fromUser) {
         super(context, accountKey, data, fromUser);
     }

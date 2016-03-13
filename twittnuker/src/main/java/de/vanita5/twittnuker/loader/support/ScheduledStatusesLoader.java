@@ -29,20 +29,20 @@ import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ScheduledStatus;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
 import java.util.List;
 
 public class ScheduledStatusesLoader extends AsyncTaskLoader<List<ScheduledStatus>> {
 
-    private final AccountKey mAccountId;
+    private final UserKey mAccountId;
     private final long mSinceId;
     private final long mMaxId;
     @ScheduledStatus.State
     private final String[] mStates;
 
-    public ScheduledStatusesLoader(Context context, AccountKey accountId, long sinceId, long maxId,
+    public ScheduledStatusesLoader(Context context, UserKey accountId, long sinceId, long maxId,
                                    @ScheduledStatus.State String[] states, List<ScheduledStatus> data) {
         super(context);
         mAccountId = accountId;

@@ -61,7 +61,7 @@ import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
@@ -107,7 +107,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
     private View mEditProfileBanner;
     private View mSetLinkColor, mSetBackgroundColor;
     private ForegroundColorView mLinkColor, mBackgroundColor;
-    private AccountKey mAccountId;
+    private UserKey mAccountId;
     private ParcelableUser mUser;
     private boolean mUserInfoLoaderInitialized;
     private boolean mGetUserInfoCalled;
@@ -177,7 +177,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
     @Override
     public void onLoadFinished(final Loader<SingleResponse<ParcelableUser>> loader,
                                final SingleResponse<ParcelableUser> data) {
-        if (data.getData() != null && data.getData().id > 0) {
+        if (data.getData() != null && data.getData().key != null) {
             displayUser(data.getData());
         } else if (mUser == null) {
         }
@@ -218,7 +218,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         final Bundle args = getArguments();
-        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         mAccountId = accountKey;
         if (!Utils.isMyAccount(getActivity(), accountKey)) {
             getActivity().finish();
@@ -423,7 +423,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         private final Handler mHandler;
 
         // Data fields
-        private final AccountKey mAccountKey;
+        private final UserKey mAccountKey;
         private final ParcelableUser mOriginal;
         private final String mName;
         private final String mUrl;
@@ -433,7 +433,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         private final int mBackgroundColor;
 
         public UpdateProfileTaskInternal(final UserProfileEditorFragment fragment,
-                                         final AccountKey accountKey, final ParcelableUser original,
+                                         final UserKey accountKey, final ParcelableUser original,
                                          final String name, final String url, final String location,
                                          final String description, final int linkColor,
                                          final int backgroundColor) {
@@ -515,9 +515,9 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
     class RemoveProfileBannerTaskInternal extends AsyncTask<Object, Object, SingleResponse<Boolean>> {
 
-        private final AccountKey mAccountKey;
+        private final UserKey mAccountKey;
 
-        RemoveProfileBannerTaskInternal(final AccountKey accountKey) {
+        RemoveProfileBannerTaskInternal(final UserKey accountKey) {
             this.mAccountKey = accountKey;
         }
 
@@ -549,7 +549,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
     private class UpdateProfileBannerImageTaskInternal extends UpdateProfileBannerImageTask {
 
-        public UpdateProfileBannerImageTaskInternal(final Context context, final AccountKey accountKey,
+        public UpdateProfileBannerImageTaskInternal(final Context context, final UserKey accountKey,
                                                     final Uri imageUri, final boolean deleteImage) {
             super(context, accountKey, imageUri, deleteImage);
         }
@@ -571,7 +571,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
     private class UpdateProfileImageTaskInternal extends UpdateProfileImageTask {
 
-        public UpdateProfileImageTaskInternal(final Context context, final AccountKey accountKey,
+        public UpdateProfileImageTaskInternal(final Context context, final UserKey accountKey,
                                               final Uri imageUri, final boolean deleteImage) {
             super(context, accountKey, imageUri, deleteImage);
         }

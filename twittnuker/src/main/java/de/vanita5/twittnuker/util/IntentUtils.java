@@ -47,7 +47,7 @@ import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.support.SensitiveContentWarningDialogFragment;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -83,8 +83,8 @@ public class IntentUtils implements Constants {
         builder.scheme(TwittnukerConstants.SCHEME_TWITTNUKER);
         builder.authority(TwittnukerConstants.AUTHORITY_USER);
         builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_ACCOUNT_KEY, user.account_key.toString());
-        if (user.id > 0) {
-            builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_USER_ID, String.valueOf(user.id));
+        if (user.key != null) {
+            builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_USER_ID, user.key.toString());
         }
         if (user.screen_name != null) {
             builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_SCREEN_NAME, user.screen_name);
@@ -103,7 +103,7 @@ public class IntentUtils implements Constants {
         }
     }
 
-    public static void openUserProfile(@NonNull final Context context, @Nullable final AccountKey accountKey,
+    public static void openUserProfile(@NonNull final Context context, @Nullable final UserKey accountKey,
                                        final long userId, final String screenName,
                                        final Bundle activityOptions, final boolean newDocument,
                                        @UserFragment.Referral final String referral) {
@@ -133,7 +133,7 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openUserMentions(@NonNull final Context context, @Nullable final AccountKey accountKey, final String screenName) {
+    public static void openUserMentions(@NonNull final Context context, @Nullable final UserKey accountKey, final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(TwittnukerConstants.SCHEME_TWITTNUKER);
         builder.authority(TwittnukerConstants.AUTHORITY_USER_MENTIONS);
@@ -154,13 +154,13 @@ public class IntentUtils implements Constants {
                 options, newDocument);
     }
 
-    public static void openUserTimeline(@NonNull  final Context context, @Nullable  final AccountKey accountKey,
+    public static void openUserTimeline(@NonNull  final Context context, @Nullable  final UserKey accountKey,
                                         final long userId, final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(TwittnukerConstants.SCHEME_TWITTNUKER);
         builder.authority(TwittnukerConstants.AUTHORITY_USER_TIMELINE);
         if (accountKey != null) {
-            builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_ACCOUNT_ID, accountKey.toString());
+            builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
         if (userId > 0) {
             builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
@@ -179,13 +179,13 @@ public class IntentUtils implements Constants {
                 getPrimaryMedia(status), options, newDocument);
     }
 
-    public static void openMedia(@NonNull final Context context, @Nullable final AccountKey accountKey, final boolean isPossiblySensitive,
+    public static void openMedia(@NonNull final Context context, @Nullable final UserKey accountKey, final boolean isPossiblySensitive,
                                  final ParcelableMedia current, final ParcelableMedia[] media,
                                  final Bundle options, final boolean newDocument) {
         openMedia(context, accountKey, isPossiblySensitive, null, null, current, media, options, newDocument);
     }
 
-    public static void openMedia(@NonNull final Context context, @Nullable final AccountKey accountKey, final boolean isPossiblySensitive,
+    public static void openMedia(@NonNull final Context context, @Nullable final UserKey accountKey, final boolean isPossiblySensitive,
                                  final ParcelableStatus status, final ParcelableDirectMessage message,
                                  final ParcelableMedia current, final ParcelableMedia[] media,
                                  final Bundle options, final boolean newDocument) {
@@ -217,7 +217,7 @@ public class IntentUtils implements Constants {
         }
     }
 
-    public static void openMediaDirectly(@NonNull final Context context, @Nullable final AccountKey accountKey,
+    public static void openMediaDirectly(@NonNull final Context context, @Nullable final UserKey accountKey,
                                          final ParcelableStatus status, final ParcelableMedia current,
                                          final Bundle options, final boolean newDocument) {
         openMediaDirectly(context, accountKey, status, null, current, getPrimaryMedia(status),
@@ -233,14 +233,14 @@ public class IntentUtils implements Constants {
     }
 
     public static void openMediaDirectly(@NonNull final Context context,
-                                         @Nullable final AccountKey accountKey,
+                                         @Nullable final UserKey accountKey,
                                          final ParcelableDirectMessage message, final ParcelableMedia current,
                                          final ParcelableMedia[] media, final Bundle options,
                                          final boolean newDocument) {
         openMediaDirectly(context, accountKey, null, message, current, media, options, newDocument);
     }
 
-    public static void openMediaDirectly(@NonNull final Context context, @Nullable final AccountKey accountKey,
+    public static void openMediaDirectly(@NonNull final Context context, @Nullable final UserKey accountKey,
                                          final ParcelableStatus status, final ParcelableDirectMessage message,
                                          final ParcelableMedia current, final ParcelableMedia[] media,
                                          final Bundle options, final boolean newDocument) {
@@ -268,7 +268,7 @@ public class IntentUtils implements Constants {
     }
 
     public static Uri getMediaViewerUri(@NonNull final String type, final long id,
-                                        @Nullable final AccountKey accountKey) {
+                                        @Nullable final UserKey accountKey) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority("media");
@@ -281,7 +281,7 @@ public class IntentUtils implements Constants {
     }
 
     public static void openMessageConversation(@NonNull final Context context,
-                                               @Nullable final AccountKey accountKey,
+                                               @Nullable final UserKey accountKey,
                                                final long recipientId) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
@@ -298,7 +298,7 @@ public class IntentUtils implements Constants {
     }
 
     public static void openIncomingFriendships(@NonNull final Context context,
-                                               @Nullable final AccountKey accountKey) {
+                                               @Nullable final UserKey accountKey) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_INCOMING_FRIENDSHIPS);
@@ -323,7 +323,7 @@ public class IntentUtils implements Constants {
     }
 
     public static void openMutesUsers(@NonNull final Context context,
-                                      @Nullable final AccountKey accountKey) {
+                                      @Nullable final UserKey accountKey) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_MUTES_USERS);
@@ -336,7 +336,7 @@ public class IntentUtils implements Constants {
     }
 
     public static void openScheduledStatuses(@NonNull final Context context,
-                                             @Nullable final AccountKey accountKey) {
+                                             @Nullable final UserKey accountKey) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_SCHEDULED_STATUSES);
@@ -348,7 +348,7 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openSavedSearches(@NonNull final Context context, @Nullable final AccountKey accountKey) {
+    public static void openSavedSearches(@NonNull final Context context, @Nullable final UserKey accountKey) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_SAVED_SEARCHES);
@@ -360,11 +360,11 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openSearch(@NonNull final Context context, @Nullable final AccountKey accountKey, final String query) {
+    public static void openSearch(@NonNull final Context context, @Nullable final UserKey accountKey, final String query) {
         openSearch(context, accountKey, query, null);
     }
 
-    public static void openSearch(@NonNull final Context context, @Nullable final AccountKey accountKey, final String query, String type) {
+    public static void openSearch(@NonNull final Context context, @Nullable final UserKey accountKey, final String query, String type) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         // Some devices cannot process query parameter with hashes well, so add this intent extra
         intent.putExtra(EXTRA_QUERY, query);
@@ -388,7 +388,7 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openStatus(@NonNull final Context context, @Nullable final AccountKey accountKey, final long statusId) {
+    public static void openStatus(@NonNull final Context context, @Nullable final UserKey accountKey, final long statusId) {
         if (statusId <= 0) return;
         final Uri uri = LinkCreator.getTwidereStatusLink(accountKey, statusId);
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -396,7 +396,7 @@ public class IntentUtils implements Constants {
     }
 
     public static void openStatus(@NonNull final Context context, @NonNull final ParcelableStatus status, Bundle activityOptions) {
-        final AccountKey accountKey = status.account_key;
+        final UserKey accountKey = status.account_key;
         final long statusId = status.id;
         final Bundle extras = new Bundle();
         extras.putParcelable(EXTRA_STATUS, status);
@@ -427,7 +427,7 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openStatusFavoriters(final Context context, @Nullable final AccountKey accountKey,
+    public static void openStatusFavoriters(final Context context, @Nullable final UserKey accountKey,
                                             final long statusId) {
         if (context == null) return;
         final Uri.Builder builder = new Uri.Builder();
@@ -441,7 +441,7 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openStatusRetweeters(final Context context, @Nullable final AccountKey accountKey,
+    public static void openStatusRetweeters(final Context context, @Nullable final UserKey accountKey,
                                             final long statusId) {
         if (context == null) return;
         final Uri.Builder builder = new Uri.Builder();
@@ -455,12 +455,12 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openTweetSearch(final Context context, @Nullable final AccountKey accountKey,
+    public static void openTweetSearch(final Context context, @Nullable final UserKey accountKey,
                                        final String query) {
         openSearch(context, accountKey, query, QUERY_PARAM_VALUE_TWEETS);
     }
 
-    public static void openUserBlocks(final Activity activity, final AccountKey accountKey) {
+    public static void openUserBlocks(final Activity activity, final UserKey accountKey) {
         if (activity == null) return;
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
@@ -471,7 +471,7 @@ public class IntentUtils implements Constants {
     }
 
     public static void openUserFavorites(@NonNull final Context context,
-                                         @Nullable final AccountKey accountKey,
+                                         @Nullable final UserKey accountKey,
                                          final long userId, final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
@@ -491,7 +491,7 @@ public class IntentUtils implements Constants {
     }
 
     public static void openUserFollowers(@NonNull final Context context,
-                                         @Nullable final AccountKey accountKey, final long userId,
+                                         @Nullable final UserKey accountKey, final long userId,
                                          final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
@@ -510,7 +510,7 @@ public class IntentUtils implements Constants {
     }
 
     public static void openUserFriends(@NonNull final Context context,
-                                       @Nullable final AccountKey accountKey, final long userId,
+                                       @Nullable final UserKey accountKey, final long userId,
                                        final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
@@ -530,7 +530,7 @@ public class IntentUtils implements Constants {
     }
 
     public static void openUserListDetails(@NonNull final Context context,
-                                           @Nullable final AccountKey accountKey, final long listId,
+                                           @Nullable final UserKey accountKey, final long listId,
                                            final long userId, final String screenName, final String listName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
@@ -555,14 +555,14 @@ public class IntentUtils implements Constants {
     }
 
     public static void openUserListDetails(@NonNull final Context context, @NonNull final ParcelableUserList userList) {
-        final long userId = userList.user_id;
+        final UserKey userId = userList.user_key;
         final long listId = userList.id;
         final Bundle extras = new Bundle();
         extras.putParcelable(EXTRA_USER_LIST, userList);
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_LIST);
-        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, userList.account_key.toString());
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, String.valueOf(userList.account_key));
         builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
         builder.appendQueryParameter(QUERY_PARAM_LIST_ID, String.valueOf(listId));
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
@@ -571,25 +571,25 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openUserLists(@NonNull final Context context, @Nullable final AccountKey accountKey, final long user_id,
-                                     final String screen_name) {
+    public static void openUserLists(@NonNull final Context context, @Nullable final UserKey accountKey, final long userId,
+                                     final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_LISTS);
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
-        if (user_id > 0) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(user_id));
+        if (userId > 0) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
         }
-        if (screen_name != null) {
-            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screen_name);
+        if (screenName != null) {
+            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
         }
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         context.startActivity(intent);
     }
 
-    public static void openDirectMessages(@NonNull final Context context, @Nullable final AccountKey accountKey) {
+    public static void openDirectMessages(@NonNull final Context context, @Nullable final UserKey accountKey) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_DIRECT_MESSAGES);
@@ -600,7 +600,7 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openInteractions(@NonNull final Context context, @Nullable final AccountKey accountKey) {
+    public static void openInteractions(@NonNull final Context context, @Nullable final UserKey accountKey) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_INTERACTIONS);

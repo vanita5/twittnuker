@@ -32,7 +32,7 @@ import android.support.annotation.Nullable;
 import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
@@ -51,7 +51,7 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
     }
 
     @Override
-    public void onLinkClick(final String link, final String orig, final AccountKey accountKey,
+    public void onLinkClick(final String link, final String orig, final UserKey accountKey,
                             final long extraId, final int type, final boolean sensitive,
                             final int start, final int end) {
         if (manager != null && manager.isActive()) return;
@@ -98,7 +98,7 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
         }
     }
 
-    protected void openMedia(AccountKey accountKey, long extraId, boolean sensitive, String link, int start, int end) {
+    protected void openMedia(UserKey accountKey, long extraId, boolean sensitive, String link, int start, int end) {
         final ParcelableMedia[] media = {ParcelableMediaUtils.image(link)};
         IntentUtils.openMedia(context, accountKey, sensitive, null, media, null, true);
     }

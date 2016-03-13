@@ -37,7 +37,7 @@ import android.widget.ListView;
 import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.adapter.TrendsAdapter;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
@@ -49,7 +49,7 @@ import static de.vanita5.twittnuker.util.IntentUtils.openTweetSearch;
 public class TrendsSuggestionsFragment extends AbsContentListViewFragment<TrendsAdapter>
         implements LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
-    private AccountKey mAccountId;
+    private UserKey mAccountId;
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {

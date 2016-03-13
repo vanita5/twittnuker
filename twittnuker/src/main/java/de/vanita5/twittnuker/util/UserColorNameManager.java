@@ -26,15 +26,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
-import android.support.v4.util.LongSparseArray;
-
-import org.apache.commons.lang3.math.NumberUtils;
+import android.support.annotation.NonNull;
+import android.support.v4.util.SimpleArrayMap;
+import android.text.TextUtils;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.util.UserKeyUtils;
 
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +45,7 @@ import static android.text.TextUtils.isEmpty;
 
 public class UserColorNameManager implements TwittnukerConstants {
 
-    private final LongSparseArray<Integer> mUserColors = new LongSparseArray<>();
+    private final SimpleArrayMap<String, Integer> mUserColors = new SimpleArrayMap<>();
     private final SharedPreferences mColorPreferences;
 
     public UserColorNameManager(Context context) {
@@ -55,54 +57,69 @@ public class UserColorNameManager implements TwittnukerConstants {
         mColorPreferences.registerOnSharedPreferenceChangeListener(new OnColorPreferenceChangeListener(listener));
     }
 
-    public void clearUserColor(final long userId) {
-        if (userId < 0) return;
+    public void clearUserColor(@NonNull final UserKey userId) {
         mUserColors.remove(userId);
         final SharedPreferences.Editor editor = mColorPreferences.edit();
-        editor.remove(Long.toString(userId));
+        editor.remove(userId.toString());
         editor.apply();
     }
 
-    public void setUserColor(final long userId, final int color) {
-        if (userId < 0) return;
+    public void setUserColor(@NonNull final UserKey userId, final int color) {
+        setUserColor(userId.toString(), color);
+    }
+
+    public void setUserColor(@NonNull final String userId, final int color) {
         mUserColors.put(userId, color);
         final SharedPreferences.Editor editor = mColorPreferences.edit();
-        editor.putInt(String.valueOf(userId), color);
+        editor.putInt(userId, color);
         editor.apply();
     }
 
     public String getDisplayName(final ParcelableUser user, final boolean nameFirst, final boolean ignoreCache) {
-        return getDisplayName(user.id, user.name, user.screen_name, nameFirst, ignoreCache);
+        return getDisplayName(user.key, user.name, user.screen_name, nameFirst, ignoreCache);
     }
 
     public String getDisplayName(final User user, final boolean nameFirst, final boolean ignoreCache) {
-        return getDisplayName(user.getId(), user.getName(), user.getScreenName(), nameFirst, ignoreCache);
+        return getDisplayName(UserKeyUtils.fromUser(user), user.getName(), user.getScreenName(), nameFirst, ignoreCache);
     }
 
     public String getDisplayName(final ParcelableUserList user, final boolean nameFirst, final boolean ignoreCache) {
-        return getDisplayName(user.user_id, user.user_name, user.user_screen_name, nameFirst, ignoreCache);
+        return getDisplayName(user.user_key, user.user_name, user.user_screen_name, nameFirst, ignoreCache);
     }
 
     public String getDisplayName(final ParcelableStatus status, final boolean nameFirst, final boolean ignoreCache) {
-        return getDisplayName(status.user_id, status.user_name, status.user_screen_name, nameFirst, ignoreCache);
+        return getDisplayName(status.user_key, status.user_name, status.user_screen_name, nameFirst, ignoreCache);
     }
 
-    public String getDisplayName(final long userId, final String name,
+    public String getDisplayName(@NonNull final UserKey userId, final String name,
+                                 final String screenName, final boolean nameFirst,
+                                 final boolean ignoreCache) {
+        return getDisplayName(userId.toString(), name, screenName, nameFirst, ignoreCache);
+    }
+
+    public String getDisplayName(@NonNull final String userId, final String name,
                                  final String screenName, final boolean nameFirst,
                                  final boolean ignoreCache) {
         return nameFirst && !isEmpty(name) ? name : "@" + screenName;
     }
 
-    public int getUserColor(final long userId, final boolean ignoreCache) {
-        if (userId == -1) return Color.TRANSPARENT;
+    public static String getDisplayName(final String name, final String screenName, final boolean nameFirst) {
+        return nameFirst && !isEmpty(name) ? name : "@" + screenName;
+    }
+
+    public int getUserColor(@NonNull final UserKey userId, final boolean ignoreCache) {
+        return getUserColor(userId.toString(), ignoreCache);
+    }
+
+    public int getUserColor(@NonNull final String userId, final boolean ignoreCache) {
         if (!ignoreCache && mUserColors.indexOfKey(userId) >= 0) return mUserColors.get(userId);
-        final int color = mColorPreferences.getInt(Long.toString(userId), Color.TRANSPARENT);
+        final int color = mColorPreferences.getInt(userId, Color.TRANSPARENT);
         mUserColors.put(userId, color);
         return color;
     }
 
     public interface UserColorChangedListener {
-        void onUserColorChanged(long userId, int color);
+        void onUserColorChanged(@NonNull UserKey userId, int color);
     }
 
     private static final class OnColorPreferenceChangeListener implements OnSharedPreferenceChangeListener {
@@ -115,9 +132,8 @@ public class UserColorNameManager implements TwittnukerConstants {
 
         @Override
         public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-            final long def = -1;
-            final long userId = NumberUtils.toLong(key, def);
-            if (mListener != null) {
+            final UserKey userId = UserKey.valueOf(key);
+            if (mListener != null && userId != null) {
                 mListener.onUserColorChanged(userId, sharedPreferences.getInt(key, 0));
             }
         }

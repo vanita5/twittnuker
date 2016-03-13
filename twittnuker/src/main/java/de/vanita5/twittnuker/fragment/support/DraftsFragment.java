@@ -66,7 +66,7 @@ import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.DraftCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
@@ -298,7 +298,7 @@ public class DraftsFragment extends BaseSupportFragment implements Constants, Lo
                     if (ArrayUtils.isEmpty(item.account_ids) || recipientId <= 0) {
                         continue;
                     }
-                    final AccountKey accountId = item.account_ids[0];
+                    final UserKey accountId = item.account_ids[0];
                     final String imageUri = item.media != null && item.media.length > 0 ? item.media[0].uri : null;
                     twitter.sendDirectMessageAsync(accountId, recipientId, item.text, imageUri);
                     break;

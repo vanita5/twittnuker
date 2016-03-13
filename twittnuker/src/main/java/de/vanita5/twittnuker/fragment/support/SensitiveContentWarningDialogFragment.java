@@ -30,7 +30,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.IntentUtils;
@@ -47,7 +47,7 @@ public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFrag
                 final Context context = getActivity();
                 final Bundle args = getArguments();
                 if (args == null || context == null) return;
-                final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+                final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
                 final ParcelableMedia current = args.getParcelable(EXTRA_CURRENT_MEDIA);
                 final ParcelableStatus status = args.getParcelable(EXTRA_STATUS);
                 final Bundle option = args.getBundle(EXTRA_ACTIVITY_OPTIONS);

@@ -36,7 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -62,7 +62,7 @@ public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements C
     private final boolean mDisplayProfileImage;
 
     private int mTypeIdx, mIconIdx, mTitleIdx, mSummaryIdx, mExtraIdIdx, mValueIdx;
-    private AccountKey mAccountKey;
+    private UserKey mAccountKey;
     private char mToken;
 
     public ComposeAutoCompleteAdapter(final Context context) {
@@ -82,7 +82,7 @@ public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements C
 
         if (Suggestions.AutoComplete.TYPE_USERS.equals(cursor.getString(mTypeIdx))) {
             text1.setText(cursor.getString(mTitleIdx));
-            text2.setText('@' + cursor.getString(mSummaryIdx));
+            text2.setText(String.format("@%s", cursor.getString(mSummaryIdx)));
             if (mDisplayProfileImage) {
                 final String profileImageUrl = cursor.getString(mIconIdx);
                 mProfileImageLoader.displayProfileImage(icon, profileImageUrl);
@@ -92,7 +92,7 @@ public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements C
 
             icon.clearColorFilter();
         } else {
-            text1.setText('#' + cursor.getString(mTitleIdx));
+            text1.setText(String.format("#%s", cursor.getString(mTitleIdx)));
             text2.setText(R.string.hashtag);
 
             icon.setImageResource(R.drawable.ic_action_hashtag);
@@ -153,7 +153,7 @@ public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements C
     }
 
 
-    public void setAccountKey(AccountKey accountKey) {
+    public void setAccountKey(UserKey accountKey) {
         mAccountKey = accountKey;
     }
 

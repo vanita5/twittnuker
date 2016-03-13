@@ -27,7 +27,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public class LinkCreator implements Constants {
@@ -44,7 +44,7 @@ public class LinkCreator implements Constants {
         return builder.build();
     }
 
-    public static Uri getTwidereStatusLink(AccountKey accountKey, long statusId) {
+    public static Uri getTwidereStatusLink(UserKey accountKey, long statusId) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_STATUS);
@@ -55,7 +55,7 @@ public class LinkCreator implements Constants {
         return builder.build();
     }
 
-    public static Uri getTwidereUserLink(@Nullable AccountKey accountKey, long userId, String screenName) {
+    public static Uri getTwidereUserLink(@Nullable UserKey accountKey, long userId, String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER);

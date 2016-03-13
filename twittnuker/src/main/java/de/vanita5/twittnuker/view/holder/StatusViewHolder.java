@@ -43,12 +43,11 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.TwidereLinkify;
@@ -251,7 +250,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
             if (statusContentUpperSpace != null) {
                 statusContentUpperSpace.setVisibility(View.GONE);
             }
-        } else if (status.in_reply_to_status_id > 0 && status.in_reply_to_user_id > 0 && displayInReplyTo) {
+        } else if (status.in_reply_to_status_id > 0 && status.in_reply_to_user_id != null && displayInReplyTo) {
             final String inReplyTo = manager.getDisplayName(status.in_reply_to_user_id,
                     status.in_reply_to_name, status.in_reply_to_screen_name, nameFirst, false);
             statusInfoLabel.setText(context.getString(R.string.in_reply_to_name, formatter.unicodeWrap(inReplyTo)));
@@ -297,7 +296,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
             }
 
             quoteIndicator.setColor(manager.getUserColor(status.quoted_user_id, false));
-            itemContent.drawStart(manager.getUserColor(status.user_id, false));
+            itemContent.drawStart(manager.getUserColor(status.user_key, false));
         } else {
 
             quotedNameView.setVisibility(View.GONE);
@@ -306,9 +305,9 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
 
             if (status.is_retweet) {
                 itemContent.drawStart(manager.getUserColor(status.retweeted_by_user_id, false),
-                        manager.getUserColor(status.user_id, false));
+                        manager.getUserColor(status.user_key, false));
             } else {
-                itemContent.drawStart(manager.getUserColor(status.user_id, false));
+                itemContent.drawStart(manager.getUserColor(status.user_key, false));
             }
         }
 
@@ -408,7 +407,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         } else {
             final boolean creatingRetweet = twitter.isCreatingRetweet(status.account_key, status.id);
             retweetIconView.setActivated(creatingRetweet || status.retweeted ||
-                    Utils.isMyRetweet(status.account_key.getId(), status.retweeted_by_user_id,
+                    Utils.isMyRetweet(status.account_key, status.retweeted_by_user_id,
                             status.my_retweet_id));
             retweetCount = status.retweet_count + (creatingRetweet ? 1 : 0);
         }
@@ -456,7 +455,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
     }
 
     @Override
-    public void onMediaClick(View view, ParcelableMedia media, AccountKey accountId, long extraId) {
+    public void onMediaClick(View view, ParcelableMedia media, UserKey accountId, long extraId) {
         if (statusClickListener == null) return;
         final int position = getLayoutPosition();
         statusClickListener.onMediaClick(this, view, media, position);

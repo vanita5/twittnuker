@@ -291,7 +291,7 @@ public class MenuUtils implements Constants {
             }
             case R.id.set_color: {
                 final Intent intent = new Intent(context, ColorPickerDialogActivity.class);
-                final int color = colorNameManager.getUserColor(status.user_id, true);
+                final int color = colorNameManager.getUserColor(status.user_key, true);
                 if (color != 0) {
                     intent.putExtra(IntentConstants.EXTRA_COLOR, color);
                 }

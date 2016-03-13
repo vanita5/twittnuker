@@ -37,7 +37,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.util.LongSparseArray;
 import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
 import android.widget.Toast;
@@ -63,7 +62,7 @@ import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -96,7 +95,7 @@ import java.util.List;
 
 public class StreamingService extends Service implements Constants {
 
-    private final SimpleArrayMap<AccountKey, UserStreamCallback> mCallbacks = new SimpleArrayMap<>();
+    private final SimpleArrayMap<UserKey, UserStreamCallback> mCallbacks = new SimpleArrayMap<>();
     private ContentResolver mResolver;
 
     private SharedPreferences mPreferences;
@@ -104,7 +103,7 @@ public class StreamingService extends Service implements Constants {
 
     private AsyncTwitterWrapper mTwitterWrapper;
 
-    private AccountKey[] mAccountKeys;
+    private UserKey[] mAccountKeys;
     private boolean mNetworkOK;
 
     private static final Uri[] STATUSES_URIS = new Uri[]{Statuses.CONTENT_URI, Mentions.CONTENT_URI};
@@ -219,7 +218,7 @@ public class StreamingService extends Service implements Constants {
 
     private boolean setTwitterInstances() {
         final List<ParcelableCredentials> accountsList = DataStoreUtils.getCredentialsList(this, true);
-        final AccountKey[] accountKeys = new AccountKey[accountsList.size()];
+        final UserKey[] accountKeys = new UserKey[accountsList.size()];
         for (int i = 0, j = accountKeys.length; i < j; i++) {
             final ParcelableCredentials credentials = accountsList.get(i);
             accountKeys[i] = credentials.account_key;
@@ -242,7 +241,7 @@ public class StreamingService extends Service implements Constants {
             final Authorization authorization = TwitterAPIFactory.getAuthorization(account);
             final TwitterUserStream twitter = TwitterAPIFactory.getInstance(this, endpoint, authorization, TwitterUserStream.class);
             final TwidereUserStreamCallback callback = new TwidereUserStreamCallback(this, account, mPreferences);
-            refreshBefore(new AccountKey[]{account.account_key});
+            refreshBefore(new UserKey[]{account.account_key});
             mCallbacks.put(account.account_key, callback);
             Log.d(Constants.LOGTAG, String.format("Stream %s starts...", account.account_key));
             new Thread() {
@@ -257,7 +256,7 @@ public class StreamingService extends Service implements Constants {
         return result;
     }
 
-    private void refreshBefore(final AccountKey[] mAccountId) {
+    private void refreshBefore(final UserKey[] mAccountId) {
         if (mPreferences.getBoolean(KEY_REFRESH_BEFORE_STREAMING, true)) {
             mTwitterWrapper.refreshAll(mAccountId);
         }

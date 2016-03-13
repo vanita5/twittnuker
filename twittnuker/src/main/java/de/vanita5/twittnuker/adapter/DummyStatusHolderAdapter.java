@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -202,13 +202,13 @@ public final class DummyStatusHolderAdapter implements IStatusesAdapter<Object>,
 
     @Override
     @Nullable
-    public AccountKey getAccountKey(int position) {
+    public UserKey getAccountKey(int position) {
         return null;
     }
 
     @Nullable
     @Override
-    public ParcelableStatus findStatusById(AccountKey accountId, long statusId) {
+    public ParcelableStatus findStatusById(UserKey accountId, long statusId) {
         return null;
     }
 

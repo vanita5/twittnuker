@@ -53,7 +53,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -375,14 +375,14 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
         if (value == null || args == null || conf == null) return;
         if (value instanceof ParcelableUser) {
             final ParcelableUser user = (ParcelableUser) value;
-            args.putLong(EXTRA_USER_ID, user.id);
+            args.putLong(EXTRA_USER_ID, user.key.getId());
             args.putString(EXTRA_SCREEN_NAME, user.screen_name);
             args.putString(EXTRA_NAME, user.name);
         } else if (value instanceof ParcelableUserList) {
             final ParcelableUserList user_list = (ParcelableUserList) value;
             args.putLong(EXTRA_LIST_ID, user_list.id);
             args.putString(EXTRA_LIST_NAME, user_list.name);
-            args.putLong(EXTRA_USER_ID, user_list.user_id);
+            args.putLong(EXTRA_USER_ID, user_list.user_key.getId());
             args.putString(EXTRA_SCREEN_NAME, user_list.user_screen_name);
         } else if (value instanceof CharSequence) {
             final String key = conf.getSecondaryFieldTextKey();
@@ -395,7 +395,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
         addFieldValueToArguments(value, args);
     }
 
-    private AccountKey getAccountKey() {
+    private UserKey getAccountKey() {
         final int pos = mAccountSpinner.getSelectedItemPosition();
         if (mAccountSpinner.getCount() > pos && pos >= 0) {
             ParcelableCredentials credentials = mAccountsAdapter.getItem(pos);

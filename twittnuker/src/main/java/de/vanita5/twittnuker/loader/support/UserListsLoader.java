@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 
 public class UserListsLoader extends BaseUserListsLoader {
@@ -39,7 +39,7 @@ public class UserListsLoader extends BaseUserListsLoader {
     private final String mScreenName;
     private final boolean mReverse;
 
-    public UserListsLoader(final Context context, final AccountKey accountKey, final long userId,
+    public UserListsLoader(final Context context, final UserKey accountKey, final long userId,
                            final String screenName, final boolean reverse, final List<ParcelableUserList> data) {
         super(context, accountKey, 0, data);
         mUserId = userId;

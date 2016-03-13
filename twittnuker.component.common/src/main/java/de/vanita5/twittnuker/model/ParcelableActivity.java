@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -34,7 +33,6 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.model.util.AccountKeyConverter;
 import de.vanita5.twittnuker.model.util.AccountKeyCursorFieldConverter;
 import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
@@ -66,7 +64,7 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     @ParcelableThisPlease
     @JsonField(name = "account_id", typeConverter = AccountKeyConverter.class)
     @CursorField(value = Activities.ACCOUNT_KEY, converter = AccountKeyCursorFieldConverter.class)
-    public AccountKey account_key;
+    public UserKey account_key;
     @ParcelableThisPlease
     @JsonField(name = "timestamp")
     @CursorField(value = Activities.TIMESTAMP)
@@ -137,7 +135,7 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     public ParcelableActivity() {
     }
 
-    public static int calculateHashCode(AccountKey accountKey, long timestamp, long maxPosition, long minPosition) {
+    public static int calculateHashCode(UserKey accountKey, long timestamp, long maxPosition, long minPosition) {
         int result = accountKey.hashCode();
         result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
         result = 31 * result + (int) (maxPosition ^ (maxPosition >>> 32));

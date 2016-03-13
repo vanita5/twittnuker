@@ -27,21 +27,24 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 import java.util.ArrayList;
 
-public class AccountKeyUtils {
+public class UserKeyUtils {
 
     @Nullable
-    public static AccountKey findById(Context context, long id) {
+    public static UserKey findById(Context context, long id) {
         final String[] projection = {Accounts.ACCOUNT_KEY};
         final Cursor cur = DataStoreUtils.findAccountCursorsById(context, projection, id);
         if (cur == null) return null;
         try {
-            if (cur.moveToFirst()) return AccountKey.valueOf(cur.getString(0));
+            if (cur.moveToFirst()) return UserKey.valueOf(cur.getString(0));
         } finally {
             cur.close();
         }
@@ -49,20 +52,36 @@ public class AccountKeyUtils {
     }
 
     @NonNull
-    public static AccountKey[] findByIds(Context context, long... id) {
+    public static UserKey[] findByIds(Context context, long... id) {
         final String[] projection = {Accounts.ACCOUNT_KEY};
         final Cursor cur = DataStoreUtils.findAccountCursorsById(context, projection, id);
-        if (cur == null) return new AccountKey[0];
+        if (cur == null) return new UserKey[0];
         try {
-            final ArrayList<AccountKey> accountKeys = new ArrayList<>();
+            final ArrayList<UserKey> accountKeys = new ArrayList<>();
             cur.moveToFirst();
             while (!cur.isAfterLast()) {
-                accountKeys.add(AccountKey.valueOf(cur.getString(0)));
+                accountKeys.add(UserKey.valueOf(cur.getString(0)));
                 cur.moveToNext();
             }
-            return accountKeys.toArray(new AccountKey[accountKeys.size()]);
+            return accountKeys.toArray(new UserKey[accountKeys.size()]);
         } finally {
             cur.close();
         }
+    }
+
+    public static UserKey fromUser(User user) {
+        return new UserKey(user.getId(), getUserHost(user));
+    }
+
+    public static String getUserHost(User user) {
+        return getUserHost(user.getOstatusUri());
+    }
+
+    @NonNull
+    public static String getUserHost(@Nullable String uri) {
+        if (uri == null) return TwittnukerConstants.USER_TYPE_TWITTER_COM;
+        final String authority = PreviewMediaExtractor.getAuthority(uri);
+        if (authority == null) return TwittnukerConstants.USER_TYPE_TWITTER_COM;
+        return authority.replaceAll("[^\\w\\d\\.]", "-");
     }
 }

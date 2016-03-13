@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.loader.support.iface.ICursorSupportLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -47,12 +47,12 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
         implements TwittnukerConstants, ICursorSupportLoader {
 
     protected final NoDuplicatesArrayList<ParcelableUserList> mData = new NoDuplicatesArrayList<>();
-    protected final AccountKey mAccountId;
+    protected final UserKey mAccountId;
     private final long mCursor;
 
     private long mNextCursor, mPrevCursor;
 
-    public BaseUserListsLoader(final Context context, final AccountKey accountKey, final long cursor,
+    public BaseUserListsLoader(final Context context, final UserKey accountKey, final long cursor,
                                final List<ParcelableUserList> data) {
         super(context);
         if (data != null) {

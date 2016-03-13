@@ -54,7 +54,7 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCal
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -77,7 +77,7 @@ public class SearchFragment extends BaseSupportFragment implements RefreshScroll
     private int mControlBarOffsetPixels;
     private int mControlBarHeight;
 
-    public AccountKey getAccountKey() {
+    public UserKey getAccountKey() {
         return getArguments().getParcelable(EXTRA_ACCOUNT_KEY);
     }
 

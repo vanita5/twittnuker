@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -79,6 +80,7 @@ public class TwitterException extends Exception implements TwitterResponse, Http
         if (cause instanceof TwitterException) {
             ((TwitterException) cause).setNested();
         }
+        setCausedByNetworkIssue(cause instanceof IOException);
     }
 
 

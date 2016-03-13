@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.ReadStateManager.OnReadStateChangeListener;
@@ -245,12 +245,12 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     public static class DirectMessageEntry {
 
-        public final AccountKey account_key;
+        public final UserKey account_key;
         public final long conversation_id;
         public final String screen_name, name;
 
         DirectMessageEntry(Cursor cursor) {
-            account_key = AccountKey.valueOf(cursor.getString(ConversationEntries.IDX_ACCOUNT_KEY));
+            account_key = UserKey.valueOf(cursor.getString(ConversationEntries.IDX_ACCOUNT_KEY));
             conversation_id = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);
             screen_name = cursor.getString(ConversationEntries.IDX_SCREEN_NAME);
             name = cursor.getString(ConversationEntries.IDX_NAME);

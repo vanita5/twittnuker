@@ -61,7 +61,7 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
     @ParcelableThisPlease
     @JsonField(name = "account_id", typeConverter = AccountKeyConverter.class)
     @CursorField(value = DirectMessages.ACCOUNT_KEY, converter = AccountKeyCursorFieldConverter.class)
-    public AccountKey account_key;
+    public UserKey account_key;
     @ParcelableThisPlease
     @JsonField(name = "id")
     @CursorField(DirectMessages.MESSAGE_ID)

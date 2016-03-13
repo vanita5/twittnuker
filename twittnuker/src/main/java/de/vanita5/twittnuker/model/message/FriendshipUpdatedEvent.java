@@ -25,24 +25,24 @@ package de.vanita5.twittnuker.model.message;
 import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.api.twitter.model.Relationship;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 
 public class FriendshipUpdatedEvent {
 
     @NonNull
-    AccountKey accountKey;
+    UserKey accountKey;
     long userId;
     @NonNull
     Relationship relationship;
 
-    public FriendshipUpdatedEvent(@NonNull AccountKey accountKey, long userId, @NonNull Relationship relationship) {
+    public FriendshipUpdatedEvent(@NonNull UserKey accountKey, long userId, @NonNull Relationship relationship) {
         this.accountKey = accountKey;
         this.userId = userId;
         this.relationship = relationship;
     }
 
     @NonNull
-    public AccountKey getAccountKey() {
+    public UserKey getAccountKey() {
         return accountKey;
     }
 
@@ -56,14 +56,14 @@ public class FriendshipUpdatedEvent {
     }
 
     public boolean isAccount(long accountId, String accountHost) {
-        return accountKey.isAccount(accountId, accountHost);
+        return accountKey.check(accountId, accountHost);
     }
 
     public boolean isUser(long id) {
         return userId == id;
     }
 
-    public boolean isAccount(AccountKey accountKey) {
+    public boolean isAccount(UserKey accountKey) {
         return this.accountKey.equals(accountKey);
     }
 }

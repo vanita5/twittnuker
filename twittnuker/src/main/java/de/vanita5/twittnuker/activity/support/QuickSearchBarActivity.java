@@ -59,7 +59,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
@@ -112,7 +112,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         mUsersSearchAdapter.addRemovedPositions(reverseSortedPositions);
         final ContentResolver cr = getContentResolver();
         ContentResolverUtils.bulkDelete(cr, SearchHistory.CONTENT_URI, SearchHistory._ID, ids,
-                null, false);
+                null);
         getSupportLoaderManager().restartLoader(0, null, this);
     }
 
@@ -148,7 +148,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        final AccountKey accountId = getSelectedAccountKey();
+        final UserKey accountId = getSelectedAccountKey();
         final Uri.Builder builder = Suggestions.Search.CONTENT_URI.buildUpon();
         builder.appendQueryParameter(QUERY_PARAM_QUERY, ParseUtils.parseString(mSearchQuery.getText()));
         if (accountId != null) {
@@ -234,7 +234,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         mAccountSpinner.setOnItemSelectedListener(this);
         if (savedInstanceState == null) {
             final Intent intent = getIntent();
-            final AccountKey accountKey = intent.getParcelableExtra(EXTRA_ACCOUNT_KEY);
+            final UserKey accountKey = intent.getParcelableExtra(EXTRA_ACCOUNT_KEY);
             final int index = accountsSpinnerAdapter.findItemPosition(System.identityHashCode(accountKey));
             if (index != -1) {
                 mAccountSpinner.setSelection(index);
@@ -297,7 +297,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         finish();
     }
 
-    private AccountKey getSelectedAccountKey() {
+    private UserKey getSelectedAccountKey() {
         final ParcelableAccount account = (ParcelableAccount) mAccountSpinner.getSelectedItem();
         if (account == null) return null;
         return account.account_key;
@@ -405,6 +405,8 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
                 }
                 case VIEW_TYPE_USER_SUGGESTION_ITEM: {
                     final UserViewHolder holder = (UserViewHolder) view.getTag();
+                    final UserKey userKey = UserKey.valueOf(cursor.getString(mIndices.extra_id));
+                    assert userKey != null;
                     holder.text1.setText(
                             cursor.getString(mIndices.title));
                     holder.text2.setVisibility(View.VISIBLE);

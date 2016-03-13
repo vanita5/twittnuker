@@ -53,7 +53,7 @@ import de.vanita5.twittnuker.fragment.support.TrendsSuggestionsFragment;
 import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
@@ -305,8 +305,8 @@ public class CustomTabUtils implements Constants {
     }
 
     public static boolean hasAccountId(final Context context, @NonNull final Bundle args,
-                                       final AccountKey[] activatedAccountKeys, AccountKey accountKey) {
-        final AccountKey[] accountKeys = Utils.getAccountKeys(context, args);
+                                       final UserKey[] activatedAccountKeys, UserKey accountKey) {
+        final UserKey[] accountKeys = Utils.getAccountKeys(context, args);
         if (accountKeys != null) {
             return ArrayUtils.contains(accountKeys, accountKey);
         }

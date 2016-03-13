@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
@@ -89,7 +89,7 @@ public class ParcelableUsersAdapter extends AbsUsersAdapter<List<ParcelableUser>
     @Override
     public long getUserId(int position) {
         if (position == getUserCount()) return -1;
-        return mData.get(position).id;
+        return mData.get(position).key.getId();
     }
 
     @Override
@@ -106,11 +106,11 @@ public class ParcelableUsersAdapter extends AbsUsersAdapter<List<ParcelableUser>
         return true;
     }
 
-    public int findPosition(AccountKey accountKey, long userId) {
+    public int findPosition(UserKey accountKey, long userId) {
         if (mData == null) return RecyclerView.NO_POSITION;
         for (int i = getUserStartIndex(), j = i + getUserCount(); i < j; i++) {
             final ParcelableUser user = mData.get(i);
-            if (user.account_key.equals(accountKey) && user.id == userId) {
+            if (user.account_key.equals(accountKey) && user.key.getId() == userId) {
                 return i;
             }
         }

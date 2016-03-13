@@ -31,7 +31,7 @@ import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public abstract class ParcelableUserListsFragment extends AbsUserListsFragment<L
     }
 
     @Nullable
-    protected AccountKey getAccountKey() {
+    protected UserKey getAccountKey() {
         final Bundle args = getArguments();
         return args.getParcelable(EXTRA_ACCOUNT_KEY);
     }

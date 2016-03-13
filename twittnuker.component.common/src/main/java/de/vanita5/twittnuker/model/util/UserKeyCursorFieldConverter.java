@@ -25,23 +25,21 @@ package de.vanita5.twittnuker.model.util;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
-
 import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 
 import java.lang.reflect.ParameterizedType;
 
-public class AccountKeyConverter extends StringBasedTypeConverter<AccountKey> {
-
+public class UserKeyCursorFieldConverter implements CursorFieldConverter<UserKey> {
     @Override
-    public AccountKey getFromString(String string) {
-        return AccountKey.valueOf(string);
+    public UserKey parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
+        return UserKey.valueOf(cursor.getString(columnIndex));
     }
 
     @Override
-    public String convertToString(AccountKey object) {
-        if (object == null) return null;
-        return object.toString();
+    public void writeField(ContentValues values, UserKey object, String columnName, ParameterizedType fieldType) {
+        if (object == null) return;
+        values.put(columnName, object.toString());
     }
+
 }

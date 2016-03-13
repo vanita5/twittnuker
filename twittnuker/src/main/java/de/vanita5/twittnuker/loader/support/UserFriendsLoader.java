@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.DataStoreUtils;
@@ -42,7 +42,7 @@ public class UserFriendsLoader extends CursorSupportUsersLoader {
     private final long mUserId;
     private final String mScreenName;
 
-    public UserFriendsLoader(final Context context, final AccountKey accountKey, final long userId,
+    public UserFriendsLoader(final Context context, final UserKey accountKey, final long userId,
                              final String screenName, final List<ParcelableUser> userList,
                              boolean fromUser) {
         super(context, accountKey, userList, fromUser);

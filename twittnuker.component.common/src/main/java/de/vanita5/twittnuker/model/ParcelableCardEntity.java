@@ -59,7 +59,7 @@ public final class ParcelableCardEntity implements Parcelable {
     };
     @ParcelableThisPlease
     @JsonField(name = "account_id", typeConverter = AccountKeyConverter.class)
-    public AccountKey account_key;
+    public UserKey account_key;
     @ParcelableThisPlease
     @JsonField(name = "name")
     public String name;

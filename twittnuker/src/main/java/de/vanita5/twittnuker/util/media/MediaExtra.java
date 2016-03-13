@@ -22,18 +22,18 @@
 
 package de.vanita5.twittnuker.util.media;
 
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 
 public class MediaExtra {
-    AccountKey accountKey;
+    UserKey accountKey;
     String fallbackUrl;
     boolean skipUrlReplacing;
 
-    public AccountKey getAccountKey() {
+    public UserKey getAccountKey() {
         return accountKey;
     }
 
-    public void setAccountKey(AccountKey accountKey) {
+    public void setAccountKey(UserKey accountKey) {
         this.accountKey = accountKey;
     }
 

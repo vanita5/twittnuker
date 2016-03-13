@@ -31,30 +31,18 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
-import de.vanita5.twittnuker.model.util.AccountKeyConverter;
+import de.vanita5.twittnuker.model.util.UserKeyConverter;
 
 @ParcelablePlease
 @JsonObject
 public class ParcelableUserList implements Parcelable, Comparable<ParcelableUserList> {
 
     @ParcelableThisPlease
-    @JsonField(name = "members_count")
-    public long members_count;
-    @ParcelableThisPlease
-    @JsonField(name = "subscribers_count")
-    public long subscribers_count;
-    @ParcelableThisPlease
-    @JsonField(name = "account_id", typeConverter = AccountKeyConverter.class)
-    public AccountKey account_key;
+    @JsonField(name = "account_id", typeConverter = UserKeyConverter.class)
+    public UserKey account_key;
     @ParcelableThisPlease
     @JsonField(name = "id")
     public long id;
-    @ParcelableThisPlease
-    @JsonField(name = "user_id")
-    public long user_id;
-    @ParcelableThisPlease
-    @JsonField(name = "position")
-    public long position;
     @ParcelableThisPlease
     @JsonField(name = "is_public")
     public boolean is_public;
@@ -67,6 +55,21 @@ public class ParcelableUserList implements Parcelable, Comparable<ParcelableUser
     @ParcelableThisPlease
     @JsonField(name = "name")
     public String name;
+
+    @ParcelableThisPlease
+    @JsonField(name = "position")
+    public long position;
+
+    @ParcelableThisPlease
+    @JsonField(name = "members_count")
+    public long members_count;
+    @ParcelableThisPlease
+    @JsonField(name = "subscribers_count")
+    public long subscribers_count;
+
+    @ParcelableThisPlease
+    @JsonField(name = "user_id", typeConverter = UserKeyConverter.class)
+    public UserKey user_key;
     @ParcelableThisPlease
     @JsonField(name = "user_screen_name")
     public String user_screen_name;
@@ -114,7 +117,7 @@ public class ParcelableUserList implements Parcelable, Comparable<ParcelableUser
                 ", subscribers_count=" + subscribers_count +
                 ", account_key=" + account_key +
                 ", id=" + id +
-                ", user_id=" + user_id +
+                ", user_id=" + user_key +
                 ", position=" + position +
                 ", is_public=" + is_public +
                 ", is_following=" + is_following +

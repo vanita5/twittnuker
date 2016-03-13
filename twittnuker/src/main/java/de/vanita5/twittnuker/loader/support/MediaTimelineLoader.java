@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
@@ -53,7 +53,7 @@ public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
 
     private User mUser;
 
-    public MediaTimelineLoader(final Context context, final AccountKey accountKey, final long userId,
+    public MediaTimelineLoader(final Context context, final UserKey accountKey, final long userId,
                                final String screenName, final long sinceId, final long maxId,
                                final List<ParcelableStatus> data, final String[] savedStatusesArgs,
                                final int tabPosition, final boolean fromUser) {
@@ -105,9 +105,9 @@ public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
     @WorkerThread
     @Override
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
-        final long retweetUserId = status.is_retweet ? status.user_id : -1;
+        final UserKey retweetUserId = status.is_retweet ? status.user_key : null;
         return !isMyTimeline() && InternalTwitterContentUtils.isFiltered(database, retweetUserId, status.text_plain,
-                status.text_html, status.source, -1, status.quoted_user_id);
+                status.text_html, status.source, null, status.quoted_user_id);
     }
 
     private boolean isMyTimeline() {

@@ -36,7 +36,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -114,7 +114,7 @@ public class MediaLoaderWrapper implements Constants {
     }
 
     public void displayPreviewImageWithCredentials(final ImageView view, final String url,
-                                                   final AccountKey accountKey,
+                                                   final UserKey accountKey,
                                                    final MediaLoadingHandler loadingHandler) {
         if (accountKey == null) {
             displayPreviewImage(view, url, loadingHandler);

@@ -30,7 +30,7 @@ import android.util.Log;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
@@ -42,9 +42,9 @@ import java.util.List;
 public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
 
     @Nullable
-    private final AccountKey mAccountKey;
+    private final UserKey mAccountKey;
 
-    public TwitterAPIUsersLoader(final Context context, @Nullable final AccountKey accountKey,
+    public TwitterAPIUsersLoader(final Context context, @Nullable final UserKey accountKey,
                                  final List<ParcelableUser> data, boolean fromUser) {
         super(context, data, fromUser);
         mAccountKey = accountKey;
@@ -79,7 +79,7 @@ public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
     }
 
     @Nullable
-    public final AccountKey getAccountId() {
+    public final UserKey getAccountId() {
         return mAccountKey;
     }
 

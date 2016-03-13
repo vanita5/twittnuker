@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.Trend;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
@@ -69,7 +69,7 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 public final class ContentValuesCreator implements TwittnukerConstants {
 
     public static ContentValues createCachedRelationship(final Relationship relationship,
-                                                         final AccountKey accountKey) {
+                                                         final UserKey accountKey) {
         final ContentValues values = new ContentValues();
         values.put(CachedRelationships.ACCOUNT_KEY, accountKey.toString());
         values.put(CachedRelationships.USER_ID, relationship.getTargetUserId());
@@ -89,7 +89,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     }
 
     public static ContentValues createDirectMessage(final DirectMessage message,
-                                                    final AccountKey accountKey,
+                                                    final UserKey accountKey,
                                                     final boolean isOutgoing) {
         if (message == null) return null;
         final ContentValues values = new ContentValues();
@@ -134,7 +134,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     public static ContentValues createFilteredUser(final ParcelableStatus status) {
         if (status == null) return null;
         final ContentValues values = new ContentValues();
-        values.put(Filters.Users.USER_ID, status.user_id);
+        values.put(Filters.Users.USER_ID, status.user_key.toString());
         values.put(Filters.Users.NAME, status.user_name);
         values.put(Filters.Users.SCREEN_NAME, status.user_screen_name);
         return values;
@@ -143,7 +143,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     public static ContentValues createFilteredUser(final ParcelableUser user) {
         if (user == null) return null;
         final ContentValues values = new ContentValues();
-        values.put(Filters.Users.USER_ID, user.id);
+        values.put(Filters.Users.USER_ID, user.key.toString());
         values.put(Filters.Users.NAME, user.name);
         values.put(Filters.Users.SCREEN_NAME, user.screen_name);
         return values;
@@ -152,14 +152,14 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     public static ContentValues createFilteredUser(final ParcelableUserMention user) {
         if (user == null) return null;
         final ContentValues values = new ContentValues();
-        values.put(Filters.Users.USER_ID, user.id);
+        values.put(Filters.Users.USER_ID, user.key.toString());
         values.put(Filters.Users.NAME, user.name);
         values.put(Filters.Users.SCREEN_NAME, user.screen_name);
         return values;
     }
 
-    public static ContentValues createMessageDraft(final AccountKey accountKey, final long recipientId,
-            final String text, final String imageUri) {
+    public static ContentValues createMessageDraft(final UserKey accountKey, final long recipientId,
+                                                   final String text, final String imageUri) {
         final ContentValues values = new ContentValues();
         values.put(Drafts.ACTION_TYPE, Draft.Action.SEND_DIRECT_MESSAGE);
         values.put(Drafts.TEXT, text);
@@ -178,7 +178,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     }
 
     public static ContentValues createSavedSearch(final SavedSearch savedSearch,
-                                                  final AccountKey accountKey) {
+                                                  final UserKey accountKey) {
         final ContentValues values = new ContentValues();
         values.put(SavedSearches.ACCOUNT_KEY, accountKey.toString());
         values.put(SavedSearches.SEARCH_ID, savedSearch.getId());
@@ -189,7 +189,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     }
 
     public static ContentValues[] createSavedSearches(final List<SavedSearch> savedSearches,
-                                                      final AccountKey accountKey) {
+                                                      final UserKey accountKey) {
         final ContentValues[] resultValuesArray = new ContentValues[savedSearches.size()];
         for (int i = 0, j = savedSearches.size(); i < j; i++) {
             resultValuesArray[i] = createSavedSearch(savedSearches.get(i), accountKey);
@@ -198,7 +198,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     }
 
     @NonNull
-    public static ContentValues createStatus(final Status orig, final AccountKey accountKey) {
+    public static ContentValues createStatus(final Status orig, final UserKey accountKey) {
         return ParcelableStatusValuesCreator.create(ParcelableStatusUtils.fromStatus(orig,
                 accountKey, false));
     }
@@ -217,14 +217,14 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     public static void createStatusActivity(@NonNull final ParcelableStatus status,
                                             @NonNull final ContentValues values) {
         if (status.is_retweet) {
-            values.put(Activities.STATUS_RETWEETED_BY_USER_ID, status.retweeted_by_user_id);
+            values.put(Activities.STATUS_RETWEETED_BY_USER_ID, String.valueOf(status.retweeted_by_user_id));
         } else if (status.is_quote) {
             values.put(Activities.STATUS_QUOTE_TEXT_HTML, status.quoted_text_html);
             values.put(Activities.STATUS_QUOTE_TEXT_PLAIN, status.quoted_text_plain);
             values.put(Activities.STATUS_QUOTE_SOURCE, status.quoted_source);
-            values.put(Activities.STATUS_QUOTED_USER_ID, status.quoted_user_id);
+            values.put(Activities.STATUS_QUOTED_USER_ID, String.valueOf(status.quoted_user_id));
         }
-        values.put(Activities.STATUS_USER_ID, status.user_id);
+        values.put(Activities.STATUS_USER_ID, String.valueOf(status.user_key));
         values.put(Activities.STATUS_USER_FOLLOWING, status.user_is_following);
         values.put(Activities.STATUS_TEXT_HTML, status.text_html);
         values.put(Activities.STATUS_TEXT_PLAIN, status.text_plain);
@@ -250,7 +250,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     public static ContentValues makeCachedUserContentValues(final ParcelableUser user) {
         if (user == null) return null;
         final ContentValues values = new ContentValues();
-        values.put(CachedUsers.USER_ID, user.id);
+        values.put(CachedUsers.USER_KEY, String.valueOf(user.key));
         values.put(CachedUsers.NAME, user.name);
         values.put(CachedUsers.SCREEN_NAME, user.screen_name);
         values.put(CachedUsers.PROFILE_IMAGE_URL, user.profile_image_url);

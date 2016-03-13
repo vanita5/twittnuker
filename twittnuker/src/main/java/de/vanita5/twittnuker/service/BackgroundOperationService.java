@@ -63,7 +63,8 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.ParcelableUserMention;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.DraftCursorIndices;
 import de.vanita5.twittnuker.model.DraftValuesCreator;
@@ -85,6 +86,7 @@ import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableDirectMessageUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
+import de.vanita5.twittnuker.model.util.ParcelableUserMentionUtils;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -264,7 +266,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                 if (ArrayUtils.isEmpty(item.account_ids) || recipientId <= 0) {
                     return;
                 }
-                final AccountKey accountKey = item.account_ids[0];
+                final UserKey accountKey = item.account_ids[0];
                 final String imageUri = ArrayUtils.isEmpty(item.media) ? null : item.media[0].uri;
                 sendMessage(accountKey, recipientId, item.text, imageUri);
                 break;
@@ -284,14 +286,14 @@ public class BackgroundOperationService extends IntentService implements Constan
     }
 
     private void handleSendDirectMessageIntent(final Intent intent) {
-        final AccountKey accountId = intent.getParcelableExtra(EXTRA_ACCOUNT_KEY);
+        final UserKey accountId = intent.getParcelableExtra(EXTRA_ACCOUNT_KEY);
         final long recipientId = intent.getLongExtra(EXTRA_RECIPIENT_ID, -1);
         final String imageUri = intent.getStringExtra(EXTRA_IMAGE_URI);
         final String text = intent.getStringExtra(EXTRA_TEXT);
         sendMessage(accountId, recipientId, text, imageUri);
     }
 
-    private void sendMessage(AccountKey accountId, long recipientId, String text, String imageUri) {
+    private void sendMessage(UserKey accountId, long recipientId, String text, String imageUri) {
         if (accountId == null || recipientId <= 0 || isEmpty(text)) return;
         final String title = getString(R.string.sending_direct_message);
         final Builder builder = new Builder(this);
@@ -372,7 +374,7 @@ public class BackgroundOperationService extends IntentService implements Constan
             boolean failed = false;
             Exception exception = null;
             final Expression where = Expression.equals(Drafts._ID, draftId);
-            final List<AccountKey> failedAccountIds = new ArrayList<>();
+            final List<UserKey> failedAccountIds = new ArrayList<>();
             Collections.addAll(failedAccountIds, ParcelableAccountUtils.getAccountKeys(item.accounts));
 
             for (final SingleResponse<ParcelableStatus> response : result) {
@@ -434,7 +436,7 @@ public class BackgroundOperationService extends IntentService implements Constan
 
 
     private SingleResponse<ParcelableDirectMessage> sendDirectMessage(final NotificationCompat.Builder builder,
-                                                                      final AccountKey accountKey, final long recipientId,
+                                                                      final UserKey accountKey, final long recipientId,
                                                                       final String text, final String imageUri) {
         final Twitter twitter = TwitterAPIFactory.getTwitterInstance(this, accountKey, true, true);
         final TwitterUpload twitterUpload = TwitterAPIFactory.getTwitterInstance(this, accountKey, true, true, TwitterUpload.class);
@@ -461,8 +463,8 @@ public class BackgroundOperationService extends IntentService implements Constan
             } else {
                 directMessage = ParcelableDirectMessageUtils.fromDirectMessage(twitter.sendDirectMessage(recipientId, text), accountKey, true);
             }
-            Utils.setLastSeen(this, recipientId, System.currentTimeMillis());
-
+            Utils.setLastSeen(this, new UserKey(recipientId, accountKey.getHost()),
+                    System.currentTimeMillis());
 
             return SingleResponse.getInstance(directMessage);
         } catch (final IOException e) {
@@ -675,8 +677,9 @@ public class BackgroundOperationService extends IntentService implements Constan
 
                     try {
                         final Status resultStatus = twitter.updateStatus(status);
-                        final UserMentionEntity[] entities = resultStatus.getUserMentionEntities();
-                        Utils.setLastSeen(this, entities, System.currentTimeMillis());
+                        ParcelableUserMention[] mentions = ParcelableUserMentionUtils.fromUserMentionEntities(resultStatus.getUser(),
+                                resultStatus.getUserMentionEntities());
+                        Utils.setLastSeen(this, mentions, System.currentTimeMillis());
                         if (!notReplyToOther) {
                             final long inReplyToUserId = resultStatus.getInReplyToUserId();
                             if (inReplyToUserId <= 0) {

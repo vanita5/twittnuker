@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 
@@ -44,7 +44,7 @@ public class UserListTimelineLoader extends TwitterAPIStatusesLoader {
     private final String mScreenName, mListName;
     private final long mListId;
 
-    public UserListTimelineLoader(final Context context, final AccountKey accountKey, final long listId,
+    public UserListTimelineLoader(final Context context, final UserKey accountKey, final long listId,
                                   final long userId, final String screenName, final String listName,
                                   final long sinceId, final long maxId, final List<ParcelableStatus> data,
                                   final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {

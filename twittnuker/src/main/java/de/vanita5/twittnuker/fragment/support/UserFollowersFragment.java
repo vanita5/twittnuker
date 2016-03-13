@@ -30,7 +30,7 @@ import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.UserFollowersLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.UsersBlockedEvent;
 
 import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
@@ -40,7 +40,7 @@ public class UserFollowersFragment extends CursorSupportUsersListFragment {
     @Override
     public CursorSupportUsersLoader onCreateUsersLoader(final Context context,
                                                         @NonNull final Bundle args, boolean fromUser) {
-        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         final UserFollowersLoader loader = new UserFollowersLoader(context, accountKey, userId,
@@ -63,7 +63,7 @@ public class UserFollowersFragment extends CursorSupportUsersListFragment {
 
     @Subscribe
     public void onUsersBlocked(UsersBlockedEvent event) {
-        final AccountKey accountKey = event.getAccountKey();
+        final UserKey accountKey = event.getAccountKey();
         final String screen_name = getAccountScreenName(getActivity(), accountKey);
         final Bundle args = getArguments();
         if (args == null) return;

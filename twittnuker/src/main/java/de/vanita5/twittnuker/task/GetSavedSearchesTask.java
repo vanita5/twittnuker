@@ -34,14 +34,14 @@ import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
-public class GetSavedSearchesTask extends AbstractTask<AccountKey[], SingleResponse<Object>, Object>
+public class GetSavedSearchesTask extends AbstractTask<UserKey[], SingleResponse<Object>, Object>
         implements Constants {
 
     private final Context mContext;
@@ -51,9 +51,9 @@ public class GetSavedSearchesTask extends AbstractTask<AccountKey[], SingleRespo
     }
 
     @Override
-    public SingleResponse<Object> doLongOperation(AccountKey[] params) {
+    public SingleResponse<Object> doLongOperation(UserKey[] params) {
         final ContentResolver cr = mContext.getContentResolver();
-        for (AccountKey accountKey : params) {
+        for (UserKey accountKey : params) {
             final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, accountKey, true);
             if (twitter == null) continue;
             try {

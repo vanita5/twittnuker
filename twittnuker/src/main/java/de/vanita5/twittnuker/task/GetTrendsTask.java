@@ -31,7 +31,7 @@ import android.support.annotation.NonNull;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -43,9 +43,9 @@ import java.util.List;
 public abstract class GetTrendsTask extends AbstractTask<Object, Object, Object> {
 
     private final Context mContext;
-    private final AccountKey mAccountId;
+    private final UserKey mAccountId;
 
-    public GetTrendsTask(Context context, final AccountKey accountKey) {
+    public GetTrendsTask(Context context, final UserKey accountKey) {
         this.mContext = context;
         this.mAccountId = accountKey;
     }
@@ -84,7 +84,7 @@ public abstract class GetTrendsTask extends AbstractTask<Object, Object, Object>
             }
             cr.delete(uri, null, null);
             ContentResolverUtils.bulkInsert(cr, uri, valuesArray);
-            ContentResolverUtils.bulkDelete(cr, TwidereDataStore.CachedHashtags.CONTENT_URI, TwidereDataStore.CachedHashtags.NAME, hashtags, null, true);
+            ContentResolverUtils.bulkDelete(cr, TwidereDataStore.CachedHashtags.CONTENT_URI, TwidereDataStore.CachedHashtags.NAME, hashtags, null);
             ContentResolverUtils.bulkInsert(cr, TwidereDataStore.CachedHashtags.CONTENT_URI,
                     hashtagValues.toArray(new ContentValues[hashtagValues.size()]));
         }

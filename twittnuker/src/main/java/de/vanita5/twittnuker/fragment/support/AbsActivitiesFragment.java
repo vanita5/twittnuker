@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosi
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.fragment.support.AbsStatusesFragment.DefaultOnLikedListener;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -287,7 +287,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
     public void onGapClick(GapViewHolder holder, int position) {
         final AbsActivitiesAdapter<Data> adapter = getAdapter();
         final ParcelableActivity activity = adapter.getActivity(position);
-        final AccountKey[] accountIds = {activity.account_key};
+        final UserKey[] accountIds = {activity.account_key};
         final long[] maxIds = {activity.min_position};
         getActivities(new BaseRefreshTaskParam(accountIds, maxIds, null));
     }
@@ -420,7 +420,7 @@ public abstract class AbsActivitiesFragment<Data> extends AbsContentListRecycler
         return new StatusesBusCallback();
     }
 
-    protected abstract AccountKey[] getAccountKeys();
+    protected abstract UserKey[] getAccountKeys();
 
     protected Data getAdapterData() {
         final AbsActivitiesAdapter<Data> adapter = getAdapter();

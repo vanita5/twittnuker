@@ -39,7 +39,7 @@ import org.apache.commons.lang3.ObjectUtils;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -92,7 +92,7 @@ public class CardMediaContainer extends ViewGroup implements Constants {
 
     public void displayMedia(@Nullable final ParcelableMedia[] mediaArray,
                              @NonNull final MediaLoaderWrapper loader,
-                             final AccountKey accountId, final long extraId,
+                             final UserKey accountId, final long extraId,
                              final OnMediaClickListener mediaClickListener,
                              final MediaLoadingHandler loadingHandler) {
         displayMedia(mediaArray, loader, accountId, extraId, false, mediaClickListener,
@@ -101,7 +101,7 @@ public class CardMediaContainer extends ViewGroup implements Constants {
 
     public void displayMedia(@Nullable final ParcelableMedia[] mediaArray,
                              @NonNull final MediaLoaderWrapper loader,
-                             final AccountKey accountId, final long extraId, boolean withCredentials,
+                             final UserKey accountId, final long extraId, boolean withCredentials,
                              final OnMediaClickListener mediaClickListener,
                              final MediaLoadingHandler loadingHandler) {
         if (mediaArray == null || mMediaPreviewStyle == VALUE_MEDIA_PREVIEW_STYLE_CODE_NONE) {
@@ -302,15 +302,15 @@ public class CardMediaContainer extends ViewGroup implements Constants {
     }
 
     public interface OnMediaClickListener {
-        void onMediaClick(View view, ParcelableMedia media, AccountKey accountKey, long id);
+        void onMediaClick(View view, ParcelableMedia media, UserKey accountKey, long id);
     }
 
     private static class ImageGridClickListener implements View.OnClickListener {
         private final WeakReference<OnMediaClickListener> mListenerRef;
-        private final AccountKey mAccountKey;
+        private final UserKey mAccountKey;
         private final long mExtraId;
 
-        ImageGridClickListener(final OnMediaClickListener listener, final AccountKey accountKey,
+        ImageGridClickListener(final OnMediaClickListener listener, final UserKey accountKey,
                                final long extraId) {
             mListenerRef = new WeakReference<>(listener);
             mAccountKey = accountKey;

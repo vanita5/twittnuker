@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter.StatusAdapterListene
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -264,7 +264,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         final AbsStatusesAdapter<Data> adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(position);
         if (status == null) return;
-        final AccountKey[] accountIds = {status.account_key};
+        final UserKey[] accountIds = {status.account_key};
         final long[] maxIds = {status.id};
         getStatuses(new BaseRefreshTaskParam(accountIds, maxIds, null));
     }
@@ -402,7 +402,7 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         return new StatusesBusCallback();
     }
 
-    protected abstract AccountKey[] getAccountKeys();
+    protected abstract UserKey[] getAccountKeys();
 
     protected Data getAdapterData() {
         final AbsStatusesAdapter<Data> adapter = getAdapter();

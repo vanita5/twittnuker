@@ -47,7 +47,7 @@ import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.loader.support.ExtendedObjectCursorLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
@@ -76,7 +76,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
 
     @Override
     protected void onLoadingFinished() {
-        final AccountKey[] accountKeys = getAccountKeys();
+        final UserKey[] accountKeys = getAccountKeys();
         final AbsStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
         if (adapter.getItemCount() > 0) {
             showContent();
@@ -107,7 +107,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
         final Uri uri = getContentUri();
         final String table = getTableNameByUri(uri);
         final String sortOrder = Statuses.DEFAULT_SORT_ORDER;
-        final AccountKey[] accountKeys = getAccountKeys();
+        final UserKey[] accountKeys = getAccountKeys();
         final Expression accountWhere = Expression.in(new Column(Statuses.ACCOUNT_KEY),
                 new ArgsArray(accountKeys.length));
         final Expression filterWhere = getFiltersWhere(table), where;
@@ -187,9 +187,9 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
     }
 
     @Override
-    protected AccountKey[] getAccountKeys() {
+    protected UserKey[] getAccountKeys() {
         final Bundle args = getArguments();
-        final AccountKey[] accountKeys = Utils.getAccountKeys(getContext(), args);
+        final UserKey[] accountKeys = Utils.getAccountKeys(getContext(), args);
         if (accountKeys != null) {
             return accountKeys;
         }
@@ -258,7 +258,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
         getStatuses(new SimpleRefreshTaskParam() {
             @NonNull
             @Override
-            public AccountKey[] getAccountKeys() {
+            public UserKey[] getAccountKeys() {
                 return CursorStatusesFragment.this.getAccountKeys();
             }
 
@@ -281,7 +281,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
         getStatuses(new SimpleRefreshTaskParam() {
             @NonNull
             @Override
-            public AccountKey[] getAccountKeys() {
+            public UserKey[] getAccountKeys() {
                 return CursorStatusesFragment.this.getAccountKeys();
             }
 
@@ -304,7 +304,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
         return buildStatusFilterWhereClause(table, null);
     }
 
-    protected long[] getNewestStatusIds(AccountKey[] accountKeys) {
+    protected long[] getNewestStatusIds(UserKey[] accountKeys) {
         final Context context = getContext();
         if (context == null) return null;
         return DataStoreUtils.getNewestStatusIds(context, getContentUri(), accountKeys);
@@ -316,13 +316,13 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            for (AccountKey accountId : getAccountKeys()) {
+            for (UserKey accountId : getAccountKeys()) {
                 mTwitterWrapper.clearNotificationAsync(getNotificationType(), accountId);
             }
         }
     }
 
-    protected long[] getOldestStatusIds(AccountKey[] accountKeys) {
+    protected long[] getOldestStatusIds(UserKey[] accountKeys) {
         final Context context = getContext();
         if (context == null) return null;
         return DataStoreUtils.getOldestStatusIds(context, getContentUri(), accountKeys);
@@ -337,11 +337,11 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment<List<Pa
     protected abstract void updateRefreshState();
 
     public static class CursorStatusesLoader extends ExtendedObjectCursorLoader<ParcelableStatus> {
-        private final AccountKey[] mAccountKeys;
+        private final UserKey[] mAccountKeys;
 
         public CursorStatusesLoader(Context context, Uri uri, String[] projection,
                                     String selection, String[] selectionArgs, String sortOrder,
-                                    boolean fromUser, AccountKey[] accountKeys) {
+                                    boolean fromUser, UserKey[] accountKeys) {
             super(context, ParcelableStatusCursorIndices.class, uri, projection, selection, selectionArgs, sortOrder, fromUser);
             mAccountKeys = accountKeys;
         }

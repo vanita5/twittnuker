@@ -22,18 +22,18 @@
 
 package de.vanita5.twittnuker.model.message;
 
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 
 public class UsersBlockedEvent {
-    private AccountKey accountKey;
+    private UserKey accountKey;
     private long[] userIds;
 
-    public UsersBlockedEvent(AccountKey accountKey, long[] userIds) {
+    public UsersBlockedEvent(UserKey accountKey, long[] userIds) {
         this.accountKey = accountKey;
         this.userIds = userIds;
     }
 
-    public AccountKey getAccountKey() {
+    public UserKey getAccountKey() {
         return accountKey;
     }
 

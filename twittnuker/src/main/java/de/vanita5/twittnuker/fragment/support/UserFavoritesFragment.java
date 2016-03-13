@@ -24,11 +24,10 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.loader.support.UserFavoritesLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;
@@ -40,7 +39,7 @@ public class UserFavoritesFragment extends ParcelableStatusesFragment {
                                                                     final Bundle args,
                                                                     final boolean fromUser) {
         setRefreshing(true);
-        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long maxId = args.getLong(EXTRA_MAX_ID, -1);
         final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
         final long userId = args.getLong(EXTRA_USER_ID, -1);
@@ -54,7 +53,7 @@ public class UserFavoritesFragment extends ParcelableStatusesFragment {
     protected String[] getSavedStatusesFileArgs() {
         final Bundle args = getArguments();
         if (args == null) return null;
-        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long userId = args.getLong(EXTRA_USER_ID, -1);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         return new String[]{AUTHORITY_USER_FAVORITES, "account" + accountKey, "user" + userId, "name" + screenName};

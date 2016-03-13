@@ -90,7 +90,7 @@ public class UserViewHolder extends ViewHolder implements OnClickListener, OnLon
         final AsyncTwitterWrapper twitter = adapter.getTwitterWrapper();
 
 
-        itemContent.drawStart(manager.getUserColor(user.id, false));
+        itemContent.drawStart(manager.getUserColor(user.key, false));
 
         final int userTypeRes = getUserTypeIconRes(user.is_verified, user.is_protected);
         if (userTypeRes != 0) {
@@ -119,7 +119,7 @@ public class UserViewHolder extends ViewHolder implements OnClickListener, OnLon
             loader.cancelDisplayTask(profileImageView);
         }
 
-        if (twitter.isProcessingFollowRequest(user.account_key, user.id)) {
+        if (twitter.isProcessingFollowRequest(user.account_key, user.key)) {
             processingRequestProgress.setVisibility(View.VISIBLE);
             acceptRequestButton.setVisibility(View.GONE);
             denyRequestButton.setVisibility(View.GONE);

@@ -66,7 +66,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.support.SignInActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -90,7 +90,7 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
 
     private AccountsAdapter mAdapter;
     private ParcelableAccount mSelectedAccount;
-    private SimpleArrayMap<AccountKey, Boolean> mActivatedState = new SimpleArrayMap<>();
+    private SimpleArrayMap<UserKey, Boolean> mActivatedState = new SimpleArrayMap<>();
 
     private DragSortListView mListView;
     private View mEmptyView;
@@ -182,7 +182,7 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
     }
 
     private void saveActivatedState() {
-        final Set<AccountKey> trueIds = new CompactHashSet<>(), falseIds = new CompactHashSet<>();
+        final Set<UserKey> trueIds = new CompactHashSet<>(), falseIds = new CompactHashSet<>();
         for (int i = 0, j = mActivatedState.size(); i < j; i++) {
             if (mActivatedState.valueAt(i)) {
                 trueIds.add(mActivatedState.keyAt(i));
@@ -203,7 +203,7 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
     }
 
     @Override
-    public void onAccountToggle(AccountKey accountId, boolean state) {
+    public void onAccountToggle(UserKey accountId, boolean state) {
         mActivatedState.put(accountId, state);
     }
 
@@ -322,7 +322,7 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
         @Override
         public void onClick(final DialogInterface dialog, final int which) {
             final Bundle args = getArguments();
-            final AccountKey accountId = args.getParcelable(EXTRA_ACCOUNT_KEY);
+            final UserKey accountId = args.getParcelable(EXTRA_ACCOUNT_KEY);
             if (accountId == null) return;
             final ContentResolver resolver = getContentResolver();
             switch (which) {

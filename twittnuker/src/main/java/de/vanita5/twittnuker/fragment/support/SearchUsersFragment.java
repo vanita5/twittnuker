@@ -29,7 +29,7 @@ import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.loader.support.UserSearchLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
@@ -48,7 +48,7 @@ public class SearchUsersFragment extends ParcelableUsersFragment {
 
     @Override
     public Loader<List<ParcelableUser>> onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
-        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final String query = args.getString(EXTRA_QUERY);
         final int page = args.getInt(EXTRA_PAGE, 1);
         return new UserSearchLoader(context, accountKey, query, page, getData(), fromUser);

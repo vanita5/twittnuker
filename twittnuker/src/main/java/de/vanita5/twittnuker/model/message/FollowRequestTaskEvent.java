@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.model.message;
 
 import android.support.annotation.IntDef;
 
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 
 public class FollowRequestTaskEvent {
 
@@ -32,10 +32,10 @@ public class FollowRequestTaskEvent {
     private int action;
     private boolean finished;
     private boolean succeeded;
-    private AccountKey mAccountKey;
+    private UserKey mAccountKey;
     private long userId;
 
-    public FollowRequestTaskEvent(@Action int action, AccountKey accountKey, long userId) {
+    public FollowRequestTaskEvent(@Action int action, UserKey accountKey, long userId) {
         this.action = action;
         this.mAccountKey = accountKey;
         this.userId = userId;
@@ -54,7 +54,7 @@ public class FollowRequestTaskEvent {
         this.finished = finished;
     }
 
-    public AccountKey getAccountKey() {
+    public UserKey getAccountKey() {
         return mAccountKey;
     }
 

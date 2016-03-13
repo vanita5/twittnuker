@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.adapter.SavedSearchesAdapter;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 import de.vanita5.twittnuker.loader.support.SavedSearchesLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.SavedSearchDestroyedEvent;
 
 import java.util.Collections;
@@ -90,7 +90,7 @@ public class SavedSearchesListFragment extends AbsContentListViewFragment<SavedS
         return new SavedSearchesLoader(getActivity(), getAccountKey());
     }
 
-    public AccountKey getAccountKey() {
+    public UserKey getAccountKey() {
         return getArguments().getParcelable(EXTRA_ACCOUNT_KEY);
     }
 

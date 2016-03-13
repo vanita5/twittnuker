@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -45,7 +45,7 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
     private final String mQuery;
     private final boolean mGapEnabled;
 
-    public TweetSearchLoader(final Context context, final AccountKey accountKey, @NonNull final String query,
+    public TweetSearchLoader(final Context context, final UserKey accountKey, @NonNull final String query,
                              final long sinceId, final long maxId, final List<ParcelableStatus> data,
                              final String[] savedStatusesArgs, final int tabPosition, boolean fromUser,
                              boolean makeGap) {

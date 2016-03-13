@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.util;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
@@ -33,16 +33,16 @@ import java.util.List;
 public class MultiSelectManager implements Constants {
 
     private final NoDuplicatesArrayList<Long> mSelectedStatusIds = new NoDuplicatesArrayList<>();
-    private final NoDuplicatesArrayList<Long> mSelectedUserIds = new NoDuplicatesArrayList<>();
+    private final NoDuplicatesArrayList<UserKey> mSelectedUserIds = new NoDuplicatesArrayList<>();
     private final NoDuplicatesArrayList<Callback> mCallbacks = new NoDuplicatesArrayList<>();
     private final ItemsList mSelectedItems = new ItemsList(this);
-    private AccountKey mAccountKey;
+    private UserKey mAccountKey;
 
     public void clearSelectedItems() {
         mSelectedItems.clear();
     }
 
-    public AccountKey getAccountKey() {
+    public UserKey getAccountKey() {
         if (mAccountKey == null) return getFirstSelectAccountKey(mSelectedItems);
         return mAccountKey;
     }
@@ -51,7 +51,7 @@ public class MultiSelectManager implements Constants {
         return mSelectedItems.size();
     }
 
-    public AccountKey getFirstSelectAccountKey() {
+    public UserKey getFirstSelectAccountKey() {
         return getFirstSelectAccountKey(mSelectedItems);
     }
 
@@ -67,12 +67,12 @@ public class MultiSelectManager implements Constants {
         return mSelectedItems.contains(object);
     }
 
-    public boolean isStatusSelected(final long status_id) {
-        return mSelectedStatusIds.contains(status_id);
+    public boolean isStatusSelected(final long statusId) {
+        return mSelectedStatusIds.contains(statusId);
     }
 
-    public boolean isUserSelected(final long user_id) {
-        return mSelectedUserIds.contains(user_id);
+    public boolean isUserSelected(final UserKey userKey) {
+        return mSelectedUserIds.contains(userKey);
     }
 
     public void registerCallback(final Callback callback) {
@@ -84,7 +84,7 @@ public class MultiSelectManager implements Constants {
         return mSelectedItems.add(item);
     }
 
-    public void setAccountKey(final AccountKey accountKey) {
+    public void setAccountKey(final UserKey accountKey) {
         mAccountKey = accountKey;
     }
 
@@ -115,7 +115,7 @@ public class MultiSelectManager implements Constants {
         }
     }
 
-    public static AccountKey getFirstSelectAccountKey(final List<Object> selectedItems) {
+    public static UserKey getFirstSelectAccountKey(final List<Object> selectedItems) {
         final Object obj = selectedItems.get(0);
         if (obj instanceof ParcelableUser) {
             final ParcelableUser user = (ParcelableUser) obj;
@@ -127,16 +127,16 @@ public class MultiSelectManager implements Constants {
         return null;
     }
 
-    public static long[] getSelectedUserIds(final List<Object> selected_items) {
-        final ArrayList<Long> ids_list = new ArrayList<>();
-        for (final Object item : selected_items) {
+    public static UserKey[] getSelectedUserIds(final List<Object> selectedItems) {
+        final ArrayList<UserKey> userKeys = new ArrayList<>();
+        for (final Object item : selectedItems) {
             if (item instanceof ParcelableUser) {
-                ids_list.add(((ParcelableUser) item).id);
+                userKeys.add(((ParcelableUser) item).key);
             } else if (item instanceof ParcelableStatus) {
-                ids_list.add(((ParcelableStatus) item).user_id);
+                userKeys.add(((ParcelableStatus) item).user_key);
             }
         }
-        return TwidereArrayUtils.fromList(ids_list);
+        return userKeys.toArray(new UserKey[userKeys.size()]);
     }
 
     public interface Callback {
@@ -163,7 +163,7 @@ public class MultiSelectManager implements Constants {
             if (object instanceof ParcelableStatus) {
                 manager.mSelectedStatusIds.add(((ParcelableStatus) object).id);
             } else if (object instanceof ParcelableUser) {
-                manager.mSelectedUserIds.add(((ParcelableUser) object).id);
+                manager.mSelectedUserIds.add(((ParcelableUser) object).key);
             } else
                 return false;
             final boolean ret = super.add(object);
@@ -185,7 +185,7 @@ public class MultiSelectManager implements Constants {
             if (object instanceof ParcelableStatus) {
                 manager.mSelectedStatusIds.remove(((ParcelableStatus) object).id);
             } else if (object instanceof ParcelableUser) {
-                manager.mSelectedUserIds.remove(((ParcelableUser) object).id);
+                manager.mSelectedUserIds.remove(((ParcelableUser) object).key);
             }
             if (ret) {
                 if (isEmpty()) {

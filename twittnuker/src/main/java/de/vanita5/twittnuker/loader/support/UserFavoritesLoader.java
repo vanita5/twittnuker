@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class UserFavoritesLoader extends TwitterAPIStatusesLoader {
     private final long mUserId;
     private final String mUserScreenName;
 
-    public UserFavoritesLoader(final Context context, final AccountKey accountKey, final long userId,
+    public UserFavoritesLoader(final Context context, final UserKey accountKey, final long userId,
                                final String screenName, final long sinceId, final long maxId,
                                final List<ParcelableStatus> data, final String[] savedStatusesArgs,
                                final int tabPosition, boolean fromUser) {

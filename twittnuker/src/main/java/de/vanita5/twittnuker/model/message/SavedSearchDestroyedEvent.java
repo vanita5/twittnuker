@@ -22,18 +22,18 @@
 
 package de.vanita5.twittnuker.model.message;
 
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 
 public class SavedSearchDestroyedEvent {
-    private final AccountKey mAccountKey;
+    private final UserKey mAccountKey;
     private final long searchId;
 
-    public SavedSearchDestroyedEvent(AccountKey accountKey, long searchId) {
+    public SavedSearchDestroyedEvent(UserKey accountKey, long searchId) {
         this.mAccountKey = accountKey;
         this.searchId = searchId;
     }
 
-    public AccountKey getAccountKey() {
+    public UserKey getAccountKey() {
         return mAccountKey;
     }
 

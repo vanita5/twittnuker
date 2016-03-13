@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
@@ -104,7 +104,7 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
     }
 
     @Override
-    protected AccountKey[] getAccountKeys() {
+    protected UserKey[] getAccountKeys() {
         return Utils.getAccountKeys(getContext(), getArguments());
     }
 
@@ -137,7 +137,7 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
         final AbsStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(adapter.getStatusStartIndex() +
                 adapter.getStatusCount() - 1);
-        AccountKey[] accountKeys = {status.account_key};
+        UserKey[] accountKeys = {status.account_key};
         final long[] maxIds = {status.id};
         getStatuses(new BaseRefreshTaskParam(accountKeys, maxIds, null));
     }
@@ -157,7 +157,7 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
     public boolean triggerRefresh() {
         super.triggerRefresh();
         final IStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
-        final AccountKey[] accountIds = getAccountKeys();
+        final UserKey[] accountIds = getAccountKeys();
         if (adapter.getStatusCount() > 0) {
             final long[] sinceIds = new long[]{adapter.getStatus(0).id};
             getStatuses(new BaseRefreshTaskParam(accountIds, null, sinceIds));

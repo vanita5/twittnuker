@@ -27,7 +27,7 @@ import android.content.SharedPreferences;
 
 import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
 import de.vanita5.twittnuker.loader.support.iface.ICursorSupportLoader;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public abstract class BaseCursorSupportUsersLoader extends TwitterAPIUsersLoader
 
     private long mNextCursor, mPrevCursor;
 
-    public BaseCursorSupportUsersLoader(final Context context, final AccountKey accountKey,
+    public BaseCursorSupportUsersLoader(final Context context, final UserKey accountKey,
                                         final List<ParcelableUser> data, boolean fromUser) {
         super(context, accountKey, data, fromUser);
         final SharedPreferences preferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);

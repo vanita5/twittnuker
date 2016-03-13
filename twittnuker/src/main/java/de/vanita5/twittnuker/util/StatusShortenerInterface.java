@@ -35,7 +35,7 @@ import android.util.Log;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.IStatusShortener;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.StatusShortenResult;
@@ -54,7 +54,7 @@ public final class StatusShortenerInterface extends AbsServiceInterface<IStatusS
     }
 
     public StatusShortenResult shorten(final ParcelableStatusUpdate status,
-                                       final AccountKey currentAccountId,
+                                       final UserKey currentAccountId,
                                        final String overrideStatusText) {
         final IStatusShortener iface = getInterface();
         if (iface == null) return null;

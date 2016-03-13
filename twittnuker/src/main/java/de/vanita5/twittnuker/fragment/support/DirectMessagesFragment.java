@@ -57,7 +57,7 @@ import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.DirectMessageEntry;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.MessageEntriesAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
@@ -92,7 +92,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
     private RecyclerViewNavigationHelper mNavigationHelper;
 
     // Data fields
-    private final SimpleArrayMap<AccountKey, Set<Long>> mUnreadCountsToRemove = new SimpleArrayMap<>();
+    private final SimpleArrayMap<UserKey, Set<Long>> mUnreadCountsToRemove = new SimpleArrayMap<>();
     private final Set<Integer> mReadPositions = Collections.synchronizedSet(new HashSet<Integer>());
     private int mFirstVisibleItem;
 
@@ -124,7 +124,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
         return twitter != null && (twitter.isReceivedDirectMessagesRefreshing() || twitter.isSentDirectMessagesRefreshing());
     }
 
-    public final SimpleArrayMap<AccountKey, Set<Long>> getUnreadCountsToRemove() {
+    public final SimpleArrayMap<UserKey, Set<Long>> getUnreadCountsToRemove() {
         return mUnreadCountsToRemove;
     }
 
@@ -156,7 +156,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
     @Override
     public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
         final Uri uri = DirectMessages.ConversationEntries.CONTENT_URI;
-        final AccountKey[] accountIds = getAccountKeys();
+        final UserKey[] accountIds = getAccountKeys();
         final String selection = Expression.in(new Column(Statuses.ACCOUNT_KEY),
                 new ArgsArray(accountIds.length)).getSQL();
         final String[] selectionArgs = TwidereArrayUtils.toStringArray(accountIds, 0, accountIds.length);
@@ -172,7 +172,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
         adapter.setCursor(cursor);
         adapter.setLoadMoreIndicatorPosition(IndicatorPosition.NONE);
         adapter.setLoadMoreSupportedPosition(hasMoreData(cursor) ? IndicatorPosition.END : IndicatorPosition.NONE);
-        final AccountKey[] accountIds = getAccountKeys();
+        final UserKey[] accountIds = getAccountKeys();
         adapter.setShowAccountsColor(accountIds.length > 1);
         setRefreshEnabled(true);
 
@@ -245,7 +245,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
             protected RefreshTaskParam doInBackground(final Object... params) {
                 final Context context = getContext();
                 if (context == null) return null;
-                AccountKey[] accountIds = getAccountKeys();
+                UserKey[] accountIds = getAccountKeys();
                 long[] ids = DataStoreUtils.getNewestMessageIds(context,
                         DirectMessages.Inbox.CONTENT_URI, accountIds);
                 return new BaseRefreshTaskParam(accountIds, ids, null);
@@ -326,7 +326,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
     }
 
     public void openNewMessageConversation() {
-        final AccountKey[] accountIds = getAccountKeys();
+        final UserKey[] accountIds = getAccountKeys();
         if (accountIds.length == 1) {
             IntentUtils.openMessageConversation(getActivity(), accountIds[0], -1);
         } else {
@@ -339,7 +339,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
         super.setUserVisibleHint(isVisibleToUser);
         final FragmentActivity activity = getActivity();
         if (isVisibleToUser && activity != null) {
-            for (AccountKey accountKey : getAccountKeys()) {
+            for (UserKey accountKey : getAccountKeys()) {
                 final String tag = "messages_" + accountKey;
                 mNotificationManager.cancel(tag, NOTIFICATION_ID_DIRECT_MESSAGES);
             }
@@ -347,9 +347,9 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
     }
 
     @NonNull
-    protected AccountKey[] getAccountKeys() {
+    protected UserKey[] getAccountKeys() {
         final Bundle args = getArguments();
-        AccountKey[] accountKeys = Utils.getAccountKeys(getContext(), args);
+        UserKey[] accountKeys = Utils.getAccountKeys(getContext(), args);
         if (accountKeys != null) {
             return accountKeys;
         }
@@ -371,7 +371,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
         mFirstVisibleItem = firstVisibleItem;
     }
 
-    private void addUnreadCountsToRemove(final AccountKey accountId, final long id) {
+    private void addUnreadCountsToRemove(final UserKey accountId, final long id) {
         if (mUnreadCountsToRemove.indexOfKey(accountId) < 0) {
             final Set<Long> counts = new HashSet<>();
             counts.add(id);
@@ -393,7 +393,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
                 final Context context = getContext();
                 if (context == null) return null;
                 RefreshTaskParam[] result = new RefreshTaskParam[2];
-                AccountKey[] accountKeys = getAccountKeys();
+                UserKey[] accountKeys = getAccountKeys();
                 result[0] = new BaseRefreshTaskParam(accountKeys, DataStoreUtils.getOldestMessageIds(context,
                         DirectMessages.Inbox.CONTENT_URI, accountKeys), null);
                 result[1] = new BaseRefreshTaskParam(accountKeys, DataStoreUtils.getOldestMessageIds(context,
@@ -435,7 +435,7 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
             for (final int pos : read_positions) {
                 final DirectMessageEntry entry = adapter.getEntry(pos);
                 final long id = entry.conversation_id;
-                final AccountKey accountKey = entry.account_key;
+                final UserKey accountKey = entry.account_key;
                 fragment.addUnreadCountsToRemove(accountKey, id);
             }
             return null;

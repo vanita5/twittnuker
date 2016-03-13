@@ -30,7 +30,7 @@ import android.widget.ImageView;
 
 import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.view.CardMediaContainer;
@@ -48,7 +48,7 @@ public interface IStatusViewHolder extends CardMediaContainer.OnMediaClickListen
     ImageView getProfileTypeView();
 
     @Override
-    void onMediaClick(View view, ParcelableMedia media, AccountKey accountKey, long extraId);
+    void onMediaClick(View view, ParcelableMedia media, UserKey accountKey, long extraId);
 
     void setStatusClickListener(StatusClickListener listener);
 

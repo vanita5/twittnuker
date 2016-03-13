@@ -32,7 +32,7 @@ import android.view.View;
 
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 
@@ -42,7 +42,7 @@ public class AccountActionProvider extends ActionProvider implements TwittnukerC
 
     private ParcelableAccount[] mAccounts;
 
-    private AccountKey[] mAccountIds;
+    private UserKey[] mAccountIds;
     private boolean mExclusive;
 
     public AccountActionProvider(final Context context, final ParcelableAccount[] accounts) {
@@ -101,7 +101,7 @@ public class AccountActionProvider extends ActionProvider implements TwittnukerC
         mExclusive = exclusive;
     }
 
-    public void setSelectedAccountIds(final AccountKey... accountIds) {
+    public void setSelectedAccountIds(final UserKey... accountIds) {
         mAccountIds = accountIds;
     }
 

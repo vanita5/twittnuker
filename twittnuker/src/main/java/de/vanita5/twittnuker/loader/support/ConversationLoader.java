@@ -49,6 +49,7 @@ public class ConversationLoader extends TwitterAPIStatusesLoader {
 
     @NonNull
     private final ParcelableStatus mStatus;
+    private boolean mCanLoadAllReplies;
 
     public ConversationLoader(final Context context, @NonNull final ParcelableStatus status,
                               final long sinceId, final long maxId, final List<ParcelableStatus> data,
@@ -61,12 +62,15 @@ public class ConversationLoader extends TwitterAPIStatusesLoader {
     @NonNull
     @Override
     public List<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
+        mCanLoadAllReplies = false;
         final ParcelableStatus status = mStatus;
         final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(getContext(), getAccountKey());
         if (credentials == null) throw new TwitterException("Null credentials");
         if (Utils.isOfficialCredentials(getContext(), credentials)) {
+            mCanLoadAllReplies = true;
             return twitter.showConversation(status.id, paging);
-        } else if (!TwitterAPIFactory.isTwitterCredentials(credentials)) {
+        } else if (TwitterAPIFactory.isStatusNetCredentials(credentials)) {
+            mCanLoadAllReplies = true;
             return twitter.getStatusNetConversation(status.id, paging);
         }
         final List<Status> statuses = new ArrayList<>();
@@ -103,6 +107,10 @@ public class ConversationLoader extends TwitterAPIStatusesLoader {
             }
         }
         return statuses;
+    }
+
+    public boolean canLoadAllReplies() {
+        return mCanLoadAllReplies;
     }
 
     @WorkerThread

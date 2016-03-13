@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
@@ -95,7 +95,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
     @NonNull
     protected abstract Uri getContentUri();
 
-    private void storeStatus(final AccountKey accountKey, final List<Status> statuses,
+    private void storeStatus(final UserKey accountKey, final List<Status> statuses,
                              final long sinceId, final long maxId, final boolean notify) {
         if (statuses == null || statuses.isEmpty() || accountKey == null) {
             return;
@@ -168,13 +168,13 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
 
     @Override
     public List<TwitterWrapper.StatusListResponse> doLongOperation(final RefreshTaskParam param) {
-        final AccountKey[] accountKeys = param.getAccountKeys();
+        final UserKey[] accountKeys = param.getAccountKeys();
         final long[] maxIds = param.getMaxIds();
         final long[] sinceIds = param.getSinceIds();
         final List<TwitterWrapper.StatusListResponse> result = new ArrayList<>();
         int idx = 0;
         final int loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
-        for (final AccountKey accountKey : accountKeys) {
+        for (final UserKey accountKey : accountKeys) {
             final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountKey, true);
             if (twitter == null) continue;
             try {

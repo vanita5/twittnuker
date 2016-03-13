@@ -52,7 +52,7 @@ public class ParcelableAccount implements Parcelable {
     @ParcelableThisPlease
     @JsonField(name = "account_id", typeConverter = AccountKeyConverter.class)
     @CursorField(value = Accounts.ACCOUNT_KEY, converter = AccountKeyCursorFieldConverter.class)
-    public AccountKey account_key;
+    public UserKey account_key;
 
     @ParcelableThisPlease
     @JsonField(name = "screen_name")

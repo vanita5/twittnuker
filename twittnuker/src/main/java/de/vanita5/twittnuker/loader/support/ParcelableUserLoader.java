@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
@@ -55,11 +55,11 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
 
     private final boolean mOmitIntentExtra, mLoadFromCache;
     private final Bundle mExtras;
-    private final AccountKey mAccountKey;
+    private final UserKey mAccountKey;
     private final long mUserId;
     private final String mScreenName;
 
-    public ParcelableUserLoader(final Context context, final AccountKey accountKey, final long userId,
+    public ParcelableUserLoader(final Context context, final UserKey accountKey, final long userId,
                                 final String screenName, final Bundle extras, final boolean omitIntentExtra,
                                 final boolean loadFromCache) {
         super(context);
@@ -75,7 +75,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
     public SingleResponse<ParcelableUser> loadInBackground() {
         final Context context = getContext();
         final ContentResolver resolver = context.getContentResolver();
-        final AccountKey accountKey = mAccountKey;
+        final UserKey accountKey = mAccountKey;
         final int accountColor = DataStoreUtils.getAccountColor(context, accountKey);
         if (!mOmitIntentExtra && mExtras != null) {
             final ParcelableUser user = mExtras.getParcelable(EXTRA_USER);
@@ -92,7 +92,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
             final Expression where;
             final String[] whereArgs;
             if (mUserId > 0) {
-                where = Expression.equals(CachedUsers.USER_ID, mUserId);
+                where = Expression.equals(CachedUsers.USER_KEY, mUserId);
                 whereArgs = null;
             } else {
                 where = Expression.equalsArgs(CachedUsers.SCREEN_NAME);
@@ -120,8 +120,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
             final long userId = twitterUser.getId();
             resolver.insert(CachedUsers.CONTENT_URI, cachedUserValues);
             final ParcelableUser user = ParcelableUserUtils.fromUser(twitterUser, accountKey);
-            final AccountKey userAccountKey = new AccountKey(user.id, user.user_host);
-            if (Utils.isMyAccount(context, userAccountKey)) {
+            if (Utils.isMyAccount(context, user.key)) {
                 final ContentValues accountValues = new ContentValues();
                 accountValues.put(Accounts.NAME, user.name);
                 accountValues.put(Accounts.SCREEN_NAME, user.screen_name);
@@ -129,7 +128,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
                 accountValues.put(Accounts.PROFILE_BANNER_URL, user.profile_banner_url);
                 accountValues.put(Accounts.ACCOUNT_USER, JsonSerializer.serialize(user,
                         ParcelableUser.class));
-                accountValues.put(Accounts.ACCOUNT_KEY, String.valueOf(userAccountKey));
+                accountValues.put(Accounts.ACCOUNT_KEY, String.valueOf(user.key));
                 final String accountWhere = Expression.equals(Accounts.ACCOUNT_KEY, userId).getSQL();
                 resolver.update(Accounts.CONTENT_URI, accountValues, accountWhere, null);
             }

@@ -33,7 +33,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -72,8 +72,8 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
         final MediaLoaderWrapper loader = adapter.getMediaLoader();
         final UserColorNameManager manager = adapter.getUserColorNameManager();
 
-        final AccountKey accountKey = AccountKey.valueOf(cursor.getString(ConversationEntries.IDX_ACCOUNT_KEY));
-        final long conversationId = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);
+        final UserKey accountKey = UserKey.valueOf(cursor.getString(ConversationEntries.IDX_ACCOUNT_KEY));
+        final UserKey conversationId = UserKey.valueOf(cursor.getString(ConversationEntries.IDX_CONVERSATION_ID));
         final long timestamp = cursor.getLong(ConversationEntries.IDX_MESSAGE_TIMESTAMP);
         final boolean isOutgoing = cursor.getInt(ConversationEntries.IDX_IS_OUTGOING) == 1;
 

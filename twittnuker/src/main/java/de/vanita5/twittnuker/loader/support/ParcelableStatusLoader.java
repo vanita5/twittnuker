@@ -28,7 +28,7 @@ import android.support.v4.content.AsyncTaskLoader;
 
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.constant.IntentConstants;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -41,11 +41,11 @@ public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<Parce
 
     private final boolean mOmitIntentExtra;
     private final Bundle mExtras;
-    private final AccountKey mAccountId;
+    private final UserKey mAccountId;
     private final long mStatusId;
 
     public ParcelableStatusLoader(final Context context, final boolean omitIntentExtra, final Bundle extras,
-                                  final AccountKey accountId, final long statusId) {
+                                  final UserKey accountId, final long statusId) {
         super(context);
         mOmitIntentExtra = omitIntentExtra;
         mExtras = extras;

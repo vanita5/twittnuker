@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.AccountKey;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -73,7 +73,7 @@ import javax.inject.Inject;
 
 public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader {
 
-    private final AccountKey mAccountKey;
+    private final UserKey mAccountKey;
     private final long mMaxId, mSinceId;
     @Nullable
     private final Object[] mSavedStatusesFileArgs;
@@ -84,7 +84,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
     SharedPreferencesWrapper mPreferences;
 
     public TwitterAPIStatusesLoader(@NonNull final Context context,
-                                    @Nullable final AccountKey accountKey,
+                                    @Nullable final UserKey accountKey,
                                     final long sinceId, final long maxId,
                                     final List<ParcelableStatus> data,
                                     @Nullable final String[] savedStatusesArgs,
@@ -220,7 +220,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         return mMaxId;
     }
 
-    public AccountKey getAccountKey() {
+    public UserKey getAccountKey() {
         return mAccountKey;
     }
 
