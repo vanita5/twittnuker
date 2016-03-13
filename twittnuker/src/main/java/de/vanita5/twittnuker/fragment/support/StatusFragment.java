@@ -123,6 +123,7 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
+import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
@@ -1065,8 +1066,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             if (!TextUtils.isEmpty(placeFullName)) {
                 locationView.setVisibility(View.VISIBLE);
                 locationView.setText(placeFullName);
-                locationView.setClickable(ParcelableLocation.isValidLocation(location));
-            } else if (ParcelableLocation.isValidLocation(location)) {
+                locationView.setClickable(ParcelableLocationUtils.isValidLocation(location));
+            } else if (ParcelableLocationUtils.isValidLocation(location)) {
                 locationView.setVisibility(View.VISIBLE);
                 locationView.setText(R.string.view_map);
                 locationView.setClickable(true);
@@ -1194,7 +1195,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 }
                 case R.id.location_view: {
                     final ParcelableLocation location = status.location;
-                    if (!ParcelableLocation.isValidLocation(location)) return;
+                    if (!ParcelableLocationUtils.isValidLocation(location)) return;
                     IntentUtils.openMap(adapter.getContext(), location.latitude, location.longitude);
                     break;
                 }

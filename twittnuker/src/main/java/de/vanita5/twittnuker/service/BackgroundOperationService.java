@@ -61,7 +61,6 @@ import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
-import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.UserKey;
@@ -72,7 +71,6 @@ import de.vanita5.twittnuker.model.MediaUploadResult;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
-import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
@@ -84,6 +82,7 @@ import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableDirectMessageUtils;
+import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserMentionUtils;
@@ -632,7 +631,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                         status.inReplyToStatusId(statusUpdate.in_reply_to_status.id);
                     }
                     if (statusUpdate.location != null) {
-                        status.location(ParcelableLocation.toGeoLocation(statusUpdate.location));
+                        status.location(ParcelableLocationUtils.toGeoLocation(statusUpdate.location));
                     }
                     if (uploader == null && hasMedia) {
                         final long[] mediaIds = new long[statusUpdate.media.length];

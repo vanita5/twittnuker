@@ -29,13 +29,13 @@ import android.support.annotation.NonNull;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import de.vanita5.twittnuker.constant.IntentConstants;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.UserKey;
 
 import java.util.Arrays;
 
 @JsonObject
-public class TabArguments implements IntentConstants {
+public class TabArguments implements TwittnukerConstants {
     @JsonField(name = "account_id")
     long accountId = -1;
 

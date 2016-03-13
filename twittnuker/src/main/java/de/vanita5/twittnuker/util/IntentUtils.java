@@ -49,11 +49,11 @@ import de.vanita5.twittnuker.fragment.support.SensitiveContentWarningDialogFragm
 import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
-import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -311,7 +311,7 @@ public class IntentUtils implements Constants {
     }
 
     public static void openMap(@NonNull final Context context, final double latitude, final double longitude) {
-        if (!ParcelableLocation.isValidLocation(latitude, longitude)) return;
+        if (!ParcelableLocationUtils.isValidLocation(latitude, longitude)) return;
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_MAP);

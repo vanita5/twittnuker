@@ -26,7 +26,7 @@ import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.model.tab.argument.TabArguments;
-import de.vanita5.twittnuker.model.tab.extra.TabExtra;
+import de.vanita5.twittnuker.model.tab.extra.TabExtras;
 import de.vanita5.twittnuker.model.util.TabArgumentsFieldConverter;
 import de.vanita5.twittnuker.model.util.TabExtrasFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;

@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -567,7 +568,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
                 extraTypeView.setImageResource(sensitive ? R.drawable.ic_action_warning : R.drawable.ic_action_gallery);
             }
             extraTypeView.setVisibility(View.VISIBLE);
-        } else if (ParcelableLocation.isValidLocation(location) || !TextUtils.isEmpty(placeFullName)) {
+        } else if (ParcelableLocationUtils.isValidLocation(location) || !TextUtils.isEmpty(placeFullName)) {
             extraTypeView.setImageResource(R.drawable.ic_action_location);
             extraTypeView.setVisibility(View.VISIBLE);
         } else {

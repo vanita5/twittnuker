@@ -120,6 +120,7 @@ import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
+import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
@@ -1199,7 +1200,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
 
     private void setRecentLocation(ParcelableLocation location) {
         if (location != null) {
-            mLocationText.setText(location.getHumanReadableString(3));
+            mLocationText.setText(ParcelableLocationUtils.getHumanReadableString(location, 3));
         } else {
             mLocationText.setText(R.string.unknown_location);
         }
@@ -1352,7 +1353,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
         public void onLocationChanged(final Location location) {
             final ComposeActivity activity = mActivityRef.get();
             if (activity == null) return;
-            activity.setRecentLocation(ParcelableLocation.fromLocation(location));
+            activity.setRecentLocation(ParcelableLocationUtils.fromLocation(location));
         }
 
         @Override
