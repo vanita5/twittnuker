@@ -28,12 +28,13 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
 import de.vanita5.twittnuker.loader.support.StatusRetweetersLoader;
+import de.vanita5.twittnuker.model.UserKey;
 
 public class StatusRetweetersListFragment extends CursorSupportUsersListFragment {
 
     @Override
     public IDsUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
-        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long statusId = args.getLong(EXTRA_STATUS_ID, -1);
         final StatusRetweetersLoader loader = new StatusRetweetersLoader(context, accountKey, statusId,
                 getData(), fromUser);

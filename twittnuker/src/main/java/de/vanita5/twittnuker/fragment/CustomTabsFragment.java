@@ -66,6 +66,7 @@ import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -224,7 +225,7 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
         final Resources res = getResources();
         final boolean hasOfficialKeyAccounts = Utils.hasAccountSignedWithOfficialKeys(getActivity());
         final boolean forcePrivateAPI = mPreferences.getBoolean(KEY_FORCE_USING_PRIVATE_APIS, false);
-        final AccountKey[] accountIds = DataStoreUtils.getAccountKeys(getActivity());
+        final UserKey[] accountIds = DataStoreUtils.getAccountKeys(getActivity());
         final MenuItem itemAdd = menu.findItem(R.id.add_submenu);
         if (itemAdd != null && itemAdd.hasSubMenu()) {
             final SubMenu subMenu = itemAdd.getSubMenu();

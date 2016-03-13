@@ -30,6 +30,7 @@ import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.loader.support.TweetSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -42,7 +43,7 @@ public class StatusesSearchFragment extends ParcelableStatusesFragment {
                                                                     final Bundle args,
                                                                     final boolean fromUser) {
         setRefreshing(true);
-        final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final long maxId = args.getLong(EXTRA_MAX_ID, -1);
         final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
         final String query = args.getString(EXTRA_QUERY);

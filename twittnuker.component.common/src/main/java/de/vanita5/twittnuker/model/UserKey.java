@@ -43,7 +43,7 @@ public class UserKey implements Comparable<UserKey>, Parcelable {
     public static final Creator<UserKey> CREATOR = new Creator<UserKey>() {
         public UserKey createFromParcel(Parcel source) {
             UserKey target = new UserKey();
-            AccountKeyParcelablePlease.readFromParcel(target, source);
+            UserKeyParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
@@ -120,7 +120,7 @@ public class UserKey implements Comparable<UserKey>, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        AccountKeyParcelablePlease.writeToParcel(this, dest, flags);
+        UserKeyParcelablePlease.writeToParcel(this, dest, flags);
     }
 
     public boolean check(long accountId, String accountHost) {

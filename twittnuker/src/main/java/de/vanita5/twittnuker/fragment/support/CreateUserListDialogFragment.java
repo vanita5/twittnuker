@@ -33,6 +33,7 @@ import android.widget.CheckBox;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.text.validator.UserListNameValidator;
 import de.vanita5.twittnuker.util.ParseUtils;
 
@@ -44,7 +45,7 @@ public class CreateUserListDialogFragment extends BaseSupportDialogFragment impl
             case DialogInterface.BUTTON_POSITIVE: {
                 final AlertDialog alertDialog = (AlertDialog) dialog;
                 final Bundle args = getArguments();
-                final AccountKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+                final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
                 final MaterialEditText mEditName = (MaterialEditText) alertDialog.findViewById(R.id.name);
                 final MaterialEditText mEditDescription = (MaterialEditText) alertDialog.findViewById(R.id.description);
                 final CheckBox mPublicCheckBox = (CheckBox) alertDialog.findViewById(R.id.is_public);
