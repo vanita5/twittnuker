@@ -31,8 +31,11 @@ import de.vanita5.twittnuker.model.util.TabArgumentsFieldConverter;
 import de.vanita5.twittnuker.model.util.TabExtrasFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 
-@CursorObject
+@CursorObject(valuesCreator = true)
 public class Tab {
+    @CursorField(value = Tabs._ID, excludeWrite = true)
+    long id;
+
     @CursorField(Tabs.NAME)
     String name;
 
@@ -51,6 +54,10 @@ public class Tab {
 
     @CursorField(value = Tabs.EXTRAS, converter = TabExtrasFieldConverter.class)
     TabExtras extras;
+
+    public long getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
