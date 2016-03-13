@@ -29,6 +29,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
+import android.util.Pair;
 
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.Constants;
@@ -41,13 +42,12 @@ import de.vanita5.twittnuker.model.ParcelableUserCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
+import de.vanita5.twittnuker.task.UpdateAccountInfoTask;
+import de.vanita5.twittnuker.task.util.TaskStarter;
 import de.vanita5.twittnuker.util.DataStoreUtils;
-import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
-import de.vanita5.twittnuker.util.Utils;
 
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser;
 
@@ -120,18 +120,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
             final long userId = twitterUser.getId();
             resolver.insert(CachedUsers.CONTENT_URI, cachedUserValues);
             final ParcelableUser user = ParcelableUserUtils.fromUser(twitterUser, accountKey);
-            if (Utils.isMyAccount(context, user.key)) {
-                final ContentValues accountValues = new ContentValues();
-                accountValues.put(Accounts.NAME, user.name);
-                accountValues.put(Accounts.SCREEN_NAME, user.screen_name);
-                accountValues.put(Accounts.PROFILE_IMAGE_URL, user.profile_image_url);
-                accountValues.put(Accounts.PROFILE_BANNER_URL, user.profile_banner_url);
-                accountValues.put(Accounts.ACCOUNT_USER, JsonSerializer.serialize(user,
-                        ParcelableUser.class));
-                accountValues.put(Accounts.ACCOUNT_KEY, String.valueOf(user.key));
-                final String accountWhere = Expression.equals(Accounts.ACCOUNT_KEY, userId).getSQL();
-                resolver.update(Accounts.CONTENT_URI, accountValues, accountWhere, null);
-            }
+
             user.account_color = accountColor;
             return SingleResponse.getInstance(user);
         } catch (final TwitterException e) {
@@ -145,4 +134,13 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
         forceLoad();
     }
 
+    @Override
+    public void deliverResult(SingleResponse<ParcelableUser> data) {
+        super.deliverResult(data);
+        if (data.hasData()) {
+            final UpdateAccountInfoTask task = new UpdateAccountInfoTask(getContext());
+            task.setParams(Pair.create(mAccountKey, data.getData()));
+            TaskStarter.execute(task);
+        }
+    }
 }
