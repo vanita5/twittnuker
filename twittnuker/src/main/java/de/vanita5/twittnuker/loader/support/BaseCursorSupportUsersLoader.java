@@ -40,6 +40,7 @@ public abstract class BaseCursorSupportUsersLoader extends TwitterAPIUsersLoader
     private final int mLoadItemLimit;
 
     private long mNextCursor, mPrevCursor;
+    private int mNextPage;
 
     public BaseCursorSupportUsersLoader(final Context context, final UserKey accountKey,
                                         final List<ParcelableUser> data, boolean fromUser) {
@@ -84,6 +85,10 @@ public abstract class BaseCursorSupportUsersLoader extends TwitterAPIUsersLoader
         if (cursor == null) return;
         mNextCursor = cursor.getNextCursor();
         mPrevCursor = cursor.getPreviousCursor();
+        mNextPage = mPage + 1;
     }
 
+    public int getNextPage() {
+        return mNextPage;
+    }
 }

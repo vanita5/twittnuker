@@ -46,6 +46,7 @@ public class UserFollowersFragment extends CursorSupportUsersListFragment {
         final UserFollowersLoader loader = new UserFollowersLoader(context, accountKey, userId,
                 screenName, getData(), fromUser);
         loader.setCursor(getNextCursor());
+        loader.setPage(getNextPage());
         return loader;
     }
 

@@ -54,7 +54,7 @@ public abstract class CursorSupportUsersLoader extends BaseCursorSupportUsersLoa
         paging.count(getCount());
         if (getCursor() > 0) {
             paging.setCursor(getCursor());
-        } else if (getPage() >= -1) {
+        } else if (getPage() > 0) {
             paging.setPage(getPage());
         }
         final ResponseList<User> users = getCursoredUsers(twitter, paging);

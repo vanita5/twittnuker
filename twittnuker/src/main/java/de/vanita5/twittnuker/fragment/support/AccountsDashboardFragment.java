@@ -106,6 +106,7 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TransitionUtils;
+import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
@@ -582,7 +583,10 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
             mAccountOptionsAdapter.add(new OptionItem(R.string.likes, R.drawable.ic_action_heart,
                     R.id.favorites));
         }
-        mAccountOptionsAdapter.add(new OptionItem(R.string.lists, R.drawable.ic_action_list, R.id.lists));
+        if (TwitterAPIFactory.isTwitterCredentials(account)) {
+            mAccountOptionsAdapter.add(new OptionItem(R.string.lists, R.drawable.ic_action_list,
+                    R.id.lists));
+        }
     }
 
     private boolean hasAccountInTab(SupportTabSpec tab, UserKey accountId, boolean isActivated) {
