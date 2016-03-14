@@ -25,11 +25,13 @@ package de.vanita5.twittnuker.text;
 import android.text.SpannableString;
 
 import de.vanita5.twittnuker.util.CheckUtils;
+import de.vanita5.twittnuker.util.TwidereStringUtils;
 
 public class SafeSpannableString extends SpannableString {
 
     public SafeSpannableString(CharSequence source) {
         super(source);
+        TwidereStringUtils.fixSHY(this);
     }
 
     @Override

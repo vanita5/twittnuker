@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.text;
 import android.text.SpannableStringBuilder;
 
 import de.vanita5.twittnuker.util.CheckUtils;
+import de.vanita5.twittnuker.util.TwidereStringUtils;
 
 /**
  * Created by Ningyuan on 2015/5/1.
@@ -33,6 +34,7 @@ public class SafeSpannableStringBuilder extends SpannableStringBuilder {
 
     public SafeSpannableStringBuilder(CharSequence source) {
         super(source);
+        TwidereStringUtils.fixSHY(this);
     }
 
     @Override
