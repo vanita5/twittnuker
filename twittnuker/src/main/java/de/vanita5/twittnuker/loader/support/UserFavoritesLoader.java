@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 
@@ -53,7 +54,7 @@ public class UserFavoritesLoader extends TwitterAPIStatusesLoader {
 
     @NonNull
     @Override
-    public ResponseList<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
+    public ResponseList<Status> getStatuses(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
         if (mUserId != -1)
             return twitter.getFavorites(mUserId, paging);
         else if (mUserScreenName != null) return twitter.getFavorites(mUserScreenName, paging);

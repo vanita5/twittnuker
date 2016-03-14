@@ -31,6 +31,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -126,6 +127,15 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<ParcelableCredentials> 
     public void setDummyItemText(String text) {
         mDummyItemText = text;
         notifyDataSetChanged();
+    }
+
+    public int findPositionByKey(UserKey key) {
+        for (int i = 0, j = getCount(); i < j; i++) {
+            if (getItem(i).account_key.equals(key)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
 }

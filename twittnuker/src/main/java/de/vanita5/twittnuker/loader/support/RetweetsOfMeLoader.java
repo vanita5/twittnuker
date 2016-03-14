@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
@@ -50,7 +51,7 @@ public class RetweetsOfMeLoader extends TwitterAPIStatusesLoader {
 
     @NonNull
     @Override
-    protected ResponseList<Status> getStatuses(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
+    protected ResponseList<Status> getStatuses(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
         return twitter.getRetweetsOfMe(paging);
     }
 

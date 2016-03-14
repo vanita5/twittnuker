@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.model.util;
 
 import de.vanita5.twittnuker.model.UserKey;
 
-public class UserKeysCursorFieldConverter extends AbsObjectArrayConverter<UserKey> {
+public class UserKeysCursorFieldConverter extends AbsArrayCursorFieldConverter<UserKey> {
 
     @Override
     protected UserKey[] newArray(int size) {

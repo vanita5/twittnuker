@@ -30,25 +30,25 @@ import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
 
 import java.lang.reflect.ParameterizedType;
 
-public abstract class AbsObjectArrayConverter<T> implements CursorFieldConverter<T[]> {
+public class LongArrayCursorFieldConverter implements CursorFieldConverter<long[]> {
     @Override
-    public final T[] parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
+    public long[] parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
         final String string = cursor.getString(columnIndex);
         if (TextUtils.isEmpty(string)) return null;
 
-        T[] temp = newArray(0);
+        long[] temp = new long[0];
         int len = 0;
         int offset = 0;
         try {
             while (true) {
                 int index = string.indexOf(',', offset);
                 if (index == -1) {
-                    temp = putElement(temp, parseItem(string.substring(offset)), len++);
-                    T[] out = newArray(len);
+                    temp = putElement(temp, Long.parseLong(string.substring(offset)), len++);
+                    long[] out = new long[len];
                     System.arraycopy(temp, 0, out, 0, len);
                     return out;
                 } else {
-                    temp = putElement(temp, parseItem(string.substring(offset, index)), len++);
+                    temp = putElement(temp, Long.parseLong(string.substring(offset, index)), len++);
                     offset = (index + 1);
                 }
             }
@@ -58,7 +58,7 @@ public abstract class AbsObjectArrayConverter<T> implements CursorFieldConverter
     }
 
     @Override
-    public final void writeField(ContentValues values, T[] object, String columnName, ParameterizedType fieldType) {
+    public void writeField(ContentValues values, long[] object, String columnName, ParameterizedType fieldType) {
         if (object == null) return;
         final StringBuilder sb = new StringBuilder();
         for (int i = 0, j = object.length; i < j; i++) {
@@ -70,16 +70,12 @@ public abstract class AbsObjectArrayConverter<T> implements CursorFieldConverter
         values.put(columnName, sb.toString());
     }
 
-    protected abstract T[] newArray(int size);
-
-    protected abstract T parseItem(String s);
-
-    private T[] putElement(T[] array, T element, int index) {
-        T[] out;
+    private static long[] putElement(long[] array, long element, int index) {
+        long[] out;
         if (index < array.length) {
             out = array;
         } else {
-            out = newArray(Math.max(1, array.length) * 2);
+            out = new long[Math.max(1, array.length) * 2];
             System.arraycopy(array, 0, out, 0, array.length);
         }
         out[index] = element;

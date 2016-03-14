@@ -227,7 +227,13 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
         }
         setRefreshEnabled(true);
         if (!(loader instanceof IExtendedLoader) || ((IExtendedLoader) loader).isFromUser()) {
-            adapter.setLoadMoreSupportedPosition(hasMoreData(data) ? IndicatorPosition.END : IndicatorPosition.NONE);
+            if (hasMoreData(data)) {
+                adapter.setLoadMoreSupportedPosition(IndicatorPosition.END);
+                onHasMoreDataChanged(true);
+            } else {
+                adapter.setLoadMoreSupportedPosition(IndicatorPosition.NONE);
+                onHasMoreDataChanged(false);
+            }
             int pos = -1;
             for (int i = statusStartIndex; i < statusEndExclusiveIndex; i++) {
                 // Assume statuses are descend sorted by id, so break at first status with id
@@ -245,6 +251,8 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
                     layoutManager.scrollToPositionWithOffset(pos, lastVisibleTop - layoutManager.getPaddingTop());
                 }
             }
+        } else {
+            onHasMoreDataChanged(false);
         }
         if (loader instanceof IExtendedLoader) {
             ((IExtendedLoader) loader).setFromUser(false);
@@ -283,6 +291,8 @@ public abstract class AbsStatusesFragment<Data> extends AbsContentListRecyclerVi
             saveReadPosition(layoutManager.findFirstVisibleItemPosition());
         }
     }
+
+    protected void onHasMoreDataChanged(boolean hasMoreData) {}
 
     @Override
     public void onStatusActionClick(IStatusViewHolder holder, int id, int position) {

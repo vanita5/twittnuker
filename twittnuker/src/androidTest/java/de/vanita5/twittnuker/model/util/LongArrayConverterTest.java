@@ -31,7 +31,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNull;
 
 public class LongArrayConverterTest {
-    private final LongArrayConverter converter = new LongArrayConverter();
+    private final LongArrayCursorFieldConverter converter = new LongArrayCursorFieldConverter();
 
     @Test
     public void testParseField() throws Exception {

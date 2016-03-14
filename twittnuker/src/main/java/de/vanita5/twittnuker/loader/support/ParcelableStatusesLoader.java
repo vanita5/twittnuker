@@ -26,12 +26,12 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
+
+import java.util.List;
 
 public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<ParcelableStatus>>
         implements Constants, IExtendedLoader {
@@ -69,11 +69,11 @@ public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<Parc
         return false;
     }
 
-    protected boolean deleteStatus(final List<ParcelableStatus> statuses, final long status_id) {
+    protected boolean deleteStatus(final List<ParcelableStatus> statuses, final long statusId) {
         if (statuses == null || statuses.isEmpty()) return false;
         boolean result = false;
         for (int i = statuses.size() - 1; i >= 0; i--) {
-            if (statuses.get(i).id == status_id) {
+            if (statuses.get(i).id == statusId) {
                 statuses.remove(i);
                 result = true;
             }

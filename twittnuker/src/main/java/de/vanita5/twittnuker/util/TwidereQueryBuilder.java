@@ -132,12 +132,15 @@ public class TwidereQueryBuilder {
 
     public static final class ConversationQueryBuilder {
 
-        public static SQLSelectQuery buildByConversationId(final String[] projection, final long account_id,
-                                                           final long conversationId, final String selection, final String sortOrder) {
+        public static Pair<SQLSelectQuery, String[]> buildByConversationId(final String[] projection,
+                                                                           final UserKey accountKey,
+                                                                           final long conversationId,
+                                                                           final String selection,
+                                                                           final String sortOrder) {
             final Selectable select = Utils.getColumnsFromProjection(projection);
             final SQLSelectQuery.Builder qb = SQLQueryBuilder.select(select);
             qb.from(new Tables(DirectMessages.TABLE_NAME));
-            final Expression accountIdWhere = Expression.equals(DirectMessages.ACCOUNT_KEY, account_id);
+            final Expression accountIdWhere = Expression.equalsArgs(DirectMessages.ACCOUNT_KEY);
             final Expression incomingWhere = Expression.and(Expression.notEquals(DirectMessages.IS_OUTGOING, 1),
                     Expression.equals(DirectMessages.SENDER_ID, conversationId));
             final Expression outgoingWhere = Expression.and(Expression.equals(DirectMessages.IS_OUTGOING, 1),
@@ -149,7 +152,7 @@ public class TwidereQueryBuilder {
                 qb.where(Expression.and(accountIdWhere, conversationWhere));
             }
             qb.orderBy(new OrderBy(sortOrder != null ? sortOrder : Conversation.DEFAULT_SORT_ORDER));
-            return qb.build();
+            return Pair.create(qb.build(), new String[]{accountKey.toString()});
         }
 
         public static Pair<SQLSelectQuery, String[]> byScreenName(final String[] projection, final UserKey accountKey,

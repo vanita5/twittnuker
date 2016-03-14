@@ -33,10 +33,11 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
-import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
-import de.vanita5.twittnuker.model.util.LongArrayConverter;
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
+import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
+import de.vanita5.twittnuker.model.util.UserKeysConverter;
+import de.vanita5.twittnuker.model.util.UserKeysCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 
 import java.util.Arrays;
@@ -83,9 +84,9 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     public String action;
 
     @ParcelableThisPlease
-    @JsonField(name = "source_ids")
-    @CursorField(value = Activities.SOURCE_IDS, converter = LongArrayConverter.class)
-    public long[] source_ids;
+    @JsonField(name = "source_ids", typeConverter = UserKeysConverter.class)
+    @CursorField(value = Activities.SOURCE_IDS, converter = UserKeysCursorFieldConverter.class)
+    public UserKey[] source_ids;
 
     @ParcelableThisPlease
     @JsonField(name = "sources")
@@ -128,7 +129,7 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     @ParcelableThisPlease
     public int account_color;
 
-    public transient long[] after_filtered_source_ids;
+    public transient UserKey[] after_filtered_source_ids;
     public transient ParcelableUser[] after_filtered_sources;
 
 
