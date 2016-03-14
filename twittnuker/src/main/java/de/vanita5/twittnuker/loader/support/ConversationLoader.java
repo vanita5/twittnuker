@@ -34,7 +34,6 @@ import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.Nullables;
@@ -52,7 +51,7 @@ public class ConversationLoader extends TwitterAPIStatusesLoader {
     private boolean mCanLoadAllReplies;
 
     public ConversationLoader(final Context context, @NonNull final ParcelableStatus status,
-                              final long sinceId, final long maxId, final List<ParcelableStatus> data,
+                              final String sinceId, final String maxId, final List<ParcelableStatus> data,
                               final boolean fromUser) {
         super(context, status.account_key, sinceId, maxId, data, null, -1, fromUser);
         mStatus = Nullables.assertNonNull(ParcelUtils.clone(status));
@@ -72,13 +71,13 @@ public class ConversationLoader extends TwitterAPIStatusesLoader {
             return twitter.getStatusNetConversation(status.id, paging);
         }
         final List<Status> statuses = new ArrayList<>();
-        final long maxId = getMaxId(), sinceId = getSinceId();
-        final boolean noSinceMaxId = maxId <= 0 && sinceId <= 0;
+        final String maxId = getMaxId(), sinceId = getSinceId();
+        final boolean noSinceMaxId = maxId == null && sinceId == null;
         // Load conversations
-        if ((maxId > 0 && maxId < status.id) || noSinceMaxId) {
-            long inReplyToId = maxId > 0 ? maxId : status.in_reply_to_status_id;
+        if ((maxId != null && maxId < status.id) || noSinceMaxId) {
+            String inReplyToId = maxId != null ? maxId : status.in_reply_to_status_id;
             int count = 0;
-            while (inReplyToId > 0 && count < 10) {
+            while (inReplyToId != null && count < 10) {
                 final Status item = twitter.showStatus(inReplyToId);
                 inReplyToId = item.getInReplyToStatusId();
                 statuses.add(item);
@@ -86,14 +85,14 @@ public class ConversationLoader extends TwitterAPIStatusesLoader {
             }
         }
         // Load replies
-        if ((sinceId > 0 && sinceId > status.id) || noSinceMaxId) {
+        if ((sinceId != null && sinceId > status.id) || noSinceMaxId) {
             SearchQuery query = new SearchQuery();
             if (TwitterAPIFactory.isTwitterCredentials(credentials)) {
                 query.query("to:" + status.user_screen_name);
             } else {
                 query.query("@" + status.user_screen_name);
             }
-            query.sinceId(sinceId > 0 ? sinceId : status.id);
+            query.sinceId(sinceId != null ? sinceId : status.id);
             try {
                 for (Status item : twitter.search(query)) {
                     if (item.getInReplyToStatusId() == status.id) {

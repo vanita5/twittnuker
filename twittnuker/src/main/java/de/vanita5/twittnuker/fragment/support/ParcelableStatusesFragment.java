@@ -30,8 +30,8 @@ import android.support.v4.app.LoaderManager;
 
 import com.squareup.otto.Subscribe;
 
-import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
+import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.UserKey;
@@ -48,7 +48,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<List<ParcelableStatus>> {
+public abstract class ParcelableStatusesFragment extends AbsStatusesFragment {
 
     private long mLastId;
     private int mPage = 1, mPageDelta;
@@ -147,7 +147,7 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment<Lis
         if ((position & IndicatorPosition.START) != 0) return;
         super.onLoadMoreContents(position);
         if (position == 0) return;
-        final AbsStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
+        final ParcelableStatusesAdapter adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(adapter.getStatusStartIndex() +
                 adapter.getStatusCount() - 1);
         UserKey[] accountKeys = {status.account_key};

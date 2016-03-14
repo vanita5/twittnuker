@@ -196,8 +196,8 @@ public final class DummyStatusHolderAdapter implements IStatusesAdapter<Object>,
     }
 
     @Override
-    public long getStatusId(int position) {
-        return 0;
+    public String getStatusId(int position) {
+        return null;
     }
 
     @Override
@@ -208,7 +208,7 @@ public final class DummyStatusHolderAdapter implements IStatusesAdapter<Object>,
 
     @Nullable
     @Override
-    public ParcelableStatus findStatusById(UserKey accountId, long statusId) {
+    public ParcelableStatus findStatusById(UserKey accountId, String statusId) {
         return null;
     }
 

@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
+import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
@@ -62,14 +63,14 @@ public abstract class ParcelableStatusesLoader extends AsyncTaskLoader<List<Parc
         mFromUser = fromUser;
     }
 
-    protected boolean containsStatus(final long statusId) {
+    protected boolean containsStatus(final String statusId) {
         for (final ParcelableStatus status : mData) {
-            if (status.id == statusId) return true;
+            if (TextUtils.equals(status.id, statusId)) return true;
         }
         return false;
     }
 
-    protected boolean deleteStatus(final List<ParcelableStatus> statuses, final long statusId) {
+    protected boolean deleteStatus(final List<ParcelableStatus> statuses, final String statusId) {
         if (statuses == null || statuses.isEmpty()) return false;
         boolean result = false;
         for (int i = statuses.size() - 1; i >= 0; i--) {

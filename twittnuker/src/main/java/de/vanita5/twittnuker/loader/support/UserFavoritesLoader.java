@@ -40,10 +40,10 @@ import java.util.List;
 
 public class UserFavoritesLoader extends TwitterAPIStatusesLoader {
 
-    private final long mUserId;
+    private final String mUserId;
     private final String mUserScreenName;
 
-    public UserFavoritesLoader(final Context context, final UserKey accountKey, final long userId,
+    public UserFavoritesLoader(final Context context, final UserKey accountKey, final String userId,
                                final String screenName, final long sinceId, final long maxId,
                                final List<ParcelableStatus> data, final String[] savedStatusesArgs,
                                final int tabPosition, boolean fromUser) {
@@ -55,10 +55,12 @@ public class UserFavoritesLoader extends TwitterAPIStatusesLoader {
     @NonNull
     @Override
     public ResponseList<Status> getStatuses(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
-        if (mUserId != -1)
+        if (mUserId != null) {
             return twitter.getFavorites(mUserId, paging);
-        else if (mUserScreenName != null) return twitter.getFavorites(mUserScreenName, paging);
-        throw new IllegalArgumentException();
+        } else if (mUserScreenName != null) {
+            return twitter.getFavoritesByScreenName(mUserScreenName, paging);
+        }
+        throw new TwitterException("Null user");
     }
 
     @WorkerThread

@@ -33,7 +33,7 @@ import android.view.MenuItem;
 import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.AbsUserListsAdapter;
+import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
 import de.vanita5.twittnuker.loader.support.UserListsLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
@@ -119,7 +119,7 @@ public class UserListsFragment extends ParcelableUserListsFragment {
     }
 
     private void removeUserList(final long id) {
-        final AbsUserListsAdapter<List<ParcelableUserList>> adapter = getAdapter();
+        final ParcelableUserListsAdapter adapter = getAdapter();
 //        final int listsIdx = adapter.findItemPosition(id);
 //        if (listsIdx >= 0) {
 //            adapter.removeAt(listsIdx);

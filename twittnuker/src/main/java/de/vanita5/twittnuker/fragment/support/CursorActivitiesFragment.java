@@ -43,7 +43,7 @@ import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
-import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
+import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.loader.support.ExtendedObjectCursorLoader;
 import de.vanita5.twittnuker.model.UserKey;
@@ -73,12 +73,12 @@ import java.util.List;
 
 import static de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri;
 
-public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<List<ParcelableActivity>> {
+public abstract class CursorActivitiesFragment extends AbsActivitiesFragment {
 
     @Override
     protected void onLoadingFinished() {
         final UserKey[] accountIds = getAccountKeys();
-        final AbsActivitiesAdapter<List<ParcelableActivity>> adapter = getAdapter();
+        final ParcelableActivitiesAdapter adapter = getAdapter();
         if (adapter.getItemCount() > 0) {
             showContent();
         } else if (accountIds.length > 0) {
@@ -121,7 +121,7 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment<Lis
                 accountKeys.length);
         final Where expression = processWhere(where, accountSelectionArgs);
         final String selection = expression.getSQL();
-        final AbsActivitiesAdapter<List<ParcelableActivity>> adapter = getAdapter();
+        final ParcelableActivitiesAdapter adapter = getAdapter();
         adapter.setShowAccountsColor(accountKeys.length > 1);
         final String[] projection = Activities.COLUMNS;
         return new CursorActivitiesLoader(context, uri, projection, selection, expression.whereArgs,

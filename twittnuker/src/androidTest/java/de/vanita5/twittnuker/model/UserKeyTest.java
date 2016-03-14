@@ -20,25 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.api;
+package de.vanita5.twittnuker.model;
 
-import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Param;
-import org.mariotaku.restfu.http.BodyType;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import org.junit.Test;
 
-/**
- * @author Joern Huxhorn - jhuxhorn at googlemail.com
- */
-@SuppressWarnings("RedundantThrows")
-public interface SpamReportingResources {
+import static org.junit.Assert.assertEquals;
 
-    @POST("/users/report_spam.json")
-    @BodyType(BodyType.FORM)
-    User reportSpam(@Param("user_id") String userId) throws TwitterException;
+public class UserKeyTest {
 
-    @POST("/users/report_spam.json")
-    @BodyType(BodyType.FORM)
-    User reportSpamByScreenName(@Param("screen_name") String screenName) throws TwitterException;
+    @Test
+    public void testToString() throws Exception {
+        assertEquals("abc@twitter.com", new UserKey("abc", "twitter.com").toString());
+    }
+
+    @Test
+    public void testValueOf() throws Exception {
+        assertEquals(UserKey.valueOf("abc@twitter.com"), new UserKey("abc", "twitter.com"));
+    }
 }

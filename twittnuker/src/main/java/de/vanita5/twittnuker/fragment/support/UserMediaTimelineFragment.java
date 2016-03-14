@@ -36,7 +36,7 @@ import android.view.ViewGroup;
 import org.apache.commons.lang3.ArrayUtils;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.AbsStatusesAdapter;
+import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.StaggeredGridParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
@@ -53,7 +53,7 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 import java.util.List;
 
 public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<StaggeredGridParcelableStatusesAdapter, StaggeredGridLayoutManager>
-        implements LoaderCallbacks<List<ParcelableStatus>>, DrawerCallback, AbsStatusesAdapter.StatusAdapterListener {
+        implements LoaderCallbacks<List<ParcelableStatus>>, DrawerCallback, ParcelableStatusesAdapter.StatusAdapterListener {
 
 
     @Override
@@ -72,7 +72,7 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final AbsStatusesAdapter<List<ParcelableStatus>> adapter = getAdapter();
+        final ParcelableStatusesAdapter adapter = getAdapter();
         adapter.setListener(this);
         final Bundle loaderArgs = new Bundle(getArguments());
         loaderArgs.putBoolean(EXTRA_FROM_USER, true);

@@ -30,6 +30,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,12 +38,13 @@ import android.view.KeyEvent;
 
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
-import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
+import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserAdapterListener;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
@@ -50,8 +52,7 @@ import de.vanita5.twittnuker.view.holder.UserViewHolder;
 import java.util.List;
 
 public abstract class ParcelableUsersFragment extends AbsContentListRecyclerViewFragment<ParcelableUsersAdapter>
-        implements LoaderManager.LoaderCallbacks<List<ParcelableUser>>, IUsersAdapter.UserAdapterListener,
-        KeyboardShortcutsHandler.KeyboardShortcutCallback {
+        implements LoaderCallbacks<List<ParcelableUser>>, UserAdapterListener, KeyboardShortcutCallback {
 
     private RecyclerViewNavigationHelper mNavigationHelper;
 
@@ -151,8 +152,7 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
         final ParcelableUser user = getAdapter().getUser(position);
         final FragmentActivity activity = getActivity();
         if (UserKeyUtils.isSameHost(user.account_key, user.key)) {
-            IntentUtils.openUserProfile(activity, user.account_key, user.key.getId(),
-                    user.screen_name, null, true, getUserReferral());
+            IntentUtils.openUserProfile(activity, user, null, true, getUserReferral());
         } else if (user.extras != null && user.extras.statusnet_profile_url != null) {
             final Uri uri = Uri.parse(user.extras.statusnet_profile_url);
             final Intent intent = new Intent(Intent.ACTION_VIEW, uri);

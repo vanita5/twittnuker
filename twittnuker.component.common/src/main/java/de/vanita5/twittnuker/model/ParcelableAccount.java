@@ -28,9 +28,11 @@ import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
+import org.mariotaku.library.objectcursor.annotation.AfterCursorObjectCreated;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
 
@@ -159,5 +161,14 @@ public class ParcelableAccount implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         ParcelableAccountParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    @AfterCursorObjectCreated
+    @OnJsonParseComplete
+    void afterObjectCreated() {
+        if (account_user != null) {
+            account_user.is_cache = true;
+            account_user.account_color = color;
+        }
     }
 }

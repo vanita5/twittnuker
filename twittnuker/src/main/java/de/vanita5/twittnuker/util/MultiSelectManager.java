@@ -32,7 +32,7 @@ import java.util.List;
 
 public class MultiSelectManager implements Constants {
 
-    private final NoDuplicatesArrayList<Long> mSelectedStatusIds = new NoDuplicatesArrayList<>();
+    private final NoDuplicatesArrayList<String> mSelectedStatusIds = new NoDuplicatesArrayList<>();
     private final NoDuplicatesArrayList<UserKey> mSelectedUserIds = new NoDuplicatesArrayList<>();
     private final NoDuplicatesArrayList<Callback> mCallbacks = new NoDuplicatesArrayList<>();
     private final ItemsList mSelectedItems = new ItemsList(this);
