@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
 import de.vanita5.twittnuker.model.CacheMetadata;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -106,14 +107,14 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
     protected CacheDownloadLoader.DownloadResult getInternal(@NonNull String url,
                                                              @Nullable Object extra) throws IOException {
         final Uri uri = Uri.parse(url);
-        final Authorization auth;
-        final ParcelableCredentials account;
+        Authorization auth = null;
+        ParcelableCredentials account = null;
         if (extra instanceof MediaExtra) {
-            account = ParcelableCredentialsUtils.getCredentials(mContext, ((MediaExtra) extra).getAccountKey());
+            UserKey accountKey = ((MediaExtra) extra).getAccountKey();
+            if (accountKey != null) {
+                account = ParcelableCredentialsUtils.getCredentials(mContext, accountKey);
             auth = TwitterAPIFactory.getAuthorization(account);
-        } else {
-            account = null;
-            auth = null;
+            }
         }
         final Uri modifiedUri = getReplacedUri(uri, account != null ? account.api_url_format : null);
         final MultiValueMap<String> additionalHeaders = new MultiValueMap<>();
