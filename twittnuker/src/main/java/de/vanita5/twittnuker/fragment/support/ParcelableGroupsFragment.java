@@ -91,6 +91,7 @@ public abstract class ParcelableGroupsFragment extends AbsContentListRecyclerVie
         if (loader instanceof IExtendedLoader) {
             ((IExtendedLoader) loader).setFromUser(false);
         }
+        showContent();
         setRefreshEnabled(true);
         setRefreshing(false);
         setLoadMoreIndicatorPosition(IndicatorPosition.NONE);
