@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -129,6 +130,7 @@ public abstract class AbsUsersAdapter<D> extends LoadMoreSupportAdapter<ViewHold
         return ITEM_VIEW_TYPE_USER;
     }
 
+    @Nullable
     @Override
     public UserAdapterListener getUserAdapterListener() {
         return mUserAdapterListener;

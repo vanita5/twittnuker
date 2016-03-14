@@ -25,43 +25,36 @@ package de.vanita5.twittnuker.adapter.iface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.ParcelableGroup;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.view.holder.UserViewHolder;
+import de.vanita5.twittnuker.view.holder.GroupViewHolder;
 
-public interface IUsersAdapter<Data> extends IContentCardAdapter {
+public interface IGroupsAdapter<Data> extends IContentCardAdapter {
 
-    ParcelableUser getUser(int position);
+    ParcelableGroup getGroup(int position);
 
-    long getUserId(int position);
+    long getGroupId(int position);
 
-    int getUserCount();
+    int getGroupsCount();
 
     void setData(Data data);
 
-    @Nullable
-    UserAdapterListener getUserAdapterListener();
-
-    RequestClickListener getRequestClickListener();
-
     boolean shouldShowAccountsColor();
+
+    boolean isNameFirst();
 
     @NonNull
     @Override
     MediaLoaderWrapper getMediaLoader();
 
-    interface UserAdapterListener {
+    @Nullable
+    GroupAdapterListener getGroupAdapterListener();
 
-        void onUserClick(UserViewHolder holder, int position);
+    interface GroupAdapterListener {
 
-        boolean onUserLongClick(UserViewHolder holder, int position);
+        void onGroupClick(GroupViewHolder holder, int position);
 
-    }
+        boolean onGroupLongClick(GroupViewHolder holder, int position);
 
-    interface RequestClickListener {
-
-        void onAcceptClicked(UserViewHolder holder, int position);
-
-        void onDenyClicked(UserViewHolder holder, int position);
     }
 }

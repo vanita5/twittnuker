@@ -44,7 +44,7 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.view.MediaPreviewImageView;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
-public class StaggeredGridParcelableStatusesAdapter extends AbsParcelableStatusesAdapter {
+public class StaggeredGridParcelableStatusesAdapter extends ParcelableStatusesAdapter {
 
     public StaggeredGridParcelableStatusesAdapter(Context context, boolean compact) {
         super(context, compact);

@@ -156,6 +156,7 @@ import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.support.UserFollowersFragment;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
 import de.vanita5.twittnuker.fragment.support.UserFriendsFragment;
+import de.vanita5.twittnuker.fragment.support.UserGroupsFragment;
 import de.vanita5.twittnuker.fragment.support.UserListFragment;
 import de.vanita5.twittnuker.fragment.support.UserListMembersFragment;
 import de.vanita5.twittnuker.fragment.support.UserListMembershipsFragment;
@@ -254,6 +255,7 @@ public final class Utils implements Constants {
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST_SUBSCRIBERS, null, LINK_ID_USER_LIST_SUBSCRIBERS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST_MEMBERSHIPS, null, LINK_ID_USER_LIST_MEMBERSHIPS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LISTS, null, LINK_ID_USER_LISTS);
+        LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_GROUPS, null, LINK_ID_USER_GROUPS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_SAVED_SEARCHES, null, LINK_ID_SAVED_SEARCHES);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_MENTIONS, null, LINK_ID_USER_MENTIONS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_INCOMING_FRIENDSHIPS, null, LINK_ID_INCOMING_FRIENDSHIPS);
@@ -604,6 +606,19 @@ public final class Utils implements Constants {
                     args.putLong(EXTRA_USER_ID, NumberUtils.toLong(paramUserId, -1));
                 }
                 if (isEmpty(paramScreenName) && isEmpty(paramUserId)) return null;
+                break;
+            }
+            case LINK_ID_USER_GROUPS: {
+                fragment = new UserGroupsFragment();
+                final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
+                final long paramUserId = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_USER_ID), -1);
+                if (!args.containsKey(EXTRA_SCREEN_NAME)) {
+                    args.putString(EXTRA_SCREEN_NAME, paramScreenName);
+                }
+                if (!args.containsKey(EXTRA_USER_ID)) {
+                    args.putLong(EXTRA_USER_ID, paramUserId);
+                }
+                if (isEmpty(paramScreenName) && paramUserId <= 0) return null;
                 break;
             }
             case LINK_ID_USER_LIST_TIMELINE: {

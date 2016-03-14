@@ -758,6 +758,7 @@
     <string name="translate_from_language">Translate from <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Translation</string>
     <string name="groups">Groups</string>
+    <string name="external_user_host_format">External user at <xliff:g id="host">%s</xliff:g></string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

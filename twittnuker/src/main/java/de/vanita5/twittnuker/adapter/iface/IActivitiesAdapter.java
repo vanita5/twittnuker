@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.adapter.iface;
 
+import android.support.annotation.Nullable;
+
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
@@ -46,9 +48,10 @@ public interface IActivitiesAdapter<Data> extends IContentCardAdapter, IGapSuppo
 
     boolean shouldShowAccountsColor();
 
-    ActivityClickListener getActivityClickListener();
+    @Nullable
+    ActivityAdapterListener getActivityClickListener();
 
-    interface ActivityClickListener {
+    interface ActivityAdapterListener {
 
         void onActivityClick(ActivityTitleSummaryViewHolder holder, int position);
     }

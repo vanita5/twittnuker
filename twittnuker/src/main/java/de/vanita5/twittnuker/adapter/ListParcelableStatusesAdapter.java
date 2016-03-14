@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
-public class ListParcelableStatusesAdapter extends AbsParcelableStatusesAdapter {
+public class ListParcelableStatusesAdapter extends ParcelableStatusesAdapter {
 
     public ListParcelableStatusesAdapter(Context context, boolean compact) {
         super(context, compact);
