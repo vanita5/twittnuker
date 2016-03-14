@@ -792,6 +792,7 @@
     <string name="translation">Übersetzung</string>
     <string name="groups">Gruppen</string>
     <string name="external_user_host_format">Externer Benutzer auf <xliff:g id="host">%s</xliff:g></string>
+    <string name="external_group_host_format">Externe Gruppe auf <xliff:g id="host">%s</xliff:g></string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

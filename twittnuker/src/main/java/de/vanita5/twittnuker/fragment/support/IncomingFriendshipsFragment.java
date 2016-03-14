@@ -28,7 +28,6 @@ import android.support.annotation.NonNull;
 
 import com.squareup.otto.Subscribe;
 
-import de.vanita5.twittnuker.adapter.AbsUsersAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
@@ -73,7 +72,7 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
 
     @Override
     public void onAcceptClicked(UserViewHolder holder, int position) {
-        final AbsUsersAdapter<List<ParcelableUser>> adapter = getAdapter();
+        final ParcelableUsersAdapter adapter = getAdapter();
         final ParcelableUser user = adapter.getUser(position);
         if (user == null) return;
         mTwitterWrapper.acceptFriendshipAsync(user.account_key, user.key);
@@ -81,7 +80,7 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
 
     @Override
     public void onDenyClicked(UserViewHolder holder, int position) {
-        final AbsUsersAdapter<List<ParcelableUser>> adapter = getAdapter();
+        final ParcelableUsersAdapter adapter = getAdapter();
         final ParcelableUser user = adapter.getUser(position);
         if (user == null) return;
         mTwitterWrapper.denyFriendshipAsync(user.account_key, user.key);

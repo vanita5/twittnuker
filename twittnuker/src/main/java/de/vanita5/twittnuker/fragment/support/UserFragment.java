@@ -806,6 +806,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mProfileImageView.setOnClickListener(this);
         mProfileBannerView.setOnClickListener(this);
         mTweetsContainer.setOnClickListener(this);
+        mGroupsContainer.setOnClickListener(this);
         mFollowersContainer.setOnClickListener(this);
         mFriendsContainer.setOnClickListener(this);
         mHeaderErrorIcon.setOnClickListener(this);
