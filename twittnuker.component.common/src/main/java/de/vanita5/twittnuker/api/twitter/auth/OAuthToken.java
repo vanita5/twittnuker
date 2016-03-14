@@ -43,7 +43,7 @@ import java.text.ParseException;
 public class OAuthToken implements ValueMap {
 
     private String screenName;
-    private long userId;
+    private String userId;
 
     private String oauthToken, oauthTokenSecret;
 
@@ -51,7 +51,7 @@ public class OAuthToken implements ValueMap {
         return screenName;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -83,7 +83,7 @@ public class OAuthToken implements ValueMap {
                         break;
                     }
                     case "user_id": {
-                        userId = Long.parseLong(value);
+                        userId = value;
                         break;
                     }
                     case "screen_name": {

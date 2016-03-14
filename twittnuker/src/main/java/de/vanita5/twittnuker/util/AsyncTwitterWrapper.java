@@ -59,7 +59,6 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -1772,7 +1771,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             mDestroyingStatusIds.remove(Pair.create(mAccountKey, mStatusId));
             if (result.hasData()) {
                 final ParcelableStatus status = result.getData();
-                if (status.retweet_id > 0) {
+                if (status.retweet_id != null) {
                     Utils.showInfoMessage(mContext, R.string.retweet_cancelled, false);
                 } else {
                     Utils.showInfoMessage(mContext, R.string.status_deleted, false);

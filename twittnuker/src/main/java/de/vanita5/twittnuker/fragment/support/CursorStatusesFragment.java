@@ -264,7 +264,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
 
             @Nullable
             @Override
-            public long[] getMaxIds() {
+            public String[] getMaxIds() {
                 return getOldestStatusIds(getAccountKeys());
             }
 
@@ -292,7 +292,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
 
             @Nullable
             @Override
-            public long[] getSinceIds() {
+            public String[] getSinceIds() {
                 return getNewestStatusIds(getAccountKeys());
             }
         });
@@ -304,7 +304,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
         return buildStatusFilterWhereClause(table, null);
     }
 
-    protected long[] getNewestStatusIds(UserKey[] accountKeys) {
+    protected String[] getNewestStatusIds(UserKey[] accountKeys) {
         final Context context = getContext();
         if (context == null) return null;
         return DataStoreUtils.getNewestStatusIds(context, getContentUri(), accountKeys);
@@ -322,7 +322,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
         }
     }
 
-    protected long[] getOldestStatusIds(UserKey[] accountKeys) {
+    protected String[] getOldestStatusIds(UserKey[] accountKeys) {
         final Context context = getContext();
         if (context == null) return null;
         return DataStoreUtils.getOldestStatusIds(context, getContentUri(), accountKeys);

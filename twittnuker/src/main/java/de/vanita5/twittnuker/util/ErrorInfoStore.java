@@ -53,7 +53,7 @@ public class ErrorInfoStore {
         return mPreferences.getInt(key, 0);
     }
 
-    public int get(String key, long extraId) {
+    public int get(String key, String extraId) {
         return get(key + "_" + extraId);
     }
 
@@ -70,7 +70,7 @@ public class ErrorInfoStore {
         mPreferences.edit().putInt(key, code).apply();
     }
 
-    public void put(String key, long extraId, int code) {
+    public void put(String key, String extraId, int code) {
         put(key + "_" + extraId, code);
     }
 
@@ -102,7 +102,7 @@ public class ErrorInfoStore {
         return null;
     }
 
-    public void remove(String key, long extraId) {
+    public void remove(String key, String extraId) {
         remove(key + "_" + extraId);
     }
 

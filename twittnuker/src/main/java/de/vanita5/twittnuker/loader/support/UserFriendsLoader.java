@@ -39,10 +39,10 @@ import java.util.List;
 
 public class UserFriendsLoader extends CursorSupportUsersLoader {
 
-    private final long mUserId;
+    private final String mUserId;
     private final String mScreenName;
 
-    public UserFriendsLoader(final Context context, final UserKey accountKey, final long userId,
+    public UserFriendsLoader(final Context context, final UserKey accountKey, final String userId,
                              final String screenName, final List<ParcelableUser> userList,
                              boolean fromUser) {
         super(context, accountKey, userList, fromUser);
@@ -55,7 +55,7 @@ public class UserFriendsLoader extends CursorSupportUsersLoader {
     protected ResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, final Paging paging)
             throws TwitterException {
         final String accountType = DataStoreUtils.getAccountType(getContext(), getAccountId());
-        if (mUserId > 0) {
+        if (mUserId != null) {
             if (ParcelableCredentials.ACCOUNT_TYPE_STATUSNET.equals(accountType)) {
                 return twitter.getStatusesFriendsList(mUserId, paging);
             }

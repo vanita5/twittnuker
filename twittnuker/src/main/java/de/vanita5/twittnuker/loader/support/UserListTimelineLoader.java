@@ -41,13 +41,13 @@ import java.util.List;
 
 public class UserListTimelineLoader extends TwitterAPIStatusesLoader {
 
-    private final long mUserId;
+    private final String mUserId;
     private final String mScreenName, mListName;
     private final long mListId;
 
     public UserListTimelineLoader(final Context context, final UserKey accountKey, final long listId,
-                                  final long userId, final String screenName, final String listName,
-                                  final long sinceId, final long maxId, final List<ParcelableStatus> data,
+                                  final String userId, final String screenName, final String listName,
+                                  final String sinceId, final String maxId, final List<ParcelableStatus> data,
                                   final String[] savedStatusesArgs, final int tabPosition, boolean fromUser) {
         super(context, accountKey, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
         mListId = listId;
@@ -63,7 +63,7 @@ public class UserListTimelineLoader extends TwitterAPIStatusesLoader {
             return twitter.getUserListStatuses(mListId, paging);
         else if (mListName == null)
             throw new TwitterException("No list name or id given");
-        else if (mUserId > 0)
+        else if (mUserId != null)
             return twitter.getUserListStatuses(mListName.replace(' ', '-'), mUserId, paging);
         else if (mScreenName != null)
             return twitter.getUserListStatuses(mListName.replace(' ', '-'), mScreenName, paging);

@@ -36,10 +36,11 @@ import java.util.List;
 
 public class StatusFavoritersLoader extends IDsUsersLoader {
 
-    private final long mStatusId;
+    private final String mStatusId;
 
-    public StatusFavoritersLoader(final Context context, final UserKey accountKey, final long statusId,
-                                  final List<ParcelableUser> data, boolean fromUser) {
+    public StatusFavoritersLoader(final Context context, final UserKey accountKey,
+                                  final String statusId, final List<ParcelableUser> data,
+                                  final boolean fromUser) {
         super(context, accountKey, data, fromUser);
         mStatusId = statusId;
     }

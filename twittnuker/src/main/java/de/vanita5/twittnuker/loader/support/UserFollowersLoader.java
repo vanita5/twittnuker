@@ -39,10 +39,10 @@ import java.util.List;
 
 public class UserFollowersLoader extends CursorSupportUsersLoader {
 
-    private final long mUserId;
+    private final String mUserId;
     private final String mScreenName;
 
-    public UserFollowersLoader(final Context context, final UserKey accountId, final long userId,
+    public UserFollowersLoader(final Context context, final UserKey accountId, final String userId,
                                final String screenName, final List<ParcelableUser> data,
                                final boolean fromUser) {
         super(context, accountId, data, fromUser);
@@ -57,7 +57,7 @@ public class UserFollowersLoader extends CursorSupportUsersLoader {
         final UserKey accountId = getAccountId();
         if (accountId == null) throw new TwitterException("No account");
         final String accountType = DataStoreUtils.getAccountType(getContext(), accountId);
-        if (mUserId > 0) {
+        if (mUserId != null) {
             if (ParcelableCredentials.ACCOUNT_TYPE_STATUSNET.equals(accountType)) {
                 return twitter.getStatusesFollowersList(mUserId, paging);
             }

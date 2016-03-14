@@ -92,6 +92,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
+import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
@@ -1782,6 +1783,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return TwidereMathUtils.sum(mItemCounts, 0, index - 1);
         }
 
+        @Nullable
         @Override
         public String getStatusId(int position) {
             final ParcelableStatus status = getStatus(position);
