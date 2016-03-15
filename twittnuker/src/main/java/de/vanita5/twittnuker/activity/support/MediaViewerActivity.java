@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
@@ -225,31 +226,28 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
     @Override
     protected MediaViewerFragment instantiateMediaFragment(int position) {
         final ParcelableMedia media = getMedia()[position];
+        final Bundle args = new Bundle();
+        final Intent intent = getIntent();
+        args.putParcelable(EXTRA_ACCOUNT_KEY, intent.getParcelableExtra(EXTRA_ACCOUNT_KEY));
+        args.putParcelable(EXTRA_MEDIA, media);
+        args.putParcelable(EXTRA_STATUS, intent.getParcelableExtra(EXTRA_STATUS));
         switch (media.type) {
             case ParcelableMedia.Type.IMAGE: {
-                final Bundle args = new Bundle();
-                args.putParcelable(EXTRA_ACCOUNT_KEY, getIntent().getParcelableExtra(EXTRA_ACCOUNT_KEY));
                 args.putParcelable(ImagePageFragment.EXTRA_MEDIA_URI, Uri.parse(media.media_url));
                 return (MediaViewerFragment) Fragment.instantiate(this,
                         ImagePageFragment.class.getName(), args);
             }
             case ParcelableMedia.Type.ANIMATED_GIF:
             case ParcelableMedia.Type.CARD_ANIMATED_GIF: {
-                final Bundle args = new Bundle();
                 args.putBoolean(VideoPageFragment.EXTRA_LOOP, true);
-                args.putParcelable(EXTRA_MEDIA, media);
                 return (MediaViewerFragment) Fragment.instantiate(this,
                         VideoPageFragment.class.getName(), args);
             }
             case ParcelableMedia.Type.VIDEO: {
-                final Bundle args = new Bundle();
-                args.putParcelable(EXTRA_MEDIA, media);
                 return (MediaViewerFragment) Fragment.instantiate(this,
                         VideoPageFragment.class.getName(), args);
             }
             case ParcelableMedia.Type.EXTERNAL_PLAYER: {
-                final Bundle args = new Bundle();
-                args.putParcelable(EXTRA_MEDIA, media);
                 return (MediaViewerFragment) Fragment.instantiate(this,
                         ExternalBrowserPageFragment.class.getName(), args);
             }
@@ -825,7 +823,7 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         @Override
         protected Object getDownloadExtra() {
             final MediaExtra mediaExtra = new MediaExtra();
-            mediaExtra.setAccountKey(getArguments().<UserKey>getParcelable(EXTRA_ACCOUNT_KEY));
+            mediaExtra.setAccountKey(getAccountKey());
             final Uri origDownloadUri = super.getDownloadUri();
             final Uri downloadUri = getDownloadUri();
             if (origDownloadUri != null && downloadUri != null) {
@@ -899,6 +897,14 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         protected void setupImageView(SubsamplingScaleImageView imageView) {
             imageView.setMaxScale(getResources().getDisplayMetrics().density);
         }
+
+        private ParcelableMedia getMedia() {
+            return getArguments().getParcelable(EXTRA_MEDIA);
+        }
+
+        private UserKey getAccountKey() {
+            return getArguments().getParcelable(EXTRA_ACCOUNT_KEY);
+        }
     }
 
     public static class VideoPageFragment extends CacheDownloadMediaViewerFragment
@@ -957,9 +963,6 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
             return Uri.parse(bestVideoUrlAndType.first);
         }
 
-        private ParcelableMedia getMedia() {
-            return getArguments().getParcelable(EXTRA_MEDIA);
-        }
 
         @Override
         protected void displayMedia(CacheDownloadLoader.Result result) {
@@ -1159,6 +1162,14 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         @Override
         public View onCreateMediaView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             return inflater.inflate(R.layout.layout_media_viewer_texture_video_view, container, false);
+        }
+
+        private ParcelableMedia getMedia() {
+            return getArguments().getParcelable(EXTRA_MEDIA);
+        }
+
+        private UserKey getAccountKey() {
+            return getArguments().getParcelable(EXTRA_ACCOUNT_KEY);
         }
 
         private static class VideoPlayProgressRunnable implements Runnable {

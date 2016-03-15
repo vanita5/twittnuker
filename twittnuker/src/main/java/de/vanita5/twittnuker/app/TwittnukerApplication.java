@@ -114,7 +114,6 @@ public class TwittnukerApplication extends Application implements Constants,
             StrictModeUtils.detectAllVmPolicy();
         }
         super.onCreate();
-        resetTheme(getSharedPreferences());
         initializeAsyncTask();
         initDebugMode();
         initBugReport();
@@ -222,7 +221,7 @@ public class TwittnukerApplication extends Application implements Constants,
                 break;
             }
             case KEY_THEME: {
-                resetTheme(preferences);
+//                resetTheme(preferences);
                 break;
             }
         }
