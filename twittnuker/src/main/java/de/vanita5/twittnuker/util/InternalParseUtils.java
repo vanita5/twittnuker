@@ -64,6 +64,7 @@ public class InternalParseUtils {
                 } else if (value instanceof Double) {
                     json.value((Double) value);
                 } else {
+                    json.nullValue();
                     Log.w(TwittnukerConstants.LOGTAG, "Unknown type " + value.getClass().getSimpleName() + " in arguments key " + key);
                 }
             }
