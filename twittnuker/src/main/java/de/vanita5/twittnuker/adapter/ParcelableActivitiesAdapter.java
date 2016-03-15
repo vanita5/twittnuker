@@ -60,7 +60,6 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 import java.lang.ref.WeakReference;
-import java.util.EventListener;
 import java.util.List;
 
 public class ParcelableActivitiesAdapter extends LoadMoreSupportAdapter<RecyclerView.ViewHolder>
@@ -81,7 +80,7 @@ public class ParcelableActivitiesAdapter extends LoadMoreSupportAdapter<Recycler
     private List<ParcelableActivity> mData;
     private final boolean mIsByFriends;
     private ActivityAdapterListener mActivityAdapterListener;
-    private long[] mFilteredUserIds;
+    private String[] mFilteredUserIds;
     private boolean mFollowingOnly;
     private boolean mMentionsOnly;
 

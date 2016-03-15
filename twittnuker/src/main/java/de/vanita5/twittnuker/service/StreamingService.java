@@ -38,6 +38,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.util.SimpleArrayMap;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ import org.mariotaku.restfu.http.Endpoint;
 import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.sqliteqb.library.Expression;
+import org.w3c.dom.Text;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
@@ -373,21 +375,22 @@ public class StreamingService extends Service implements Constants {
 
         @Override
         public void onDirectMessage(final DirectMessage directMessage) {
-            if (directMessage == null || directMessage.getId() <= 0) return;
+            if (directMessage == null || directMessage.getId() == null) return;
+            final String where = Expression.and(Expression.equalsArgs(DirectMessages.ACCOUNT_KEY),
+                    Expression.equalsArgs(DirectMessages.MESSAGE_ID)).getSQL();
+            final String[] whereArgs = {account.account_key.toString(), directMessage.getId()};
             for (final Uri uri : MESSAGES_URIS) {
-                final String where = DirectMessages.ACCOUNT_KEY + " = " + account.account_key + " AND "
-                        + DirectMessages.MESSAGE_ID + " = " + directMessage.getId();
-                resolver.delete(uri, where, null);
+                resolver.delete(uri, where, whereArgs);
             }
             final User sender = directMessage.getSender(), recipient = directMessage.getRecipient();
-            if (sender.getId() == account.account_key.getId()) {
+            if (TextUtils.equals(sender.getId(), account.account_key.getId())) {
                 final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage,
                         account.account_key, true);
                 if (values != null) {
                     resolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
                 }
             }
-            if (recipient.getId() == account.account_key.getId()) {
+            if (TextUtils.equals(recipient.getId(), account.account_key.getId())) {
                 final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage,
                         account.account_key, false);
                 final Uri.Builder builder = DirectMessages.Inbox.CONTENT_URI.buildUpon();
@@ -448,7 +451,7 @@ public class StreamingService extends Service implements Constants {
 //            ContentValues values = ParcelableActivityValuesCreator.create(activity);
 //            resolver.insert(Activities.AboutMe.CONTENT_URI, values);
 
-            if (favoritedStatus.getUser().getId() == account.account_key.getId()) {
+            if (TextUtils.equals(favoritedStatus.getUser().getId(), account.account_key.getId())) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
                         Utils.parseURLEntities(favoritedStatus.getText(), favoritedStatus.getUrlEntities()),
                         ParcelableStatusUtils.fromStatus(favoritedStatus,
@@ -459,7 +462,7 @@ public class StreamingService extends Service implements Constants {
 
         @Override
         public void onFollow(final User source, final User followedUser) {
-            if (followedUser.getId() == account.account_key.getId()) {
+            if (TextUtils.equals(followedUser.getId(), account.account_key.getId())) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER,
                         null, null, source);
             }
@@ -510,7 +513,7 @@ public class StreamingService extends Service implements Constants {
             }
 
             //Retweet
-            if (rt != null && rt.getUser().getId() == account.account_key.getId()) {
+            if (rt != null && TextUtils.equals(rt.getUser().getId(), account.account_key.getId())) {
                 createNotification(status.getUser().getScreenName(),
                         NotificationContent.NOTIFICATION_TYPE_RETWEET,
                         Utils.parseURLEntities(rt.getText(), rt.getUrlEntities()),

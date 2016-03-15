@@ -103,7 +103,7 @@ public class RefreshService extends Service implements Constants {
 
                             @Nullable
                             @Override
-                            public long[] getSinceIds() {
+                            public String[] getSinceIds() {
                                 return DataStoreUtils.getNewestStatusIds(context,
                                         Statuses.CONTENT_URI, getAccountKeys());
                             }
@@ -124,7 +124,7 @@ public class RefreshService extends Service implements Constants {
 
                         @Nullable
                         @Override
-                        public long[] getSinceIds() {
+                        public String[] getSinceIds() {
                             return DataStoreUtils.getNewestActivityMaxPositions(context,
                                     Activities.AboutMe.CONTENT_URI, getAccountKeys());
                         }
@@ -145,7 +145,7 @@ public class RefreshService extends Service implements Constants {
 
                             @Nullable
                             @Override
-                            public long[] getSinceIds() {
+                            public String[] getSinceIds() {
                                 return DataStoreUtils.getNewestMessageIds(context,
                                         DirectMessages.Inbox.CONTENT_URI, getAccountKeys());
                             }

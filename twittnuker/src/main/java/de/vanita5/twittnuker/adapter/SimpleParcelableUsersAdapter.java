@@ -23,12 +23,14 @@
 package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
 import java.util.List;
@@ -94,10 +96,17 @@ public class SimpleParcelableUsersAdapter extends BaseArrayAdapter<ParcelableUse
         }
         if (data == null) return;
         for (final ParcelableUser user : data) {
-            if (clearOld || findItemPosition(user.key.getId()) < 0) {
+            if (clearOld || findUserPosition(user.key) < 0) {
                 add(user);
             }
         }
+    }
+
+    public int findUserPosition(@NonNull UserKey userKey) {
+        for (int i = 0, j = getCount(); i < j; i++) {
+            if (userKey.equals(getItem(i).key)) return i;
+        }
+        return -1;
     }
 
 }

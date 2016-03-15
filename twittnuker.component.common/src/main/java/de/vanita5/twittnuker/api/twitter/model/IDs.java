@@ -37,7 +37,7 @@ public class IDs extends TwitterResponseObject implements TwitterResponse, Curso
 
     long previousCursor;
     long nextCursor;
-    long[] ids;
+    String[] ids;
 
     @Override
     public long getNextCursor() {
@@ -59,7 +59,7 @@ public class IDs extends TwitterResponseObject implements TwitterResponse, Curso
         return previousCursor != 0;
     }
 
-    public long[] getIDs() {
+    public String[] getIDs() {
         return ids;
     }
 

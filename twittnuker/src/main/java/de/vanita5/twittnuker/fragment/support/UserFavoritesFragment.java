@@ -40,9 +40,9 @@ public class UserFavoritesFragment extends ParcelableStatusesFragment {
                                                                     final boolean fromUser) {
         setRefreshing(true);
         final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
-        final long maxId = args.getLong(EXTRA_MAX_ID, -1);
-        final long sinceId = args.getLong(EXTRA_SINCE_ID, -1);
-        final long userId = args.getLong(EXTRA_USER_ID, -1);
+        final String maxId = args.getString(EXTRA_MAX_ID);
+        final String sinceId = args.getString(EXTRA_SINCE_ID);
+        final String userId = args.getString(EXTRA_USER_ID);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
         return new UserFavoritesLoader(context, accountKey, userId, screenName, sinceId, maxId,

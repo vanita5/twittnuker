@@ -84,8 +84,8 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
     @Override
     public Object doLongOperation(RefreshTaskParam param) {
         final UserKey[] accountIds = param.getAccountKeys();
-        final long[] maxIds = param.getMaxIds();
-        final long[] sinceIds = param.getSinceIds();
+        final String[] maxIds = param.getMaxIds();
+        final String[] sinceIds = param.getSinceIds();
         final ContentResolver cr = context.getContentResolver();
         final int loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT);
         boolean saveReadPosition = false;
@@ -97,12 +97,12 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
             if (twitter == null) continue;
             final Paging paging = new Paging();
             paging.count(loadItemLimit);
-            if (maxIds != null && maxIds[i] > 0) {
+            if (maxIds != null && maxIds[i] != null) {
                 paging.maxId(maxIds[i]);
             }
-            if (sinceIds != null && sinceIds[i] > 0) {
+            if (sinceIds != null && sinceIds[i] != null) {
                 paging.sinceId(sinceIds[i]);
-                if (maxIds == null || maxIds[i] <= 0) {
+                if (maxIds == null || maxIds[i] == null) {
                     paging.setLatestResults(true);
                     saveReadPosition = true;
                 }

@@ -280,14 +280,14 @@ public class IntentUtils implements Constants {
 
     public static void openMessageConversation(@NonNull final Context context,
                                                @Nullable final UserKey accountKey,
-                                               final long recipientId) {
+                                               final String recipientId) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
-            if (recipientId > 0) {
-                builder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(recipientId));
+            if (recipientId != null) {
+                builder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, recipientId);
             }
         }
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
@@ -466,15 +466,15 @@ public class IntentUtils implements Constants {
 
     public static void openUserFavorites(@NonNull final Context context,
                                          @Nullable final UserKey accountKey,
-                                         final long userId, final String screenName) {
+                                         final String userId, final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_FAVORITES);
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
-        if (userId > 0) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
+        if (userId != null) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, userId);
         }
         if (screenName != null) {
             builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
@@ -525,7 +525,7 @@ public class IntentUtils implements Constants {
 
     public static void openUserListDetails(@NonNull final Context context,
                                            @Nullable final UserKey accountKey, final long listId,
-                                           final long userId, final String screenName, final String listName) {
+                                           final String userId, final String screenName, final String listName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_LIST);
@@ -535,8 +535,8 @@ public class IntentUtils implements Constants {
         if (listId > 0) {
             builder.appendQueryParameter(QUERY_PARAM_LIST_ID, String.valueOf(listId));
         }
-        if (userId > 0) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
+        if (userId != null) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, userId);
         }
         if (screenName != null) {
             builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);

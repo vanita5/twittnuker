@@ -186,7 +186,6 @@ import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
-import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
@@ -1327,15 +1326,15 @@ public final class Utils implements Constants {
         return VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP;
     }
 
-    public static String getQuoteStatus(final Context context, long statusId, final String screen_name, final String text) {
+    public static String getQuoteStatus(final Context context, String statusId, final String screenName, final String text) {
         if (context == null) return null;
         String quoteFormat = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).getString(
                 KEY_QUOTE_FORMAT, DEFAULT_QUOTE_FORMAT);
         if (isEmpty(quoteFormat)) {
             quoteFormat = DEFAULT_QUOTE_FORMAT;
         }
-        String result = quoteFormat.replace(FORMAT_PATTERN_LINK, LinkCreator.getTwitterStatusLink(screen_name, statusId).toString());
-        result = result.replace(FORMAT_PATTERN_NAME, screen_name);
+        String result = quoteFormat.replace(FORMAT_PATTERN_LINK, LinkCreator.getTwitterStatusLink(screenName, statusId).toString());
+        result = result.replace(FORMAT_PATTERN_NAME, screenName);
         result = result.replace(FORMAT_PATTERN_TEXT, text);
         return result;
     }
@@ -1944,10 +1943,10 @@ public final class Utils implements Constants {
     }
 
     public static boolean truncateMessages(final List<DirectMessage> in, final List<DirectMessage> out,
-                                           final long sinceId) {
+                                           final String sinceId) {
         if (in == null) return false;
         for (final DirectMessage message : in) {
-            if (sinceId > 0 && message.getId() <= sinceId) {
+            if (sinceId != null && message.getId() <= sinceId) {
                 continue;
             }
             out.add(message);
@@ -1956,10 +1955,10 @@ public final class Utils implements Constants {
     }
 
     public static boolean truncateStatuses(final List<Status> in, final List<Status> out,
-                                           final long sinceId) {
+                                           final String sinceId) {
         if (in == null) return false;
         for (final Status status : in) {
-            if (sinceId > 0 && status.getId() <= sinceId) {
+            if (sinceId != null && status.getId() <= sinceId) {
                 continue;
             }
             out.add(status);
@@ -2074,11 +2073,11 @@ public final class Utils implements Constants {
     @Nullable
     public static ParcelableUser getUserForConversation(@NonNull final Context context,
                                                         @NonNull final UserKey accountKey,
-                                                        final long conversationId) {
+                                                        final String conversationId) {
         final ContentResolver cr = context.getContentResolver();
         final Expression where = Expression.and(Expression.equalsArgs(ConversationEntries.ACCOUNT_KEY),
                 Expression.equalsArgs(ConversationEntries.CONVERSATION_ID));
-        final String[] whereArgs = {accountKey.toString(), String.valueOf(conversationId)};
+        final String[] whereArgs = {accountKey.toString(), conversationId};
         final Cursor c = cr.query(ConversationEntries.CONTENT_URI, null, where.getSQL(), whereArgs,
                 null);
         if (c == null) return null;

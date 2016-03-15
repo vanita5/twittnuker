@@ -234,8 +234,8 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
      * <i>Perspectival</i>. Only surfaces on methods supporting the <code>include_my_retweet</code> parameter,
      * when set to true. Details the Tweet ID of the user’s own retweet (if existent) of this Tweet.
      */
-    public long getCurrentUserRetweet() {
-        if (currentUserRetweet == null) return -1;
+    public String getCurrentUserRetweet() {
+        if (currentUserRetweet == null) return null;
         return currentUserRetweet.id;
     }
 
@@ -403,7 +403,7 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
     @JsonObject
     public static class CurrentUserRetweet {
         @JsonField(name = "id")
-        long id;
+        String id;
 
     }
 }

@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.model.UserKey;
 
 public class SavedSearchesAdapter extends BaseAdapter {
 
@@ -77,7 +78,7 @@ public class SavedSearchesAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public boolean removeItem(long accountId, long searchId) {
+    public boolean removeItem(UserKey accountId, long searchId) {
         if (mData == null) return false;
         for (int i = 0, mDataSize = mData.size(); i < mDataSize; i++) {
             SavedSearch search = mData.get(i);

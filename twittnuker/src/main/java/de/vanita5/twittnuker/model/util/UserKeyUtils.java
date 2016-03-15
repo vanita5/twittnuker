@@ -75,14 +75,17 @@ public class UserKeyUtils {
     }
 
     public static String getUserHost(User user) {
-        return getUserHost(user.getOstatusUri());
+        return getUserHost(user.getOstatusUri(), TwittnukerConstants.USER_TYPE_TWITTER_COM);
     }
 
     @NonNull
-    public static String getUserHost(@Nullable String uri) {
-        if (uri == null) return TwittnukerConstants.USER_TYPE_TWITTER_COM;
+    public static String getUserHost(@Nullable String uri, @Nullable String def) {
+        if (def == null) {
+            def = TwittnukerConstants.USER_TYPE_TWITTER_COM;
+        }
+        if (uri == null) return def;
         final String authority = PreviewMediaExtractor.getAuthority(uri);
-        if (authority == null) return TwittnukerConstants.USER_TYPE_TWITTER_COM;
+        if (authority == null) return def;
         return authority.replaceAll("[^\\w\\d\\.]", "-");
     }
 

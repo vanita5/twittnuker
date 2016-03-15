@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
@@ -258,11 +259,11 @@ public class BackgroundOperationService extends IntentService implements Constan
             }
             case Draft.Action.SEND_DIRECT_MESSAGE_COMPAT:
             case Draft.Action.SEND_DIRECT_MESSAGE: {
-                long recipientId = -1;
+                String recipientId = null;
                 if (item.action_extras instanceof SendDirectMessageActionExtra) {
                     recipientId = ((SendDirectMessageActionExtra) item.action_extras).getRecipientId();
                 }
-                if (ArrayUtils.isEmpty(item.account_ids) || recipientId <= 0) {
+                if (ArrayUtils.isEmpty(item.account_ids) || recipientId == null) {
                     return;
                 }
                 final UserKey accountKey = item.account_ids[0];
@@ -286,14 +287,15 @@ public class BackgroundOperationService extends IntentService implements Constan
 
     private void handleSendDirectMessageIntent(final Intent intent) {
         final UserKey accountId = intent.getParcelableExtra(EXTRA_ACCOUNT_KEY);
-        final long recipientId = intent.getLongExtra(EXTRA_RECIPIENT_ID, -1);
-        final String imageUri = intent.getStringExtra(EXTRA_IMAGE_URI);
+        final String recipientId = intent.getStringExtra(EXTRA_RECIPIENT_ID);
         final String text = intent.getStringExtra(EXTRA_TEXT);
+        final String imageUri = intent.getStringExtra(EXTRA_IMAGE_URI);
+        if (accountId == null || recipientId == null || text == null) return;
         sendMessage(accountId, recipientId, text, imageUri);
     }
 
-    private void sendMessage(UserKey accountId, long recipientId, String text, String imageUri) {
-        if (accountId == null || recipientId <= 0 || isEmpty(text)) return;
+    private void sendMessage(@NonNull UserKey accountId, @NonNull String recipientId,
+                             @NonNull String text, @Nullable String imageUri) {
         final String title = getString(R.string.sending_direct_message);
         final Builder builder = new Builder(this);
         builder.setSmallIcon(R.drawable.ic_stat_send);
@@ -309,7 +311,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                 recipientId, text, imageUri);
 
         final ContentResolver resolver = getContentResolver();
-        if (result.getData() != null && result.getData().id > 0) {
+        if (result.getData() != null && result.getData().id != null) {
             final ContentValues values = ContentValuesCreator.createDirectMessage(result.getData());
             final String delete_where = DirectMessages.ACCOUNT_KEY + " = " + accountId + " AND "
                     + DirectMessages.MESSAGE_ID + " = " + result.getData().id;
@@ -435,8 +437,10 @@ public class BackgroundOperationService extends IntentService implements Constan
 
 
     private SingleResponse<ParcelableDirectMessage> sendDirectMessage(final NotificationCompat.Builder builder,
-                                                                      final UserKey accountKey, final long recipientId,
-                                                                      final String text, final String imageUri) {
+                                                                      final UserKey accountKey,
+                                                                      final String recipientId,
+                                                                      final String text,
+                                                                      final String imageUri) {
         final Twitter twitter = TwitterAPIFactory.getTwitterInstance(this, accountKey, true, true);
         final TwitterUpload twitterUpload = TwitterAPIFactory.getTwitterInstance(this, accountKey, true, true, TwitterUpload.class);
         if (twitter == null || twitterUpload == null) return SingleResponse.getInstance();
@@ -676,17 +680,16 @@ public class BackgroundOperationService extends IntentService implements Constan
 
                     try {
                         final Status resultStatus = twitter.updateStatus(status);
-                        ParcelableUserMention[] mentions = ParcelableUserMentionUtils.fromUserMentionEntities(resultStatus.getUser(),
-                                resultStatus.getUserMentionEntities());
+                        final ParcelableStatus result = ParcelableStatusUtils.fromStatus(resultStatus,
+                                account.account_key, false);
+                        final ParcelableUserMention[] mentions = result.mentions;
                         Utils.setLastSeen(this, mentions, System.currentTimeMillis());
                         if (!notReplyToOther) {
-                            final long inReplyToUserId = resultStatus.getInReplyToUserId();
-                            if (inReplyToUserId <= 0) {
+                            final String inReplyToUserId = resultStatus.getInReplyToUserId();
+                            if (inReplyToUserId == null) {
                                 notReplyToOther = true;
                             }
                         }
-                        final ParcelableStatus result = ParcelableStatusUtils.fromStatus(resultStatus,
-                                account.account_key, false);
                         if (shouldShorten && shortener != null && shortenedResult != null) {
                             shortener.callback(shortenedResult, result);
                         }
