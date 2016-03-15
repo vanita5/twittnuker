@@ -154,7 +154,8 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
                 }
                 final List<Status> statuses = getStatuses(twitter, paging);
                 InternalTwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
-                storeStatus(accountKey, statuses, sinceId, maxId, sinceSortId, maxSortId, true);
+                storeStatus(accountKey, statuses, sinceId, maxId, sinceSortId, maxSortId,
+                        loadItemLimit, true);
                 // TODO cache related data and preload
                 final CacheUsersStatusesTask cacheTask = new CacheUsersStatusesTask(context);
                 cacheTask.setParams(new TwitterWrapper.StatusListResponse(accountKey, statuses));
@@ -181,7 +182,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
     private void storeStatus(final UserKey accountKey, final List<Status> statuses,
                              final String sinceId, final String maxId,
                              final long sinceSortId, final long maxSortId,
-                             final boolean notify) {
+                             int loadItemLimit, final boolean notify) {
         if (statuses == null || statuses.isEmpty() || accountKey == null) {
             return;
         }
@@ -229,7 +230,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
         final boolean deletedOldGap = rowsDeleted > 0 && ArrayUtils.contains(statusIds, maxId);
         final boolean noRowsDeleted = rowsDeleted == 0;
         final boolean insertGap = minIdx != -1 && (noRowsDeleted || deletedOldGap) && !noItemsBefore
-                && !hasIntersection;
+                && !hasIntersection && statuses.size() >= loadItemLimit;
         if (insertGap) {
             values[minIdx].put(Statuses.IS_GAP, true);
         }
