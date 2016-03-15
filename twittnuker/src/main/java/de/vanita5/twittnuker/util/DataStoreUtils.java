@@ -418,9 +418,16 @@ public class DataStoreUtils implements Constants {
     public static String[] getAccountScreenNames(final Context context, @Nullable final UserKey[] accountKeys) {
         if (context == null) return new String[0];
         final String[] cols = new String[]{Accounts.SCREEN_NAME};
-        final String where = accountKeys != null ? Expression.in(new Column(Accounts.ACCOUNT_KEY),
-                new RawItemArray(accountKeys)).getSQL() : null;
-        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, cols, where, null, null);
+        final String where;
+        final String[] whereArgs;
+        if (accountKeys != null) {
+            where = Expression.inArgs(new Column(Accounts.ACCOUNT_KEY), accountKeys.length).getSQL();
+            whereArgs = TwidereArrayUtils.toStringArray(accountKeys);
+        } else {
+            where = null;
+            whereArgs = null;
+        }
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, cols, where, whereArgs, null);
         if (cur == null) return new String[0];
         try {
             cur.moveToFirst();
@@ -700,7 +707,7 @@ public class DataStoreUtils implements Constants {
         }
     }
 
-    public static UserKey findAccountKey(@NonNull final Context context, @NonNull final String screenName) {
+    public static UserKey findAccountKeyByScreenName(@NonNull final Context context, @NonNull final String screenName) {
         final String[] projection = {Accounts.ACCOUNT_KEY};
         final String where = Expression.equalsArgs(Accounts.SCREEN_NAME).getSQL();
         final String[] whereArgs = {screenName};
@@ -717,7 +724,7 @@ public class DataStoreUtils implements Constants {
         }
     }
 
-    public static UserKey findAccountKey(@NonNull final Context context, final long accountId) {
+    public static UserKey findAccountKey(@NonNull final Context context, final String accountId) {
         final String[] projection = {Accounts.ACCOUNT_KEY};
         final Cursor cur = findAccountCursorsById(context, projection, accountId);
         if (cur == null) return null;
@@ -999,7 +1006,7 @@ public class DataStoreUtils implements Constants {
 
     @Nullable
     public static Cursor findAccountCursorsById(@NonNull final Context context, final String[] columns,
-                                                final long... ids) {
+                                                final String... ids) {
         if (ids == null) return null;
         final ContentResolver cr = context.getContentResolver();
         Expression[] expressions = new Expression[ids.length + 1];

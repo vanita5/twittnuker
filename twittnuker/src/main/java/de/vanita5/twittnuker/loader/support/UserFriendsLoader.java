@@ -30,10 +30,11 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 
 import java.util.List;
 
@@ -52,21 +53,31 @@ public class UserFriendsLoader extends CursorSupportUsersLoader {
 
     @NonNull
     @Override
-    protected ResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, final Paging paging)
+    protected ResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging)
             throws TwitterException {
-        final String accountType = DataStoreUtils.getAccountType(getContext(), getAccountId());
-        if (mUserId != null) {
-            if (ParcelableCredentials.ACCOUNT_TYPE_STATUSNET.equals(accountType)) {
-                return twitter.getStatusesFriendsList(mUserId, paging);
+        switch (ParcelableAccountUtils.getAccountType(credentials)) {
+            case ParcelableAccount.Type.STATUSNET: {
+                if (mUserId != null) {
+                    return twitter.getStatusesFriendsList(mUserId, paging);
+                } else if (mScreenName != null) {
+                    return twitter.getStatusesFriendsListByScreenName(mScreenName, paging);
+                }
             }
-            return twitter.getFriendsList(mUserId, paging);
-        } else if (mScreenName != null) {
-            if (ParcelableCredentials.ACCOUNT_TYPE_STATUSNET.equals(accountType)) {
-                return twitter.getStatusesFriendsList(mScreenName, paging);
+            case ParcelableAccount.Type.FANFOU: {
+                if (mUserId != null) {
+                    return twitter.getUsersFriends(mUserId, paging);
+                } else if (mScreenName != null) {
+                    return twitter.getUsersFriends(mScreenName, paging);
+                }
             }
-            return twitter.getFriendsListByScreenName(mScreenName, paging);
+            default: {
+                if (mUserId != null) {
+                    return twitter.getFriendsList(mUserId, paging);
+                } else if (mScreenName != null) {
+                    return twitter.getFriendsListByScreenName(mScreenName, paging);
+                }
+            }
         }
         throw new TwitterException("user_id or screen_name required");
     }
-
 }

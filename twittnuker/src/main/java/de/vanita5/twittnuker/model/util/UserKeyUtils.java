@@ -40,7 +40,7 @@ import java.util.ArrayList;
 public class UserKeyUtils {
 
     @Nullable
-    public static UserKey findById(Context context, long id) {
+    public static UserKey findById(Context context, String id) {
         final String[] projection = {Accounts.ACCOUNT_KEY};
         final Cursor cur = DataStoreUtils.findAccountCursorsById(context, projection, id);
         if (cur == null) return null;
@@ -53,7 +53,7 @@ public class UserKeyUtils {
     }
 
     @NonNull
-    public static UserKey[] findByIds(Context context, long... id) {
+    public static UserKey[] findByIds(Context context, String... id) {
         final String[] projection = {Accounts.ACCOUNT_KEY};
         final Cursor cur = DataStoreUtils.findAccountCursorsById(context, projection, id);
         if (cur == null) return new UserKey[0];

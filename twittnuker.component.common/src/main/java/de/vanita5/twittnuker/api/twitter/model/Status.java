@@ -30,6 +30,7 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
 
+import de.vanita5.twittnuker.api.fanfou.model.Photo;
 import de.vanita5.twittnuker.api.gnusocial.model.Attachment;
 import de.vanita5.twittnuker.api.statusnet.model.Attention;
 import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
@@ -132,15 +133,31 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
     @JsonField(name = "possibly_sensitive")
     boolean possiblySensitive;
 
-
+    /**
+     * For GNU social
+     */
     @JsonField(name = "attachments")
     Attachment[] attachments;
 
+
+    /**
+     * For GNU social
+     */
     @JsonField(name = "external_url")
     String externalUrl;
 
+
+    /**
+     * For GNU social
+     */
     @JsonField(name = "attentions")
     Attention[] attentions;
+
+    /**
+     * For Fanfou
+     */
+    @JsonField(name = "photo")
+    Photo photo;
 
     private transient long sortId = -1;
 
@@ -343,18 +360,45 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
         return (int) diff;
     }
 
+    public String getLang() {
+        return lang;
+    }
+
+    public long getSortId() {
+        if (sortId != -1) return sortId;
+        sortId = rawId;
+        if (sortId == -1) {
+            // Try use long id
+            try {
+                sortId = Long.parseLong(id);
+            } catch (NumberFormatException e) {
+                // Ignore
+            }
+        }
+        if (sortId == -1 && createdAt != null) {
+            // Try use timestamp
+            sortId = createdAt.getTime();
+        }
+        return sortId;
+    }
+
+    public Photo getPhoto() {
+        return photo;
+    }
+
     @Override
     public String toString() {
         return "Status{" +
                 "createdAt=" + createdAt +
-                ", id=" + id +
+                ", id='" + id + '\'' +
+                ", rawId=" + rawId +
                 ", text='" + text + '\'' +
                 ", source='" + source + '\'' +
                 ", truncated=" + truncated +
                 ", entities=" + entities +
                 ", extendedEntities=" + extendedEntities +
-                ", inReplyToStatusId=" + inReplyToStatusId +
-                ", inReplyToUserId=" + inReplyToUserId +
+                ", inReplyToStatusId='" + inReplyToStatusId + '\'' +
+                ", inReplyToUserId='" + inReplyToUserId + '\'' +
                 ", inReplyToScreenName='" + inReplyToScreenName + '\'' +
                 ", user=" + user +
                 ", geo=" + geo +
@@ -370,14 +414,16 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
                 ", descendentReplyCount=" + descendentReplyCount +
                 ", retweetedStatus=" + retweetedStatus +
                 ", quotedStatus=" + quotedStatus +
+                ", repostStatus=" + repostStatus +
                 ", card=" + card +
                 ", possiblySensitive=" + possiblySensitive +
                 ", attachments=" + Arrays.toString(attachments) +
                 ", externalUrl='" + externalUrl + '\'' +
                 ", attentions=" + Arrays.toString(attentions) +
+                ", photo=" + photo +
+                ", sortId=" + sortId +
                 "} " + super.toString();
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -398,6 +444,10 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
     @OnJsonParseComplete
     void onJsonParseComplete() throws IOException {
         if (id == null || text == null) throw new IOException("Malformed Status object");
+        fixStatus();
+    }
+
+    protected void fixStatus() {
         // Fix for fanfou
         if (TextUtils.isEmpty(inReplyToStatusId)) {
             inReplyToStatusId = null;
@@ -409,31 +459,9 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
         }
     }
 
-    public String getLang() {
-        return lang;
-    }
-
     public static void setQuotedStatus(Status status, Status quoted) {
         if (status == null) return;
         status.quotedStatus = quoted;
-    }
-
-    public long getSortId() {
-        if (sortId != -1) return sortId;
-        sortId = rawId;
-        if (sortId == -1) {
-            // Try use long id
-            try {
-                sortId = Long.parseLong(id);
-            } catch (NumberFormatException e) {
-                // Ignore
-            }
-        }
-        if (sortId == -1 && createdAt != null) {
-            // Try use timestamp
-            sortId = createdAt.getTime();
-        }
-        return sortId;
     }
 
 

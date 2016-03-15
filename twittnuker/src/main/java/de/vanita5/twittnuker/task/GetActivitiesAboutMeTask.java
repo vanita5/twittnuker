@@ -34,7 +34,10 @@ import de.vanita5.twittnuker.api.twitter.model.CursorTimestampResponse;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
@@ -64,13 +67,26 @@ public class GetActivitiesAboutMeTask extends GetActivitiesTask {
     }
 
     @Override
-    protected ResponseList<Activity> getActivities(@NonNull final Twitter twitter, @NonNull final UserKey accountId, @NonNull final Paging paging) throws TwitterException {
-        if (Utils.isOfficialCredentials(context, accountId)) {
+    protected ResponseList<Activity> getActivities(@NonNull final Twitter twitter,
+                                                   @NonNull final ParcelableCredentials credentials,
+                                                   @NonNull final Paging paging) throws TwitterException {
+        if (Utils.isOfficialCredentials(context, credentials)) {
             return twitter.getActivitiesAboutMe(paging);
         }
         final ResponseList<Activity> activities = new ResponseList<>();
-        for (Status status : twitter.getMentionsTimeline(paging)) {
-            activities.add(Activity.fromMention(accountId.getId(), status));
+        final ResponseList<Status> statuses;
+        switch (ParcelableAccountUtils.getAccountType(credentials)) {
+            case ParcelableAccount.Type.FANFOU: {
+                statuses = twitter.getMentions(paging);
+                break;
+            }
+            default: {
+                statuses = twitter.getMentionsTimeline(paging);
+                break;
+            }
+        }
+        for (Status status : statuses) {
+            activities.add(Activity.fromMention(credentials.account_key.getId(), status));
         }
         return activities;
     }

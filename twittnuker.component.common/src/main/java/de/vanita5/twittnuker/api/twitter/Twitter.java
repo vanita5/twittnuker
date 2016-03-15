@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.api.twitter;
 
+import de.vanita5.twittnuker.api.fanfou.Fanfou;
 import de.vanita5.twittnuker.api.statusnet.StatusNet;
 import de.vanita5.twittnuker.api.twitter.api.DirectMessagesResources;
 import de.vanita5.twittnuker.api.twitter.api.FavoritesResources;
@@ -37,8 +38,8 @@ import de.vanita5.twittnuker.api.twitter.api.TrendsResources;
 import de.vanita5.twittnuker.api.twitter.api.TweetResources;
 import de.vanita5.twittnuker.api.twitter.api.UsersResources;
 
-public interface Twitter extends SearchResource, TimelineResources,
-        TweetResources, UsersResources, ListResources, DirectMessagesResources, FriendsFollowersResources,
-        FavoritesResources, SpamReportingResources, SavedSearchesResources, TrendsResources, PlacesGeoResources,
-        HelpResources, TwitterPrivate, StatusNet {
+public interface Twitter extends SearchResource, TimelineResources, TweetResources, UsersResources,
+        ListResources, DirectMessagesResources, FriendsFollowersResources, FavoritesResources,
+        SpamReportingResources, SavedSearchesResources, TrendsResources, PlacesGeoResources,
+        HelpResources, TwitterPrivate, StatusNet, Fanfou {
 }

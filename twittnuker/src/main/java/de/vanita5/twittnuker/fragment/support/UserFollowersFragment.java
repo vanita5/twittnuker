@@ -39,6 +39,18 @@ import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
 public class UserFollowersFragment extends CursorSupportUsersListFragment {
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mBus.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        mBus.unregister(this);
+        super.onStop();
+    }
+
+    @Override
     public CursorSupportUsersLoader onCreateUsersLoader(final Context context,
                                                         @NonNull final Bundle args,
                                                         final boolean fromUser) {
@@ -50,18 +62,6 @@ public class UserFollowersFragment extends CursorSupportUsersListFragment {
         loader.setCursor(getNextCursor());
         loader.setPage(getNextPage());
         return loader;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mBus.register(this);
-    }
-
-    @Override
-    public void onStop() {
-        mBus.unregister(this);
-        super.onStop();
     }
 
     @Subscribe

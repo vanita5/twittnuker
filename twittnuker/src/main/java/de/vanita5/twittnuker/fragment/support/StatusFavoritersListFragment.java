@@ -26,14 +26,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
+import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.StatusFavoritersLoader;
 import de.vanita5.twittnuker.model.UserKey;
 
 public class StatusFavoritersListFragment extends CursorSupportUsersListFragment {
 
     @Override
-    public IDsUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
+    public CursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser) {
         final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final String statusId = args.getString(EXTRA_STATUS_ID);
         final StatusFavoritersLoader loader = new StatusFavoritersLoader(context, accountKey,

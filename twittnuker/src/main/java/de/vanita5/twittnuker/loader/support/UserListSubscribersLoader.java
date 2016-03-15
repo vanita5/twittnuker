@@ -30,6 +30,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
@@ -53,7 +54,7 @@ public class UserListSubscribersLoader extends CursorSupportUsersLoader {
 
     @NonNull
     @Override
-    public PageableResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, final Paging paging)
+    public PageableResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging)
             throws TwitterException {
         if (mListId > 0)
             return twitter.getUserListSubscribers(mListId, paging);

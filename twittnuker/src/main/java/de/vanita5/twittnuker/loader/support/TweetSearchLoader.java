@@ -33,9 +33,11 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
@@ -61,17 +63,23 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 
     @NonNull
     @Override
-    public List<Status> getStatuses(@NonNull final Twitter twitter,
+    public List<? extends Status> getStatuses(@NonNull final Twitter twitter,
                                     @NonNull final ParcelableCredentials credentials,
                                     @NonNull final Paging paging) throws TwitterException {
         if (mQuery == null) throw new TwitterException("Empty query");
         final String processedQuery = processQuery(credentials, mQuery);
-        if (TwitterAPIFactory.isTwitterCredentials(credentials)) {
-            final SearchQuery query = new SearchQuery(processedQuery);
-            query.paging(paging);
-            return twitter.search(query);
-        } else if (TwitterAPIFactory.isStatusNetCredentials(credentials)) {
-            return twitter.searchStatuses(processedQuery, paging);
+        switch (ParcelableAccountUtils.getAccountType(credentials)) {
+            case ParcelableAccount.Type.TWITTER: {
+                final SearchQuery query = new SearchQuery(processedQuery);
+                query.paging(paging);
+                return twitter.search(query);
+            }
+            case ParcelableAccount.Type.STATUSNET: {
+                return twitter.searchStatuses(processedQuery, paging);
+            }
+            case ParcelableAccount.Type.FANFOU: {
+                return twitter.searchPublicTimeline(processedQuery, paging);
+            }
         }
         throw new TwitterException("Not implemented");
     }

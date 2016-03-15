@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
@@ -44,7 +45,7 @@ public class MutesUsersLoader extends CursorSupportUsersLoader {
 
     @NonNull
     @Override
-    protected final PageableResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, final Paging paging)
+    protected final PageableResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging)
             throws TwitterException {
         return twitter.getMutesUsersList(paging);
     }

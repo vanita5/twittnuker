@@ -20,27 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.statusnet.api;
+package de.vanita5.twittnuker.api.fanfou.api;
 
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.param.Query;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.model.Status;
 
-public interface UserResources {
+public interface PhotosResources {
 
-    @GET("/statuses/friends.json")
-    PageableResponseList<User> getStatusesFriendsList(@Query("user_id") String userId, @Query Paging paging) throws TwitterException;
-
-    @GET("/statuses/friends.json")
-    PageableResponseList<User> getStatusesFriendsListByScreenName(@Query("screen_name") String screenName, @Query Paging paging) throws TwitterException;
-
-    @GET("/statuses/followers.json")
-    PageableResponseList<User> getStatusesFollowersList(@Query("user_id") String userId, @Query Paging paging) throws TwitterException;
-
-    @GET("/statuses/followers.json")
-    PageableResponseList<User> getStatusesFollowersListByScreenName(@Query("screen_name") String screenName, @Query Paging paging) throws TwitterException;
+    @GET("/photos/user_timeline.json")
+    ResponseList<Status> getPhotosUserTimeline(@Query("id") String id, @Query Paging paging) throws TwitterException;
 
 }

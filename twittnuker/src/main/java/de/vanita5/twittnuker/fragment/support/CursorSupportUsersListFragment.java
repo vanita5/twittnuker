@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
-import de.vanita5.twittnuker.loader.support.BaseCursorSupportUsersLoader;
+import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
@@ -61,7 +61,7 @@ public abstract class CursorSupportUsersListFragment extends ParcelableUsersFrag
     @Override
     public void onLoadFinished(final Loader<List<ParcelableUser>> loader, final List<ParcelableUser> data) {
         super.onLoadFinished(loader, data);
-        final BaseCursorSupportUsersLoader cursorLoader = (BaseCursorSupportUsersLoader) loader;
+        final CursorSupportUsersLoader cursorLoader = (CursorSupportUsersLoader) loader;
         mNextCursor = cursorLoader.getNextCursor();
         mPrevCursor = cursorLoader.getPrevCursor();
         mNextPage = cursorLoader.getNextPage();
@@ -101,5 +101,5 @@ public abstract class CursorSupportUsersListFragment extends ParcelableUsersFrag
     }
 
     @Override
-    protected abstract BaseCursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser);
+    protected abstract CursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args, boolean fromUser);
 }

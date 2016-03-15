@@ -60,7 +60,9 @@ public class TabArguments implements TwittnukerConstants {
 
     @CallSuper
     public void copyToBundle(@NonNull Bundle bundle) {
-        if (accountId != null) {
+        if (accountKeys != null) {
+            bundle.putParcelableArray(EXTRA_ACCOUNT_KEYS, accountKeys);
+        } else if (accountId != null) {
             bundle.putString(EXTRA_ACCOUNT_ID, accountId);
         }
     }

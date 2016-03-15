@@ -28,6 +28,8 @@ import android.text.TextUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+
+import de.vanita5.twittnuker.api.fanfou.model.Photo;
 import de.vanita5.twittnuker.api.gnusocial.model.Attachment;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.api.twitter.model.EntitySupport;
@@ -116,10 +118,24 @@ public class ParcelableMediaUtils {
         final ParcelableMedia[] fromEntities = fromEntities(status);
         final ParcelableMedia[] fromAttachments = fromAttachments(status);
         final ParcelableMedia[] fromCard = fromCard(status.getCard(), status.getUrlEntities());
+        final ParcelableMedia[] fromPhoto = fromPhoto(status);
         final ParcelableMedia[] merged = new ParcelableMedia[fromCard.length +
-                fromAttachments.length + fromEntities.length];
-        TwidereArrayUtils.mergeArray(merged, fromEntities, fromAttachments, fromCard);
+                fromAttachments.length + fromEntities.length + fromPhoto.length];
+        TwidereArrayUtils.mergeArray(merged, fromEntities, fromAttachments, fromCard, fromPhoto);
         return merged;
+    }
+
+    @NonNull
+    private static ParcelableMedia[] fromPhoto(Status status) {
+        Photo photo = status.getPhoto();
+        if (photo == null) return new ParcelableMedia[0];
+        final ParcelableMedia media = new ParcelableMedia();
+        media.type = ParcelableMedia.Type.IMAGE;
+        media.url = photo.getUrl();
+        media.page_url = photo.getUrl();
+        media.media_url = photo.getLargeUrl();
+        media.preview_url = photo.getImageUrl();
+        return new ParcelableMedia[]{media};
     }
 
     @NonNull

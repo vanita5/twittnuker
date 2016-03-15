@@ -88,6 +88,7 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -578,7 +579,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
             if (site != null) {
                 extra.setTextLimit(site.getTextLimit());
             }
-            return Pair.create(ParcelableCredentials.ACCOUNT_TYPE_STATUSNET,
+            return Pair.create(ParcelableAccount.Type.STATUSNET,
                     JsonSerializer.serialize(extra, StatusNetAccountExtra.class));
         } catch (TwitterException e) {
             // Ignore
@@ -590,15 +591,15 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
             twitter.getActivitiesAboutMe(paging);
             TwitterAccountExtra extra = new TwitterAccountExtra();
             extra.setIsOfficialCredentials(true);
-            return Pair.create(ParcelableCredentials.ACCOUNT_TYPE_TWITTER,
+            return Pair.create(ParcelableAccount.Type.TWITTER,
                     JsonSerializer.serialize(extra, TwitterAccountExtra.class));
         } catch (TwitterException e) {
             // Ignore
         }
         if (UserKeyUtils.isFanfouUser(user)) {
-            return Pair.create(ParcelableCredentials.ACCOUNT_TYPE_FANFOU, null);
+            return Pair.create(ParcelableAccount.Type.FANFOU, null);
         }
-        return Pair.create(ParcelableCredentials.ACCOUNT_TYPE_TWITTER, null);
+        return Pair.create(ParcelableAccount.Type.TWITTER, null);
     }
 
     public static abstract class AbstractSignInTask extends AsyncTask<Object, Runnable, SignInResponse> {

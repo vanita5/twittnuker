@@ -28,9 +28,8 @@ import android.text.TextUtils;
 
 import com.twitter.Validator;
 
-import org.apache.commons.lang3.math.NumberUtils;
-
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.StatusNetAccountExtra;
 
@@ -66,7 +65,7 @@ public class TwidereValidator implements Constants {
             return Validator.MAX_TWEET_LENGTH;
         }
         switch (credentials.account_type) {
-            case ParcelableCredentials.ACCOUNT_TYPE_STATUSNET: {
+            case ParcelableAccount.Type.STATUSNET: {
                 StatusNetAccountExtra extra = JsonSerializer.parse(credentials.account_extras,
                         StatusNetAccountExtra.class);
                 if (extra != null) {

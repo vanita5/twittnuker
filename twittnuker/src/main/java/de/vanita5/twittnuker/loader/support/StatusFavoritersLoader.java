@@ -29,12 +29,13 @@ import de.vanita5.twittnuker.api.twitter.model.IDs;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;
 
-public class StatusFavoritersLoader extends IDsUsersLoader {
+public class StatusFavoritersLoader extends CursorSupportUsersLoader {
 
     private final String mStatusId;
 
@@ -47,8 +48,12 @@ public class StatusFavoritersLoader extends IDsUsersLoader {
 
     @NonNull
     @Override
-    protected IDs getIDs(@NonNull final Twitter twitter, final Paging paging) throws TwitterException {
+    protected IDs getIDs(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
         return twitter.getStatusActivitySummary(mStatusId).getFavoriters();
     }
 
+    @Override
+    protected boolean useIDs(@NonNull ParcelableCredentials credentials) {
+        return true;
+    }
 }

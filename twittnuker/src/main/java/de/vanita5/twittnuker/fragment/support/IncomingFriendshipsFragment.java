@@ -30,14 +30,12 @@ import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
-import de.vanita5.twittnuker.loader.support.IDsUsersLoader;
+import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.IncomingFriendshipsLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.message.FollowRequestTaskEvent;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
-
-import java.util.List;
 
 public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment implements IUsersAdapter.RequestClickListener {
     @Override
@@ -53,8 +51,8 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
     }
 
     @Override
-    public IDsUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args,
-                                              final boolean fromUser) {
+    public CursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args,
+                                                        final boolean fromUser) {
         final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final IncomingFriendshipsLoader loader = new IncomingFriendshipsLoader(context, accountKey,
                 getData(), fromUser);

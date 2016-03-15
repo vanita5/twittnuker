@@ -94,7 +94,11 @@ public class StaggeredGridParcelableStatusesAdapter extends ParcelableStatusesAd
             if (media == null || media.length < 1) return;
             final ParcelableMedia firstMedia = media[0];
             mediaTextView.setText(status.text_unescaped);
-            aspectRatioSource.setSize(firstMedia.width, firstMedia.height);
+            if (firstMedia.width > 0 && firstMedia.height > 0) {
+                aspectRatioSource.setSize(firstMedia.width, firstMedia.height);
+            } else {
+                aspectRatioSource.setSize(100, 100);
+            }
             mediaImageContainer.setTag(firstMedia);
             mediaImageContainer.requestLayout();
 
