@@ -50,7 +50,6 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.UriUtils;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -160,12 +159,12 @@ public abstract class GetDirectMessagesTask extends AbstractTask<RefreshTaskPara
     }
 
 
-    public void beforeExecute() {
+    public void beforeExecute(RefreshTaskParam params) {
         bus.post(new GetMessagesTaskEvent(getDatabaseUri(), true, null));
     }
 
     @Override
-    protected void afterExecute(List<TwitterWrapper.MessageListResponse> result) {
+    protected void afterExecute(RefreshTaskParam params, List<TwitterWrapper.MessageListResponse> result) {
         bus.post(new GetMessagesTaskEvent(getDatabaseUri(), false, AsyncTwitterWrapper.getException(result)));
     }
 }

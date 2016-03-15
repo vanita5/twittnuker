@@ -115,7 +115,7 @@ public class ParcelableAccountUtils {
 
     @NonNull
     @ParcelableAccount.Type
-    public static String getAccountType(ParcelableAccount account) {
+    public static String getAccountType(@NonNull ParcelableAccount account) {
         if (account.account_type == null) return ParcelableAccount.Type.TWITTER;
         return account.account_type;
     }

@@ -126,7 +126,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
                 final ResponseList<Activity> activities = getActivities(twitter, credentials, paging);
                 storeActivities(cr, loadItemLimit, accountKey, noItemsBefore, activities, sinceId, maxId);
                 if (saveReadPosition) {
-                    saveReadPosition(accountKey, twitter);
+                    saveReadPosition(accountKey,credentials, twitter);
                 }
                 errorInfoStore.remove(getErrorInfoKey(), accountKey);
             } catch (TwitterException e) {
@@ -200,7 +200,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
     }
 
     protected abstract void saveReadPosition(@NonNull final UserKey accountId,
-                                             @NonNull final Twitter twitter);
+                                             ParcelableCredentials credentials, @NonNull final Twitter twitter);
 
     protected abstract ResponseList<Activity> getActivities(@NonNull final Twitter twitter,
                                                             @NonNull final ParcelableCredentials credentials,
@@ -208,7 +208,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
             throws TwitterException;
 
     @Override
-    public void afterExecute(Object result) {
+    public void afterExecute(RefreshTaskParam params, Object result) {
         bus.post(new GetActivitiesTaskEvent(getContentUri(), false, null));
     }
 
@@ -216,7 +216,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
 
     @UiThread
     @Override
-    public void beforeExecute() {
+    public void beforeExecute(RefreshTaskParam params) {
         bus.post(new GetActivitiesTaskEvent(getContentUri(), true, null));
     }
 }

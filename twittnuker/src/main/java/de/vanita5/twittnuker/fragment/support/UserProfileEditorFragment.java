@@ -66,7 +66,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileBannerImageTask;
+import de.vanita5.twittnuker.task.UpdateProfileBannerImageTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;

@@ -19,16 +19,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.vanita5.twittnuker.api.fanfou;
 
-import de.vanita5.twittnuker.api.fanfou.api.BlocksResources;
-import de.vanita5.twittnuker.api.fanfou.api.FavoritesResources;
-import de.vanita5.twittnuker.api.fanfou.api.FriendshipsResources;
-import de.vanita5.twittnuker.api.fanfou.api.PhotosResources;
-import de.vanita5.twittnuker.api.fanfou.api.SearchResources;
-import de.vanita5.twittnuker.api.fanfou.api.TimelineResources;
-import de.vanita5.twittnuker.api.fanfou.api.UsersResources;
+package de.vanita5.twittnuker.api.fanfou.api;
 
-public interface Fanfou extends TimelineResources, SearchResources, UsersResources, PhotosResources,
-        FriendshipsResources, BlocksResources, FavoritesResources {
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Path;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Status;
+
+public interface FavoritesResources {
+
+    @POST("/favorites/create/{id}.json")
+    Status createFanfouFavorite(@Path("id") String id) throws TwitterException;
+
+    @POST("/favorites/destroy/{id}.json")
+    Status destroyFanfouFavorite(@Path("id") String id) throws TwitterException;
 }

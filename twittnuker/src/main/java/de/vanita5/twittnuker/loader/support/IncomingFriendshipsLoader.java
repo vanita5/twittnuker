@@ -29,9 +29,13 @@ import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.IDs;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 
 import java.util.List;
 
@@ -48,8 +52,19 @@ public class IncomingFriendshipsLoader extends CursorSupportUsersLoader {
         return twitter.getIncomingFriendships(paging);
     }
 
+    @NonNull
+    @Override
+    protected ResponseList<User> getCursoredUsers(@NonNull Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull Paging paging) throws TwitterException {
+        return twitter.getFriendshipsRequests(paging);
+    }
+
     @Override
     protected boolean useIDs(@NonNull ParcelableCredentials credentials) {
+        switch (ParcelableAccountUtils.getAccountType(credentials)) {
+            case ParcelableAccount.Type.FANFOU: {
+                return false;
+            }
+        }
         return true;
     }
 }

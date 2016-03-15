@@ -53,6 +53,7 @@ import de.vanita5.twittnuker.provider.CacheProvider;
 import de.vanita5.twittnuker.provider.TwidereDataProvider;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.service.RefreshService;
+import de.vanita5.twittnuker.task.AbsFriendshipOperationTask;
 import de.vanita5.twittnuker.task.GetDirectMessagesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
@@ -147,4 +148,6 @@ public interface GeneralComponent {
     void inject(GetDirectMessagesTask task);
 
     void inject(NotificationHelper object);
+
+    void inject(AbsFriendshipOperationTask task);
 }

@@ -43,7 +43,6 @@ import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -87,7 +86,7 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     @Inject
     protected ErrorInfoStore mErrorInfoStore;
     @Inject
-    TwidereValidator mValidator;
+    protected TwidereValidator mValidator;
 
     private final ActionHelper mActionHelper = new ActionHelper(this);
 
@@ -124,13 +123,6 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
         final Activity activity = getActivity();
         if (activity == null) return;
         activity.registerReceiver(receiver, filter);
-    }
-
-    public void setProgressBarIndeterminateVisibility(final boolean visible) {
-        final Activity activity = getActivity();
-        if (activity instanceof BaseAppCompatActivity) {
-            activity.setProgressBarIndeterminateVisibility(visible);
-        }
     }
 
     public void unregisterReceiver(final BroadcastReceiver receiver) {

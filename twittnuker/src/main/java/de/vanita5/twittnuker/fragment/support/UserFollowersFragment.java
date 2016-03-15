@@ -25,30 +25,13 @@ package de.vanita5.twittnuker.fragment.support;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
-
-import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.UserFollowersLoader;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.model.message.UsersBlockedEvent;
-
-import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
+import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 
 public class UserFollowersFragment extends CursorSupportUsersListFragment {
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        mBus.register(this);
-    }
-
-    @Override
-    public void onStop() {
-        mBus.unregister(this);
-        super.onStop();
-    }
 
     @Override
     public CursorSupportUsersLoader onCreateUsersLoader(final Context context,
@@ -64,16 +47,15 @@ public class UserFollowersFragment extends CursorSupportUsersListFragment {
         return loader;
     }
 
-    @Subscribe
-    public void onUsersBlocked(UsersBlockedEvent event) {
-        final UserKey accountKey = event.getAccountKey();
-        final String screenName = getAccountScreenName(getActivity(), accountKey);
-        final Bundle args = getArguments();
-        if (args == null) return;
-        if (accountKey != null && TextUtils.equals(accountKey.getId(), args.getString(EXTRA_USER_ID))
-                || screenName != null && screenName.equalsIgnoreCase(args.getString(EXTRA_SCREEN_NAME))) {
-            removeUsers(event.getUserIds());
+    @Override
+    protected boolean shouldRemoveUser(int position, FriendshipTaskEvent event) {
+        if (!event.isSucceeded()) return false;
+        switch (event.getAction()) {
+            case FriendshipTaskEvent.Action.BLOCK: {
+                return true;
+            }
         }
+        return false;
     }
 
 }

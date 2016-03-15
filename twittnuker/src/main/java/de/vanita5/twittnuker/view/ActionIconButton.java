@@ -23,14 +23,18 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.support.annotation.ColorInt;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
-import android.widget.ImageButton;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class ActionIconButton extends ImageButton {
+public class ActionIconButton extends AppCompatImageButton {
 
     @ColorInt
     private int mDefaultColor, mActivatedColor, mDisabledColor;
@@ -56,6 +60,14 @@ public class ActionIconButton extends ImageButton {
 
     @ColorInt
     public int getDefaultColor() {
+        if (mDefaultColor == 0) {
+            // Return inverse color for background tint
+            ColorStateList color = ViewCompat.getBackgroundTintList(this);
+            if (color != null) {
+                final int currentColor = color.getColorForState(getDrawableState(), 0);
+                return ThemeUtils.getContrastColor(currentColor, Color.BLACK, Color.WHITE);
+            }
+        }
         return mDefaultColor;
     }
 

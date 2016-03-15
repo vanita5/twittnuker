@@ -26,29 +26,17 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.squareup.otto.Subscribe;
-
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.IncomingFriendshipsLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.model.message.FollowRequestTaskEvent;
+import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
-public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment implements IUsersAdapter.RequestClickListener {
-    @Override
-    public void onStart() {
-        super.onStart();
-        mBus.register(this);
-    }
-
-    @Override
-    public void onStop() {
-        mBus.unregister(this);
-        super.onStop();
-    }
+public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment implements
+        IUsersAdapter.RequestClickListener {
 
     @Override
     public CursorSupportUsersLoader onCreateUsersLoader(final Context context, @NonNull final Bundle args,
@@ -57,6 +45,7 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
         final IncomingFriendshipsLoader loader = new IncomingFriendshipsLoader(context, accountKey,
                 getData(), fromUser);
         loader.setCursor(getNextCursor());
+        loader.setPage(getNextPage());
         return loader;
     }
 
@@ -84,14 +73,16 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
         mTwitterWrapper.denyFriendshipAsync(user.account_key, user.key);
     }
 
-    @Subscribe
-    public void onFollowRequestTaskEvent(FollowRequestTaskEvent event) {
-        final ParcelableUsersAdapter adapter = getAdapter();
-        final int position = adapter.findPosition(event.getAccountKey(), event.getUserId());
-        if (event.isFinished() && event.isSucceeded()) {
-            adapter.removeUserAt(position);
-        } else {
-            adapter.notifyItemChanged(position);
+    @Override
+    protected boolean shouldRemoveUser(int position, FriendshipTaskEvent event) {
+        if (!event.isSucceeded()) return false;
+        switch (event.getAction()) {
+            case FriendshipTaskEvent.Action.BLOCK:
+            case FriendshipTaskEvent.Action.ACCEPT:
+            case FriendshipTaskEvent.Action.DENY: {
+                return true;
+            }
         }
+        return false;
     }
 }

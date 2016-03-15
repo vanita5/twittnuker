@@ -45,11 +45,9 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 public interface FavoritesResources {
 
     @POST("/favorites/create.json")
-    @BodyType(BodyType.FORM)
     Status createFavorite(@Param("id") String id) throws TwitterException;
 
     @POST("/favorites/destroy.json")
-    @BodyType(BodyType.FORM)
     Status destroyFavorite(@Param("id") String id) throws TwitterException;
 
     @GET("/favorites/list.json")

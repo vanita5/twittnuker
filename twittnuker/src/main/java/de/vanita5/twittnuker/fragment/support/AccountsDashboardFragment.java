@@ -94,11 +94,11 @@ import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.CompareUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.IntentUtils;
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.ListViewUtils;
@@ -739,10 +739,15 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         final Resources res = getResources();
         final int defWidth = res.getDisplayMetrics().widthPixels;
         final int width = bannerWidth > 0 ? bannerWidth : defWidth;
-        final String bannerUrl = InternalTwitterContentUtils.getBestBannerUrl(account.profile_banner_url, width);
+        String bannerUrl = account.profile_banner_url;
+        if (bannerUrl == null && ParcelableAccount.Type.FANFOU.equals(account.account_type)) {
+            if (account.account_user != null) {
+                bannerUrl = ParcelableUserUtils.getProfileBannerUrl(account.account_user);
+            }
+        }
         final ImageView bannerView = mAccountProfileBannerView;
         if (bannerView.getDrawable() == null || !CompareUtils.objectEquals(bannerUrl, bannerView.getTag())) {
-            mMediaLoader.displayProfileBanner(mAccountProfileBannerView, bannerUrl, this);
+            mMediaLoader.displayProfileBanner(mAccountProfileBannerView, bannerUrl, width, this);
         } else {
             mMediaLoader.cancelDisplayTask(mAccountProfileBannerView);
         }

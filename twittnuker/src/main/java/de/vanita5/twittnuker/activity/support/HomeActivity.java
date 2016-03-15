@@ -85,6 +85,7 @@ import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.RegistrationIntentService;
 import de.vanita5.twittnuker.service.StreamingService;
@@ -968,7 +969,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                                 true, ReadPositionTag.HOME_TIMELINE, accountKeys);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
                         final int count = DataStoreUtils.getStatusesCount(mContext, Statuses.CONTENT_URI,
-                                position, accountKeys);
+                                position, Statuses.STATUS_TIMESTAMP, accountKeys);
                         result.put(i, count);
                         publishProgress(new TabBadge(i, count));
                         break;
@@ -979,7 +980,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
                                 true, ReadPositionTag.ACTIVITIES_ABOUT_ME, accountIds);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
                         final int count = DataStoreUtils.getInteractionsCount(mContext, spec.args,
-                                accountIds, position);
+                                accountIds, position, Activities.TIMESTAMP);
                         publishProgress(new TabBadge(i, count));
                         result.put(i, count);
                         break;

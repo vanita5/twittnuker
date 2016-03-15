@@ -36,25 +36,67 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 
+import com.squareup.otto.Subscribe;
+
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
+import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserAdapterListener;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 import de.vanita5.twittnuker.model.util.UserKeyUtils;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
+import de.vanita5.twittnuker.util.ParcelUtils;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
 import java.util.List;
 
 public abstract class ParcelableUsersFragment extends AbsContentListRecyclerViewFragment<ParcelableUsersAdapter>
-        implements LoaderCallbacks<List<ParcelableUser>>, UserAdapterListener, KeyboardShortcutCallback {
+        implements LoaderCallbacks<List<ParcelableUser>>, UserAdapterListener, KeyboardShortcutCallback,
+        IUsersAdapter.FollowClickListener {
+
+    @NonNull
+    private final Object mUsersBusCallback;
 
     private RecyclerViewNavigationHelper mNavigationHelper;
+
+    protected ParcelableUsersFragment() {
+        mUsersBusCallback = createMessageBusCallback();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        final ParcelableUsersAdapter adapter = getAdapter();
+        final RecyclerView recyclerView = getRecyclerView();
+        final LinearLayoutManager layoutManager = getLayoutManager();
+        adapter.setUserAdapterListener(this);
+
+        mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
+                this);
+        final Bundle loaderArgs = new Bundle(getArguments());
+        loaderArgs.putBoolean(EXTRA_FROM_USER, true);
+        getLoaderManager().initLoader(0, loaderArgs, this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mBus.register(mUsersBusCallback);
+    }
+
+    @Override
+    public void onStop() {
+        mBus.unregister(mUsersBusCallback);
+        super.onStop();
+    }
 
     @Override
     public boolean isRefreshing() {
@@ -66,7 +108,9 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
     @NonNull
     @Override
     protected ParcelableUsersAdapter onCreateAdapter(Context context, boolean compact) {
-        return new ParcelableUsersAdapter(context);
+        final ParcelableUsersAdapter adapter = new ParcelableUsersAdapter(context);
+        adapter.setFollowClickListener(this);
+        return adapter;
     }
 
     @NonNull
@@ -75,10 +119,7 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
         return super.getAdapter();
     }
 
-    protected boolean hasMoreData(List<ParcelableUser> data) {
-        return data == null || !data.isEmpty();
-    }
-
+    @Override
     public void onLoadFinished(Loader<List<ParcelableUser>> loader, List<ParcelableUser> data) {
         final ParcelableUsersAdapter adapter = getAdapter();
         adapter.setData(data);
@@ -95,14 +136,6 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
         setLoadMoreIndicatorPosition(IndicatorPosition.NONE);
     }
 
-    protected void removeUsers(String... ids) {
-        //TODO remove from adapter
-    }
-
-    public final List<ParcelableUser> getData() {
-        return getAdapter().getData();
-    }
-
     @Override
     public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
         return mNavigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event, metaState);
@@ -116,21 +149,6 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
     @Override
     public boolean isKeyboardShortcutHandled(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
         return mNavigationHelper.isKeyboardShortcutHandled(handler, keyCode, event, metaState);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        final ParcelableUsersAdapter adapter = getAdapter();
-        final RecyclerView recyclerView = getRecyclerView();
-        final LinearLayoutManager layoutManager = getLayoutManager();
-        adapter.setUserAdapterListener(this);
-
-        mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
-                this);
-        final Bundle loaderArgs = new Bundle(getArguments());
-        loaderArgs.putBoolean(EXTRA_FROM_USER, true);
-        getLoaderManager().initLoader(0, loaderArgs, this);
     }
 
     @Override
@@ -164,6 +182,20 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
         }
     }
 
+    @Override
+    public void onFollowClicked(UserViewHolder holder, int position) {
+        final AsyncTwitterWrapper twitter = mTwitterWrapper;
+        final ParcelableUsersAdapter adapter = getAdapter();
+        final ParcelableUser user = adapter.getUser(position);
+        if (user == null || twitter == null) return;
+        if (twitter.isUpdatingRelationship(user.account_key, user.key)) return;
+        if (user.is_following) {
+            DestroyFriendshipDialogFragment.show(getFragmentManager(), user);
+        } else {
+            twitter.createFriendshipAsync(user.account_key, user.key);
+        }
+    }
+
     @UserFragment.Referral
     protected String getUserReferral() {
         return null;
@@ -181,5 +213,56 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
     @Override
     protected void setupRecyclerView(Context context, boolean compact) {
         super.setupRecyclerView(context, true);
+    }
+
+    private int findPosition(ParcelableUsersAdapter adapter, UserKey accountKey, UserKey userKey) {
+        return adapter.findPosition(accountKey, userKey);
+    }
+
+    protected boolean shouldRemoveUser(int position, FriendshipTaskEvent event) {
+        return false;
+    }
+
+    protected boolean hasMoreData(List<ParcelableUser> data) {
+        return data == null || !data.isEmpty();
+    }
+
+    protected void removeUsers(String... ids) {
+        //TODO remove from adapter
+    }
+
+    public final List<ParcelableUser> getData() {
+        return getAdapter().getData();
+    }
+
+    @NonNull
+    protected Object createMessageBusCallback() {
+        return new UsersBusCallback();
+    }
+
+    protected class UsersBusCallback {
+
+        @Subscribe
+        public void onFriendshipTaskEvent(FriendshipTaskEvent event) {
+            final ParcelableUsersAdapter adapter = getAdapter();
+            final int position = findPosition(adapter, event.getAccountKey(), event.getUserKey());
+            final List<ParcelableUser> data = adapter.getData();
+            if (shouldRemoveUser(position, event)) {
+                data.remove(position);
+                adapter.notifyItemRemoved(position);
+            } else {
+                ParcelableUser adapterUser = data.get(position);
+                ParcelableUser eventUser = event.getUser();
+                if (eventUser != null) {
+                    if (adapterUser.account_key.equals(eventUser.account_key)) {
+                        ParcelableUser clone = ParcelUtils.clone(eventUser);
+                        clone.position = adapterUser.position;
+                        data.set(position, clone);
+                    }
+                }
+                adapter.notifyItemChanged(position);
+            }
+        }
+
     }
 }

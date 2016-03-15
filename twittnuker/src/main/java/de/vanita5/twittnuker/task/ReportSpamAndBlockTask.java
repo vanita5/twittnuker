@@ -20,27 +20,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment.support;
+package de.vanita5.twittnuker.task;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
-import de.vanita5.twittnuker.loader.support.MutesUsersLoader;
-import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 
-public class MutesUsersListFragment extends CursorSupportUsersListFragment {
-
-    @Override
-    public CursorSupportUsersLoader onCreateUsersLoader(final Context context,
-                                                        @NonNull final Bundle args,
-                                                        final boolean fromUser) {
-        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
-        final MutesUsersLoader loader = new MutesUsersLoader(context, accountKey, getData(), fromUser);
-        loader.setCursor(getNextCursor());
-        loader.setPage(getNextPage());
-        return loader;
+public class ReportSpamAndBlockTask extends CreateUserBlockTask {
+    public ReportSpamAndBlockTask(Context context) {
+        super(context);
     }
 
+
+    @NonNull
+    @Override
+    protected User perform(@NonNull Twitter twitter, @NonNull ParcelableCredentials credentials,
+                           @NonNull Arguments args) throws TwitterException {
+        return twitter.reportSpam(args.userKey.getId());
+    }
 }

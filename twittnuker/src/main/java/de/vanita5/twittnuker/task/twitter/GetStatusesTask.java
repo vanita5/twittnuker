@@ -97,7 +97,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
 
 
     @Override
-    public void afterExecute(List<TwitterWrapper.StatusListResponse> result) {
+    public void afterExecute(RefreshTaskParam params, List<TwitterWrapper.StatusListResponse> result) {
         bus.post(new GetStatusesTaskEvent(getContentUri(), false, AsyncTwitterWrapper.getException(result)));
     }
 
@@ -230,7 +230,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
         final boolean deletedOldGap = rowsDeleted > 0 && ArrayUtils.contains(statusIds, maxId);
         final boolean noRowsDeleted = rowsDeleted == 0;
         final boolean insertGap = minIdx != -1 && (noRowsDeleted || deletedOldGap) && !noItemsBefore
-                && !hasIntersection && statuses.size() >= loadItemLimit;
+                && !hasIntersection;
         if (insertGap) {
             values[minIdx].put(Statuses.IS_GAP, true);
         }
@@ -238,6 +238,14 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
         final Uri insertUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, notify);
         ContentResolverUtils.bulkInsert(resolver, insertUri, values);
 
+        if (maxId != null && sinceId == null) {
+            final ContentValues noGapValues = new ContentValues();
+            noGapValues.put(Statuses.IS_GAP, false);
+            final String noGapWhere = Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_KEY),
+                    Expression.equalsArgs(Statuses.STATUS_ID)).getSQL();
+            final String[] noGapWhereArgs = {accountKey.toString(), maxId};
+            resolver.update(getContentUri(), noGapValues, noGapWhere, noGapWhereArgs);
+        }
     }
 
 

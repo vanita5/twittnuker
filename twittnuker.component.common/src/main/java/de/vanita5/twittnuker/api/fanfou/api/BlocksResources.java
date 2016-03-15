@@ -20,18 +20,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.message;
+package de.vanita5.twittnuker.api.fanfou.api;
 
-import android.support.annotation.NonNull;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.http.BodyType;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.User;
 
-import de.vanita5.twittnuker.model.ParcelableUser;
+public interface BlocksResources {
 
-public class FriendshipUserUpdatedEvent {
+    @POST("/blocks/create.json")
+    User createFanfouBlock(@Param("id") String userId) throws TwitterException;
 
-    @NonNull
-    public final ParcelableUser user;
-
-    public FriendshipUserUpdatedEvent(@NonNull ParcelableUser user) {
-        this.user = user;
-    }
+    @POST("/blocks/destroy.json")
+    User destroyFanfouBlock(@Param("id") String userId) throws TwitterException;
 }

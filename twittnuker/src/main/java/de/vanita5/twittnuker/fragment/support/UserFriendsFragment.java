@@ -29,6 +29,7 @@ import android.support.annotation.NonNull;
 import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.support.UserFriendsLoader;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 
 public class UserFriendsFragment extends CursorSupportUsersListFragment {
 
@@ -41,7 +42,19 @@ public class UserFriendsFragment extends CursorSupportUsersListFragment {
         final UserFriendsLoader loader = new UserFriendsLoader(context, accountKey, userId,
                 screenName, getData(), fromUser);
         loader.setCursor(getNextCursor());
+        loader.setPage(getNextPage());
         return loader;
     }
 
+    @Override
+    protected boolean shouldRemoveUser(int position, FriendshipTaskEvent event) {
+        if (!event.isSucceeded()) return false;
+        switch (event.getAction()) {
+            case FriendshipTaskEvent.Action.UNFOLLOW:
+            case FriendshipTaskEvent.Action.BLOCK: {
+                return true;
+            }
+        }
+        return false;
+    }
 }
