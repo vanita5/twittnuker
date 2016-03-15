@@ -75,7 +75,28 @@ public class UserKeyUtils {
     }
 
     public static String getUserHost(User user) {
+        if (isFanfouUser(user)) return TwittnukerConstants.USER_TYPE_FANFOU_COM;
         return getUserHost(user.getOstatusUri(), TwittnukerConstants.USER_TYPE_TWITTER_COM);
+    }
+
+    public static boolean isFanfouUser(User user) {
+        String url = user.getProfileImageUrlLarge();
+        if (url != null && isFanfouHost(getUserHost(url, "twitter.com"))) {
+            return true;
+        }
+        url = user.getProfileImageUrl();
+        if (url != null && isFanfouHost(getUserHost(url, "twitter.com"))) {
+            return true;
+        }
+        url = user.getProfileBackgroundImageUrl();
+        if (url != null && isFanfouHost(getUserHost(url, "twitter.com"))) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isFanfouHost(@NonNull String host) {
+        return TextUtils.equals("fanfou.com", host) || host.endsWith(".fanfou.com");
     }
 
     @NonNull

@@ -32,6 +32,7 @@ public class BaseRefreshTaskParam implements RefreshTaskParam {
     private final String[] sinceIds;
     private final long[] maxSortIds;
     private final long[] sinceSortIds;
+    private boolean isLoadingMore;
 
     public BaseRefreshTaskParam(UserKey[] accountKeys, String[] maxIds, String[] sinceIds) {
         this(accountKeys, maxIds, sinceIds, null, null);
@@ -74,12 +75,22 @@ public class BaseRefreshTaskParam implements RefreshTaskParam {
         return sinceIds != null;
     }
 
+    @Override
     public long[] getMaxSortIds() {
         return maxSortIds;
     }
 
+    @Override
     public long[] getSinceSortIds() {
         return sinceSortIds;
     }
 
+    @Override
+    public boolean isLoadingMore() {
+        return isLoadingMore;
+    }
+
+    public void setIsLoadingMore(boolean isLoadingMore) {
+        this.isLoadingMore = isLoadingMore;
+    }
 }

@@ -22,9 +22,22 @@
 
 package de.vanita5.twittnuker.model;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public abstract class SimpleRefreshTaskParam implements RefreshTaskParam {
+
+    UserKey[] cached;
+
+    @NonNull
+    @Override
+    public final UserKey[] getAccountKeys() {
+        if (cached != null) return cached;
+        return cached = getAccountKeysWorker();
+    }
+
+    @NonNull
+    public abstract UserKey[] getAccountKeysWorker();
 
     @Nullable
     @Override
@@ -58,5 +71,10 @@ public abstract class SimpleRefreshTaskParam implements RefreshTaskParam {
     @Override
     public long[] getMaxSortIds() {
         return null;
+    }
+
+    @Override
+    public boolean isLoadingMore() {
+        return false;
     }
 }

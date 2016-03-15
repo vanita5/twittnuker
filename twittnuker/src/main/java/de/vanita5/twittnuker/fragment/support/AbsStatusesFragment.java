@@ -277,7 +277,8 @@ public abstract class AbsStatusesFragment extends AbsContentListRecyclerViewFrag
         if (status == null) return;
         final UserKey[] accountIds = {status.account_key};
         final String[] maxIds = {status.id};
-        getStatuses(new BaseRefreshTaskParam(accountIds, maxIds, null));
+        final long[] maxSortIds = {status.sort_id};
+        getStatuses(new BaseRefreshTaskParam(accountIds, maxIds, null, maxSortIds, null));
     }
 
     @Override
@@ -295,7 +296,8 @@ public abstract class AbsStatusesFragment extends AbsContentListRecyclerViewFrag
         }
     }
 
-    protected void onHasMoreDataChanged(boolean hasMoreData) {}
+    protected void onHasMoreDataChanged(boolean hasMoreData) {
+    }
 
     @Override
     public void onStatusActionClick(IStatusViewHolder holder, int id, int position) {
@@ -465,7 +467,7 @@ public abstract class AbsStatusesFragment extends AbsContentListRecyclerViewFrag
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (!getUserVisibleHint()) return;
+        if (!getUserVisibleHint() || menuInfo == null) return;
         final ParcelableStatusesAdapter adapter = getAdapter();
         final MenuInflater inflater = new MenuInflater(getContext());
         final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =

@@ -49,8 +49,8 @@ public class UserTimelineLoader extends TwitterAPIStatusesLoader {
     public UserTimelineLoader(final Context context, final UserKey accountId, final String userId,
                               final String screenName, final String sinceId, final String maxId,
                               final List<ParcelableStatus> data, final String[] savedStatusesArgs,
-                              final int tabPosition, boolean fromUser) {
-        super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser);
+                              final int tabPosition, boolean fromUser, boolean loadingMore) {
+        super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser, loadingMore);
         mUserId = userId;
         mUserScreenName = screenName;
         mIsMyTimeline = TextUtils.equals(accountId.getId(), userId);
@@ -62,7 +62,7 @@ public class UserTimelineLoader extends TwitterAPIStatusesLoader {
         if (mUserId != null)
             return twitter.getUserTimeline(mUserId, paging);
         else if (mUserScreenName != null)
-            return twitter.getUserTimeline(mUserScreenName, paging);
+            return twitter.getUserTimelineByScreenName(mUserScreenName, paging);
         else
             throw new TwitterException("Invalid user");
     }

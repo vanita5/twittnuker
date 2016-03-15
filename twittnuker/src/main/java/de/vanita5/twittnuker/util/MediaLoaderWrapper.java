@@ -144,6 +144,8 @@ public class MediaLoaderWrapper implements Constants {
     public void displayOriginalProfileImage(final ImageView view, final ParcelableUser user) {
         if (user.extras != null && !TextUtils.isEmpty(user.extras.profile_image_url_original)) {
             displayProfileImage(view, user.extras.profile_image_url_original);
+        } else if (user.extras != null && !TextUtils.isEmpty(user.extras.profile_image_url_profile_size)) {
+            displayProfileImage(view, user.extras.profile_image_url_profile_size);
         } else {
             displayProfileImage(view, Utils.getOriginalTwitterProfileImage(user.profile_image_url));
         }

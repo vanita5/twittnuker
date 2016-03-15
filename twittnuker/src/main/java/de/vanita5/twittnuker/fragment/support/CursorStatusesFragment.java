@@ -254,11 +254,12 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
         // Only supports load from end, skip START flag
         if ((position & IndicatorPosition.START) != 0) return;
         super.onLoadMoreContents(position);
+        final Context context = getContext();
         if (position == 0) return;
         getStatuses(new SimpleRefreshTaskParam() {
             @NonNull
             @Override
-            public UserKey[] getAccountKeys() {
+            public UserKey[] getAccountKeysWorker() {
                 return CursorStatusesFragment.this.getAccountKeys();
             }
 
@@ -266,6 +267,13 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
             @Override
             public String[] getMaxIds() {
                 return getOldestStatusIds(getAccountKeys());
+            }
+
+            @Nullable
+            @Override
+            public long[] getMaxSortIds() {
+                return DataStoreUtils.getOldestStatusSortIds(context, getContentUri(),
+                        getAccountKeys());
             }
 
             @Override
@@ -278,10 +286,11 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
     @Override
     public boolean triggerRefresh() {
         super.triggerRefresh();
+        final Context context = getContext();
         getStatuses(new SimpleRefreshTaskParam() {
             @NonNull
             @Override
-            public UserKey[] getAccountKeys() {
+            public UserKey[] getAccountKeysWorker() {
                 return CursorStatusesFragment.this.getAccountKeys();
             }
 
@@ -294,6 +303,13 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
             @Override
             public String[] getSinceIds() {
                 return getNewestStatusIds(getAccountKeys());
+            }
+
+            @Nullable
+            @Override
+            public long[] getSinceSortIds() {
+                return DataStoreUtils.getNewestStatusSortIds(context, getContentUri(),
+                        getAccountKeys());
             }
         });
         return true;

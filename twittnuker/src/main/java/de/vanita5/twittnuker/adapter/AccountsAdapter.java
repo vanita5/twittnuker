@@ -33,10 +33,12 @@ import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
+import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.holder.AccountViewHolder;
@@ -83,7 +85,14 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
         holder.screenName.setText(String.format("@%s", cursor.getString(mIndices.screen_name)));
         holder.setAccountColor(color);
         if (mDisplayProfileImage) {
-            mImageLoader.displayProfileImage(holder.profileImage, cursor.getString(mIndices.profile_image_url));
+            final ParcelableUser user = JsonSerializer.parse(cursor.getString(mIndices.account_user),
+                    ParcelableUser.class);
+            if (user != null) {
+                mImageLoader.displayProfileImage(holder.profileImage, user);
+            } else {
+                mImageLoader.displayProfileImage(holder.profileImage,
+                        cursor.getString(mIndices.profile_image_url));
+            }
         } else {
             mImageLoader.cancelDisplayTask(holder.profileImage);
         }

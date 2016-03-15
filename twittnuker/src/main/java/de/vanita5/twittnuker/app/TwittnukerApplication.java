@@ -59,8 +59,6 @@ import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 
-import static de.vanita5.twittnuker.util.DataStoreUtils.initAccountColor;
-
 public class TwittnukerApplication extends Application implements Constants,
         OnSharedPreferenceChangeListener {
 
@@ -121,7 +119,6 @@ public class TwittnukerApplication extends Application implements Constants,
         initDebugMode();
         initBugReport();
         mHandler = new Handler();
-        initAccountColor(this);
 
         final PackageManager pm = getPackageManager();
         final ComponentName main = new ComponentName(this, MainActivity.class);
