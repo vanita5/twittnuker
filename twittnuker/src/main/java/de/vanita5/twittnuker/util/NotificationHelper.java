@@ -58,6 +58,7 @@ import javax.inject.Inject;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
@@ -94,9 +95,12 @@ public class NotificationHelper implements Constants {
         List<NotificationContent> results = new ArrayList<>();
         try {
             final ContentResolver resolver = mContext.getContentResolver();
-            final String where = Expression.equals(PushNotifications.ACCOUNT_KEY, userKey.getId()).getSQL();
+
+            final String where = Expression.equalsArgs(PushNotifications.ACCOUNT_KEY).getSQL();
+            final String[] whereArgs = {userKey.getId()};
+
             c = resolver.query(PushNotifications.CONTENT_URI, PushNotifications.MATRIX_COLUMNS,
-                    where, null, PushNotifications.DEFAULT_SORT_ORDER);
+                    where, whereArgs, PushNotifications.DEFAULT_SORT_ORDER);
 
             if (c == null || c.getCount() == 0) return null;
             c.moveToFirst();
@@ -143,12 +147,15 @@ public class NotificationHelper implements Constants {
 
     public void deleteCachedNotifications(final UserKey userKey, final String type) {
         final ContentResolver resolver = mContext.getContentResolver();
-        String where = Expression.equals(PushNotifications.ACCOUNT_KEY, userKey.getId()).getSQL();
+
+        String where = Expression.equalsArgs(PushNotifications.ACCOUNT_KEY).getSQL();
+        final String[] whereArgs = {userKey.getId()};
+
         if (type != null && !type.isEmpty()) {
             where += " AND " + PushNotifications.NOTIFICATION_TYPE + " = '" + type + "'";
         }
         Cursor c = resolver.query(PushNotifications.CONTENT_URI, PushNotifications.MATRIX_COLUMNS,
-                where, null, PushNotifications.DEFAULT_SORT_ORDER);
+                where, whereArgs, PushNotifications.DEFAULT_SORT_ORDER);
 
         // Only rebuild notifications if there are entries that will be removed
         if (c == null) return;
@@ -182,16 +189,8 @@ public class NotificationHelper implements Constants {
     private ParcelableStatus getParcelableStatusDummy(NotificationContent notification,
                                                       boolean is_retweet) {
         ParcelableStatus status = new ParcelableStatus();
-        try {
-            status.id = Long.parseLong(notification.getObjectId());
-        } catch (NumberFormatException e) {
-            status.id = -1;
-        }
-        try {
-            status.user_key = new UserKey(Long.parseLong(notification.getObjectUserId()), null);
-        } catch (NumberFormatException e) {
-            status.user_key = new UserKey(-1, null);
-        }
+        status.id = notification.getObjectId();
+        status.user_key = new UserKey(notification.getObjectUserId(), TwittnukerConstants.USER_TYPE_TWITTER_COM);
         status.account_key = notification.getAccountKey();
         status.user_screen_name = notification.getFromUser();
         status.user_profile_image_url = notification.getProfileImageUrl();
@@ -202,11 +201,7 @@ public class NotificationHelper implements Constants {
         status.timestamp = notification.getTimestamp();
 
         if (is_retweet) {
-            try {
-                status.retweeted_by_user_id = new UserKey(Long.parseLong(notification.getObjectUserId()), null);
-            } catch (NumberFormatException e) {
-                status.retweeted_by_user_id = new UserKey(-1, null);
-            }
+            status.retweeted_by_user_id = new UserKey(notification.getObjectUserId(), TwittnukerConstants.USER_TYPE_TWITTER_COM);
             status.retweeted_by_user_screen_name = notification.getFromUser();
         }
 
@@ -604,24 +599,24 @@ public class NotificationHelper implements Constants {
         if (NotificationContent.NOTIFICATION_TYPE_MENTION.equals(type)) {
             return Html.fromHtml(String.format("<b>%s:</b> %s", nameEscaped, textEscaped));
         } else if (NotificationContent.NOTIFICATION_TYPE_RETWEET.equals(type)) {
-            return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_retweet) + ":</b> %s",
-                    nameEscaped, textEscaped));
+            return Html.fromHtml(String.format("<b>%s %s:</b> %s",
+                    nameEscaped, mContext.getString(R.string.notification_new_retweet), textEscaped));
         } else if (NotificationContent.NOTIFICATION_TYPE_FAVORITE.equals(type)) {
             if (mSharedPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
-                return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_favorite) + ":</b> %s",
-                        nameEscaped, textEscaped));
+                return Html.fromHtml(String.format("<b>%s %s:</b> %s",
+                        nameEscaped, mContext.getString(R.string.notification_new_favorite),textEscaped));
             } else {
-                return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_like) + ":</b> %s",
-                        nameEscaped, textEscaped));
+                return Html.fromHtml(String.format("<b>%s %s:</b> %s",
+                        nameEscaped, mContext.getString(R.string.notification_new_like), textEscaped));
             }
         } else if (NotificationContent.NOTIFICATION_TYPE_FOLLOWER.equals(type)) {
-            return Html.fromHtml(String.format("<b>%s</b> " + mContext.getString(R.string.notification_new_follower),
-                    nameEscaped));
+            return Html.fromHtml(String.format("<b>%s</b> %s",
+                    nameEscaped, mContext.getString(R.string.notification_new_follower)));
         } else if (NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE.equals(type)) {
-            return Html.fromHtml(String.format("<b>%s:</b>", mContext.getString(R.string.notification_new_direct_message)) + " " + textEscaped);
+            return Html.fromHtml(String.format("<b>%s:</b> %s", mContext.getString(R.string.notification_new_direct_message), textEscaped));
         } else if (NotificationContent.NOTIFICATION_TYPE_QUOTE.equals(type)) {
-            return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_quote) + ":</b> %s",
-                    nameEscaped, textEscaped));
+            return Html.fromHtml(String.format("<b>%s %s:</b> %s",
+                    nameEscaped, mContext.getString(R.string.notification_new_quote), textEscaped));
         }
         return null;
     }
@@ -633,7 +628,7 @@ public class NotificationHelper implements Constants {
         return text;
     }
 
-    private PendingIntent getDeleteIntent(final long accountId) {
+    private PendingIntent getDeleteIntent(final String accountId) {
         Intent intent = new Intent(mContext, NotificationActionReceiver.class);
         intent.setAction(INTENT_ACTION_PUSH_NOTIFICATION_CLEARED);
         intent.putExtra(EXTRA_USER_ID, accountId);

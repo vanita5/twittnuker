@@ -87,7 +87,7 @@ public class RegistrationIntentService extends IntentService implements Constant
         //is configured server-side.
 
         for (UserKey userKey : DataStoreUtils.getAccountKeys(this)) {
-            if (backend.register(String.valueOf(userKey.getId()), token)) {
+            if (backend.register(userKey.getId(), token)) {
                 mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, true).apply();
                 break;
             }

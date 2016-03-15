@@ -25,8 +25,6 @@ package de.vanita5.twittnuker.loader.support;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
@@ -35,14 +33,16 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
+import java.util.List;
+
 public class UserListMembersLoader extends CursorSupportUsersLoader {
 
     private final long mListId;
-    private final long mUserId;
+    private final String mUserId;
     private final String mScreenName, mListName;
 
     public UserListMembersLoader(final Context context, final UserKey accountKey, final long listId,
-                                 final long userId, final String screenName, final String listName,
+                                 final String userId, final String screenName, final String listName,
                                  final List<ParcelableUser> data, boolean fromUser) {
         super(context, accountKey, data, fromUser);
         mListId = listId;
@@ -57,10 +57,10 @@ public class UserListMembersLoader extends CursorSupportUsersLoader {
             throws TwitterException {
         if (mListId > 0)
             return twitter.getUserListMembers(mListId, paging);
-        else if (mUserId > 0)
+        else if (mUserId != null)
             return twitter.getUserListMembers(mListName.replace(' ', '-'), mUserId, paging);
         else if (mScreenName != null)
-            return twitter.getUserListMembers(mListName.replace(' ', '-'), mScreenName, paging);
+            return twitter.getUserListMembersByScreenName(mListName.replace(' ', '-'), mScreenName, paging);
         throw new TwitterException("list_id or list_name and user_id (or screen_name) required");
     }
 

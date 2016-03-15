@@ -30,6 +30,21 @@ public class BaseRefreshTaskParam implements RefreshTaskParam {
     private final UserKey[] accountKeys;
     private final String[] maxIds;
     private final String[] sinceIds;
+    private final long[] maxSortIds;
+    private final long[] sinceSortIds;
+
+    public BaseRefreshTaskParam(UserKey[] accountKeys, String[] maxIds, String[] sinceIds) {
+        this(accountKeys, maxIds, sinceIds, null, null);
+    }
+
+    public BaseRefreshTaskParam(UserKey[] accountKeys, String[] maxIds, String[] sinceIds,
+                                long[] maxSortIds, long[] sinceSortIds) {
+        this.accountKeys = accountKeys;
+        this.maxIds = maxIds;
+        this.sinceIds = sinceIds;
+        this.maxSortIds = maxSortIds;
+        this.sinceSortIds = sinceSortIds;
+    }
 
     @NonNull
     @Override
@@ -59,10 +74,12 @@ public class BaseRefreshTaskParam implements RefreshTaskParam {
         return sinceIds != null;
     }
 
-    public BaseRefreshTaskParam(UserKey[] accountKeys, String[] maxIds, String[] sinceIds) {
-        this.accountKeys = accountKeys;
-        this.maxIds = maxIds;
-        this.sinceIds = sinceIds;
+    public long[] getMaxSortIds() {
+        return maxSortIds;
+    }
+
+    public long[] getSinceSortIds() {
+        return sinceSortIds;
     }
 
 }

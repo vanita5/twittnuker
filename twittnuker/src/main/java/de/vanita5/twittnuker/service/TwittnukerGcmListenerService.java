@@ -63,13 +63,9 @@ public class TwittnukerGcmListenerService extends GcmListenerService {
         Log.d(TAG, "Push Notification " + type);
 
         //TODO show notification
-        UserKey accountKey = null;
-        try {
-            accountKey = new UserKey(Long.parseLong(data.getString("account")), TwittnukerConstants.USER_TYPE_TWITTER_COM);
-        } catch (NumberFormatException e) {
-            Log.e(TAG, e.getMessage());
-            return;
-        }
+        final String accountId = data.getString("account");
+        if (accountId == null) return;
+        UserKey accountKey = new UserKey(accountId, TwittnukerConstants.USER_TYPE_TWITTER_COM);
 
         AccountPreferences accountPreferences = new AccountPreferences(this, accountKey);
 

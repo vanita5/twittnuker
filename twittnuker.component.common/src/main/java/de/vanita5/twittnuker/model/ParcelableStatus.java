@@ -318,11 +318,6 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     }
 
 
-    @AfterCursorObjectCreated
-    void finishCursorObjectCreation() {
-        card_name = card != null ? card.name : null;
-    }
-
     @Override
     public int compareTo(@NonNull final ParcelableStatus another) {
         long timeDelta = timestamp - another.timestamp;
@@ -339,7 +334,7 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
 
         ParcelableStatus status = (ParcelableStatus) o;
 
-        if (id != status.id) return false;
+        if (!TextUtils.equals(id, status.id)) return false;
         return account_key.equals(status.account_key);
 
     }
@@ -349,9 +344,9 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
         return calculateHashCode(account_key, id);
     }
 
-    public static int calculateHashCode(UserKey account_key, String id) {
+    public static int calculateHashCode(UserKey accountKey, String id) {
         int result = id.hashCode();
-        result = 31 * result + account_key.hashCode();
+        result = 31 * result + accountKey.hashCode();
         return result;
     }
 
@@ -419,10 +414,30 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
                 '}';
     }
 
+    @AfterCursorObjectCreated
+    void finishCursorObjectCreation() {
+        card_name = card != null ? card.name : null;
+        fixSortId();
+    }
+
     @OnJsonParseComplete
     void onParseComplete() throws IOException {
         if (is_quote && TextUtils.isEmpty(quoted_text_html))
             throw new IOException("Incompatible model");
+        fixSortId();
+    }
+
+    void fixSortId() {
+        if (sort_id <= 0) {
+            try {
+                sort_id = Long.parseLong(id);
+            } catch (NumberFormatException e) {
+                // Ignore
+            }
+        }
+        if (sort_id <= 0) {
+            sort_id = timestamp;
+        }
     }
 
     @Override
