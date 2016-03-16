@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.preference.Preference;
+import android.support.v7.preference.Preference;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.view.SupportMenuInflater;
 import android.support.v7.widget.ActionMenuView;
@@ -33,7 +33,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Spanned;
 import android.util.AttributeSet;
-import android.view.ContextThemeWrapper;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -84,7 +83,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
         }
     }
 
-    @Override
+    /*@Override
     protected View onCreateView(final ViewGroup parent) {
         super.onCreateView(parent);
         final Context context = getContext();
@@ -99,7 +98,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
             }
             throw e;
         }
-    }
+    }*/
 
     private static void setPreviewView(final Context context, final View view) {
         if (view instanceof IExtendedView) {

@@ -34,7 +34,7 @@
     android:minHeight="?listPreferredItemHeightSmall"
     android:orientation="horizontal">
 
-    <org.mariotaku.twidere.view.ActionIconView
+    <de.vanita5.twittnuker.view.ActionIconView
         android:id="@android:id/icon"
         android:layout_width="@dimen/header_icon_width"
         android:layout_height="@dimen/header_icon_width"

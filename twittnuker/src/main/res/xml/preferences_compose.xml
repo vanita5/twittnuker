@@ -48,11 +48,11 @@
         android:key="compose_now_action"
         android:title="@string/compose_now_action"/>
 
-    <de.vanita5.twittnuker.preference.StatusShortenerPreference
+    <!--<de.vanita5.twittnuker.preference.StatusShortenerPreference
         android:defaultValue=""
         android:key="status_shortener"
         android:summary="%s"
-        android:title="@string/status_shortener"/>
+        android:title="@string/status_shortener"/>-->
 
     <EditTextPreference
         android:defaultValue="RT @[NAME]: [TEXT]"

@@ -30,22 +30,22 @@ import de.vanita5.twittnuker.R;
 
 public class TimelineSyncPreference extends ServicePickerPreference implements Constants {
 
-	public TimelineSyncPreference(final Context context) {
-		this(context, null);
-	}
+    public TimelineSyncPreference(final Context context) {
+        this(context, null);
+    }
 
-	public TimelineSyncPreference(final Context context, final AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public TimelineSyncPreference(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	@Override
-	protected String getIntentAction() {
-		return INTENT_ACTION_SYNC_TIMELINE;
-	}
+    @Override
+    protected String getIntentAction() {
+        return INTENT_ACTION_SYNC_TIMELINE;
+    }
 
-	@Override
-	protected String getNoneEntry() {
-		return getContext().getString(R.string.none);
-	}
+    @Override
+    protected String getNoneEntry() {
+        return getContext().getString(R.string.none);
+    }
 
 }
