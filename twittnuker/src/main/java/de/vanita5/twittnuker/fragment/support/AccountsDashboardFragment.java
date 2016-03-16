@@ -76,8 +76,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.commonsware.cwac.merge.MergeAdapter;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.sqliteqb.library.Expression;
@@ -106,7 +104,6 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TransitionUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver;
@@ -120,7 +117,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class AccountsDashboardFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>,
-        OnSharedPreferenceChangeListener, ImageLoadingListener, OnClickListener, KeyboardShortcutCallback, AdapterView.OnItemClickListener {
+        OnSharedPreferenceChangeListener, OnClickListener, KeyboardShortcutCallback,
+        AdapterView.OnItemClickListener {
 
     private final Rect mSystemWindowsInsets = new Rect();
     private ContentResolver mResolver;
@@ -356,6 +354,10 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
                             account.account_key.getId(), account.screen_name);
                     break;
                 }
+                case R.id.public_timeline: {
+                    IntentUtils.openPublicTimeline(getActivity(), account.account_key);
+                    break;
+                }
                 case R.id.messages: {
                     IntentUtils.openDirectMessages(getActivity(), account.account_key);
                     break;
@@ -365,7 +367,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
                     break;
                 }
                 case R.id.edit: {
-                    Utils.openProfileEditor(getActivity(), account.account_key);
+                    IntentUtils.openProfileEditor(getActivity(), account.account_key);
                     break;
                 }
             }
@@ -374,15 +376,15 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
             final OptionItem option = (OptionItem) item;
             switch (option.id) {
                 case R.id.accounts: {
-                    Utils.openAccountsManager(getActivity());
+                    IntentUtils.openAccountsManager(getActivity());
                     break;
                 }
                 case R.id.drafts: {
-                    Utils.openDrafts(getActivity());
+                    IntentUtils.openDrafts(getActivity());
                     break;
                 }
                 case R.id.filters: {
-                    Utils.openFilters(getActivity());
+                    IntentUtils.openFilters(getActivity());
                     break;
                 }
                 case R.id.settings: {
@@ -394,26 +396,6 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
             }
             closeAccountsDrawer();
         }
-    }
-
-    @Override
-    public void onLoadingStarted(String imageUri, View view) {
-
-    }
-
-    @Override
-    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-    }
-
-    @Override
-    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-        view.setTag(imageUri);
-    }
-
-    @Override
-    public void onLoadingCancelled(String imageUri, View view) {
-
     }
 
     @Override
@@ -593,12 +575,21 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
             mAccountOptionsAdapter.add(new OptionItem(R.string.likes, R.drawable.ic_action_heart,
                     R.id.favorites));
         }
-        if (TwitterAPIFactory.isTwitterCredentials(account)) {
-            mAccountOptionsAdapter.add(new OptionItem(R.string.lists, R.drawable.ic_action_list,
-                    R.id.lists));
-        } else if (TwitterAPIFactory.isStatusNetCredentials(account)) {
-            mAccountOptionsAdapter.add(new OptionItem(R.string.groups, R.drawable.ic_action_list,
-                    R.id.groups));
+        switch (ParcelableAccountUtils.getAccountType(account)) {
+            case ParcelableAccount.Type.TWITTER: {
+                mAccountOptionsAdapter.add(new OptionItem(R.string.lists, R.drawable.ic_action_list,
+                        R.id.lists));
+                break;
+            }
+            case ParcelableAccount.Type.STATUSNET: {
+                mAccountOptionsAdapter.add(new OptionItem(R.string.groups, R.drawable.ic_action_list,
+                        R.id.groups));
+                break;
+            }
+            case ParcelableAccount.Type.FANFOU: {
+                mAccountOptionsAdapter.add(new OptionItem(R.string.public_timeline, R.drawable.ic_action_quote,
+                        R.id.public_timeline));
+            }
         }
     }
 
@@ -747,7 +738,8 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         }
         final ImageView bannerView = mAccountProfileBannerView;
         if (bannerView.getDrawable() == null || !CompareUtils.objectEquals(bannerUrl, bannerView.getTag())) {
-            mMediaLoader.displayProfileBanner(mAccountProfileBannerView, bannerUrl, width, this);
+            mMediaLoader.displayProfileBanner(mAccountProfileBannerView, bannerUrl, width);
+            mAccountProfileBannerView.setTag(bannerUrl);
         } else {
             mMediaLoader.cancelDisplayTask(mAccountProfileBannerView);
         }

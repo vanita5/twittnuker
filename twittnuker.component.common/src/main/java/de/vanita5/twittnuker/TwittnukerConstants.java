@@ -52,7 +52,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String KEYBOARD_SHORTCUTS_PREFERENCES_NAME = "keyboard_shortcuts_preferences";
 
     String DEFAULT_TWITTER_API_URL_FORMAT = "https://[DOMAIN.]twitter.com/";
-    String DEFAULT_TWITTER_OAUTH_BASE_URL = "https://api.twitter.com/oauth/";
 
     String SCHEME_HTTP = "http";
     String SCHEME_HTTPS = "https";
@@ -83,6 +82,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_USER_BLOCKS = "user_blocks";
     String AUTHORITY_STATUS = "status";
     String AUTHORITY_STATUSES = "statuses";
+    String AUTHORITY_PUBLIC_TIMELINE = "public_timeline";
     String AUTHORITY_DIRECT_MESSAGES_CONVERSATION = "direct_messages_conversation";
     String AUTHORITY_DIRECT_MESSAGES = "direct_messages";
     String AUTHORITY_SEARCH = "search";

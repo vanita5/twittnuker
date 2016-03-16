@@ -108,6 +108,7 @@ import de.vanita5.twittnuker.fragment.support.AbsStatusesFragment.DefaultOnLiked
 import de.vanita5.twittnuker.loader.support.ConversationLoader;
 import de.vanita5.twittnuker.loader.support.ParcelableStatusLoader;
 import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
@@ -121,7 +122,9 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
@@ -2425,6 +2428,11 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         @Override
         public StatusActivity loadInBackground() {
             final Context context = getContext();
+            final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context,
+                    mAccountKey);
+            if (credentials == null || !ParcelableAccount.Type.TWITTER.equals(ParcelableAccountUtils.getAccountType(credentials))) {
+                return null;
+            }
             final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, mAccountKey, false);
             if (twitter == null) return null;
             final Paging paging = new Paging();

@@ -26,7 +26,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
-import android.text.TextUtils;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -34,47 +33,32 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 
 import java.util.List;
 
-public class UserTimelineLoader extends TwitterAPIStatusesLoader {
+public class PublicTimelineLoader extends TwitterAPIStatusesLoader {
 
-    private final String mUserId;
-    private final String mUserScreenName;
-    private final boolean mIsMyTimeline;
-
-    public UserTimelineLoader(final Context context, final UserKey accountId, final String userId,
-                              final String screenName, final String sinceId, final String maxId,
-                              final List<ParcelableStatus> data, final String[] savedStatusesArgs,
-                              final int tabPosition, boolean fromUser, boolean loadingMore) {
+    public PublicTimelineLoader(final Context context, final UserKey accountId,
+                                final String sinceId, final String maxId,
+                                final List<ParcelableStatus> data, final String[] savedStatusesArgs,
+                                final int tabPosition, boolean fromUser, boolean loadingMore) {
         super(context, accountId, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser, loadingMore);
-        mUserId = userId;
-        mUserScreenName = screenName;
-        mIsMyTimeline = TextUtils.equals(accountId.getId(), userId);
     }
 
     @NonNull
     @Override
     protected ResponseList<Status> getStatuses(@NonNull final Twitter twitter,
-                                               @NonNull ParcelableCredentials credentials,
+                                               @NonNull final ParcelableCredentials credentials,
                                                @NonNull final Paging paging) throws TwitterException {
-        if (mUserId != null) {
-            return twitter.getUserTimeline(mUserId, paging);
-        } else if (mUserScreenName != null) {
-            return twitter.getUserTimelineByScreenName(mUserScreenName, paging);
-        } else
-            throw new TwitterException("Invalid user");
+        return twitter.getPublicTimeline(paging);
     }
 
     @WorkerThread
     @Override
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
-        if (mIsMyTimeline) return false;
-        final UserKey retweetUserId = status.is_retweet ? status.user_key : null;
-        return InternalTwitterContentUtils.isFiltered(database, retweetUserId, status.text_plain,
-                status.text_html, status.source, null, status.quoted_user_id);
+        return InternalTwitterContentUtils.isFiltered(database, status, true);
     }
 }

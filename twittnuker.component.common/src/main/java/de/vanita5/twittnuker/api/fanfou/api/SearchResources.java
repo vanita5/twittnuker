@@ -23,22 +23,17 @@
 package de.vanita5.twittnuker.api.fanfou.api;
 
 import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.KeyValue;
-import org.mariotaku.restfu.annotation.param.Queries;
 import org.mariotaku.restfu.annotation.param.Query;
-import de.vanita5.twittnuker.api.fanfou.model.FanfouSearchStatus;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.User;
-
-import java.util.List;
 
 public interface SearchResources {
 
     @GET("/search/public_timeline.json")
-    @Queries(@KeyValue(key = "format", value = "html"))
-    ResponseList<FanfouSearchStatus> searchPublicTimeline(@Query("q") String query, @Query Paging paging) throws TwitterException;
+    ResponseList<Status> searchPublicTimeline(@Query("q") String query, @Query Paging paging) throws TwitterException;
 
     @GET("/search/users.json")
     ResponseList<User> searchFanfouUsers(@Query("q") String query, @Query Paging paging) throws TwitterException;

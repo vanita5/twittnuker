@@ -88,7 +88,8 @@ public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
                         screenName = mUserScreenName;
                     } else {
                         if (mUser == null) {
-                            mUser = TwitterWrapper.tryShowUser(twitter, mUserId, null);
+                            mUser = TwitterWrapper.tryShowUser(twitter, mUserId, null,
+                                    credentials.account_type);
                         }
                         screenName = mUser.getScreenName();
                     }

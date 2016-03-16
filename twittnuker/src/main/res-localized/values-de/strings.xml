@@ -791,6 +791,7 @@
     <string name="translate_from_language">Übersetze von <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Übersetzung</string>
     <string name="groups">Gruppen</string>
+    <string name="public_timeline">Öffentliche Timeline</string>
     <string name="external_user_host_format">Externer Benutzer auf <xliff:g id="host">%s</xliff:g></string>
     <string name="external_group_host_format">Externe Gruppe auf <xliff:g id="host">%s</xliff:g></string>
     <string name="error_too_many_photos_fanfou">Zu viele Bilder</string>

@@ -27,11 +27,14 @@ package de.vanita5.twittnuker;
  */
 public interface SecretConstants {
 
-    public static final String TWITLONGER_API_KEY = "";
+    String TWITLONGER_API_KEY = "";
 
     /**
      * Twitter OAuth keys
      */
-    public static final String TWITTER_CONSUMER_KEY = "K4KihyAG8rUOi9ysqDc5fw";
-    public static final String TWITTER_CONSUMER_SECRET = "TP9kXNAvNpdH2KcKCuH2DHAbtzzaZ04KIwzOGiOKB0";
+    String TWITTER_CONSUMER_KEY = "K4KihyAG8rUOi9ysqDc5fw";
+    String TWITTER_CONSUMER_SECRET = "TP9kXNAvNpdH2KcKCuH2DHAbtzzaZ04KIwzOGiOKB0";
+
+    String FANFOU_CONSUMER_KEY = "a51624a67585267ab72086984869fb9b";
+    String FANFOU_CONSUMER_SECRET = "d4f0ad96bae1e5104ae34f5ff9690fb7";
 }

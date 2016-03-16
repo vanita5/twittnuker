@@ -130,6 +130,7 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
@@ -413,7 +414,7 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
                 break;
             }
             case R.id.drafts: {
-                Utils.openDrafts(this);
+                IntentUtils.openDrafts(this);
                 break;
             }
             case R.id.delete: {

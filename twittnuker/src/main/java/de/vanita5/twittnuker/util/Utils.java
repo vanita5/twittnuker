@@ -143,6 +143,7 @@ import de.vanita5.twittnuker.fragment.support.InteractionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.ListsFragment;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.support.MutesUsersListFragment;
+import de.vanita5.twittnuker.fragment.support.PublicTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.SavedSearchesListFragment;
 import de.vanita5.twittnuker.fragment.support.ScheduledStatusesFragment;
 import de.vanita5.twittnuker.fragment.support.SearchFragment;
@@ -247,6 +248,7 @@ public final class Utils implements Constants {
                 LINK_ID_DIRECT_MESSAGES_CONVERSATION);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_DIRECT_MESSAGES, null, LINK_ID_DIRECT_MESSAGES);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_INTERACTIONS, null, LINK_ID_INTERACTIONS);
+        LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_PUBLIC_TIMELINE, null, LINK_ID_PUBLIC_TIMELINE);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST, null, LINK_ID_USER_LIST);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST_TIMELINE, null, LINK_ID_USER_LIST_TIMELINE);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_LIST_MEMBERS, null, LINK_ID_USER_LIST_MEMBERS);
@@ -576,6 +578,10 @@ public final class Utils implements Constants {
             }
             case LINK_ID_INTERACTIONS: {
                 fragment = new InteractionsTimelineFragment();
+                break;
+            }
+            case LINK_ID_PUBLIC_TIMELINE: {
+                fragment = new PublicTimelineFragment();
                 break;
             }
             case LINK_ID_USER_LIST: {
@@ -1662,25 +1668,6 @@ public final class Utils implements Constants {
         return top - actionBarHeight;
     }
 
-    public static void openUserMediaTimeline(final Activity activity, final UserKey accountKey,
-                                             final long userId, final String screenName) {
-        if (activity == null) return;
-        final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(SCHEME_TWITTNUKER);
-        builder.authority(AUTHORITY_USER_MEDIA_TIMELINE);
-        if (accountKey != null) {
-            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, String.valueOf(accountKey));
-        }
-        if (userId > 0) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
-        }
-        if (screenName != null) {
-            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
-        }
-        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
-    }
-
     public static String replaceLast(final String text, final String regex, final String replacement) {
         if (text == null || regex == null || replacement == null) return text;
         return text.replaceFirst("(?s)" + regex + "(?!.*?" + regex + ")", replacement);
@@ -2071,49 +2058,6 @@ public final class Utils implements Constants {
     public static void setSharedElementTransition(Context context, Window window, int transitionRes) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
         UtilsL.setSharedElementTransition(context, window, transitionRes);
-    }
-
-    public static void openAccountsManager(Context context) {
-        final Intent intent = new Intent();
-        final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(SCHEME_TWITTNUKER);
-        builder.authority(AUTHORITY_ACCOUNTS);
-        intent.setData(builder.build());
-        intent.setPackage(BuildConfig.APPLICATION_ID);
-        context.startActivity(intent);
-    }
-
-    public static void openDrafts(Context context) {
-        final Intent intent = new Intent();
-        final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(SCHEME_TWITTNUKER);
-        builder.authority(AUTHORITY_DRAFTS);
-        intent.setData(builder.build());
-        intent.setPackage(BuildConfig.APPLICATION_ID);
-        context.startActivity(intent);
-    }
-
-    public static void openProfileEditor(Context context, @Nullable UserKey accountId) {
-        final Intent intent = new Intent();
-        final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(SCHEME_TWITTNUKER);
-        builder.authority(AUTHORITY_PROFILE_EDITOR);
-        if (accountId != null) {
-            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountId.toString());
-        }
-        intent.setData(builder.build());
-        intent.setPackage(BuildConfig.APPLICATION_ID);
-        context.startActivity(intent);
-    }
-
-    public static void openFilters(Context context) {
-        final Intent intent = new Intent();
-        final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(SCHEME_TWITTNUKER);
-        builder.authority(AUTHORITY_FILTERS);
-        intent.setData(builder.build());
-        intent.setPackage(BuildConfig.APPLICATION_ID);
-        context.startActivity(intent);
     }
 
     public static <T> Object findFieldOfTypes(T obj, Class<? extends T> cls, Class<?>... checkTypes) {
