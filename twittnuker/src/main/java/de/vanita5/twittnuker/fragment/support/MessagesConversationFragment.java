@@ -86,11 +86,11 @@ import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter.MenuButtonClickListener;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.loader.UserSearchLoader;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserCursorIndices;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
@@ -421,8 +421,8 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
     }
 
     @Override
-    public void onBaseViewCreated(final View view, final Bundle savedInstanceState) {
-        super.onBaseViewCreated(view, savedInstanceState);
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mUsersSearchProgress = view.findViewById(R.id.users_search_progress);
         mUsersSearchList = (ListView) view.findViewById(R.id.users_search_list);
         mUsersSearchEmpty = view.findViewById(R.id.users_search_empty);

@@ -24,20 +24,19 @@ package de.vanita5.twittnuker.fragment.support;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.iface.IDialogFragmentCallback;
-
 import me.uucky.colorpicker.ColorPickerDialog;
 
 public final class ColorPickerDialogFragment extends BaseSupportDialogFragment implements
-	DialogInterface.OnClickListener {
+        DialogInterface.OnClickListener {
 
     private ColorPickerDialog.Controller mController;
 
@@ -50,33 +49,33 @@ public final class ColorPickerDialogFragment extends BaseSupportDialogFragment i
         }
     }
 
-	@Override
-	public void onClick(final DialogInterface dialog, final int which) {
-		final FragmentActivity a = getActivity();
+    @Override
+    public void onClick(final DialogInterface dialog, final int which) {
+        final FragmentActivity a = getActivity();
         if (!(a instanceof Callback) || mController == null) return;
-		switch (which) {
+        switch (which) {
             case DialogInterface.BUTTON_POSITIVE: {
                 final int color = mController.getColor();
                 ((Callback) a).onColorSelected(color);
-				break;
+                break;
             }
             case DialogInterface.BUTTON_NEUTRAL: {
                 ((Callback) a).onColorCleared();
                 break;
             }
-		}
-	}
+        }
+    }
 
     @NonNull
-	@Override
-	public Dialog onCreateDialog(final Bundle savedInstanceState) {
-		final int color;
-		final Bundle args = getArguments();
-		if (savedInstanceState != null) {
-			color = savedInstanceState.getInt(EXTRA_COLOR, Color.WHITE);
-		} else {
-			color = args.getInt(EXTRA_COLOR, Color.WHITE);
-		}
+    @Override
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        final int color;
+        final Bundle args = getArguments();
+        if (savedInstanceState != null) {
+            color = savedInstanceState.getInt(EXTRA_COLOR, Color.WHITE);
+        } else {
+            color = args.getInt(EXTRA_COLOR, Color.WHITE);
+        }
 
         final FragmentActivity activity = getActivity();
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -93,17 +92,16 @@ public final class ColorPickerDialogFragment extends BaseSupportDialogFragment i
                 final Dialog dialog = (Dialog) di;
                 mController = new ColorPickerDialog.Controller(dialog.getContext(), dialog.getWindow().getDecorView());
 
-				final boolean showAlphaSlider = args.getBoolean(EXTRA_ALPHA_SLIDER, true);
-				final Resources res = getResources();
-				for (int presetColor : PRESET_COLORS) {
-                    mController.addColor(res.getColor(presetColor));
-        		}
+                final boolean showAlphaSlider = args.getBoolean(EXTRA_ALPHA_SLIDER, true);
+                for (int presetColor : PRESET_COLORS) {
+                    mController.addColor(ContextCompat.getColor(getContext(), presetColor));
+                }
                 mController.setAlphaEnabled(showAlphaSlider);
                 mController.setInitialColor(color);
-        	}
+            }
         });
         return dialog;
-	}
+    }
 
     @Override
     public void onDismiss(final DialogInterface dialog) {
@@ -114,13 +112,13 @@ public final class ColorPickerDialogFragment extends BaseSupportDialogFragment i
         }
     }
 
-	@Override
-	public void onSaveInstanceState(final Bundle outState) {
+    @Override
+    public void onSaveInstanceState(final Bundle outState) {
         if (mController != null) {
             outState.putInt(EXTRA_COLOR, mController.getColor());
-		}
-		super.onSaveInstanceState(outState);
-	}
+        }
+        super.onSaveInstanceState(outState);
+    }
 
     public interface Callback extends IDialogFragmentCallback {
 

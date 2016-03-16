@@ -69,7 +69,7 @@
             android:value="true" />
     </SwitchPreference>
 
-    <ListPreference
+    <de.vanita5.twittnuker.preference.ThemedListPreference
         android:defaultValue="@string/default_profile_image_style"
         android:entries="@array/entries_profile_image_style"
         android:entryValues="@array/values_profile_image_style"
@@ -79,7 +79,7 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </ListPreference>
+    </de.vanita5.twittnuker.preference.ThemedListPreference>
 
     <SwitchPreference
         android:defaultValue="true"
@@ -90,7 +90,7 @@
             android:name="notify_change"
             android:value="true" />
     </SwitchPreference>
-    <ListPreference
+    <de.vanita5.twittnuker.preference.ThemedListPreference
         android:defaultValue="crop"
         android:entries="@array/entries_media_preview_style"
         android:entryValues="@array/values_media_preview_style"
@@ -100,7 +100,7 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </ListPreference>
+    </de.vanita5.twittnuker.preference.ThemedListPreference>
 
     <de.vanita5.twittnuker.preference.LinkHighlightPreference
         android:defaultValue="highlight"

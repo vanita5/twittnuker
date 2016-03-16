@@ -45,7 +45,7 @@
             android:key="enable_push_notifications"
             android:summary="@string/enable_push_notifications_summary"
             android:title="@string/enable_push_notifications"/>
-        <EditTextPreference
+        <de.vanita5.twittnuker.preference.ThemedEditTextPreference
             android:dialogTitle="@string/push_api_url"
             android:key="push_api_url"
             android:singleLine="true"

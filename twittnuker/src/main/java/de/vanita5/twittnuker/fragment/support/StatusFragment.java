@@ -109,7 +109,6 @@ import de.vanita5.twittnuker.loader.ConversationLoader;
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader;
 import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
@@ -120,6 +119,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
@@ -388,8 +388,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     }
 
     @Override
-    public void onBaseViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onBaseViewCreated(view, savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mStatusContent = view.findViewById(R.id.status_content);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mProgressContainer = view.findViewById(R.id.progress_container);

@@ -61,7 +61,6 @@ import de.vanita5.twittnuker.fragment.support.SupportBrowserFragment;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.TwidereActionModeForChildListener;
 import de.vanita5.twittnuker.view.TintedStatusNativeActionModeAwareLayout;
 
 import java.util.ArrayList;
@@ -79,7 +78,6 @@ public class SettingsActivity extends BaseAppCompatActivity implements OnItemCli
     private EntriesAdapter mEntriesAdapter;
     private TintedStatusNativeActionModeAwareLayout mMainContent;
     private View mDetailFragmentContainer;
-    private TwidereActionModeForChildListener mTwidereActionModeForChildListener;
 
     public static void setShouldNotifyChange(Activity activity) {
         if (!(activity instanceof SettingsActivity)) return;
@@ -107,8 +105,6 @@ public class SettingsActivity extends BaseAppCompatActivity implements OnItemCli
         mMainContent.setDrawColor(true);
         mMainContent.setColor(statusBarColor, alpha);
 
-        mTwidereActionModeForChildListener = new TwidereActionModeForChildListener(this, this, false);
-        mMainContent.setActionModeForChildListener(mTwidereActionModeForChildListener);
         mDetailFragmentContainer.setBackgroundColor((backgroundAlpha << 24 | 0xFFFFFF) & ThemeUtils.getThemeBackgroundColor(this));
 
         mSlidingPaneLayout.setShadowResourceLeft(R.drawable.sliding_pane_shadow_left);
@@ -226,9 +222,6 @@ public class SettingsActivity extends BaseAppCompatActivity implements OnItemCli
 
     @Override
     public void onBackPressed() {
-        if (mTwidereActionModeForChildListener.finishExisting()) {
-            return;
-        }
         if (isTopSettings() && shouldNotifyChange()) {
             final RestartConfirmDialogFragment df = new RestartConfirmDialogFragment();
             df.show(getSupportFragmentManager(), "restart_confirm");

@@ -54,7 +54,7 @@
         android:summary="@string/leftside_compose_button_summary"
         android:title="@string/leftside_compose_button" />
 
-    <ListPreference
+    <de.vanita5.twittnuker.preference.ThemedListPreference
         android:defaultValue="@string/default_tab_display_option"
         android:entries="@array/entries_tab_display_option"
         android:entryValues="@array/values_tab_display_option"

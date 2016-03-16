@@ -61,7 +61,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ActionBarContainer;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -89,12 +88,12 @@ import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.LinkHandlerActivity;
 import de.vanita5.twittnuker.activity.ThemedAppCompatActivity;
 import de.vanita5.twittnuker.activity.UserListSelectorActivity;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -106,7 +105,6 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.loader.ParcelableUserLoader;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.CachedRelationship;
 import de.vanita5.twittnuker.model.CachedRelationshipValuesCreator;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
@@ -116,6 +114,7 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.SupportTabSpec;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 import de.vanita5.twittnuker.model.message.FriendshipUpdatedEvent;
 import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent;
@@ -156,7 +155,6 @@ import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.ProfileBannerImageView;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
-import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import java.util.Calendar;
@@ -196,7 +194,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private View mProgressContainer, mHeaderErrorContainer;
     private View mCardContent;
     private View mProfileBannerSpace;
-    private TintedStatusFrameLayout mTintedStatusContent;
     private HeaderDrawerLayout mHeaderDrawerLayout;
     private ViewPager mViewPager;
     private TabPagerIndicator mPagerIndicator;
@@ -707,14 +704,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof FragmentActivity) {
-            mTintedStatusContent = (TintedStatusFrameLayout) ((FragmentActivity) context).findViewById(R.id.main_content);
-        }
-    }
-
-    @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_user, container, false);
     }
@@ -1105,8 +1094,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     @Override
-    public void onBaseViewCreated(final View view, final Bundle savedInstanceState) {
-        super.onBaseViewCreated(view, savedInstanceState);
+    public void onViewCreated(final View view, final Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mHeaderDrawerLayout = (HeaderDrawerLayout) view.findViewById(R.id.user_profile_drawer);
         final View headerView = mHeaderDrawerLayout.getHeader();
         final View contentView = mHeaderDrawerLayout.getContent();
@@ -1403,9 +1392,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     public void setListShown(boolean shown) {
-        final TintedStatusFrameLayout tintedStatus = mTintedStatusContent;
-        if (tintedStatus == null) return;
-//        tintedStatus.setDrawShadow(shown);
     }
 
     private void getFriendship() {
@@ -1442,10 +1428,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final IThemedActivity themed = (IThemedActivity) activity;
         final String backgroundOption = themed.getThemeBackgroundOption();
         final int actionBarColor = ThemeUtils.getActionBarColor(activity);
-        if (mTintedStatusContent != null) {
-            final int alpha = ThemeUtils.isTransparentBackground(backgroundOption) ? themed.getCurrentThemeBackgroundAlpha() : 0xFF;
-            mTintedStatusContent.setColor(actionBarColor, ThemeUtils.getActionBarAlpha(alpha));
-        }
         if (mActionBarBackground != null) {
             mActionBarBackground.setColor(actionBarColor);
         }
@@ -1477,9 +1459,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final FragmentActivity activity = getActivity();
         if (!(activity instanceof LinkHandlerActivity)) return;
         final LinkHandlerActivity linkHandler = (LinkHandlerActivity) activity;
-        final ActionBarContainer actionBarContainer = linkHandler.getActionBarContainer();
         final ActionBar actionBar = linkHandler.getSupportActionBar();
-        if (actionBarContainer == null || actionBar == null) return;
+        if (actionBar == null) return;
         final Drawable shadow = ResourcesCompat.getDrawable(activity.getResources(), R.drawable.shadow_user_banner_action_bar, null);
         mActionBarBackground = new ActionBarDrawable(shadow);
         if (!ThemeUtils.isWindowFloating(linkHandler)
@@ -1487,7 +1468,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 //            mActionBarBackground.setAlpha(ThemeUtils.getActionBarAlpha(linkHandler.getCurrentThemeBackgroundAlpha()));
             mProfileBannerView.setAlpha(linkHandler.getCurrentThemeBackgroundAlpha() / 255f);
         }
-        actionBarContainer.setPrimaryBackground(mActionBarBackground);
+        actionBar.setBackgroundDrawable(mActionBarBackground);
     }
 
     private void setupUserPages() {
@@ -1553,9 +1534,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         profileBannerView.setTranslationY(offset / 2);
         profileBirthdayBannerView.setTranslationY(offset / 2);
 
-        if (mActionBarBackground != null && mTintedStatusContent != null) {
+        if (mActionBarBackground != null) {
             mActionBarBackground.setFactor(factor);
-            mTintedStatusContent.setFactor(factor);
 
             final float profileContentHeight = mProfileNameContainer.getHeight() + mProfileDetailsContainer.getHeight();
             final float tabOutlineAlphaFactor;
@@ -1695,9 +1675,12 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
         public void setFactor(float f) {
             mFactor = f;
-            mShadowDrawable.setAlpha(Math.round(mAlpha * TwidereMathUtils.clamp(1 - f, 0, 1)));
+            final int shadowAlpha = Math.round(mAlpha * TwidereMathUtils.clamp(1 - f, 0, 1));
+            mShadowDrawable.setAlpha(shadowAlpha);
             final boolean hasColor = mColor != 0;
-            mColorDrawable.setAlpha(hasColor ? Math.round(mAlpha * TwidereMathUtils.clamp(f, 0, 1)) : 0);
+            final int colorAlpha = hasColor ? Math.round(mAlpha * TwidereMathUtils.clamp(f, 0, 1)) : 0;
+            mColorDrawable.setAlpha(colorAlpha);
+            invalidateSelf();
         }
 
         public void setOutlineAlphaFactor(float f) {

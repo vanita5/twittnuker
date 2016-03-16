@@ -61,12 +61,12 @@ import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.loader.ParcelableUserLoader;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
-import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.task.UpdateProfileBannerImageTask;
+import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
@@ -274,8 +274,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
     }
 
     @Override
-    public void onBaseViewCreated(View view, Bundle savedInstanceState) {
-        super.onBaseViewCreated(view, savedInstanceState);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mProgressContainer = view.findViewById(R.id.progress_container);
         mEditProfileContent = view.findViewById(R.id.edit_profile_content);
         mProfileBannerView = (ImageView) view.findViewById(R.id.profile_banner);

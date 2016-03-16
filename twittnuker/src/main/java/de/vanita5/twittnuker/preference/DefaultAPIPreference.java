@@ -28,9 +28,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.DialogPreference;
-import android.support.v7.preference.PreferenceDialogFragmentCompat;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -47,6 +45,7 @@ import android.widget.Toast;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.APIEditorActivity;
+import de.vanita5.twittnuker.fragment.ThemedPreferenceDialogFragmentCompat;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -62,6 +61,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 
     public DefaultAPIPreference(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
+        setDialogLayoutResource(R.layout.layout_api_editor);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
         df.show(fragment.getFragmentManager(), getKey());
     }
 
-    public static final class DefaultAPIPreferenceDialogFragment extends PreferenceDialogFragmentCompat {
+    public static final class DefaultAPIPreferenceDialogFragment extends ThemedPreferenceDialogFragmentCompat {
 
         public static DefaultAPIPreferenceDialogFragment newInstance(String key) {
             final DefaultAPIPreferenceDialogFragment df = new DefaultAPIPreferenceDialogFragment();
@@ -93,28 +93,22 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final DialogPreference preference = getPreference();
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setView(R.layout.layout_api_editor);
-            builder.setTitle(preference.getDialogTitle());
-            builder.setPositiveButton(android.R.string.ok, this);
-            builder.setNegativeButton(android.R.string.cancel, this);
-
-            final AlertDialog dialog = builder.create();
+            final Dialog dialog = super.onCreateDialog(savedInstanceState);
             dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface dialog) {
-                    final AlertDialog alertDialog = (AlertDialog) dialog;
-                    mEditAPIUrlFormat = (EditText) alertDialog.findViewById(R.id.api_url_format);
-                    mEditAuthType = (RadioGroup) alertDialog.findViewById(R.id.auth_type);
-                    mButtonOAuth = (RadioButton) alertDialog.findViewById(R.id.oauth);
-                    mButtonxAuth = (RadioButton) alertDialog.findViewById(R.id.xauth);
-                    mButtonBasic = (RadioButton) alertDialog.findViewById(R.id.basic);
-                    mButtonTwipOMode = (RadioButton) alertDialog.findViewById(R.id.twip_o);
-                    mEditSameOAuthSigningUrl = (CheckBox) alertDialog.findViewById(R.id.same_oauth_signing_url);
-                    mEditNoVersionSuffix = (CheckBox) alertDialog.findViewById(R.id.no_version_suffix);
-                    mEditConsumerKey = (EditText) alertDialog.findViewById(R.id.consumer_key);
-                    mEditConsumerSecret = (EditText) alertDialog.findViewById(R.id.consumer_secret);
-                    mAPIFormatHelpButton = alertDialog.findViewById(R.id.api_url_format_help);
+                    final Dialog editDialog = (Dialog) dialog;
+                    mEditAPIUrlFormat = (EditText) editDialog.findViewById(R.id.api_url_format);
+                    mEditAuthType = (RadioGroup) editDialog.findViewById(R.id.auth_type);
+                    mButtonOAuth = (RadioButton) editDialog.findViewById(R.id.oauth);
+                    mButtonxAuth = (RadioButton) editDialog.findViewById(R.id.xauth);
+                    mButtonBasic = (RadioButton) editDialog.findViewById(R.id.basic);
+                    mButtonTwipOMode = (RadioButton) editDialog.findViewById(R.id.twip_o);
+                    mEditSameOAuthSigningUrl = (CheckBox) editDialog.findViewById(R.id.same_oauth_signing_url);
+                    mEditNoVersionSuffix = (CheckBox) editDialog.findViewById(R.id.no_version_suffix);
+                    mEditConsumerKey = (EditText) editDialog.findViewById(R.id.consumer_key);
+                    mEditConsumerSecret = (EditText) editDialog.findViewById(R.id.consumer_secret);
+                    mAPIFormatHelpButton = editDialog.findViewById(R.id.api_url_format_help);
 
                     mEditNoVersionSuffix.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override

@@ -30,7 +30,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.DialogPreference;
 import android.support.v7.preference.PreferenceDialogFragmentCompat;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -39,6 +38,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -108,7 +110,7 @@ public class ColorPickerPreference extends DialogPreference implements Constants
     }
 
     public static final class ColorPickerPreferenceDialogFragment extends PreferenceDialogFragmentCompat
-            implements DialogInterface.OnShowListener {
+            implements DialogInterface.OnShowListener, MaterialDialog.SingleButtonCallback {
 
         private ColorPickerDialog.Controller mController;
 
@@ -126,13 +128,15 @@ public class ColorPickerPreference extends DialogPreference implements Constants
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final ColorPickerPreference preference = (ColorPickerPreference) getPreference();
             final Context context = getContext();
-            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(preference.getDialogTitle());
-            builder.setView(R.layout.cp__dialog_color_picker);
+            final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+            builder.title(preference.getDialogTitle());
+            builder.customView(R.layout.cp__dialog_color_picker, false);
 
-            builder.setPositiveButton(context.getString(android.R.string.ok), this);
-            builder.setNegativeButton(context.getString(android.R.string.cancel), this);
-            AlertDialog dialog = builder.create();
+            builder.positiveText(android.R.string.ok);
+            builder.negativeText(android.R.string.cancel);
+            builder.onPositive(this);
+            builder.onNegative(this);
+            Dialog dialog = builder.build();
             dialog.setOnShowListener(this);
             return dialog;
         }
@@ -151,7 +155,7 @@ public class ColorPickerPreference extends DialogPreference implements Constants
         @Override
         public void onShow(DialogInterface dialog) {
             final ColorPickerPreference preference = (ColorPickerPreference) getPreference();
-            final AlertDialog alertDialog = (AlertDialog) dialog;
+            final Dialog alertDialog = (Dialog) dialog;
             final View windowView = alertDialog.getWindow().getDecorView();
             if (windowView == null) return;
             mController = new ColorPickerDialog.Controller(getContext(), windowView);
@@ -160,6 +164,21 @@ public class ColorPickerPreference extends DialogPreference implements Constants
                 mController.addColor(ContextCompat.getColor(getContext(), presetColor));
             }
             mController.setInitialColor(preference.getValue());
+        }
+
+        @Override
+        public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+            switch (dialogAction) {
+                case POSITIVE:
+                    onClick(materialDialog, DialogInterface.BUTTON_POSITIVE);
+                    break;
+                case NEUTRAL:
+                    onClick(materialDialog, DialogInterface.BUTTON_NEUTRAL);
+                    break;
+                case NEGATIVE:
+                    onClick(materialDialog, DialogInterface.BUTTON_NEGATIVE);
+                    break;
+            }
         }
     }
 

@@ -32,7 +32,7 @@
         <de.vanita5.twittnuker.preference.ThemePreviewPreference android:key="theme_preview"/>
     </PreferenceCategory>-->
 
-    <ListPreference
+    <de.vanita5.twittnuker.preference.ThemedListPreference
         android:defaultValue="light"
         android:entries="@array/entries_theme"
         android:entryValues="@array/values_theme"
@@ -42,7 +42,7 @@
         <extra
             android:name="recreate_activity"
             android:value="true"/>
-    </ListPreference>
+    </de.vanita5.twittnuker.preference.ThemedListPreference>
 
     <de.vanita5.twittnuker.preference.ColorPickerPreference
         android:key="theme_color"

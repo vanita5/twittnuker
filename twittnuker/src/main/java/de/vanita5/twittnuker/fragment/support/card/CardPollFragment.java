@@ -54,9 +54,9 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.CardDataMap;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
 import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils;
 import de.vanita5.twittnuker.task.AbstractTask;
 import de.vanita5.twittnuker.task.util.TaskStarter;
@@ -98,8 +98,8 @@ public class CardPollFragment extends BaseSupportFragment implements
     }
 
     @Override
-    public void onBaseViewCreated(View view, Bundle savedInstanceState) {
-        super.onBaseViewCreated(view, savedInstanceState);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mPollContainer = (TableLayout) view.findViewById(R.id.poll_container);
         mPollSummary = (TextView) view.findViewById(R.id.poll_summary);
     }

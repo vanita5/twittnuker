@@ -66,10 +66,10 @@ import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.DraftCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
@@ -249,8 +249,8 @@ public class DraftsFragment extends BaseSupportFragment implements Constants, Lo
     }
 
     @Override
-    public void onBaseViewCreated(View view, Bundle savedInstanceState) {
-        super.onBaseViewCreated(view, savedInstanceState);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mListView = (ListView) view.findViewById(android.R.id.list);
         mEmptyView = view.findViewById(android.R.id.empty);
         mEmptyText = (TextView) view.findViewById(R.id.empty_text);
