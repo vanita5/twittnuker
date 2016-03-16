@@ -27,7 +27,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.preference.DialogPreference;
+import android.support.v7.preference.DialogPreference;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;
@@ -35,31 +35,31 @@ import de.vanita5.twittnuker.activity.support.DataExportActivity;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
 
 public class SettingsImportExportPreference extends DialogPreference {
-	public SettingsImportExportPreference(Context context) {
-		this(context, null);
-	}
+    public SettingsImportExportPreference(Context context) {
+        this(context, null);
+    }
 
-	public SettingsImportExportPreference(Context context, AttributeSet attrs) {
-		super(context, attrs);
+    public SettingsImportExportPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
         setDialogTitle(null);
-		setPositiveButtonText(null);
-		setNegativeButtonText(null);
-	}
+        setPositiveButtonText(null);
+        setNegativeButtonText(null);
+    }
 
-	@Override
-	protected void onPrepareDialogBuilder(Builder builder) {
-		final Context context = getContext();
-		final String[] entries = new String[2];
-		final Intent[] values = new Intent[2];
-		entries[0] = context.getString(R.string.import_settings);
-		entries[1] = context.getString(R.string.export_settings);
-		values[0] = new Intent(context, DataImportActivity.class);
-		values[1] = new Intent(context, DataExportActivity.class);
-		builder.setItems(entries, new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				context.startActivity(values[which]);
-			}
-		});
-	}
+//    @Override
+//    protected void onPrepareDialogBuilder(Builder builder) {
+//        final Context context = getContext();
+//        final String[] entries = new String[2];
+//        final Intent[] values = new Intent[2];
+//        entries[0] = context.getString(R.string.import_settings);
+//        entries[1] = context.getString(R.string.export_settings);
+//        values[0] = new Intent(context, DataImportActivity.class);
+//        values[1] = new Intent(context, DataExportActivity.class);
+//        builder.setItems(entries, new OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                context.startActivity(values[which]);
+//            }
+//        });
+//    }
 }

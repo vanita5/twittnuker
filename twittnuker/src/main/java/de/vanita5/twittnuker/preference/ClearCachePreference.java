@@ -29,49 +29,51 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileFilter;
 
+import de.vanita5.twittnuker.R;
+
 public class ClearCachePreference extends AsyncTaskPreference {
 
-	public ClearCachePreference(final Context context) {
-		this(context, null);
-	}
+    public ClearCachePreference(final Context context) {
+        this(context, null);
+    }
 
-	public ClearCachePreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceStyle);
-	}
+    public ClearCachePreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.preferenceStyle);
+    }
 
-	public ClearCachePreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public ClearCachePreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
-	protected void doInBackground() {
-		final Context context = getContext();
-		if (context == null) return;
+    @Override
+    protected void doInBackground() {
+        final Context context = getContext();
+        if (context == null) return;
         final File externalCacheDir = context.getExternalCacheDir();
         if (externalCacheDir != null) {
             for (final File file : externalCacheDir.listFiles((FileFilter) null)) {
-				deleteRecursive(file);
-			}
-		}
+                deleteRecursive(file);
+            }
+        }
         final File internalCacheDir = context.getCacheDir();
         if (internalCacheDir != null) {
             for (final File file : internalCacheDir.listFiles((FileFilter) null)) {
-				deleteRecursive(file);
-			}
-		}
-	}
+                deleteRecursive(file);
+            }
+        }
+    }
 
-	private static void deleteRecursive(final File f) {
-		if (f.isDirectory()) {
+    private static void deleteRecursive(final File f) {
+        if (f.isDirectory()) {
             final File[] files = f.listFiles();
             if (files == null) return;
             for (final File c : files) {
-				deleteRecursive(c);
-			}
-		}
+                deleteRecursive(c);
+            }
+        }
         if (!f.delete()) {
             Log.w(LOGTAG, String.format("Unable to delete %s", f));
         }
-	}
+    }
 
 }

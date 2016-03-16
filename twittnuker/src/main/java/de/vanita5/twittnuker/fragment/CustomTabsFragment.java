@@ -23,19 +23,19 @@
 package de.vanita5.twittnuker.fragment;
 
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.ActionMode;
@@ -64,6 +64,7 @@ import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
+import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
 import de.vanita5.twittnuker.model.UserKey;
@@ -86,7 +87,7 @@ import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
 import static de.vanita5.twittnuker.util.CustomTabUtils.isTabAdded;
 import static de.vanita5.twittnuker.util.CustomTabUtils.isTabTypeValid;
 
-public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<Cursor>,
+public class CustomTabsFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>,
         MultiChoiceModeListener, OnItemClickListener {
 
     private ContentResolver mResolver;
@@ -165,8 +166,8 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onBaseViewCreated(View view, Bundle savedInstanceState) {
+        super.onBaseViewCreated(view, savedInstanceState);
         mListView = (DragSortListView) view.findViewById(android.R.id.list);
         mEmptyView = view.findViewById(android.R.id.empty);
         mEmptyIcon = (ImageView) view.findViewById(R.id.empty_icon);

@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DebugModeUtils;
+import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameManager;
@@ -51,6 +52,8 @@ public class BaseSupportDialogFragment extends DialogFragment implements Constan
     protected SharedPreferencesWrapper mPreferences;
     @Inject
     protected TwidereValidator mValidator;
+    @Inject
+    protected KeyboardShortcutsHandler mKeyboardShortcutsHandler;
 
     public TwittnukerApplication getApplication() {
         final Activity activity = getActivity();

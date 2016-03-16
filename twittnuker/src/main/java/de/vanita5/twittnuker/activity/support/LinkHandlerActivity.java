@@ -370,8 +370,7 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
         }
         mMainContent.setDrawColor(true);
         mMainContent.setFactor(1);
-        final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption())
-                ? ThemeUtils.getActionBarAlpha(getCurrentThemeBackgroundAlpha()) : 0xFF;
+        final int alpha = ThemeUtils.getActionBarAlpha(getThemeBackgroundOption(), getCurrentThemeBackgroundAlpha());
         final int statusBarColor = ThemeUtils.getActionBarColor(this);
         mMainContent.setColor(statusBarColor, alpha);
     }

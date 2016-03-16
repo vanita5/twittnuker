@@ -24,34 +24,32 @@ package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.drawable.Drawable;
-import android.preference.Preference;
 import android.support.annotation.NonNull;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
-import android.view.View;
+import android.widget.ImageView;
 
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class ForegroundColorIconPreference extends Preference {
-	public ForegroundColorIconPreference(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public ForegroundColorIconPreference(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
-	protected void onBindView(@NonNull View view) {
-		super.onBindView(view);
-		final Drawable icon = getIcon();
-		if (icon != null) {
-			icon.setColorFilter(ThemeUtils.getThemeForegroundColor(getContext()), Mode.SRC_ATOP);
-		}
-		setIcon(icon);
-	}
+    @Override
+    public void onBindViewHolder(@NonNull PreferenceViewHolder view) {
+        super.onBindViewHolder(view);
+        final int fgColor = ThemeUtils.getThemeForegroundColor(getContext());
+        ((ImageView) view.findViewById(android.R.id.icon)).setColorFilter(fgColor, Mode.SRC_ATOP);
+    }
 
-	public ForegroundColorIconPreference(Context context, AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceStyle);
-	}
+    public ForegroundColorIconPreference(Context context, AttributeSet attrs) {
+        this(context, attrs, R.attr.preferenceStyle);
+    }
 
-	public ForegroundColorIconPreference(Context context) {
-		this(context, null);
-	}
+    public ForegroundColorIconPreference(Context context) {
+        this(context, null);
+    }
 }

@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.fragment;
 
 import android.os.Bundle;
-import android.preference.Preference;
+import android.support.v7.preference.Preference;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -38,7 +38,6 @@ public class AccountNotificationSettingsFragment extends BaseAccountPreferenceFr
         if (preference != null && account != null) {
             preference.setDefaultValue(account.color);
         }
-
     }
 
     @Override

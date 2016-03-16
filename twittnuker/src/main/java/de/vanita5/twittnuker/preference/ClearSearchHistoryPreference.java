@@ -24,37 +24,37 @@ package de.vanita5.twittnuker.preference;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.provider.SearchRecentSuggestions;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 
-public class ClearSearchHistoryPreference extends AsyncTaskPreference implements Constants, OnPreferenceClickListener {
+public class ClearSearchHistoryPreference extends AsyncTaskPreference implements Constants {
 
-	public ClearSearchHistoryPreference(final Context context) {
-		this(context, null);
-	}
+    public ClearSearchHistoryPreference(final Context context) {
+        this(context, null);
+    }
 
-	public ClearSearchHistoryPreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceStyle);
-	}
+    public ClearSearchHistoryPreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.preferenceStyle);
+    }
 
-	public ClearSearchHistoryPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public ClearSearchHistoryPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
-	protected void doInBackground() {
-		final Context context = getContext();
-		if (context == null) return;
-		final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(context,
-				RecentSearchProvider.AUTHORITY, RecentSearchProvider.MODE);
-		suggestions.clearHistory();
+    @Override
+    protected void doInBackground() {
+        final Context context = getContext();
+        if (context == null) return;
+        final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(context,
+                RecentSearchProvider.AUTHORITY, RecentSearchProvider.MODE);
+        suggestions.clearHistory();
         final ContentResolver cr = context.getContentResolver();
         cr.delete(SearchHistory.CONTENT_URI, null, null);
-	}
+    }
 
 }

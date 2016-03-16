@@ -23,16 +23,19 @@
 package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
-import android.preference.Preference;
+import android.support.v7.preference.Preference;
 import android.util.AttributeSet;
+
+import de.vanita5.twittnuker.R;
 
 public class AppVersionPreference extends Preference {
 
-	public Handler mHandler = new Handler();
-	protected int mClickCount;
+    public Handler mHandler = new Handler();
+    protected int mClickCount;
 
 //	private final Runnable mResetCounterRunnable = new Runnable() {
 //
@@ -42,28 +45,28 @@ public class AppVersionPreference extends Preference {
 //		}
 //	};
 
-	public AppVersionPreference(final Context context) {
-		this(context, null);
-	}
+    public AppVersionPreference(final Context context) {
+        this(context, null);
+    }
 
-	public AppVersionPreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceStyle);
-	}
+    public AppVersionPreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.preferenceStyle);
+    }
 
-	public AppVersionPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-		final PackageManager pm = context.getPackageManager();
-		try {
-			final PackageInfo info = pm.getPackageInfo(context.getPackageName(), 0);
-			setTitle(info.applicationInfo.loadLabel(pm));
-			setSummary(info.versionName);
-		} catch (final PackageManager.NameNotFoundException e) {
+    public AppVersionPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+        final PackageManager pm = context.getPackageManager();
+        try {
+            final PackageInfo info = pm.getPackageInfo(context.getPackageName(), 0);
+            setTitle(info.applicationInfo.loadLabel(pm));
+            setSummary(info.versionName);
+        } catch (final PackageManager.NameNotFoundException e) {
             throw new AssertionError(e);
-		}
-	}
+        }
+    }
 
-	@Override
-	protected void onClick() {
+    @Override
+    protected void onClick() {
 //		mHandler.removeCallbacks(mResetCounterRunnable);
 //		mClickCount++;
 //		if (mClickCount >= 7) {
@@ -75,6 +78,6 @@ public class AppVersionPreference extends Preference {
 //			}
 //		}
 //		mHandler.postDelayed(mResetCounterRunnable, 3000);
-	}
+    }
 
 }

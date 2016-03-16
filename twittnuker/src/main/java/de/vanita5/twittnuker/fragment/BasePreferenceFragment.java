@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
 
-public class BasePreferenceFragment extends PreferenceFragment implements Constants {
+public abstract class BasePreferenceFragment extends PreferenceFragmentCompat implements Constants {
 
     @Inject
     protected KeyboardShortcutsHandler mKeyboardShortcutHandler;

@@ -20,21 +20,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment;
+package de.vanita5.twittnuker.preference.iface;
 
-import android.os.Bundle;
-import android.preference.PreferenceFragment;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
-
-public class SettingsEntriesFragment extends PreferenceFragment implements Constants {
-
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES_NAME);
-		addPreferencesFromResource(R.xml.preferences_headers);
-	}
-
+public interface IDialogPreference {
+    void displayDialog(PreferenceFragmentCompat fragment);
 }

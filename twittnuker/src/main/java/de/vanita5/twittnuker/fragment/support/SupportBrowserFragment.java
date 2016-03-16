@@ -29,13 +29,14 @@ import de.vanita5.twittnuker.util.ParseUtils;
 
 public class SupportBrowserFragment extends BaseSupportWebViewFragment {
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		final Bundle args = getArguments();
-		final Object uri = args != null ? args.get(EXTRA_URI) : null;
-		final WebView view = getWebView();
-		view.loadUrl(ParseUtils.parseString(uri, "about:blank"));
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        final Bundle args = getArguments();
+        final Object uri = args != null ? args.get(EXTRA_URI) : null;
+        final WebView view = getWebView();
+        view.loadUrl(ParseUtils.parseString(uri, "about:blank"));
+        view.getSettings().setDisplayZoomControls(false);
     }
 
 

@@ -96,7 +96,7 @@
             android:key="proxy_username"
             android:singleLine="true"
             android:title="@string/proxy_username"/>
-        <de.vanita5.twittnuker.preference.AutoFixEditTextPreference
+        <EditTextPreference
             android:dependency="enable_proxy"
             android:inputType="textPassword"
             android:key="proxy_password"
@@ -107,9 +107,9 @@
         android:key="category_api"
         android:title="@string/api">
 
-        <de.vanita5.twittnuker.preference.DefaultAPIPreference
-            android:summary="@string/default_api_settings_summary"
-            android:title="@string/default_api_settings"/>
+        <!--<org.mariotaku.twidere.preference.DefaultAPIPreference-->
+            <!--android:summary="@string/default_api_settings_summary"-->
+            <!--android:title="@string/default_api_settings"/>-->
 
     </PreferenceCategory>
 

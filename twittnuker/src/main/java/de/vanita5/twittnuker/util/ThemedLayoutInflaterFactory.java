@@ -38,7 +38,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.app.AppCompatDelegateAccessor;
-import android.support.v7.app.AppCompatPreferenceActivity;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.TwidereToolbar;
 import android.util.AttributeSet;
@@ -261,12 +260,6 @@ public class ThemedLayoutInflaterFactory implements LayoutInflaterFactory {
         Context actionBarContext = null;
         if (activity instanceof AppCompatActivity) {
             final AppCompatDelegate delegate = ((AppCompatActivity) activity).getDelegate();
-            final ActionBar actionBar = AppCompatDelegateAccessor.peekActionBar(delegate);
-            if (actionBar != null) {
-                actionBarContext = actionBar.getThemedContext();
-            }
-        } else if (activity instanceof AppCompatPreferenceActivity) {
-            final AppCompatDelegate delegate = ((AppCompatPreferenceActivity) activity).getDelegate();
             final ActionBar actionBar = AppCompatDelegateAccessor.peekActionBar(delegate);
             if (actionBar != null) {
                 actionBarContext = actionBar.getThemedContext();

@@ -23,12 +23,12 @@
 package de.vanita5.twittnuker.fragment;
 
 import android.app.Activity;
-import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;

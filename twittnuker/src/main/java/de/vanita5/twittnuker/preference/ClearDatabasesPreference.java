@@ -30,6 +30,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
@@ -40,14 +41,14 @@ import static de.vanita5.twittnuker.provider.TwidereDataStore.CACHE_URIS;
 import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_URIS;
 import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 
-public class ClearDatabasesPreference extends AsyncTaskPreference implements Constants, OnPreferenceClickListener {
+public class ClearDatabasesPreference extends AsyncTaskPreference implements Constants {
 
     public ClearDatabasesPreference(final Context context) {
         this(context, null);
     }
 
     public ClearDatabasesPreference(final Context context, final AttributeSet attrs) {
-        this(context, attrs, android.R.attr.preferenceStyle);
+        this(context, attrs, R.attr.preferenceStyle);
     }
 
     public ClearDatabasesPreference(final Context context, final AttributeSet attrs, final int defStyle) {
