@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -96,6 +97,8 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
         } else {
             mImageLoader.cancelDisplayTask(holder.profileImage);
         }
+        final String accountType = cursor.getString(mIndices.account_type);
+        holder.accountType.setImageResource(ParcelableAccountUtils.getAccountTypeIcon(accountType));
         holder.toggle.setChecked(cursor.getShort(mIndices.is_activated) == 1);
         holder.toggle.setOnCheckedChangeListener(mCheckedChangeListener);
         holder.toggle.setTag(cursor.getString(mIndices.account_key));

@@ -29,6 +29,7 @@ import android.support.v4.content.Loader;
 import de.vanita5.twittnuker.loader.support.UserListTimelineLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class UserListTimelineFragment extends ParcelableStatusesFragment {
         setRefreshing(true);
         if (args == null) return null;
         final long listId = args.getLong(EXTRA_LIST_ID, -1);
-        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final UserKey accountKey = Utils.getAccountKey(context, args);
         final String maxId = args.getString(EXTRA_MAX_ID);
         final String sinceId = args.getString(EXTRA_SINCE_ID);
         final String userId = args.getString(EXTRA_USER_ID);

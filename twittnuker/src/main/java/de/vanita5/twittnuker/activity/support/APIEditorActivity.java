@@ -22,10 +22,14 @@
 
 package de.vanita5.twittnuker.activity.support;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -38,6 +42,8 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.model.CustomAPIConfig;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -55,6 +61,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
     private RadioGroup mEditAuthType;
     private RadioButton mButtonOAuth, mButtonXAuth, mButtonBasic, mButtonTWIPOMode;
     private Button mSaveButton;
+    private Button mLoadDefaultsButton;
     private View mAPIFormatHelpButton;
     private boolean mEditNoVersionSuffixChanged;
 
@@ -90,6 +97,11 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
                 Toast.makeText(this, R.string.api_url_format_help, Toast.LENGTH_LONG).show();
                 break;
             }
+            case R.id.load_defaults: {
+                final LoadDefaultsChooserDialogFragment df = new LoadDefaultsChooserDialogFragment();
+                df.show(getSupportFragmentManager(), "load_defaults");
+                break;
+            }
         }
     }
 
@@ -100,6 +112,7 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
     @Override
     public void onContentChanged() {
         super.onContentChanged();
+        mLoadDefaultsButton = (Button) findViewById(R.id.load_defaults);
         mEditAPIUrlFormat = (EditText) findViewById(R.id.api_url_format);
         mEditAuthType = (RadioGroup) findViewById(R.id.auth_type);
         mButtonOAuth = (RadioButton) findViewById(R.id.oauth);
@@ -190,6 +203,9 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
         mSaveButton.setOnClickListener(this);
         mAPIFormatHelpButton.setOnClickListener(this);
 
+        mLoadDefaultsButton.setVisibility(View.VISIBLE);
+        mLoadDefaultsButton.setOnClickListener(this);
+
         mEditAPIUrlFormat.setText(apiUrlFormat);
         mEditSameOAuthSigningUrl.setChecked(sameOAuthSigningUrl);
         mEditNoVersionSuffix.setChecked(noVersionSuffix);
@@ -219,6 +235,56 @@ public class APIEditorActivity extends BaseSupportDialogActivity implements OnCh
             default: {
                 return ParcelableCredentials.AUTH_TYPE_OAUTH;
             }
+        }
+    }
+
+
+    private int getAuthTypeId(final int authType) {
+        switch (authType) {
+            case ParcelableCredentials.AUTH_TYPE_XAUTH: {
+                return R.id.xauth;
+            }
+            case ParcelableCredentials.AUTH_TYPE_BASIC: {
+                return R.id.basic;
+            }
+            case ParcelableCredentials.AUTH_TYPE_TWIP_O_MODE: {
+                return R.id.twip_o;
+            }
+            default: {
+                return R.id.oauth;
+            }
+        }
+    }
+
+    private void setAPIConfig(CustomAPIConfig apiConfig) {
+        mEditAPIUrlFormat.setText(apiConfig.getApiUrlFormat());
+        mEditAuthType.check(getAuthTypeId(apiConfig.getAuthType()));
+        mEditSameOAuthSigningUrl.setChecked(apiConfig.isSameOAuthUrl());
+        mEditNoVersionSuffix.setChecked(apiConfig.isNoVersionSuffix());
+        mEditConsumerKey.setText(apiConfig.getConsumerKey());
+        mEditConsumerSecret.setText(apiConfig.getConsumerSecret());
+    }
+
+    public static class LoadDefaultsChooserDialogFragment extends BaseSupportDialogFragment
+            implements DialogInterface.OnClickListener {
+        private CustomAPIConfig[] mAPIConfigs;
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            mAPIConfigs = CustomAPIConfig.listDefault(getContext());
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            String[] entries = new String[mAPIConfigs.length];
+            for (int i = 0, mAPIConfigsLength = mAPIConfigs.length; i < mAPIConfigsLength; i++) {
+                entries[i] = mAPIConfigs[i].getName();
+            }
+            builder.setItems(entries, this);
+            return builder.create();
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            ((APIEditorActivity) getActivity()).setAPIConfig(mAPIConfigs[which]);
         }
     }
 }

@@ -52,6 +52,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String KEYBOARD_SHORTCUTS_PREFERENCES_NAME = "keyboard_shortcuts_preferences";
 
     String DEFAULT_TWITTER_API_URL_FORMAT = "https://[DOMAIN.]twitter.com/";
+    String DEFAULT_FANFOU_API_URL_FORMAT = "http://api.fanfou.com/";
 
     String SCHEME_HTTP = "http";
     String SCHEME_HTTPS = "https";
