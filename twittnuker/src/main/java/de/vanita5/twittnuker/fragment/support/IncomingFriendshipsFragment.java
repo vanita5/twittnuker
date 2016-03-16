@@ -28,8 +28,8 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
-import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
-import de.vanita5.twittnuker.loader.support.IncomingFriendshipsLoader;
+import de.vanita5.twittnuker.loader.CursorSupportUsersLoader;
+import de.vanita5.twittnuker.loader.IncomingFriendshipsLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;

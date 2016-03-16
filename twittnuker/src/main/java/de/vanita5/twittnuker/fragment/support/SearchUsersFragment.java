@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
-import de.vanita5.twittnuker.loader.support.UserSearchLoader;
+import de.vanita5.twittnuker.loader.UserSearchLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 

@@ -22,17 +22,9 @@
 
 package de.vanita5.twittnuker.preference;
 
-import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.support.v7.preference.DialogPreference;
 import android.util.AttributeSet;
-
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.DataExportActivity;
-import de.vanita5.twittnuker.activity.support.DataImportActivity;
 
 public class SettingsImportExportPreference extends DialogPreference {
     public SettingsImportExportPreference(Context context) {

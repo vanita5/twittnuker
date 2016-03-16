@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter.UserListAdapterListener;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
-import de.vanita5.twittnuker.loader.support.iface.ICursorSupportLoader;
+import de.vanita5.twittnuker.loader.iface.ICursorSupportLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.IntentUtils;

@@ -36,7 +36,7 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.adapter.SavedSearchesAdapter;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
-import de.vanita5.twittnuker.loader.support.SavedSearchesLoader;
+import de.vanita5.twittnuker.loader.SavedSearchesLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.SavedSearchDestroyedEvent;
 

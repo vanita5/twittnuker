@@ -35,7 +35,7 @@ import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
-import de.vanita5.twittnuker.loader.support.UserListsLoader;
+import de.vanita5.twittnuker.loader.UserListsLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.message.UserListDestroyedEvent;

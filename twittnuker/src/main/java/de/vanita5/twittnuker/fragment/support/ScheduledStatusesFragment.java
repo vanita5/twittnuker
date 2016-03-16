@@ -37,7 +37,7 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
 import de.vanita5.twittnuker.api.twitter.model.ScheduledStatus;
-import de.vanita5.twittnuker.loader.support.ScheduledStatusesLoader;
+import de.vanita5.twittnuker.loader.ScheduledStatusesLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 

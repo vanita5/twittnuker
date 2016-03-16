@@ -23,18 +23,14 @@
 package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.PreferenceViewHolder;
 import android.text.SpannableString;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.text.TwidereHighLightStyle;
-import de.vanita5.twittnuker.util.Utils;
 
 public class LinkHighlightPreference extends ListPreference implements Constants {
 

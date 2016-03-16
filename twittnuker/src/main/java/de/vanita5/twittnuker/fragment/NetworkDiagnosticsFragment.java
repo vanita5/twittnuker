@@ -56,8 +56,9 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -76,7 +77,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 
 
-public class NetworkDiagnosticsFragment extends BaseFragment {
+public class NetworkDiagnosticsFragment extends BaseSupportFragment {
 
     private TextView mLogTextView;
     private Button mStartDiagnosticsButton;
@@ -96,8 +97,8 @@ public class NetworkDiagnosticsFragment extends BaseFragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onBaseViewCreated(View view, Bundle savedInstanceState) {
+        super.onBaseViewCreated(view, savedInstanceState);
         mStartDiagnosticsButton = (Button) view.findViewById(R.id.start_diagnostics);
         mLogTextView = (TextView) view.findViewById(R.id.log_text);
     }

@@ -60,7 +60,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
-import de.vanita5.twittnuker.loader.support.ParcelableUserLoader;
+import de.vanita5.twittnuker.loader.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;

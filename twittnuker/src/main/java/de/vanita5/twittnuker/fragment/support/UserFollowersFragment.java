@@ -26,8 +26,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
-import de.vanita5.twittnuker.loader.support.UserFollowersLoader;
+import de.vanita5.twittnuker.loader.CursorSupportUsersLoader;
+import de.vanita5.twittnuker.loader.UserFollowersLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 

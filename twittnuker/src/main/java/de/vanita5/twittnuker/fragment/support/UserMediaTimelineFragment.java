@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.adapter.StaggeredGridParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
-import de.vanita5.twittnuker.loader.support.MediaTimelineLoader;
+import de.vanita5.twittnuker.loader.MediaTimelineLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;

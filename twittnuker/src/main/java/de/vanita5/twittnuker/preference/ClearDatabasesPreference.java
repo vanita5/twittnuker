@@ -26,7 +26,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;

@@ -54,15 +54,15 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
-import de.vanita5.twittnuker.adapter.support.SupportTabsAdapter;
+import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
-import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
 import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
 import de.vanita5.twittnuker.fragment.support.InteractionsTimelineFragment;
+import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.preference.WizardPageHeaderPreference;
@@ -647,7 +647,7 @@ public class SettingsWizardActivity extends BaseAppCompatActivity implements Con
 
         @Override
         protected void onPreExecute() {
-            ProgressDialogFragment.show(mActivity, FRAGMENT_TAG).setCancelable(false);
+            SupportProgressDialogFragment.show(mActivity, FRAGMENT_TAG).setCancelable(false);
         }
 
         private boolean wasConfigured(final List<SupportTabSpec> tabs) {

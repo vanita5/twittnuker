@@ -23,11 +23,9 @@
 package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;

@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
-import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
+import de.vanita5.twittnuker.loader.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 
 import java.util.List;

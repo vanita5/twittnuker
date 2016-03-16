@@ -30,8 +30,8 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.fragment.support.DataExportImportTypeSelectorDialogFragment;
+import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.util.DataImportExportUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
@@ -180,7 +180,7 @@ public class DataExportActivity extends ThemedFragmentActivity implements DataEx
 
         @Override
         protected void onPreExecute() {
-            ProgressDialogFragment.show(mActivity, FRAGMENT_TAG).setCancelable(false);
+            SupportProgressDialogFragment.show(mActivity, FRAGMENT_TAG).setCancelable(false);
         }
 
     }

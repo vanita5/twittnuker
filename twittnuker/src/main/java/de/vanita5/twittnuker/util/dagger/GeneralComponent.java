@@ -38,16 +38,14 @@ import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
 import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
-import de.vanita5.twittnuker.fragment.BaseDialogFragment;
-import de.vanita5.twittnuker.fragment.support.BaseFiltersFragment;
-import de.vanita5.twittnuker.fragment.BaseFragment;
 import de.vanita5.twittnuker.fragment.BaseListFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
 import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
+import de.vanita5.twittnuker.fragment.support.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
-import de.vanita5.twittnuker.loader.support.TwitterAPIStatusesLoader;
+import de.vanita5.twittnuker.loader.TwitterAPIStatusesLoader;
 import de.vanita5.twittnuker.preference.AccountsListPreference;
 import de.vanita5.twittnuker.provider.CacheProvider;
 import de.vanita5.twittnuker.provider.TwidereDataProvider;
@@ -72,8 +70,6 @@ import dagger.Component;
 @Component(modules = ApplicationModule.class)
 public interface GeneralComponent {
     void inject(DummyStatusHolderAdapter object);
-
-    void inject(BaseFragment object);
 
     void inject(BaseSupportFragment object);
 
@@ -116,8 +112,6 @@ public interface GeneralComponent {
     void inject(ManagedAsyncTask<Object, Object, Object> object);
 
     void inject(BasePreferenceFragment object);
-
-    void inject(BaseDialogFragment object);
 
     void inject(BaseFiltersFragment.FilteredUsersFragment.FilterUsersListAdapter object);
 

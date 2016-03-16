@@ -18,9 +18,6 @@ package de.vanita5.twittnuker.activity.support;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -36,8 +33,10 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.FileProvider;
@@ -81,10 +80,10 @@ import org.mariotaku.mediaviewer.library.subsampleimageview.SubsampleImageViewer
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
-import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
-import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.CacheProvider;
 import de.vanita5.twittnuker.task.SaveFileTask;
 import de.vanita5.twittnuker.task.SaveImageToGalleryTask;
@@ -391,7 +390,7 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
                 activity.executeAfterFragmentResumed(new IExtendedActivity.Action() {
                     @Override
                     public void execute(IExtendedActivity activity) {
-                        final FragmentManager fm = ((Activity) activity).getFragmentManager();
+                        final FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
                         final DialogFragment fragment = (DialogFragment) fm.findFragmentByTag(PROGRESS_FRAGMENT_TAG);
                         if (fragment != null) {
                             fragment.dismiss();
@@ -406,9 +405,9 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
                 activity.executeAfterFragmentResumed(new IExtendedActivity.Action() {
                     @Override
                     public void execute(IExtendedActivity activity) {
-                        final DialogFragment fragment = new ProgressDialogFragment();
+                        final DialogFragment fragment = new SupportProgressDialogFragment();
                         fragment.setCancelable(false);
-                        fragment.show(((Activity) activity).getFragmentManager(), PROGRESS_FRAGMENT_TAG);
+                        fragment.show(((FragmentActivity) activity).getSupportFragmentManager(), PROGRESS_FRAGMENT_TAG);
                     }
                 });
             }

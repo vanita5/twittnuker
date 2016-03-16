@@ -34,7 +34,7 @@ import android.widget.ListView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ResolveInfoListAdapter;
-import de.vanita5.twittnuker.loader.support.IntentActivitiesLoader;
+import de.vanita5.twittnuker.loader.IntentActivitiesLoader;
 
 import java.util.List;
 

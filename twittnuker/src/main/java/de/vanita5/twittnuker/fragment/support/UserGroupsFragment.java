@@ -26,7 +26,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.loader.support.UserGroupsLoader;
+import de.vanita5.twittnuker.loader.UserGroupsLoader;
 import de.vanita5.twittnuker.model.ParcelableGroup;
 import de.vanita5.twittnuker.model.UserKey;
 

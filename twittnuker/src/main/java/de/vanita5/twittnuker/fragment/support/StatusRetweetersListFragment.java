@@ -26,8 +26,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.loader.support.CursorSupportUsersLoader;
-import de.vanita5.twittnuker.loader.support.StatusRetweetersLoader;
+import de.vanita5.twittnuker.loader.CursorSupportUsersLoader;
+import de.vanita5.twittnuker.loader.StatusRetweetersLoader;
 import de.vanita5.twittnuker.model.UserKey;
 
 public class StatusRetweetersListFragment extends CursorSupportUsersListFragment {

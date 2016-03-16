@@ -22,8 +22,7 @@
 
 package de.vanita5.twittnuker.fragment;
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.content.Context;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import de.vanita5.twittnuker.Constants;
@@ -40,17 +39,11 @@ public abstract class BasePreferenceFragment extends PreferenceFragmentCompat im
     @Inject
     protected UserColorNameManager mUserColorNameManager;
 
-    @SuppressWarnings("deprecated")
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        GeneralComponentHelper.build(activity).inject(this);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        GeneralComponentHelper.build(context).inject(this);
     }
 
-    @Override
-    public void onActivityCreated(final Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES_NAME);
-    }
 
 }
