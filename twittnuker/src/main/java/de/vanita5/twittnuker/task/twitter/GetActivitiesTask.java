@@ -181,7 +181,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
                     String.valueOf(deleteBound[1])};
             int rowsDeleted = cr.delete(getContentUri(), where.getSQL(), whereArgs);
             boolean insertGap = valuesList.size() >= loadItemLimit && !noItemsBefore
-                    && rowsDeleted <= 0;
+                    && rowsDeleted <= 0 && activities.size() > 1;
             if (insertGap && !valuesList.isEmpty()) {
                 valuesList.get(valuesList.size() - 1).put(Activities.IS_GAP, true);
             }

@@ -21,4 +21,5 @@
 
     <string name="image_uploader_twipple" translatable="false">Twipple</string>
 
+    <string name="fanfou_repost_format"><xliff:g id="text">%1$s</xliff:g> 转 \@<xliff:g id="screen_name">%2$s</xliff:g> <xliff:g id="orig_text">%3$s</xliff:g></string>
 </resources>
