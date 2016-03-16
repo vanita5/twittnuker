@@ -26,9 +26,9 @@ import de.vanita5.twittnuker.api.fanfou.api.FavoritesResources;
 import de.vanita5.twittnuker.api.fanfou.api.FriendshipsResources;
 import de.vanita5.twittnuker.api.fanfou.api.PhotosResources;
 import de.vanita5.twittnuker.api.fanfou.api.SearchResources;
-import de.vanita5.twittnuker.api.fanfou.api.TimelineResources;
+import de.vanita5.twittnuker.api.fanfou.api.StatusesResources;
 import de.vanita5.twittnuker.api.fanfou.api.UsersResources;
 
-public interface Fanfou extends TimelineResources, SearchResources, UsersResources, PhotosResources,
+public interface Fanfou extends StatusesResources, SearchResources, UsersResources, PhotosResources,
         FriendshipsResources, BlocksResources, FavoritesResources {
 }

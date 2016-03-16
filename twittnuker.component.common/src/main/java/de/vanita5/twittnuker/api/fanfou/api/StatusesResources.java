@@ -29,9 +29,12 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 
-public interface TimelineResources {
+public interface StatusesResources {
 
     @GET("/statuses/mentions.json")
     ResponseList<Status> getMentions(@Query Paging paging) throws TwitterException;
+
+    @GET("/statuses/context_timeline.json")
+    ResponseList<Status> getContextTimeline(@Query("id") String id, @Query Paging paging) throws TwitterException;
 
 }
