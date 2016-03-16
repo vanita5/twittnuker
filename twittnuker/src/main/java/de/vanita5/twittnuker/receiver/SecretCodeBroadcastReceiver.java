@@ -39,7 +39,7 @@ public class SecretCodeBroadcastReceiver extends BroadcastReceiver implements In
         final Intent testIntent = new Intent(context, SettingsActivity.class);
         final String cls = SettingsDetailsFragment.class.getName();
         final Bundle args = new Bundle();
-        args.putInt(EXTRA_RESID, R.xml.settings_hidden);
+        args.putInt(EXTRA_RESID, R.xml.preferences_hidden);
         args.putString(EXTRA_SETTINGS_INTENT_ACTION, INTENT_ACTION_HIDDEN_SETTINGS_ENTRY);
         testIntent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT, cls);
         testIntent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT_ARGUMENTS, args);

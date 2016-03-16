@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.activity;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -140,4 +141,10 @@ public abstract class BaseThemedActivity extends Activity implements IThemedActi
         return true;
     }
 
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        ThemeUtils.fixNightMode(getResources(), newConfig);
+        super.onConfigurationChanged(newConfig);
+    }
 }

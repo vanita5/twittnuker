@@ -23,13 +23,13 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+    <SwitchPreference
         android:defaultValue="false"
         android:key="quick_send"
         android:summary="@string/quick_send_summary"
         android:title="@string/quick_send"/>
 
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+    <SwitchPreference
         android:defaultValue="false"
         android:key="no_close_after_tweet_sent"
         android:summary="@string/no_close_after_status_updated_summary"
@@ -40,7 +40,7 @@
         android:summary="@string/compose_now_summary"
         android:title="@string/compose_now"/>
 
-    <de.vanita5.twittnuker.preference.SummaryListPreference
+    <ListPreference
         android:defaultValue="compose"
         android:dependency="compose_now"
         android:entries="@array/entries_compose_now_action"

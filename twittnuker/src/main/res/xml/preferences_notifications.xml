@@ -40,12 +40,12 @@
     <PreferenceCategory
         android:key="cat_push_notifications"
         android:title="@string/push_notifications">
-        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="enable_push_notifications"
             android:summary="@string/enable_push_notifications_summary"
             android:title="@string/enable_push_notifications"/>
-        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
+        <EditTextPreference
             android:dialogTitle="@string/push_api_url"
             android:key="push_api_url"
             android:singleLine="true"
@@ -58,20 +58,20 @@
         android:key="cat_notifications"
         android:title="@string/notifications">
 
-        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="stream_notifications"
             android:summary="@string/stream_notifications_summary"
             android:title="@string/stream_notifications"/>
 
-        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="combined_notifications"
             android:summaryOff="@string/combined_notifications_summary_off"
             android:summaryOn="@string/combined_notifications_summary_on"
             android:title="@string/combined_notifications"/>
 
-        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:dependency="stream_notifications"
             android:key="pebble_notifications"

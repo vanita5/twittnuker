@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
@@ -21,23 +20,31 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:title="@string/other_settings">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/network">
 
-    <de.vanita5.twittnuker.preference.SettingsImportExportPreference
-        android:key="import_export_settings"
-        android:title="@string/import_export_settings"/>
+    <de.vanita5.twittnuker.preference.ImagePreloadPreference
+        android:key="image_preload_options"
+        android:title="@string/media_preload"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="preload_wifi_only"
+        android:title="@string/preload_wifi_only"/>
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="bandwidth_saving_mode"
+        android:summary="@string/bandwidth_saving_mode_summary"
+        android:title="@string/bandwidth_saving_mode"/>
 
     <Preference
-        android:fragment="de.vanita5.twittnuker.fragment.NetworkDiagnosticsFragment"
-        android:order="13"
-        android:title="@string/network_diagnostics"/>
-
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
-        android:defaultValue="true"
-        android:key="bug_reports"
-        android:order="12"
-        android:summary="@string/bug_reports_summary"
-        android:title="@string/bug_reports"/>
+        android:fragment="de.vanita5.twittnuker.fragment.SettingsDetailsFragment"
+        android:title="@string/advanced">
+        <extra
+            android:name="resid"
+            android:value="@xml/preferences_advanced_network"/>
+    </Preference>
 
 </PreferenceScreen>

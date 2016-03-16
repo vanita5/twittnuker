@@ -47,7 +47,7 @@
             android:name="notify_change"
             android:value="true" />
     </de.vanita5.twittnuker.preference.SeekBarDialogPreference>
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+    <SwitchPreference
         android:defaultValue="false"
         android:key="name_first"
         android:order="23"
@@ -58,9 +58,9 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
+    </SwitchPreference>
 
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="display_profile_image"
         android:order="24"
@@ -68,9 +68,9 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
+    </SwitchPreference>
 
-    <de.vanita5.twittnuker.preference.SummaryListPreference
+    <ListPreference
         android:defaultValue="@string/default_profile_image_style"
         android:entries="@array/entries_profile_image_style"
         android:entryValues="@array/values_profile_image_style"
@@ -80,9 +80,9 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.SummaryListPreference>
+    </ListPreference>
 
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="media_preview"
         android:order="26"
@@ -90,8 +90,8 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
-    <de.vanita5.twittnuker.preference.SummaryListPreference
+    </SwitchPreference>
+    <ListPreference
         android:defaultValue="crop"
         android:entries="@array/entries_media_preview_style"
         android:entryValues="@array/values_media_preview_style"
@@ -101,7 +101,7 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.SummaryListPreference>
+    </ListPreference>
 
     <de.vanita5.twittnuker.preference.LinkHighlightPreference
         android:defaultValue="highlight"
@@ -113,7 +113,7 @@
             android:value="true" />
     </de.vanita5.twittnuker.preference.LinkHighlightPreference>
 
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+    <SwitchPreference
         android:defaultValue="false"
         android:key="show_absolute_time"
         android:order="29"
@@ -122,8 +122,8 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+    </SwitchPreference>
+    <SwitchPreference
         android:defaultValue="true"
         android:key="compact_cards"
         android:order="31"
@@ -132,8 +132,8 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+    </SwitchPreference>
+    <SwitchPreference
         android:defaultValue="false"
         android:key="hide_card_actions"
         android:order="33"
@@ -141,8 +141,8 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+    </SwitchPreference>
+    <SwitchPreference
         android:defaultValue="false"
         android:key="i_want_my_stars_back"
         android:order="34"
@@ -151,6 +151,6 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
+    </SwitchPreference>
 
 </PreferenceScreen>

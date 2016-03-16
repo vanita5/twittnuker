@@ -24,12 +24,14 @@ package de.vanita5.twittnuker.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class MainActivity extends Activity implements Constants {
 
@@ -43,6 +45,12 @@ public class MainActivity extends Activity implements Constants {
         final Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        ThemeUtils.fixNightMode(getResources(), newConfig);
+        super.onConfigurationChanged(newConfig);
     }
 
 }

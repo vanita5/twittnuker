@@ -132,15 +132,6 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
     }
 
     @Override
-    public void setTheme(int resId) {
-        super.setTheme(resId);
-        if (shouldApplyWindowBackground()) {
-            ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeBackgroundOption,
-                    mCurrentThemeBackgroundAlpha);
-        }
-    }
-
-    @Override
     protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resId, boolean first) {
         mCurrentThemeColor = getThemeColor();
         mCurrentActionBarColor = getActionBarColor();
@@ -151,6 +142,10 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
         super.onApplyThemeResource(theme, resId, first);
         final Toolbar actionBarToolbar = getActionBarToolbar();
         ThemeUtils.applyToolbarItemColor(this, actionBarToolbar, mCurrentThemeColor);
+        if (shouldApplyWindowBackground()) {
+            ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeBackgroundOption,
+                    mCurrentThemeBackgroundAlpha);
+        }
     }
 
     @Override
@@ -162,14 +157,8 @@ public abstract class ThemedAppCompatActivity extends AppCompatActivity implemen
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        int currentNightMode = getResources().getConfiguration().uiMode
-                & Configuration.UI_MODE_NIGHT_MASK;
-
-        if (currentNightMode == Configuration.UI_MODE_NIGHT_YES)
-            newConfig.uiMode = (newConfig.uiMode & ~Configuration.UI_MODE_NIGHT_MASK) | Configuration.UI_MODE_NIGHT_YES;
-
+        ThemeUtils.fixNightMode(getResources(), newConfig);
         super.onConfigurationChanged(newConfig);
-
     }
 
     @Nullable

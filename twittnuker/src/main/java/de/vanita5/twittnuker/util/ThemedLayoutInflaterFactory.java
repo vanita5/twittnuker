@@ -38,6 +38,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.app.AppCompatDelegateAccessor;
+import android.support.v7.app.AppCompatPreferenceActivity;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.TwidereToolbar;
 import android.util.AttributeSet;
@@ -51,7 +52,6 @@ import android.widget.TextView;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.AppCompatPreferenceActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ProfileImageView;

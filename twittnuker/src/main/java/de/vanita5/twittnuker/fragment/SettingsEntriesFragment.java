@@ -34,7 +34,7 @@ public class SettingsEntriesFragment extends PreferenceFragment implements Const
 	public void onActivityCreated(final Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		getPreferenceManager().setSharedPreferencesName(SHARED_PREFERENCES_NAME);
-		addPreferencesFromResource(R.xml.settings_headers);
+		addPreferencesFromResource(R.xml.preferences_headers);
 	}
 
 }

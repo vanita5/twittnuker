@@ -38,7 +38,7 @@
         </de.vanita5.twittnuker.preference.ThemeFontFamilyPreference>
 
     </PreferenceCategory>
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
         android:key="unread_count"
         android:summary="@string/unread_count_summary"
@@ -46,15 +46,15 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </de.vanita5.twittnuker.preference.AutoFixSwitchPreference>
+    </SwitchPreference>
 
-    <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+    <SwitchPreference
         android:defaultValue="false"
         android:key="leftside_compose_button"
         android:summary="@string/leftside_compose_button_summary"
         android:title="@string/leftside_compose_button" />
 
-    <de.vanita5.twittnuker.preference.SummaryListPreference
+    <ListPreference
         android:defaultValue="@string/default_tab_display_option"
         android:entries="@array/entries_tab_display_option"
         android:entryValues="@array/values_tab_display_option"

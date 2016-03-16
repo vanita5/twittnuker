@@ -43,7 +43,7 @@ public class AccountNotificationSettingsFragment extends BaseAccountPreferenceFr
 
     @Override
     protected int getPreferencesResource() {
-        return R.xml.settings_account_notifications;
+        return R.xml.preferences_account_notifications;
     }
 
     @Override

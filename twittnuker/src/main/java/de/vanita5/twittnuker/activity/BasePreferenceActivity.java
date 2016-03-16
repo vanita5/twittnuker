@@ -22,26 +22,15 @@
 
 package de.vanita5.twittnuker.activity;
 
-import android.annotation.SuppressLint;
+import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
+import android.preference.PreferenceActivity;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.ActionMenuView;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager.LayoutParams;
-import android.widget.FrameLayout;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
@@ -49,16 +38,13 @@ import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
-import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 
 import javax.inject.Inject;
 
-public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity implements Constants,
+public abstract class BasePreferenceActivity extends PreferenceActivity implements Constants,
         IThemedActivity, KeyboardShortcutsHandler.KeyboardShortcutCallback {
 
-    private TintedStatusFrameLayout mMainContent;
     // Data fields
     private int mCurrentThemeColor, mCurrentActionBarColor;
     private int mCurrentThemeBackgroundAlpha;
@@ -124,21 +110,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     }
 
     @Override
-    public void onContentChanged() {
-        super.onContentChanged();
-        mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
-        setupTintStatusBar();
-    }
-
-    @Override
-    public void onSupportActionModeStarted(android.support.v7.view.ActionMode mode) {
-        super.onSupportActionModeStarted(mode);
-        ThemeUtils.applySupportActionModeColor(mode, getCurrentThemeColor(),
-                getThemeBackgroundOption(), true);
-        ThemeUtils.applySupportActionModeItemColor(mode, getCurrentThemeColor());
-    }
-
-    @Override
     public boolean handleKeyboardShortcutSingle(@NonNull KeyboardShortcutsHandler handler, int keyCode, @NonNull KeyEvent event, int metaState) {
         return false;
     }
@@ -154,7 +125,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
             StrictModeUtils.detectAllVmPolicy();
             StrictModeUtils.detectAllThreadPolicy();
         }
-        setupWindow();
         super.onCreate(savedInstanceState);
         GeneralComponentHelper.build(this).inject(this);
     }
@@ -180,95 +150,6 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
     }
 
     @Override
-    public void setContentView(@LayoutRes int layoutResID) {
-        final FrameLayout mainContent = initMainContent();
-        getLayoutInflater().inflate(layoutResID, (ViewGroup) mainContent.findViewById(R.id.settings_content), true);
-        super.setContentView(mainContent);
-    }
-
-    @Override
-    public void setContentView(View view) {
-        final FrameLayout mainContent = initMainContent();
-        final ViewGroup settingsContent = (ViewGroup) mainContent.findViewById(R.id.settings_content);
-        settingsContent.removeAllViews();
-        settingsContent.addView(view);
-        super.setContentView(mainContent);
-    }
-
-    @Override
-    public void setContentView(View view, ViewGroup.LayoutParams params) {
-        final FrameLayout mainContent = initMainContent();
-        final ViewGroup settingsContent = (ViewGroup) mainContent.findViewById(R.id.settings_content);
-        settingsContent.removeAllViews();
-        settingsContent.addView(view);
-        super.setContentView(mainContent);
-    }
-
-    @Override
-    public void addContentView(View view, ViewGroup.LayoutParams params) {
-        FrameLayout mainContent = (FrameLayout) findViewById(R.id.main_content);
-        if (mainContent == null) {
-            @SuppressLint("InflateParams")
-            final View mainLayout = getLayoutInflater().inflate(R.layout.activity_settings, null);
-            mainContent = (FrameLayout) mainLayout.findViewById(R.id.main_content);
-        }
-        final ViewGroup settingsContent = (ViewGroup) mainContent.findViewById(R.id.settings_content);
-        settingsContent.addView(view, params);
-        onContentChanged();
-    }
-
-    protected boolean isActionBarOutlineEnabled() {
-        return true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        final boolean result = super.onPrepareOptionsMenu(menu);
-        if (!shouldSetActionItemColor()) return result;
-        final View actionBarView = getWindow().findViewById(android.support.v7.appcompat.R.id.action_bar);
-        if (actionBarView instanceof Toolbar) {
-            final int actionBarColor = getCurrentActionBarColor();
-            final int itemColor = ThemeUtils.getContrastForegroundColor(this, actionBarColor);
-            final Toolbar toolbar = (Toolbar) actionBarView;
-            final int popupColor = ThemeUtils.getThemeForegroundColor(toolbar.getContext(), toolbar.getPopupTheme());
-            ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(actionBarView, ActionMenuView.class), itemColor, popupColor);
-        }
-        return result;
-    }
-
-    protected boolean shouldSetActionItemColor() {
-        return true;
-    }
-
-    private FrameLayout initMainContent() {
-        final FrameLayout mainContent = (FrameLayout) findViewById(R.id.main_content);
-        if (mainContent != null) {
-            return mainContent;
-        }
-        return ((FrameLayout) getLayoutInflater().inflate(R.layout.activity_settings, null));
-    }
-
-    @Override
-    public void setTheme(int resId) {
-        super.setTheme(resId);
-        if (shouldApplyWindowBackground()) {
-            ThemeUtils.applyWindowBackground(this, getWindow(),
-                    mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
-        }
-    }
-
-    @Override
-    public void setSupportActionBar(@Nullable Toolbar toolbar) {
-        super.setSupportActionBar(toolbar);
-        ThemeUtils.applyToolbarItemColor(this, toolbar, mCurrentThemeColor);
-    }
-
-    @Override
     protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resId, boolean first) {
         mCurrentThemeColor = getThemeColor();
         mCurrentActionBarColor = getActionBarColor();
@@ -277,43 +158,23 @@ public abstract class BasePreferenceActivity extends AppCompatPreferenceActivity
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         mCurrentThemeFontFamily = getThemeFontFamily();
         super.onApplyThemeResource(theme, resId, first);
+
+        if (shouldApplyWindowBackground()) {
+            ThemeUtils.applyWindowBackground(this, getWindow(),
+                    mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
+        }
     }
 
+
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        setupActionBar();
+    public void onConfigurationChanged(Configuration newConfig) {
+        ThemeUtils.fixNightMode(getResources(), newConfig);
+        super.onConfigurationChanged(newConfig);
     }
 
     protected boolean shouldApplyWindowBackground() {
         return true;
     }
 
-    private void setupActionBar() {
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar == null) return;
-
-        final int actionBarColor = getCurrentActionBarColor();
-        final String option = getThemeBackgroundOption();
-        ThemeUtils.applyActionBarBackground(actionBar, this, actionBarColor, option, isActionBarOutlineEnabled());
-    }
-
-    private void setupTintStatusBar() {
-        if (mMainContent == null) return;
-
-        final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ? getCurrentThemeBackgroundAlpha() : 0xFF;
-        final int statusBarColor = getCurrentActionBarColor();
-        mMainContent.setColor(statusBarColor, alpha);
-
-        mMainContent.setDrawShadow(false);
-        mMainContent.setDrawColor(true);
-        mMainContent.setFactor(1);
-    }
-
-    private void setupWindow() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-    }
 
 }

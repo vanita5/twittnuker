@@ -27,19 +27,19 @@
     <PreferenceCategory
         android:key="cat_refresh_content"
         android:title="@string/content_to_refresh">
-        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="auto_refresh_home_timeline"
             android:title="@string/home"/>
-        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="auto_refresh_mentions"
             android:title="@string/mentions"/>
-        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="auto_refresh_direct_messages"
             android:title="@string/direct_messages"/>
-        <de.vanita5.twittnuker.preference.AutoFixSwitchPreference
+        <SwitchPreference
             android:defaultValue="false"
             android:key="auto_refresh_trends"
             android:title="@string/trends"/>

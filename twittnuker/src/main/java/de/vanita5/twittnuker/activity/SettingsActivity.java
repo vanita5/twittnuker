@@ -30,18 +30,10 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.app.ThemedAppCompatDelegateFactory;
-import android.support.v7.view.ActionMode;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -49,25 +41,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.view.ViewGroup.MarginLayoutParams;
-import android.view.ViewParent;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.support.DataExportActivity;
 import de.vanita5.twittnuker.activity.support.DataImportActivity;
-import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.TwidereActionModeForChildListener;
-import de.vanita5.twittnuker.util.support.ViewSupport;
-import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
-import de.vanita5.twittnuker.view.TintedStatusNativeActionModeAwareLayout;
 import de.vanita5.twittnuker.view.holder.ViewListHolder;
 
 import java.util.ArrayList;
@@ -80,8 +63,6 @@ public class SettingsActivity extends BasePreferenceActivity {
     private HeaderAdapter mAdapter;
 
     private boolean mShouldNotifyChange;
-    private TwidereActionModeForChildListener mTwidereActionModeForChildListener;
-    private ThemedAppCompatDelegateFactory.ThemedAppCompatDelegate mDelegate;
 
     public static void setShouldNotifyChange(Activity activity) {
         if (!(activity instanceof SettingsActivity)) return;
@@ -105,7 +86,7 @@ public class SettingsActivity extends BasePreferenceActivity {
 
     @Override
     public void onBuildHeaders(final List<Header> target) {
-        loadHeadersFromResource(R.xml.settings_headers, target);
+        loadHeadersFromResource(R.xml.preferences_headers, target);
         final HeaderAdapter adapter = getHeaderAdapter();
         adapter.clear();
         adapter.addAll(target);
@@ -235,71 +216,10 @@ public class SettingsActivity extends BasePreferenceActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
-
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-        setSupportActionBar(toolbar);
-
-        mTwidereActionModeForChildListener = new TwidereActionModeForChildListener(this, this, false);
-        final TintedStatusNativeActionModeAwareLayout layout = (TintedStatusNativeActionModeAwareLayout) findViewById(R.id.main_content);
-        layout.setActionModeForChildListener(mTwidereActionModeForChildListener);
-
-        ThemeUtils.setCompatContentViewOverlay(this, new EmptyDrawable());
-        final View actionBarContainer = findViewById(R.id.twidere_action_bar_container);
-        ViewCompat.setElevation(actionBarContainer, ThemeUtils.getSupportActionBarElevation(this));
-        ViewSupport.setOutlineProvider(actionBarContainer, ViewOutlineProviderCompat.BACKGROUND);
-        final View windowOverlay = findViewById(R.id.window_overlay);
-        ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this));
-        setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
-
-
-        final String backgroundOption = getCurrentThemeBackgroundOption();
-        final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);
-        final int actionBarAlpha = isTransparent ? ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(this)) : 0xFF;
-
-        actionBarContainer.setAlpha(actionBarAlpha / 255f);
-        windowOverlay.setAlpha(actionBarAlpha / 255f);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
         if (savedInstanceState != null) {
             invalidateHeaders();
         }
-        final ListView listView = getListView();
-        if (listView != null) {
-            listView.setChoiceMode(isMultiPane() ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
-            final LayoutParams lp = listView.getLayoutParams();
-            if (lp instanceof MarginLayoutParams) {
-                final MarginLayoutParams mlp = (MarginLayoutParams) lp;
-                mlp.leftMargin = 0;
-                mlp.topMargin = 0;
-                mlp.rightMargin = 0;
-                mlp.bottomMargin = 0;
-                listView.setLayoutParams(mlp);
-            }
-            final ViewParent listParent = listView.getParent();
-            if (listParent instanceof ViewGroup) {
-                ((ViewGroup) listParent).setPadding(0, 0, 0, 0);
-            }
-        }
-    }
-
-    @Override
-    public AppCompatDelegate getDelegate() {
-        if (mDelegate == null) {
-            mDelegate = ThemedAppCompatDelegateFactory.create(this, this);
-        }
-        return mDelegate;
     }
 
     private void setShouldNotifyChange(boolean notify) {
@@ -312,21 +232,12 @@ public class SettingsActivity extends BasePreferenceActivity {
 
     @Override
     public void onBackPressed() {
-        if (mTwidereActionModeForChildListener.finishExisting()) {
-            return;
-        }
         if (isTopSettings() && shouldNotifyChange()) {
             final RestartConfirmDialogFragment df = new RestartConfirmDialogFragment();
             df.show(getFragmentManager().beginTransaction(), "restart_confirm");
             return;
         }
         super.onBackPressed();
-    }
-
-    @Nullable
-    @Override
-    public ActionMode onWindowStartingSupportActionMode(final ActionMode.Callback callback) {
-        return null;
     }
 
     public static class RestartConfirmDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {

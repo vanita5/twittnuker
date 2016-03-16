@@ -335,7 +335,7 @@ public class SettingsWizardActivity extends BaseThemedActivity implements Consta
 
         @Override
         protected int getPreferenceResource() {
-            return R.xml.settings_cards;
+            return R.xml.preferences_cards;
         }
     }
 
@@ -514,7 +514,7 @@ public class SettingsWizardActivity extends BaseThemedActivity implements Consta
 
         @Override
         protected int getPreferenceResource() {
-            return R.xml.settings_theme;
+            return R.xml.preferences_theme;
         }
     }
 
