@@ -24,8 +24,9 @@ package de.vanita5.twittnuker.api.fanfou.api;
 
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Param;
-import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.User;
 
 public interface BlocksResources {
@@ -35,4 +36,7 @@ public interface BlocksResources {
 
     @POST("/blocks/destroy.json")
     User destroyFanfouBlock(@Param("id") String userId) throws TwitterException;
+
+    @POST("/blocks/blocking.json")
+    ResponseList<User> getFanfouBlocking(@Param Paging paging) throws TwitterException;
 }

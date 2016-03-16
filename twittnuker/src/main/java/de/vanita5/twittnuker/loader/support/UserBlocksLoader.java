@@ -27,12 +27,13 @@ import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 
 import java.util.List;
 
@@ -45,8 +46,15 @@ public class UserBlocksLoader extends CursorSupportUsersLoader {
 
     @NonNull
     @Override
-    protected final PageableResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging)
+    protected final List<User> getCursoredUsers(@NonNull final Twitter twitter,
+                                                @NonNull ParcelableCredentials credentials,
+                                                @NonNull final Paging paging)
             throws TwitterException {
+        switch (ParcelableAccountUtils.getAccountType(credentials)) {
+            case ParcelableAccount.Type.FANFOU: {
+                return twitter.getFanfouBlocking(paging);
+            }
+        }
         return twitter.getBlocksList(paging);
     }
 
