@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.ListPreference;
+import android.support.v7.preference.ListPreference;
 import android.util.AttributeSet;
 
 public class AutoFixListPreference extends ListPreference {
