@@ -38,11 +38,15 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
+
+import com.afollestad.appthemeengine.ATE;
 
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.AssistLauncherActivity;
 import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
@@ -112,6 +116,10 @@ public class TwittnukerApplication extends Application implements Constants,
         sInstance = this;
         if (BuildConfig.DEBUG) {
             StrictModeUtils.detectAllVmPolicy();
+        }
+        if (!ATE.config(this, null).isConfigured()) {
+            final int accentColor = ThemeUtils.getUserAccentColor(this);
+            ATE.config(this, null).primaryColor(accentColor).accentColor(accentColor).commit();
         }
         resetTheme(getSharedPreferences());
         super.onCreate();
@@ -223,6 +231,12 @@ public class TwittnukerApplication extends Application implements Constants,
             }
             case KEY_THEME: {
                 resetTheme(preferences);
+                break;
+            }
+            case KEY_THEME_COLOR: {
+                final int themeColor = preferences.getInt(key, ContextCompat.getColor(this, R.color.branding_color));
+                ATE.config(this, "light").primaryColor(themeColor).accentColor(themeColor).commit();
+                ATE.config(this, "dark").accentColor(themeColor).commit();
                 break;
             }
         }

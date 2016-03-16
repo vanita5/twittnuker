@@ -3,4 +3,4 @@
 
 -dontwarn de.vanita5.twittnuker.api.twitter.util.TwitterDateConverterTest
 -dontwarn de.vanita5.twittnuker.task.SaveFileTaskTest
--dontwarn de.vanita5.twittnuker.activity.support.ImagePageFragmentTest
+-dontwarn de.vanita5.twittnuker.activity.ImagePageFragmentTest

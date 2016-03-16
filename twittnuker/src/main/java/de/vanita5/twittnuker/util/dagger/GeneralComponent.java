@@ -24,12 +24,10 @@ package de.vanita5.twittnuker.util.dagger;
 
 import android.support.v7.widget.RecyclerView;
 
-import de.vanita5.twittnuker.activity.BasePreferenceActivity;
-import de.vanita5.twittnuker.activity.BaseThemedActivity;
-import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
-import de.vanita5.twittnuker.activity.support.ComposeActivity;
-import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
-import de.vanita5.twittnuker.activity.support.ThemedFragmentActivity;
+import de.vanita5.twittnuker.activity.BaseAppCompatActivity;
+import de.vanita5.twittnuker.activity.ComposeActivity;
+import de.vanita5.twittnuker.activity.MediaViewerActivity;
+import de.vanita5.twittnuker.activity.ThemedFragmentActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.BaseArrayAdapter;
@@ -75,10 +73,6 @@ public interface GeneralComponent {
 
     void inject(MultiSelectEventHandler object);
 
-    void inject(BasePreferenceActivity object);
-
-    void inject(BaseThemedActivity object);
-
     void inject(BaseSupportDialogFragment object);
 
     void inject(RefreshService object);
@@ -114,8 +108,6 @@ public interface GeneralComponent {
     void inject(BasePreferenceFragment object);
 
     void inject(BaseFiltersFragment.FilteredUsersFragment.FilterUsersListAdapter object);
-
-    void inject(AccountsDashboardFragment.OptionItemsAdapter object);
 
     void inject(EmojiSpannableFactory object);
 

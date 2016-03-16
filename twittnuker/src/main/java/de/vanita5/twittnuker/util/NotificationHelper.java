@@ -59,7 +59,7 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
+import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableStatus;

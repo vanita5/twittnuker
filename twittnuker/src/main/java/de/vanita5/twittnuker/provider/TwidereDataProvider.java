@@ -75,7 +75,7 @@ import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
+import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.NotificationType;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;

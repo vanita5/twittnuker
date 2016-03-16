@@ -34,8 +34,8 @@ import android.view.KeyEvent;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.ComposeActivity;
-import de.vanita5.twittnuker.activity.support.QuickSearchBarActivity;
+import de.vanita5.twittnuker.activity.ComposeActivity;
+import de.vanita5.twittnuker.activity.QuickSearchBarActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants;
 

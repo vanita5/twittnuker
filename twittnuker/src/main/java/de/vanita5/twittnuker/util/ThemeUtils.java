@@ -39,12 +39,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.app.WindowDecorActionBar;
-import android.support.v7.app.WindowDecorActionBar.ActionModeImpl;
-import android.support.v7.view.StandaloneActionMode;
-import android.support.v7.view.SupportActionModeWrapperAccessor;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionBarContainer;
 import android.support.v7.widget.ActionBarContextView;
@@ -55,7 +50,6 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.TwidereToolbar;
 import android.text.TextUtils;
 import android.util.TypedValue;
-import android.view.ActionMode;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
@@ -66,14 +60,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.LinkHandlerActivity;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.activity.support.LinkHandlerActivity;
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.graphic.iface.DoNotWrapDrawable;
@@ -97,15 +90,6 @@ public class ThemeUtils implements Constants {
 
     private ThemeUtils() {
         throw new AssertionError("ThemeUtils should never be instantiated");
-    }
-
-
-    public static void applyActionBarBackground(final ActionBar actionBar, final Context context,
-                                                final int actionBarColor, String backgroundOption, boolean outlineEnabled) {
-        if (actionBar == null || context == null) return;
-        actionBar.setBackgroundDrawable(getActionBarBackground(context, actionBarColor, backgroundOption, outlineEnabled));
-        actionBar.setSplitBackgroundDrawable(getActionBarSplitBackground(context));
-        actionBar.setStackedBackgroundDrawable(getActionBarStackedBackground(context, actionBarColor, backgroundOption, outlineEnabled));
     }
 
 
@@ -141,77 +125,6 @@ public class ThemeUtils implements Constants {
                 applyColorFilterToMenuIcon(item.getSubMenu(), popupColor, popupColor, highlightColor, mode, excludedGroups);
             }
         }
-    }
-
-    public static void applySupportActionModeColor(final ActionMode mode,
-                                                   int accentColor, String backgroundOption,
-                                                   boolean outlineEnabled) {
-        android.support.v7.view.ActionMode modeCompat = SupportActionModeWrapperAccessor.getWrappedObject(mode);
-        if (modeCompat == null) return;
-        applySupportActionModeColor(modeCompat, accentColor, backgroundOption,
-                outlineEnabled);
-    }
-
-    public static void applySupportActionModeColor(final android.support.v7.view.ActionMode modeCompat,
-                                                   int actionBarColor, String backgroundOption,
-                                                   boolean outlineEnabled) {
-        // Very dirty implementation
-        // This call ensures TitleView created
-        modeCompat.setTitle(modeCompat.getTitle());
-        final View contextView = findActionBarContextView(modeCompat);
-        if (!(contextView instanceof ActionBarContextView)) return;
-        setActionBarContextViewBackground((ActionBarContextView) contextView, actionBarColor,
-                backgroundOption, outlineEnabled);
-    }
-
-    public static void applySupportActionModeItemColor(final ActionMode mode, int accentColor) {
-        android.support.v7.view.ActionMode modeCompat = SupportActionModeWrapperAccessor.getWrappedObject(mode);
-        if (modeCompat == null) return;
-        applySupportActionModeItemColor(modeCompat, accentColor);
-    }
-
-    public static void applySupportActionModeItemColor(final android.support.v7.view.ActionMode modeCompat,
-                                                       int accentColor) {
-        // Very dirty implementation
-        // This call ensures TitleView created
-        modeCompat.setTitle(modeCompat.getTitle());
-        final View contextView = findActionBarContextView(modeCompat);
-        if (!(contextView instanceof ActionBarContextView)) return;
-        setActionBarContextViewItemColor((ActionBarContextView) contextView, accentColor);
-    }
-
-    private static void setActionBarContextViewItemColor(ActionBarContextView contextView, int toolbarColor) {
-        final Context context = contextView.getContext();
-        final int contrastForegroundColor = getContrastForegroundColor(context, toolbarColor);
-        if (isDarkTheme(context)) {
-            return;
-        }
-        final View titleView = contextView.findViewById(R.id.action_bar_title);
-        final View subtitleView = contextView.findViewById(R.id.action_bar_subtitle);
-        final View closeButton = contextView.findViewById(R.id.action_mode_close_button);
-        if (titleView instanceof TextView) {
-            ((TextView) titleView).setTextColor(contrastForegroundColor);
-        }
-        if (subtitleView instanceof TextView) {
-            ((TextView) subtitleView).setTextColor(contrastForegroundColor);
-        }
-        if (closeButton instanceof ImageView) {
-            ((ImageView) closeButton).setColorFilter(contrastForegroundColor, Mode.SRC_ATOP);
-        }
-    }
-
-    private static View findActionBarContextView(final android.support.v7.view.ActionMode modeCompat) {
-        if (modeCompat instanceof ActionModeImpl) {
-            WindowDecorActionBar actionBar = (WindowDecorActionBar) Utils.findFieldOfTypes(modeCompat,
-                    ActionModeImpl.class, WindowDecorActionBar.class);
-            if (actionBar == null) return null;
-            return (View) Utils.findFieldOfTypes(actionBar, WindowDecorActionBar.class,
-                    ActionBarContextView.class);
-        } else if (modeCompat instanceof StandaloneActionMode) {
-            return (View) Utils.findFieldOfTypes(modeCompat, StandaloneActionMode.class,
-                    ActionBarContextView.class);
-        }
-        return null;
     }
 
     public static void setActionBarContextViewBackground(@NonNull ActionBarContextView contextView,
@@ -1026,6 +939,15 @@ public class ThemeUtils implements Constants {
         if (currentNightMode == Configuration.UI_MODE_NIGHT_YES)
             newConfig.uiMode = (newConfig.uiMode & ~Configuration.UI_MODE_NIGHT_MASK)
                     | Configuration.UI_MODE_NIGHT_YES;
+    }
+
+    public static String getATEKey(Context context) {
+        TypedValue value = new TypedValue();
+        if (!context.getTheme().resolveAttribute(R.attr.ateThemeKey, value, true)) {
+            return "dark";
+        }
+        if (TextUtils.isEmpty(value.string)) return "dark";
+        return String.valueOf(value.string);
     }
 
 

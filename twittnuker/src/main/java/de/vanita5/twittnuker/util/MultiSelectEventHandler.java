@@ -36,7 +36,7 @@ import com.twitter.Extractor;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
+import de.vanita5.twittnuker.activity.BaseAppCompatActivity;
 import de.vanita5.twittnuker.menu.AccountActionProvider;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;

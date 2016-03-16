@@ -37,7 +37,6 @@ import android.util.Pair;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.support.ComposeActivity;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.IntentSupport;
 

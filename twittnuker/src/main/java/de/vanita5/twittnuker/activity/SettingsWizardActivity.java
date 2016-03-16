@@ -38,12 +38,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.view.LayoutInflaterCompat;
-import android.support.v4.view.LayoutInflaterFactory;
 import android.support.v4.view.ViewPager;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceScreen;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -51,9 +48,6 @@ import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
-import de.vanita5.twittnuker.activity.support.DataImportActivity;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
@@ -73,7 +67,6 @@ import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.InternalParseUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.LinePageIndicator;
@@ -180,21 +173,6 @@ public class SettingsWizardActivity extends BaseAppCompatActivity implements Con
     @Override
     public int getActionBarColor() {
         return ThemeUtils.getActionBarColor(this);
-    }
-
-    @NonNull
-    @Override
-    public LayoutInflater getLayoutInflater() {
-        final LayoutInflater inflater = super.getLayoutInflater();
-        if (inflater.getFactory() == null) {
-            LayoutInflaterCompat.setFactory(inflater, new ThemedLayoutInflaterFactory(this, new LayoutInflaterFactory() {
-                @Override
-                public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
-                    return SettingsWizardActivity.this.onCreateView(parent, name, context, attrs);
-                }
-            }));
-        }
-        return inflater;
     }
 
     @Override
@@ -321,7 +299,7 @@ public class SettingsWizardActivity extends BaseAppCompatActivity implements Con
         final Intent intent = getIntent();
         intent.putExtra(EXTRA_PAGE, mViewPager.getCurrentItem());
         setIntent(intent);
-        restart();
+        recreate();
     }
 
     public static class WizardPageCardsFragment extends BaseWizardPageFragment {

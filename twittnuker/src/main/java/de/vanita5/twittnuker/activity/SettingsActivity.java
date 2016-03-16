@@ -54,7 +54,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.SettingsDetailsFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;

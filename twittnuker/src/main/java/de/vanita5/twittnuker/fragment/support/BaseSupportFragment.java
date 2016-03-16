@@ -32,17 +32,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManagerAccessor;
 import android.support.v4.text.BidiFormatter;
-import android.support.v4.view.LayoutInflaterCompat;
-import android.support.v4.view.LayoutInflaterFactory;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -53,7 +48,6 @@ import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.ThemedLayoutInflaterFactory;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
@@ -174,19 +168,6 @@ public class BaseSupportFragment extends Fragment implements IBaseFragment, Cons
     public void onResume() {
         super.onResume();
         mActionHelper.dispatchOnResumeFragments();
-    }
-
-    @Override
-    public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
-        final FragmentActivity activity = getActivity();
-        if (!(activity instanceof IThemedActivity)) {
-            return super.getLayoutInflater(savedInstanceState);
-        }
-        final LayoutInflater inflater = activity.getLayoutInflater().cloneInContext(getThemedContext());
-        getChildFragmentManager(); // Init if needed; use raw implementation below.
-        final LayoutInflaterFactory delegate = FragmentManagerAccessor.getLayoutInflaterFactory(getChildFragmentManager());
-        LayoutInflaterCompat.setFactory(inflater, new ThemedLayoutInflaterFactory((IThemedActivity) activity, delegate));
-        return inflater;
     }
 
     @Override

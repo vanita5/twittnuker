@@ -22,6 +22,7 @@
   -->
 
 <RelativeLayout
+    android:id="@+id/account_dashboard_header"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -109,7 +110,7 @@
                         android:focusable="false"
                         android:singleLine="true"
                         android:textAppearance="?android:textAppearanceSmall"
-                        android:textColor="?attr/textColorDrawerNamePrimary"
+                        android:textColor="@android:color/white"
                         android:textStyle="bold"
                         tools:text="Name"/>
 
@@ -120,7 +121,7 @@
                         android:focusable="false"
                         android:singleLine="true"
                         android:textAppearance="?android:textAppearanceSmall"
-                        android:textColor="?textColorDrawerNameSecondary"
+                        android:textColor="@color/light_gray"
                         tools:text="\@username"/>
 
                 </LinearLayout>

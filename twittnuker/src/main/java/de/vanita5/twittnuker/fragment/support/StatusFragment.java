@@ -89,7 +89,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
+import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;

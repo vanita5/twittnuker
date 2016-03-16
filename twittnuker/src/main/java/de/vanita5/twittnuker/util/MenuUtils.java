@@ -30,8 +30,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -46,8 +48,8 @@ import android.view.MenuItem;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.activity.support.AccountSelectorActivity;
-import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
+import de.vanita5.twittnuker.activity.AccountSelectorActivity;
+import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.support.AddStatusFilterDialogFragment;
@@ -79,7 +81,7 @@ public class MenuUtils implements Constants {
         item.setChecked(checked);
     }
 
-    public static void setMenuItemIcon(final Menu menu, final int id, final int icon) {
+    public static void setMenuItemIcon(final Menu menu, final int id, @DrawableRes final int icon) {
         if (menu == null) return;
         final MenuItem item = menu.findItem(id);
         if (item == null) return;
@@ -94,7 +96,7 @@ public class MenuUtils implements Constants {
         MenuItemCompat.setShowAsAction(item, flags);
     }
 
-    public static void setMenuItemTitle(final Menu menu, final int id, final int icon) {
+    public static void setMenuItemTitle(final Menu menu, final int id, @StringRes final int icon) {
         if (menu == null) return;
         final MenuItem item = menu.findItem(id);
         if (item == null) return;

@@ -48,12 +48,11 @@ import org.mariotaku.restfu.http.Endpoint;
 import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.sqliteqb.library.Expression;
-import org.w3c.dom.Text;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
+import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.DeletionEvent;
 import de.vanita5.twittnuker.api.twitter.model.Warning;

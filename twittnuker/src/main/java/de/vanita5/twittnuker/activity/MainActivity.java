@@ -29,7 +29,6 @@ import android.os.Bundle;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 

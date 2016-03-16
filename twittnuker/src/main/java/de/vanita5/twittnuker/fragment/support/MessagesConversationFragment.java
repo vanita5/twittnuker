@@ -78,8 +78,8 @@ import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.OrderBy;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
-import de.vanita5.twittnuker.activity.support.ThemedImagePickerActivity;
+import de.vanita5.twittnuker.activity.BaseAppCompatActivity;
+import de.vanita5.twittnuker.activity.ThemedImagePickerActivity;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;

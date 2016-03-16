@@ -169,8 +169,11 @@
 # Marshmallow removed Notification.setLatestEventInfo()
 -dontwarn android.app.Notification
 
--keepclassmembers class de.vanita5.twittnuker.activity.support.BrowserSignInActivity.InjectorJavaScriptInterface {
+-keepclassmembers class de.vanita5.twittnuker.activity.BrowserSignInActivity.InjectorJavaScriptInterface {
     public *;
 }
 
 -dontwarn de.vanita5.twittnuker.api.twitter.model.TwitterResponse$AccessLevel
+
+# app-theme-engine
+-dontwarn com.afollestad.appthemeengine.**

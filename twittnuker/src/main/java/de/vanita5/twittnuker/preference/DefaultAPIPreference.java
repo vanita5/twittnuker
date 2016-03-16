@@ -46,13 +46,12 @@ import android.widget.Toast;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.APIEditorActivity;
+import de.vanita5.twittnuker.activity.APIEditorActivity;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.ParseUtils;
 
-import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 import static de.vanita5.twittnuker.util.Utils.trim;
 
 public class DefaultAPIPreference extends DialogPreference implements Constants, IDialogPreference {

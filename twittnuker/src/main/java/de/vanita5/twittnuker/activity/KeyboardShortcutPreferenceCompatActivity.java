@@ -37,7 +37,8 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutSpec;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class KeyboardShortcutPreferenceCompatActivity extends BaseThemedActivity implements Constants, OnClickListener {
+public class KeyboardShortcutPreferenceCompatActivity extends BaseSupportDialogActivity implements
+        Constants, OnClickListener {
 
     public static final String EXTRA_CONTEXT_TAG = "context_tag";
     public static final String EXTRA_KEY_ACTION = "key_action";
@@ -79,12 +80,12 @@ public class KeyboardShortcutPreferenceCompatActivity extends BaseThemedActivity
         switch (v.getId()) {
             case R.id.button_positive: {
                 if (mKeySpec == null) return;
-                mKeyboardShortcutHandler.register(mKeySpec, getKeyAction());
+                mKeyboardShortcutsHandler.register(mKeySpec, getKeyAction());
                 finish();
                 break;
             }
             case R.id.button_neutral: {
-                mKeyboardShortcutHandler.unregister(getKeyAction());
+                mKeyboardShortcutsHandler.unregister(getKeyAction());
                 finish();
                 break;
             }
@@ -117,10 +118,10 @@ public class KeyboardShortcutPreferenceCompatActivity extends BaseThemedActivity
         }
         mKeySpec = spec;
         mKeysLabel.setText(spec.toKeyString());
-        final String oldAction = mKeyboardShortcutHandler.findAction(spec);
+        final String oldAction = mKeyboardShortcutsHandler.findAction(spec);
         final KeyboardShortcutSpec copyOfSpec = spec.copy();
         copyOfSpec.setContextTag(null);
-        final String oldGeneralAction = mKeyboardShortcutHandler.findAction(copyOfSpec);
+        final String oldGeneralAction = mKeyboardShortcutsHandler.findAction(copyOfSpec);
         if (!TextUtils.isEmpty(oldAction) && !keyAction.equals(oldAction)) {
             // Conflicts with keys in same context tag
             mConflictLabel.setVisibility(View.VISIBLE);

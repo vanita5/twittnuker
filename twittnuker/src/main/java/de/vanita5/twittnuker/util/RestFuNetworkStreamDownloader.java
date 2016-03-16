@@ -31,7 +31,7 @@ import org.mariotaku.restfu.http.HttpRequest;
 import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.RestHttpClient;
 import org.mariotaku.restfu.http.mime.Body;
-import de.vanita5.twittnuker.activity.support.ThemedImagePickerActivity;
+import de.vanita5.twittnuker.activity.ThemedImagePickerActivity;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 import java.io.IOException;

@@ -53,8 +53,8 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.twitter.Validator;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.ColorPickerDialogActivity;
-import de.vanita5.twittnuker.activity.support.ThemedImagePickerActivity;
+import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
+import de.vanita5.twittnuker.activity.ThemedImagePickerActivity;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;

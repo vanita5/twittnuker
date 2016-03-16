@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.activity.support.MediaViewerActivity;
+import de.vanita5.twittnuker.activity.MediaViewerActivity;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.support.SensitiveContentWarningDialogFragment;
 import de.vanita5.twittnuker.fragment.support.UserFragment;

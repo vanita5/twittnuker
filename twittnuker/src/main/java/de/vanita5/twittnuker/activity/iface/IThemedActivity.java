@@ -49,6 +49,4 @@ public interface IThemedActivity {
     @ShapedImageView.ShapeStyle
     int getCurrentProfileImageStyle();
 
-    void restart();
-
 }

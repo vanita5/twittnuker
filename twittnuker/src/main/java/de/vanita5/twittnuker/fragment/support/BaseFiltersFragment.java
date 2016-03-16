@@ -59,8 +59,7 @@ import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
-import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
+import de.vanita5.twittnuker.activity.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -134,12 +133,6 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
     @Override
     public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
         mActionMode = mode;
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof IThemedActivity) {
-            ThemeUtils.applySupportActionModeColor(mode,
-                    ((IThemedActivity) activity).getCurrentThemeColor(),
-                    ((IThemedActivity) activity).getThemeBackgroundOption(), true);
-        }
         setControlVisible(true);
         mode.getMenuInflater().inflate(R.menu.action_multi_select_items, menu);
         return true;
@@ -148,11 +141,6 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
     @Override
     public boolean onPrepareActionMode(final ActionMode mode, final Menu menu) {
         updateTitle(mode);
-        final FragmentActivity activity = getActivity();
-        if (activity instanceof IThemedActivity) {
-            ThemeUtils.applySupportActionModeItemColor(mode,
-                    ((IThemedActivity) activity).getCurrentThemeColor());
-        }
         return true;
     }
 

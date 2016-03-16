@@ -42,7 +42,7 @@ import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
+import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
