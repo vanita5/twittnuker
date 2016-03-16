@@ -867,7 +867,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 
         @Override
         public long getItemId(int position) {
-            return System.identityHashCode(getAdapterAccount(position));
+            return getAdapterAccount(position).hashCode();
         }
 
         @Override
