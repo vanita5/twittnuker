@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.DataStoreUtils;
-import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
+import de.vanita5.twittnuker.util.UriUtils;
 
 import java.util.ArrayList;
 
@@ -105,7 +105,7 @@ public class UserKeyUtils {
             def = TwittnukerConstants.USER_TYPE_TWITTER_COM;
         }
         if (uri == null) return def;
-        final String authority = PreviewMediaExtractor.getAuthority(uri);
+        final String authority = UriUtils.getAuthority(uri);
         if (authority == null) return def;
         return authority.replaceAll("[^\\w\\d\\.]", "-");
     }

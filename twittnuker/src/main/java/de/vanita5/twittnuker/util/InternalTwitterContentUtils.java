@@ -44,7 +44,6 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,7 +179,7 @@ public class InternalTwitterContentUtils {
     public static String getBestBannerUrl(@Nullable final String baseUrl, final int width) {
         if (baseUrl == null) return null;
         final String type = getBestBannerType(width);
-        final String authority = PreviewMediaExtractor.getAuthority(baseUrl);
+        final String authority = UriUtils.getAuthority(baseUrl);
         return authority != null && authority.endsWith(".twimg.com") ? baseUrl + "/" + type : baseUrl;
     }
 

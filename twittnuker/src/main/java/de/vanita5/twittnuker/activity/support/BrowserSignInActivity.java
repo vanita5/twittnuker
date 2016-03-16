@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.activity.support;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -33,7 +32,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -41,12 +39,12 @@ import android.widget.Toast;
 
 import org.attoparser.AttoParseException;
 import org.mariotaku.restfu.http.Authorization;
+import org.mariotaku.restfu.http.Endpoint;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
@@ -55,9 +53,9 @@ import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Set;
 
 import static android.text.TextUtils.isEmpty;
-import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 
 @SuppressLint("SetJavaScriptEnabled")
 public class BrowserSignInActivity extends BaseAppCompatActivity {
@@ -100,7 +98,6 @@ public class BrowserSignInActivity extends BaseAppCompatActivity {
     @SuppressLint("AddJavascriptInterface")
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browser_sign_in);
         mWebView.setWebViewClient(new AuthorizationWebViewClient(this));
@@ -155,7 +152,25 @@ public class BrowserSignInActivity extends BaseAppCompatActivity {
         public void onPageFinished(final WebView view, final String url) {
             super.onPageFinished(view, url);
             view.loadUrl(INJECT_CONTENT);
-            ((BrowserSignInActivity) getActivity()).setLoadProgressShown(false);
+            final BrowserSignInActivity activity = (BrowserSignInActivity) getActivity();
+            activity.setLoadProgressShown(false);
+            Uri uri = Uri.parse(url);
+            // Hack for fanfou
+            if ("fanfou.com".equals(uri.getHost())) {
+                final String path = uri.getPath();
+                final Set<String> paramNames = uri.getQueryParameterNames();
+                if ("/oauth/authorize".equals(path) && paramNames.contains("oauth_callback")) {
+                    // Sign in successful response.
+                    final OAuthToken requestToken = activity.mRequestToken;
+                    if (requestToken != null) {
+                        final Intent intent = new Intent();
+                        intent.putExtra(EXTRA_REQUEST_TOKEN, requestToken.getOauthToken());
+                        intent.putExtra(EXTRA_REQUEST_TOKEN_SECRET, requestToken.getOauthTokenSecret());
+                        activity.setResult(RESULT_OK, intent);
+                        activity.finish();
+                    }
+                }
+            }
         }
 
         @Override
@@ -170,7 +185,7 @@ public class BrowserSignInActivity extends BaseAppCompatActivity {
                                     final String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             final Activity activity = getActivity();
-            Toast.makeText(activity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, description, Toast.LENGTH_SHORT).show();
             activity.finish();
         }
 
@@ -199,36 +214,27 @@ public class BrowserSignInActivity extends BaseAppCompatActivity {
     static class GetRequestTokenTask extends AsyncTask<Object, Object, OAuthToken> {
 
         private final String mConsumerKey, mConsumerSecret;
-        private final TwittnukerApplication mApplication;
-        private final SharedPreferences mPreferences;
         private final BrowserSignInActivity mActivity;
+        private final String mAPIUrlFormat;
 
         public GetRequestTokenTask(final BrowserSignInActivity activity) {
             mActivity = activity;
-            mApplication = TwittnukerApplication.getInstance(activity);
-            mPreferences = activity.getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
             final Intent intent = activity.getIntent();
             mConsumerKey = intent.getStringExtra(Accounts.CONSUMER_KEY);
             mConsumerSecret = intent.getStringExtra(Accounts.CONSUMER_SECRET);
+            mAPIUrlFormat = intent.getStringExtra(Accounts.API_URL_FORMAT);
         }
 
         @Override
         protected OAuthToken doInBackground(final Object... params) {
-            final String defConsumerKey = getNonEmptyString(mPreferences, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY);
-            final String defConsumerSecret = getNonEmptyString(mPreferences, KEY_CONSUMER_SECRET,
-                    TWITTER_CONSUMER_SECRET);
-            final String consumerKey, consumerSecret;
-            if (!isEmpty(mConsumerKey) && !isEmpty(mConsumerSecret)) {
-                consumerKey = mConsumerKey;
-                consumerSecret = mConsumerSecret;
-            } else {
-                consumerKey = defConsumerKey;
-                consumerSecret = defConsumerSecret;
+            if (isEmpty(mConsumerKey) || isEmpty(mConsumerSecret)) {
+                return null;
             }
             try {
-                final OAuthEndpoint endpoint = new OAuthEndpoint(TwitterAPIFactory.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", null));
-                final Authorization auth = new OAuthAuthorization(consumerKey, consumerSecret);
-                final TwitterOAuth twitter = TwitterAPIFactory.getInstance(mActivity, endpoint, auth, TwitterOAuth.class);
+                final Endpoint endpoint = TwitterAPIFactory.getOAuthSignInEndpoint(mAPIUrlFormat, true);
+                final Authorization auth = new OAuthAuthorization(mConsumerKey, mConsumerSecret);
+                final TwitterOAuth twitter = TwitterAPIFactory.getInstance(mActivity, endpoint,
+                        auth, TwitterOAuth.class);
                 return twitter.getRequestToken(OAUTH_CALLBACK_OOB);
             } catch (final Exception e) {
                 Log.w(LOGTAG, e);
@@ -247,7 +253,7 @@ public class BrowserSignInActivity extends BaseAppCompatActivity {
                 }
                 return;
             }
-            final OAuthEndpoint endpoint = new OAuthEndpoint(TwitterAPIFactory.getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api", null));
+            final Endpoint endpoint = TwitterAPIFactory.getOAuthSignInEndpoint(mAPIUrlFormat, true);
             mActivity.loadUrl(endpoint.construct("/oauth/authorize", new String[]{"oauth_token", data.getOauthToken()}));
         }
 
