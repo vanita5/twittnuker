@@ -36,10 +36,10 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.imageloader.OvalBitmapDisplayer;
 import de.vanita5.twittnuker.util.media.MediaExtra;
 
@@ -221,6 +221,15 @@ public class MediaLoaderWrapper implements Constants {
 
     public void displayProfileImage(final ImageView view, final String url, final ImageLoadingListener listener) {
         mImageLoader.displayImage(url, view, mProfileImageDisplayOptions, listener);
+    }
+
+    public void loadProfileImage(final ParcelableAccount account, final ImageLoadingListener listener) {
+        if (account.account_user != null && account.account_user.extras != null
+                && !TextUtils.isEmpty(account.account_user.extras.profile_image_url_profile_size)) {
+            loadProfileImage(account.account_user.extras.profile_image_url_profile_size, listener);
+        } else {
+            loadProfileImage(account.profile_image_url, listener);
+        }
     }
 
     public void loadProfileImage(final String url, final ImageLoadingListener listener) {
