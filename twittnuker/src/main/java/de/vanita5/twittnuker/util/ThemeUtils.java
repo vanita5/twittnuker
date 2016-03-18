@@ -58,6 +58,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.afollestad.appthemeengine.util.ATEUtil;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import de.vanita5.twittnuker.Constants;
@@ -440,13 +442,6 @@ public class ThemeUtils implements Constants {
                 ThemeBackgroundPreference.MIN_ALPHA, ThemeBackgroundPreference.MAX_ALPHA);
     }
 
-
-    public static int getActionBarAlpha(final String option, final int alpha) {
-        if (isTransparentBackground(option)) {
-            return getActionBarAlpha(alpha);
-        }
-        return 0xFF;
-    }
 
     public static int getActionBarAlpha(final int alpha) {
         final int normalizedAlpha = TwidereMathUtils.clamp(alpha, 0, 0xFF);
@@ -876,6 +871,11 @@ public class ThemeUtils implements Constants {
         }
         if (TextUtils.isEmpty(value.string)) return "dark";
         return String.valueOf(value.string);
+    }
+
+    public static int getColorDependent(int color) {
+        final boolean isDark = !ATEUtil.isColorLight(color);
+        return isDark ? Color.WHITE : Color.BLACK;
     }
 
 

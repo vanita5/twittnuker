@@ -55,12 +55,12 @@
             app:min="10"
             app:step="5"/>
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="remember_position"
             android:summary="@string/remember_position_summary"
             android:title="@string/remember_position"/>
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="read_from_bottom"
             android:summary="@string/load_more_from_top_summary"
@@ -88,12 +88,12 @@
     <PreferenceCategory
         android:key="category_safety"
         android:title="@string/safety">
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="phishing_link_warning"
             android:summary="@string/phishing_link_warning_summary"
             android:title="@string/phishing_link_warning"/>
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="display_sensitive_contents"
             android:summary="@string/display_sensitive_contents_summary"

@@ -763,12 +763,9 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
     }
 
     private void setupBars() {
-        final int themeColor = getThemeColor();
-        final int actionBarColor = getActionBarColor();
         final String backgroundOption = getCurrentThemeBackgroundOption();
         final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);
         final int actionBarAlpha = isTransparent ? ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(this)) : 0xFF;
-        mTabIndicator.setItemContext(ThemeUtils.getActionBarThemedContext(this, actionBarColor));
         mActionsButton.setAlpha(actionBarAlpha / 255f);
     }
 

@@ -33,7 +33,7 @@
         android:order="13"
         android:title="@string/network_diagnostics"/>
 
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="true"
         android:key="bug_reports"
         android:order="12"

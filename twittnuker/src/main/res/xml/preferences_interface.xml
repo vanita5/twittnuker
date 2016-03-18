@@ -38,7 +38,7 @@
         </de.vanita5.twittnuker.preference.ThemeFontFamilyPreference>
 
     </PreferenceCategory>
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="true"
         android:key="unread_count"
         android:summary="@string/unread_count_summary"
@@ -46,9 +46,9 @@
         <extra
             android:name="notify_change"
             android:value="true" />
-    </SwitchPreference>
+    </SwitchPreferenceCompat>
 
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="leftside_compose_button"
         android:summary="@string/leftside_compose_button_summary"

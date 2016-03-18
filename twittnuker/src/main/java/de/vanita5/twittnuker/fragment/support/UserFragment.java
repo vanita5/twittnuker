@@ -55,7 +55,6 @@ import android.support.v4.app.SharedElementCallback;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.OnApplyWindowInsetsListener;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
@@ -145,7 +144,6 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
@@ -231,7 +229,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private int mBannerWidth;
     private int mCardBackgroundColor;
     private int mActionBarShadowColor;
-    private int mUiColor;
+    private int mUiColor, mPrimaryColor, mPrimaryColorDark;
     private boolean mNameFirst;
     private int mPreviousTabItemIsDark, mPreviousActionBarItemIsDark;
     private boolean mHideBirthdayView;
@@ -1473,20 +1471,22 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         if (mActionBarBackground == null) {
             setupBaseActionBar();
         }
-        final AppCompatActivity activity = (AppCompatActivity) getActivity();
-        final IThemedActivity themed = (IThemedActivity) activity;
-        final String backgroundOption = themed.getThemeBackgroundOption();
-        final int actionBarColor = ThemeUtils.getActionBarColor(activity);
+        final ThemedAppCompatActivity activity = (ThemedAppCompatActivity) getActivity();
+        if (Config.coloredActionBar(activity, activity.getATEKey())) {
+            mPrimaryColor = color;
+            mPrimaryColorDark = ATEUtil.darkenColor(color);
+        } else {
+            mPrimaryColor = Config.primaryColor(activity, activity.getATEKey());
+            mPrimaryColorDark = Color.BLACK;
+        }
         if (mActionBarBackground != null) {
-            mActionBarBackground.setColor(actionBarColor);
+            mActionBarBackground.setColor(mPrimaryColor);
         }
         if (mUser != null) {
-            final String displayName = mUserColorNameManager.getDisplayName(mUser, mNameFirst, false);
-            ActivitySupport.setTaskDescription(activity, new TaskDescriptionCompat(displayName, null,
-                    actionBarColor));
+            final String name = mUserColorNameManager.getDisplayName(mUser, mNameFirst, false);
+            ActivitySupport.setTaskDescription(activity, new TaskDescriptionCompat(name, null, color));
         } else {
-            ActivitySupport.setTaskDescription(activity, new TaskDescriptionCompat(null, null,
-                    actionBarColor));
+            ActivitySupport.setTaskDescription(activity, new TaskDescriptionCompat(null, null, color));
         }
         final int optimalAccentColor = ThemeUtils.getOptimalAccentColor(color,
                 mDescriptionView.getCurrentTextColor());
@@ -1494,8 +1494,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mLocationView.setLinkTextColor(optimalAccentColor);
         mURLView.setLinkTextColor(optimalAccentColor);
         mProfileBannerView.setBackgroundColor(color);
-        ViewSupport.setBackground(mPagerIndicator, ThemeUtils.getActionBarStackedBackground(activity,
-                actionBarColor, backgroundOption, true));
+
+        mPagerIndicator.setBackgroundColor(mPrimaryColor);
 
         final HeaderDrawerLayout drawer = mHeaderDrawerLayout;
         if (drawer != null) {
@@ -1586,69 +1586,55 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final ThemedAppCompatActivity activity = (ThemedAppCompatActivity) getActivity();
 
 
-        final int statusBarColor;
-        if (Config.coloredStatusBar(activity, activity.getATEKey())) {
-            statusBarColor = (int) sArgbEvaluator.evaluate(factor, ATEUtil.darkenColor(0xA0000000),
-                    ATEUtil.darkenColor(mUiColor));
-        } else {
-            statusBarColor = (int) sArgbEvaluator.evaluate(factor, ATEUtil.darkenColor(0xA0000000),
-                    Color.BLACK);
-        }
+        final int statusBarColor = (int) sArgbEvaluator.evaluate(factor, ATEUtil.darkenColor(0xA0000000),
+                ATEUtil.darkenColor(mPrimaryColorDark));
         WindowSupport.setStatusBarColor(activity.getWindow(), statusBarColor);
-        int stackedTabColor = ThemeUtils.getActionBarColor(activity, mUiColor,
-                activity.getThemeBackgroundOption());
+        int stackedTabColor = mPrimaryColor;
+
+
+        final float profileContentHeight = mProfileNameContainer.getHeight() + mProfileDetailsContainer.getHeight();
+        final float tabOutlineAlphaFactor;
+        if ((offset - spaceHeight) > 0) {
+            tabOutlineAlphaFactor = 1f - TwidereMathUtils.clamp((offset - spaceHeight) / profileContentHeight, 0, 1);
+        } else {
+            tabOutlineAlphaFactor = 1f;
+        }
 
         if (mActionBarBackground != null) {
             mActionBarBackground.setFactor(factor);
-
-            final float profileContentHeight = mProfileNameContainer.getHeight() + mProfileDetailsContainer.getHeight();
-            final float tabOutlineAlphaFactor;
-            if ((offset - spaceHeight) > 0) {
-                tabOutlineAlphaFactor = 1f - TwidereMathUtils.clamp((offset - spaceHeight) / profileContentHeight, 0, 1);
-            } else {
-                tabOutlineAlphaFactor = 1f;
-            }
             mActionBarBackground.setOutlineAlphaFactor(tabOutlineAlphaFactor);
-
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                setCompatToolbarOverlayAlpha(activity, factor * tabOutlineAlphaFactor);
-            }
-
-            final Drawable tabBackground = mPagerIndicator.getBackground();
-
-
-            if (ThemeUtils.isTransparentBackground(activity.getCurrentThemeBackgroundOption())) {
-                stackedTabColor = ColorUtils.setAlphaComponent(stackedTabColor,
-                        ThemeUtils.getActionBarAlpha(activity.getCurrentThemeBackgroundAlpha()));
-            }
-            final int tabColor = (Integer) sArgbEvaluator.evaluate(tabOutlineAlphaFactor, stackedTabColor, mCardBackgroundColor);
-            ((ColorDrawable) tabBackground).setColor(tabColor);
-            final boolean tabItemIsDark = TwidereColorUtils.getYIQLuminance(tabColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD;
-
-            if (mPreviousTabItemIsDark == 0 || (tabItemIsDark ? 1 : -1) != mPreviousTabItemIsDark) {
-                final int[] primaryColors = new int[2];
-                ThemeUtils.getDarkLightForegroundColors(activity, primaryColors);
-                final int tabContrastColor = primaryColors[tabItemIsDark ? 0 : 1];
-                mPagerIndicator.setIconColor(tabContrastColor);
-                mPagerIndicator.setLabelColor(tabContrastColor);
-                if (ThemeUtils.isDarkTheme(activity)) {
-                    mPagerIndicator.setStripColor(ThemeUtils.getOptimalAccentColor(mUiColor,
-                            tabContrastColor));
-                } else {
-                    mPagerIndicator.setStripColor(tabContrastColor);
-                }
-                mPagerIndicator.updateAppearance();
-            }
-            mPreviousTabItemIsDark = (tabItemIsDark ? 1 : -1);
-
-
         }
 
-        final int barColor = (Integer) sArgbEvaluator.evaluate(factor, mActionBarShadowColor, stackedTabColor);
-        final boolean actionItemIsDark = TwidereColorUtils.getYIQLuminance(barColor) > ThemeUtils.ACCENT_COLOR_THRESHOLD;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            setCompatToolbarOverlayAlpha(activity, factor * tabOutlineAlphaFactor);
+        }
+
+        final int currentTabColor = (Integer) sArgbEvaluator.evaluate(tabOutlineAlphaFactor,
+                stackedTabColor, mCardBackgroundColor);
+
+        final Drawable tabBackground = mPagerIndicator.getBackground();
+        ((ColorDrawable) tabBackground).setColor(currentTabColor);
+        final boolean tabItemIsDark = !ATEUtil.isColorLight(currentTabColor);
+
+        if (mPreviousTabItemIsDark == 0 || (tabItemIsDark ? 1 : -1) != mPreviousTabItemIsDark) {
+            final int tabContrastColor = ThemeUtils.getColorDependent(currentTabColor);
+            mPagerIndicator.setIconColor(tabContrastColor);
+            mPagerIndicator.setLabelColor(tabContrastColor);
+            if (Config.coloredActionBar(activity, activity.getATEKey())) {
+                mPagerIndicator.setStripColor(tabContrastColor);
+            } else {
+                mPagerIndicator.setStripColor(ThemeUtils.getOptimalAccentColor(mUiColor,
+                        tabContrastColor));
+            }
+            mPagerIndicator.updateAppearance();
+        }
+        mPreviousTabItemIsDark = (tabItemIsDark ? 1 : -1);
+
+        final int currentActionBarColor = (Integer) sArgbEvaluator.evaluate(factor, mActionBarShadowColor,
+                stackedTabColor);
+        final boolean actionItemIsDark = !ATEUtil.isColorLight(stackedTabColor);
         if (mPreviousActionBarItemIsDark == 0 || (actionItemIsDark ? 1 : -1) != mPreviousActionBarItemIsDark) {
-            ThemeUtils.applyToolbarItemColor(activity, mToolbar, barColor);
+            ThemeUtils.applyToolbarItemColor(activity, mToolbar, currentActionBarColor);
         }
         mPreviousActionBarItemIsDark = actionItemIsDark ? 1 : -1;
 

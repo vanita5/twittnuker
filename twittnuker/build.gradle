@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "de.vanita5.twittnuker"
-        minSdkVersion 21
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 23
         versionName "0.7.8"
