@@ -42,11 +42,11 @@ import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.fragment.support.CursorActivitiesFragment;
 import de.vanita5.twittnuker.fragment.support.UserFragment;
+import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
@@ -448,19 +448,13 @@ public class ParcelableActivitiesAdapter extends LoadMoreSupportAdapter<Recycler
         }
     }
 
-    static class EmptyViewHolder extends RecyclerView.ViewHolder {
-        public EmptyViewHolder(View view) {
-            super(view);
-        }
-    }
-
     static class EventListener implements IStatusViewHolder.StatusClickListener, GapClickListener,
             ActivityEventListener {
 
         final WeakReference<ParcelableActivitiesAdapter> adapterRef;
 
         EventListener(ParcelableActivitiesAdapter adapter) {
-            adapterRef = new WeakReference<ParcelableActivitiesAdapter>(adapter);
+            adapterRef = new WeakReference<>(adapter);
         }
 
         @Override

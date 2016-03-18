@@ -61,9 +61,9 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.activity.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.UserListSelectorActivity;
+import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -424,7 +424,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         final FragmentActivity activity = getActivity();
         ThemeUtils.initPagerIndicatorAsActionBarTab(activity, mPagerIndicator, mPagerOverlay);
         ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
-        ThemeUtils.setCompatContentViewOverlay(activity, new EmptyDrawable());
         ThemeUtils.setWindowOverlayViewOverlay(activity, new EmptyDrawable());
 
         if (activity instanceof IThemedActivity) {

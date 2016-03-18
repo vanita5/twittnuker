@@ -67,10 +67,10 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.api.twitter.util.TwitterConverterFactory;
-import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -237,12 +237,17 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         return isTwitterCredentials(ParcelableAccountUtils.getAccount(context, accountId));
     }
 
-    public static boolean isTwitterCredentials(ParcelableAccount credentials) {
-        return ParcelableAccount.Type.TWITTER.equals(credentials.account_type);
+    public static boolean isTwitterCredentials(ParcelableAccount account) {
+        if (account.account_type == null) {
+            final String accountHost = account.account_key.getHost();
+            if (accountHost == null) return true;
+            return USER_TYPE_TWITTER_COM.equals(accountHost);
+        }
+        return ParcelableAccount.Type.TWITTER.equals(account.account_type);
     }
 
-    public static boolean isStatusNetCredentials(ParcelableAccount credentials) {
-        return ParcelableAccount.Type.STATUSNET.equals(credentials.account_type);
+    public static boolean isStatusNetCredentials(ParcelableAccount account) {
+        return ParcelableAccount.Type.STATUSNET.equals(account.account_type);
     }
 
     @WorkerThread

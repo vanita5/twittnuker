@@ -34,21 +34,6 @@ import com.nostra13.universalimageloader.utils.IoUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
-import javax.inject.Inject;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -69,6 +54,21 @@ import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import javax.inject.Inject;
 
 public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader {
 
@@ -184,8 +184,13 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         final ParcelableStatus[] array = data.toArray(new ParcelableStatus[data.size()]);
         for (int i = 0, size = array.length; i < size; i++) {
             final ParcelableStatus status = array[i];
-            if (shouldFilterStatus(db, status) && !status.is_gap && i != size - 1) {
-                deleteStatus(data, status.id);
+            final boolean filtered = shouldFilterStatus(db, status);
+            if (filtered) {
+                if (!status.is_gap && i != size - 1) {
+                    data.remove(i);
+                } else {
+                    status.is_filtered = true;
+                }
             }
         }
         if (mComparator != null) {

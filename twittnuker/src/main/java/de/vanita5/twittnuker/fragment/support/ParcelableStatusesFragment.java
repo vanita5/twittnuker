@@ -35,10 +35,10 @@ import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
@@ -151,7 +151,7 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment {
         if (position == 0) return;
         final ParcelableStatusesAdapter adapter = getAdapter();
         // Load the last item
-        final int idx = adapter.getStatusStartIndex() + adapter.getStatusCount() - 1;
+        final int idx = adapter.getStatusStartIndex() + adapter.getRawStatusCount() - 1;
         if (idx < 0) return;
         final ParcelableStatus status = adapter.getStatus(idx);
         UserKey[] accountKeys = {status.account_key};
