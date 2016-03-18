@@ -311,8 +311,6 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
     private void updateSystemWindowsInsets() {
         if (mAccountProfileContainer == null) return;
         final Rect insets = mSystemWindowsInsets;
-        final int top = Utils.getInsetsTopWithoutActionBarHeight(getActivity(), insets.top);
-        mAccountProfileContainer.setPadding(0, top, 0, 0);
     }
 
     @Override
@@ -692,6 +690,11 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
             }
         }
         return false;
+    }
+
+    public void setStatusBarHeight(int height) {
+        final int top = Utils.getInsetsTopWithoutActionBarHeight(getActivity(), height);
+        mAccountProfileContainer.setPadding(0, top, 0, 0);
     }
 
     static class AccountProfileImageViewHolder extends ViewHolder implements OnClickListener {

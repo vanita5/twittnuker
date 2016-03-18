@@ -40,6 +40,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
+import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper;
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -56,7 +57,7 @@ import de.vanita5.twittnuker.view.themed.AccentSwipeRefreshLayout;
 public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAdapter, L extends RecyclerView.LayoutManager>
         extends BaseSupportFragment implements SwipeRefreshLayout.OnRefreshListener,
         HeaderDrawerLayout.DrawerCallback, RefreshScrollTopInterface, IControlBarActivity.ControlBarOffsetListener,
-        ContentScrollHandler.ContentListSupport, IControlBarActivity.ControlBarShowHideHelper.ControlBarAnimationListener {
+        ContentScrollHandler.ContentListSupport, ControlBarShowHideHelper.ControlBarAnimationListener {
 
     private View mProgressContainer;
     private SwipeRefreshLayout mSwipeRefreshLayout;

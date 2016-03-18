@@ -62,6 +62,8 @@ import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
+import de.vanita5.twittnuker.util.theme.TabPagerIndicatorViewProcessor;
+import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 public class TwittnukerApplication extends Application implements Constants,
         OnSharedPreferenceChangeListener {
@@ -117,6 +119,7 @@ public class TwittnukerApplication extends Application implements Constants,
         if (BuildConfig.DEBUG) {
             StrictModeUtils.detectAllVmPolicy();
         }
+        ATE.registerViewProcessor(TabPagerIndicator.class, new TabPagerIndicatorViewProcessor());
         if (!ATE.config(this, null).isConfigured()) {
             final int accentColor = ThemeUtils.getUserAccentColor(this);
             ATE.config(this, null).primaryColor(accentColor).accentColor(accentColor).commit();
