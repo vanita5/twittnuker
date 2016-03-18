@@ -167,7 +167,6 @@ import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.ExtendedRecyclerView;
 import de.vanita5.twittnuker.view.ForegroundColorView;
-import de.vanita5.twittnuker.view.StatusTextView;
 import de.vanita5.twittnuker.view.TwitterCardContainer;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
@@ -893,7 +892,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         private final ActionMenuView menuBar;
         private final TextView nameView, screenNameView;
-        private final StatusTextView textView;
+        private final TextView textView;
         private final TextView quotedTextView;
         private final TextView quotedNameView, quotedScreenNameView;
         private final ImageView profileImageView;
@@ -929,7 +928,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             menuBar = (ActionMenuView) itemView.findViewById(R.id.menu_bar);
             nameView = (TextView) itemView.findViewById(R.id.name);
             screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
-            textView = (StatusTextView) itemView.findViewById(R.id.text);
+            textView = (TextView) itemView.findViewById(R.id.text);
             profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
             profileTypeView = (ImageView) itemView.findViewById(R.id.profile_type);
             timeSourceView = (TextView) itemView.findViewById(R.id.time_source);

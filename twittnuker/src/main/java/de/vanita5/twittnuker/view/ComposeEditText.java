@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.view;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.method.ArrowKeyMovementMethod;
@@ -34,6 +33,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.afollestad.appthemeengine.inflation.ATEMultiAutoCompleteTextView;
+import com.afollestad.appthemeengine.inflation.ATEMultiAutoCompleteTextView2;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.model.UserKey;
@@ -41,7 +43,7 @@ import de.vanita5.twittnuker.util.EmojiSupportUtils;
 import de.vanita5.twittnuker.util.widget.StatusTextTokenizer;
 import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView;
 
-public class ComposeEditText extends AppCompatMultiAutoCompleteTextView implements IThemeBackgroundTintView {
+public class ComposeEditText extends ATEMultiAutoCompleteTextView2 implements IThemeBackgroundTintView {
 
     private ComposeAutoCompleteAdapter mAdapter;
     private UserKey mAccountKey;
@@ -51,11 +53,7 @@ public class ComposeEditText extends AppCompatMultiAutoCompleteTextView implemen
     }
 
     public ComposeEditText(final Context context, final AttributeSet attrs) {
-        this(context, attrs, R.attr.autoCompleteTextViewStyle);
-    }
-
-    public ComposeEditText(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
+        super(context, attrs);
         EmojiSupportUtils.initForTextView(this);
         setTokenizer(new StatusTextTokenizer());
         setOnItemClickListener(new AdapterView.OnItemClickListener() {

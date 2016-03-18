@@ -69,8 +69,10 @@ import de.vanita5.twittnuker.util.theme.ActionBarContextViewViewProcessor;
 import de.vanita5.twittnuker.util.theme.ExtendedSwipeRefreshLayoutViewProcessor;
 import de.vanita5.twittnuker.util.theme.FloatingActionButtonViewProcessor;
 import de.vanita5.twittnuker.util.theme.TabPagerIndicatorViewProcessor;
+import de.vanita5.twittnuker.util.theme.TimelineContentTextViewViewProcessor;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
-import de.vanita5.twittnuker.view.themed.ExtendedSwipeRefreshLayout;
+import de.vanita5.twittnuker.view.TimelineContentTextView;
+import de.vanita5.twittnuker.view.ExtendedSwipeRefreshLayout;
 
 public class TwittnukerApplication extends Application implements Constants,
         OnSharedPreferenceChangeListener {
@@ -130,6 +132,7 @@ public class TwittnukerApplication extends Application implements Constants,
         ATE.registerViewProcessor(FloatingActionButton.class, new FloatingActionButtonViewProcessor());
         ATE.registerViewProcessor(ActionBarContextView.class, new ActionBarContextViewViewProcessor());
         ATE.registerViewProcessor(ExtendedSwipeRefreshLayout.class, new ExtendedSwipeRefreshLayoutViewProcessor());
+        ATE.registerViewProcessor(TimelineContentTextView.class, new TimelineContentTextViewViewProcessor());
         final SharedPreferences preferences = getSharedPreferences();
         if (!ATE.config(this, null).isConfigured()) {
             final int themeColor = preferences.getInt(KEY_THEME_COLOR, ContextCompat.getColor(this,

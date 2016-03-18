@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
@@ -32,13 +33,12 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import de.vanita5.twittnuker.util.EmojiSupportUtils;
-import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
 /**
  * Returns true when not clicking links
  * Created by mariotaku on 15/11/20.
  */
-public class TimelineContentTextView extends ThemedTextView {
+public class TimelineContentTextView extends AppCompatTextView {
     private boolean mFirstNotLink;
 
     public TimelineContentTextView(Context context) {
@@ -57,8 +57,17 @@ public class TimelineContentTextView extends ThemedTextView {
     }
 
     @Override
-    protected MovementMethod getDefaultMovementMethod() {
-        return LinkMovementMethod.getInstance();
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        // FIXME simple workaround to https://code.google.com/p/android/issues/detail?id=191430
+        // Android clears TextView when setText(), so setText before touch
+        if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            if (getSelectionEnd() != getSelectionStart()) {
+                final CharSequence text = getText();
+                setText(null);
+                setText(text);
+            }
+        }
+        return super.dispatchTouchEvent(event);
     }
 
     @Override
@@ -93,11 +102,8 @@ public class TimelineContentTextView extends ThemedTextView {
     }
 
     @Override
-    public int getBaseline() {
-        try {
-            return super.getBaseline();
-        } catch (IndexOutOfBoundsException e) {
-            return -1;
-        }
+    protected MovementMethod getDefaultMovementMethod() {
+        return LinkMovementMethod.getInstance();
     }
+
 }

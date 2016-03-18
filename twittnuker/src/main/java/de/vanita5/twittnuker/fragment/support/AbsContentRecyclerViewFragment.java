@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
-import de.vanita5.twittnuker.view.themed.ExtendedSwipeRefreshLayout;
+import de.vanita5.twittnuker.view.ExtendedSwipeRefreshLayout;
 
 public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAdapter, L extends RecyclerView.LayoutManager>
         extends BaseSupportFragment implements SwipeRefreshLayout.OnRefreshListener,

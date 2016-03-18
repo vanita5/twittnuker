@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
 import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.viewprocessors.ViewProcessor;
 
-import de.vanita5.twittnuker.view.themed.ExtendedSwipeRefreshLayout;
+import de.vanita5.twittnuker.view.ExtendedSwipeRefreshLayout;
 
 public class ExtendedSwipeRefreshLayoutViewProcessor implements ViewProcessor<ExtendedSwipeRefreshLayout, Object> {
     @Override

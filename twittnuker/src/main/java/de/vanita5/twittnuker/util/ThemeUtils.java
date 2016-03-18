@@ -673,6 +673,12 @@ public class ThemeUtils implements Constants {
         return TwidereColorUtils.getContrastYIQ(itemBackgroundColor, colorDark, colorLight);
     }
 
+    public static int getActionIconColor(Context context, int backgroundColor) {
+        final int colorDark = ContextCompat.getColor(context, R.color.action_icon_dark);
+        final int colorLight = ContextCompat.getColor(context, R.color.action_icon_light);
+        return ATEUtil.isColorLight(backgroundColor) ? colorDark : colorLight;
+    }
+
     public static void wrapMenuIcon(ActionMenuView view, int colorDark, int colorLight, int... excludeGroups) {
         final Context context = view.getContext();
         final int itemBackgroundColor = ThemeUtils.getThemeBackgroundColor(context);

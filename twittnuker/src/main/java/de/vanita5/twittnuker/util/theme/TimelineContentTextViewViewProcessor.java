@@ -20,22 +20,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.themed;
+package de.vanita5.twittnuker.util.theme;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatTextView;
-import android.util.AttributeSet;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-public class ThemedTextView extends AppCompatTextView {
-    public ThemedTextView(Context context) {
-        super(context);
-    }
+import com.afollestad.appthemeengine.Config;
+import com.afollestad.appthemeengine.viewprocessors.ViewProcessor;
 
-    public ThemedTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
+import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.view.TimelineContentTextView;
 
-    public ThemedTextView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+public class TimelineContentTextViewViewProcessor implements ViewProcessor<TimelineContentTextView, Object> {
+    @Override
+    public void process(@NonNull Context context, @Nullable String key, @Nullable TimelineContentTextView target, @Nullable Object extra) {
+        if (target == null) return;
+        final int accentColor = Config.accentColor(context, key);
+        target.setLinkTextColor(ThemeUtils.getOptimalAccentColor(accentColor, target.getCurrentTextColor()));
     }
 }

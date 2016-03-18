@@ -25,19 +25,19 @@ package de.vanita5.twittnuker.view;
 import android.content.Context;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
 import java.lang.ref.WeakReference;
 
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
 import static de.vanita5.twittnuker.util.Utils.formatSameDayTime;
 
-public class ShortTimeView extends ThemedTextView implements Constants {
+public class ShortTimeView extends AppCompatTextView implements Constants {
 
     private static final long TICKER_DURATION = 5000L;
 

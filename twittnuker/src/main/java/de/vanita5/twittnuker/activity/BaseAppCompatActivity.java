@@ -31,10 +31,6 @@ import android.view.MotionEvent;
 
 import com.squareup.otto.Bus;
 
-import java.util.ArrayList;
-
-import javax.inject.Inject;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
@@ -42,12 +38,18 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCal
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
+import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
+
+import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 @SuppressLint("Registered")
 public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Constants,
@@ -67,6 +69,10 @@ public class BaseAppCompatActivity extends ThemedAppCompatActivity implements Co
     protected SharedPreferencesWrapper mPreferences;
     @Inject
     protected NotificationManagerWrapper mNotificationManager;
+    @Inject
+    protected MediaLoaderWrapper mMediaLoader;
+    @Inject
+    protected UserColorNameManager mUserColorNameManager;
 
     private ActionHelper mActionHelper = new ActionHelper(this);
 

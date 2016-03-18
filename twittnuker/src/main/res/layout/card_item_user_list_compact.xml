@@ -81,7 +81,7 @@
             tools:text="Created by user" />
     </LinearLayout>
 
-    <de.vanita5.twittnuker.view.themed.ThemedTextView
+    <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/element_spacing_small">
 
-        <de.vanita5.twittnuker.view.themed.ThemedTextView
+        <TextView
             android:id="@+id/members_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <de.vanita5.twittnuker.view.themed.ThemedTextView
+        <TextView
             android:id="@+id/subscribers_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -78,7 +78,7 @@
             android:layout_toRightOf="@+id/status_info_icon"
             tools:visibility="visible"/>
 
-        <de.vanita5.twittnuker.view.themed.ThemedTextView
+        <TextView
             android:id="@+id/status_info_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
