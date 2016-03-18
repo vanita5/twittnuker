@@ -126,6 +126,7 @@ public class TwittnukerApplication extends Application implements Constants,
         ATE.registerViewProcessor(TabPagerIndicator.class, new TabPagerIndicatorViewProcessor());
         ATE.registerViewProcessor(FloatingActionButton.class, new FloatingActionButtonViewProcessor());
         ATE.registerViewProcessor(ActionBarContextView.class, new ActionBarContextViewViewProcessor());
+        ATE.registerViewProcessor(ExtendedSwipeRefreshLayout.class, new ExtendedSwipeRefreshLayoutViewProcessor());
         final SharedPreferences preferences = getSharedPreferences();
         if (!ATE.config(this, null).isConfigured()) {
             final int themeColor = preferences.getInt(KEY_THEME_COLOR, ContextCompat.getColor(this,

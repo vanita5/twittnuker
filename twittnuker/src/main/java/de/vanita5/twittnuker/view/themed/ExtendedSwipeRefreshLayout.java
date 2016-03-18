@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.view.themed;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,25 +30,19 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import de.vanita5.twittnuker.view.iface.IExtendedView;
-import de.vanita5.twittnuker.view.iface.IThemeAccentView;
 
-public class AccentSwipeRefreshLayout extends SwipeRefreshLayout implements IThemeAccentView, IExtendedView {
+public class ExtendedSwipeRefreshLayout extends SwipeRefreshLayout implements IExtendedView {
 
     private TouchInterceptor mTouchInterceptor;
     private OnSizeChangedListener mOnSizeChangedListener;
     private OnFitSystemWindowsListener mOnFitSystemWindowsListener;
 
-    public AccentSwipeRefreshLayout(Context context, AttributeSet attrs) {
+    public ExtendedSwipeRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public AccentSwipeRefreshLayout(Context context) {
+    public ExtendedSwipeRefreshLayout(Context context) {
         super(context);
-    }
-
-    @Override
-    public void setAccentTintColor(@NonNull ColorStateList color) {
-        setColorSchemeColors(color.getDefaultColor());
     }
 
     @Override

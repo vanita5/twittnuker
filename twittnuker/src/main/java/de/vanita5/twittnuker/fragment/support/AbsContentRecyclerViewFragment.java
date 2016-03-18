@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
-import de.vanita5.twittnuker.view.themed.AccentSwipeRefreshLayout;
+import de.vanita5.twittnuker.view.themed.ExtendedSwipeRefreshLayout;
 
 public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAdapter, L extends RecyclerView.LayoutManager>
         extends BaseSupportFragment implements SwipeRefreshLayout.OnRefreshListener,
@@ -225,8 +225,8 @@ public abstract class AbsContentRecyclerViewFragment<A extends LoadMoreSupportAd
         mLayoutManager = onCreateLayoutManager(context);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        if (mSwipeRefreshLayout instanceof AccentSwipeRefreshLayout) {
-            ((AccentSwipeRefreshLayout) mSwipeRefreshLayout).setTouchInterceptor(new IExtendedView.TouchInterceptor() {
+        if (mSwipeRefreshLayout instanceof ExtendedSwipeRefreshLayout) {
+            ((ExtendedSwipeRefreshLayout) mSwipeRefreshLayout).setTouchInterceptor(new IExtendedView.TouchInterceptor() {
                 @Override
                 public boolean dispatchTouchEvent(View view, MotionEvent event) {
                     return false;
