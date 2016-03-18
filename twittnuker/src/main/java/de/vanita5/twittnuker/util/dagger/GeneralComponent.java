@@ -38,13 +38,13 @@ import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
 import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
 import de.vanita5.twittnuker.fragment.BaseListFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
-import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
 import de.vanita5.twittnuker.fragment.support.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
 import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
 import de.vanita5.twittnuker.loader.TwitterAPIStatusesLoader;
 import de.vanita5.twittnuker.preference.AccountsListPreference;
+import de.vanita5.twittnuker.preference.KeyboardShortcutPreference;
 import de.vanita5.twittnuker.provider.CacheProvider;
 import de.vanita5.twittnuker.provider.TwidereDataProvider;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
@@ -136,4 +136,6 @@ public interface GeneralComponent {
     void inject(NotificationHelper object);
 
     void inject(AbsFriendshipOperationTask task);
+
+    void inject(KeyboardShortcutPreference preference);
 }

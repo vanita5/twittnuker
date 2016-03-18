@@ -22,36 +22,75 @@
 
 package de.vanita5.twittnuker.preference;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.preference.DialogPreference;
+import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.AttributeSet;
 
-public class SettingsImportExportPreference extends DialogPreference {
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.DataExportActivity;
+import de.vanita5.twittnuker.activity.DataImportActivity;
+import de.vanita5.twittnuker.preference.iface.IDialogPreference;
+
+public class SettingsImportExportPreference extends DialogPreference implements IDialogPreference {
     public SettingsImportExportPreference(Context context) {
         this(context, null);
     }
 
     public SettingsImportExportPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setDialogTitle(null);
-        setPositiveButtonText(null);
-        setNegativeButtonText(null);
     }
 
-//    @Override
-//    protected void onPrepareDialogBuilder(Builder builder) {
-//        final Context context = getContext();
-//        final String[] entries = new String[2];
-//        final Intent[] values = new Intent[2];
-//        entries[0] = context.getString(R.string.import_settings);
-//        entries[1] = context.getString(R.string.export_settings);
-//        values[0] = new Intent(context, DataImportActivity.class);
-//        values[1] = new Intent(context, DataExportActivity.class);
-//        builder.setItems(entries, new OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                context.startActivity(values[which]);
-//            }
-//        });
-//    }
+    @Override
+    public void displayDialog(PreferenceFragmentCompat fragment) {
+        ImportExportDialogFragment df = ImportExportDialogFragment.newInstance(getKey());
+        df.setTargetFragment(fragment, 0);
+        df.show(fragment.getFragmentManager(), getKey());
+    }
+
+    public static class ImportExportDialogFragment extends PreferenceDialogFragmentCompat {
+
+        public static ImportExportDialogFragment newInstance(String key) {
+            final ImportExportDialogFragment df = new ImportExportDialogFragment();
+            final Bundle args = new Bundle();
+            args.putString(ARG_KEY, key);
+            df.setArguments(args);
+            return df;
+        }
+
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getContext());
+            final Context context = getContext();
+            final String[] entries = new String[2];
+            final Intent[] values = new Intent[2];
+            entries[0] = context.getString(R.string.import_settings);
+            entries[1] = context.getString(R.string.export_settings);
+            values[0] = new Intent(context, DataImportActivity.class);
+            values[1] = new Intent(context, DataExportActivity.class);
+            builder.setItems(entries, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startActivity(values[which]);
+                }
+            });
+            return builder.create();
+        }
+
+        @Override
+        public void onDialogClosed(boolean positive) {
+
+        }
+    }
+
 }
