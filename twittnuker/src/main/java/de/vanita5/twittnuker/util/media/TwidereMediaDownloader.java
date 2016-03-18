@@ -53,6 +53,7 @@ import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 import de.vanita5.twittnuker.util.net.NoIntercept;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -148,7 +149,12 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         builder.tag(NoIntercept.INSTANCE);
         final HttpResponse resp = mClient.newCall(builder.build()).execute();
         if (!resp.isSuccessful()) {
-            throw new IOException("Unable to get media, response code: " + resp.getStatus());
+            final String detailMessage = "Unable to get " + requestUri + ", response code: "
+                    + resp.getStatus();
+            if (resp.getStatus() == 404) {
+                throw new FileNotFoundException(detailMessage);
+            }
+            throw new IOException(detailMessage);
         }
         final Body body = resp.getBody();
         final CacheMetadata metadata = new CacheMetadata();

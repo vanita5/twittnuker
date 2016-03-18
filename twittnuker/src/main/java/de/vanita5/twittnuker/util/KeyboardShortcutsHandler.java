@@ -36,7 +36,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.ComposeActivity;
 import de.vanita5.twittnuker.activity.QuickSearchBarActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants;
 
 import java.util.HashMap;
@@ -86,8 +85,9 @@ public class KeyboardShortcutsHandler implements Constants, KeyboardShortcutCons
 
     private final SharedPreferencesWrapper mPreferences;
 
-    public KeyboardShortcutsHandler(final TwittnukerApplication context) {
-        mPreferences = SharedPreferencesWrapper.getInstance(context, KEYBOARD_SHORTCUTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
+    public KeyboardShortcutsHandler(final Context context) {
+        mPreferences = SharedPreferencesWrapper.getInstance(context,
+                KEYBOARD_SHORTCUTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
     public String findAction(@NonNull KeyboardShortcutSpec spec) {

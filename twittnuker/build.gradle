@@ -95,6 +95,32 @@ dependencies {
     apt 'com.google.dagger:dagger-compiler:2.1'
     apt 'com.github.mariotaku.ObjectCursor:processor:0.9.6'
 
+    compile('com.github.afollestad:app-theme-engine:1.0.1@aar') {
+        transitive = true
+    }
+    compile('com.github.afollestad.material-dialogs:commons:0.8.5.7@aar') {
+        transitive = true
+    }
+    //compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.7'
+
+    compile project(':twittnuker.component.common')
+
+    compile 'com.google.android.gms:play-services-gcm:8.3.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') { transitive = true; }
+    compile ':YouTubeAndroidPlayerApi:1.2.2@jar'
+
+    compile 'org.osmdroid:osmdroid-android:5.1'
+
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta1'
+
+    provided 'javax.annotation:jsr250-api:1.0'
+
+    testCompile 'junit:junit:4.12'
+
+    androidTestCompile 'com.android.support:support-annotations:23.2.1'
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test:rules:0.5'
+
     //compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-v13:23.2.1'
     compile 'com.android.support:appcompat-v7:23.2.1'
@@ -102,8 +128,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.2.1'
     compile 'com.android.support:preference-v7:23.2.1'
     compile 'com.android.support:preference-v14:23.2.1'
-    compile('com.github.afollestad.app-theme-engine:library:1.0.2-SNAPSHOT@aar') { transitive = true }
-    compile('com.github.afollestad.material-dialogs:commons:0.8.5.8-SNAPSHOT@aar') { transitive = true }
     compile 'com.twitter:twitter-text:1.13.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.squareup:otto:1.3.8'
@@ -112,7 +136,6 @@ dependencies {
     compile 'com.commonsware.cwac:layouts:0.4.2'
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.pnikosis:materialish-progress:1.7'
-//    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.7'
     compile 'com.github.johnpersano:supertoasts:1.3.4.1@aar'
     compile 'com.github.mariotaku:MessageBubbleView:1.2'
     compile 'com.github.mariotaku:DragSortListView:0.6.1'
@@ -136,30 +159,9 @@ dependencies {
     compile 'com.github.mariotaku.SQLiteQB:library:0.9.6'
     compile 'com.github.mariotaku.ObjectCursor:core:0.9.6'
 
-    compile project(':twittnuker.component.common')
-
-    compile 'com.google.android.gms:play-services-gcm:8.3.0'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') { transitive = true; }
-    compile ':YouTubeAndroidPlayerApi:1.2.2@jar'
-
-    // Twittnuker specific
     compile 'org.sufficientlysecure:donations:2.4'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
     compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
-
-    // libraries for f-droid
-    compile 'org.osmdroid:osmdroid-android:5.1'
-
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta1'
-
-    provided 'javax.annotation:jsr250-api:1.0'
-
-    testCompile 'junit:junit:4.12'
-
-    androidTestCompile 'com.android.support:support-annotations:23.2.1'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'org.apache.commons:commons-lang3:3.4'
 }
 
 task svgToDrawable(type: SvgDrawableTask) {

@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util.dagger;
 
+import android.app.Application;
 import android.content.Context;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -42,7 +43,6 @@ import org.mariotaku.mediaviewer.library.MediaDownloader;
 import org.mariotaku.restfu.http.RestHttpClient;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
@@ -81,9 +81,11 @@ import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 @Module
 public class ApplicationModule implements Constants {
 
-    private final TwittnukerApplication application;
+    private static ApplicationModule sApplicationModule;
 
-    public ApplicationModule(TwittnukerApplication application) {
+    private final Application application;
+
+    public ApplicationModule(Application application) {
         if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
             throw new RuntimeException("Module must be created inside main thread");
         }
@@ -91,7 +93,9 @@ public class ApplicationModule implements Constants {
     }
 
     static ApplicationModule get(@NonNull Context context) {
-        return TwittnukerApplication.getInstance(context).getApplicationModule();
+        if (sApplicationModule != null) return sApplicationModule;
+        Application application = (Application) context.getApplicationContext();
+        return sApplicationModule = new ApplicationModule(application);
     }
 
     @Provides
