@@ -55,16 +55,6 @@ public class ImageCropperActivity extends CropImageActivity implements IThemedAc
     }
 
     @Override
-    public int getThemeColor() {
-        return ThemeUtils.getUserAccentColor(this);
-    }
-
-    @Override
-    public int getActionBarColor() {
-        return ThemeUtils.getActionBarColor(this);
-    }
-
-    @Override
     public void setContentView(final int layoutResID) {
         super.setContentView(R.layout.activity_image_cropper);
     }
@@ -101,14 +91,7 @@ public class ImageCropperActivity extends CropImageActivity implements IThemedAc
     }
 
     @Override
-    public String getThemeFontFamily() {
-        return ThemeUtils.getThemeFontFamily(this);
-    }
-
-    @Override
     protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resId, boolean first) {
-        mCurrentThemeColor = getThemeColor();
-        mCurrentActionBarColor = getActionBarColor();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
         super.onApplyThemeResource(theme, resId, first);

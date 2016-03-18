@@ -30,7 +30,7 @@
 
     <fragment
         android:id="@+id/left_drawer"
-        class="de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment"
+        class="de.vanita5.twittnuker.fragment.AccountsDashboardFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_accounts_dashboard" />

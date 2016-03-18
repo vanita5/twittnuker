@@ -58,7 +58,7 @@ import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient;
 import static android.text.TextUtils.isEmpty;
 
 @SuppressLint("SetJavaScriptEnabled")
-public class BrowserSignInActivity extends BaseAppCompatActivity {
+public class BrowserSignInActivity extends BaseActivity {
 
     private static final String INJECT_CONTENT = "javascript:window.injector.processHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');";
 

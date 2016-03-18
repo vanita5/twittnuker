@@ -28,7 +28,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
-import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
+import de.vanita5.twittnuker.fragment.card.CardPollFragment;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;

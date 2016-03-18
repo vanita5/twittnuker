@@ -52,12 +52,12 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
-import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
-import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
-import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
-import de.vanita5.twittnuker.fragment.support.InteractionsTimelineFragment;
-import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseSupportFragment;
+import de.vanita5.twittnuker.fragment.DirectMessagesFragment;
+import de.vanita5.twittnuker.fragment.HomeTimelineFragment;
+import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment;
+import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.preference.WizardPageHeaderPreference;
@@ -77,7 +77,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SettingsWizardActivity extends BaseAppCompatActivity implements Constants {
+public class SettingsWizardActivity extends BaseActivity implements Constants {
 
     public static final String WIZARD_PREFERENCE_KEY_NEXT_PAGE = "next_page";
     public static final String WIZARD_PREFERENCE_KEY_USE_DEFAULTS = "use_defaults";
@@ -164,16 +164,6 @@ public class SettingsWizardActivity extends BaseAppCompatActivity implements Con
     @Override
     public String getThemeBackgroundOption() {
         return ThemeUtils.getThemeBackgroundOption(this);
-    }
-
-    @Override
-    public int getThemeColor() {
-        return ThemeUtils.getUserAccentColor(this);
-    }
-
-    @Override
-    public int getActionBarColor() {
-        return ThemeUtils.getActionBarColor(this);
     }
 
     @Override

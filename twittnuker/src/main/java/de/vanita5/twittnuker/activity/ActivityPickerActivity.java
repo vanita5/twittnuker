@@ -32,14 +32,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ResolveInfoListAdapter;
 import de.vanita5.twittnuker.loader.IntentActivitiesLoader;
 
-public class ActivityPickerActivity extends BaseSupportDialogActivity implements LoaderCallbacks<List<ResolveInfo>>,
-        OnItemClickListener {
+import java.util.List;
+
+public class ActivityPickerActivity extends BaseActivity implements
+        LoaderCallbacks<List<ResolveInfo>>, OnItemClickListener {
 
     private ResolveInfoListAdapter mAdapter;
 

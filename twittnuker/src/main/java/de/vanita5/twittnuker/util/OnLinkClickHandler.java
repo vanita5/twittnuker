@@ -31,7 +31,7 @@ import android.support.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.fragment.support.UserFragment;
+import de.vanita5.twittnuker.fragment.UserFragment;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;

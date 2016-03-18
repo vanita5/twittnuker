@@ -25,20 +25,21 @@ package de.vanita5.twittnuker.graphic;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.support.v7.graphics.drawable.DrawableWrapper;
+import android.support.v7.view.menu.TwidereActionMenuItemView;
 import android.view.MenuItem;
 
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 
-public class ActionIconDrawable extends DrawableWrapper {
+public class ActionIconDrawable extends DrawableWrapper implements TwidereActionMenuItemView.IgnoreTinting {
 
     private int mDefaultColor;
     private int mHighlightColor;
 
-	public ActionIconDrawable(Drawable drawable, int defaultColor) {
-		super(drawable);
+    public ActionIconDrawable(Drawable drawable, int defaultColor) {
+        super(drawable);
         setDefaultColor(defaultColor);
-		setHighlightColor(0);
-	}
+        setHighlightColor(0);
+    }
 
     public int getDefaultColor() {
         return mDefaultColor;
@@ -50,14 +51,14 @@ public class ActionIconDrawable extends DrawableWrapper {
     }
 
 
-	public static void setMenuHighlight(MenuItem item, TwidereMenuInfo info) {
-		final Drawable icon = item.getIcon();
-		if (icon instanceof ActionIconDrawable) {
-			((ActionIconDrawable) icon).setHighlightColor(info.isHighlight() ? info.getHighlightColor(0) : 0);
-		}
-	}
+    public static void setMenuHighlight(MenuItem item, TwidereMenuInfo info) {
+        final Drawable icon = item.getIcon();
+        if (icon instanceof ActionIconDrawable) {
+            ((ActionIconDrawable) icon).setHighlightColor(info.isHighlight() ? info.getHighlightColor(0) : 0);
+        }
+    }
 
-	private void setHighlightColor(int color) {
+    private void setHighlightColor(int color) {
         mHighlightColor = color;
         updateColorFilter();
     }
@@ -66,6 +67,6 @@ public class ActionIconDrawable extends DrawableWrapper {
         final int color = mHighlightColor == 0 ? mDefaultColor : mHighlightColor;
         setColorFilter(color, Mode.SRC_ATOP);
         invalidateSelf();
-	}
+    }
 
 }

@@ -91,7 +91,7 @@ import javax.inject.Inject;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
-import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;

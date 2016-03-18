@@ -39,7 +39,6 @@ import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback;
 import android.support.v7.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -56,17 +55,16 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.SettingsDetailsFragment;
-import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.fragment.support.SupportBrowserFragment;
-import de.vanita5.twittnuker.preference.iface.IDialogPreference;
+import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.SupportBrowserFragment;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsActivity extends BaseAppCompatActivity implements OnItemClickListener,
-        OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback {
+public class SettingsActivity extends BaseActivity implements OnItemClickListener,
+        OnPreferenceStartFragmentCallback {
 
     private static final int RESULT_SETTINGS_CHANGED = 10;
 
@@ -259,15 +257,6 @@ public class SettingsActivity extends BaseAppCompatActivity implements OnItemCli
         ft.setBreadCrumbTitle(pe.title);
         ft.commit();
         mSlidingPaneLayout.closePane();
-    }
-
-    @Override
-    public boolean onPreferenceDisplayDialog(PreferenceFragmentCompat fragment, Preference preference) {
-        if (preference instanceof IDialogPreference) {
-            ((IDialogPreference) preference).displayDialog(fragment);
-            return true;
-        }
-        return false;
     }
 
     static class EntriesAdapter extends BaseAdapter {

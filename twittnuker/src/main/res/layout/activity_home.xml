@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/left_drawer"
-        class="de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment"
+        class="de.vanita5.twittnuker.fragment.AccountsDashboardFragment"
         android:layout_width="@dimen/drawer_width_home"
         android:layout_height="match_parent"
         android:layout_gravity="start"

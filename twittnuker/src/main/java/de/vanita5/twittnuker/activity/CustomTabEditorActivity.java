@@ -48,17 +48,11 @@ import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import java.text.Collator;
-import java.util.Comparator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
-import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -77,12 +71,18 @@ import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 
+import java.text.Collator;
+import java.util.Comparator;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import static de.vanita5.twittnuker.util.CustomTabUtils.findTabIconKey;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getIconMap;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getTabConfiguration;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
 
-public class CustomTabEditorActivity extends BaseSupportDialogActivity implements OnClickListener {
+public class CustomTabEditorActivity extends BaseActivity implements OnClickListener {
 
     private SharedPreferences mPreferences;
 
@@ -241,7 +241,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
             text1.setText(user.name);
             text2.setText(String.format("@%s", user.screen_name));
             if (displayProfileImage) {
-                mImageLoader.displayProfileImage(icon, user);
+                mMediaLoader.displayProfileImage(icon, user);
             }
         } else if (value instanceof ParcelableUserList) {
             final ParcelableUserList userList = (ParcelableUserList) value;
@@ -249,7 +249,7 @@ public class CustomTabEditorActivity extends BaseSupportDialogActivity implement
             text1.setText(userList.name);
             text2.setText(getString(R.string.created_by, createdBy));
             if (displayProfileImage) {
-                mImageLoader.displayProfileImage(icon, userList.user_profile_image_url);
+                mMediaLoader.displayProfileImage(icon, userList.user_profile_image_url);
             }
         } else if (value instanceof CharSequence) {
             text2.setVisibility(View.GONE);

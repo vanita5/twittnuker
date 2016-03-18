@@ -56,11 +56,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
-import de.vanita5.twittnuker.fragment.support.UserFragment;
+import de.vanita5.twittnuker.fragment.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
@@ -74,14 +72,16 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SwipeDismissListViewTouchListener;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.view.ExtendedRelativeLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener;
+
+import java.util.List;
+
 import jopt.csp.util.SortableIntList;
 
-public class QuickSearchBarActivity extends ThemedFragmentActivity implements OnClickListener,
+public class QuickSearchBarActivity extends BaseActivity implements OnClickListener,
         LoaderCallbacks<Cursor>, OnItemSelectedListener, OnItemClickListener,
         OnFitSystemWindowsListener, SwipeDismissListViewTouchListener.DismissCallbacks {
 
@@ -113,16 +113,6 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         ContentResolverUtils.bulkDelete(cr, SearchHistory.CONTENT_URI, SearchHistory._ID, ids,
                 null);
         getSupportLoaderManager().restartLoader(0, null, this);
-    }
-
-    @Override
-    public int getThemeColor() {
-        return ThemeUtils.getUserAccentColor(this);
-    }
-
-    @Override
-    public int getActionBarColor() {
-        return ThemeUtils.getActionBarColor(this);
     }
 
     @Override
@@ -339,7 +329,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
         static final int VIEW_TYPE_USER_SCREEN_NAME = 3;
 
         private final LayoutInflater mInflater;
-        private final MediaLoaderWrapper mImageLoader;
+        private final MediaLoaderWrapper mMediaLoader;
         private final UserColorNameManager mUserColorNameManager;
         private final QuickSearchBarActivity mActivity;
         private final SortableIntList mRemovedPositions;
@@ -351,7 +341,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
             super(activity, null, 0);
             mRemovedPositions = new SortableIntList();
             mActivity = activity;
-            mImageLoader = activity.mImageLoader;
+            mMediaLoader = activity.mMediaLoader;
             mUserColorNameManager = activity.mUserColorNameManager;
             mInflater = LayoutInflater.from(activity);
         }
@@ -412,7 +402,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
                     holder.text2.setVisibility(View.VISIBLE);
                     holder.text2.setText(String.format("@%s", cursor.getString(mIndices.summary)));
                     holder.icon.clearColorFilter();
-                    mImageLoader.displayProfileImage(holder.icon, cursor.getString(mIndices.icon));
+                    mMediaLoader.displayProfileImage(holder.icon, cursor.getString(mIndices.icon));
                     break;
                 }
                 case VIEW_TYPE_USER_SCREEN_NAME: {
@@ -420,7 +410,7 @@ public class QuickSearchBarActivity extends ThemedFragmentActivity implements On
                     holder.text1.setText(String.format("@%s", cursor.getString(mIndices.title)));
                     holder.text2.setVisibility(View.GONE);
                     holder.icon.setColorFilter(holder.text1.getCurrentTextColor(), Mode.SRC_ATOP);
-                    mImageLoader.cancelDisplayTask(holder.icon);
+                    mMediaLoader.cancelDisplayTask(holder.icon);
                     holder.icon.setImageResource(R.drawable.ic_action_user);
                     break;
                 }

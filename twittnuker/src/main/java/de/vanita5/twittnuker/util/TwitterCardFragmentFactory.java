@@ -26,8 +26,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import de.vanita5.twittnuker.fragment.support.card.CardBrowserFragment;
-import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
+import de.vanita5.twittnuker.fragment.card.CardBrowserFragment;
+import de.vanita5.twittnuker.fragment.card.CardPollFragment;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils;

@@ -24,10 +24,9 @@ package de.vanita5.twittnuker.util.dagger;
 
 import android.support.v7.widget.RecyclerView;
 
-import de.vanita5.twittnuker.activity.BaseAppCompatActivity;
+import de.vanita5.twittnuker.activity.BaseActivity;
 import de.vanita5.twittnuker.activity.ComposeActivity;
 import de.vanita5.twittnuker.activity.MediaViewerActivity;
-import de.vanita5.twittnuker.activity.ThemedFragmentActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.BaseArrayAdapter;
@@ -38,10 +37,10 @@ import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
 import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
 import de.vanita5.twittnuker.fragment.BaseListFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
-import de.vanita5.twittnuker.fragment.support.BaseFiltersFragment;
-import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
-import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
+import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
+import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseSupportFragment;
+import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
 import de.vanita5.twittnuker.loader.TwitterAPIStatusesLoader;
 import de.vanita5.twittnuker.preference.AccountsListPreference;
 import de.vanita5.twittnuker.preference.KeyboardShortcutPreference;
@@ -77,15 +76,13 @@ public interface GeneralComponent {
 
     void inject(RefreshService object);
 
-    void inject(ThemedFragmentActivity object);
-
     void inject(ComposeActivity object);
 
     void inject(TwidereDataProvider object);
 
     void inject(BaseListFragment object);
 
-    void inject(BaseAppCompatActivity object);
+    void inject(BaseActivity object);
 
     void inject(BackgroundOperationService object);
 

@@ -29,7 +29,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
-import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
 
 import java.io.File;
 

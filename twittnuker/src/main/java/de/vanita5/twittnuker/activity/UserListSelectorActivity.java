@@ -38,9 +38,6 @@ import android.widget.ListView;
 
 import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
@@ -52,8 +49,8 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
-import de.vanita5.twittnuker.fragment.support.CreateUserListDialogFragment;
-import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.CreateUserListDialogFragment;
+import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -65,10 +62,14 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
 
-public class UserListSelectorActivity extends BaseSupportDialogActivity implements OnClickListener, OnItemClickListener {
+public class UserListSelectorActivity extends BaseActivity implements OnClickListener,
+        OnItemClickListener {
 
     private AutoCompleteTextView mEditScreenName;
     private ListView mUserListsListView, mUsersListView;

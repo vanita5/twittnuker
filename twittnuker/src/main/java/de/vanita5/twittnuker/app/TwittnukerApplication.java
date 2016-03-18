@@ -69,12 +69,15 @@ import de.vanita5.twittnuker.util.net.TwidereDns;
 import de.vanita5.twittnuker.util.theme.ActionBarContextViewViewProcessor;
 import de.vanita5.twittnuker.util.theme.ExtendedSwipeRefreshLayoutViewProcessor;
 import de.vanita5.twittnuker.util.theme.FloatingActionButtonViewProcessor;
+import de.vanita5.twittnuker.util.theme.OptimalLinkColorTagProcessor;
+import de.vanita5.twittnuker.util.theme.ProfileImageViewViewProcessor;
 import de.vanita5.twittnuker.util.theme.ProgressWheelViewProcessor;
 import de.vanita5.twittnuker.util.theme.TabPagerIndicatorViewProcessor;
 import de.vanita5.twittnuker.util.theme.TimelineContentTextViewViewProcessor;
+import de.vanita5.twittnuker.view.ExtendedSwipeRefreshLayout;
+import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 import de.vanita5.twittnuker.view.TimelineContentTextView;
-import de.vanita5.twittnuker.view.ExtendedSwipeRefreshLayout;
 
 public class TwittnukerApplication extends Application implements Constants,
         OnSharedPreferenceChangeListener {
@@ -88,6 +91,7 @@ public class TwittnukerApplication extends Application implements Constants,
     private SQLiteDatabase mDatabase;
 
     private ApplicationModule mApplicationModule;
+    private ProfileImageViewViewProcessor mProfileImageViewViewProcessor;
 
     @NonNull
     public static TwittnukerApplication getInstance(@NonNull final Context context) {
@@ -136,12 +140,13 @@ public class TwittnukerApplication extends Application implements Constants,
         ATE.registerViewProcessor(ExtendedSwipeRefreshLayout.class, new ExtendedSwipeRefreshLayoutViewProcessor());
         ATE.registerViewProcessor(TimelineContentTextView.class, new TimelineContentTextViewViewProcessor());
         ATE.registerViewProcessor(ProgressWheel.class, new ProgressWheelViewProcessor());
+        mProfileImageViewViewProcessor = new ProfileImageViewViewProcessor();
+        ATE.registerViewProcessor(ProfileImageView.class, mProfileImageViewViewProcessor);
+        ATE.registerTagProcessor("optimal_link_color", new OptimalLinkColorTagProcessor());
         final SharedPreferences preferences = getSharedPreferences();
         if (!ATE.config(this, null).isConfigured()) {
             final int themeColor = preferences.getInt(KEY_THEME_COLOR, ContextCompat.getColor(this,
                     R.color.branding_color));
-            final int actionBarColor = preferences.getInt(KEY_ACTION_BAR_COLOR, ContextCompat.getColor(this,
-                    R.color.material_dark));
             ATE.config(this, VALUE_THEME_NAME_LIGHT)
                     .primaryColor(themeColor)
                     .accentColor(themeColor)
@@ -267,6 +272,11 @@ public class TwittnukerApplication extends Application implements Constants,
             }
             case KEY_THEME_BACKGROUND: {
                 Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK);
+                break;
+            }
+            case KEY_PROFILE_IMAGE_STYLE: {
+                Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK);
+                mProfileImageViewViewProcessor.setStyle(Utils.getProfileImageStyle(preferences.getString(key, null)));
                 break;
             }
             case KEY_THEME_COLOR: {

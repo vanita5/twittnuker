@@ -25,13 +25,6 @@
                   xmlns:app="http://schemas.android.com/apk/res-auto"
                   android:title="@string/theme">
 
-    <!--<PreferenceCategory
-        android:key="cat_theme_preview"
-        android:order="11"
-        android:title="@string/preview">
-        <de.vanita5.twittnuker.preference.ThemePreviewPreference android:key="theme_preview"/>
-    </PreferenceCategory>-->
-
     <de.vanita5.twittnuker.preference.ThemedListPreference
         android:defaultValue="light"
         android:entries="@array/entries_theme"

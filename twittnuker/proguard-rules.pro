@@ -89,6 +89,7 @@
 -dontwarn com.makeramen.roundedimageview.**
 
 -keepattributes *Annotation*
+-keepattributes EnclosingMethod
 
 
 # dnsjava

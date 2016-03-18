@@ -110,8 +110,8 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
-import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.DraftValuesCreator;
@@ -175,7 +175,7 @@ import java.util.TreeSet;
 
 import javax.inject.Inject;
 
-public class ComposeActivity extends BaseAppCompatActivity implements OnMenuItemClickListener,
+public class ComposeActivity extends BaseActivity implements OnMenuItemClickListener,
         OnClickListener, OnLongClickListener, Callback, ATEToolbarCustomizer {
 
     // Constants
@@ -233,16 +233,6 @@ public class ComposeActivity extends BaseAppCompatActivity implements OnMenuItem
     // Listeners
     private LocationListener mLocationListener;
     private boolean mNameFirst;
-
-    @Override
-    public int getThemeColor() {
-        return ThemeUtils.getUserAccentColor(this);
-    }
-
-    @Override
-    public int getActionBarColor() {
-        return ThemeUtils.getActionBarColor(this);
-    }
 
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {

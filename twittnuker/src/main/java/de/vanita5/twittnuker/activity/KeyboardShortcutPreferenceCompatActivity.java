@@ -35,9 +35,8 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutSpec;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class KeyboardShortcutPreferenceCompatActivity extends BaseSupportDialogActivity implements
+public class KeyboardShortcutPreferenceCompatActivity extends BaseActivity implements
         Constants, OnClickListener {
 
     public static final String EXTRA_CONTEXT_TAG = "context_tag";
@@ -52,16 +51,6 @@ public class KeyboardShortcutPreferenceCompatActivity extends BaseSupportDialogA
     @Override
     public String getThemeBackgroundOption() {
         return VALUE_THEME_BACKGROUND_DEFAULT;
-    }
-
-    @Override
-    public int getThemeColor() {
-        return ThemeUtils.getThemeColor(this);
-    }
-
-    @Override
-    public int getActionBarColor() {
-        return ThemeUtils.getActionBarColor(this);
     }
 
     @Override

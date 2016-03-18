@@ -26,10 +26,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import de.vanita5.twittnuker.fragment.support.ColorPickerDialogFragment;
-import de.vanita5.twittnuker.fragment.support.ColorPickerDialogFragment.Callback;
+import de.vanita5.twittnuker.fragment.ColorPickerDialogFragment;
+import de.vanita5.twittnuker.fragment.ColorPickerDialogFragment.Callback;
 
-public class ColorPickerDialogActivity extends BaseSupportDialogActivity implements Callback {
+public class ColorPickerDialogActivity extends BaseActivity implements Callback {
 
     public static final int RESULT_CLEARED = -2;
 

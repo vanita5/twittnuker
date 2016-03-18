@@ -79,9 +79,8 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
-import de.vanita5.twittnuker.graphic.EmptyDrawable;
+import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -105,8 +104,6 @@ import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.support.ViewSupport;
-import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
 import de.vanita5.twittnuker.util.view.ConsumerKeySecretValidator;
 
 import java.lang.ref.WeakReference;
@@ -118,7 +115,7 @@ import static de.vanita5.twittnuker.util.Utils.isUserLoggedIn;
 import static de.vanita5.twittnuker.util.Utils.showErrorMessage;
 import static de.vanita5.twittnuker.util.Utils.trim;
 
-public class SignInActivity extends BaseAppCompatActivity implements OnClickListener, TextWatcher {
+public class SignInActivity extends BaseActivity implements OnClickListener, TextWatcher {
 
     public static final String FRAGMENT_TAG_SIGN_IN_PROGRESS = "sign_in_progress";
     private static final String TWITTER_SIGNUP_URL = "https://twitter.com/signup";
@@ -167,7 +164,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
                 break;
             }
             case REQUEST_BROWSER_SIGN_IN: {
-                if (resultCode == BaseAppCompatActivity.RESULT_OK && data != null) {
+                if (resultCode == BaseActivity.RESULT_OK && data != null) {
                     doBrowserLogin(data);
                 }
                 break;
@@ -342,6 +339,7 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
             df.setCancelable(false);
             df.show(getSupportFragmentManager(), "set_consumer_key_secret");
         }
+
     }
 
     private void doLogin() {

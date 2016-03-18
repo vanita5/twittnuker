@@ -30,30 +30,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.fragment.DataExportImportTypeSelectorDialogFragment;
+import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.util.DataImportExportUtils;
+
 import java.io.File;
 import java.io.IOException;
 
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.support.DataExportImportTypeSelectorDialogFragment;
-import de.vanita5.twittnuker.fragment.support.SupportProgressDialogFragment;
-import de.vanita5.twittnuker.util.DataImportExportUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
-
-public class DataImportActivity extends ThemedFragmentActivity implements DataExportImportTypeSelectorDialogFragment.Callback {
+public class DataImportActivity extends BaseActivity implements
+        DataExportImportTypeSelectorDialogFragment.Callback {
 
     private ImportSettingsTask mImportSettingsTask;
     private OpenImportTypeTask mOpenImportTypeTask;
     private Runnable mResumeFragmentsRunnable;
-
-    @Override
-    public int getThemeColor() {
-        return ThemeUtils.getThemeColor(this);
-    }
-
-    @Override
-    public int getActionBarColor() {
-        return ThemeUtils.getActionBarColor(this);
-    }
 
     @Override
     public void onCancelled(final DialogFragment df) {

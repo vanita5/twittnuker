@@ -30,7 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.support.MessagesConversationFragment;
+import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;

@@ -33,15 +33,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
 
-import java.io.File;
-
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.support.FileSelectorDialogFragment;
+import de.vanita5.twittnuker.fragment.FileSelectorDialogFragment;
 import de.vanita5.twittnuker.util.PermissionUtils;
+
+import java.io.File;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
-public class FileSelectorActivity extends BaseSupportDialogActivity implements FileSelectorDialogFragment.Callback {
+public class FileSelectorActivity extends BaseActivity implements
+        FileSelectorDialogFragment.Callback {
 
 
     private Runnable mResumeFragmentsRunnable;

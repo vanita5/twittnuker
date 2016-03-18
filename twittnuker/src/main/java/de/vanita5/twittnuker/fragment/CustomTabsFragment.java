@@ -64,7 +64,6 @@ import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.activity.CustomTabEditorActivity;
-import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
 import de.vanita5.twittnuker.model.UserKey;

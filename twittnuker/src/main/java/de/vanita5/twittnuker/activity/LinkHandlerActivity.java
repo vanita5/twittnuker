@@ -49,13 +49,12 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 
 import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
 import static de.vanita5.twittnuker.util.Utils.matchLinkId;
 
-public class LinkHandlerActivity extends BaseAppCompatActivity implements SystemWindowsInsetsCallback,
+public class LinkHandlerActivity extends BaseActivity implements SystemWindowsInsetsCallback,
         IControlBarActivity, SupportFragmentCallback {
 
     private final View.OnLayoutChangeListener mLayoutChangeListener = new View.OnLayoutChangeListener() {

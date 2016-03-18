@@ -37,7 +37,7 @@
     <de.vanita5.twittnuker.preference.SeekBarDialogPreference
         android:defaultValue="@integer/default_text_size"
         android:key="text_size_int"
-        android:order="22"
+        android:order="21"
         android:summary="@string/text_size_summary"
         android:title="@string/size"
         app:max="24"
@@ -47,6 +47,16 @@
             android:name="notify_change"
             android:value="true" />
     </de.vanita5.twittnuker.preference.SeekBarDialogPreference>
+    <de.vanita5.twittnuker.preference.ThemeFontFamilyPreference
+        android:defaultValue="sans-serif-light"
+        android:enabled="@bool/has_font_family"
+        android:key="theme_font_family"
+        android:order="22"
+        android:title="@string/font_family">
+        <extra
+            android:name="notify_change"
+            android:value="true" />
+    </de.vanita5.twittnuker.preference.ThemeFontFamilyPreference>
     <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="name_first"

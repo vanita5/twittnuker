@@ -46,6 +46,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayoutAccessor;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.SparseIntArray;
@@ -69,9 +70,9 @@ import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.fragment.support.AccountsDashboardFragment;
-import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
-import de.vanita5.twittnuker.fragment.support.TrendsSuggestionsFragment;
+import de.vanita5.twittnuker.fragment.AccountsDashboardFragment;
+import de.vanita5.twittnuker.fragment.DirectMessagesFragment;
+import de.vanita5.twittnuker.fragment.TrendsSuggestionsFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
@@ -103,7 +104,7 @@ import de.vanita5.twittnuker.view.TabPagerIndicator;
 import java.util.Collections;
 import java.util.List;
 
-public class HomeActivity extends BaseAppCompatActivity implements OnClickListener, OnPageChangeListener,
+public class HomeActivity extends BaseActivity implements OnClickListener, OnPageChangeListener,
         SupportFragmentCallback, OnLongClickListener, DrawerLayout.DrawerListener {
     private final Handler mHandler = new Handler();
 
@@ -339,6 +340,7 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
             finish();
             return;
         }
+        supportRequestWindowFeature(AppCompatDelegate.FEATURE_ACTION_MODE_OVERLAY);
         setContentView(R.layout.activity_home);
 
         setSupportActionBar(mActionBar);

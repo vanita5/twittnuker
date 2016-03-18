@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.util;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
-import de.vanita5.twittnuker.fragment.support.OpenStreetMapViewerFragment;
+import de.vanita5.twittnuker.fragment.OpenStreetMapViewerFragment;
 
 public class MapFragmentFactoryImpl extends MapFragmentFactory {
     @Override

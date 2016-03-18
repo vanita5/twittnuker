@@ -39,15 +39,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.ArrayUtils;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 
-public class AccountSelectorActivity extends BaseSupportDialogActivity implements LoaderCallbacks<Cursor>,
-        OnClickListener, OnItemClickListener {
+public class AccountSelectorActivity extends BaseActivity implements
+        LoaderCallbacks<Cursor>, OnClickListener, OnItemClickListener {
 
     private final ContentObserver mContentObserver = new ContentObserver(null) {
 

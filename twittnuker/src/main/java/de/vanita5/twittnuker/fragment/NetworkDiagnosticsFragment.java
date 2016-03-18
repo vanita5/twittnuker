@@ -56,7 +56,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.fragment.support.BaseSupportFragment;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;

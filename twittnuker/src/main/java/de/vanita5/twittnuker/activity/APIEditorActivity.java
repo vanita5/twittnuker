@@ -42,7 +42,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.CustomAPIConfig;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 import static de.vanita5.twittnuker.util.Utils.trim;
 
-public class APIEditorActivity extends BaseSupportDialogActivity implements OnCheckedChangeListener,
+public class APIEditorActivity extends BaseActivity implements OnCheckedChangeListener,
         OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private EditText mEditAPIUrlFormat;

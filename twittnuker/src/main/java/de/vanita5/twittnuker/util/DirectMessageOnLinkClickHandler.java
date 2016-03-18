@@ -30,7 +30,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
-import de.vanita5.twittnuker.fragment.support.PhishingLinkWarningDialogFragment;
+import de.vanita5.twittnuker.fragment.PhishingLinkWarningDialogFragment;
 
 public class DirectMessageOnLinkClickHandler extends OnLinkClickHandler {
 
