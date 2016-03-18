@@ -101,24 +101,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.mariotaku.restfu.RestFuUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
-
-import javax.inject.Inject;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
@@ -169,6 +151,24 @@ import de.vanita5.twittnuker.view.ComposeEditText;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.helper.SimpleItemTouchHelperCallback;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+
+import javax.inject.Inject;
 
 public class ComposeActivity extends ThemedFragmentActivity implements OnMenuItemClickListener,
         OnClickListener, OnLongClickListener, Callback {
@@ -1417,8 +1417,9 @@ public class ComposeActivity extends ThemedFragmentActivity implements OnMenuIte
             itemView.setAlpha(isSelected ? 1 : 0.33f);
             ((CheckableLinearLayout) itemView).setChecked(isSelected);
             final MediaLoaderWrapper loader = adapter.getImageLoader();
-            if (ObjectUtils.notEqual(account.profile_image_url, iconView.getTag()) || iconView.getDrawable() == null) {
-                loader.displayProfileImage(iconView, account.profile_image_url);
+            if (ObjectUtils.notEqual(account, iconView.getTag()) || iconView.getDrawable() == null) {
+                iconView.setTag(account);
+                loader.displayProfileImage(iconView, account);
             }
             iconView.setBorderColor(account.color);
             iconView.setTag(account.profile_image_url);

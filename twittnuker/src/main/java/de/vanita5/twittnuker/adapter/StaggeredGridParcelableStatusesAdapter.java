@@ -36,9 +36,9 @@ import com.commonsware.cwac.layouts.AspectLockedFrameLayout;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.view.MediaPreviewImageView;
@@ -103,7 +103,7 @@ public class StaggeredGridParcelableStatusesAdapter extends ParcelableStatusesAd
             mediaImageContainer.requestLayout();
 
             mediaImageView.setHasPlayIcon(ParcelableMediaUtils.hasPlayIcon(firstMedia.type));
-            loader.displayProfileImage(mediaProfileImageView, status.user_profile_image_url);
+            loader.displayProfileImage(mediaProfileImageView, status);
             loader.displayPreviewImageWithCredentials(mediaImageView, firstMedia.preview_url,
                     status.account_key, adapter.getMediaLoadingHandler());
         }

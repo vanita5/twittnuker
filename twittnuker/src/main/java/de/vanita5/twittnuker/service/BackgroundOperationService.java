@@ -62,8 +62,6 @@ import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.ParcelableUserMention;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.DraftCursorIndices;
 import de.vanita5.twittnuker.model.DraftValuesCreator;
@@ -74,9 +72,11 @@ import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
+import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.StatusShortenResult;
 import de.vanita5.twittnuker.model.UploaderMediaItem;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
@@ -309,11 +309,13 @@ public class BackgroundOperationService extends IntentService implements Constan
                 recipientId, text, imageUri);
 
         final ContentResolver resolver = getContentResolver();
-        if (result.getData() != null && result.getData().id != null) {
-            final ContentValues values = ContentValuesCreator.createDirectMessage(result.getData());
-            final String delete_where = DirectMessages.ACCOUNT_KEY + " = " + accountId + " AND "
-                    + DirectMessages.MESSAGE_ID + " = " + result.getData().id;
-            resolver.delete(DirectMessages.Outbox.CONTENT_URI, delete_where, null);
+        if (result.hasData()) {
+            final ParcelableDirectMessage message = result.getData();
+            final ContentValues values = ContentValuesCreator.createDirectMessage(message);
+            final String deleteWhere = Expression.and(Expression.equalsArgs(DirectMessages.ACCOUNT_KEY),
+                    Expression.equalsArgs(DirectMessages.MESSAGE_ID)).getSQL();
+            String[] deleteWhereArgs = {message.account_key.toString(), message.id};
+            resolver.delete(DirectMessages.Outbox.CONTENT_URI, deleteWhere, deleteWhereArgs);
             resolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
             showOkMessage(R.string.direct_message_sent, false);
         } else {
