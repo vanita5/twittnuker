@@ -66,6 +66,8 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
+import de.vanita5.twittnuker.graphic.ActionIconDrawable;
+import de.vanita5.twittnuker.graphic.iface.DoNotWrapDrawable;
 import de.vanita5.twittnuker.preference.ThemeBackgroundPreference;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.support.ViewSupport;
@@ -679,6 +681,18 @@ public class ThemeUtils implements Constants {
         return ATEUtil.isColorLight(backgroundColor) ? colorDark : colorLight;
     }
 
+    public static void setLightStatusBar(@NonNull Window window, boolean lightStatusBar) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+        final View decorView = window.getDecorView();
+
+        final int systemUiVisibility = decorView.getSystemUiVisibility();
+        if (lightStatusBar) {
+            decorView.setSystemUiVisibility(systemUiVisibility | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        } else {
+            decorView.setSystemUiVisibility(systemUiVisibility & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+    }
+
     public static void wrapMenuIcon(ActionMenuView view, int colorDark, int colorLight, int... excludeGroups) {
         final Context context = view.getContext();
         final int itemBackgroundColor = ThemeUtils.getThemeBackgroundColor(context);
@@ -702,18 +716,18 @@ public class ThemeUtils implements Constants {
 
     public static void wrapMenuItemIcon(@NonNull MenuItem item, int itemColor, int... excludeGroups) {
         if (ArrayUtils.contains(excludeGroups, item.getGroupId())) return;
-//        final Drawable icon = item.getIcon();
-//        if (icon == null || icon instanceof DoNotWrapDrawable) return;
-//        if (icon instanceof ActionIconDrawable) {
-//            ((ActionIconDrawable) icon).setDefaultColor(itemColor);
-//            item.setIcon(icon);
-//            return;
-//        }
-//        icon.mutate();
-//        final Drawable.Callback callback = icon.getCallback();
-//        final ActionIconDrawable newIcon = new ActionIconDrawable(icon, itemColor);
-//        newIcon.setCallback(callback);
-//        item.setIcon(newIcon);
+        final Drawable icon = item.getIcon();
+        if (icon == null || icon instanceof DoNotWrapDrawable) return;
+        if (icon instanceof ActionIconDrawable) {
+            ((ActionIconDrawable) icon).setDefaultColor(itemColor);
+            item.setIcon(icon);
+            return;
+        }
+        icon.mutate();
+        final Drawable.Callback callback = icon.getCallback();
+        final ActionIconDrawable newIcon = new ActionIconDrawable(icon, itemColor);
+        newIcon.setCallback(callback);
+        item.setIcon(newIcon);
     }
 
     public static void wrapToolbarMenuIcon(@Nullable ActionMenuView view, int itemColor, int popupItemColor, int... excludeGroups) {

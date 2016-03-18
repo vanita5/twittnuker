@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.view.ForegroundColorView;
+import de.vanita5.twittnuker.view.NameView;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.TouchInterceptor;
 
@@ -144,7 +145,7 @@ public class ThemePreviewPreference extends Preference implements Constants, OnS
             final TextView timeSourceView = (TextView) statusContentView.findViewById(R.id.time_source);
             final View retweetedByView = statusContentView.findViewById(R.id.retweeted_by);
             final TextView quoteOriginalLink = (TextView) statusContentView.findViewById(R.id.quote_original_link);
-            final View quotedNameContainer = statusContentView.findViewById(R.id.quoted_name_container);
+            final NameView quotedNameContainer = (NameView) statusContentView.findViewById(R.id.quoted_name);
             final TextView quotedTextView = (TextView) statusContentView.findViewById(R.id.quoted_text);
             final ForegroundColorView quoteIndicator = (ForegroundColorView) statusContentView.findViewById(R.id.quote_indicator);
             final TextView locationView = (TextView) statusContentView.findViewById(R.id.location_view);

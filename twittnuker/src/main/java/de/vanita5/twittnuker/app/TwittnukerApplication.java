@@ -45,6 +45,7 @@ import android.support.v7.widget.ActionBarContextView;
 
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.Config;
+import com.pnikosis.materialishprogress.ProgressWheel;
 
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.BuildConfig;
@@ -68,6 +69,7 @@ import de.vanita5.twittnuker.util.net.TwidereDns;
 import de.vanita5.twittnuker.util.theme.ActionBarContextViewViewProcessor;
 import de.vanita5.twittnuker.util.theme.ExtendedSwipeRefreshLayoutViewProcessor;
 import de.vanita5.twittnuker.util.theme.FloatingActionButtonViewProcessor;
+import de.vanita5.twittnuker.util.theme.ProgressWheelViewProcessor;
 import de.vanita5.twittnuker.util.theme.TabPagerIndicatorViewProcessor;
 import de.vanita5.twittnuker.util.theme.TimelineContentTextViewViewProcessor;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
@@ -133,6 +135,7 @@ public class TwittnukerApplication extends Application implements Constants,
         ATE.registerViewProcessor(ActionBarContextView.class, new ActionBarContextViewViewProcessor());
         ATE.registerViewProcessor(ExtendedSwipeRefreshLayout.class, new ExtendedSwipeRefreshLayoutViewProcessor());
         ATE.registerViewProcessor(TimelineContentTextView.class, new TimelineContentTextViewViewProcessor());
+        ATE.registerViewProcessor(ProgressWheel.class, new ProgressWheelViewProcessor());
         final SharedPreferences preferences = getSharedPreferences();
         if (!ATE.config(this, null).isConfigured()) {
             final int themeColor = preferences.getInt(KEY_THEME_COLOR, ContextCompat.getColor(this,

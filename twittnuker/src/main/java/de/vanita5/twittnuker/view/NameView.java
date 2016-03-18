@@ -38,6 +38,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.text.util.SafeEditableFactory;
+import de.vanita5.twittnuker.text.util.SafeSpannableFactory;
 
 public class NameView extends AppCompatTextView {
 
@@ -60,6 +62,8 @@ public class NameView extends AppCompatTextView {
 
     public NameView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setSpannableFactory(new SafeSpannableFactory());
+        setEditableFactory(new SafeEditableFactory());
         setEllipsize(TextUtils.TruncateAt.END);
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NameView, defStyleAttr, 0);
         setPrimaryTextColor(a.getColor(R.styleable.NameView_nv_primaryTextColor, 0));
@@ -161,12 +165,4 @@ public class NameView extends AppCompatTextView {
         }
     }
 
-    @Override
-    public int getBaseline() {
-        try {
-            return super.getBaseline();
-        } catch (IndexOutOfBoundsException e) {
-            return -1;
-        }
-    }
 }

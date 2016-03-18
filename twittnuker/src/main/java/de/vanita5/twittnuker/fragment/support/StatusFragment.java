@@ -53,6 +53,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
+import android.support.v4.text.BidiFormatter;
 import android.support.v4.view.ActionProvider;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewCompat;
@@ -167,6 +168,7 @@ import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.ExtendedRecyclerView;
 import de.vanita5.twittnuker.view.ForegroundColorView;
+import de.vanita5.twittnuker.view.NameView;
 import de.vanita5.twittnuker.view.TwitterCardContainer;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
@@ -891,10 +893,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final StatusAdapter adapter;
 
         private final ActionMenuView menuBar;
-        private final TextView nameView, screenNameView;
+        private final NameView nameView, quotedNameView;
         private final TextView textView;
         private final TextView quotedTextView;
-        private final TextView quotedNameView, quotedScreenNameView;
         private final ImageView profileImageView;
         private final ImageView profileTypeView;
         private final TextView timeSourceView;
@@ -906,7 +907,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final View mediaPreviewLoad;
 
         private final CardMediaContainer mediaPreview;
-        private final View quotedNameContainer;
         private final TextView translateLabelView;
 
         private final View countsUsersHeightHolder;
@@ -926,8 +926,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             this.linkClickHandler = new DetailStatusLinkClickHandler(adapter.getContext(), null, adapter);
             this.linkify = new TwidereLinkify(linkClickHandler);
             menuBar = (ActionMenuView) itemView.findViewById(R.id.menu_bar);
-            nameView = (TextView) itemView.findViewById(R.id.name);
-            screenNameView = (TextView) itemView.findViewById(R.id.screen_name);
+            nameView = (NameView) itemView.findViewById(R.id.name);
             textView = (TextView) itemView.findViewById(R.id.text);
             profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
             profileTypeView = (ImageView) itemView.findViewById(R.id.profile_type);
@@ -942,9 +941,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             twitterCard = (TwitterCardContainer) itemView.findViewById(R.id.twitter_card);
 
             quotedTextView = (TextView) itemView.findViewById(R.id.quoted_text);
-            quotedNameView = (TextView) itemView.findViewById(R.id.quoted_name);
-            quotedScreenNameView = (TextView) itemView.findViewById(R.id.quoted_screen_name);
-            quotedNameContainer = itemView.findViewById(R.id.quoted_name_container);
+            quotedNameView = (NameView) itemView.findViewById(R.id.quoted_name);
             quoteIndicator = (ForegroundColorView) itemView.findViewById(R.id.quote_indicator);
             translateLabelView = (TextView) itemView.findViewById(R.id.translate_label);
             translateContainer = itemView.findViewById(R.id.translate_container);
@@ -989,12 +986,12 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             if (status.is_quote && ArrayUtils.isEmpty(status.media)) {
 
                 quoteOriginalLink.setVisibility(View.VISIBLE);
-                quotedNameContainer.setVisibility(View.VISIBLE);
+                quotedNameView.setVisibility(View.VISIBLE);
                 quotedTextView.setVisibility(View.VISIBLE);
                 quoteIndicator.setVisibility(View.VISIBLE);
 
-                quotedNameView.setText(status.quoted_user_name);
-                quotedScreenNameView.setText(String.format("@%s", status.quoted_user_screen_name));
+                quotedNameView.setName(status.quoted_user_name);
+                quotedNameView.setScreenName(String.format("@%s", status.quoted_user_screen_name));
 
                 final CharSequence quotedText = HtmlSpanBuilder.fromHtml(status.quoted_text_html,
                         status.text_unescaped);
@@ -1005,7 +1002,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 profileContainer.drawStart(manager.getUserColor(status.quoted_user_id, false));
             } else {
                 quoteOriginalLink.setVisibility(View.GONE);
-                quotedNameContainer.setVisibility(View.GONE);
+                quotedNameView.setVisibility(View.GONE);
                 quotedTextView.setVisibility(View.GONE);
                 quoteIndicator.setVisibility(View.GONE);
 
@@ -1020,8 +1017,11 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 timestamp = status.timestamp;
             }
 
-            nameView.setText(status.user_name);
-            screenNameView.setText(String.format("@%s", status.user_screen_name));
+            final BidiFormatter formatter = adapter.getBidiFormatter();
+
+            nameView.setName(status.user_name);
+            nameView.setScreenName(String.format("@%s", status.user_screen_name));
+            nameView.updateText(formatter);
 
             loader.displayProfileImage(profileImageView, status);
 
@@ -1199,7 +1199,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                     IntentUtils.openMap(adapter.getContext(), location.latitude, location.longitude);
                     break;
                 }
-                case R.id.quoted_name_container: {
+                case R.id.quoted_name: {
                     IntentUtils.openUserProfile(adapter.getContext(), status.account_key,
                             status.quoted_user_id.getId(), status.quoted_user_screen_name, null,
                             true, UserFragment.Referral.STATUS);
@@ -1260,19 +1260,21 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             ThemeUtils.wrapMenuIcon(menuBar, MENU_GROUP_STATUS_SHARE);
             mediaPreviewLoad.setOnClickListener(this);
             profileContainer.setOnClickListener(this);
-            quotedNameContainer.setOnClickListener(this);
+            quotedNameView.setOnClickListener(this);
             retweetedByView.setOnClickListener(this);
             locationView.setOnClickListener(this);
             quoteOriginalLink.setOnClickListener(this);
             translateLabelView.setOnClickListener(this);
 
             final float textSize = adapter.getTextSize();
-            nameView.setTextSize(textSize * 1.25f);
-            quotedNameView.setTextSize(textSize * 1.25f);
+            nameView.setPrimaryTextSize(textSize * 1.25f);
+            nameView.setSecondaryTextSize(textSize * 0.85f);
             textView.setTextSize(textSize * 1.25f);
+
+            quotedNameView.setPrimaryTextSize(textSize * 1.25f);
+            quotedNameView.setSecondaryTextSize(textSize * 0.85f);
             quotedTextView.setTextSize(textSize * 1.25f);
-            screenNameView.setTextSize(textSize * 0.85f);
-            quotedScreenNameView.setTextSize(textSize * 0.85f);
+
             quoteOriginalLink.setTextSize(textSize * 0.85f);
             locationView.setTextSize(textSize * 0.85f);
             timeSourceView.setTextSize(textSize * 0.85f);
@@ -1285,6 +1287,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             countView.setTextSize(textSize * 1.25f);
             labelView.setTextSize(textSize * 0.85f);
 
+            nameView.setNameFirst(adapter.isNameFirst());
+            quotedNameView.setNameFirst(adapter.isNameFirst());
 
             mediaPreview.setStyle(adapter.getMediaPreviewStyle());
 

@@ -20,33 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.themed;
+package de.vanita5.twittnuker.util.theme;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
-import android.util.AttributeSet;
+import android.support.annotation.Nullable;
 
+import com.afollestad.appthemeengine.Config;
+import com.afollestad.appthemeengine.viewprocessors.ViewProcessor;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
-import de.vanita5.twittnuker.view.iface.IThemeAccentView;
-
-/**
- * ProgressWheel view that supports theme color settings
- *
- * Created by mariotaku on 15/4/25.
- */
-public class AccentProgressWheel extends ProgressWheel implements IThemeAccentView {
-    public AccentProgressWheel(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public AccentProgressWheel(Context context) {
-        super(context);
-    }
-
+public class ProgressWheelViewProcessor implements ViewProcessor<ProgressWheel, Object> {
     @Override
-    public void setAccentTintColor(@NonNull ColorStateList color) {
-        setBarColor(color.getDefaultColor());
+    public void process(@NonNull Context context, @Nullable String key, @Nullable ProgressWheel target, @Nullable Object extra) {
+        if (target == null) return;
+        target.setBarColor(Config.accentColor(context, key));
     }
 }
