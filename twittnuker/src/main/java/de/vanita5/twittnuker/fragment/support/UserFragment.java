@@ -56,9 +56,12 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.ColorUtils;
+import android.support.v4.view.OnApplyWindowInsetsListener;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v4.view.WindowCompat;
+import android.support.v4.view.WindowInsetsCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -75,12 +78,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.afollestad.appthemeengine.Config;
+import com.afollestad.appthemeengine.util.ATEUtil;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -100,6 +106,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.FriendshipUpdate;
 import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
+import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable;
@@ -143,18 +150,20 @@ import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.UserColorNameManager;
+import de.vanita5.twittnuker.util.UserColorNameManager.UserColorChangedListener;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import de.vanita5.twittnuker.util.support.ActivitySupport;
 import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.support.ViewSupport;
+import de.vanita5.twittnuker.util.support.WindowSupport;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.ProfileBannerImageView;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
+import de.vanita5.twittnuker.view.iface.IExtendedView;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import java.util.Calendar;
@@ -164,7 +173,7 @@ import java.util.Locale;
 public class UserFragment extends BaseSupportFragment implements OnClickListener, OnLinkClickListener,
         OnSizeChangedListener, OnTouchListener, DrawerCallback, SupportFragmentCallback,
         SystemWindowsInsetsCallback, RefreshScrollTopInterface, OnPageChangeListener, KeyboardShortcutCallback,
-        UserColorNameManager.UserColorChangedListener {
+        UserColorChangedListener, IToolBarSupportFragment {
 
     public static final String TRANSITION_NAME_PROFILE_IMAGE = "profile_image";
     public static final String TRANSITION_NAME_PROFILE_TYPE = "profile_type";
@@ -200,6 +209,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private View mPagerOverlay;
     private View mErrorOverlay;
     private View mProfileBannerContainer;
+    private View mProfileContentContainer;
     private Button mFollowButton;
     private ProgressBar mFollowProgress;
     private View mPagesContent, mPagesErrorContainer;
@@ -208,6 +218,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private View mProfileNameBackground;
     private View mProfileDetailsContainer;
     private View mFollowingYouIndicator;
+    private Toolbar mToolbar;
 
     private ActionBarDrawable mActionBarBackground;
     private SupportTabsAdapter mPagerAdapter;
@@ -816,7 +827,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
         if (activity instanceof IThemedActivity) {
             ViewSupport.setBackground(mPagerOverlay, ThemeUtils.getNormalWindowContentOverlay(activity));
-//            ViewSupport.setBackground(mErrorOverlay, ThemeUtils.getNormalWindowContentOverlay(activity));
             setUiColor(((IThemedActivity) activity).getCurrentThemeColor());
         }
 
@@ -1096,6 +1106,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         mHeaderDrawerLayout = (HeaderDrawerLayout) view.findViewById(R.id.user_profile_drawer);
         final View headerView = mHeaderDrawerLayout.getHeader();
         final View contentView = mHeaderDrawerLayout.getContent();
@@ -1107,6 +1119,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mProfileBannerView = (ProfileBannerImageView) view.findViewById(R.id.profile_banner);
         mProfileBirthdayBannerView = view.findViewById(R.id.profile_birthday_banner);
         mProfileBannerContainer = view.findViewById(R.id.profile_banner_container);
+        mProfileContentContainer = view.findViewById(R.id.profile_content_container);
         mNameView = (TextView) headerView.findViewById(R.id.name);
         mScreenNameView = (TextView) headerView.findViewById(R.id.screen_name);
         mDescriptionView = (TextView) headerView.findViewById(R.id.description);
@@ -1129,7 +1142,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mURLContainer = headerView.findViewById(R.id.url_container);
         mProfileBannerSpace = headerView.findViewById(R.id.profile_banner_space);
         mViewPager = (ViewPager) contentView.findViewById(R.id.view_pager);
-        mPagerIndicator = (TabPagerIndicator) contentView.findViewById(R.id.view_pager_tabs);
+        mPagerIndicator = (TabPagerIndicator) contentView.findViewById(R.id.toolbar_tabs);
         mPagerOverlay = contentView.findViewById(R.id.pager_window_overlay);
         mErrorOverlay = contentView.findViewById(R.id.error_window_overlay);
         mFollowButton = (Button) headerView.findViewById(R.id.follow);
@@ -1141,6 +1154,38 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mProfileNameBackground = view.findViewById(R.id.profile_name_background);
         mProfileDetailsContainer = view.findViewById(R.id.profile_details_container);
         mFollowingYouIndicator = view.findViewById(R.id.following_you_indicator);
+
+        final Object host = getHost();
+        if (host instanceof AppCompatActivity) {
+            ((AppCompatActivity) host).setSupportActionBar(mToolbar);
+        }
+
+//        ((IExtendedView) view).setOnFitSystemWindowsListener(new IExtendedView.OnFitSystemWindowsListener() {
+//            @Override
+//            public void onFitSystemWindows(Rect insets) {
+//                mProfileContentContainer.setPadding(0, insets.top, 0, 0);
+//            }
+//        });
+        ((IExtendedView) view).setOnSizeChangedListener(new OnSizeChangedListener() {
+            @Override
+            public void onSizeChanged(View view, int w, int h, int oldw, int oldh) {
+                final int paddingTop = mToolbar.getMeasuredHeight();
+                mHeaderDrawerLayout.setPadding(0, paddingTop, 0, 0);
+            }
+        });
+        //TODO FUCK STATUS BAR COLOR
+        if (ViewCompat.getFitsSystemWindows(view)) {
+            view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            ViewCompat.setOnApplyWindowInsetsListener(view, new OnApplyWindowInsetsListener() {
+                @Override
+                public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
+                    mProfileContentContainer.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
+                    return insets.consumeSystemWindowInsets();
+                }
+            });
+        }
+
     }
 
     @Override
@@ -1222,11 +1267,15 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     @Override
     protected void fitSystemWindows(Rect insets) {
-        final ThemedAppCompatActivity activity = (ThemedAppCompatActivity) getActivity();
-        mHeaderDrawerLayout.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-        final String backgroundOption = activity.getCurrentThemeBackgroundOption();
-        final boolean isTransparentBackground = ThemeUtils.isTransparentBackground(backgroundOption);
-        mHeaderDrawerLayout.setClipToPadding(isTransparentBackground);
+    }
+
+    @Override
+    public boolean setupWindow(FragmentActivity activity) {
+        if (activity instanceof AppCompatActivity) {
+            ((AppCompatActivity) activity).supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+            ((AppCompatActivity) activity).supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY);
+        }
+        return true;
     }
 
     @Override
@@ -1534,6 +1583,19 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         profileBannerView.setTranslationY(offset / 2);
         profileBirthdayBannerView.setTranslationY(offset / 2);
 
+        final ThemedAppCompatActivity activity = (ThemedAppCompatActivity) getActivity();
+
+
+        final int statusBarColor;
+        if (Config.coloredStatusBar(activity, activity.getATEKey())) {
+            statusBarColor = (int) sArgbEvaluator.evaluate(factor, ATEUtil.darkenColor(0xA0000000),
+                    ATEUtil.darkenColor(mUiColor));
+        } else {
+            statusBarColor = (int) sArgbEvaluator.evaluate(factor, ATEUtil.darkenColor(0xA0000000),
+                    Color.BLACK);
+        }
+        WindowSupport.setStatusBarColor(activity.getWindow(), statusBarColor);
+
         if (mActionBarBackground != null) {
             mActionBarBackground.setFactor(factor);
 
@@ -1546,7 +1608,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             }
             mActionBarBackground.setOutlineAlphaFactor(tabOutlineAlphaFactor);
 
-            final ThemedAppCompatActivity activity = (ThemedAppCompatActivity) getActivity();
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 setCompatToolbarOverlayAlpha(activity, factor * tabOutlineAlphaFactor);
@@ -1607,6 +1668,26 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 subtitleView.setAlpha(textAlpha);
             }
         }
+    }
+
+    @Override
+    public Toolbar getToolbar() {
+        return mToolbar;
+    }
+
+    @Override
+    public float getControlBarOffset() {
+        return 0;
+    }
+
+    @Override
+    public void setControlBarOffset(float offset) {
+
+    }
+
+    @Override
+    public int getControlBarHeight() {
+        return 0;
     }
 
     @StringDef({Referral.SEARCH_RESULT, Referral.USER_MENTION, Referral.STATUS,

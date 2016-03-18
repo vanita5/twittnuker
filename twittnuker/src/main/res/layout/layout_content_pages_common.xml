@@ -37,10 +37,10 @@
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/view_pager_tabs"/>
+            android:layout_below="@+id/toolbar_tabs"/>
 
         <de.vanita5.twittnuker.view.TabPagerIndicator
-            android:id="@+id/view_pager_tabs"
+            android:id="@+id/toolbar_tabs"
             android:layout_width="match_parent"
             android:layout_height="@dimen/element_size_normal"
             android:outlineProvider="background"
@@ -50,7 +50,8 @@
             app:tabHorizontalPadding="@dimen/element_spacing_large"
             app:tabIconColor="?android:colorForeground"
             app:tabShowDivider="true"
-            tools:ignore="UnusedAttribute"/>
+            tools:ignore="UnusedAttribute"
+            tools:listitem="@layout/layout_tab_item"/>
 
         <View
             android:id="@+id/pager_window_overlay"

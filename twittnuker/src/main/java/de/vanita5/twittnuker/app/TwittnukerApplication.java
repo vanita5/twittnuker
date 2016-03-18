@@ -38,8 +38,10 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.ActionBarContextView;
 
 import com.afollestad.appthemeengine.ATE;
 
@@ -62,6 +64,8 @@ import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
+import de.vanita5.twittnuker.util.theme.ActionBarContextViewViewProcessor;
+import de.vanita5.twittnuker.util.theme.FloatingActionButtonViewProcessor;
 import de.vanita5.twittnuker.util.theme.TabPagerIndicatorViewProcessor;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
@@ -120,6 +124,8 @@ public class TwittnukerApplication extends Application implements Constants,
             StrictModeUtils.detectAllVmPolicy();
         }
         ATE.registerViewProcessor(TabPagerIndicator.class, new TabPagerIndicatorViewProcessor());
+        ATE.registerViewProcessor(FloatingActionButton.class, new FloatingActionButtonViewProcessor());
+        ATE.registerViewProcessor(ActionBarContextView.class, new ActionBarContextViewViewProcessor());
         final SharedPreferences preferences = getSharedPreferences();
         if (!ATE.config(this, null).isConfigured()) {
             final int themeColor = preferences.getInt(KEY_THEME_COLOR, ContextCompat.getColor(this,

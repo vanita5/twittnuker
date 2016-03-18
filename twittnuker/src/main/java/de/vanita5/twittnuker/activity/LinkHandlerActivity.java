@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -31,29 +30,25 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.ActionBarContainer;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
+import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.fragment.support.UserFragment;
-import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.support.ActivitySupport;
-import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 
 import static de.vanita5.twittnuker.util.Utils.createFragmentForIntent;
@@ -62,8 +57,6 @@ import static de.vanita5.twittnuker.util.Utils.matchLinkId;
 public class LinkHandlerActivity extends BaseAppCompatActivity implements SystemWindowsInsetsCallback,
         IControlBarActivity, SupportFragmentCallback {
 
-    private ControlBarShowHideHelper mControlBarShowHideHelper = new ControlBarShowHideHelper(this);
-    private MultiSelectEventHandler mMultiSelectHandler;
     private final View.OnLayoutChangeListener mLayoutChangeListener = new View.OnLayoutChangeListener() {
 
         private final Rect tempInsets = new Rect();
@@ -78,9 +71,11 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
             }
         }
     };
-
+    private ControlBarShowHideHelper mControlBarShowHideHelper = new ControlBarShowHideHelper(this);
+    private MultiSelectEventHandler mMultiSelectHandler;
     private boolean mFinishOnly;
     private int mActionBarHeight;
+    private CharSequence mSubtitle;
 
 
     @Override
@@ -168,24 +163,33 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        supportRequestWindowFeature(AppCompatDelegate.FEATURE_SUPPORT_ACTION_BAR_OVERLAY);
         mMultiSelectHandler = new MultiSelectEventHandler(this);
         mMultiSelectHandler.dispatchOnCreate();
         final Intent intent = getIntent();
-        final Uri data = intent.getData();
-        final int linkId = matchLinkId(data);
+        final Uri uri = intent.getData();
+        final int linkId = matchLinkId(uri);
+        intent.setExtrasClassLoader(getClassLoader());
+        final Fragment fragment = createFragmentForIntent(this, linkId, intent);
+        if (fragment instanceof IToolBarSupportFragment) {
+            if (!((IToolBarSupportFragment) fragment).setupWindow(this)) {
+                supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+                supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY);
+            }
+        }
         super.onCreate(savedInstanceState);
-        ThemeUtils.setCompatContentViewOverlay(this, new EmptyDrawable());
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            setActionBarTheme(linkId);
-        }
-        if (!showFragment(linkId, data)) {
-            finish();
-        }
-    }
 
+        if (fragment == null) {
+            finish();
+            return;
+        }
+
+        setupActionBarOption();
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(android.R.id.content, fragment);
+        ft.commit();
+        showFragment(linkId, uri);
+        mFinishOnly = Boolean.parseBoolean(uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY));
+    }
 
     @Override
     protected void onStart() {
@@ -199,72 +203,69 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
         super.onStop();
     }
 
-    private void setupToolbarMenuItemColor() {
-        final Toolbar toolbar = peekActionBarToolbar();
-        if (toolbar != null) {
-            final int actionBarColor = getCurrentActionBarColor();
-            final int itemColor = ThemeUtils.getContrastForegroundColor(this, actionBarColor);
-            ThemeUtils.wrapToolbarMenuIcon(ViewSupport.findViewByType(toolbar, ActionMenuView.class), itemColor, itemColor);
-        }
+    @Override
+    public void setSupportActionBar(Toolbar toolbar) {
+        super.setSupportActionBar(toolbar);
+        setupActionBarOption();
     }
 
     public final void setSubtitle(CharSequence subtitle) {
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar == null) return;
-        actionBar.setSubtitle(subtitle);
+        mSubtitle = subtitle;
+        setupActionBarOption();
     }
 
-    protected boolean shouldSetActionItemColor() {
-        return !(getCurrentVisibleFragment() instanceof UserFragment);
+    @Override
+    public void setControlBarVisibleAnimate(boolean visible) {
+        // Currently only search page needs this pattern, so we only enable this feature for it.
+        if (!(getCurrentVisibleFragment() instanceof HideUiOnScroll)) return;
+        mControlBarShowHideHelper.setControlBarVisibleAnimate(visible);
     }
 
-    private boolean handleFragmentKeyboardShortcutRepeat(KeyboardShortcutsHandler handler, int keyCode,
-                                                         int repeatCount, @NonNull KeyEvent event, int metaState) {
-        final Fragment fragment = getCurrentVisibleFragment();
-        if (fragment instanceof KeyboardShortcutCallback) {
-            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(handler, keyCode,
-                    repeatCount, event, metaState);
+    @Override
+    public void setControlBarVisibleAnimate(boolean visible, ControlBarShowHideHelper.ControlBarAnimationListener listener) {
+        // Currently only search page needs this pattern, so we only enable this feature for it.
+        if (!(getCurrentVisibleFragment() instanceof HideUiOnScroll)) return;
+        mControlBarShowHideHelper.setControlBarVisibleAnimate(visible, listener);
+    }
+
+    @Override
+    public float getControlBarOffset() {
+        Fragment fragment = getCurrentVisibleFragment();
+        ActionBar actionBar = getSupportActionBar();
+        if (fragment instanceof IToolBarSupportFragment) {
+            return ((IToolBarSupportFragment) fragment).getControlBarOffset();
+        } else if (actionBar != null) {
+            return actionBar.getHideOffset() / (float) getControlBarHeight();
         }
-        return false;
+        return 0;
     }
 
-    private boolean handleFragmentKeyboardShortcutSingle(KeyboardShortcutsHandler handler, int keyCode,
-                                                         @NonNull KeyEvent event, int metaState) {
-        final Fragment fragment = getCurrentVisibleFragment();
-        if (fragment instanceof KeyboardShortcutCallback) {
-            if (((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(handler, keyCode,
-                    event, metaState)) {
-                return true;
-            }
+    @Override
+    public void setControlBarOffset(float offset) {
+        Fragment fragment = getCurrentVisibleFragment();
+        ActionBar actionBar = getSupportActionBar();
+        if (fragment instanceof IToolBarSupportFragment) {
+            ((IToolBarSupportFragment) fragment).setControlBarOffset(offset);
+        } else if (actionBar != null) {
+            actionBar.setHideOffset((int) (getControlBarHeight() * offset));
         }
-        return false;
+        notifyControlBarOffsetChanged();
     }
 
-    @SuppressLint("AppCompatMethod")
-    private void setActionBarTheme(int linkId) {
-        final int actionBarColor = getActionBarColor();
-        final String option = getThemeBackgroundOption();
-        final ActionBarContainer actionBarContainer = (ActionBarContainer) findViewById(R.id.twidere_action_bar_container);
-        switch (linkId) {
-            case LINK_ID_SEARCH:
-            case LINK_ID_USER_LISTS:
-            case LINK_ID_USER_LIST:
-            case LINK_ID_FILTERS: {
-                ThemeUtils.applyActionBarBackground(actionBarContainer, this, actionBarColor, option, false);
-                break;
-            }
-            default: {
-                ThemeUtils.applyActionBarBackground(actionBarContainer, this, actionBarColor, option, true);
-                break;
-            }
+    @Override
+    public int getControlBarHeight() {
+        Fragment fragment = getCurrentVisibleFragment();
+        ActionBar actionBar = getSupportActionBar();
+        if (fragment instanceof IToolBarSupportFragment) {
+            return ((IToolBarSupportFragment) fragment).getControlBarHeight();
+        } else if (actionBar != null) {
+            return actionBar.getHeight();
         }
+        if (mActionBarHeight != 0) return mActionBarHeight;
+        return mActionBarHeight = ThemeUtils.getActionBarHeight(this);
     }
 
     private boolean showFragment(final int linkId, final Uri uri) {
-        final Intent intent = getIntent();
-        intent.setExtrasClassLoader(getClassLoader());
-        final Fragment fragment = createFragmentForIntent(this, linkId, intent);
-        if (uri == null || fragment == null) return false;
         setSubtitle(null);
         switch (linkId) {
             case LINK_ID_STATUS: {
@@ -280,7 +281,7 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
                 break;
             }
             case LINK_ID_USER_FAVORITES: {
-                if (mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
+                if (mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK)) {
                     setTitle(R.string.favorites);
                 } else {
                     setTitle(R.string.likes);
@@ -413,55 +414,37 @@ public class LinkHandlerActivity extends BaseAppCompatActivity implements System
                 break;
             }
         }
-        mFinishOnly = Boolean.parseBoolean(uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY));
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(android.R.id.content, fragment);
-        ft.commit();
         return true;
     }
 
-    @Override
-    public void setControlBarVisibleAnimate(boolean visible) {
-        // Currently only search page needs this pattern, so we only enable this feature for it.
-        if (!(getCurrentVisibleFragment() instanceof HideUiOnScroll)) return;
-        mControlBarShowHideHelper.setControlBarVisibleAnimate(visible);
-    }
-
-    @Override
-    public void setControlBarVisibleAnimate(boolean visible, ControlBarShowHideHelper.ControlBarAnimationListener listener) {
-        // Currently only search page needs this pattern, so we only enable this feature for it.
-        if (!(getCurrentVisibleFragment() instanceof HideUiOnScroll)) return;
-        mControlBarShowHideHelper.setControlBarVisibleAnimate(visible, listener);
-    }
-
-    @Override
-    public float getControlBarOffset() {
-        return 0;
-    }
-
-    @Override
-    public void setControlBarOffset(float offset) {
-        final int translationY = -Math.round((1 - offset) * getControlBarHeight());
-        notifyControlBarOffsetChanged();
-    }
-
-    @Override
-    public int getControlBarHeight() {
-        if (mActionBarHeight != 0) return mActionBarHeight;
-        return mActionBarHeight = ThemeUtils.getActionBarHeight(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (ThemeUtils.isColoredActionBar(this)) {
-            ActivitySupport.setTaskDescription(this, new TaskDescriptionCompat(null, null,
-                    getCurrentActionBarColor()));
+    private boolean handleFragmentKeyboardShortcutRepeat(KeyboardShortcutsHandler handler, int keyCode,
+                                                         int repeatCount, @NonNull KeyEvent event, int metaState) {
+        final Fragment fragment = getCurrentVisibleFragment();
+        if (fragment instanceof KeyboardShortcutCallback) {
+            return ((KeyboardShortcutCallback) fragment).handleKeyboardShortcutRepeat(handler, keyCode,
+                    repeatCount, event, metaState);
         }
+        return false;
     }
 
-    public ActionBarContainer getActionBarContainer() {
-        return null;
+    private boolean handleFragmentKeyboardShortcutSingle(KeyboardShortcutsHandler handler, int keyCode,
+                                                         @NonNull KeyEvent event, int metaState) {
+        final Fragment fragment = getCurrentVisibleFragment();
+        if (fragment instanceof KeyboardShortcutCallback) {
+            if (((KeyboardShortcutCallback) fragment).handleKeyboardShortcutSingle(handler, keyCode,
+                    event, metaState)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void setupActionBarOption() {
+        final ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setSubtitle(mSubtitle);
+        }
     }
 
     public interface HideUiOnScroll {

@@ -23,28 +23,17 @@
 package de.vanita5.twittnuker.util.theme;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.ActionBarContextView;
 
 import com.afollestad.appthemeengine.Config;
-import com.afollestad.appthemeengine.util.ATEUtil;
 import com.afollestad.appthemeengine.viewprocessors.ViewProcessor;
 
-import de.vanita5.twittnuker.view.TabPagerIndicator;
-
-public class TabPagerIndicatorViewProcessor implements ViewProcessor<TabPagerIndicator, Object> {
+public class ActionBarContextViewViewProcessor implements ViewProcessor<ActionBarContextView, Object> {
     @Override
-    public void process(@NonNull Context context, String key, TabPagerIndicator target, Object extra) {
+    public void process(@NonNull Context context, String key, ActionBarContextView target,
+                        Object extra) {
         final int primaryColor = Config.primaryColor(context, key);
-        final boolean isDark = !ATEUtil.isColorLight(primaryColor);
-        final int primaryColorDependent = isDark ? Color.WHITE : Color.BLACK;
-        target.setIconColor(primaryColorDependent);
-        target.setLabelColor(primaryColorDependent);
-        if (Config.coloredActionBar(context, key)) {
-            target.setStripColor(primaryColorDependent);
-        } else {
-            target.setStripColor(Config.accentColor(context, key));
-        }
-        target.updateAppearance();
+        target.setBackgroundColor(primaryColor);
     }
 }

@@ -31,7 +31,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 
-import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.ATEActivity;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -56,11 +55,6 @@ public abstract class ThemedAppCompatActivity extends ATEActivity implements Con
     private String mCurrentThemeFontFamily;
 
     private Toolbar mToolbar;
-
-    @Override
-    public String getCurrentThemeFontFamily() {
-        return mCurrentThemeFontFamily;
-    }
 
     @Override
     public int getCurrentThemeBackgroundAlpha() {
@@ -95,12 +89,6 @@ public abstract class ThemedAppCompatActivity extends ATEActivity implements Con
     @Override
     public String getThemeFontFamily() {
         return ThemeUtils.getThemeFontFamily(this);
-    }
-
-    @Override
-    @ShapeStyle
-    public int getCurrentProfileImageStyle() {
-        return mProfileImageStyle;
     }
 
     @Override

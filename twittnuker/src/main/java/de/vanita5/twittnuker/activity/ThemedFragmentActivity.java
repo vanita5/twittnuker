@@ -78,11 +78,6 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     private int mMetaState;
 
     @Override
-    public String getCurrentThemeFontFamily() {
-        return mCurrentThemeFontFamily;
-    }
-
-    @Override
     public int getCurrentThemeBackgroundAlpha() {
         return mCurrentThemeBackgroundAlpha;
     }
@@ -115,12 +110,6 @@ public abstract class ThemedFragmentActivity extends FragmentActivity implements
     @Override
     public String getThemeFontFamily() {
         return ThemeUtils.getThemeFontFamily(this);
-    }
-
-    @Override
-    @ShapeStyle
-    public int getCurrentProfileImageStyle() {
-        return mProfileImageStyle;
     }
 
     @Override

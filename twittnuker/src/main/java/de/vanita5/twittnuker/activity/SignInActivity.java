@@ -34,7 +34,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -45,7 +44,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -56,7 +54,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -111,7 +108,6 @@ import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
 import de.vanita5.twittnuker.util.view.ConsumerKeySecretValidator;
-import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
 
 import java.lang.ref.WeakReference;
 
@@ -140,7 +136,6 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
     private LinearLayout mSignInSignUpContainer, mUsernamePasswordContainer;
     private ContentResolver mResolver;
     private AbstractSignInTask mTask;
-    private TintedStatusLayout mMainContent;
 
     @Override
     public void afterTextChanged(final Editable s) {
@@ -212,8 +207,6 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
         mSignUpButton = (Button) findViewById(R.id.sign_up);
         mSignInSignUpContainer = (LinearLayout) findViewById(R.id.sign_in_sign_up);
         mUsernamePasswordContainer = (LinearLayout) findViewById(R.id.username_password);
-        mMainContent = (TintedStatusLayout) findViewById(R.id.main_content);
-        setupTintStatusBar();
     }
 
     @Override
@@ -309,18 +302,9 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        setupWindow();
         super.onCreate(savedInstanceState);
         mResolver = getContentResolver();
         setContentView(R.layout.activity_sign_in);
-        setSupportActionBar((Toolbar) findViewById(R.id.action_bar));
-
-        ThemeUtils.setCompatContentViewOverlay(this, new EmptyDrawable());
-        final View actionBarContainer = findViewById(R.id.twidere_action_bar_container);
-        ViewCompat.setElevation(actionBarContainer, ThemeUtils.getSupportActionBarElevation(this));
-        ViewSupport.setOutlineProvider(actionBarContainer, ViewOutlineProviderCompat.BACKGROUND);
-        final View windowOverlay = findViewById(R.id.window_overlay);
-        ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this));
 
         if (savedInstanceState != null) {
             mAPIUrlFormat = savedInstanceState.getString(Accounts.API_URL_FORMAT);
@@ -509,33 +493,6 @@ public class SignInActivity extends BaseAppCompatActivity implements OnClickList
                 fragment.show(ft, FRAGMENT_TAG_SIGN_IN_PROGRESS);
             }
         });
-    }
-
-    protected boolean isActionBarOutlineEnabled() {
-        return true;
-    }
-
-    protected boolean shouldSetActionItemColor() {
-        return true;
-    }
-
-    private void setupTintStatusBar() {
-        if (mMainContent == null) return;
-
-        final int alpha = ThemeUtils.isTransparentBackground(getThemeBackgroundOption()) ?
-                getCurrentThemeBackgroundAlpha() : 0xFF;
-        final int statusBarColor = getCurrentActionBarColor();
-        mMainContent.setColor(statusBarColor, alpha);
-
-        mMainContent.setDrawShadow(false);
-        mMainContent.setDrawColor(true);
-        mMainContent.setFactor(1);
-    }
-
-    private void setupWindow() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
     }
 
     @Nullable

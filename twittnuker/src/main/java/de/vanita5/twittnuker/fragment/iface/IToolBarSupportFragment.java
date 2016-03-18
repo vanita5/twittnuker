@@ -20,26 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity.iface;
+package de.vanita5.twittnuker.fragment.iface;
 
-public interface IThemedActivity {
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.Toolbar;
 
-    int getCurrentThemeBackgroundAlpha();
+public interface IToolBarSupportFragment {
 
-    String getCurrentThemeBackgroundOption();
+    Toolbar getToolbar();
 
-    int getCurrentThemeColor();
+    float getControlBarOffset();
 
-    int getCurrentActionBarColor();
+    void setControlBarOffset(float offset);
 
-    int getThemeBackgroundAlpha();
+    int getControlBarHeight();
 
-    String getThemeBackgroundOption();
-
-    int getThemeColor();
-
-    int getActionBarColor();
-
-    String getThemeFontFamily();
-
+    boolean setupWindow(FragmentActivity activity);
 }

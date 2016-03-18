@@ -23,28 +23,22 @@
 package de.vanita5.twittnuker.util.theme;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 
 import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.util.ATEUtil;
 import com.afollestad.appthemeengine.viewprocessors.ViewProcessor;
 
-import de.vanita5.twittnuker.view.TabPagerIndicator;
-
-public class TabPagerIndicatorViewProcessor implements ViewProcessor<TabPagerIndicator, Object> {
+public class FloatingActionButtonViewProcessor implements ViewProcessor<FloatingActionButton, Object> {
     @Override
-    public void process(@NonNull Context context, String key, TabPagerIndicator target, Object extra) {
+    public void process(@NonNull Context context, String key, FloatingActionButton target, Object extra) {
         final int primaryColor = Config.primaryColor(context, key);
         final boolean isDark = !ATEUtil.isColorLight(primaryColor);
         final int primaryColorDependent = isDark ? Color.WHITE : Color.BLACK;
-        target.setIconColor(primaryColorDependent);
-        target.setLabelColor(primaryColorDependent);
-        if (Config.coloredActionBar(context, key)) {
-            target.setStripColor(primaryColorDependent);
-        } else {
-            target.setStripColor(Config.accentColor(context, key));
-        }
-        target.updateAppearance();
+        target.setBackgroundTintList(ColorStateList.valueOf(primaryColor));
+        target.setColorFilter(primaryColorDependent);
     }
 }
