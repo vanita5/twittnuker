@@ -44,6 +44,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.ActionBarContextView;
 
 import com.afollestad.appthemeengine.ATE;
+import com.afollestad.appthemeengine.Config;
 
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.BuildConfig;
@@ -65,9 +66,11 @@ import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 import de.vanita5.twittnuker.util.theme.ActionBarContextViewViewProcessor;
+import de.vanita5.twittnuker.util.theme.ExtendedSwipeRefreshLayoutViewProcessor;
 import de.vanita5.twittnuker.util.theme.FloatingActionButtonViewProcessor;
 import de.vanita5.twittnuker.util.theme.TabPagerIndicatorViewProcessor;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
+import de.vanita5.twittnuker.view.themed.ExtendedSwipeRefreshLayout;
 
 public class TwittnukerApplication extends Application implements Constants,
         OnSharedPreferenceChangeListener {
@@ -133,9 +136,15 @@ public class TwittnukerApplication extends Application implements Constants,
                     R.color.branding_color));
             final int actionBarColor = preferences.getInt(KEY_ACTION_BAR_COLOR, ContextCompat.getColor(this,
                     R.color.material_dark));
-            ATE.config(this, "light").primaryColor(themeColor).accentColor(themeColor).coloredActionBar(true).commit();
-            ATE.config(this, "dark").accentColor(themeColor).coloredActionBar(false).commit();
-            ATE.config(this, null).primaryColor(themeColor).accentColor(themeColor).commit();
+            ATE.config(this, VALUE_THEME_NAME_LIGHT)
+                    .primaryColor(themeColor)
+                    .accentColor(themeColor)
+                    .coloredActionBar(true)
+                    .commit();
+            ATE.config(this, VALUE_THEME_NAME_DARK)
+                    .accentColor(themeColor)
+                    .coloredActionBar(false)
+                    .commit();
         }
         resetTheme(preferences);
         super.onCreate();
@@ -247,12 +256,25 @@ public class TwittnukerApplication extends Application implements Constants,
             }
             case KEY_THEME: {
                 resetTheme(preferences);
+                Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK);
+                break;
+            }
+            case KEY_THEME_BACKGROUND: {
+                Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK);
                 break;
             }
             case KEY_THEME_COLOR: {
-                final int themeColor = preferences.getInt(key, ContextCompat.getColor(this, R.color.branding_color));
-                ATE.config(this, "light").primaryColor(themeColor).accentColor(themeColor).coloredActionBar(true).commit();
-                ATE.config(this, "dark").accentColor(themeColor).coloredActionBar(false).commit();
+                final int themeColor = preferences.getInt(key, ContextCompat.getColor(this,
+                        R.color.branding_color));
+                ATE.config(this, VALUE_THEME_NAME_LIGHT)
+                        .primaryColor(themeColor)
+                        .accentColor(themeColor)
+                        .coloredActionBar(true)
+                        .commit();
+                ATE.config(this, VALUE_THEME_NAME_DARK)
+                        .accentColor(themeColor)
+                        .coloredActionBar(false)
+                        .commit();
                 break;
             }
         }
