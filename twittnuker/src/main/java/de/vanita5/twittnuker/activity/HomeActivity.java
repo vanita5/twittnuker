@@ -446,7 +446,6 @@ public class HomeActivity extends BaseAppCompatActivity implements OnClickListen
         super.onResume();
         registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
         invalidateOptionsMenu();
-        updateActionsButtonStyle();
         updateActionsButton();
 
         if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
