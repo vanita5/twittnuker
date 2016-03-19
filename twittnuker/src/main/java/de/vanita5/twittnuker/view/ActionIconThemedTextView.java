@@ -33,8 +33,9 @@ import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.support.TextViewSupport;
+import de.vanita5.twittnuker.view.iface.IIconActionButton;
 
-public class ActionIconThemedTextView extends AppCompatTextView {
+public class ActionIconThemedTextView extends AppCompatTextView implements IIconActionButton {
 
     private int mIconWidth, mIconHeight;
     @ColorInt
@@ -69,19 +70,22 @@ public class ActionIconThemedTextView extends AppCompatTextView {
     }
 
     @ColorInt
-    public int getColor() {
+    @Override
+    public int getDefaultColor() {
         if (mColor != 0) return mColor;
         final ColorStateList colors = getTextColors();
         if (colors != null) return colors.getDefaultColor();
         return getCurrentTextColor();
     }
 
-    public void setColor(@ColorInt int color) {
+    @Override
+    public void setDefaultColor(@ColorInt int color) {
         this.mColor = color;
         refreshDrawableState();
     }
 
     @ColorInt
+    @Override
     public int getActivatedColor() {
         if (mActivatedColor != 0) return mActivatedColor;
         final ColorStateList colors = getLinkTextColors();
@@ -89,12 +93,14 @@ public class ActionIconThemedTextView extends AppCompatTextView {
         return getCurrentTextColor();
     }
 
+    @Override
     public void setActivatedColor(@ColorInt int color) {
         this.mActivatedColor = color;
         refreshDrawableState();
     }
 
     @ColorInt
+    @Override
     public int getDisabledColor() {
         if (mDisabledColor != 0) return mDisabledColor;
         final ColorStateList colors = getTextColors();
@@ -102,6 +108,7 @@ public class ActionIconThemedTextView extends AppCompatTextView {
         return getCurrentTextColor();
     }
 
+    @Override
     public void setDisabledColor(@ColorInt int color) {
         this.mDisabledColor = color;
         refreshDrawableState();
@@ -121,7 +128,7 @@ public class ActionIconThemedTextView extends AppCompatTextView {
             if (isActivated()) {
                 color = getActivatedColor();
             } else if (isEnabled()) {
-                color = getColor();
+                color = getDefaultColor();
             } else {
                 color = getDisabledColor();
             }

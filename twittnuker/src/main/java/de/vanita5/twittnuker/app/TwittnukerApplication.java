@@ -63,12 +63,12 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereBugReporter;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 import de.vanita5.twittnuker.util.theme.ActionBarContextViewViewProcessor;
 import de.vanita5.twittnuker.util.theme.ExtendedSwipeRefreshLayoutViewProcessor;
 import de.vanita5.twittnuker.util.theme.FloatingActionButtonViewProcessor;
+import de.vanita5.twittnuker.util.theme.IconActionButtonTagProcessor;
 import de.vanita5.twittnuker.util.theme.OptimalLinkColorTagProcessor;
 import de.vanita5.twittnuker.util.theme.ProfileImageViewViewProcessor;
 import de.vanita5.twittnuker.util.theme.ProgressWheelViewProcessor;
@@ -90,7 +90,6 @@ public class TwittnukerApplication extends Application implements Constants,
     private SQLiteOpenHelper mSQLiteOpenHelper;
     private SQLiteDatabase mDatabase;
 
-    private ApplicationModule mApplicationModule;
     private ProfileImageViewViewProcessor mProfileImageViewViewProcessor;
 
     @NonNull
@@ -143,15 +142,23 @@ public class TwittnukerApplication extends Application implements Constants,
         mProfileImageViewViewProcessor = new ProfileImageViewViewProcessor();
         ATE.registerViewProcessor(ProfileImageView.class, mProfileImageViewViewProcessor);
         ATE.registerTagProcessor("optimal_link_color", new OptimalLinkColorTagProcessor());
+        ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR,
+                new IconActionButtonTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR));
+        ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_ACTIVATED,
+                new IconActionButtonTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_ACTIVATED));
+        ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_DISABLED,
+                new IconActionButtonTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_DISABLED));
         final SharedPreferences preferences = getSharedPreferences();
-        if (!ATE.config(this, null).isConfigured()) {
-            final int themeColor = preferences.getInt(KEY_THEME_COLOR, ContextCompat.getColor(this,
-                    R.color.branding_color));
+        final int themeColor = preferences.getInt(KEY_THEME_COLOR, ContextCompat.getColor(this,
+                R.color.branding_color));
+        if (!ATE.config(this, VALUE_THEME_NAME_LIGHT).isConfigured()) {
             ATE.config(this, VALUE_THEME_NAME_LIGHT)
                     .primaryColor(themeColor)
                     .accentColor(themeColor)
                     .coloredActionBar(true)
                     .commit();
+        }
+        if (!ATE.config(this, VALUE_THEME_NAME_DARK).isConfigured()) {
             ATE.config(this, VALUE_THEME_NAME_DARK)
                     .accentColor(themeColor)
                     .coloredActionBar(false)
@@ -286,10 +293,12 @@ public class TwittnukerApplication extends Application implements Constants,
                         .primaryColor(themeColor)
                         .accentColor(themeColor)
                         .coloredActionBar(true)
+                        .coloredStatusBar(true)
                         .commit();
                 ATE.config(this, VALUE_THEME_NAME_DARK)
                         .accentColor(themeColor)
                         .coloredActionBar(false)
+                        .coloredStatusBar(false)
                         .commit();
                 break;
             }
@@ -327,11 +336,6 @@ public class TwittnukerApplication extends Application implements Constants,
             Class.forName(AsyncTask.class.getName());
         } catch (final ClassNotFoundException ignore) {
         }
-    }
-
-    public ApplicationModule getApplicationModule() {
-        if (mApplicationModule != null) return mApplicationModule;
-        return mApplicationModule = new ApplicationModule(this);
     }
 
     @Nullable

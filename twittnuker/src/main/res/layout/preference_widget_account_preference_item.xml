@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <de.vanita5.twittnuker.view.ActionIconButton
+    <de.vanita5.twittnuker.view.IconActionButton
         android:id="@+id/settings"
         android:layout_width="@dimen/element_size_normal"
         android:layout_height="@dimen/element_size_normal"

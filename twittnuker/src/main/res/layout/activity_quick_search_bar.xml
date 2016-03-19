@@ -73,7 +73,7 @@
                     <requestFocus/>
                 </EditText>
 
-                <de.vanita5.twittnuker.view.ActionIconButton
+                <de.vanita5.twittnuker.view.IconActionButton
                     android:id="@+id/search_submit"
                     android:layout_width="@dimen/element_size_normal"
                     android:layout_height="match_parent"

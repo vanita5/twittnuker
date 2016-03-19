@@ -40,7 +40,7 @@ import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.view.ActionIconView;
+import de.vanita5.twittnuker.view.IconActionView;
 import de.vanita5.twittnuker.view.BadgeView;
 import de.vanita5.twittnuker.view.ShortTimeView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
@@ -50,7 +50,7 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
     private final IColorLabelView itemContent;
 
     private final ParcelableActivitiesAdapter adapter;
-    private final ActionIconView activityTypeView;
+    private final IconActionView activityTypeView;
     private final TextView titleView;
     private final TextView summaryView;
     private final ShortTimeView timeView;
@@ -66,7 +66,7 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
         this.adapter = adapter;
 
         itemContent = (IColorLabelView) itemView.findViewById(R.id.item_content);
-        activityTypeView = (ActionIconView) itemView.findViewById(R.id.activity_type);
+        activityTypeView = (IconActionView) itemView.findViewById(R.id.activity_type);
         titleView = (TextView) itemView.findViewById(R.id.title);
         summaryView = (TextView) itemView.findViewById(R.id.summary);
         timeView = (ShortTimeView) itemView.findViewById(R.id.time);

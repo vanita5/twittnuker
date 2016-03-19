@@ -192,7 +192,7 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/element_spacing_small">
 
-                <de.vanita5.twittnuker.view.ActionIconView
+                <de.vanita5.twittnuker.view.IconActionView
                     android:layout_width="@dimen/element_size_small"
                     android:layout_height="@dimen/element_size_small"
                     android:color="?android:textColorPrimary"
@@ -220,7 +220,7 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/element_spacing_small">
 
-                <de.vanita5.twittnuker.view.ActionIconView
+                <de.vanita5.twittnuker.view.IconActionView
                     android:layout_width="@dimen/element_size_small"
                     android:layout_height="@dimen/element_size_small"
                     android:color="?android:textColorPrimary"
@@ -249,7 +249,7 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/element_spacing_small">
 
-                <de.vanita5.twittnuker.view.ActionIconView
+                <de.vanita5.twittnuker.view.IconActionView
                     android:layout_width="@dimen/element_size_small"
                     android:layout_height="@dimen/element_size_small"
                     android:color="?android:textColorPrimary"

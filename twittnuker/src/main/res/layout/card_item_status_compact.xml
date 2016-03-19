@@ -40,7 +40,7 @@
         android:paddingLeft="@dimen/element_spacing_normal"
         android:paddingRight="@dimen/element_spacing_normal">
 
-        <de.vanita5.twittnuker.view.ActionIconView
+        <de.vanita5.twittnuker.view.IconActionView
             android:id="@+id/status_info_icon"
             style="?profileImageStyle"
             android:layout_width="@dimen/element_size_small"
@@ -147,7 +147,7 @@
                     tools:text="42 mins ago"
                     tools:textSize="@dimen/text_size_extra_small" />
 
-                <de.vanita5.twittnuker.view.ActionIconView
+                <de.vanita5.twittnuker.view.IconActionView
                     android:id="@+id/extra_type"
                     android:layout_width="@dimen/element_size_small"
                     android:layout_height="@dimen/element_size_small"
@@ -278,7 +278,7 @@
             android:orientation="horizontal"
             tools:visibility="visible">
 
-            <de.vanita5.twittnuker.view.ActionIconButton
+            <de.vanita5.twittnuker.view.IconActionButton
                 android:id="@+id/reply_icon"
                 android:layout_width="@dimen/button_size_content_card_compact"
                 android:layout_height="@dimen/button_size_content_card_compact"
@@ -302,7 +302,7 @@
                 android:textAppearance="?android:textAppearanceSmall"
                 tools:text="255"/>
 
-            <de.vanita5.twittnuker.view.ActionIconButton
+            <de.vanita5.twittnuker.view.IconActionButton
                 android:id="@+id/retweet_icon"
                 android:layout_width="@dimen/button_size_content_card_compact"
                 android:layout_height="@dimen/button_size_content_card_compact"
@@ -326,7 +326,7 @@
                 android:textAppearance="?android:textAppearanceSmall"
                 tools:text="255"/>
 
-            <de.vanita5.twittnuker.view.ActionIconButton
+            <de.vanita5.twittnuker.view.IconActionButton
                 android:id="@+id/favorite_icon"
                 android:layout_width="@dimen/button_size_content_card_compact"
                 android:layout_height="@dimen/button_size_content_card_compact"
@@ -352,7 +352,7 @@
 
         </LinearLayout>
 
-        <de.vanita5.twittnuker.view.ActionIconButton
+        <de.vanita5.twittnuker.view.IconActionButton
             android:id="@+id/item_menu"
             style="?cardActionButtonStyle"
             android:layout_width="@dimen/button_size_content_card_compact"

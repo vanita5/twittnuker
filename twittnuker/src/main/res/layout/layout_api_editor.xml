@@ -56,7 +56,7 @@
                 android:text="@string/api_url_format"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
 
-            <de.vanita5.twittnuker.view.ActionIconView
+            <de.vanita5.twittnuker.view.IconActionView
                 android:id="@+id/api_url_format_help"
                 android:layout_width="@dimen/element_size_small"
                 android:layout_height="@dimen/element_size_small"

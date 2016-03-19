@@ -149,10 +149,10 @@ import de.vanita5.twittnuker.util.TwidereViewUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.view.ActionIconView;
 import de.vanita5.twittnuker.view.BadgeView;
 import de.vanita5.twittnuker.view.CheckableLinearLayout;
 import de.vanita5.twittnuker.view.ComposeEditText;
+import de.vanita5.twittnuker.view.IconActionView;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.StatusTextCountView;
 import de.vanita5.twittnuker.view.helper.SimpleItemTouchHelperCallback;
@@ -209,7 +209,7 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
     private BadgeView mCountView;
     private View mAccountSelectorButton;
     private View mLocationContainer;
-    private ActionIconView mLocationIcon;
+    private IconActionView mLocationIcon;
     private TextView mLocationText;
     private TextView mReplyLabel;
     private View mReplyLabelDivider;
@@ -497,7 +497,7 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         mCountView = (BadgeView) findViewById(R.id.accounts_count);
         mAccountSelectorButton = findViewById(R.id.account_selector_button);
         mLocationContainer = findViewById(R.id.location_container);
-        mLocationIcon = (ActionIconView) findViewById(R.id.location_icon);
+        mLocationIcon = (IconActionView) findViewById(R.id.location_icon);
         mLocationText = (TextView) findViewById(R.id.location_text);
         mReplyLabel = (TextView) findViewById(R.id.reply_label);
         mReplyLabelDivider = findViewById(R.id.reply_label_divider);
@@ -1264,11 +1264,8 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
 
     private void updateLocationState() {
         final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
-        if (attachLocation) {
-            mLocationIcon.setColorFilter(ThemeUtils.getOptimalAccentColor(this, false
-            ), Mode.SRC_ATOP);
-        } else {
-            mLocationIcon.setColorFilter(mLocationIcon.getDefaultColor(), Mode.SRC_ATOP);
+        mLocationIcon.setActivated(attachLocation);
+        if (!attachLocation) {
             mLocationText.setText(R.string.no_location);
         }
     }

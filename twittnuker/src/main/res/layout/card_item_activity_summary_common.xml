@@ -28,7 +28,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/element_spacing_normal">
 
-    <de.vanita5.twittnuker.view.ActionIconView
+    <de.vanita5.twittnuker.view.IconActionView
         android:id="@+id/activity_type"
         android:layout_width="@dimen/element_size_small"
         android:layout_height="@dimen/element_size_small"

@@ -43,10 +43,10 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
@@ -56,10 +56,10 @@ import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UnitConvertUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.ActionIconButton;
 import de.vanita5.twittnuker.view.ActionIconThemedTextView;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.ForegroundColorView;
+import de.vanita5.twittnuker.view.IconActionButton;
 import de.vanita5.twittnuker.view.NameView;
 import de.vanita5.twittnuker.view.ShortTimeView;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
@@ -86,7 +86,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
     private final TextView statusInfoLabel;
     private final ShortTimeView timeView;
     private final CardMediaContainer mediaPreview, quoteMediaPreview;
-    private final ActionIconButton replyIconView, retweetIconView, favoriteIconView;
+    private final IconActionButton replyIconView, retweetIconView, favoriteIconView;
     private final TextView replyCountView, retweetCountView, favoriteCountView;
     private final IColorLabelView itemContent;
     private final ForegroundColorView quoteIndicator;
@@ -128,9 +128,9 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         itemMenu = itemView.findViewById(R.id.item_menu);
         actionButtons = itemView.findViewById(R.id.action_buttons);
 
-        replyIconView = (ActionIconButton) itemView.findViewById(R.id.reply_icon);
-        retweetIconView = (ActionIconButton) itemView.findViewById(R.id.retweet_icon);
-        favoriteIconView = (ActionIconButton) itemView.findViewById(R.id.favorite_icon);
+        replyIconView = (IconActionButton) itemView.findViewById(R.id.reply_icon);
+        retweetIconView = (IconActionButton) itemView.findViewById(R.id.retweet_icon);
+        favoriteIconView = (IconActionButton) itemView.findViewById(R.id.favorite_icon);
 
         replyCountView = (ActionIconThemedTextView) itemView.findViewById(R.id.reply_count);
         retweetCountView = (ActionIconThemedTextView) itemView.findViewById(R.id.retweet_count);
@@ -464,6 +464,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         final int position = getLayoutPosition();
         statusClickListener.onMediaClick(this, view, media, position);
     }
+
 
     public void setOnClickListeners() {
         setStatusClickListener(adapter.getStatusClickListener());

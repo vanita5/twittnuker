@@ -71,7 +71,7 @@
             android:paddingRight="@dimen/element_spacing_normal"
             tools:text="140" />
 
-            <de.vanita5.twittnuker.view.ActionIconButton
+            <de.vanita5.twittnuker.view.IconActionButton
                 android:id="@+id/comment_menu"
                 style="?cardActionButtonStyle"
                 android:layout_width="@dimen/element_size_normal"
