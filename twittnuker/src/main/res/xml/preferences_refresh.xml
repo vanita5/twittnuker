@@ -21,15 +21,17 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<!--suppress AndroidElementNotAllowed -->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/refresh">
 
-    <de.vanita5.twittnuker.preference.AutoRefreshAccountsListPreference
-        android:key="auto_refresh"
+    <org.mariotaku.twidere.preference.AutoRefreshAccountsListPreference
+        android:key="cat_auto_refresh"
         android:title="@string/auto_refresh"
         app:switchDefault="true"
-        app:switchKey="auto_refresh" />
+        app:switchKey="auto_refresh"/>
 
     <PreferenceCategory
         android:key="cat_streaming"
@@ -74,7 +76,7 @@
     <PreferenceCategory
         android:key="cat_general"
         android:title="@string/general">
-        <de.vanita5.twittnuker.preference.AutoInvalidateListPreference
+        <de.vanita5.twittnuker.preference.ThemedListPreference
             android:defaultValue="15"
             android:entries="@array/entries_refresh_interval"
             android:entryValues="@array/values_refresh_interval"
@@ -94,9 +96,8 @@
 
         <SwitchPreferenceCompat
             android:defaultValue="false"
-            android:enabled="false"
             android:key="refresh_on_start"
-            android:summary="@string/refresh_on_start_workaround"
+            android:summary="@string/refresh_on_start_summary"
             android:title="@string/refresh_on_start" />
         <SwitchPreferenceCompat
             android:defaultValue="false"

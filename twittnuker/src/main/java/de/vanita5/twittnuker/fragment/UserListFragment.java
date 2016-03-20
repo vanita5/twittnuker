@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Rect;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
@@ -38,23 +37,19 @@ import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -63,7 +58,6 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.UserListSelectorActivity;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -71,7 +65,6 @@ import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -86,17 +79,11 @@ import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.view.TabPagerIndicator;
 
-public class UserListFragment extends BaseSupportFragment implements OnClickListener,
+public class UserListFragment extends AbsToolbarTabPagesFragment implements OnClickListener,
         LoaderCallbacks<SingleResponse<ParcelableUserList>>, SystemWindowsInsetsCallback,
         SupportFragmentCallback {
 
-    private ViewPager mViewPager;
-    private TabPagerIndicator mPagerIndicator;
-    private View mPagerOverlay;
-
-    private SupportTabsAdapter mPagerAdapter;
     private boolean mUserListLoaderInitialized;
 
     private ParcelableUserList mUserList;
@@ -135,28 +122,11 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
         invalidateOptionsMenu();
     }
 
-    @Override
-    public Fragment getCurrentVisibleFragment() {
-        final int currentItem = mViewPager.getCurrentItem();
-        if (currentItem < 0 || currentItem >= mPagerAdapter.getCount()) return null;
-        return (Fragment) mPagerAdapter.instantiateItem(mViewPager, currentItem);
-    }
-
-    @Override
-    public boolean triggerRefresh(int position) {
-        return false;
-    }
-
-    @Override
-    public boolean getSystemWindowsInsets(Rect insets) {
-        return false;
-    }
-
-    public void getUserListInfo(final boolean omit_intent_extra) {
+    public void getUserListInfo(final boolean omitIntentExtra) {
         final LoaderManager lm = getLoaderManager();
         lm.destroyLoader(0);
         final Bundle args = new Bundle(getArguments());
-        args.putBoolean(EXTRA_OMIT_INTENT_EXTRA, omit_intent_extra);
+        args.putBoolean(EXTRA_OMIT_INTENT_EXTRA, omitIntentExtra);
         if (!mUserListLoaderInitialized) {
             lm.initLoader(0, args, this);
             mUserListLoaderInitialized = true;
@@ -192,11 +162,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_content_pages, container, false);
-    }
-
-    @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         final FragmentActivity activity = getActivity();
@@ -214,13 +179,30 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
             }
         });
 
-        mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager());
-
-        mViewPager.setAdapter(mPagerAdapter);
-        mPagerIndicator.setViewPager(mViewPager);
-        mPagerIndicator.setTabDisplayOption(TabPagerIndicator.LABEL);
         getUserListInfo(false);
-        setupUserPages();
+    }
+
+    @Override
+    protected void addTabs(SupportTabsAdapter adapter) {
+        final Bundle args = getArguments(), tabArgs = new Bundle();
+        if (args.containsKey(EXTRA_USER_LIST)) {
+            final ParcelableUserList userList = args.getParcelable(EXTRA_USER_LIST);
+            assert userList != null;
+            tabArgs.putParcelable(EXTRA_ACCOUNT_KEY, userList.account_key);
+            tabArgs.putString(EXTRA_USER_ID, userList.user_key.getId());
+            tabArgs.putString(EXTRA_SCREEN_NAME, userList.user_screen_name);
+            tabArgs.putLong(EXTRA_LIST_ID, userList.id);
+            tabArgs.putString(EXTRA_LIST_NAME, userList.name);
+        } else {
+            tabArgs.putParcelable(EXTRA_ACCOUNT_KEY, args.getParcelable(EXTRA_ACCOUNT_KEY));
+            tabArgs.getString(EXTRA_USER_ID, args.getString(EXTRA_USER_ID));
+            tabArgs.putString(EXTRA_SCREEN_NAME, args.getString(EXTRA_SCREEN_NAME));
+            tabArgs.putLong(EXTRA_LIST_ID, args.getLong(EXTRA_LIST_ID, -1));
+            tabArgs.putString(EXTRA_LIST_NAME, args.getString(EXTRA_LIST_NAME));
+        }
+        adapter.addTab(UserListTimelineFragment.class, tabArgs, getString(R.string.statuses), null, 0, null);
+        adapter.addTab(UserListMembersFragment.class, tabArgs, getString(R.string.members), null, 1, null);
+        adapter.addTab(UserListSubscribersFragment.class, tabArgs, getString(R.string.subscribers), null, 2, null);
     }
 
     private ParcelableUserList getUserList() {
@@ -390,47 +372,6 @@ public class UserListFragment extends BaseSupportFragment implements OnClickList
     @Override
     public void onLoaderReset(final Loader<SingleResponse<ParcelableUserList>> loader) {
 
-    }
-
-    @Override
-    public void onViewCreated(final View view, final Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
-        mPagerIndicator = (TabPagerIndicator) view.findViewById(R.id.toolbar_tabs);
-        mPagerOverlay = view.findViewById(R.id.pager_window_overlay);
-    }
-
-    private void setupUserPages() {
-        final Bundle args = getArguments(), tabArgs = new Bundle();
-        if (args.containsKey(EXTRA_USER_LIST)) {
-            final ParcelableUserList userList = args.getParcelable(EXTRA_USER_LIST);
-            assert userList != null;
-            tabArgs.putParcelable(EXTRA_ACCOUNT_KEY, userList.account_key);
-            tabArgs.putString(EXTRA_USER_ID, userList.user_key.getId());
-            tabArgs.putString(EXTRA_SCREEN_NAME, userList.user_screen_name);
-            tabArgs.putLong(EXTRA_LIST_ID, userList.id);
-            tabArgs.putString(EXTRA_LIST_NAME, userList.name);
-        } else {
-            tabArgs.putParcelable(EXTRA_ACCOUNT_KEY, args.getParcelable(EXTRA_ACCOUNT_KEY));
-            tabArgs.getString(EXTRA_USER_ID, args.getString(EXTRA_USER_ID));
-            tabArgs.putString(EXTRA_SCREEN_NAME, args.getString(EXTRA_SCREEN_NAME));
-            tabArgs.putLong(EXTRA_LIST_ID, args.getLong(EXTRA_LIST_ID, -1));
-            tabArgs.putString(EXTRA_LIST_NAME, args.getString(EXTRA_LIST_NAME));
-        }
-        mPagerAdapter.addTab(UserListTimelineFragment.class, tabArgs, getString(R.string.statuses), null, 0, null);
-        mPagerAdapter.addTab(UserListMembersFragment.class, tabArgs, getString(R.string.members), null, 1, null);
-        mPagerAdapter.addTab(UserListSubscribersFragment.class, tabArgs, getString(R.string.subscribers), null, 2, null);
-
-        final FragmentActivity activity = getActivity();
-        ThemeUtils.setCompatToolbarOverlay(activity, new EmptyDrawable());
-        ThemeUtils.setWindowOverlayViewOverlay(activity, new EmptyDrawable());
-
-        if (activity instanceof IThemedActivity) {
-            final String backgroundOption = ((IThemedActivity) activity).getCurrentThemeBackgroundOption();
-            final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);
-            final int actionBarAlpha = isTransparent ? ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(activity)) : 0xFF;
-            mPagerIndicator.setAlpha(actionBarAlpha / 255f);
-        }
     }
 
     public static class EditUserListDialogFragment extends BaseSupportDialogFragment implements

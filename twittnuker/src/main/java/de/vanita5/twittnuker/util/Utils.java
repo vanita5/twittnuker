@@ -132,7 +132,6 @@ import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.Relationship;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
-import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment;
 import de.vanita5.twittnuker.fragment.AccountsManagerFragment;
 import de.vanita5.twittnuker.fragment.DirectMessagesFragment;
@@ -167,6 +166,7 @@ import de.vanita5.twittnuker.fragment.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.UserProfileEditorFragment;
 import de.vanita5.twittnuker.fragment.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.UsersListFragment;
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.AccountPreferences;
@@ -1313,6 +1313,12 @@ public final class Utils implements Constants {
     @ShapeStyle
     public static int getProfileImageStyle(Context context) {
         final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        final String style = prefs.getString(KEY_PROFILE_IMAGE_STYLE, null);
+        return getProfileImageStyle(style);
+    }
+
+    @ShapeStyle
+    public static int getProfileImageStyle(@NonNull SharedPreferences prefs) {
         final String style = prefs.getString(KEY_PROFILE_IMAGE_STYLE, null);
         return getProfileImageStyle(style);
     }

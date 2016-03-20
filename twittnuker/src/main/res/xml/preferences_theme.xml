@@ -21,7 +21,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<!--suppress AndroidElementNotAllowed -->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
                   xmlns:app="http://schemas.android.com/apk/res-auto"
                   android:title="@string/theme">
 
@@ -37,35 +39,9 @@
             android:value="true"/>
     </de.vanita5.twittnuker.preference.ThemedListPreference>
 
-    <de.vanita5.twittnuker.preference.ColorPickerPreference
-        android:key="theme_color"
-        android:order="22"
-        android:title="@string/theme_color"
-        app:defaultColor="@color/branding_color">
-        <extra
-            android:name="notify_change"
-            android:value="true"/>
-        <extra
-            android:name="restart_activity"
-            android:value="true"/>
-    </de.vanita5.twittnuker.preference.ColorPickerPreference>
-
-    <de.vanita5.twittnuker.preference.ColorPickerPreference
-        android:defaultValue="@color/twittnuker_material_dark"
-        android:key="action_bar_color"
-        android:order="23"
-        android:title="@string/action_bar_color">
-        <extra
-            android:name="notify_change"
-            android:value="true"/>
-        <extra
-            android:name="restart_activity"
-            android:value="true"/>
-    </de.vanita5.twittnuker.preference.ColorPickerPreference>
-
     <de.vanita5.twittnuker.preference.ThemeBackgroundPreference
         android:defaultValue="default"
-        android:order="25"
+        android:order="22"
         android:title="@string/background">
         <extra
             android:name="notify_change"
@@ -75,9 +51,22 @@
             android:value="true"/>
     </de.vanita5.twittnuker.preference.ThemeBackgroundPreference>
 
+    <de.vanita5.twittnuker.preference.ColorPickerPreference
+        android:key="theme_color"
+        android:order="23"
+        android:title="@string/color"
+        app:defaultColor="@color/branding_color">
+        <extra
+            android:name="notify_change"
+            android:value="true"/>
+        <extra
+            android:name="restart_activity"
+            android:value="true"/>
+    </de.vanita5.twittnuker.preference.ColorPickerPreference>
+
     <de.vanita5.twittnuker.preference.EmojiSupportPreference
         android:key="emoji_support"
-        android:order="26"
+        android:order="25"
         android:title="@string/emoji_support">
         <extra
             android:name="notify_change"

@@ -91,6 +91,7 @@ public class TwittnukerApplication extends Application implements Constants,
     private SQLiteDatabase mDatabase;
 
     private ProfileImageViewViewProcessor mProfileImageViewViewProcessor;
+    private FontFamilyTagProcessor mFontFamilyTagProcessor;
 
     @NonNull
     public static TwittnukerApplication getInstance(@NonNull final Context context) {
@@ -133,15 +134,18 @@ public class TwittnukerApplication extends Application implements Constants,
         if (BuildConfig.DEBUG) {
             StrictModeUtils.detectAllVmPolicy();
         }
+        mProfileImageViewViewProcessor = new ProfileImageViewViewProcessor();
+        mFontFamilyTagProcessor = new FontFamilyTagProcessor();
+
         ATE.registerViewProcessor(TabPagerIndicator.class, new TabPagerIndicatorViewProcessor());
         ATE.registerViewProcessor(FloatingActionButton.class, new FloatingActionButtonViewProcessor());
         ATE.registerViewProcessor(ActionBarContextView.class, new ActionBarContextViewViewProcessor());
         ATE.registerViewProcessor(ExtendedSwipeRefreshLayout.class, new ExtendedSwipeRefreshLayoutViewProcessor());
         ATE.registerViewProcessor(TimelineContentTextView.class, new TimelineContentTextViewViewProcessor());
         ATE.registerViewProcessor(ProgressWheel.class, new ProgressWheelViewProcessor());
-        mProfileImageViewViewProcessor = new ProfileImageViewViewProcessor();
         ATE.registerViewProcessor(ProfileImageView.class, mProfileImageViewViewProcessor);
-        ATE.registerTagProcessor("optimal_link_color", new OptimalLinkColorTagProcessor());
+        ATE.registerTagProcessor(OptimalLinkColorTagProcessor.TAG, new OptimalLinkColorTagProcessor());
+        ATE.registerTagProcessor(FontFamilyTagProcessor.TAG, mFontFamilyTagProcessor);
         ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR,
                 new IconActionButtonTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR));
         ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_ACTIVATED,
@@ -149,6 +153,11 @@ public class TwittnukerApplication extends Application implements Constants,
         ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_DISABLED,
                 new IconActionButtonTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_DISABLED));
         final SharedPreferences preferences = getSharedPreferences();
+
+
+        mProfileImageViewViewProcessor.setStyle(Utils.getProfileImageStyle(preferences));
+        mFontFamilyTagProcessor.setFontFamily(ThemeUtils.getThemeFontFamily(preferences));
+
         final int themeColor = preferences.getInt(KEY_THEME_COLOR, ContextCompat.getColor(this,
                 R.color.branding_color));
         if (!ATE.config(this, VALUE_THEME_NAME_LIGHT).isConfigured()) {
@@ -284,6 +293,11 @@ public class TwittnukerApplication extends Application implements Constants,
             case KEY_PROFILE_IMAGE_STYLE: {
                 Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK);
                 mProfileImageViewViewProcessor.setStyle(Utils.getProfileImageStyle(preferences.getString(key, null)));
+                break;
+            }
+            case KEY_THEME_FONT_FAMILY: {
+                Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK);
+                mFontFamilyTagProcessor.setFontFamily(ThemeUtils.getThemeFontFamily(preferences));
                 break;
             }
             case KEY_THEME_COLOR: {

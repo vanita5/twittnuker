@@ -55,12 +55,10 @@ import android.support.v4.app.SharedElementCallback;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.OnApplyWindowInsetsListener;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.view.WindowCompat;
-import android.support.v4.view.WindowInsetsCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -156,12 +154,14 @@ import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 import de.vanita5.twittnuker.util.support.WindowSupport;
 import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
+import de.vanita5.twittnuker.view.ExtendedRelativeLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.ProfileBannerImageView;
+import de.vanita5.twittnuker.view.ProfileBannerSpace;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
-import de.vanita5.twittnuker.view.iface.IExtendedView;
+import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener;
 
 import java.util.Calendar;
@@ -200,14 +200,14 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private ColorLabelRelativeLayout mProfileNameContainer;
     private View mProgressContainer, mHeaderErrorContainer;
     private View mCardContent;
-    private View mProfileBannerSpace;
+    private ProfileBannerSpace mProfileBannerSpace;
     private HeaderDrawerLayout mHeaderDrawerLayout;
     private ViewPager mViewPager;
     private TabPagerIndicator mPagerIndicator;
     private View mPagerOverlay;
     private View mErrorOverlay;
     private View mProfileBannerContainer;
-    private View mProfileContentContainer;
+    private ExtendedRelativeLayout mProfileContentContainer;
     private Button mFollowButton;
     private ProgressBar mFollowProgress;
     private View mPagesContent, mPagesErrorContainer;
@@ -217,6 +217,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     private View mProfileDetailsContainer;
     private View mFollowingYouIndicator;
     private Toolbar mToolbar;
+    private TintedStatusFrameLayout mTintedStatusFrameLayout;
 
     private ActionBarDrawable mActionBarBackground;
     private SupportTabsAdapter mPagerAdapter;
@@ -370,7 +371,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         } else if (!relationship.isSourceFollowingTarget() && user.is_protected) {
             mPagesErrorContainer.setVisibility(View.VISIBLE);
             final String displayName = mUserColorNameManager.getDisplayName(user, mNameFirst, true);
-            mPagesErrorText.setText(getString(R.string.user_protected_summary, displayName));
+            mPagesErrorText.setText(R.string.user_protected_summary);
             mPagesErrorIcon.setImageResource(R.drawable.ic_info_locked);
             mPagesContent.setVisibility(View.GONE);
         } else {
@@ -465,7 +466,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 break;
             }
             case TAB_TYPE_FAVORITES: {
-                if (mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
+                if (mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK)) {
                     actionBar.setSubtitle(getResources().getQuantityString(R.plurals.N_favorites,
                             (int) user.favorites_count, user.favorites_count));
                 } else {
@@ -790,6 +791,32 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         ViewCompat.setTransitionName(mProfileTypeView, TRANSITION_NAME_PROFILE_TYPE);
 //        ViewCompat.setTransitionName(mCardView, TRANSITION_NAME_CARD);
 
+
+        mTintedStatusFrameLayout.setWindowInsetsListener(new TintedStatusFrameLayout.WindowInsetsListener() {
+            @Override
+            public void onApplyWindowInsets(int left, int top, int right, int bottom) {
+                mProfileContentContainer.setPadding(0, top, 0, 0);
+                mProfileBannerSpace.setStatusBarHeight(top);
+
+                if (mProfileBannerSpace.getToolbarHeight() == 0) {
+                    int toolbarHeight = mToolbar.getMeasuredHeight();
+                    if (toolbarHeight == 0) {
+                        toolbarHeight = ThemeUtils.getActionBarHeight(getContext());
+                    }
+                    mProfileBannerSpace.setToolbarHeight(toolbarHeight);
+                }
+            }
+
+        });
+        mProfileContentContainer.setOnSizeChangedListener(new OnSizeChangedListener() {
+            @Override
+            public void onSizeChanged(View view, int w, int h, int oldw, int oldh) {
+                final int toolbarHeight = mToolbar.getMeasuredHeight();
+                mHeaderDrawerLayout.setPadding(0, toolbarHeight, 0, 0);
+                mProfileBannerSpace.setToolbarHeight(toolbarHeight);
+            }
+        });
+
         mHeaderDrawerLayout.setDrawerCallback(this);
 
         mPagerAdapter = new SupportTabsAdapter(activity, getChildFragmentManager());
@@ -1104,7 +1131,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        mTintedStatusFrameLayout = (TintedStatusFrameLayout) view;
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         mHeaderDrawerLayout = (HeaderDrawerLayout) view.findViewById(R.id.user_profile_drawer);
         final View headerView = mHeaderDrawerLayout.getHeader();
@@ -1117,7 +1144,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mProfileBannerView = (ProfileBannerImageView) view.findViewById(R.id.profile_banner);
         mProfileBirthdayBannerView = view.findViewById(R.id.profile_birthday_banner);
         mProfileBannerContainer = view.findViewById(R.id.profile_banner_container);
-        mProfileContentContainer = view.findViewById(R.id.profile_content_container);
+        mProfileContentContainer = (ExtendedRelativeLayout) view.findViewById(R.id.profile_content_container);
         mNameView = (TextView) headerView.findViewById(R.id.name);
         mScreenNameView = (TextView) headerView.findViewById(R.id.screen_name);
         mDescriptionView = (TextView) headerView.findViewById(R.id.description);
@@ -1138,7 +1165,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         mDescriptionContainer = headerView.findViewById(R.id.description_container);
         mLocationContainer = headerView.findViewById(R.id.location_container);
         mURLContainer = headerView.findViewById(R.id.url_container);
-        mProfileBannerSpace = headerView.findViewById(R.id.profile_banner_space);
+        mProfileBannerSpace = (ProfileBannerSpace) headerView.findViewById(R.id.profile_banner_space);
         mViewPager = (ViewPager) contentView.findViewById(R.id.view_pager);
         mPagerIndicator = (TabPagerIndicator) contentView.findViewById(R.id.toolbar_tabs);
         mPagerOverlay = contentView.findViewById(R.id.pager_window_overlay);
@@ -1156,32 +1183,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final Object host = getHost();
         if (host instanceof AppCompatActivity) {
             ((AppCompatActivity) host).setSupportActionBar(mToolbar);
-        }
-
-//        ((IExtendedView) view).setOnFitSystemWindowsListener(new IExtendedView.OnFitSystemWindowsListener() {
-//            @Override
-//            public void onFitSystemWindows(Rect insets) {
-//                mProfileContentContainer.setPadding(0, insets.top, 0, 0);
-//            }
-//        });
-        ((IExtendedView) view).setOnSizeChangedListener(new OnSizeChangedListener() {
-            @Override
-            public void onSizeChanged(View view, int w, int h, int oldw, int oldh) {
-                final int paddingTop = mToolbar.getMeasuredHeight();
-                mHeaderDrawerLayout.setPadding(0, paddingTop, 0, 0);
-            }
-        });
-        //TODO FUCK STATUS BAR COLOR
-        if (ViewCompat.getFitsSystemWindows(view)) {
-            view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            ViewCompat.setOnApplyWindowInsetsListener(view, new OnApplyWindowInsetsListener() {
-                @Override
-                public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
-                    mProfileContentContainer.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
-                    return insets.consumeSystemWindowInsets();
-                }
-            });
         }
 
     }
@@ -1273,6 +1274,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             ((AppCompatActivity) activity).supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
             ((AppCompatActivity) activity).supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY);
         }
+        WindowSupport.setStatusBarColor(activity.getWindow(), Color.TRANSPARENT);
         return true;
     }
 
@@ -1586,10 +1588,10 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final BaseActivity activity = (BaseActivity) getActivity();
 
 
-        final int statusBarColor = (int) sArgbEvaluator.evaluate(factor, ATEUtil.darkenColor(0xA0000000),
+        final int statusBarColor = (int) sArgbEvaluator.evaluate(factor, 0xA0000000,
                 ATEUtil.darkenColor(mPrimaryColorDark));
         final Window window = activity.getWindow();
-        WindowSupport.setStatusBarColor(window, statusBarColor);
+        mTintedStatusFrameLayout.setStatusBarColor(statusBarColor);
         ThemeUtils.setLightStatusBar(window, ATEUtil.isColorLight(statusBarColor));
         int stackedTabColor = mPrimaryColor;
 

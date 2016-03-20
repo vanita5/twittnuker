@@ -20,6 +20,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
+<!--suppress AndroidElementNotAllowed -->
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -29,17 +30,17 @@
         android:key="cat_general"
         android:title="@string/general">
 
-        <de.vanita5.twittnuker.preference.ColorPickerPreference
-            android:key="notification_light_color"
-            android:title="@string/notification_light_color"
-            app:defaultColor="@color/branding_color" />
-
         <de.vanita5.twittnuker.preference.RingtonePreference
             android:key="notification_ringtone"
             android:ringtoneType="notification"
             android:showDefault="true"
             android:showSilent="true"
             android:title="@string/notification_ringtone" />
+
+        <de.vanita5.twittnuker.preference.ColorPickerPreference
+            android:key="notification_light_color"
+            android:title="@string/notification_light_color"
+            app:defaultColor="@color/branding_color" />
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -34,7 +34,6 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.afollestad.appthemeengine.inflation.ATEMultiAutoCompleteTextView;
-import com.afollestad.appthemeengine.inflation.ATEMultiAutoCompleteTextView2;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
@@ -43,7 +42,7 @@ import de.vanita5.twittnuker.util.EmojiSupportUtils;
 import de.vanita5.twittnuker.util.widget.StatusTextTokenizer;
 import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView;
 
-public class ComposeEditText extends ATEMultiAutoCompleteTextView2 implements IThemeBackgroundTintView {
+public class ComposeEditText extends ATEMultiAutoCompleteTextView implements IThemeBackgroundTintView {
 
     private ComposeAutoCompleteAdapter mAdapter;
     private UserKey mAccountKey;

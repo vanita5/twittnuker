@@ -47,11 +47,11 @@ import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 import de.vanita5.twittnuker.model.SimpleRefreshTaskParam;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.AccountChangedEvent;
 import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
@@ -157,7 +157,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
                 final int startIndex = adapter.getStatusStartIndex();
                 for (int i = firstVisiblePosition, j = lastVisiblePosition + 1; i < j; i++) {
                     if (status.account_key.equals(adapter.getAccountKey(i)) &&
-                            adapter.getStatusId(i) == status.id) {
+                            status.id.equals(adapter.getStatusId(i))) {
                         data.set(i - startIndex, status);
                         return;
                     }

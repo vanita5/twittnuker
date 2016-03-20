@@ -91,6 +91,7 @@
             android:gravity="center_vertical|start"
             android:minHeight="@dimen/element_size_small"
             android:singleLine="true"
+            android:tag="font_family|user"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:visibility="gone"
             tools:text="Mariotaku and 10 others retweeted"
@@ -154,6 +155,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:tag="font_family|user"
                     app:nv_primaryTextColor="?android:textColorPrimary"
                     app:nv_primaryTextStyle="bold"
                     app:nv_secondaryTextColor="?android:textColorSecondary"/>
@@ -165,6 +167,7 @@
                     android:gravity="center_vertical"
                     android:paddingTop="@dimen/element_spacing_xsmall"
                     android:singleLine="true"
+                    android:tag="font_family|user"
                     android:textAppearance="?android:textAppearanceSmall"
                     tools:text="10 mins ago"
                     tools:textSize="@dimen/text_size_extra_small" />
@@ -197,6 +200,7 @@
             android:layout_marginTop="@dimen/element_spacing_small"
             android:paddingLeft="@dimen/element_spacing_normal"
             android:paddingRight="@dimen/element_spacing_normal"
+            android:tag="font_family|user"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorPrimary"
             android:visibility="visible"
@@ -253,6 +257,7 @@
             android:paddingLeft="@dimen/element_spacing_normal"
             android:paddingRight="@dimen/element_spacing_normal"
             android:paddingTop="@dimen/element_spacing_small"
+            android:tag="font_family|user"
             android:visibility="gone"
             app:nv_primaryTextColor="?android:textColorPrimary"
             app:nv_primaryTextStyle="bold"
@@ -269,6 +274,7 @@
             android:paddingLeft="@dimen/element_spacing_normal"
             android:paddingRight="@dimen/element_spacing_normal"
             android:paddingTop="@dimen/element_spacing_small"
+            android:tag="font_family|user"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorPrimary"
             android:visibility="gone"
@@ -338,6 +344,7 @@
                 android:focusable="false"
                 android:gravity="center"
                 android:minHeight="@dimen/button_size_content_card"
+                android:tag="font_family|user"
                 android:textAppearance="?android:textAppearanceSmall"
                 tools:text="255"/>
 
@@ -360,6 +367,7 @@
                 android:focusable="false"
                 android:gravity="center"
                 android:minHeight="@dimen/button_size_content_card"
+                android:tag="font_family|user"
                 android:textAppearance="?android:textAppearanceSmall"
                 tools:text="255"/>
 
@@ -382,6 +390,7 @@
                 android:focusable="false"
                 android:gravity="center"
                 android:minHeight="@dimen/button_size_content_card"
+                android:tag="font_family|user"
                 android:textAppearance="?android:textAppearanceSmall"
                 tools:text="255"/>
 

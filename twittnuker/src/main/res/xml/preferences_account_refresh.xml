@@ -21,10 +21,18 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:title="@string/auto_refresh">
+<!--suppress AndroidElementNotAllowed -->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/auto_refresh">
+
+    <SwitchPreferenceCompat
+        android:disableDependentsState="false"
+        android:key="auto_refresh"
+        android:title="@string/auto_refresh"/>
 
     <PreferenceCategory
+        android:dependency="auto_refresh"
         android:key="cat_refresh_content"
         android:title="@string/content_to_refresh">
         <SwitchPreferenceCompat

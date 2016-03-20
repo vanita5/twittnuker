@@ -41,15 +41,14 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.task.AbstractTask;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
@@ -168,7 +167,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
                 deleteBound[1] = Math.max(deleteBound[1], parcelableActivity.max_sort_position);
             }
             final ContentValues values = ContentValuesCreator.createActivity(parcelableActivity);
-            values.put(Statuses.INSERTED_DATE, System.currentTimeMillis());
+            values.put(Activities.INSERTED_DATE, System.currentTimeMillis());
             valuesList.add(values);
         }
         if (deleteBound[0] > 0 && deleteBound[1] > 0) {

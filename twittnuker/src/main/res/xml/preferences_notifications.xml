@@ -21,6 +21,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
+<!--suppress AndroidElementNotAllowed -->
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -32,14 +33,10 @@
         app:switchDefault="true"
         app:switchKey="notification"/>
 
-    <!--<PreferenceCategory-->
-    <!--android:key="cat_general"-->
-    <!--android:title="@string/general">-->
-    <!--</PreferenceCategory>-->
-
     <PreferenceCategory
         android:key="cat_push_notifications"
         android:title="@string/push_notifications">
+
         <SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="enable_push_notifications"

@@ -25,17 +25,13 @@ package de.vanita5.twittnuker.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
-import de.vanita5.twittnuker.util.ThemeUtils;
-
 public class ProfileBannerSpace extends View {
 
-    private final Rect mSystemWindowsInsets;
-    private final int mActionBarHeight;
+    private int mStatusBarHeight, mToolbarHeight;
 
     /**
      * {@inheritDoc}
@@ -57,8 +53,6 @@ public class ProfileBannerSpace extends View {
      */
     public ProfileBannerSpace(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
-        mSystemWindowsInsets = new Rect();
-        mActionBarHeight = ThemeUtils.getActionBarHeight(context);
     }
 
     /**
@@ -71,18 +65,28 @@ public class ProfileBannerSpace extends View {
     public void draw(@NonNull final Canvas canvas) {
     }
 
-    @Deprecated
-    @Override
-    protected boolean fitSystemWindows(@NonNull Rect insets) {
-        mSystemWindowsInsets.set(insets);
-        return super.fitSystemWindows(insets);
+    public void setStatusBarHeight(int offset) {
+        mStatusBarHeight = offset;
+        requestLayout();
+    }
+
+    public void setToolbarHeight(int toolbarHeight) {
+        mToolbarHeight = toolbarHeight;
+        requestLayout();
+    }
+
+    public int getStatusBarHeight() {
+        return mStatusBarHeight;
+    }
+
+    public int getToolbarHeight() {
+        return mToolbarHeight;
     }
 
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        final int insetsTop = mSystemWindowsInsets.top;
-        final int top = insetsTop <= 0 || insetsTop < mActionBarHeight ? insetsTop + mActionBarHeight : insetsTop;
-        final int width = MeasureSpec.getSize(widthMeasureSpec), height = width / 2 - top;
+        final int width = MeasureSpec.getSize(widthMeasureSpec), height = width / 2
+                - mStatusBarHeight - mToolbarHeight;
         setMeasuredDimension(width, height);
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
     }

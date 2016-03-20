@@ -25,19 +25,8 @@ package de.vanita5.twittnuker.view.iface;
 import android.graphics.Rect;
 
 public interface TintedStatusLayout extends IExtendedView {
-	void setColor(int color);
+    void setStatusBarColor(int color);
 
-	void setColor(int color, int alpha);
+    void setSetPaddingEnabled(boolean enabled);
 
-	void setDrawColor(boolean color);
-
-	void setDrawShadow(boolean shadow);
-
-	void setFactor(float f);
-
-	void setShadowColor(int color);
-
-	void setSetPaddingEnabled(boolean enabled);
-
-	void getSystemWindowsInsets(Rect insets);
 }
