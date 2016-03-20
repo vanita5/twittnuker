@@ -52,11 +52,11 @@ import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices;
 import de.vanita5.twittnuker.model.UserFollowState;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras;
 import de.vanita5.twittnuker.model.tab.extra.TabExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
@@ -291,7 +291,7 @@ public class DataStoreUtils implements Constants {
     public static String[] getFilteredUserIds(Context context) {
         if (context == null) return new String[0];
         final ContentResolver resolver = context.getContentResolver();
-        final String[] projection = {Filters.Users.USER_ID};
+        final String[] projection = {Filters.Users.USER_KEY};
         final Cursor cur = resolver.query(Filters.Users.CONTENT_URI, projection, null, null, null);
         if (cur == null) return new String[0];
         try {
@@ -313,7 +313,7 @@ public class DataStoreUtils implements Constants {
     @NonNull
     public static Expression buildStatusFilterWhereClause(@NonNull final String table, final Expression extraSelection) {
         final SQLSelectQuery filteredUsersQuery = SQLQueryBuilder
-                .select(new Column(new Table(Filters.Users.TABLE_NAME), Filters.Users.USER_ID))
+                .select(new Column(new Table(Filters.Users.TABLE_NAME), Filters.Users.USER_KEY))
                 .from(new Tables(Filters.Users.TABLE_NAME))
                 .build();
         final Expression filteredUsersWhere = Expression.or(
@@ -618,7 +618,7 @@ public class DataStoreUtils implements Constants {
     @NonNull
     public static Expression buildActivityFilterWhereClause(@NonNull final String table, final Expression extraSelection) {
         final SQLSelectQuery filteredUsersQuery = SQLQueryBuilder
-                .select(new Column(new Table(Filters.Users.TABLE_NAME), Filters.Users.USER_ID))
+                .select(new Column(new Table(Filters.Users.TABLE_NAME), Filters.Users.USER_KEY))
                 .from(new Tables(Filters.Users.TABLE_NAME))
                 .build();
         final Expression filteredUsersWhere = Expression.or(
@@ -851,11 +851,11 @@ public class DataStoreUtils implements Constants {
         sAccountScreenNames.clear();
     }
 
-    public static boolean isFilteringUser(Context context, String userId) {
+    public static boolean isFilteringUser(Context context, String userKey) {
         final ContentResolver cr = context.getContentResolver();
-        final Expression where = Expression.equalsArgs(Filters.Users.USER_ID);
+        final Expression where = Expression.equalsArgs(Filters.Users.USER_KEY);
         final Cursor c = cr.query(Filters.Users.CONTENT_URI, new String[]{SQLFunctions.COUNT()},
-                where.getSQL(), new String[]{userId}, null);
+                where.getSQL(), new String[]{userKey}, null);
         if (c == null) return false;
         try {
             if (c.moveToFirst()) {

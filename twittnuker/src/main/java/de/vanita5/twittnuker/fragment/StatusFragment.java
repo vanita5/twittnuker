@@ -103,7 +103,6 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
-import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.DefaultOnLikedListener;
 import de.vanita5.twittnuker.loader.ConversationLoader;
@@ -752,7 +751,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (!getUserVisibleHint()) return;
+        if (!getUserVisibleHint() || menuInfo == null) return;
         final MenuInflater inflater = new MenuInflater(getContext());
         final ExtendedRecyclerView.ContextMenuInfo contextMenuInfo =
                 (ExtendedRecyclerView.ContextMenuInfo) menuInfo;
@@ -2457,9 +2456,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final List<ParcelableUser> retweeters = new ArrayList<>();
             try {
                 for (Status status : twitter.getRetweets(mStatusId, paging)) {
-                    final User user = status.getUser();
-                    if (!DataStoreUtils.isFilteringUser(context, user.getId())) {
-                        retweeters.add(ParcelableUserUtils.fromUser(user, mAccountKey));
+                    final ParcelableUser user = ParcelableUserUtils.fromUser(status.getUser(), mAccountKey);
+                    if (!DataStoreUtils.isFilteringUser(context, user.key.toString())) {
+                        retweeters.add(user);
                     }
                 }
                 activitySummary.setRetweeters(retweeters);
