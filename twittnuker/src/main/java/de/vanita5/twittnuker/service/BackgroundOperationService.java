@@ -54,6 +54,7 @@ import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.api.fanfou.model.PhotoStatusUpdate;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterUpload;
@@ -95,7 +96,6 @@ import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.MediaUploaderInterface;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.StatusShortenerInterface;
 import de.vanita5.twittnuker.util.TwidereListUtils;
@@ -709,9 +709,13 @@ public class BackgroundOperationService extends IntentService implements Constan
                 FileBody body = null;
                 try {
                     body = getBodyFromMedia(resolver, builder, media, statusUpdate);
-                    final String location = ParseUtils.parseString(statusUpdate.location);
-                    final ParcelableStatus result = ParcelableStatusUtils.fromStatus(twitter.uploadPhoto(body,
-                            statusText, location), credentials.account_key, false);
+                    final PhotoStatusUpdate update = new PhotoStatusUpdate(body, statusText);
+                    if (statusUpdate.location != null) {
+                        update.setLocation(statusUpdate.location.toString());
+                    }
+                    final Status newStatus = twitter.uploadPhoto(update);
+                    final ParcelableStatus result = ParcelableStatusUtils.fromStatus(newStatus,
+                            credentials.account_key, false);
                     if (shouldShorten && shortener != null && shortenedResult != null) {
                         shortener.callback(shortenedResult, result);
                     }
