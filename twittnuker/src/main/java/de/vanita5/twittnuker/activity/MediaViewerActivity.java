@@ -1,23 +1,17 @@
 /*
- * Twittnuker - Twitter client for Android
+ * Copyright (C) 2009 The Android Open Source Project
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package de.vanita5.twittnuker.activity;
@@ -25,6 +19,7 @@ package de.vanita5.twittnuker.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaPlayer;
@@ -71,7 +66,6 @@ import android.widget.Toast;
 
 import com.commonsware.cwac.layouts.AspectLockedFrameLayout;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
-import com.pnikosis.materialishprogress.ProgressWheel;
 import com.sprylab.android.widget.TextureVideoView;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -82,11 +76,6 @@ import org.mariotaku.mediaviewer.library.FileCache;
 import org.mariotaku.mediaviewer.library.MediaDownloader;
 import org.mariotaku.mediaviewer.library.MediaViewerFragment;
 import org.mariotaku.mediaviewer.library.subsampleimageview.SubsampleImageViewerFragment;
-
-import java.io.File;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -102,11 +91,18 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.PermissionUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.media.MediaExtra;
 import de.vanita5.twittnuker.util.media.preview.provider.TwitterMediaProvider;
+
+import java.io.File;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
+import pl.droidsonroids.gif.GifTextureView;
+import pl.droidsonroids.gif.InputSource;
 
 public final class MediaViewerActivity extends AbsMediaViewerActivity implements Constants,
         AppCompatCallback, TaskStackBuilder.SupportParentable, ActionBarDrawerToggle.DelegateProvider,
@@ -228,6 +224,7 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         return mFileCache;
     }
 
+    @SuppressLint("SwitchIntDef")
     @Override
     protected MediaViewerFragment instantiateMediaFragment(int position) {
         final ParcelableMedia media = getMedia()[position];
@@ -238,9 +235,18 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         args.putParcelable(EXTRA_STATUS, intent.getParcelableExtra(EXTRA_STATUS));
         switch (media.type) {
             case ParcelableMedia.Type.IMAGE: {
+                if (media.media_url == null) {
+                    return (MediaViewerFragment) Fragment.instantiate(this,
+                            ExternalBrowserPageFragment.class.getName(), args);
+                }
                 args.putParcelable(ImagePageFragment.EXTRA_MEDIA_URI, Uri.parse(media.media_url));
-                return (MediaViewerFragment) Fragment.instantiate(this,
-                        ImagePageFragment.class.getName(), args);
+                if (media.media_url.endsWith(".gif")) {
+                    return (MediaViewerFragment) Fragment.instantiate(this,
+                            GifPageFragment.class.getName(), args);
+                } else {
+                    return (MediaViewerFragment) Fragment.instantiate(this,
+                            ImagePageFragment.class.getName(), args);
+                }
             }
             case ParcelableMedia.Type.ANIMATED_GIF:
             case ParcelableMedia.Type.CARD_ANIMATED_GIF: {
@@ -840,13 +846,6 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         }
 
         @Override
-        public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-            final ProgressWheel progressWheel = (ProgressWheel) view.findViewById(org.mariotaku.mediaviewer.library.R.id.load_progress);
-            progressWheel.setBarColor(ThemeUtils.getUserAccentColor(getContext()));
-        }
-
-        @Override
         public void setUserVisibleHint(boolean isVisibleToUser) {
             super.setUserVisibleHint(isVisibleToUser);
             if (isVisibleToUser) {
@@ -909,6 +908,61 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
 
         private UserKey getAccountKey() {
             return getArguments().getParcelable(EXTRA_ACCOUNT_KEY);
+        }
+    }
+
+    public static class GifPageFragment extends CacheDownloadMediaViewerFragment {
+
+        private GifTextureView mGifView;
+
+        @Override
+        public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            startLoading(false);
+        }
+
+        @Nullable
+        @Override
+        protected Uri getDownloadUri() {
+            return getArguments().getParcelable(ImagePageFragment.EXTRA_MEDIA_URI);
+        }
+
+        @Nullable
+        @Override
+        protected Object getDownloadExtra() {
+            return null;
+        }
+
+        @Override
+        protected void displayMedia(CacheDownloadLoader.Result result) {
+            final Context context = getContext();
+            if (context == null) return;
+            if (result.cacheUri != null) {
+                mGifView.setInputSource(new InputSource.UriSource(context.getContentResolver(), result.cacheUri));
+            } else {
+                mGifView.setInputSource(null);
+            }
+        }
+
+        @Override
+        protected boolean isAbleToLoad() {
+            return getDownloadUri() != null;
+        }
+
+        @Override
+        protected View onCreateMediaView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.layout_media_viewer_gif, parent, false);
+        }
+
+        @Override
+        public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            mGifView = (GifTextureView) view.findViewById(R.id.gif_view);
+        }
+
+        @Override
+        protected void recycleMedia() {
+            mGifView.setInputSource(null);
         }
     }
 
@@ -1049,8 +1103,6 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
             mVolumeButton = (ImageButton) view.findViewById(R.id.volume_button);
             mVideoControl = view.findViewById(R.id.video_control);
 
-            final ProgressWheel progressWheel = (ProgressWheel) view.findViewById(org.mariotaku.mediaviewer.library.R.id.load_progress);
-            progressWheel.setBarColor(ThemeUtils.getUserAccentColor(getContext()));
         }
 
 
