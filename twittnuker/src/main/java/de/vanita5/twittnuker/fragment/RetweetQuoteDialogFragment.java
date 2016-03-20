@@ -209,7 +209,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         final AlertDialog alertDialog = (AlertDialog) dialog;
         final Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
         if (positiveButton == null) return;
-        if (useQuote(s.length() > 0, account)) {
+        if (s.length() > 0) {
             positiveButton.setText(R.string.comment);
         } else if(isMyRetweet(status)) {
             positiveButton.setText(R.string.cancel_retweet);
