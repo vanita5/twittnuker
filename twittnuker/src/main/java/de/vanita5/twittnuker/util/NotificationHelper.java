@@ -97,7 +97,7 @@ public class NotificationHelper implements Constants {
             final ContentResolver resolver = mContext.getContentResolver();
 
             final String where = Expression.equalsArgs(PushNotifications.ACCOUNT_KEY).getSQL();
-            final String[] whereArgs = {userKey.getId()};
+            final String[] whereArgs = {userKey.toString()};
 
             c = resolver.query(PushNotifications.CONTENT_URI, PushNotifications.MATRIX_COLUMNS,
                     where, whereArgs, PushNotifications.DEFAULT_SORT_ORDER);
@@ -149,7 +149,7 @@ public class NotificationHelper implements Constants {
         final ContentResolver resolver = mContext.getContentResolver();
 
         String where = Expression.equalsArgs(PushNotifications.ACCOUNT_KEY).getSQL();
-        final String[] whereArgs = {userKey.getId()};
+        final String[] whereArgs = {userKey.toString()};
 
         if (type != null && !type.isEmpty()) {
             where += " AND " + PushNotifications.NOTIFICATION_TYPE + " = '" + type + "'";
@@ -160,7 +160,7 @@ public class NotificationHelper implements Constants {
         // Only rebuild notifications if there are entries that will be removed
         if (c == null) return;
         if (c.getCount() > 0) {
-            resolver.delete(PushNotifications.CONTENT_URI, where, null);
+            resolver.delete(PushNotifications.CONTENT_URI, where, whereArgs);
             rebuildNotification(userKey);
         }
         c.close();
@@ -483,7 +483,7 @@ public class NotificationHelper implements Constants {
         builder.setContentTitle("@" + notification.getFromUser());
         builder.setContentText(contentText);
         if (!rebuild) builder.setTicker(ticker);
-        builder.setDeleteIntent(getDeleteIntent(notification.getAccountKey().getId()));
+        builder.setDeleteIntent(getDeleteIntent(notification.getAccountKey()));
         builder.setAutoCancel(true);
         builder.setWhen(notification.getTimestamp());
 
@@ -628,10 +628,10 @@ public class NotificationHelper implements Constants {
         return text;
     }
 
-    private PendingIntent getDeleteIntent(final String accountId) {
+    private PendingIntent getDeleteIntent(final UserKey accountKey) {
         Intent intent = new Intent(mContext, NotificationActionReceiver.class);
         intent.setAction(INTENT_ACTION_PUSH_NOTIFICATION_CLEARED);
-        intent.putExtra(EXTRA_USER_ID, accountId);
+        intent.putExtra(EXTRA_ACCOUNT_KEY, accountKey);
         return PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 

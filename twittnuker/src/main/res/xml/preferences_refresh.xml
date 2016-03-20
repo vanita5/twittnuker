@@ -27,7 +27,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/refresh">
 
-    <org.mariotaku.twidere.preference.AutoRefreshAccountsListPreference
+    <de.vanita5.twittnuker.preference.AutoRefreshAccountsListPreference
         android:key="cat_auto_refresh"
         android:title="@string/auto_refresh"
         app:switchDefault="true"

@@ -45,9 +45,8 @@ public class NotificationActionReceiver extends BroadcastReceiver implements Con
         switch (action) {
             case INTENT_ACTION_PUSH_NOTIFICATION_CLEARED: {
                 NotificationHelper notificationHelper = new NotificationHelper(context);
-                final String accountId = intent.getStringExtra(EXTRA_USER_ID);
-                notificationHelper.deleteCachedNotifications(
-                        new UserKey(accountId, null), null);
+                final UserKey accountKey = intent.getParcelableExtra(EXTRA_ACCOUNT_KEY);
+                notificationHelper.deleteCachedNotifications(accountKey, null);
                 break;
             }
             case INTENT_ACTION_RETWEET: {

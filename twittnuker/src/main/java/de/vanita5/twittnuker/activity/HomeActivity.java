@@ -324,6 +324,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
         mMultiSelectHandler = new MultiSelectEventHandler(this);
         mMultiSelectHandler.dispatchOnCreate();
         if (!DataStoreUtils.hasAccount(this)) {
@@ -446,7 +447,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
         invalidateOptionsMenu();
         updateActionsButton();
 
@@ -455,12 +455,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         } else {
             stopStreamingService();
         }
-    }
-
-    @Override
-    protected void onPause() {
-        unregisterReceiver(mGCMRegistrationReceiver);
-        super.onPause();
     }
 
     @Override
@@ -582,6 +576,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
 
     @Override
     protected void onDestroy() {
+
+        unregisterReceiver(mGCMRegistrationReceiver);
 
         stopStreamingService();
 
