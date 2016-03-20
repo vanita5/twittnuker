@@ -63,7 +63,7 @@
                 android:textColor="?android:attr/textColorSecondary"/>
         </LinearLayout>
 
-        <de.vanita5.twittnuker.view.ShapedImageView
+        <de.vanita5.twittnuker.view.ProfileImageView
             android:id="@+id/profile_image"
             style="?profileImageStyle"
             android:layout_width="@dimen/icon_size_card_details"

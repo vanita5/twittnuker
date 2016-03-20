@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_description">Your Twitter App</string>
     <string name="compose">Compose</string>
     <string name="add_account">Add account</string>
     <string name="settings">Settings</string>
@@ -51,6 +50,7 @@
     <string name="undo_like">Unlike</string>
     <string name="reply">Reply</string>
     <string name="share">Share</string>
+    <string name="view_user_profile">User profile</string>
     <string name="view_map">Map</string>
     <string name="statuses">Tweets</string>
     <string name="followers">Followers</string>
@@ -351,7 +351,6 @@
     <string name="your_profile_image">Your profile image</string>
     <string name="mention_user">Mention <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Theme color</string>
-    <string name="action_bar_color">Action bar color</string>
     <string name="wrong_url_format">Wrong URL format.</string>
     <string name="wrong_username_password">Wrong username/password.</string>
     <string name="network_error">Network error.</string>
@@ -745,7 +744,7 @@
     <string name="interactions">Interactions</string>
     <string name="network_diagnostics">Network diagnostics</string>
     <string name="action_start">Start</string>
-    <string name="builtin_dns_resolver">Built-In DNS resolver</string>
+    <string name="builtin_dns_resolver">Built-in DNS resolver</string>
     <string name="bandwidth_saving_mode">Bandwidth saving mode</string>
     <string name="retry_on_network_issue">Retry on network issue</string>
     <string name="retry_on_network_issue_summary">Try to recover from network issue automatically</string>
@@ -763,7 +762,9 @@
     <string name="external_group_host_format">External group at <xliff:g id="host">%s</xliff:g></string>
     <string name="error_too_many_photos_fanfou">Too many photos</string>
     <string name="load_defaults">Load defaults</string>
+    <!-- Normally you don't need to translate this -->
     <string name="provider_default">Twitter</string>
+    <!-- Fanfou is a Chinese micro blogging website http://fanfou.com/ -->
     <string name="provider_fanfou">Fanfou</string>
 
     <!-- Twittnuker -->

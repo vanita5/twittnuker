@@ -81,6 +81,14 @@
             android:elevation="@dimen/toolbar_elevation"
             android:tag="ate_ignore"
             app:popupTheme="?actionBarPopupTheme"/>
+
+        <View
+            android:id="@+id/window_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:background="?android:windowContentOverlay"/>
+
     </de.vanita5.twittnuker.view.ExtendedRelativeLayout>
 
 </de.vanita5.twittnuker.view.TintedStatusFrameLayout>

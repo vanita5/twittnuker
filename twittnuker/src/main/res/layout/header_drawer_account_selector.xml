@@ -60,7 +60,7 @@
             android:paddingRight="@dimen/element_spacing_large"
             android:paddingTop="@dimen/element_spacing_normal">
 
-            <de.vanita5.twittnuker.view.ShapedImageView
+            <de.vanita5.twittnuker.view.ProfileImageView
                 android:id="@+id/profile_image"
                 style="?profileImageStyle"
                 android:layout_width="@dimen/icon_size_profile_image_dashboard_current"

@@ -42,7 +42,7 @@
         android:background="@drawable/list_drag_handle"
         tools:layout_height="?android:attr/listPreferredItemHeight"/>
 
-    <de.vanita5.twittnuker.view.ShapedImageView
+    <de.vanita5.twittnuker.view.ProfileImageView
         android:id="@android:id/icon"
         style="?profileImageStyle"
         android:layout_width="@dimen/element_size_normal"

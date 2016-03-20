@@ -27,7 +27,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <de.vanita5.twittnuker.view.ShapedImageView
+    <de.vanita5.twittnuker.view.ProfileImageView
         android:id="@android:id/icon"
         style="?profileImageStyle"
         android:layout_width="wrap_content"

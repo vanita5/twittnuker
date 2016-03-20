@@ -28,7 +28,7 @@
 
     <PreferenceCategory
         android:key="category_multimedia_contents"
-        android:title="@string/multimedia_contents">
+        android:title="@string/media">
         <de.vanita5.twittnuker.preference.MediaUploaderPreference
             android:defaultValue=""
             android:key="media_uploader"

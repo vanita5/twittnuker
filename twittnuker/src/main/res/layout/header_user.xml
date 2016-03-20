@@ -403,7 +403,7 @@
 
     </FrameLayout>
 
-    <de.vanita5.twittnuker.view.ShapedImageView
+    <de.vanita5.twittnuker.view.ProfileImageView
         android:id="@+id/profile_image"
         style="?profileImageStyleLarge"
         android:layout_width="@dimen/icon_size_user_profile"
