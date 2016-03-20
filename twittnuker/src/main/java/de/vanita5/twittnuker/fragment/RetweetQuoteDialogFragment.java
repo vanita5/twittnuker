@@ -47,7 +47,7 @@ import com.twitter.Validator;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
+import de.vanita5.twittnuker.adapter.DummyItemAdapter;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -82,7 +82,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         final Context context = builder.getContext();
         final LayoutInflater inflater = LayoutInflater.from(context);
         @SuppressLint("InflateParams") final View view = inflater.inflate(R.layout.dialog_status_quote_retweet, null);
-        final DummyStatusHolderAdapter adapter = new DummyStatusHolderAdapter(context);
+        final DummyItemAdapter adapter = new DummyItemAdapter(context);
         adapter.setShouldShowAccountsColor(true);
         final IStatusViewHolder holder = new StatusViewHolder(adapter, view.findViewById(R.id.item_content));
         final ParcelableStatus status = getStatus();

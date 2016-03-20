@@ -139,6 +139,7 @@ import de.vanita5.twittnuker.fragment.DraftsFragment;
 import de.vanita5.twittnuker.fragment.FiltersFragment;
 import de.vanita5.twittnuker.fragment.IncomingFriendshipsFragment;
 import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment;
+import de.vanita5.twittnuker.fragment.ItemsListFragment;
 import de.vanita5.twittnuker.fragment.ListsFragment;
 import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.MutesUsersListFragment;
@@ -149,7 +150,6 @@ import de.vanita5.twittnuker.fragment.SearchFragment;
 import de.vanita5.twittnuker.fragment.StatusFavoritersListFragment;
 import de.vanita5.twittnuker.fragment.StatusFragment;
 import de.vanita5.twittnuker.fragment.StatusRetweetersListFragment;
-import de.vanita5.twittnuker.fragment.StatusesListFragment;
 import de.vanita5.twittnuker.fragment.UserBlocksListFragment;
 import de.vanita5.twittnuker.fragment.UserFavoritesFragment;
 import de.vanita5.twittnuker.fragment.UserFollowersFragment;
@@ -165,10 +165,8 @@ import de.vanita5.twittnuker.fragment.UserMediaTimelineFragment;
 import de.vanita5.twittnuker.fragment.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.UserProfileEditorFragment;
 import de.vanita5.twittnuker.fragment.UserTimelineFragment;
-import de.vanita5.twittnuker.fragment.UsersListFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -181,6 +179,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
 import de.vanita5.twittnuker.model.TwitterAccountExtra;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
@@ -259,8 +258,7 @@ public final class Utils implements Constants {
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_SAVED_SEARCHES, null, LINK_ID_SAVED_SEARCHES);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USER_MENTIONS, null, LINK_ID_USER_MENTIONS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_INCOMING_FRIENDSHIPS, null, LINK_ID_INCOMING_FRIENDSHIPS);
-        LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_USERS, null, LINK_ID_USERS);
-        LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_STATUSES, null, LINK_ID_STATUSES);
+        LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_ITEMS, null, LINK_ID_ITEMS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_STATUS_RETWEETERS, null, LINK_ID_STATUS_RETWEETERS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_STATUS_FAVORITERS, null, LINK_ID_STATUS_FAVORITERS);
         LINK_HANDLER_URI_MATCHER.addURI(AUTHORITY_SEARCH, null, LINK_ID_SEARCH);
@@ -686,12 +684,8 @@ public final class Utils implements Constants {
                 fragment = new IncomingFriendshipsFragment();
                 break;
             }
-            case LINK_ID_USERS: {
-                fragment = new UsersListFragment();
-                break;
-            }
-            case LINK_ID_STATUSES: {
-                fragment = new StatusesListFragment();
+            case LINK_ID_ITEMS: {
+                fragment = new ItemsListFragment();
                 break;
             }
             case LINK_ID_STATUS_RETWEETERS: {

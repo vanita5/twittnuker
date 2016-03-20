@@ -74,7 +74,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_TWITTNUKER_CACHE = "twittnuker.cache";
 
     String AUTHORITY_USER = "user";
-    String AUTHORITY_USERS = "users";
+    String AUTHORITY_ITEMS = "items";
     String AUTHORITY_USER_TIMELINE = "user_timeline";
     String AUTHORITY_USER_MEDIA_TIMELINE = "user_media_timeline";
     String AUTHORITY_USER_FAVORITES = "user_favorites";
@@ -82,7 +82,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_USER_FRIENDS = "user_friends";
     String AUTHORITY_USER_BLOCKS = "user_blocks";
     String AUTHORITY_STATUS = "status";
-    String AUTHORITY_STATUSES = "statuses";
     String AUTHORITY_PUBLIC_TIMELINE = "public_timeline";
     String AUTHORITY_DIRECT_MESSAGES_CONVERSATION = "direct_messages_conversation";
     String AUTHORITY_DIRECT_MESSAGES = "direct_messages";

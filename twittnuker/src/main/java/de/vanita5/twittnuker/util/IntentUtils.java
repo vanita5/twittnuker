@@ -29,6 +29,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -47,12 +48,12 @@ import de.vanita5.twittnuker.activity.MediaViewerActivity;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.SensitiveContentWarningDialogFragment;
 import de.vanita5.twittnuker.fragment.UserFragment;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
 
 import java.util.ArrayList;
@@ -79,14 +80,14 @@ public class IntentUtils implements Constants {
         final Bundle extras = new Bundle();
         extras.putParcelable(EXTRA_USER, user);
         final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(TwittnukerConstants.SCHEME_TWITTNUKER);
-        builder.authority(TwittnukerConstants.AUTHORITY_USER);
-        builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_ACCOUNT_KEY, user.account_key.toString());
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_USER);
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, user.account_key.toString());
         if (user.key != null) {
-            builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_USER_ID, user.key.toString());
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, user.key.toString());
         }
         if (user.screen_name != null) {
-            builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_SCREEN_NAME, user.screen_name);
+            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, user.screen_name);
         }
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         intent.setExtrasClassLoader(context.getClassLoader());
@@ -120,13 +121,13 @@ public class IntentUtils implements Constants {
         }
     }
 
-    public static void openUsers(@NonNull final Context context, final List<ParcelableUser> users) {
-        if (users == null) return;
+    public static void openItems(@NonNull final Context context, final List<Parcelable> items) {
+        if (items == null) return;
         final Bundle extras = new Bundle();
-        extras.putParcelableArrayList(EXTRA_USERS, new ArrayList<>(users));
+        extras.putParcelableArrayList(EXTRA_ITEMS, new ArrayList<>(items));
         final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(TwittnukerConstants.SCHEME_TWITTNUKER);
-        builder.authority(TwittnukerConstants.AUTHORITY_USERS);
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_ITEMS);
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         intent.putExtras(extras);
         context.startActivity(intent);
@@ -135,12 +136,12 @@ public class IntentUtils implements Constants {
     public static void openUserMentions(@NonNull final Context context, @Nullable final UserKey accountKey,
                                         @NonNull final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(TwittnukerConstants.SCHEME_TWITTNUKER);
-        builder.authority(TwittnukerConstants.AUTHORITY_USER_MENTIONS);
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_USER_MENTIONS);
         if (accountKey != null) {
-            builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
+            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
-        builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_SCREEN_NAME, screenName);
+        builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         context.startActivity(intent);
     }
@@ -155,10 +156,10 @@ public class IntentUtils implements Constants {
     public static void openUserTimeline(@NonNull  final Context context, @Nullable final UserKey accountKey,
                                         final String userId, final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(TwittnukerConstants.SCHEME_TWITTNUKER);
-        builder.authority(TwittnukerConstants.AUTHORITY_USER_TIMELINE);
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_USER_TIMELINE);
         if (accountKey != null) {
-            builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
+            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
         if (userId != null) {
             builder.appendQueryParameter(QUERY_PARAM_USER_ID, userId);
@@ -188,7 +189,7 @@ public class IntentUtils implements Constants {
                                  final ParcelableMedia current, final ParcelableMedia[] media,
                                  final Bundle options, final boolean newDocument) {
         if (media == null) return;
-        final SharedPreferences prefs = context.getSharedPreferences(TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         if (context instanceof FragmentActivity && isPossiblySensitive
                 && !prefs.getBoolean(SharedPreferenceConstants.KEY_DISPLAY_SENSITIVE_CONTENTS, false)) {
             final FragmentActivity activity = (FragmentActivity) context;
@@ -409,18 +410,6 @@ public class IntentUtils implements Constants {
         } else {
             context.startActivity(intent);
         }
-    }
-
-    public static void openStatuses(final Context context, final List<ParcelableStatus> statuses) {
-        if (context == null || statuses == null) return;
-        final Bundle extras = new Bundle();
-        extras.putParcelableArrayList(EXTRA_STATUSES, new ArrayList<>(statuses));
-        final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(SCHEME_TWITTNUKER);
-        builder.authority(AUTHORITY_STATUSES);
-        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        intent.putExtras(extras);
-        context.startActivity(intent);
     }
 
     public static void openStatusFavoriters(@NonNull final Context context, @Nullable final UserKey accountKey,

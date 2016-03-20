@@ -31,8 +31,12 @@ import android.support.v7.widget.RecyclerView;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.adapter.iface.IUserListsAdapter;
+import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -46,7 +50,8 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 import javax.inject.Inject;
 
-public final class DummyStatusHolderAdapter implements IStatusesAdapter<Object>, SharedPreferenceConstants {
+public final class DummyItemAdapter implements IStatusesAdapter<Object>,
+        IUsersAdapter<Object>, IUserListsAdapter<Object>, SharedPreferenceConstants {
 
     private final Context context;
     private final SharedPreferencesWrapper preferences;
@@ -77,12 +82,12 @@ public final class DummyStatusHolderAdapter implements IStatusesAdapter<Object>,
     private boolean showAbsoluteTime;
     private int showingActionCardPosition = RecyclerView.NO_POSITION;
 
-    public DummyStatusHolderAdapter(Context context) {
+    public DummyItemAdapter(Context context) {
         this(context, new TwidereLinkify(null), null);
     }
 
-    public DummyStatusHolderAdapter(Context context, TwidereLinkify linkify,
-                                    @Nullable RecyclerView.Adapter<? extends RecyclerView.ViewHolder> adapter) {
+    public DummyItemAdapter(Context context, TwidereLinkify linkify,
+                            @Nullable RecyclerView.Adapter<? extends RecyclerView.ViewHolder> adapter) {
         GeneralComponentHelper.build(context).inject(this);
         this.context = context;
         preferences = SharedPreferencesWrapper.getInstance(context, TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
@@ -100,6 +105,12 @@ public final class DummyStatusHolderAdapter implements IStatusesAdapter<Object>,
     @Override
     public MediaLoaderWrapper getMediaLoader() {
         return loader;
+    }
+
+    @Nullable
+    @Override
+    public UserListAdapterListener getUserListAdapterListener() {
+        return null;
     }
 
     @NonNull
@@ -276,8 +287,55 @@ public final class DummyStatusHolderAdapter implements IStatusesAdapter<Object>,
     }
 
     @Override
+    public ParcelableUser getUser(int position) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public String getUserId(int position) {
+        return null;
+    }
+
+    @Override
+    public int getUserCount() {
+        return 0;
+    }
+
+    @Override
+    public ParcelableUserList getUserList(int position) {
+        return null;
+    }
+
+    @Override
+    public long getUserListId(int position) {
+        return 0;
+    }
+
+    @Override
+    public int getUserListsCount() {
+        return 0;
+    }
+
+    @Override
     public void setData(Object o) {
 
+    }
+
+    @Nullable
+    @Override
+    public UserAdapterListener getUserAdapterListener() {
+        return null;
+    }
+
+    @Override
+    public RequestClickListener getRequestClickListener() {
+        return null;
+    }
+
+    @Override
+    public FollowClickListener getFollowClickListener() {
+        return null;
     }
 
     @Override

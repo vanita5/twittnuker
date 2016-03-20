@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.adapter.BaseArrayAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
-import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
+import de.vanita5.twittnuker.adapter.DummyItemAdapter;
 import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
 import de.vanita5.twittnuker.fragment.BaseListFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
@@ -66,7 +66,7 @@ import dagger.Component;
 @Singleton
 @Component(modules = ApplicationModule.class)
 public interface GeneralComponent {
-    void inject(DummyStatusHolderAdapter object);
+    void inject(DummyItemAdapter object);
 
     void inject(BaseSupportFragment object);
 

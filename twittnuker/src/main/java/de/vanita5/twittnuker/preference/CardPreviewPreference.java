@@ -32,7 +32,7 @@ import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.DummyStatusHolderAdapter;
+import de.vanita5.twittnuker.adapter.DummyItemAdapter;
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
@@ -41,7 +41,7 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
 
     private StatusViewHolder mHolder;
     private boolean mCompactModeChanged;
-    private DummyStatusHolderAdapter mAdapter;
+    private DummyItemAdapter mAdapter;
 
     public CardPreviewPreference(final Context context) {
         this(context, null);
@@ -57,7 +57,7 @@ public class CardPreviewPreference extends Preference implements Constants, OnSh
                 Context.MODE_PRIVATE);
         setLayoutResources(preferences);
         preferences.registerOnSharedPreferenceChangeListener(this);
-        mAdapter = new DummyStatusHolderAdapter(context);
+        mAdapter = new DummyItemAdapter(context);
     }
 
     @Override

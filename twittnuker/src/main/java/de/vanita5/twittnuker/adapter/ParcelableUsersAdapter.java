@@ -33,8 +33,8 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
@@ -170,14 +170,7 @@ public class ParcelableUsersAdapter extends LoadMoreSupportAdapter<RecyclerView.
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case ITEM_VIEW_TYPE_USER: {
-                final View view;
-                view = mInflater.inflate(R.layout.card_item_user_compact, parent, false);
-                final View itemContent = view.findViewById(R.id.item_content);
-                itemContent.setBackgroundColor(mCardBackgroundColor);
-                final UserViewHolder holder = new UserViewHolder(this, view);
-                holder.setOnClickListeners();
-                holder.setupViewOptions();
-                return holder;
+                return createUserViewHolder(this, mInflater, parent, mCardBackgroundColor);
             }
             case ITEM_VIEW_TYPE_LOAD_INDICATOR: {
                 final View view = mInflater.inflate(R.layout.card_item_load_indicator, parent, false);
@@ -239,5 +232,17 @@ public class ParcelableUsersAdapter extends LoadMoreSupportAdapter<RecyclerView.
     @Override
     public boolean shouldShowAccountsColor() {
         return false;
+    }
+
+    public static UserViewHolder createUserViewHolder(IUsersAdapter<?> adapter,
+                                                      LayoutInflater inflater, ViewGroup parent,
+                                                      int cardBackgroundColor) {
+        final View view = inflater.inflate(R.layout.card_item_user_compact, parent, false);
+        final View itemContent = view.findViewById(R.id.item_content);
+        itemContent.setBackgroundColor(cardBackgroundColor);
+        final UserViewHolder holder = new UserViewHolder(adapter, view);
+        holder.setOnClickListeners();
+        holder.setupViewOptions();
+        return holder;
     }
 }
