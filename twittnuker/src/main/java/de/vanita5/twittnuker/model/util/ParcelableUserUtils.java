@@ -30,8 +30,8 @@ import android.text.TextUtils;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
@@ -93,6 +93,7 @@ public class ParcelableUserUtils implements TwittnukerConstants{
             extras.profile_image_url_profile_size = user.getProfileImageUrlLarge();
         }
         extras.groups_count = user.getGroupsCount();
+        extras.unique_id = user.getUniqueId();
         obj.extras = extras;
         return obj;
     }

@@ -322,6 +322,10 @@ public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
         @JsonField(name = "groups_count")
         @ParcelableThisPlease
         public long groups_count = -1;
+        @JsonField(name = "unique_id")
+        @ParcelableThisPlease
+        public String unique_id;
+
 
         @Override
         public int describeContents() {
