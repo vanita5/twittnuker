@@ -77,4 +77,9 @@ public abstract class SimpleRefreshTaskParam implements RefreshTaskParam {
     public boolean isLoadingMore() {
         return false;
     }
+
+    @Override
+    public boolean shouldAbort() {
+        return false;
+    }
 }

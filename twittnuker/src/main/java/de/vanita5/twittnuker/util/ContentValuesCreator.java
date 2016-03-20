@@ -33,7 +33,6 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.Trend;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
@@ -46,6 +45,7 @@ import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
@@ -54,7 +54,6 @@ import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
-import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
@@ -69,10 +68,11 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 public final class ContentValuesCreator implements TwittnukerConstants {
 
     public static ContentValues createCachedRelationship(final Relationship relationship,
-                                                         final UserKey accountKey) {
+                                                         final UserKey accountKey,
+                                                         final UserKey userKey) {
         final ContentValues values = new ContentValues();
         values.put(CachedRelationships.ACCOUNT_KEY, accountKey.toString());
-        values.put(CachedRelationships.USER_ID, relationship.getTargetUserId());
+        values.put(CachedRelationships.USER_KEY, userKey.toString());
         values.put(CachedRelationships.FOLLOWING, relationship.isSourceFollowingTarget());
         values.put(CachedRelationships.FOLLOWED_BY, relationship.isSourceFollowedByTarget());
         values.put(CachedRelationships.BLOCKING, relationship.isSourceBlockingTarget());

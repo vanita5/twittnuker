@@ -254,7 +254,6 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
         // Only supports load from end, skip START flag
         if ((position & IndicatorPosition.START) != 0) return;
         super.onLoadMoreContents(position);
-        final Context context = getContext();
         if (position == 0) return;
         getStatuses(new SimpleRefreshTaskParam() {
             @NonNull
@@ -272,7 +271,7 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
             @Nullable
             @Override
             public long[] getMaxSortIds() {
-                return DataStoreUtils.getOldestStatusSortIds(context, getContentUri(),
+                return DataStoreUtils.getOldestStatusSortIds(getContext(), getContentUri(),
                         getAccountKeys());
             }
 
@@ -280,13 +279,17 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
             public boolean hasMaxIds() {
                 return true;
             }
+
+            @Override
+            public boolean shouldAbort() {
+                return getContext() == null;
+            }
         });
     }
 
     @Override
     public boolean triggerRefresh() {
         super.triggerRefresh();
-        final Context context = getContext();
         getStatuses(new SimpleRefreshTaskParam() {
             @NonNull
             @Override
@@ -308,8 +311,13 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
             @Nullable
             @Override
             public long[] getSinceSortIds() {
-                return DataStoreUtils.getNewestStatusSortIds(context, getContentUri(),
+                return DataStoreUtils.getNewestStatusSortIds(getContext(), getContentUri(),
                         getAccountKeys());
+            }
+
+            @Override
+            public boolean shouldAbort() {
+                return getContext() == null;
             }
         });
         return true;

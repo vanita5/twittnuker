@@ -42,7 +42,6 @@ import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserAdapterListener;
-import de.vanita5.twittnuker.fragment.UserFragment.Referral;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
@@ -197,7 +196,7 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
         }
     }
 
-    @Referral
+    @UserFragment.Referral
     protected String getUserReferral() {
         return null;
     }
@@ -248,6 +247,7 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
             final ParcelableUsersAdapter adapter = getAdapter();
             final int position = findPosition(adapter, event.getAccountKey(), event.getUserKey());
             final List<ParcelableUser> data = adapter.getData();
+            if (position < 0 || position >= data.size()) return;
             if (shouldRemoveUser(position, event)) {
                 data.remove(position);
                 adapter.notifyItemRemoved(position);

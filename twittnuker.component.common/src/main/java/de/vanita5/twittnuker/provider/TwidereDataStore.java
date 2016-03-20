@@ -303,14 +303,12 @@ public interface TwidereDataStore {
 
         String EXTRAS = "extras";
 
-        String USER_HOST = "user_host";
-
         String[] COLUMNS = {_ID, USER_KEY, CREATED_AT, NAME, SCREEN_NAME, DESCRIPTION_PLAIN, LOCATION,
                 URL, PROFILE_IMAGE_URL, PROFILE_BANNER_URL, PROFILE_BACKGROUND_URL, IS_PROTECTED,
                 IS_VERIFIED, IS_FOLLOWING, FOLLOWERS_COUNT, FRIENDS_COUNT, STATUSES_COUNT,
                 FAVORITES_COUNT, LISTED_COUNT, MEDIA_COUNT, DESCRIPTION_HTML, DESCRIPTION_EXPANDED,
                 URL_EXPANDED, BACKGROUND_COLOR, LINK_COLOR, TEXT_COLOR, LAST_SEEN,
-                DESCRIPTION_UNESCAPED, EXTRAS, USER_HOST};
+                DESCRIPTION_UNESCAPED, EXTRAS};
 
         String[] BASIC_COLUMNS = {_ID, USER_KEY, NAME, SCREEN_NAME, PROFILE_IMAGE_URL};
 
@@ -318,7 +316,7 @@ public interface TwidereDataStore {
                 TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_BOOLEAN,
                 TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT,
                 TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT,
-                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT};
+                TYPE_TEXT, TYPE_TEXT};
 
     }
 
@@ -994,8 +992,7 @@ public interface TwidereDataStore {
 
         Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
 
-
-        String USER_ID = "user_id";
+        String USER_KEY = "user_id";
 
         String FOLLOWING = "following";
 
@@ -1009,7 +1006,7 @@ public interface TwidereDataStore {
 
         String RETWEET_ENABLED = "retweet_enabled";
 
-        String[] COLUMNS = {_ID, ACCOUNT_KEY, USER_ID, FOLLOWING, FOLLOWED_BY, BLOCKING,
+        String[] COLUMNS = {_ID, ACCOUNT_KEY, USER_KEY, FOLLOWING, FOLLOWED_BY, BLOCKING,
                 BLOCKED_BY, MUTING, RETWEET_ENABLED};
 
         String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL,

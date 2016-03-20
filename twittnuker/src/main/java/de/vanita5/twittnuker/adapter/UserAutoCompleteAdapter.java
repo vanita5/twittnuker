@@ -43,7 +43,6 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.view.ProfileImageView;
 
 import javax.inject.Inject;
 
@@ -116,6 +115,7 @@ public class UserAutoCompleteAdapter extends SimpleCursorAdapter implements Cons
         final Expression usersSelection = Expression.or(
                 Expression.likeRaw(new Columns.Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
                 Expression.likeRaw(new Columns.Column(CachedUsers.NAME), "?||'%'", "^"));
+        //TODO
         final String[] selectionArgs = new String[]{queryEscaped, queryEscaped};
         final String[] order = {CachedUsers.LAST_SEEN, CachedUsers.SCORE, CachedUsers.SCREEN_NAME,
                 CachedUsers.NAME};

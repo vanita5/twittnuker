@@ -1936,9 +1936,11 @@ public final class Utils implements Constants {
         return orig.replaceAll("\\n+", "\n");
     }
 
-    public static void updateRelationship(Context context, Relationship relationship, UserKey accountId) {
+    public static void updateRelationship(Context context, UserKey accountKey, UserKey userKey,
+                                          Relationship relationship) {
         final ContentResolver resolver = context.getContentResolver();
-        final ContentValues values = ContentValuesCreator.createCachedRelationship(relationship, accountId);
+        final ContentValues values = ContentValuesCreator.createCachedRelationship(relationship,
+                accountKey, userKey);
         resolver.insert(CachedRelationships.CONTENT_URI, values);
     }
 

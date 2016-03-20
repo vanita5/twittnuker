@@ -35,7 +35,6 @@ import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.fragment.AbsStatusesFragment;
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
@@ -159,7 +158,7 @@ public abstract class ParcelableStatusesFragment extends AbsStatusesFragment {
         final String[] maxIds = {status.id};
         mPage += mPageDelta;
         final BaseRefreshTaskParam param = new BaseRefreshTaskParam(accountKeys, maxIds, null);
-        param.setIsLoadingMore(true);
+        param.setLoadingMore(true);
         getStatuses(param);
     }
 
