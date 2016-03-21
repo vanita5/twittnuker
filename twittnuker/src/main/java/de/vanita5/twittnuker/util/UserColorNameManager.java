@@ -54,10 +54,6 @@ public class UserColorNameManager implements TwittnukerConstants {
         return nameFirst && !isEmpty(name) ? name : "@" + screenName;
     }
 
-    public static String getNickname(@NonNull final String nickname, final String name) {
-        return TextUtils.isEmpty(nickname) ? name : nickname;
-    }
-
     public void registerColorChangedListener(final UserColorChangedListener listener) {
 
         mColorPreferences.registerOnSharedPreferenceChangeListener(new OnColorPreferenceChangeListener(listener));
