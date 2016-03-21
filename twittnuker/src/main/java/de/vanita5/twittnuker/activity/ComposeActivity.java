@@ -74,6 +74,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.text.style.SuggestionSpan;
+import android.text.style.URLSpan;
 import android.text.style.UpdateAppearance;
 import android.util.Log;
 import android.view.ActionMode;
@@ -123,6 +124,7 @@ import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
@@ -136,6 +138,7 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.EditTextEnterHandler.EnterListener;
+import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -1027,20 +1030,34 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         final String myScreenName = DataStoreUtils.getAccountScreenName(this, status.account_key);
         if (TextUtils.isEmpty(myScreenName)) return false;
         int selectionStart = 0;
+        final Collection<String> mentions = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         mEditText.append("@" + status.user_screen_name + " ");
         // If replying status from current user, just exclude it's screen name from selection.
         if (!status.account_key.equals(status.user_key)) {
             selectionStart = mEditText.length();
         }
         if (status.is_retweet) {
-            mEditText.append("@" + status.retweeted_by_user_screen_name + " ");
+            mentions.add(status.retweeted_by_user_screen_name);
         }
         if (status.is_quote) {
-            mEditText.append("@" + status.quoted_user_screen_name + " ");
+            mentions.add(status.quoted_user_screen_name);
         }
-        final Collection<String> mentions = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-        mentions.addAll(mExtractor.extractMentionedScreennames(status.text_plain));
-        mentions.addAll(mExtractor.extractMentionedScreennames(status.quoted_text_plain));
+        if (!ArrayUtils.isEmpty(status.mentions)) {
+            for (ParcelableUserMention mention : status.mentions) {
+                mentions.add(mention.screen_name);
+            }
+            mentions.addAll(mExtractor.extractMentionedScreennames(status.quoted_text_plain));
+        } else if (USER_TYPE_FANFOU_COM.equals(status.account_key.getHost())) {
+            addFanfouHtmlToMentions(status.text_html, mentions);
+            if (status.is_quote) {
+                addFanfouHtmlToMentions(status.quoted_text_html, mentions);
+            }
+        } else {
+            mentions.addAll(mExtractor.extractMentionedScreennames(status.text_plain));
+            if (status.is_quote) {
+                mentions.addAll(mExtractor.extractMentionedScreennames(status.quoted_text_plain));
+            }
+        }
 
         for (final String mention : mentions) {
             if (mention.equalsIgnoreCase(status.user_screen_name) || mention.equalsIgnoreCase(myScreenName)
@@ -1054,6 +1071,21 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         mAccountsAdapter.setSelectedAccountIds(status.account_key);
         showReplyLabel(status);
         return true;
+    }
+
+    private void addFanfouHtmlToMentions(String textHtml, Collection<String> mentions) {
+        final CharSequence text = HtmlSpanBuilder.fromHtml(textHtml, null);
+        if (text instanceof Spannable) {
+            Spannable html = ((Spannable) text);
+            for (URLSpan span : html.getSpans(0, html.length(), URLSpan.class)) {
+                int start = html.getSpanStart(span), end = html.getSpanEnd(span);
+                if (start <= 0 || end > html.length() || start > end) continue;
+                final char ch = html.charAt(start - 1);
+                if (ch == '@' || ch == '\uff20') {
+                    mentions.add(html.subSequence(start, end).toString());
+                }
+            }
+        }
     }
 
     private boolean handleReplyMultipleIntent(final String[] screenNames, final UserKey accountId,
