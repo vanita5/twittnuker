@@ -34,13 +34,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
-import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter.UserListAdapterListener;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
-import de.vanita5.twittnuker.fragment.AbsContentListRecyclerViewFragment;
-import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
+import de.vanita5.twittnuker.adapter.iface.IUserListsAdapter.UserListClickListener;
 import de.vanita5.twittnuker.loader.iface.ICursorSupportLoader;
-import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
@@ -50,7 +49,7 @@ import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 import java.util.List;
 
 public abstract class ParcelableUserListsFragment extends AbsContentListRecyclerViewFragment<ParcelableUserListsAdapter>
-        implements LoaderCallbacks<List<ParcelableUserList>>, UserListAdapterListener, KeyboardShortcutCallback {
+        implements LoaderCallbacks<List<ParcelableUserList>>, UserListClickListener, KeyboardShortcutCallback {
 
     private RecyclerViewNavigationHelper mNavigationHelper;
     private long mNextCursor;
@@ -145,7 +144,7 @@ public abstract class ParcelableUserListsFragment extends AbsContentListRecycler
         final ParcelableUserListsAdapter adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();
-        adapter.setListener(this);
+        adapter.setUserListClickListener(this);
 
         mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
                 this);

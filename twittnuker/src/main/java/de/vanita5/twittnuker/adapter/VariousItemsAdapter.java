@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
@@ -57,7 +58,8 @@ public class VariousItemsAdapter extends LoadMoreSupportAdapter<RecyclerView.Vie
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context,
                 ThemeUtils.getThemeBackgroundOption(context),
                 ThemeUtils.getUserThemeBackgroundAlpha(context));
-        mDummyAdapter = new DummyItemAdapter(context);
+        mDummyAdapter = new DummyItemAdapter(context, new TwidereLinkify(null), this);
+        mDummyAdapter.updateOptions();
         setLoadMoreIndicatorPosition(IndicatorPosition.NONE);
     }
 
@@ -125,5 +127,13 @@ public class VariousItemsAdapter extends LoadMoreSupportAdapter<RecyclerView.Vie
     public int getItemCount() {
         if (mData == null) return 0;
         return mData.size();
+    }
+
+    public Object getItem(int position) {
+        return mData.get(position);
+    }
+
+    public DummyItemAdapter getDummyAdapter() {
+        return mDummyAdapter;
     }
 }

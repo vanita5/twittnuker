@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.FollowClickListener;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.RequestClickListener;
-import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserAdapterListener;
+import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserClickListener;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -66,7 +66,7 @@ public class UserViewHolder extends ViewHolder implements OnClickListener, OnLon
     private final View actionsContainer;
     private final View processingRequestProgress;
 
-    private UserAdapterListener userClickListener;
+    private UserClickListener userClickListener;
     private RequestClickListener requestClickListener;
     private FollowClickListener followClickListener;
 
@@ -208,7 +208,7 @@ public class UserViewHolder extends ViewHolder implements OnClickListener, OnLon
     }
 
     public void setOnClickListeners() {
-        setUserClickListener(adapter.getUserAdapterListener());
+        setUserClickListener(adapter.getUserClickListener());
         setActionClickListeners(adapter.getRequestClickListener(), adapter.getFollowClickListener());
     }
 
@@ -241,7 +241,7 @@ public class UserViewHolder extends ViewHolder implements OnClickListener, OnLon
         friendsCountView.setTextSize(textSize);
     }
 
-    public void setUserClickListener(UserAdapterListener listener) {
+    public void setUserClickListener(UserClickListener listener) {
         userClickListener = listener;
         ((View) itemContent).setOnClickListener(this);
         ((View) itemContent).setOnLongClickListener(this);

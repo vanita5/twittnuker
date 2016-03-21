@@ -93,11 +93,9 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
-import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter.StatusAdapterListener;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
@@ -136,7 +134,7 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.CheckUtils;
 import de.vanita5.twittnuker.util.CompareUtils;
-import de.vanita5.twittnuker.util.ContentScrollHandler;
+import de.vanita5.twittnuker.util.ContentScrollHandler.ContentListSupport;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.IntentUtils;
@@ -173,13 +171,14 @@ import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
+import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder.StatusClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class StatusFragment extends BaseSupportFragment implements LoaderCallbacks<SingleResponse<ParcelableStatus>>,
-        OnMediaClickListener, StatusAdapterListener, KeyboardShortcutCallback, ContentScrollHandler.ContentListSupport {
+        OnMediaClickListener, StatusClickListener, KeyboardShortcutCallback, ContentListSupport {
 
     // Constants
     private static final int LOADER_ID_DETAIL_STATUS = 1;
@@ -371,7 +370,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         mLayoutManager.setRecycleChildrenOnDetach(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setClipToPadding(false);
-        mStatusAdapter.setEventListener(this);
+        mStatusAdapter.setStatusClickListener(this);
         mRecyclerView.setAdapter(mStatusAdapter);
         registerForContextMenu(mRecyclerView);
 
@@ -409,7 +408,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     }
 
     @Override
-    public void onStatusActionClick(IStatusViewHolder holder, int id, int position) {
+    public void onItemActionClick(ViewHolder holder, int id, int position) {
         final ParcelableStatus status = mStatusAdapter.getStatus(position);
         if (status == null) return;
         switch (id) {
@@ -431,7 +430,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 if (status.is_favorite) {
                     twitter.destroyFavoriteAsync(status.account_key, status.id);
                 } else {
-                    holder.playLikeAnimation(new DefaultOnLikedListener(twitter, status));
+                    ((StatusViewHolder) holder).playLikeAnimation(new DefaultOnLikedListener(twitter,
+                            status));
                 }
                 break;
             }
@@ -449,7 +449,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     }
 
     @Override
-    public void onStatusMenuClick(IStatusViewHolder holder, View menuView, int position) {
+    public void onItemMenuClick(ViewHolder holder, View menuView, int position) {
         if (getActivity() == null) return;
         final View view = mLayoutManager.findViewByPosition(position);
         if (view == null) return;
@@ -457,8 +457,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     }
 
     @Override
-    public void onUserProfileClick(IStatusViewHolder holder, ParcelableStatus status, int position) {
+    public void onUserProfileClick(IStatusViewHolder holder, int position) {
         final FragmentActivity activity = getActivity();
+        final ParcelableStatus status = mStatusAdapter.getStatus(position);
         IntentUtils.openUserProfile(activity, status.account_key, status.user_key.getId(),
                 status.user_screen_name, null, true, UserFragment.Referral.TIMELINE_STATUS);
     }
@@ -1659,7 +1660,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final MediaLoadingHandler mMediaLoadingHandler;
         private final TwidereLinkify mTwidereLinkify;
 
-        private StatusAdapterListener mStatusAdapterListener;
+        private StatusClickListener mStatusClickListener;
         private RecyclerView mRecyclerView;
         private DetailStatusViewHolder mStatusViewHolder;
 
@@ -1679,7 +1680,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private final boolean mShowCardActions;
         private final boolean mUseStarsForLikes;
         private final boolean mShowAbsoluteTime;
-        private final ParcelableStatusesAdapter.EventListener mEventListener;
         private boolean mDetailMediaExpanded;
 
         private ParcelableStatus mStatus;
@@ -1719,7 +1719,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             mDisplayMediaPreview = Utils.isMediaPreviewEnabled(context, mPreferences);
             mSensitiveContentEnabled = mPreferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, true);
             mShowCardActions = !mPreferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false);
-            mUseStarsForLikes = mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false);
+            mUseStarsForLikes = mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK);
             mShowAbsoluteTime = mPreferences.getBoolean(KEY_SHOW_ABSOLUTE_TIME);
             if (compact) {
                 mCardLayoutResource = R.layout.card_item_status_compact;
@@ -1727,7 +1727,6 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 mCardLayoutResource = R.layout.card_item_status;
             }
             mTwidereLinkify = new TwidereLinkify(new StatusAdapterLinkClickHandler<>(this));
-            mEventListener = new ParcelableStatusesAdapter.EventListener(this);
         }
 
         public int findPositionById(long itemId) {
@@ -1932,15 +1931,10 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
         @Nullable
         @Override
-        public IStatusViewHolder.StatusClickListener getStatusClickListener() {
-            return mEventListener;
+        public StatusClickListener getStatusClickListener() {
+            return mStatusClickListener;
         }
 
-        @Nullable
-        @Override
-        public StatusAdapterListener getStatusAdapterListener() {
-            return mStatusAdapterListener;
-        }
 
         public ParcelableStatus getStatus() {
             return mStatus;
@@ -1973,7 +1967,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         @Nullable
         @Override
         public GapClickListener getGapClickListener() {
-            return mEventListener;
+            return mStatusClickListener;
         }
 
 
@@ -2183,8 +2177,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             return mItemCounts[idx];
         }
 
-        public void setEventListener(StatusAdapterListener listener) {
-            mStatusAdapterListener = listener;
+        public void setStatusClickListener(StatusClickListener listener) {
+            mStatusClickListener = listener;
         }
 
         public void setReplyError(CharSequence error) {
@@ -2242,7 +2236,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         public void setStatusActivity(StatusActivity activity) {
             final ParcelableStatus status = getStatus();
             if (status == null) return;
-            if (activity != null && activity.statusId != (status.is_retweet ? status.retweet_id : status.id)) {
+            if (activity != null && activity.isStatus(status)) {
                 return;
             }
             mStatusActivity = activity;
@@ -2580,6 +2574,10 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                     ", replyCount=" + replyCount +
                     ", retweetCount=" + retweetCount +
                     '}';
+        }
+
+        public boolean isStatus(ParcelableStatus status) {
+            return TextUtils.equals(statusId, status.is_retweet ? status.retweet_id : status.id);
         }
     }
 

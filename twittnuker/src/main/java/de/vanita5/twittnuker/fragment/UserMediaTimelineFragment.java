@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,12 +41,11 @@ import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.StaggeredGridParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.fragment.AbsContentRecyclerViewFragment;
-import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.loader.MediaTimelineLoader;
-import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback;
 import de.vanita5.twittnuker.view.holder.GapViewHolder;
@@ -54,7 +54,7 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 import java.util.List;
 
 public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<StaggeredGridParcelableStatusesAdapter, StaggeredGridLayoutManager>
-        implements LoaderCallbacks<List<ParcelableStatus>>, DrawerCallback, ParcelableStatusesAdapter.StatusAdapterListener {
+        implements LoaderCallbacks<List<ParcelableStatus>>, DrawerCallback, IStatusViewHolder.StatusClickListener {
 
 
     @Override
@@ -74,7 +74,7 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         final ParcelableStatusesAdapter adapter = getAdapter();
-        adapter.setListener(this);
+        adapter.setStatusClickListener(this);
         final Bundle loaderArgs = new Bundle(getArguments());
         loaderArgs.putBoolean(EXTRA_FROM_USER, true);
         getLoaderManager().initLoader(0, loaderArgs, this);
@@ -188,7 +188,7 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
     }
 
     @Override
-    public void onStatusActionClick(IStatusViewHolder holder, int id, int position) {
+    public void onItemActionClick(RecyclerView.ViewHolder holder, int id, int position) {
 
     }
 
@@ -203,12 +203,12 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
     }
 
     @Override
-    public void onStatusMenuClick(IStatusViewHolder holder, View menuView, int position) {
+    public void onItemMenuClick(RecyclerView.ViewHolder holder, View menuView, int position) {
 
     }
 
     @Override
-    public void onUserProfileClick(IStatusViewHolder holder, ParcelableStatus status, int position) {
+    public void onUserProfileClick(IStatusViewHolder holder, int position) {
 
     }
 }

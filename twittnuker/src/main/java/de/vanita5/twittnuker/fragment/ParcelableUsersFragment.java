@@ -41,7 +41,7 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
-import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserAdapterListener;
+import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserClickListener;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
@@ -59,7 +59,7 @@ import de.vanita5.twittnuker.view.holder.UserViewHolder;
 import java.util.List;
 
 public abstract class ParcelableUsersFragment extends AbsContentListRecyclerViewFragment<ParcelableUsersAdapter>
-        implements LoaderCallbacks<List<ParcelableUser>>, UserAdapterListener, KeyboardShortcutCallback,
+        implements LoaderCallbacks<List<ParcelableUser>>, UserClickListener, KeyboardShortcutCallback,
         IUsersAdapter.FollowClickListener {
 
     @NonNull
@@ -77,7 +77,7 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
         final ParcelableUsersAdapter adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();
-        adapter.setUserAdapterListener(this);
+        adapter.setUserClickListener(this);
 
         mNavigationHelper = new RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
                 this);

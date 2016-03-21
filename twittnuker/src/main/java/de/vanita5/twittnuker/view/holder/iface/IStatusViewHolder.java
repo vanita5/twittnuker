@@ -29,11 +29,13 @@ import android.view.View;
 import android.widget.ImageView;
 
 import de.vanita5.twittnuker.adapter.iface.ContentCardClickListener;
+import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter;
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.view.CardMediaContainer;
+import de.vanita5.twittnuker.view.holder.GapViewHolder;
 
 public interface IStatusViewHolder extends CardMediaContainer.OnMediaClickListener {
     void displayStatus(ParcelableStatus status, boolean displayInReplyTo);
@@ -56,7 +58,7 @@ public interface IStatusViewHolder extends CardMediaContainer.OnMediaClickListen
 
     void playLikeAnimation(LikeAnimationDrawable.OnLikedListener listener);
 
-    interface StatusClickListener extends ContentCardClickListener {
+    interface StatusClickListener extends ContentCardClickListener, IGapSupportedAdapter.GapClickListener {
 
         void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int statusPosition);
 
@@ -68,19 +70,27 @@ public interface IStatusViewHolder extends CardMediaContainer.OnMediaClickListen
     }
 
     abstract class SimpleStatusClickListener implements StatusClickListener {
-
+        @Override
         public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int statusPosition) {
 
         }
 
+        @Override
         public void onStatusClick(IStatusViewHolder holder, int position) {
 
         }
 
+        @Override
         public boolean onStatusLongClick(IStatusViewHolder holder, int position) {
             return false;
         }
 
+        @Override
+        public void onGapClick(GapViewHolder holder, int position) {
+
+        }
+
+        @Override
         public void onUserProfileClick(IStatusViewHolder holder, int position) {
 
         }

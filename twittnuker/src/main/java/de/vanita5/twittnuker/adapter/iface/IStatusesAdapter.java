@@ -22,15 +22,12 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import android.support.annotation.Nullable;
-import android.view.View;
 
-import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
-import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 public interface IStatusesAdapter<Data> extends IContentCardAdapter, IGapSupportedAdapter {
@@ -82,22 +79,4 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter, IGapSupport
     @Nullable
     IStatusViewHolder.StatusClickListener getStatusClickListener();
 
-    @Nullable
-    StatusAdapterListener getStatusAdapterListener();
-
-    interface StatusAdapterListener {
-        void onGapClick(GapViewHolder holder, int position);
-
-        void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int statusPosition);
-
-        void onStatusActionClick(IStatusViewHolder holder, int id, int position);
-
-        void onStatusClick(IStatusViewHolder holder, int position);
-
-        boolean onStatusLongClick(IStatusViewHolder holder, int position);
-
-        void onStatusMenuClick(IStatusViewHolder holder, View menuView, int position);
-
-        void onUserProfileClick(IStatusViewHolder holder, ParcelableStatus status, int position);
-    }
 }

@@ -37,7 +37,6 @@ import org.mariotaku.library.objectcursor.ObjectCursor;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 import de.vanita5.twittnuker.model.UserKey;
@@ -53,7 +52,6 @@ import de.vanita5.twittnuker.view.holder.GapViewHolder;
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<RecyclerView.ViewHolder>
@@ -79,9 +77,8 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
     private final boolean mShowCardActions;
     private final boolean mUseStarsForLikes;
     private final boolean mShowAbsoluteTime;
-    private final EventListener mEventListener;
     @Nullable
-    private StatusAdapterListener mStatusAdapterListener;
+    private IStatusViewHolder.StatusClickListener mStatusClickListener;
     private boolean mShowInReplyTo;
     private boolean mShowAccountsColor;
     private List<ParcelableStatus> mData;
@@ -94,7 +91,6 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
                 ThemeUtils.getUserThemeBackgroundAlpha(context));
         mInflater = LayoutInflater.from(context);
         mLoadingHandler = new MediaLoadingHandler(getProgressViewIds());
-        mEventListener = new EventListener(this);
         mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
         mCompactCards = compact;
         mProfileImageStyle = Utils.getProfileImageStyle(mPreferences.getString(KEY_PROFILE_IMAGE_STYLE, null));
@@ -244,7 +240,11 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
     @Nullable
     @Override
     public IStatusViewHolder.StatusClickListener getStatusClickListener() {
-        return mEventListener;
+        return mStatusClickListener;
+    }
+
+    public void setStatusClickListener(@Nullable IStatusViewHolder.StatusClickListener statusClickListener) {
+        mStatusClickListener = statusClickListener;
     }
 
     @Override
@@ -262,14 +262,7 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
         return mTextSize;
     }
 
-    @Nullable
     @Override
-    public StatusAdapterListener getStatusAdapterListener() {
-        return mStatusAdapterListener;
-    }
-
-    @Override
-
     public TwidereLinkify getTwidereLinkify() {
         return mLinkify;
     }
@@ -410,10 +403,6 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
         return count;
     }
 
-    public void setListener(@Nullable StatusAdapterListener listener) {
-        mStatusAdapterListener = listener;
-    }
-
     public void setShowAccountsColor(boolean showAccountsColor) {
         if (mShowAccountsColor == showAccountsColor) return;
         mShowAccountsColor = showAccountsColor;
@@ -424,7 +413,7 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
     @Override
     public ParcelableStatus findStatusById(UserKey accountKey, String statusId) {
         for (int i = 0, j = getStatusCount(); i < j; i++) {
-            if (accountKey.equals(getAccountKey(i)) && statusId == getStatusId(i)) {
+            if (accountKey.equals(getAccountKey(i)) && statusId.equals(getStatusId(i))) {
                 return getStatus(i);
             }
         }
@@ -438,7 +427,7 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
     @Nullable
     @Override
     public GapClickListener getGapClickListener() {
-        return mEventListener;
+        return mStatusClickListener;
     }
 
     public int getStatusStartIndex() {
@@ -455,77 +444,4 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
         return getStatus(position).is_filtered;
     }
 
-    public static class EventListener implements GapClickListener, IStatusViewHolder.StatusClickListener {
-
-        private final WeakReference<IStatusesAdapter<?>> adapterRef;
-
-        public EventListener(IStatusesAdapter<?> adapter) {
-            adapterRef = new WeakReference<IStatusesAdapter<?>>(adapter);
-        }
-
-        @Override
-        public final void onStatusClick(IStatusViewHolder holder, int position) {
-            final IStatusesAdapter<?> adapter = adapterRef.get();
-            if (adapter == null) return;
-            final StatusAdapterListener listener = adapter.getStatusAdapterListener();
-            if (listener == null) return;
-            listener.onStatusClick(holder, position);
-        }
-
-        @Override
-        public void onMediaClick(IStatusViewHolder holder, View view, final ParcelableMedia media, int statusPosition) {
-            final IStatusesAdapter<?> adapter = adapterRef.get();
-            if (adapter == null) return;
-            final StatusAdapterListener listener = adapter.getStatusAdapterListener();
-            if (listener == null) return;
-            listener.onMediaClick(holder, view, media, statusPosition);
-        }
-
-        @Override
-        public void onUserProfileClick(final IStatusViewHolder holder, final int position) {
-            final IStatusesAdapter<?> adapter = adapterRef.get();
-            if (adapter == null) return;
-            final StatusAdapterListener listener = adapter.getStatusAdapterListener();
-            if (listener == null) return;
-            final ParcelableStatus status = adapter.getStatus(position);
-            if (status == null) return;
-            listener.onUserProfileClick(holder, status, position);
-        }
-
-        @Override
-        public boolean onStatusLongClick(IStatusViewHolder holder, int position) {
-            final IStatusesAdapter<?> adapter = adapterRef.get();
-            if (adapter == null) return false;
-            final StatusAdapterListener listener = adapter.getStatusAdapterListener();
-            return listener != null && listener.onStatusLongClick(holder, position);
-        }
-
-        @Override
-        public void onItemActionClick(RecyclerView.ViewHolder holder, int id, int position) {
-            final IStatusesAdapter<?> adapter = adapterRef.get();
-            if (adapter == null) return;
-            final StatusAdapterListener listener = adapter.getStatusAdapterListener();
-            if (listener == null) return;
-            listener.onStatusActionClick((IStatusViewHolder) holder, id, position);
-        }
-
-        @Override
-        public void onItemMenuClick(RecyclerView.ViewHolder holder, View menuView, int position) {
-            final IStatusesAdapter<?> adapter = adapterRef.get();
-            if (adapter == null) return;
-            final StatusAdapterListener listener = adapter.getStatusAdapterListener();
-            if (listener == null) return;
-            listener.onStatusMenuClick((IStatusViewHolder) holder, menuView, position);
-        }
-
-        @Override
-        public final void onGapClick(RecyclerView.ViewHolder holder, int position) {
-            final IStatusesAdapter<?> adapter = adapterRef.get();
-            if (adapter == null) return;
-            final StatusAdapterListener listener = adapter.getStatusAdapterListener();
-            if (listener == null) return;
-            listener.onGapClick((GapViewHolder) holder, position);
-        }
-
-    }
 }

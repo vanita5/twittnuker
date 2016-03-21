@@ -220,10 +220,6 @@ public class ParcelableActivitiesAdapter extends LoadMoreSupportAdapter<Recycler
         return mStatusAdapterDelegate.getTextSize();
     }
 
-    public int getLinkHighlightingStyle() {
-        return mStatusAdapterDelegate.getLinkHighlightingStyle();
-    }
-
     public boolean isNameFirst() {
         return mStatusAdapterDelegate.isNameFirst();
     }
@@ -469,11 +465,11 @@ public class ParcelableActivitiesAdapter extends LoadMoreSupportAdapter<Recycler
         }
 
         @Override
-        public final void onGapClick(RecyclerView.ViewHolder holder, int position) {
+        public final void onGapClick(GapViewHolder holder, int position) {
             final ParcelableActivitiesAdapter adapter = adapterRef.get();
             if (adapter == null) return;
             if (adapter.mActivityAdapterListener != null) {
-                adapter.mActivityAdapterListener.onGapClick((GapViewHolder) holder, position);
+                adapter.mActivityAdapterListener.onGapClick(holder, position);
             }
         }
 
