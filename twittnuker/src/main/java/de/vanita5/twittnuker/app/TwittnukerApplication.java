@@ -174,6 +174,13 @@ public class TwittnukerApplication extends Application implements Constants,
                     .coloredActionBar(false)
                     .commit();
         }
+        if (!ATE.config(this, null).isConfigured()) {
+            ATE.config(this, null)
+                    .accentColor(themeColor)
+                    .coloredActionBar(false)
+                    .coloredStatusBar(false)
+                    .commit();
+        }
         resetTheme(preferences);
         super.onCreate();
         initializeAsyncTask();
@@ -311,6 +318,11 @@ public class TwittnukerApplication extends Application implements Constants,
                         .coloredStatusBar(true)
                         .commit();
                 ATE.config(this, VALUE_THEME_NAME_DARK)
+                        .accentColor(themeColor)
+                        .coloredActionBar(false)
+                        .coloredStatusBar(false)
+                        .commit();
+                ATE.config(this, null)
                         .accentColor(themeColor)
                         .coloredActionBar(false)
                         .coloredStatusBar(false)

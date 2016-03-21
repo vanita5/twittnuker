@@ -94,7 +94,6 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.PermissionUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.media.MediaExtra;
@@ -144,11 +143,6 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
-    @Nullable
-    public String getATEKey() {
-        return ThemeUtils.getATEKey(this);
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -174,7 +168,7 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        ATE.invalidateActivity(this, this.updateTime, this.getATEKey());
+        ATE.invalidateActivity(this, this.updateTime, getATEKey());
     }
 
     @Override
@@ -200,6 +194,11 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
                 break;
             }
         }
+    }
+
+    @Nullable
+    public String getATEKey() {
+        return VALUE_THEME_NAME_DARK;
     }
 
     public void processShareIntent(Intent intent) {
