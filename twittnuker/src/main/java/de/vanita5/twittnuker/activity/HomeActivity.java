@@ -324,7 +324,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
         mMultiSelectHandler = new MultiSelectEventHandler(this);
         mMultiSelectHandler.dispatchOnCreate();
         if (!DataStoreUtils.hasAccount(this)) {
@@ -449,6 +448,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         super.onResume();
         invalidateOptionsMenu();
         updateActionsButton();
+
+        registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
 
         if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
             startStreamingService();
@@ -575,10 +576,13 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
     }
 
     @Override
-    protected void onDestroy() {
-
+    protected void onPause() {
         unregisterReceiver(mGCMRegistrationReceiver);
+        super.onPause();
+    }
 
+    @Override
+    protected void onDestroy() {
         stopStreamingService();
 
         // Delete unused items in databases.
