@@ -27,8 +27,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
@@ -38,6 +36,8 @@ import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
+
+import java.util.List;
 
 
 public class RetweetsOfMeLoader extends TwitterAPIStatusesLoader {
@@ -60,6 +60,6 @@ public class RetweetsOfMeLoader extends TwitterAPIStatusesLoader {
     @Override
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
         return InternalTwitterContentUtils.isFiltered(database, null, status.text_plain,
-                status.text_html, status.source, status.retweeted_by_user_id, status.quoted_user_id);
+                status.spans, status.source, status.retweeted_by_user_key, status.quoted_user_key);
     }
 }

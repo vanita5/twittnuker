@@ -43,7 +43,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.activity.MediaViewerActivity;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.SensitiveContentWarningDialogFragment;
@@ -104,11 +103,11 @@ public class IntentUtils implements Constants {
     }
 
     public static void openUserProfile(@NonNull final Context context, @Nullable final UserKey accountKey,
-                                       final String userId, final String screenName,
+                                       final UserKey userKey, final String screenName,
                                        final Bundle activityOptions, final boolean newDocument,
                                        @UserFragment.Referral final String referral) {
-        if (userId == null && isEmpty(screenName)) return;
-        final Uri uri = LinkCreator.getTwidereUserLink(accountKey, userId, screenName);
+        if (userKey == null && isEmpty(screenName)) return;
+        final Uri uri = LinkCreator.getTwidereUserLink(accountKey, userKey, screenName);
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         intent.putExtra(EXTRA_REFERRAL, referral);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && newDocument) {

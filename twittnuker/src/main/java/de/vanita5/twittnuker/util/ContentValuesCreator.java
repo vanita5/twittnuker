@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
+import de.vanita5.twittnuker.model.SpanItem;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
@@ -216,16 +217,16 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     public static void createStatusActivity(@NonNull final ParcelableStatus status,
                                             @NonNull final ContentValues values) {
         if (status.is_retweet) {
-            values.put(Activities.STATUS_RETWEETED_BY_USER_ID, String.valueOf(status.retweeted_by_user_id));
+            values.put(Activities.STATUS_RETWEETED_BY_USER_ID, String.valueOf(status.retweeted_by_user_key));
         } else if (status.is_quote) {
-            values.put(Activities.STATUS_QUOTE_TEXT_HTML, status.quoted_text_html);
+            values.put(Activities.STATUS_QUOTE_SPANS, JsonSerializer.serialize(status.quoted_spans, SpanItem.class));
             values.put(Activities.STATUS_QUOTE_TEXT_PLAIN, status.quoted_text_plain);
             values.put(Activities.STATUS_QUOTE_SOURCE, status.quoted_source);
-            values.put(Activities.STATUS_QUOTED_USER_ID, String.valueOf(status.quoted_user_id));
+            values.put(Activities.STATUS_QUOTED_USER_ID, String.valueOf(status.quoted_user_key));
         }
         values.put(Activities.STATUS_USER_ID, String.valueOf(status.user_key));
         values.put(Activities.STATUS_USER_FOLLOWING, status.user_is_following);
-        values.put(Activities.STATUS_TEXT_HTML, status.text_html);
+        values.put(Activities.STATUS_SPANS, JsonSerializer.serialize(status.spans, SpanItem.class));
         values.put(Activities.STATUS_TEXT_PLAIN, status.text_plain);
         values.put(Activities.STATUS_SOURCE, status.source);
     }

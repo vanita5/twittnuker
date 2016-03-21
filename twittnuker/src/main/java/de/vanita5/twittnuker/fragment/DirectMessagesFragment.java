@@ -49,17 +49,17 @@ import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.activity.LinkHandlerActivity;
+import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.DirectMessageEntry;
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter.MessageEntriesAdapterListener;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -206,8 +206,8 @@ public class DirectMessagesFragment extends AbsContentListRecyclerViewFragment<M
 
     @Override
     public void onUserClick(int position, DirectMessageEntry entry) {
-        IntentUtils.openUserProfile(getActivity(), entry.account_key, entry.conversation_id,
-                entry.screen_name, null, true, null);
+        IntentUtils.openUserProfile(getActivity(), entry.account_key,
+                UserKey.valueOf(entry.conversation_id), entry.screen_name, null, true, null);
     }
 
     @Subscribe

@@ -28,9 +28,9 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.model.ParcelableStatus;
 
 public class LinkCreator implements Constants {
 
@@ -58,15 +58,16 @@ public class LinkCreator implements Constants {
         return builder.build();
     }
 
-    public static Uri getTwidereUserLink(@Nullable UserKey accountKey, String userId, String screenName) {
+    public static Uri getTwidereUserLink(@Nullable UserKey accountKey,@Nullable UserKey userKey, String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER);
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
-        if (userId != null) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, userId);
+        if (userKey != null) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userKey.toString());
+            builder.appendQueryParameter(QUERY_PARAM_USER_ID, userKey.getId());
         }
         if (screenName != null) {
             builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);

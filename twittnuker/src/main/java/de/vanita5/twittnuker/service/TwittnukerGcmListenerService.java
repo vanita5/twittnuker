@@ -31,7 +31,6 @@ import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.util.NotificationHelper;
 
 public class TwittnukerGcmListenerService extends GcmListenerService {
@@ -72,7 +71,7 @@ public class TwittnukerGcmListenerService extends GcmListenerService {
         NotificationContent content = new NotificationContent();
         content.setAccountKey(accountKey);
         content.setObjectId(data.getString("object_id"));
-        content.setObjectUserId(data.getString("object_user_id"));
+        content.setObjectUserKey(new UserKey(data.getString("object_user_id"), TwittnukerConstants.USER_TYPE_TWITTER_COM));
         content.setFromUser(data.getString("fromuser"));
         content.setType(data.getString("type"));
         content.setMessage(data.getString("msg"));

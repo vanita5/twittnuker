@@ -24,27 +24,35 @@ package de.vanita5.twittnuker.model.util;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.URLSpan;
 
 import de.vanita5.twittnuker.api.statusnet.model.Attention;
 import de.vanita5.twittnuker.api.twitter.model.Place;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
-import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.SpanItem;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 
 import java.util.Date;
+import java.util.List;
 
 public class ParcelableStatusUtils {
 
     public static void makeOriginalStatus(@NonNull ParcelableStatus status) {
         if (!status.is_retweet) return;
         status.id = status.retweet_id;
-        status.retweeted_by_user_id = null;
+        status.retweeted_by_user_key = null;
         status.retweeted_by_user_name = null;
         status.retweeted_by_user_screen_name = null;
         status.retweeted_by_user_profile_image = null;
@@ -72,7 +80,7 @@ public class ParcelableStatusUtils {
             final User retweetUser = orig.getUser();
             result.retweet_id = retweetedStatus.getId();
             result.retweet_timestamp = getTime(retweetedStatus.getCreatedAt());
-            result.retweeted_by_user_id = UserKeyUtils.fromUser(retweetUser);
+            result.retweeted_by_user_key = UserKeyUtils.fromUser(retweetUser);
             result.retweeted_by_user_name = retweetUser.getName();
             result.retweeted_by_user_screen_name = retweetUser.getScreenName();
             result.retweeted_by_user_profile_image = TwitterContentUtils.getProfileImageUrl(retweetUser);
@@ -81,23 +89,34 @@ public class ParcelableStatusUtils {
         final Status quoted = orig.getQuotedStatus();
         result.is_quote = orig.isQuote();
         if (quoted != null) {
-            final User quoted_user = quoted.getUser();
+            final User quotedUser = quoted.getUser();
             result.quoted_id = quoted.getId();
-            result.quoted_text_html = InternalTwitterContentUtils.formatStatusText(quoted);
-            result.quoted_text_plain = InternalTwitterContentUtils.unescapeTwitterStatusText(quoted.getText());
-            result.quoted_text_unescaped = HtmlEscapeHelper.toPlainText(result.quoted_text_html);
+
+            String quotedText = quoted.getText();
+            // Twitter will escape <> to &lt;&gt;, so if a status contains those symbols unescaped
+            // We should treat this as an html
+            if (quotedText.contains("<") && quotedText.contains(">")) {
+                result.quoted_text_unescaped = HtmlEscapeHelper.toPlainText(quotedText);
+                result.quoted_text_plain = result.quoted_text_unescaped;
+            } else {
+                final Pair<String, List<SpanItem>> textWithIndices = InternalTwitterContentUtils.formatStatusTextWithIndices(quoted);
+                result.quoted_text_plain = InternalTwitterContentUtils.unescapeTwitterStatusText(quotedText);
+                result.quoted_text_unescaped = textWithIndices.first;
+                result.quoted_spans = textWithIndices.second.toArray(new SpanItem[textWithIndices.second.size()]);
+            }
+
             result.quoted_timestamp = quoted.getCreatedAt().getTime();
             result.quoted_source = quoted.getSource();
             result.quoted_media = ParcelableMediaUtils.fromStatus(quoted);
             result.quoted_location = ParcelableLocationUtils.fromGeoLocation(quoted.getGeoLocation());
             result.quoted_place_full_name = getPlaceFullName(quoted.getPlace());
 
-            result.quoted_user_id = UserKeyUtils.fromUser(quoted_user);
-            result.quoted_user_name = quoted_user.getName();
-            result.quoted_user_screen_name = quoted_user.getScreenName();
-            result.quoted_user_profile_image = TwitterContentUtils.getProfileImageUrl(quoted_user);
-            result.quoted_user_is_protected = quoted_user.isProtected();
-            result.quoted_user_is_verified = quoted_user.isVerified();
+            result.quoted_user_key = UserKeyUtils.fromUser(quotedUser);
+            result.quoted_user_name = quotedUser.getName();
+            result.quoted_user_screen_name = quotedUser.getScreenName();
+            result.quoted_user_profile_image = TwitterContentUtils.getProfileImageUrl(quotedUser);
+            result.quoted_user_is_protected = quotedUser.isProtected();
+            result.quoted_user_is_verified = quotedUser.isVerified();
         }
 
         final Status status;
@@ -140,18 +159,19 @@ public class ParcelableStatusUtils {
         // Twitter will escape <> to &lt;&gt;, so if a status contains those symbols unescaped
         // We should treat this as an html
         if (text.contains("<") && text.contains(">")) {
-            result.text_html = text;
-            result.text_plain = HtmlEscapeHelper.toPlainText(result.text_html);
+            result.text_unescaped = HtmlEscapeHelper.toPlainText(text);
+            result.text_plain = result.text_unescaped;
         } else {
-            result.text_html = InternalTwitterContentUtils.formatStatusText(status);
+            final Pair<String, List<SpanItem>> textWithIndices = InternalTwitterContentUtils.formatStatusTextWithIndices(status);
             result.text_plain = InternalTwitterContentUtils.unescapeTwitterStatusText(text);
+            result.text_unescaped = textWithIndices.first;
+            result.spans = textWithIndices.second.toArray(new SpanItem[textWithIndices.second.size()]);
         }
         result.media = ParcelableMediaUtils.fromStatus(status);
         result.source = status.getSource();
         result.location = ParcelableLocationUtils.fromGeoLocation(status.getGeoLocation());
         result.is_favorite = status.isFavorited();
-        result.text_unescaped = HtmlEscapeHelper.toPlainText(result.text_html);
-        if (result.account_key.maybeEquals(result.retweeted_by_user_id)) {
+        if (result.account_key.maybeEquals(result.retweeted_by_user_key)) {
             result.my_retweet_id = result.id;
         } else {
             result.my_retweet_id = status.getCurrentUserRetweet();
@@ -211,7 +231,6 @@ public class ParcelableStatusUtils {
         return date != null ? date.getTime() : 0;
     }
 
-    @NonNull
     public static String getInReplyToName(@NonNull final Status status) {
         final String inReplyToUserId = status.getInReplyToUserId();
         final UserMentionEntity[] entities = status.getUserMentionEntities();
@@ -229,5 +248,28 @@ public class ParcelableStatusUtils {
             }
         }
         return status.getInReplyToScreenName();
+    }
+
+    public static void applySpans(@NonNull SpannableStringBuilder text, @Nullable SpanItem[] spans) {
+        if (spans == null) return;
+        for (SpanItem span : spans) {
+            text.setSpan(new URLSpan(span.link), span.start, span.end,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
+    public static void updateExtraInformation(ParcelableStatus status, ParcelableCredentials credentials, UserColorNameManager manager) {
+        status.account_color = credentials.color;
+        status.user_color = manager.getUserColor(status.user_key);
+
+        if (status.quoted_user_key != null) {
+            status.quoted_user_color = manager.getUserColor(status.quoted_user_key);
+        }
+        if (status.retweeted_by_user_key != null) {
+            status.retweet_user_color = manager.getUserColor(status.retweeted_by_user_key);
+        }
+
+        if (status.in_reply_to_user_id != null) {
+        }
     }
 }

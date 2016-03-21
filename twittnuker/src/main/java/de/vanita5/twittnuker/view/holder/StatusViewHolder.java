@@ -30,7 +30,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.text.BidiFormatter;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.text.Spanned;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,6 +49,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -173,10 +175,9 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         nameView.updateText(adapter.getBidiFormatter());
         if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
             final TwidereLinkify linkify = adapter.getTwidereLinkify();
-            final CharSequence text = HtmlSpanBuilder.fromHtml(TWITTNUKER_PREVIEW_TEXT_HTML,
-                    TWITTNUKER_PREVIEW_TEXT_UNESCAPED);
-            textView.setText(linkify.applyAllLinks(text, null, -1, false,
-                    adapter.getLinkHighlightingStyle(), true));
+            final Spannable text = HtmlSpanBuilder.fromHtml(TWITTNUKER_PREVIEW_TEXT_HTML);
+            linkify.applyAllLinks(text, null, -1, false, adapter.getLinkHighlightingStyle(), true);
+            textView.setText(text);
         } else {
             textView.setText(toPlainText(TWITTNUKER_PREVIEW_TEXT_HTML));
         }
@@ -218,7 +219,6 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         final MediaLoaderWrapper loader = adapter.getMediaLoader();
         final AsyncTwitterWrapper twitter = adapter.getTwitterWrapper();
         final TwidereLinkify linkify = adapter.getTwidereLinkify();
-        final UserColorNameManager manager = adapter.getUserColorNameManager();
         final BidiFormatter formatter = adapter.getBidiFormatter();
         final Context context = adapter.getContext();
         final boolean nameFirst = adapter.isNameFirst();
@@ -244,8 +244,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
                 statusContentUpperSpace.setVisibility(View.GONE);
             }
         } else if (status.retweet_id != null) {
-            final String retweetedBy = manager.getDisplayName(status.retweeted_by_user_id,
-                    status.retweeted_by_user_name, status.retweeted_by_user_screen_name, nameFirst, false);
+            final String retweetedBy = UserColorNameManager.decideDisplayName(
+                    status.retweeted_by_user_name, status.retweeted_by_user_screen_name, nameFirst);
             statusInfoLabel.setText(context.getString(R.string.name_retweeted, formatter.unicodeWrap(retweetedBy)));
             statusInfoIcon.setImageResource(R.drawable.ic_activity_action_retweet);
             statusInfoLabel.setVisibility(View.VISIBLE);
@@ -255,8 +255,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
                 statusContentUpperSpace.setVisibility(View.GONE);
             }
         } else if (status.in_reply_to_status_id != null && status.in_reply_to_user_id != null && displayInReplyTo) {
-            final String inReplyTo = manager.getDisplayName(status.in_reply_to_user_id,
-                    status.in_reply_to_name, status.in_reply_to_screen_name, nameFirst, false);
+            final String inReplyTo = UserColorNameManager.decideDisplayName(
+                    status.in_reply_to_name, status.in_reply_to_screen_name, nameFirst);
             statusInfoLabel.setText(context.getString(R.string.in_reply_to_name, formatter.unicodeWrap(inReplyTo)));
             statusInfoIcon.setImageResource(R.drawable.ic_activity_action_reply);
             statusInfoLabel.setVisibility(View.VISIBLE);
@@ -274,7 +274,6 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
             }
         }
 
-
         boolean skipLinksInText = status.extras != null && status.extras.support_entities;
         if (status.is_quote) {
 
@@ -282,25 +281,24 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
             quotedTextView.setVisibility(View.VISIBLE);
             quoteIndicator.setVisibility(View.VISIBLE);
 
-            quotedNameView.setName(status.quoted_user_name);
+            quotedNameView.setName(
+                    status.quoted_user_name);
             quotedNameView.setScreenName("@" + status.quoted_user_screen_name);
 
-            if (adapter.getLinkHighlightingStyle() != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE
-                    && !TextUtils.isEmpty(status.quoted_text_html)) {
-                final CharSequence text = HtmlSpanBuilder.fromHtml(status.quoted_text_html,
-                        status.quoted_text_unescaped);
-                if (text instanceof Spanned) {
-                    quotedTextView.setText(linkify.applyAllLinks(text, status.account_key,
-                            getLayoutPosition(), status.is_possibly_sensitive,
-                            adapter.getLinkHighlightingStyle(), skipLinksInText));
-                }
+            if (adapter.getLinkHighlightingStyle() != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+                final SpannableStringBuilder text = SpannableStringBuilder.valueOf(status.quoted_text_unescaped);
+                ParcelableStatusUtils.applySpans(text, status.quoted_spans);
+                linkify.applyAllLinks(text, status.account_key, getLayoutPosition(),
+                        status.is_possibly_sensitive, adapter.getLinkHighlightingStyle(),
+                        skipLinksInText);
+                quotedTextView.setText(text);
             } else {
                 final String text = status.quoted_text_unescaped;
                 quotedTextView.setText(text);
             }
 
-            quoteIndicator.setColor(manager.getUserColor(status.quoted_user_id, false));
-            itemContent.drawStart(manager.getUserColor(status.user_key, false));
+            quoteIndicator.setColor(status.quoted_user_color);
+            itemContent.drawStart(status.user_color);
         } else {
 
             quotedNameView.setVisibility(View.GONE);
@@ -308,8 +306,8 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
             quoteIndicator.setVisibility(View.GONE);
 
             if (status.is_retweet) {
-                final int retweetUserColor = manager.getUserColor(status.retweeted_by_user_id, false);
-                final int userColor = manager.getUserColor(status.user_key, false);
+                final int retweetUserColor = status.retweet_user_color;
+                final int userColor = status.user_color;
                 if (retweetUserColor == 0) {
                     itemContent.drawStart(userColor);
                 } else if (userColor == 0) {
@@ -318,7 +316,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
                     itemContent.drawStart(retweetUserColor, userColor);
                 }
             } else {
-                itemContent.drawStart(manager.getUserColor(status.user_key, false));
+                itemContent.drawStart(status.user_color);
             }
         }
 
@@ -394,12 +392,16 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
                 quotedTextMediaSpace.setVisibility(status.is_quote ? View.VISIBLE : View.GONE);
             }
         }
-        if (adapter.getLinkHighlightingStyle() == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
-            textView.setText(status.text_unescaped);
+
+        if (adapter.getLinkHighlightingStyle() != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
+            final SpannableStringBuilder text = SpannableStringBuilder.valueOf(status.text_unescaped);
+            ParcelableStatusUtils.applySpans(text, status.spans);
+            linkify.applyAllLinks(text, status.account_key, getLayoutPosition(),
+                    status.is_possibly_sensitive, adapter.getLinkHighlightingStyle(),
+                    skipLinksInText);
+            textView.setText(text);
         } else {
-            final CharSequence text = HtmlSpanBuilder.fromHtml(status.text_html, status.text_unescaped);
-            textView.setText(linkify.applyAllLinks(text, status.account_key, getLayoutPosition(),
-                    status.is_possibly_sensitive, adapter.getLinkHighlightingStyle(), skipLinksInText));
+            textView.setText(status.text_unescaped);
         }
 
         if (replyCount > 0) {
@@ -416,10 +418,11 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
         } else {
             final boolean creatingRetweet = twitter.isCreatingRetweet(status.account_key, status.id);
             retweetIconView.setActivated(creatingRetweet || status.retweeted ||
-                    Utils.isMyRetweet(status.account_key, status.retweeted_by_user_id,
+                    Utils.isMyRetweet(status.account_key, status.retweeted_by_user_key,
                             status.my_retweet_id));
             retweetCount = status.retweet_count + (creatingRetweet ? 1 : 0);
         }
+
         if (retweetCount > 0) {
             retweetCountView.setText(UnitConvertUtils.calculateProperCount(retweetCount));
             retweetCountView.setVisibility(View.VISIBLE);
@@ -451,6 +454,7 @@ public class StatusViewHolder extends ViewHolder implements Constants, IStatusVi
 
         nameView.updateText(formatter);
         quotedNameView.updateText(formatter);
+
     }
 
     @Override

@@ -40,10 +40,10 @@ public class NotificationContent {
     public static final String NOTIFICATION_TYPE_ERROR_420 = "type_error_420";
 
     private UserKey accountKey;
+    private UserKey objectUserKey;
     private long timestamp;
 
     private String objectId;
-    private String objectUserId;
     private String fromUser;
     private String message;
     private String type;
@@ -143,7 +143,7 @@ public class NotificationContent {
         if (accountKey != null ? !accountKey.equals(that.accountKey) : that.accountKey != null) return false;
         if (objectId != null ? !objectId.equals(that.objectId) : that.objectId != null)
             return false;
-        if (objectUserId != null ? !objectUserId.equals(that.objectUserId) : that.objectUserId != null)
+        if (objectUserKey != null ? !objectUserKey.equals(that.objectUserKey) : that.objectUserKey != null)
             return false;
         if (fromUser != null ? !fromUser.equals(that.fromUser) : that.fromUser != null)
             return false;
@@ -156,18 +156,18 @@ public class NotificationContent {
     public int hashCode() {
         int result = accountKey != null ? accountKey.hashCode() : 0;
         result = 31 * result + (objectId != null ? objectId.hashCode() : 0);
-        result = 31 * result + (objectUserId != null ? objectUserId.hashCode() : 0);
+        result = 31 * result + (objectUserKey != null ? objectUserKey.hashCode() : 0);
         result = 31 * result + (fromUser != null ? fromUser.hashCode() : 0);
         result = 31 * result + (message != null ? message.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
 
-    public String getObjectUserId() {
-        return objectUserId;
+    public UserKey getObjectUserKey() {
+        return objectUserKey;
     }
 
-    public void setObjectUserId(String objectUserId) {
-        this.objectUserId = objectUserId;
+    public void setObjectUserKey(UserKey objectUserKey) {
+        this.objectUserKey = objectUserKey;
     }
 }

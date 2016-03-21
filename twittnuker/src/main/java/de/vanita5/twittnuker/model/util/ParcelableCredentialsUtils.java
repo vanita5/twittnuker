@@ -27,9 +27,9 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 
@@ -58,5 +58,30 @@ public class ParcelableCredentialsUtils {
             c.close();
         }
         return null;
+    }
+
+
+    @NonNull
+    public static ParcelableCredentials[] getCredentialses(@Nullable final Cursor cursor, @Nullable final ParcelableCredentialsCursorIndices indices) {
+        if (cursor == null || indices == null) return new ParcelableCredentials[0];
+        try {
+            cursor.moveToFirst();
+            final ParcelableCredentials[] credentialses = new ParcelableCredentials[cursor.getCount()];
+            while (!cursor.isAfterLast()) {
+                credentialses[cursor.getPosition()] = indices.newObject(cursor);
+                cursor.moveToNext();
+            }
+            return credentialses;
+        } finally {
+            cursor.close();
+        }
+    }
+
+
+    public static ParcelableCredentials[] getCredentialses(@NonNull final Context context) {
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI,
+                Accounts.COLUMNS, null, null, null);
+        if (cur == null) return new ParcelableCredentials[0];
+        return getCredentialses(cur, new ParcelableCredentialsCursorIndices(cur));
     }
 }

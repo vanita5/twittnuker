@@ -59,7 +59,17 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
             return object2.compareTo(object1);
         }
     };
+    public static final Creator<ParcelableStatus> CREATOR = new Creator<ParcelableStatus>() {
+        public ParcelableStatus createFromParcel(Parcel source) {
+            ParcelableStatus target = new ParcelableStatus();
+            ParcelableStatusParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
 
+        public ParcelableStatus[] newArray(int size) {
+            return new ParcelableStatus[size];
+        }
+    };
     @ParcelableThisPlease
     @JsonField(name = "id")
     @CursorField(Statuses.STATUS_ID)
@@ -91,7 +101,8 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     @ParcelableThisPlease
     @JsonField(name = "retweeted_by_user_id", typeConverter = UserKeyConverter.class)
     @CursorField(value = Statuses.RETWEETED_BY_USER_ID, converter = UserKeyCursorFieldConverter.class)
-    public UserKey retweeted_by_user_id;
+    @Nullable
+    public UserKey retweeted_by_user_key;
     @ParcelableThisPlease
     @JsonField(name = "retweet_timestamp")
     @CursorField(Statuses.RETWEET_TIMESTAMP)
@@ -115,6 +126,7 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     @ParcelableThisPlease
     @JsonField(name = "in_reply_to_user_id", typeConverter = UserKeyConverter.class)
     @CursorField(value = Statuses.IN_REPLY_TO_USER_ID, converter = UserKeyCursorFieldConverter.class)
+    @Nullable
     public UserKey in_reply_to_user_id;
     @ParcelableThisPlease
     @JsonField(name = "my_retweet_id")
@@ -131,7 +143,8 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     @ParcelableThisPlease
     @JsonField(name = "quoted_user_id", typeConverter = UserKeyConverter.class)
     @CursorField(value = Statuses.QUOTED_USER_KEY, converter = UserKeyCursorFieldConverter.class)
-    public UserKey quoted_user_id;
+    @Nullable
+    public UserKey quoted_user_key;
     @ParcelableThisPlease
     @JsonField(name = "is_gap")
     @CursorField(Statuses.IS_GAP)
@@ -189,10 +202,6 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     @CursorField(Statuses.RETWEETED_BY_USER_PROFILE_IMAGE)
     public String retweeted_by_user_profile_image;
     @ParcelableThisPlease
-    @JsonField(name = "text_html")
-    @CursorField(Statuses.TEXT_HTML)
-    public String text_html;
-    @ParcelableThisPlease
     @JsonField(name = "text_plain")
     @CursorField(Statuses.TEXT_PLAIN)
     public String text_plain;
@@ -233,10 +242,6 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     @JsonField(name = "card_name")
     @CursorField(Statuses.CARD_NAME)
     public String card_name;
-    @ParcelableThisPlease
-    @JsonField(name = "quoted_text_html")
-    @CursorField(Statuses.QUOTED_TEXT_HTML)
-    public String quoted_text_html;
     @ParcelableThisPlease
     @JsonField(name = "quoted_text_plain")
     @CursorField(Statuses.QUOTED_TEXT_PLAIN)
@@ -298,30 +303,44 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     @JsonField(name = "extras")
     @CursorField(value = Statuses.EXTRAS, converter = LoganSquareCursorFieldConverter.class)
     public Extras extras;
+    @ParcelableThisPlease
+    @JsonField(name = "spans")
+    @CursorField(value = Statuses.SPANS, converter = LoganSquareCursorFieldConverter.class)
+    public SpanItem[] spans;
+    @ParcelableThisPlease
+    @JsonField(name = "quoted_spans")
+    @CursorField(value = Statuses.QUOTED_SPANS, converter = LoganSquareCursorFieldConverter.class)
+    public SpanItem[] quoted_spans;
     public transient boolean is_filtered;
+    @ParcelableThisPlease
+    @JsonField(name = "account_color")
+    @CursorField(Statuses.ACCOUNT_COLOR)
+    public int account_color;
+    @ParcelableThisPlease
+    @JsonField(name = "user_color")
+    @CursorField(Statuses.USER_COLOR)
+    public int user_color;
+    @ParcelableThisPlease
+    @JsonField(name = "quoted_user_color")
+    @CursorField(Statuses.QUOTED_USER_COLOR)
+    public int quoted_user_color;
+    @ParcelableThisPlease
+    @JsonField(name = "retweet_user_color")
+    @CursorField(Statuses.RETWEET_USER_COLOR)
+    public int retweet_user_color;
 
     @CursorField(value = Statuses._ID, excludeWrite = true)
     long _id;
-
-    @ParcelableThisPlease
-    public int account_color;
-
-    public static final Creator<ParcelableStatus> CREATOR = new Creator<ParcelableStatus>() {
-        public ParcelableStatus createFromParcel(Parcel source) {
-            ParcelableStatus target = new ParcelableStatus();
-            ParcelableStatusParcelablePlease.readFromParcel(target, source);
-            return target;
-        }
-
-        public ParcelableStatus[] newArray(int size) {
-            return new ParcelableStatus[size];
-        }
-    };
 
 
     public ParcelableStatus() {
     }
 
+    public static int calculateHashCode(UserKey accountKey, String id) {
+        int result = id.hashCode();
+        result = 31 * result + accountKey.hashCode();
+        return result;
+    }
 
     @Override
     public int compareTo(@NonNull final ParcelableStatus another) {
@@ -351,12 +370,6 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
         return calculateHashCode(account_key, id);
     }
 
-    public static int calculateHashCode(UserKey accountKey, String id) {
-        int result = id.hashCode();
-        result = 31 * result + accountKey.hashCode();
-        return result;
-    }
-
     @Override
     public String toString() {
         return "ParcelableStatus{" +
@@ -365,7 +378,7 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
                 ", timestamp=" + timestamp +
                 ", user_id=" + user_key +
                 ", retweet_id=" + retweet_id +
-                ", retweeted_by_user_id=" + retweeted_by_user_id +
+                ", retweeted_by_user_id=" + retweeted_by_user_key +
                 ", retweet_timestamp=" + retweet_timestamp +
                 ", retweet_count=" + retweet_count +
                 ", favorite_count=" + favorite_count +
@@ -375,7 +388,7 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
                 ", my_retweet_id=" + my_retweet_id +
                 ", quoted_id=" + quoted_id +
                 ", quoted_timestamp=" + quoted_timestamp +
-                ", quoted_user_id=" + quoted_user_id +
+                ", quoted_user_id=" + quoted_user_key +
                 ", is_gap=" + is_gap +
                 ", is_retweet=" + is_retweet +
                 ", retweeted=" + retweeted +
@@ -390,7 +403,6 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
                 ", retweeted_by_user_name='" + retweeted_by_user_name + '\'' +
                 ", retweeted_by_user_screen_name='" + retweeted_by_user_screen_name + '\'' +
                 ", retweeted_by_user_profile_image='" + retweeted_by_user_profile_image + '\'' +
-                ", text_html='" + text_html + '\'' +
                 ", text_plain='" + text_plain + '\'' +
                 ", lang='" + lang + '\'' +
                 ", user_name='" + user_name + '\'' +
@@ -401,7 +413,6 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
                 ", user_profile_image_url='" + user_profile_image_url + '\'' +
                 ", text_unescaped='" + text_unescaped + '\'' +
                 ", card_name='" + card_name + '\'' +
-                ", quoted_text_html='" + quoted_text_html + '\'' +
                 ", quoted_text_plain='" + quoted_text_plain + '\'' +
                 ", quoted_text_unescaped='" + quoted_text_unescaped + '\'' +
                 ", quoted_source='" + quoted_source + '\'' +
@@ -429,7 +440,7 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
 
     @OnJsonParseComplete
     void onParseComplete() throws IOException {
-        if (is_quote && TextUtils.isEmpty(quoted_text_html))
+        if (is_quote && TextUtils.isEmpty(quoted_text_unescaped))
             throw new IOException("Incompatible model");
         fixSortId();
     }
@@ -462,6 +473,17 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     @JsonObject
     public static class Extras implements Parcelable {
 
+        public static final Creator<Extras> CREATOR = new Creator<Extras>() {
+            public Extras createFromParcel(Parcel source) {
+                Extras target = new Extras();
+                ParcelableStatus$ExtrasParcelablePlease.readFromParcel(target, source);
+                return target;
+            }
+
+            public Extras[] newArray(int size) {
+                return new Extras[size];
+            }
+        };
         @JsonField(name = "external_url")
         @ParcelableThisPlease
         public String external_url;
@@ -481,17 +503,5 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
         public void writeToParcel(Parcel dest, int flags) {
             ParcelableStatus$ExtrasParcelablePlease.writeToParcel(this, dest, flags);
         }
-
-        public static final Creator<Extras> CREATOR = new Creator<Extras>() {
-            public Extras createFromParcel(Parcel source) {
-                Extras target = new Extras();
-                ParcelableStatus$ExtrasParcelablePlease.readFromParcel(target, source);
-                return target;
-            }
-
-            public Extras[] newArray(int size) {
-                return new Extras[size];
-            }
-        };
     }
 }

@@ -30,8 +30,6 @@ import android.text.TextUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
@@ -49,6 +47,9 @@ import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
+
+import java.util.List;
+
 
 public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
 
@@ -130,7 +131,7 @@ public class MediaTimelineLoader extends TwitterAPIStatusesLoader {
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
         final UserKey retweetUserId = status.is_retweet ? status.user_key : null;
         return !isMyTimeline() && InternalTwitterContentUtils.isFiltered(database, retweetUserId, status.text_plain,
-                status.text_html, status.source, null, status.quoted_user_id);
+                status.spans, status.source, null, status.quoted_user_key);
     }
 
     private boolean isMyTimeline() {

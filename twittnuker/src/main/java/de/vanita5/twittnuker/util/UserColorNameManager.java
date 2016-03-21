@@ -27,7 +27,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SimpleArrayMap;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
@@ -45,11 +44,18 @@ import static android.text.TextUtils.isEmpty;
 
 public class UserColorNameManager implements TwittnukerConstants {
 
-    private final SimpleArrayMap<String, Integer> mUserColors = new SimpleArrayMap<>();
     private final SharedPreferences mColorPreferences;
 
     public UserColorNameManager(Context context) {
         mColorPreferences = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
+    }
+
+    public static String decideDisplayName(final String name, final String screenName, final boolean nameFirst) {
+        return nameFirst && !isEmpty(name) ? name : "@" + screenName;
+    }
+
+    public static String getNickname(@NonNull final String nickname, final String name) {
+        return TextUtils.isEmpty(nickname) ? name : nickname;
     }
 
     public void registerColorChangedListener(final UserColorChangedListener listener) {
@@ -58,64 +64,53 @@ public class UserColorNameManager implements TwittnukerConstants {
     }
 
     public void clearUserColor(@NonNull final UserKey userId) {
-        mUserColors.remove(userId);
         final SharedPreferences.Editor editor = mColorPreferences.edit();
         editor.remove(userId.toString());
         editor.apply();
     }
 
-    public void setUserColor(@NonNull final UserKey userId, final int color) {
-        setUserColor(userId.toString(), color);
-    }
-
-    public void setUserColor(@NonNull final String userId, final int color) {
-        mUserColors.put(userId, color);
+    public void setUserColor(@NonNull final UserKey userKey, final int color) {
         final SharedPreferences.Editor editor = mColorPreferences.edit();
-        editor.putInt(userId, color);
+        editor.putInt(userKey.toString(), color);
         editor.apply();
     }
 
-    public String getDisplayName(final ParcelableUser user, final boolean nameFirst, final boolean ignoreCache) {
-        return getDisplayName(user.key, user.name, user.screen_name, nameFirst, ignoreCache);
+    public String getDisplayName(final ParcelableUser user, final boolean nameFirst) {
+        return getDisplayName(user.key, user.name, user.screen_name, nameFirst);
     }
 
-    public String getDisplayName(final User user, final boolean nameFirst, final boolean ignoreCache) {
-        return getDisplayName(UserKeyUtils.fromUser(user), user.getName(), user.getScreenName(), nameFirst, ignoreCache);
+    public String getDisplayName(final User user, final boolean nameFirst) {
+        return getDisplayName(UserKeyUtils.fromUser(user), user.getName(), user.getScreenName(), nameFirst);
     }
 
-    public String getDisplayName(final ParcelableUserList user, final boolean nameFirst, final boolean ignoreCache) {
-        return getDisplayName(user.user_key, user.user_name, user.user_screen_name, nameFirst, ignoreCache);
+    public String getDisplayName(final ParcelableUserList user, final boolean nameFirst) {
+        return getDisplayName(user.user_key, user.user_name, user.user_screen_name, nameFirst);
     }
 
-    public String getDisplayName(final ParcelableStatus status, final boolean nameFirst, final boolean ignoreCache) {
-        return getDisplayName(status.user_key, status.user_name, status.user_screen_name, nameFirst, ignoreCache);
+    public String getDisplayName(final ParcelableStatus status, final boolean nameFirst) {
+        return getDisplayName(status.user_key, status.user_name, status.user_screen_name, nameFirst);
     }
 
     public String getDisplayName(@NonNull final UserKey userId, final String name,
-                                 final String screenName, final boolean nameFirst,
-                                 final boolean ignoreCache) {
-        return getDisplayName(userId.toString(), name, screenName, nameFirst, ignoreCache);
+                                 final String screenName, final boolean nameFirst) {
+        return getDisplayName(userId.toString(), name, screenName, nameFirst);
     }
 
     public String getDisplayName(@NonNull final String userId, final String name,
-                                 final String screenName, final boolean nameFirst,
-                                 final boolean ignoreCache) {
-        return nameFirst && !isEmpty(name) ? name : "@" + screenName;
+                                 final String screenName, final boolean nameFirst) {
+        return decideDisplayName(name, screenName, nameFirst);
     }
 
-    public static String getDisplayName(final String name, final String screenName, final boolean nameFirst) {
-        return nameFirst && !isEmpty(name) ? name : "@" + screenName;
+    public int getUserColor(@NonNull final UserKey userId) {
+        return getUserColor(userId.toString());
     }
 
-    public int getUserColor(@NonNull final UserKey userId, final boolean ignoreCache) {
-        return getUserColor(userId.toString(), ignoreCache);
+    public int getUserColor(@NonNull final String userId) {
+        return mColorPreferences.getInt(userId, Color.TRANSPARENT);
     }
 
-    public int getUserColor(@NonNull final String userId, final boolean ignoreCache) {
-        if (!ignoreCache && mUserColors.indexOfKey(userId) >= 0) return mUserColors.get(userId);
-        final int color = mColorPreferences.getInt(userId, Color.TRANSPARENT);
-        mUserColors.put(userId, color);
-        return color;
+    public String getName(@NonNull final UserKey id, String name) {
+        return name;
     }
 
     public interface UserColorChangedListener {

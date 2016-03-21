@@ -45,11 +45,13 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
@@ -57,7 +59,6 @@ import de.vanita5.twittnuker.task.AbstractTask;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.task.util.TaskStarter;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
@@ -65,6 +66,7 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.UriUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
@@ -84,6 +86,8 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
     protected Bus bus;
     @Inject
     protected ErrorInfoStore errorInfoStore;
+    @Inject
+    protected UserColorNameManager manager;
 
     public GetStatusesTask(Context context) {
         this.context = context;
@@ -119,7 +123,11 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
         int idx = 0;
         final int loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
         for (final UserKey accountKey : accountKeys) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountKey, true);
+            final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context,
+                    accountKey);
+            if (credentials == null) continue;
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, credentials,
+                    true, true);
             if (twitter == null) continue;
             try {
                 final Paging paging = new Paging();
@@ -156,8 +164,8 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
                 }
                 final List<Status> statuses = getStatuses(twitter, paging);
                 InternalTwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
-                storeStatus(accountKey, statuses, sinceId, maxId, sinceSortId, maxSortId,
-                        loadItemLimit, true);
+                storeStatus(accountKey, credentials, statuses, sinceId, maxId, sinceSortId,
+                        maxSortId, loadItemLimit, true);
                 // TODO cache related data and preload
                 final CacheUsersStatusesTask cacheTask = new CacheUsersStatusesTask(context);
                 cacheTask.setParams(new TwitterWrapper.StatusListResponse(accountKey, statuses));
@@ -181,7 +189,8 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
     @NonNull
     protected abstract String getErrorInfoKey();
 
-    private void storeStatus(@NonNull final UserKey accountKey, @NonNull final List<Status> statuses,
+    private void storeStatus(@NonNull final UserKey accountKey, ParcelableCredentials credentials,
+                             @NonNull final List<Status> statuses,
                              final String sinceId, final String maxId,
                              final long sinceSortId, final long maxSortId,
                              int loadItemLimit, final boolean notify) {
@@ -202,10 +211,11 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
                 final Status item = statuses.get(i);
                 final ParcelableStatus status = ParcelableStatusUtils.fromStatus(item, accountKey,
                         false);
+                ParcelableStatusUtils.updateExtraInformation(status, credentials, manager);
+                status.position_key = getPositionKey(status.timestamp, status.sort_id, lastSortId,
+                        sortDiff);
                 values[i] = ParcelableStatusValuesCreator.create(status);
                 values[i].put(Statuses.INSERTED_DATE, System.currentTimeMillis());
-                values[i].put(Statuses.POSITION_KEY, getPositionKey(status.timestamp, status.sort_id,
-                        lastSortId, sortDiff));
                 if (minIdx == -1 || item.compareTo(statuses.get(minIdx)) < 0) {
                     minIdx = i;
                 }

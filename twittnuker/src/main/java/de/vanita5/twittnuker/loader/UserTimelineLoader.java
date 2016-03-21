@@ -28,8 +28,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
@@ -39,6 +37,8 @@ import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
+
+import java.util.List;
 
 public class UserTimelineLoader extends TwitterAPIStatusesLoader {
 
@@ -75,6 +75,6 @@ public class UserTimelineLoader extends TwitterAPIStatusesLoader {
         if (mIsMyTimeline) return false;
         final UserKey retweetUserId = status.is_retweet ? status.user_key : null;
         return InternalTwitterContentUtils.isFiltered(database, retweetUserId, status.text_plain,
-                status.text_html, status.source, null, status.quoted_user_id);
+                status.spans, status.source, null, status.quoted_user_key);
     }
 }

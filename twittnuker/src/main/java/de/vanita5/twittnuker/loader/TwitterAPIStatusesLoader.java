@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.util.LoganSquareMapperFinder;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -84,6 +85,8 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
     protected DiskCache mFileCache;
     @Inject
     protected SharedPreferencesWrapper mPreferences;
+    @Inject
+    protected UserColorNameManager mUserColorNameManager;
 
     public TwitterAPIStatusesLoader(@NonNull final Context context,
                                     @Nullable final UserKey accountKey,
@@ -176,7 +179,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
             final Status status = statuses.get(i);
             final ParcelableStatus item = ParcelableStatusUtils.fromStatus(status, mAccountKey,
                     insertGap && isGapEnabled() && minIdx == i);
-            item.account_color = credentials.color;
+            ParcelableStatusUtils.updateExtraInformation(item, credentials, mUserColorNameManager);
             data.add(item);
         }
 

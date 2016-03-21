@@ -116,7 +116,7 @@ public class NotificationHelper implements Constants {
                 NotificationContent notification = new NotificationContent();
                 notification.setAccountKey(UserKey.valueOf(c.getString(idxAccountKey)));
                 notification.setObjectId(c.getString(idxObjectId));
-                notification.setObjectUserId(c.getString(idxObjectUserId));
+                notification.setObjectUserKey(new UserKey(c.getString(idxObjectUserId), TwittnukerConstants.USER_TYPE_TWITTER_COM));
                 notification.setMessage(c.getString(idxMessage));
                 notification.setTimestamp(c.getLong(idxTimestamp));
                 notification.setFromUser(c.getString(idxFromUser));
@@ -137,7 +137,7 @@ public class NotificationHelper implements Constants {
         final ContentValues values = new ContentValues();
         values.put(PushNotifications.ACCOUNT_KEY, String.valueOf(notification.getAccountKey()));
         values.put(PushNotifications.OBJECT_ID, notification.getObjectId());
-        values.put(PushNotifications.OBJECT_USER_ID, notification.getObjectUserId());
+        values.put(PushNotifications.OBJECT_USER_ID, notification.getObjectUserKey().getId());
         values.put(PushNotifications.FROM_USER, notification.getFromUser());
         values.put(PushNotifications.MESSAGE, notification.getMessage());
         values.put(PushNotifications.NOTIFICATION_TYPE, notification.getType());
@@ -190,18 +190,18 @@ public class NotificationHelper implements Constants {
                                                       boolean is_retweet) {
         ParcelableStatus status = new ParcelableStatus();
         status.id = notification.getObjectId();
-        status.user_key = new UserKey(notification.getObjectUserId(), TwittnukerConstants.USER_TYPE_TWITTER_COM);
+        status.user_key = notification.getObjectUserKey();
         status.account_key = notification.getAccountKey();
         status.user_screen_name = notification.getFromUser();
         status.user_profile_image_url = notification.getProfileImageUrl();
         status.is_retweet = is_retweet;
         status.is_favorite = false;
         status.text_plain = notification.getMessage();
-        status.text_html = notification.getMessage();
+        status.text_unescaped = notification.getMessage();
         status.timestamp = notification.getTimestamp();
 
         if (is_retweet) {
-            status.retweeted_by_user_id = new UserKey(notification.getObjectUserId(), TwittnukerConstants.USER_TYPE_TWITTER_COM);
+            status.retweeted_by_user_key = notification.getObjectUserKey();
             status.retweeted_by_user_screen_name = notification.getFromUser();
         }
 
@@ -293,7 +293,7 @@ public class NotificationHelper implements Constants {
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.retweeted_by_user_id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", status.retweeted_by_user_key != null ? status.retweeted_by_user_key.getId() : null);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
@@ -306,7 +306,7 @@ public class NotificationHelper implements Constants {
                     viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
                     viewProfileBuilder.authority(AUTHORITY_USER);
                     viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
-                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(status.retweeted_by_user_id));
+                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, status.retweeted_by_user_key != null ? status.retweeted_by_user_key.getId() : null);
                     final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
                     viewProfileIntent.setPackage(TWITTNUKER_PACKAGE_NAME);
                     builder.addAction(R.drawable.ic_action_profile, mContext.getString(R.string.view_user_profile),
@@ -419,9 +419,9 @@ public class NotificationHelper implements Constants {
                     uriBuilder.authority(AUTHORITY_USER);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getAccountKey()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, notification.getFromUser());
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, notification.getObjectUserId());
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, notification.getObjectUserKey().getId());
 //                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(notification.getObjectUserId()));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", notification.getObjectUserKey().getId());
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_USER);
@@ -441,9 +441,9 @@ public class NotificationHelper implements Constants {
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getAccountKey()));
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(notification.getObjectUserId()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, notification.getObjectUserKey().getId());
 //                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(notification.getObjectUserId()));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", notification.getObjectUserKey().getId());
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_DIRECT_MESSAGES_CONVERSATION);

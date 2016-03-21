@@ -75,6 +75,7 @@ import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.NotificationType;
@@ -933,7 +934,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             notification = new NotificationContent();
             notification.setAccountKey(status.account_key);
             notification.setObjectId(String.valueOf(status.id));
-            notification.setObjectUserId(String.valueOf(status.user_key.getId()));
+            notification.setObjectUserKey(status.user_key);
             notification.setFromUser(status.user_screen_name);
             notification.setType(type);
             notification.setMessage(status.text_unescaped);
@@ -945,7 +946,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             notification = new NotificationContent();
             notification.setAccountKey(dm.account_key);
             notification.setObjectId(String.valueOf(dm.id));
-            notification.setObjectUserId(String.valueOf(dm.sender_id));
+            notification.setObjectUserKey(new UserKey(dm.sender_id, TwittnukerConstants.USER_TYPE_TWITTER_COM));
             notification.setFromUser(dm.sender_screen_name);
             notification.setType(type);
             notification.setMessage(dm.text_unescaped);
@@ -1176,14 +1177,14 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             userCursor.moveToFirst();
             final String displayName = mUserColorNameManager.getDisplayName(userCursor.getString(idxUserId),
                     userCursor.getString(idxUserName), userCursor.getString(idxUserScreenName),
-                    mNameFirst, false);
+                    mNameFirst);
             if (usersCount == 1) {
                 notificationContent = context.getString(R.string.from_name, displayName);
             } else if (usersCount == 2) {
                 userCursor.moveToPosition(1);
                 final String othersName = mUserColorNameManager.getDisplayName(userCursor.getString(idxUserId),
                         userCursor.getString(idxUserName), userCursor.getString(idxUserScreenName),
-                        mNameFirst, false);
+                        mNameFirst);
                 notificationContent = resources.getString(R.string.from_name_and_name, displayName, othersName);
             } else {
                 notificationContent = resources.getString(R.string.from_name_and_N_others, displayName, usersCount - 1);

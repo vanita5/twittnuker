@@ -66,8 +66,8 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.SignInActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
@@ -177,7 +177,7 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
             IntentUtils.openUserProfile(context, account.account_user, null, true,
                     UserFragment.Referral.SELF_PROFILE);
         } else {
-            IntentUtils.openUserProfile(context, account.account_key, account.account_key.getId(),
+            IntentUtils.openUserProfile(context, account.account_key, account.account_key,
                 account.screen_name, null, true, UserFragment.Referral.SELF_PROFILE);
         }
     }

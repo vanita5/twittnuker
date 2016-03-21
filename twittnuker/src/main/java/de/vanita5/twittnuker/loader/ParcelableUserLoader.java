@@ -32,11 +32,12 @@ import android.util.Log;
 import android.util.Pair;
 
 import org.mariotaku.sqliteqb.library.Expression;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.fragment.UserFragment;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserCursorIndices;
@@ -78,8 +79,16 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
         final Context context = getContext();
         final ContentResolver resolver = context.getContentResolver();
         final UserKey accountKey = mAccountKey;
-        final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context,
-                mAccountKey);
+        ParcelableCredentials credentials = null;
+        for (ParcelableCredentials cred : ParcelableCredentialsUtils.getCredentialses(context)) {
+            if (cred.account_key.equals(accountKey)) {
+                credentials = cred;
+                break;
+            } else if (cred.account_user != null && cred.account_user.account_key.equals(accountKey)) {
+                credentials = cred;
+                break;
+            }
+        }
         if (credentials == null) return SingleResponse.getInstance();
         if (!mOmitIntentExtra && mExtras != null) {
             final ParcelableUser user = mExtras.getParcelable(EXTRA_USER);
@@ -119,13 +128,20 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
             }
         }
         try {
-            final User twitterUser = TwitterWrapper.tryShowUser(twitter, mUserId, mScreenName,
+            final User twitterUser;
+            if (mExtras != null && UserFragment.Referral.SELF_PROFILE.equals(mExtras.getString(EXTRA_REFERRAL))) {
+                twitterUser = twitter.verifyCredentials();
+            } else {
+                twitterUser = TwitterWrapper.tryShowUser(twitter, mUserId, mScreenName,
                     credentials.account_type);
+            }
             final ContentValues cachedUserValues = createCachedUser(twitterUser);
             resolver.insert(CachedUsers.CONTENT_URI, cachedUserValues);
             final ParcelableUser user = ParcelableUserUtils.fromUser(twitterUser, accountKey);
             user.account_color = credentials.color;
-            return SingleResponse.getInstance(user);
+            final SingleResponse<ParcelableUser> response = SingleResponse.getInstance(user);
+            response.getExtras().putParcelable(EXTRA_ACCOUNT, credentials);
+            return response;
         } catch (final TwitterException e) {
             Log.w(LOGTAG, e);
             return SingleResponse.getInstance(e);
@@ -150,7 +166,8 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
             final ParcelableUser user = data.getData();
             if (user.is_cache) return;
             final UpdateAccountInfoTask task = new UpdateAccountInfoTask(getContext());
-            task.setParams(Pair.create(mAccountKey, user));
+            final ParcelableAccount account = data.getExtras().getParcelable(EXTRA_ACCOUNT);
+            task.setParams(Pair.create(account, user));
             TaskStarter.execute(task);
         }
     }

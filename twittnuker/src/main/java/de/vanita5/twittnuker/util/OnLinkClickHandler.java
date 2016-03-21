@@ -32,8 +32,8 @@ import android.support.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.fragment.UserFragment;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
@@ -91,8 +91,8 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
                                     id = id.substring(1);
                                 }
                                 final String screenName = orig.substring(1, length);
-                                IntentUtils.openUserProfile(context, accountKey, id, screenName, null,
-                                        true, UserFragment.Referral.USER_MENTION);
+                                IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(id),
+                                        screenName, null, true, UserFragment.Referral.USER_MENTION);
                                 break;
                             }
                         } else if (TwidereLinkify.isHashSymbol(ch) &&
@@ -119,8 +119,8 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
                 break;
             }
             case TwidereLinkify.LINK_TYPE_USER_ID: {
-                IntentUtils.openUserProfile(context, accountKey, link, null, null, true,
-                        UserFragment.Referral.USER_MENTION);
+                IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(link), null, null,
+                        true, UserFragment.Referral.USER_MENTION);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_STATUS: {
