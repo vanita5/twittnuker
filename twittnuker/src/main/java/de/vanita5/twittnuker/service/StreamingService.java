@@ -234,7 +234,7 @@ public class StreamingService extends Service implements Constants {
             final ParcelableCredentials account = accountsList.get(i);
 
             if (mCallbacks.indexOfKey(account.account_key) >= 0) {
-                Log.d(Constants.LOGTAG, String.format("Stream Callback %d already exists!!!", account.account_key));
+                Log.d(Constants.LOGTAG, String.format("Stream Callback %s already exists!!!", account.account_key.toString()));
                 return false;
             }
 
