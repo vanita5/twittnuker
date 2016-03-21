@@ -1530,7 +1530,7 @@ public final class Utils implements Constants {
 
     public static boolean isCompactCards(final Context context) {
         final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        return prefs != null && prefs.getBoolean(KEY_COMPACT_CARDS, false);
+        return prefs != null && prefs.getBoolean(KEY_COMPACT_CARDS, true);
     }
 
     public static boolean isDatabaseReady(final Context context) {
