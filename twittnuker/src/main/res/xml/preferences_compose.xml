@@ -21,6 +21,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
+<!--suppress AndroidElementNotAllowed -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreferenceCompat
@@ -40,7 +41,7 @@
         android:summary="@string/compose_now_summary"
         android:title="@string/compose_now"/>
 
-    <de.vanita5.twittnuker.preference.ThemedListPreference
+    <de.vanita5.twittnuker.preference.EntrySummaryListPreference
         android:defaultValue="compose"
         android:dependency="compose_now"
         android:entries="@array/entries_compose_now_action"

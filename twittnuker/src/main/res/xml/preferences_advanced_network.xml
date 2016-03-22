@@ -73,7 +73,7 @@
             android:summary="@string/proxy_summary"
             android:title="@string/proxy"/>
 
-        <de.vanita5.twittnuker.preference.ThemedListPreference
+        <de.vanita5.twittnuker.preference.EntrySummaryListPreference
             android:defaultValue="http"
             android:dependency="enable_proxy"
             android:entries="@array/entries_proxy_type"

@@ -76,7 +76,7 @@
     <PreferenceCategory
         android:key="cat_general"
         android:title="@string/general">
-        <de.vanita5.twittnuker.preference.ThemedListPreference
+        <de.vanita5.twittnuker.preference.EntrySummaryListPreference
             android:defaultValue="15"
             android:entries="@array/entries_refresh_interval"
             android:entryValues="@array/values_refresh_interval"

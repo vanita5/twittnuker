@@ -31,7 +31,7 @@ import android.util.AttributeSet;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
-public class ThemeFontFamilyPreference extends ThemedListPreference implements Constants {
+public class ThemeFontFamilyPreference extends EntrySummaryListPreference implements Constants {
 
     private static final int[] ENTRIES_RES = {R.string.font_family_regular, R.string.font_family_condensed,
             R.string.font_family_light};

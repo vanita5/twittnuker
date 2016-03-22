@@ -27,7 +27,7 @@
                   xmlns:app="http://schemas.android.com/apk/res-auto"
                   android:title="@string/theme">
 
-    <de.vanita5.twittnuker.preference.ThemedListPreference
+    <de.vanita5.twittnuker.preference.EntrySummaryListPreference
         android:defaultValue="light"
         android:entries="@array/entries_theme"
         android:entryValues="@array/values_theme"
@@ -37,7 +37,7 @@
         <extra
             android:name="recreate_activity"
             android:value="true"/>
-    </de.vanita5.twittnuker.preference.ThemedListPreference>
+    </de.vanita5.twittnuker.preference.EntrySummaryListPreference>
 
     <de.vanita5.twittnuker.preference.ThemeBackgroundPreference
         android:defaultValue="default"

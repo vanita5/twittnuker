@@ -35,7 +35,7 @@
             android:value="true" />
     </SwitchPreferenceCompat>
 
-    <de.vanita5.twittnuker.preference.ThemedListPreference
+    <de.vanita5.twittnuker.preference.EntrySummaryListPreference
         android:defaultValue="@string/default_tab_display_option"
         android:entries="@array/entries_tab_display_option"
         android:entryValues="@array/values_tab_display_option"
