@@ -24,6 +24,8 @@ package de.vanita5.twittnuker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.Spanned;
+import android.text.style.URLSpan;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -74,5 +76,13 @@ public class SpanItem implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         SpanItemParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static SpanItem from(Spanned spanned, URLSpan span) {
+        SpanItem spanItem = new SpanItem();
+        spanItem.link = span.getURL();
+        spanItem.start = spanned.getSpanStart(span);
+        spanItem.end = spanned.getSpanEnd(span);
+        return spanItem;
     }
 }

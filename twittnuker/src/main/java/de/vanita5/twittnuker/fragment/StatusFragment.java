@@ -2210,10 +2210,9 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final ParcelableStatus old = mStatus;
             mStatus = status;
             mStatusAccount = credentials;
-            final boolean changed = !CompareUtils.objectEquals(old, status);
             notifyDataSetChanged();
             updateItemDecoration();
-            return changed;
+            return !CompareUtils.objectEquals(old, status);
         }
 
         private void updateItemDecoration() {

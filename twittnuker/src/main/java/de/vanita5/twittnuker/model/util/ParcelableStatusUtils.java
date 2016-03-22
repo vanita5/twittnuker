@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.model.util;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -40,6 +41,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SpanItem;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
+import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
@@ -159,8 +161,14 @@ public class ParcelableStatusUtils {
         // Twitter will escape <> to &lt;&gt;, so if a status contains those symbols unescaped
         // We should treat this as an html
         if (text.contains("<") && text.contains(">")) {
-            result.text_unescaped = HtmlEscapeHelper.toPlainText(text);
+            final Spannable html = HtmlSpanBuilder.fromHtml(text);
+            result.text_unescaped = html.toString();
             result.text_plain = result.text_unescaped;
+            URLSpan[] spans = html.getSpans(0, html.length(), URLSpan.class);
+            result.spans = new SpanItem[spans.length];
+            for (int i = 0, j = spans.length; i < j; i++) {
+                result.spans[i] = SpanItem.from(html, spans[i]);
+            }
         } else {
             final Pair<String, List<SpanItem>> textWithIndices = InternalTwitterContentUtils.formatStatusTextWithIndices(status);
             result.text_plain = InternalTwitterContentUtils.unescapeTwitterStatusText(text);
