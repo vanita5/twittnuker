@@ -40,6 +40,7 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import javax.inject.Inject;
 
 import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUS;
 import static de.vanita5.twittnuker.util.Utils.findStatus;
 
 public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<ParcelableStatus>> {
@@ -89,6 +90,12 @@ public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<Parce
 
     @Override
     protected void onStartLoading() {
+        if (!mOmitIntentExtra && mExtras != null) {
+            final ParcelableStatus status = mExtras.getParcelable(EXTRA_STATUS);
+            if (status != null) {
+                deliverResult(SingleResponse.getInstance(status));
+            }
+        }
         forceLoad();
     }
 

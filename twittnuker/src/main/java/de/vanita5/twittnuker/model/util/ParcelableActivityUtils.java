@@ -28,10 +28,10 @@ import android.support.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 
 import de.vanita5.twittnuker.api.twitter.model.Activity;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,19 +112,21 @@ public class ParcelableActivityUtils {
 
     @Nullable
     public static ParcelableStatus getActivityStatus(@NonNull ParcelableActivity activity) {
+        final ParcelableStatus status;
         if (Activity.Action.MENTION.equals(activity.action)) {
-            final ParcelableStatus status = activity.target_object_statuses[0];
-            status.account_color = activity.account_color;
-            return status;
+            status = activity.target_object_statuses[0];
         } else if (Activity.Action.REPLY.equals(activity.action)) {
-            final ParcelableStatus status = activity.target_statuses[0];
-            status.account_color = activity.account_color;
-            return status;
+            status = activity.target_statuses[0];
         } else if (Activity.Action.QUOTE.equals(activity.action)) {
-            final ParcelableStatus status = activity.target_statuses[0];
-            status.account_color = activity.account_color;
-            return status;
+            status = activity.target_statuses[0];
+        } else {
+            return null;
         }
-        return null;
+        status.account_color = activity.account_color;
+        status.user_color = activity.status_user_color;
+        status.retweet_user_color = activity.status_retweet_user_color;
+        status.quoted_user_color = activity.status_quoted_user_color;
+
+        return status;
     }
 }

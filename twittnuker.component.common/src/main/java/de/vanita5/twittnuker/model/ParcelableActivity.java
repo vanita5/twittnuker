@@ -33,9 +33,10 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
+
+import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
-import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
 import de.vanita5.twittnuker.model.util.UserKeysConverter;
 import de.vanita5.twittnuker.model.util.UserKeysCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
@@ -134,7 +135,22 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     public boolean status_user_following;
 
     @ParcelableThisPlease
+    @JsonField(name = "account_color")
+    @CursorField(Activities.ACCOUNT_COLOR)
     public int account_color;
+    @ParcelableThisPlease
+    @JsonField(name = "status_user_color")
+    @CursorField(Activities.STATUS_USER_COLOR)
+    public int status_user_color;
+    @ParcelableThisPlease
+    @JsonField(name = "status_quoted_user_color")
+    @CursorField(Activities.STATUS_QUOTED_USER_COLOR)
+    public int status_quoted_user_color;
+    @ParcelableThisPlease
+    @JsonField(name = "status_retweet_user_color")
+    @CursorField(Activities.STATUS_RETWEET_USER_COLOR)
+    public int status_retweet_user_color;
+
 
     public transient UserKey[] after_filtered_source_ids;
     public transient ParcelableUser[] after_filtered_sources;

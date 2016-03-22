@@ -153,7 +153,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int REQUEST_EDIT_API = 5;
     int REQUEST_BROWSER_SIGN_IN = 6;
     int REQUEST_SET_COLOR = 7;
-    int REQUEST_SAVE_FILE = 8;
     int REQUEST_EDIT_IMAGE = 9;
     int REQUEST_ADD_TAB = 11;
     int REQUEST_EDIT_TAB = 12;

@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -204,11 +205,19 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     }
 
     @NonNull
-    public static ContentValues createActivity(final ParcelableActivity activity) {
+    public static ContentValues createActivity(final ParcelableActivity activity,
+                                               ParcelableCredentials credentials, UserColorNameManager manager) {
         final ContentValues values = new ContentValues();
         final ParcelableStatus status = ParcelableActivityUtils.getActivityStatus(activity);
         if (status != null) {
+            ParcelableStatusUtils.updateExtraInformation(status, credentials, manager);
             createStatusActivity(status, values);
+
+            activity.account_color = status.account_color;
+            activity.status_user_color = status.user_color;
+            activity.status_retweet_user_color = status.retweet_user_color;
+            activity.status_quoted_user_color = status.quoted_user_color;
+
         }
         ParcelableActivityValuesCreator.writeTo(activity, values);
         return values;
