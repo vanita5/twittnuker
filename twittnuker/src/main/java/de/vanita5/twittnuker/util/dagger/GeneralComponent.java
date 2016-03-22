@@ -41,6 +41,8 @@ import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseSupportFragment;
 import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
+import de.vanita5.twittnuker.loader.ParcelableStatusLoader;
+import de.vanita5.twittnuker.loader.ParcelableUserLoader;
 import de.vanita5.twittnuker.loader.TwitterAPIStatusesLoader;
 import de.vanita5.twittnuker.preference.AccountsListPreference;
 import de.vanita5.twittnuker.preference.KeyboardShortcutPreference;
@@ -135,4 +137,8 @@ public interface GeneralComponent {
     void inject(AbsFriendshipOperationTask task);
 
     void inject(KeyboardShortcutPreference preference);
+
+    void inject(ParcelableUserLoader loader);
+
+    void inject(ParcelableStatusLoader loader);
 }

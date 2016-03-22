@@ -30,6 +30,7 @@ import android.text.TextUtils;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -37,6 +38,7 @@ import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 
 public class ParcelableUserUtils implements TwittnukerConstants{
 
@@ -132,5 +134,10 @@ public class ParcelableUserUtils implements TwittnukerConstants{
             return user.profile_background_url;
         }
         return null;
+    }
+
+    public static void updateExtraInformation(ParcelableUser user, ParcelableAccount account, UserColorNameManager manager) {
+        user.account_color = account.color;
+        user.color = manager.getUserColor(user.key);
     }
 }

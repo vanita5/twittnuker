@@ -34,6 +34,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -136,24 +137,24 @@ public class MenuUtils implements Constants {
                                       @NonNull final SharedPreferencesWrapper preferences,
                                       @NonNull final Menu menu,
                                       @NonNull final ParcelableStatus status,
-                                      @NonNull UserColorNameManager manager,
                                       @NonNull final AsyncTwitterWrapper twitter) {
         final ParcelableCredentials account = ParcelableCredentialsUtils.getCredentials(context,
                 status.account_key);
         if (account == null) return;
-        setupForStatus(context, preferences, menu, status, account, manager, twitter);
+        setupForStatus(context, preferences, menu, status, account, twitter);
     }
 
+    @UiThread
     public static void setupForStatus(@NonNull final Context context,
                                       @NonNull final SharedPreferencesWrapper preferences,
                                       @NonNull final Menu menu,
                                       @NonNull final ParcelableStatus status,
                                       @NonNull final ParcelableCredentials account,
-                                      @NonNull UserColorNameManager manager,
                                       @NonNull final AsyncTwitterWrapper twitter) {
         if (menu instanceof ContextMenu) {
             ((ContextMenu) menu).setHeaderTitle(context.getString(R.string.status_menu_title_format,
-                    manager.getDisplayName(status, preferences.getBoolean(KEY_NAME_FIRST)),
+                    UserColorNameManager.decideDisplayName(status.user_name,
+                            status.user_screen_name, preferences.getBoolean(KEY_NAME_FIRST)),
                     status.text_unescaped));
         }
         final int retweetHighlight = ContextCompat.getColor(context, R.color.highlight_retweet);

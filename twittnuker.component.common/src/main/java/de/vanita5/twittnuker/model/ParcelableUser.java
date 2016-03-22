@@ -180,6 +180,9 @@ public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
     @CursorField(value = CachedUsers.EXTRAS, converter = LoganSquareCursorFieldConverter.class)
     public Extras extras;
 
+    @ParcelableThisPlease
+    public int color;
+
     public static final Creator<ParcelableUser> CREATOR = new Creator<ParcelableUser>() {
         public ParcelableUser createFromParcel(Parcel source) {
             ParcelableUser target = new ParcelableUser();
