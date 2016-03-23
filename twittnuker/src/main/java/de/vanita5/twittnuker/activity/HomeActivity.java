@@ -30,14 +30,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.database.ContentObserver;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceActivity;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -46,6 +51,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayoutAccessor;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -59,6 +65,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
@@ -111,6 +118,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
     private final ContentObserver mAccountChangeObserver = new AccountChangeObserver(this, mHandler);
 
     private ParcelableAccount mSelectedAccountToSearch;
+    private int mTabColumns;
 
 
     private MultiSelectEventHandler mMultiSelectHandler;
@@ -120,13 +128,15 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
     private BroadcastReceiver mGCMRegistrationReceiver;
 
     private ExtendedViewPager mViewPager;
-    private Toolbar mActionBar;
+    private Toolbar mToolbar;
     private View mWindowOverlay;
     private TabPagerIndicator mTabIndicator;
     private DrawerLayout mDrawerLayout;
     private View mEmptyTabHint;
     private FloatingActionButton mActionsButton;
     private ExtendedRelativeLayout mHomeContent;
+    private ImageButton mDrawerToggleButton;
+
 
     private UpdateUnreadCountTask mUpdateUnreadCountTask;
 
@@ -139,7 +149,38 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         }
     };
     private ControlBarShowHideHelper mControlBarShowHideHelper = new ControlBarShowHideHelper(this);
-    private int mTabColumns;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private ActionBarDrawerToggle.Delegate mHomeDrawerToggleDelegate = new ActionBarDrawerToggle.Delegate() {
+        @Override
+        public void setActionBarUpIndicator(Drawable upDrawable, @StringRes int contentDescRes) {
+            mDrawerToggleButton.setImageDrawable(upDrawable);
+            mDrawerToggleButton.setContentDescription(getString(contentDescRes));
+        }
+
+        @Override
+        public void setActionBarDescription(@StringRes int contentDescRes) {
+            mDrawerToggleButton.setContentDescription(getString(contentDescRes));
+        }
+
+        @Override
+        public Drawable getThemeUpIndicator() {
+            final int[] attrs = {android.support.v7.appcompat.R.attr.homeAsUpIndicator};
+            final TypedArray a = obtainStyledAttributes(attrs);
+            final Drawable result = a.getDrawable(0);
+            a.recycle();
+            return result;
+        }
+
+        @Override
+        public Context getActionBarThemedContext() {
+            return mToolbar.getContext();
+        }
+
+        @Override
+        public boolean isNavigationVisible() {
+            return true;
+        }
+    };
 
     public void closeAccountsDrawer() {
         if (mDrawerLayout == null) return;
@@ -198,6 +239,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
         switch (item.getItemId()) {
             case android.R.id.home: {
                 final FragmentManager fm = getSupportFragmentManager();
@@ -343,7 +387,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         supportRequestWindowFeature(AppCompatDelegate.FEATURE_ACTION_MODE_OVERLAY);
         setContentView(R.layout.activity_home);
 
-        setSupportActionBar(mActionBar);
+        setSupportActionBar(mToolbar);
 
         ThemeUtils.setCompatContentViewOverlay(getWindow(), new EmptyDrawable());
 
@@ -363,6 +407,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
 
         mTabColumns = getResources().getInteger(R.integer.default_tab_columns);
 
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open_accounts_dashboard,
+                R.string.close_accounts_dashboard);
         mHomeContent.setOnFitSystemWindowsListener(this);
         mPagerAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), mTabIndicator, mTabColumns);
         mViewPager.setAdapter(mPagerAdapter);
@@ -391,6 +437,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
 
         mActionsButton.setOnClickListener(this);
         mActionsButton.setOnLongClickListener(this);
+        mDrawerToggleButton.setOnClickListener(this);
         mEmptyTabHint.setOnClickListener(this);
 
         setupSlidingMenu();
@@ -459,6 +506,12 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
     }
 
     @Override
+    protected void onPause() {
+        unregisterReceiver(mGCMRegistrationReceiver);
+        super.onPause();
+    }
+
+    @Override
     protected void onStop() {
         mMultiSelectHandler.dispatchOnStop();
         mReadStateManager.unregisterOnSharedPreferenceChangeListener(mReadStateChangeListener);
@@ -500,6 +553,14 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
                 intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, CustomTabsFragment.class.getName());
                 intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_TITLE, R.string.tabs);
                 startActivityForResult(intent, REQUEST_SETTINGS);
+                break;
+            }
+            case R.id.drawer_toggle: {
+                if (mDrawerLayout.isDrawerOpen(GravityCompat.START) || mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
+                    mDrawerLayout.closeDrawers();
+                } else {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
                 break;
             }
         }
@@ -576,13 +637,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
     }
 
     @Override
-    protected void onPause() {
-        unregisterReceiver(mGCMRegistrationReceiver);
-        super.onPause();
-    }
-
-    @Override
     protected void onDestroy() {
+
         stopStreamingService();
 
         // Delete unused items in databases.
@@ -599,6 +655,20 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggle
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public float getControlBarOffset() {
         if (mTabColumns > 1) {
             final ViewGroup.LayoutParams lp = mActionsButton.getLayoutParams();
@@ -611,7 +681,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
             return 1 - mActionsButton.getTranslationY() / total;
         }
         final float totalHeight = getControlBarHeight();
-        return 1 + mActionBar.getTranslationY() / totalHeight;
+        return 1 + mToolbar.getTranslationY() / totalHeight;
     }
 
     @Override
@@ -619,7 +689,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar == null) return;
         final int translationY = mTabColumns > 1 ? 0 : (int) (getControlBarHeight() * (offset - 1));
-        mActionBar.setTranslationY(translationY);
+        mToolbar.setTranslationY(translationY);
         mWindowOverlay.setTranslationY(translationY);
         final ViewGroup.LayoutParams lp = mActionsButton.getLayoutParams();
         if (lp instanceof MarginLayoutParams) {
@@ -634,13 +704,48 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
     public void onContentChanged() {
         super.onContentChanged();
         mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
-        mActionBar = (Toolbar) findViewById(R.id.action_bar);
+        mToolbar = (Toolbar) findViewById(R.id.action_bar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.home_menu);
         mViewPager = (ExtendedViewPager) findViewById(R.id.main_pager);
         mEmptyTabHint = findViewById(R.id.empty_tab_hint);
         mActionsButton = (FloatingActionButton) findViewById(R.id.actions_button);
         mHomeContent = (ExtendedRelativeLayout) findViewById(R.id.home_content);
         mWindowOverlay = findViewById(R.id.window_overlay);
+        mDrawerToggleButton = (ImageButton) findViewById(R.id.drawer_toggle);
+    }
+
+    @Override
+    public void onDrawerSlide(View drawerView, float slideOffset) {
+
+    }
+
+    @Override
+    public void onDrawerOpened(View drawerView) {
+
+    }
+
+    @Override
+    public void onDrawerClosed(View drawerView) {
+
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
+        final Fragment fragment = getLeftDrawerFragment();
+        if (fragment instanceof AccountsDashboardFragment) {
+            ((AccountsDashboardFragment) fragment).loadAccounts();
+        }
+    }
+
+    @Nullable
+    @Override
+    public ActionBarDrawerToggle.Delegate getDrawerToggleDelegate() {
+        return mHomeDrawerToggleDelegate;
+    }
+
+    @Override
+    public int getControlBarHeight() {
+        return mTabIndicator.getHeight() - mTabIndicator.getStripHeight();
     }
 
     private Fragment getKeyboardShortcutRecipient() {
@@ -651,11 +756,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         } else {
             return getCurrentVisibleFragment();
         }
-    }
-
-    @Override
-    public int getControlBarHeight() {
-        return mTabIndicator.getHeight() - mTabIndicator.getStripHeight();
     }
 
     private boolean handleFragmentKeyboardShortcutRepeat(final KeyboardShortcutsHandler handler,
@@ -798,6 +898,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
 
     private void setupSlidingMenu() {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow_start, GravityCompat.START);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.addDrawerListener(this);
         final Window window = getWindow();
         ThemeUtils.applyWindowBackground(this, mHomeContent,
@@ -837,29 +938,6 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         }
         mActionsButton.setImageResource(icon);
         mActionsButton.setContentDescription(getString(title));
-    }
-
-    @Override
-    public void onDrawerSlide(View drawerView, float slideOffset) {
-
-    }
-
-    @Override
-    public void onDrawerOpened(View drawerView) {
-
-    }
-
-    @Override
-    public void onDrawerClosed(View drawerView) {
-
-    }
-
-    @Override
-    public void onDrawerStateChanged(int newState) {
-        final Fragment fragment = getLeftDrawerFragment();
-        if (fragment instanceof AccountsDashboardFragment) {
-            ((AccountsDashboardFragment) fragment).loadAccounts();
-        }
     }
 
     private void startStreamingService() {

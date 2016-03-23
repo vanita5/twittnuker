@@ -673,6 +673,7 @@
     <string name="reset_to_default">Zurücksetzen</string>
     <string name="reset_keyboard_shortcuts_confirm">Sollen alle Keyboard Shortcuts zurückgesetzt werden?</string>
     <string name="open_accounts_dashboard">Account Dashboard öffnen</string>
+    <string name="close_accounts_dashboard">Account Dashboard schliessen</string>
     <string name="previous_tab">Vorheriger Tab</string>
     <string name="next_tab">Nächster Tab</string>
     <string name="keyboard_shortcut_back">Zurück</string>
