@@ -151,6 +151,7 @@ import de.vanita5.twittnuker.util.Nullables;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.util.RecyclerViewScrollHandler;
 import de.vanita5.twittnuker.util.RecyclerViewUtils;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.StatusActionModeCallback;
 import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
 import de.vanita5.twittnuker.util.StatusLinkClickHandler;
@@ -207,6 +208,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     // Data fields
     private boolean mConversationLoaderInitialized;
     private boolean mActivityLoaderInitialized;
+    private boolean mHasMoreConversation = true;
 
     // Listeners
     private LoaderCallbacks<List<ParcelableStatus>> mConversationsLoaderCallback = new LoaderCallbacks<List<ParcelableStatus>>() {
@@ -469,7 +471,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         final FragmentActivity activity = getActivity();
         final ParcelableStatus status = mStatusAdapter.getStatus(position);
         IntentUtils.openUserProfile(activity, status.account_key, status.user_key,
-                status.user_screen_name, null, true, UserFragment.Referral.TIMELINE_STATUS);
+                status.user_screen_name, null, mPreferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                UserFragment.Referral.TIMELINE_STATUS);
     }
 
     @Override
@@ -618,6 +621,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     }
 
     private void setConversation(List<ParcelableStatus> data) {
+        mHasMoreConversation = data != null && !data.isEmpty();
         final ReadPosition readPosition = saveReadPosition();
         mStatusAdapter.setData(data);
         restoreReadPosition(readPosition);
@@ -634,6 +638,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
 
     @Override
     public void onLoadMoreContents(@IndicatorPosition int position) {
+        if (!mHasMoreConversation) return;
         if ((position & IndicatorPosition.START) != 0) {
             final int start = mStatusAdapter.getIndexStart(StatusAdapter.ITEM_IDX_CONVERSATION);
             final ParcelableStatus status = mStatusAdapter.getStatus(start);
@@ -935,7 +940,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         public DetailStatusViewHolder(final StatusAdapter adapter, View itemView) {
             super(itemView);
             this.adapter = adapter;
-            this.linkClickHandler = new DetailStatusLinkClickHandler(adapter.getContext(), null, adapter);
+            this.linkClickHandler = new DetailStatusLinkClickHandler(adapter.getContext(), null,
+                    adapter, adapter.getPreferences());
             this.linkify = new TwidereLinkify(linkClickHandler);
             menuBar = (ActionMenuView) itemView.findViewById(R.id.menu_bar);
             nameView = (NameView) itemView.findViewById(R.id.name);
@@ -1183,6 +1189,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             final ParcelableStatus status = adapter.getStatus(getLayoutPosition());
             final StatusFragment fragment = adapter.getFragment();
             if (status == null || fragment == null) return;
+            final SharedPreferencesWrapper preferences = fragment.mPreferences;
             switch (v.getId()) {
                 case R.id.media_preview_load: {
                     if (adapter.isSensitiveContentEnabled() || !status.is_possibly_sensitive) {
@@ -1196,14 +1203,16 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 case R.id.profile_container: {
                     final FragmentActivity activity = fragment.getActivity();
                     IntentUtils.openUserProfile(activity, status.account_key, status.user_key,
-                            status.user_screen_name, null, true, UserFragment.Referral.STATUS);
+                            status.user_screen_name, null, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                            UserFragment.Referral.STATUS);
                     break;
                 }
                 case R.id.retweeted_by: {
                     if (status.retweet_id != null) {
                         IntentUtils.openUserProfile(adapter.getContext(), status.account_key,
                                 status.retweeted_by_user_key, status.retweeted_by_user_screen_name,
-                                null, true, UserFragment.Referral.STATUS);
+                                null, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                                UserFragment.Referral.STATUS);
                     }
                     break;
                 }
@@ -1216,7 +1225,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 case R.id.quoted_name: {
                     IntentUtils.openUserProfile(adapter.getContext(), status.account_key,
                             status.quoted_user_key, status.quoted_user_screen_name, null,
-                            true, UserFragment.Referral.STATUS);
+                            preferences.getBoolean(KEY_NEW_DOCUMENT_API), UserFragment.Referral.STATUS);
                     break;
                 }
                 case R.id.quote_original_link: {
@@ -1585,8 +1594,10 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         private static class DetailStatusLinkClickHandler extends StatusLinkClickHandler {
             private final StatusAdapter adapter;
 
-            public DetailStatusLinkClickHandler(Context context, MultiSelectManager manager, StatusAdapter adapter) {
-                super(context, manager);
+            public DetailStatusLinkClickHandler(Context context, MultiSelectManager manager,
+                                                StatusAdapter adapter,
+                                                SharedPreferencesWrapper preferences) {
+                super(context, manager, preferences);
                 this.adapter = adapter;
             }
 
@@ -1739,7 +1750,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             } else {
                 mCardLayoutResource = R.layout.card_item_status;
             }
-            mTwidereLinkify = new TwidereLinkify(new StatusAdapterLinkClickHandler<>(this));
+            mTwidereLinkify = new TwidereLinkify(new StatusAdapterLinkClickHandler<>(this,
+                    mPreferences));
         }
 
         public int findPositionById(long itemId) {

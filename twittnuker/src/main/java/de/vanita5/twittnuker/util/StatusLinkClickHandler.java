@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.util;
 
 import android.content.Context;
 
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 
 public class StatusLinkClickHandler extends OnLinkClickHandler {
 
@@ -57,7 +57,7 @@ public class StatusLinkClickHandler extends OnLinkClickHandler {
         mStatus = status;
     }
 
-    public StatusLinkClickHandler(Context context, MultiSelectManager manager) {
-        super(context, manager);
+    public StatusLinkClickHandler(Context context, MultiSelectManager manager, SharedPreferencesWrapper preferences) {
+        super(context, manager, preferences);
     }
 }

@@ -32,10 +32,10 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IDirectMessagesAdapter;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
@@ -74,7 +74,7 @@ public class MessageConversationAdapter extends BaseRecyclerViewAdapter<ViewHold
     public MessageConversationAdapter(final Context context) {
         super(context);
         mInflater = LayoutInflater.from(context);
-        mLinkify = new TwidereLinkify(new DirectMessageOnLinkClickHandler(context, null));
+        mLinkify = new TwidereLinkify(new DirectMessageOnLinkClickHandler(context, null, mPreferences));
         mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
         mProfileImageStyle = Utils.getProfileImageStyle(mPreferences.getString(KEY_PROFILE_IMAGE_STYLE, null));

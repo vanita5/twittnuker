@@ -331,6 +331,8 @@ public interface SharedPreferenceConstants {
     String KEY_I_WANT_MY_STARS_BACK = "i_want_my_stars_back";
     @Preference(type = STRING, hasDefault = false)
     String KEY_EMOJI_SUPPORT = "emoji_support";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
+    String KEY_NEW_DOCUMENT_API = "new_document_api";
 
     //GCM
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
