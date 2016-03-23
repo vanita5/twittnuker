@@ -260,6 +260,8 @@
     <string name="activity_by_friends_list_member_added_multi">(D)<xliff:g id="user">%1$s</xliff:g> fügte <xliff:g id="target">%2$s</xliff:g> und <xliff:g id="other">%1$s</xliff:g> andere zur Liste hinzu.</string>
     <string name="activity_by_friends_list_created"><xliff:g id="user">%1$s</xliff:g> hat die Liste <xliff:g id="target">%2$s</xliff:g> erstellt.</string>
     <string name="activity_by_friends_list_created_multi"><xliff:g id="user">%1$s</xliff:g> hat die Liste <xliff:g id="target">%2$s</xliff:g> und <xliff:g id="other">%1$s</xliff:g> erstellt.</string>
+    <string name="activity_joined_twitter"><xliff:g id="user">%s</xliff:g> ist Twitter beigetreten.</string>
+    <string name="activity_joined_twitter_multi"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> sind Twitter beigetreten.</string>
     <string name="status_not_updated">Tweet nicht gesendet.</string>
     <string name="status_not_updated_summary">Tweet wurde nicht gesendet und als Entwurf gespeichert.</string>
     <string name="incoming_friendships">Ausstehende Folgen-Anfragen</string>
