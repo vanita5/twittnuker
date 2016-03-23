@@ -799,7 +799,7 @@
     <string name="standard_notifications">Standard Notifications</string>
     <string name="push_notifications">Push Notificatons</string>
     <string name="enable_push_notifications">Enable Push Notificatons</string>
-    <string name="enable_push_notifications_summary">Receive pus notifications from given server</string>
+    <string name="enable_push_notifications_summary">Receive push notifications from given server</string>
     <string name="push_api_url">Push API URL</string>
     <string name="push_api_port">Push API Port</string>
     <string name="push_api_url_summary">The URL/IP to your backend server</string>
