@@ -89,7 +89,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.CacheProvider;
 import de.vanita5.twittnuker.task.SaveFileTask;
-import de.vanita5.twittnuker.task.SaveImageToGalleryTask;
+import de.vanita5.twittnuker.task.SaveMediaToGalleryTask;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.MenuUtils;
@@ -526,9 +526,11 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         final boolean hasMedia = cacheUri != null;
         if (!hasMedia) return;
         if (f instanceof ImagePageFragment) {
-            mSaveFileTask = SaveImageToGalleryTask.create(this, cacheUri, CacheProvider.Type.IMAGE);
+            mSaveFileTask = SaveMediaToGalleryTask.create(this, cacheUri, CacheProvider.Type.IMAGE);
         } else if (f instanceof VideoPageFragment) {
-            mSaveFileTask = SaveImageToGalleryTask.create(this, cacheUri, CacheProvider.Type.VIDEO);
+            mSaveFileTask = SaveMediaToGalleryTask.create(this, cacheUri, CacheProvider.Type.VIDEO);
+        } else if (f instanceof GifPageFragment) {
+            mSaveFileTask = SaveMediaToGalleryTask.create(this, cacheUri, CacheProvider.Type.IMAGE);
         } else {
             throw new UnsupportedOperationException();
         }

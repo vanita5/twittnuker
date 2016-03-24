@@ -28,7 +28,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -39,6 +38,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,11 +61,16 @@ import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.loader.ParcelableUserLoader;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
+import de.vanita5.twittnuker.task.UpdateAccountInfoTask;
 import de.vanita5.twittnuker.task.UpdateProfileBannerImageTask;
+import de.vanita5.twittnuker.task.util.TaskStarter;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
@@ -418,7 +423,6 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         private static final String DIALOG_FRAGMENT_TAG = "updating_user_profile";
         private final UserProfileEditorFragment mFragment;
         private final FragmentActivity mActivity;
-        private final Handler mHandler;
 
         // Data fields
         private final UserKey mAccountKey;
@@ -437,7 +441,6 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
                                          final int backgroundColor) {
             mFragment = fragment;
             mActivity = fragment.getActivity();
-            mHandler = new Handler(mActivity.getMainLooper());
             mAccountKey = accountKey;
             mOriginal = original;
             mName = name;
@@ -450,7 +453,11 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
         @Override
         protected SingleResponse<ParcelableUser> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mActivity, mAccountKey, true);
+            final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(mActivity, mAccountKey);
+            if (credentials == null) return SingleResponse.getInstance();
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mActivity, credentials,
+                    true, true);
+            if (twitter == null) return SingleResponse.getInstance();
             try {
                 User user = null;
                 if (isProfileChanged()) {
@@ -467,7 +474,10 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
                     // User profile unchanged
                     return SingleResponse.getInstance();
                 }
-                return SingleResponse.getInstance(ParcelableUserUtils.fromUser(user, mAccountKey));
+                final SingleResponse<ParcelableUser> response = SingleResponse.getInstance(
+                        ParcelableUserUtils.fromUser(user, mAccountKey));
+                response.getExtras().putParcelable(EXTRA_ACCOUNT, credentials);
+                return response;
             } catch (TwitterException e) {
                 return SingleResponse.getInstance(e);
             }
@@ -490,18 +500,31 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
             super.onPostExecute(result);
-            final Fragment f = mFragment.getFragmentManager().findFragmentByTag(DIALOG_FRAGMENT_TAG);
-            if (f instanceof DialogFragment) {
-                ((DialogFragment) f).dismissAllowingStateLoss();
+            if (result.hasData()) {
+                final ParcelableAccount account = result.getExtras().getParcelable(EXTRA_ACCOUNT);
+                if (account != null) {
+                    final UpdateAccountInfoTask task = new UpdateAccountInfoTask(mActivity);
+                    task.setParams(Pair.create(account, result.getData()));
+                    TaskStarter.execute(task);
+                }
             }
-            mFragment.getActivity().finish();
+            mFragment.executeAfterFragmentResumed(new Action() {
+                @Override
+                public void execute(IBaseFragment fragment) {
+                    final Fragment f = mFragment.getFragmentManager().findFragmentByTag(DIALOG_FRAGMENT_TAG);
+                    if (f instanceof DialogFragment) {
+                        ((DialogFragment) f).dismissAllowingStateLoss();
+                    }
+                    mFragment.getActivity().finish();
+                }
+            });
         }
 
         @Override
         protected void onPreExecute() {
-            mHandler.post(new Runnable() {
+            mFragment.executeAfterFragmentResumed(new Action() {
                 @Override
-                public void run() {
+                public void execute(IBaseFragment fragment) {
                     final DialogFragment df = SupportProgressDialogFragment.show(mFragment.getActivity(), DIALOG_FRAGMENT_TAG);
                     df.setCancelable(false);
                 }
