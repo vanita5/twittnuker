@@ -34,12 +34,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -104,6 +105,7 @@ import com.twitter.Extractor;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.mariotaku.multivalueswitch.library.MultiValueSwitch;
 import org.mariotaku.restfu.RestFuUtils;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -132,6 +134,8 @@ import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
+import de.vanita5.twittnuker.task.AbstractTask;
+import de.vanita5.twittnuker.task.util.TaskStarter;
 import de.vanita5.twittnuker.text.MarkForDeleteSpan;
 import de.vanita5.twittnuker.text.style.EmojiSpan;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
@@ -144,6 +148,7 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.PermissionUtils;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
@@ -172,6 +177,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -186,6 +192,10 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
     private static final String EXTRA_ORIGINAL_TEXT = "original_text";
     private static final String EXTRA_SHARE_SCREENSHOT = "share_screenshot";
     private static final String DISCARD_STATUS_DIALOG_FRAGMENT_TAG = "discard_status";
+
+    public static final String LOCATION_VALUE_PLACE = "place";
+    public static final String LOCATION_VALUE_COORDINATE = "coordinate";
+    public static final String LOCATION_VALUE_NONE = "none";
 
     // Utility classes
     @Inject
@@ -210,11 +220,11 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
     private ShapedImageView mProfileImageView;
     private BadgeView mCountView;
     private View mAccountSelectorButton;
-    private View mLocationContainer;
     private IconActionView mLocationIcon;
     private TextView mLocationText;
     private TextView mReplyLabel;
     private View mReplyLabelDivider;
+    private MultiValueSwitch mLocationSwitch;
 
     // Adapters
     private MediaPreviewAdapter mMediaPreviewAdapter;
@@ -306,7 +316,9 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         super.onStart();
         mImageUploaderUsed = !ServicePickerPreference.isNoneValue(mPreferences.getString(KEY_MEDIA_UPLOADER, null));
         mStatusShortenerUsed = !ServicePickerPreference.isNoneValue(mPreferences.getString(KEY_STATUS_SHORTENER, null));
-        requestOrUpdateLocation();
+        if (mPreferences.getBoolean(KEY_ATTACH_LOCATION)) {
+            requestOrUpdateLocation();
+        }
         setMenu();
         updateTextCount();
         final int textSize = mPreferences.getInt(KEY_TEXT_SIZE, Utils.getDefaultTextSize(this));
@@ -340,10 +352,6 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
             }
             case R.id.account_selector_button: {
                 setAccountSelectorVisible(!isAccountSelectorVisible());
-                break;
-            }
-            case R.id.location_container: {
-                toggleLocation();
                 break;
             }
         }
@@ -405,10 +413,6 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
             }
             case R.id.add_image: {
                 pickImage();
-                break;
-            }
-            case R.id.add_location: {
-                toggleLocation();
                 break;
             }
             case R.id.drafts: {
@@ -493,12 +497,12 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         mMenuBar = (ActionMenuView) findViewById(R.id.menu_bar);
         mSendView = findViewById(R.id.send);
         mSendTextCountView = (StatusTextCountView) mSendView.findViewById(R.id.status_text_count);
+        mLocationSwitch = (MultiValueSwitch) findViewById(R.id.location_switch);
         mAccountSelector = (RecyclerView) findViewById(R.id.account_selector);
         mAccountSelectorContainer = findViewById(R.id.account_selector_container);
         mProfileImageView = (ShapedImageView) findViewById(R.id.account_profile_image);
         mCountView = (BadgeView) findViewById(R.id.accounts_count);
         mAccountSelectorButton = findViewById(R.id.account_selector_button);
-        mLocationContainer = findViewById(R.id.location_container);
         mLocationIcon = (IconActionView) findViewById(R.id.location_icon);
         mLocationText = (TextView) findViewById(R.id.location_text);
         mReplyLabel = (TextView) findViewById(R.id.reply_label);
@@ -593,7 +597,53 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         setupEditText();
         mAccountSelectorContainer.setOnClickListener(this);
         mAccountSelectorButton.setOnClickListener(this);
-        mLocationContainer.setOnClickListener(this);
+        final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION);
+        final boolean attachPreciseLocation = mPreferences.getBoolean(KEY_ATTACH_PRECISE_LOCATION);
+        if (attachLocation) {
+            if (attachPreciseLocation) {
+                mLocationSwitch.setValue(LOCATION_VALUE_COORDINATE);
+            } else {
+                mLocationSwitch.setValue(LOCATION_VALUE_PLACE);
+            }
+        } else {
+            mLocationSwitch.setValue(LOCATION_VALUE_NONE);
+        }
+        mLocationSwitch.setOnCheckedChangeListener(new MultiValueSwitch.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChange(int position) {
+                final String value = String.valueOf(mLocationSwitch.getValue());
+                boolean attachLocation = false, attachPreciseLocation = false;
+                switch (value) {
+                    case LOCATION_VALUE_COORDINATE: {
+                        attachLocation = true;
+                        attachPreciseLocation = true;
+                        break;
+                    }
+                    case LOCATION_VALUE_PLACE: {
+                        attachLocation = true;
+                        attachPreciseLocation = false;
+                        break;
+                    }
+                }
+                SharedPreferences.Editor editor = mPreferences.edit();
+                editor.putBoolean(KEY_ATTACH_LOCATION, attachLocation);
+                editor.putBoolean(KEY_ATTACH_PRECISE_LOCATION, attachPreciseLocation);
+                editor.apply();
+                if (attachLocation) {
+                    requestOrUpdateLocation();
+                } else if (mLocationListener != null) {
+                    try {
+                        mLocationManager.removeUpdates(mLocationListener);
+                        mLocationListener = null;
+                    } catch (SecurityException e) {
+                        //Ignore
+                    }
+                }
+                updateLocationState();
+                setMenu();
+                updateTextCount();
+            }
+        });
 
         final LinearLayoutManager linearLayoutManager = new FixedLinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -1222,12 +1272,25 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
             }
         } else {
             Toast.makeText(this, R.string.cannot_get_location, Toast.LENGTH_SHORT).show();
+            final SharedPreferences.Editor editor = mPreferences.edit();
+            editor.putBoolean(KEY_ATTACH_LOCATION, false);
+            editor.putBoolean(KEY_ATTACH_PRECISE_LOCATION, false);
+            editor.apply();
+            mLocationSwitch.setValue(LOCATION_VALUE_NONE);
         }
     }
 
     private void setRecentLocation(ParcelableLocation location) {
         if (location != null) {
-            mLocationText.setText(ParcelableLocationUtils.getHumanReadableString(location, 3));
+            final boolean attachPreciseLocation = mPreferences.getBoolean(KEY_ATTACH_PRECISE_LOCATION);
+            if (attachPreciseLocation) {
+                mLocationText.setText(ParcelableLocationUtils.getHumanReadableString(location, 3));
+            } else {
+                DisplayPlaceNameTask task = new DisplayPlaceNameTask(this);
+                task.setParams(location);
+                task.setResultHandler(mLocationText);
+                TaskStarter.execute(task);
+            }
         } else {
             mLocationText.setText(R.string.unknown_location);
         }
@@ -1268,19 +1331,6 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         return true;
     }
 
-    private void toggleLocation() throws SecurityException {
-        final boolean attachLocation = !mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
-        mPreferences.edit().putBoolean(KEY_ATTACH_LOCATION, attachLocation).apply();
-        if (!attachLocation && mLocationListener != null) {
-            mLocationManager.removeUpdates(mLocationListener);
-            mLocationListener = null;
-        }
-        requestOrUpdateLocation();
-        updateLocationState();
-        setMenu();
-        updateTextCount();
-    }
-
     private void requestOrUpdateLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -1293,10 +1343,14 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
     }
 
     private void updateLocationState() {
-        final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
+        final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION);
         mLocationIcon.setActivated(attachLocation);
         if (!attachLocation) {
             mLocationText.setText(R.string.no_location);
+        } else if (mRecentLocation != null) {
+            setRecentLocation(mRecentLocation);
+        } else {
+            mLocationText.setText(R.string.getting_location);
         }
     }
 
@@ -1317,9 +1371,9 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
             mEditText.setSelection(textLength - (tweetLength - maxLength), textLength);
             return;
         }
-        final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION, false);
+        final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION);
+        final boolean attachPreciseLocation = mPreferences.getBoolean(KEY_ATTACH_PRECISE_LOCATION);
         final UserKey[] accountKeys = mAccountsAdapter.getSelectedAccountKeys();
-        final ParcelableLocation statusLocation = attachLocation ? mRecentLocation : null;
         final boolean isPossiblySensitive = hasMedia && mIsPossiblySensitive;
         final ParcelableStatusUpdate update = new ParcelableStatusUpdate();
         @Draft.Action String action;
@@ -1330,7 +1384,10 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         }
         update.accounts = ParcelableAccountUtils.getAccounts(this, accountKeys);
         update.text = text;
-        update.location = statusLocation;
+        if (attachLocation) {
+            update.location = mRecentLocation;
+            update.display_coordinates = attachPreciseLocation;
+        }
         update.media = getMedia();
         update.in_reply_to_status = mInReplyToStatus;
         update.is_possibly_sensitive = isPossiblySensitive;
@@ -1762,6 +1819,51 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         }
     }
 
+    static class DisplayPlaceNameTask extends AbstractTask<ParcelableLocation, List<Address>, TextView> {
+
+        private final ComposeActivity context;
+
+        DisplayPlaceNameTask(ComposeActivity context) {
+            this.context = context;
+        }
+
+        @Override
+        protected List<Address> doLongOperation(ParcelableLocation location) {
+            Geocoder gcd = new Geocoder(context, Locale.getDefault());
+            try {
+                return gcd.getFromLocation(location.latitude, location.longitude, 1);
+            } catch (IOException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void beforeExecute(ParcelableLocation location) {
+            final TextView textView = getCallback();
+            if (textView != null) {
+                textView.setText(R.string.getting_location);
+            }
+        }
+
+        @Override
+        protected void afterExecute(TextView textView, ParcelableLocation location, List<Address> addresses) {
+            final SharedPreferencesWrapper preferences = context.mPreferences;
+            final boolean attachLocation = preferences.getBoolean(KEY_ATTACH_LOCATION);
+            final boolean attachPreciseLocation = preferences.getBoolean(KEY_ATTACH_PRECISE_LOCATION);
+            if (attachLocation) {
+                if (attachPreciseLocation) {
+                    textView.setText(ParcelableLocationUtils.getHumanReadableString(location, 3));
+                } else if (addresses == null || addresses.isEmpty()) {
+                    textView.setText(R.string.your_coarse_location);
+                } else {
+                    textView.setText(addresses.get(0).getLocality());
+                }
+            } else {
+                textView.setText(R.string.no_location);
+            }
+        }
+    }
+
     static class MediaPreviewAdapter extends ArrayRecyclerAdapter<ParcelableMediaUpdate, MediaPreviewViewHolder>
             implements SimpleItemTouchHelperCallback.ItemTouchHelperAdapter {
 
@@ -1901,29 +2003,6 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
             builder.setPositiveButton(R.string.send_anyway, this);
             builder.setNegativeButton(android.R.string.cancel, null);
             return builder.create();
-        }
-    }
-
-    static class SpacingItemDecoration extends ItemDecoration {
-
-        final int mSpacingSmall, mSpacingNormal;
-
-        SpacingItemDecoration(Context context) {
-            final Resources resources = context.getResources();
-            mSpacingSmall = resources.getDimensionPixelSize(R.dimen.element_spacing_small);
-            mSpacingNormal = resources.getDimensionPixelSize(R.dimen.element_spacing_normal);
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, State state) {
-            final int pos = parent.getChildAdapterPosition(view);
-            if (pos == 0) {
-                outRect.set(0, mSpacingNormal, 0, 0);
-            } else if (pos == parent.getAdapter().getItemCount() - 1) {
-                outRect.set(0, 0, 0, mSpacingNormal);
-            } else {
-                outRect.set(0, 0, 0, 0);
-            }
         }
     }
 

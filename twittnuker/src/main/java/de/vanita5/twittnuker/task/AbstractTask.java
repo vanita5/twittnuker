@@ -23,7 +23,10 @@
 package de.vanita5.twittnuker.task;
 
 import android.support.annotation.MainThread;
+import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Abstract Task class can be used with different implementations
@@ -31,7 +34,7 @@ import android.support.annotation.WorkerThread;
 public abstract class AbstractTask<Params, Result, Callback> {
 
     private Params mParams;
-    private Callback mCallback;
+    private WeakReference<Callback> mCallbackRef;
 
     @WorkerThread
     protected abstract Result doLongOperation(Params params);
@@ -56,17 +59,24 @@ public abstract class AbstractTask<Params, Result, Callback> {
     }
 
     public AbstractTask<Params, Result, Callback> setResultHandler(Callback callback) {
-        mCallback = callback;
+        mCallbackRef = new WeakReference<>(callback);
         return this;
     }
 
     @MainThread
     public void invokeAfterExecute(Result result) {
-        if (mCallback != null) {
-            afterExecute(mCallback, mParams, result);
+        Callback callback = getCallback();
+        if (callback != null) {
+            afterExecute(callback, mParams, result);
         } else {
             afterExecute(mParams, result);
         }
+    }
+
+    @Nullable
+    protected Callback getCallback() {
+        if (mCallbackRef == null) return null;
+        return mCallbackRef.get();
     }
 
     public Result invokeExecute() {

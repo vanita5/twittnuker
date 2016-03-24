@@ -78,6 +78,7 @@ import de.vanita5.twittnuker.util.theme.TimelineContentTextViewViewProcessor;
 import de.vanita5.twittnuker.view.ExtendedSwipeRefreshLayout;
 import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
+import de.vanita5.twittnuker.view.ThemedMultiValueSwitch;
 import de.vanita5.twittnuker.view.TimelineContentTextView;
 
 public class TwittnukerApplication extends Application implements Constants,
@@ -153,6 +154,7 @@ public class TwittnukerApplication extends Application implements Constants,
                 new IconActionButtonTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_ACTIVATED));
         ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_DISABLED,
                 new IconActionButtonTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_DISABLED));
+        ATE.registerTagProcessor(ThemedMultiValueSwitch.PREFIX_TINT, new ThemedMultiValueSwitch.TintTagProcessor());
         final SharedPreferences preferences = getSharedPreferences();
 
 

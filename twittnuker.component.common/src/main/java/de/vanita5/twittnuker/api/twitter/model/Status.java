@@ -158,6 +158,11 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
      */
     @JsonField(name = "photo")
     Photo photo;
+    /**
+     * For Fanfou
+     */
+    @JsonField(name = "location")
+    String location;
 
     private transient long sortId = -1;
 
@@ -330,7 +335,6 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
         return entities.getUserMentions();
     }
 
-
     /**
      * An collection of brief user objects (usually only one) indicating users who contributed to
      * the authorship of the tweet, on behalf of the official tweet author.
@@ -350,14 +354,6 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
 
     public Attention[] getAttentions() {
         return attentions;
-    }
-
-    @Override
-    public int compareTo(@NonNull final Status that) {
-        final long diff = getSortId() - that.getSortId();
-        if (diff > Integer.MAX_VALUE) return Integer.MAX_VALUE;
-        if (diff < Integer.MIN_VALUE) return Integer.MIN_VALUE;
-        return (int) diff;
     }
 
     public String getLang() {
@@ -384,6 +380,18 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
 
     public Photo getPhoto() {
         return photo;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    @Override
+    public int compareTo(@NonNull final Status that) {
+        final long diff = getSortId() - that.getSortId();
+        if (diff > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        if (diff < Integer.MIN_VALUE) return Integer.MIN_VALUE;
+        return (int) diff;
     }
 
     @Override

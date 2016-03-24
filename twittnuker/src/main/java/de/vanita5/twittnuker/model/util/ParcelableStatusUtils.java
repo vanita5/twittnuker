@@ -111,7 +111,7 @@ public class ParcelableStatusUtils {
             result.quoted_source = quoted.getSource();
             result.quoted_media = ParcelableMediaUtils.fromStatus(quoted);
             result.quoted_location = ParcelableLocationUtils.fromGeoLocation(quoted.getGeoLocation());
-            result.quoted_place_full_name = getPlaceFullName(quoted.getPlace());
+            result.quoted_place_full_name = getPlaceFullName(quoted);
 
             result.quoted_user_key = UserKeyUtils.fromUser(quotedUser);
             result.quoted_user_name = quotedUser.getName();
@@ -188,7 +188,7 @@ public class ParcelableStatusUtils {
         result.mentions = ParcelableUserMentionUtils.fromUserMentionEntities(user,
                 status.getUserMentionEntities());
         result.card = ParcelableCardEntityUtils.fromCardEntity(status.getCard(), accountKey);
-        result.place_full_name = getPlaceFullName(status.getPlace());
+        result.place_full_name = getPlaceFullName(status);
         result.card_name = result.card != null ? result.card.name : null;
         result.lang = status.getLang();
         return result;
@@ -230,8 +230,9 @@ public class ParcelableStatusUtils {
     }
 
     @Nullable
-    private static String getPlaceFullName(@Nullable Place place) {
-        if (place == null) return null;
+    private static String getPlaceFullName(@NonNull Status status) {
+        Place place = status.getPlace();
+        if (place == null) return status.getLocation();
         return place.getFullName();
     }
 
