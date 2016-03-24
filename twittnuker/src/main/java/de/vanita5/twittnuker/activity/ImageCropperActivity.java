@@ -71,16 +71,6 @@ public class ImageCropperActivity extends CropImageActivity implements IThemedAc
     }
 
     @Override
-    public int getCurrentThemeColor() {
-        return mCurrentThemeColor;
-    }
-
-    @Override
-    public int getCurrentActionBarColor() {
-        return mCurrentActionBarColor;
-    }
-
-    @Override
     public int getThemeBackgroundAlpha() {
         return ThemeUtils.getUserThemeBackgroundAlpha(this);
     }

@@ -90,8 +90,9 @@ import com.afollestad.appthemeengine.util.ATEUtil;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.mariotaku.abstask.library.AbstractTask;
+import org.mariotaku.abstask.library.TaskStarter;
 import org.mariotaku.sqliteqb.library.Expression;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.AccountSelectorActivity;
@@ -132,8 +133,6 @@ import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import org.mariotaku.abstask.library.AbstractTask;
-import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
@@ -566,7 +565,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         } else if (user.link_color != 0) {
             setUiColor(user.link_color);
         } else if (activity instanceof IThemedActivity) {
-            setUiColor(((IThemedActivity) activity).getCurrentThemeColor());
         }
         final int defWidth = resources.getDisplayMetrics().widthPixels;
         final int width = mBannerWidth > 0 ? mBannerWidth : defWidth;
@@ -844,11 +842,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
         setupBaseActionBar();
         setupUserPages();
-
-        if (activity instanceof IThemedActivity) {
-            ViewSupport.setBackground(mPagerOverlay, ThemeUtils.getNormalWindowContentOverlay(activity));
-            setUiColor(((IThemedActivity) activity).getCurrentThemeColor());
-        }
 
         getUserInfo(accountId, userId, screenName, false);
     }

@@ -105,6 +105,8 @@ import com.twitter.Extractor;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.mariotaku.abstask.library.AbstractTask;
+import org.mariotaku.abstask.library.TaskStarter;
 import org.mariotaku.multivalueswitch.library.MultiValueSwitch;
 import org.mariotaku.restfu.RestFuUtils;
 
@@ -134,8 +136,6 @@ import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
-import org.mariotaku.abstask.library.AbstractTask;
-import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.text.MarkForDeleteSpan;
 import de.vanita5.twittnuker.text.style.EmojiSpan;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
@@ -1714,12 +1714,13 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
             final ComposeActivity activity = mActivityRef.get();
             if (activity == null) return;
             activity.setProgressVisible(false);
-            activity.addMedia(new ParcelableMediaUpdate(dst.toString(), mMediaType));
-            activity.setMenu();
-            activity.updateTextCount();
-            if (!result) {
+            if (result) {
+                activity.addMedia(new ParcelableMediaUpdate(dst.toString(), mMediaType));
+            } else {
                 Toast.makeText(activity, R.string.error_occurred, Toast.LENGTH_SHORT).show();
             }
+            activity.setMenu();
+            activity.updateTextCount();
         }
 
         @Override

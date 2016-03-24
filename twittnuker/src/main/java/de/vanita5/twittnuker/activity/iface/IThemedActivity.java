@@ -28,10 +28,6 @@ public interface IThemedActivity {
 
     String getCurrentThemeBackgroundOption();
 
-    int getCurrentThemeColor();
-
-    int getCurrentActionBarColor();
-
     int getThemeBackgroundAlpha();
 
     String getThemeBackgroundOption();

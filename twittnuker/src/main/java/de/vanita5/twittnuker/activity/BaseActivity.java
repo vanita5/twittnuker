@@ -109,7 +109,6 @@ public class BaseActivity extends ATEActivity implements Constants, IExtendedAct
     private Rect mSystemWindowsInsets;
     private int mKeyMetaState;
     // Data fields
-    private int mCurrentThemeColor, mCurrentActionBarColor;
     private int mCurrentThemeBackgroundAlpha;
     private String mCurrentThemeBackgroundOption;
 
@@ -255,16 +254,6 @@ public class BaseActivity extends ATEActivity implements Constants, IExtendedAct
     @Override
     public String getCurrentThemeBackgroundOption() {
         return mCurrentThemeBackgroundOption;
-    }
-
-    @Override
-    public int getCurrentThemeColor() {
-        return mCurrentThemeColor;
-    }
-
-    @Override
-    public int getCurrentActionBarColor() {
-        return mCurrentActionBarColor;
     }
 
     @Override

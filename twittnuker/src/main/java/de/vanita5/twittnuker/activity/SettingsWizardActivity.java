@@ -45,6 +45,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
+import com.afollestad.appthemeengine.Config;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import de.vanita5.twittnuker.Constants;
@@ -174,7 +175,7 @@ public class SettingsWizardActivity extends BaseActivity implements Constants {
         mViewPager.setAdapter(mAdapter);
         mViewPager.setEnabled(false);
         mIndicator.setViewPager(mViewPager);
-        mIndicator.setSelectedColor(getCurrentThemeColor());
+        mIndicator.setSelectedColor(Config.accentColor(this, getATEKey()));
         initPages();
         final int initialPage = getIntent().getIntExtra(EXTRA_PAGE, -1);
         if (initialPage != -1) {
