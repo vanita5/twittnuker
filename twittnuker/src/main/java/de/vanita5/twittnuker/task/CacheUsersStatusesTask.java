@@ -28,6 +28,7 @@ import android.content.Context;
 
 import com.twitter.Extractor;
 
+import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.model.UserKey;

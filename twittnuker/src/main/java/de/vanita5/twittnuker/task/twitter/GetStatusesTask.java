@@ -55,9 +55,9 @@ import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-import de.vanita5.twittnuker.task.AbstractTask;
+import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
-import de.vanita5.twittnuker.task.util.TaskStarter;
+import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
@@ -103,7 +103,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
 
 
     @Override
-    public void afterExecute(RefreshTaskParam params, List<TwitterWrapper.StatusListResponse> result) {
+    public void afterExecute(List<TwitterWrapper.StatusListResponse> result) {
         bus.post(new GetStatusesTaskEvent(getContentUri(), false, AsyncTwitterWrapper.getException(result)));
     }
 

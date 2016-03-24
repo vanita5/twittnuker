@@ -30,7 +30,7 @@ import android.util.Log;
 import com.squareup.otto.Bus;
 
 import org.apache.commons.lang3.math.NumberUtils;
-
+import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
@@ -40,8 +40,8 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;

@@ -93,7 +93,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
-import de.vanita5.twittnuker.task.AbstractTask;
+import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.task.AcceptFriendshipTask;
 import de.vanita5.twittnuker.task.CreateFriendshipTask;
 import de.vanita5.twittnuker.task.CreateUserBlockTask;
@@ -110,7 +110,7 @@ import de.vanita5.twittnuker.task.GetSavedSearchesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.task.ReportSpamAndBlockTask;
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
-import de.vanita5.twittnuker.task.util.TaskStarter;
+import org.mariotaku.abstask.library.TaskStarter;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -502,7 +502,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             }
 
             @Override
-            public void afterExecute(Bus handler, Object params, SingleResponse<Relationship> result) {
+            public void afterExecute(Bus handler, SingleResponse<Relationship> result) {
                 if (result.hasData()) {
                     handler.post(new FriendshipUpdatedEvent(accountKey, userId, result.getData()));
                 } else if (result.hasException()) {

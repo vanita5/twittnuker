@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
-import de.vanita5.twittnuker.task.AbstractTask;
+import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
@@ -213,7 +213,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
             throws TwitterException;
 
     @Override
-    public void afterExecute(RefreshTaskParam params, Object result) {
+    public void afterExecute(Object result) {
         bus.post(new GetActivitiesTaskEvent(getContentUri(), false, null));
     }
 

@@ -134,8 +134,8 @@ import de.vanita5.twittnuker.model.util.ParcelableLocationUtils;
 import de.vanita5.twittnuker.preference.ServicePickerPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
-import de.vanita5.twittnuker.task.AbstractTask;
-import de.vanita5.twittnuker.task.util.TaskStarter;
+import org.mariotaku.abstask.library.AbstractTask;
+import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.text.MarkForDeleteSpan;
 import de.vanita5.twittnuker.text.style.EmojiSpan;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
@@ -1846,13 +1846,13 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         }
 
         @Override
-        protected void afterExecute(TextView textView, ParcelableLocation location, List<Address> addresses) {
+        protected void afterExecute(TextView textView, List<Address> addresses) {
             final SharedPreferencesWrapper preferences = context.mPreferences;
             final boolean attachLocation = preferences.getBoolean(KEY_ATTACH_LOCATION);
             final boolean attachPreciseLocation = preferences.getBoolean(KEY_ATTACH_PRECISE_LOCATION);
             if (attachLocation) {
                 if (attachPreciseLocation) {
-                    textView.setText(ParcelableLocationUtils.getHumanReadableString(location, 3));
+                    textView.setText(ParcelableLocationUtils.getHumanReadableString(getParams(), 3));
                 } else if (addresses == null || addresses.isEmpty()) {
                     textView.setText(R.string.your_coarse_location);
                 } else {

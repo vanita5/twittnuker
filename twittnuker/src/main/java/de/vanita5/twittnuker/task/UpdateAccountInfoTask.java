@@ -31,6 +31,7 @@ import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
 import android.util.Pair;
 
+import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableUser;

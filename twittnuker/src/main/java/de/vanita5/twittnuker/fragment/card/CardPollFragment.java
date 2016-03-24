@@ -58,8 +58,8 @@ import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils;
-import de.vanita5.twittnuker.task.AbstractTask;
-import de.vanita5.twittnuker.task.util.TaskStarter;
+import org.mariotaku.abstask.library.AbstractTask;
+import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 
@@ -169,7 +169,7 @@ public class CardPollFragment extends BaseSupportFragment implements
                                 = new AbstractTask<CardDataMap, ParcelableCardEntity, CardPollFragment>() {
 
                             @Override
-                            public void afterExecute(CardPollFragment handler, CardDataMap params, ParcelableCardEntity result) {
+                            public void afterExecute(CardPollFragment handler, ParcelableCardEntity result) {
                                 handler.displayAndReloadPoll(result, status);
                             }
 
