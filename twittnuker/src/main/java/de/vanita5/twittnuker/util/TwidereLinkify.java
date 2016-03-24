@@ -261,6 +261,7 @@ public final class TwidereLinkify implements Constants {
                 break;
             }
             case LINK_TYPE_STATUS: {
+                if (!USER_TYPE_TWITTER_COM.equals(accountKey.getHost())) break;
                 final int length = string.length();
                 final URLSpan[] spans = string.getSpans(0, length, URLSpan.class);
                 for (final URLSpan span : spans) {
