@@ -772,6 +772,7 @@
     <string name="new_document_api">New Document API</string>
     <string name="new_document_api_summary">Öffne Profile und Medien in neuen Tasks</string>
     <string name="drawer_toggle">Menu Button</string>
+    <string name="group">Gruppe</string>
 
 
     <!-- Twittnuker -->

@@ -48,6 +48,7 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.SensitiveContentWarningDialogFragment;
 import de.vanita5.twittnuker.fragment.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
+import de.vanita5.twittnuker.model.ParcelableGroup;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -547,6 +548,21 @@ public class IntentUtils implements Constants {
         builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, String.valueOf(userList.account_key));
         builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
         builder.appendQueryParameter(QUERY_PARAM_LIST_ID, String.valueOf(listId));
+        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
+        intent.setExtrasClassLoader(context.getClassLoader());
+        intent.putExtras(extras);
+        context.startActivity(intent);
+    }
+
+    public static void openGroupDetails(@NonNull final Context context, @NonNull final ParcelableGroup group) {
+        final Bundle extras = new Bundle();
+        extras.putParcelable(EXTRA_GROUP, group);
+        final Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME_TWITTNUKER);
+        builder.authority(AUTHORITY_GROUP);
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, group.account_key.toString());
+        builder.appendQueryParameter(QUERY_PARAM_GROUP_ID, group.id);
+        builder.appendQueryParameter(QUERY_PARAM_GROUP_NAME, group.nickname);
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         intent.setExtrasClassLoader(context.getClassLoader());
         intent.putExtras(extras);

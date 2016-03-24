@@ -36,10 +36,10 @@ import android.view.KeyEvent;
 import de.vanita5.twittnuker.adapter.ParcelableGroupsAdapter;
 import de.vanita5.twittnuker.adapter.iface.IGroupsAdapter.GroupAdapterListener;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
-import de.vanita5.twittnuker.fragment.AbsContentListRecyclerViewFragment;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableGroup;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
@@ -165,7 +165,7 @@ public abstract class ParcelableGroupsFragment extends AbsContentListRecyclerVie
 
     @Override
     public void onGroupClick(GroupViewHolder holder, int position) {
-
+        IntentUtils.openGroupDetails(getContext(), getAdapter().getGroup(position));
     }
 
     @Override

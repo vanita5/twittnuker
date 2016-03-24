@@ -24,21 +24,24 @@ package de.vanita5.twittnuker.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.content.Loader;
+import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.loader.UserGroupsLoader;
-import de.vanita5.twittnuker.model.ParcelableGroup;
+import de.vanita5.twittnuker.loader.CursorSupportUsersLoader;
+import de.vanita5.twittnuker.loader.GroupMembersLoader;
 import de.vanita5.twittnuker.model.UserKey;
 
-import java.util.List;
+public class GroupMembersFragment extends CursorSupportUsersListFragment {
 
-public class UserGroupsFragment extends ParcelableGroupsFragment {
     @Override
-    protected Loader<List<ParcelableGroup>> onCreateUserListsLoader(Context context, Bundle args, boolean fromUser) {
-        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
-        final String userId = args.getString(EXTRA_USER_ID);
-        final String screenName = args.getString(EXTRA_SCREEN_NAME);
-        return new UserGroupsLoader(context, accountKey, userId, screenName, getData());
+    public CursorSupportUsersLoader onCreateUsersLoader(final Context context,
+                                                        @NonNull final Bundle args, boolean fromUser) {
+        final UserKey accountId = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        final String groupId = args.getString(EXTRA_GROUP_ID);
+        final String groupName = args.getString(EXTRA_GROUP_NAME);
+        final GroupMembersLoader loader = new GroupMembersLoader(context, accountId, groupId,
+                groupName, getData(), fromUser);
+        loader.setCursor(getNextCursor());
+        loader.setPage(getNextPage());
+        return loader;
     }
-
 }
