@@ -419,6 +419,7 @@ public abstract class AbsStatusesFragment extends AbsContentListRecyclerViewFrag
         return new StatusesBusCallback();
     }
 
+    @NonNull
     protected abstract UserKey[] getAccountKeys();
 
     protected List<ParcelableStatus> getAdapterData() {
