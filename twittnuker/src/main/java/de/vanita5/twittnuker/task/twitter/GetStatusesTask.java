@@ -72,6 +72,7 @@ import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -114,6 +115,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
 
     @Override
     public List<TwitterWrapper.StatusListResponse> doLongOperation(final RefreshTaskParam param) {
+        if (param.shouldAbort()) return Collections.emptyList();
         final UserKey[] accountKeys = param.getAccountKeys();
         final String[] maxIds = param.getMaxIds();
         final String[] sinceIds = param.getSinceIds();
