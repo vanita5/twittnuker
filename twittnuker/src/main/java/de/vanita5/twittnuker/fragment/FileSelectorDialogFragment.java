@@ -47,7 +47,6 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
-import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.iface.ISupportDialogFragmentCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
@@ -236,6 +235,7 @@ public class FileSelectorDialogFragment extends BaseSupportDialogFragment implem
             text.setPadding(mPadding, mPadding, position, mPadding);
             final Drawable icon = ResourcesCompat.getDrawable(mResources,
                     file.isDirectory() ? R.drawable.ic_folder : R.drawable.ic_file, null);
+            assert icon != null;
             icon.mutate();
             icon.setColorFilter(mActionIconColor, PorterDuff.Mode.SRC_ATOP);
             text.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);

@@ -187,6 +187,7 @@ public class ScalableDrawable extends Drawable implements Drawable.Callback {
             mScale = state.getScale();
         }
 
+        @NonNull
         @Override
         public Drawable newDrawable() {
             return new ScalableDrawable(this);

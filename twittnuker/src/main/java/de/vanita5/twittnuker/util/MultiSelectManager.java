@@ -23,9 +23,9 @@
 package de.vanita5.twittnuker.util;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +67,7 @@ public class MultiSelectManager implements Constants {
         return mSelectedItems.contains(object);
     }
 
-    public boolean isStatusSelected(final long statusId) {
+    public boolean isStatusSelected(final String statusId) {
         return mSelectedStatusIds.contains(statusId);
     }
 

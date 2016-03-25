@@ -26,6 +26,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
 
@@ -86,6 +87,7 @@ public class CircleLayerDrawable extends AnimationLayerDrawable {
             mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         }
 
+        @NonNull
         @Override
         public Drawable newDrawable() {
             return new CircleLayerDrawable(mIntrinsicWidth, mIntrinsicHeight, mPalette);

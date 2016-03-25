@@ -240,7 +240,7 @@ public class ThemeUtils implements Constants {
         if (!context.getTheme().resolveAttribute(attr, outValue, true))
             return def;
         if (outValue.type == TypedValue.TYPE_REFERENCE)
-            return context.getResources().getColor(attr);
+            return ContextCompat.getColor(context, attr);
         return outValue.data;
     }
 
