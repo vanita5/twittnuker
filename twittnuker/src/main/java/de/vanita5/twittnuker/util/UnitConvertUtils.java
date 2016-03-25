@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.util;
 
+import java.util.Locale;
+
 public class UnitConvertUtils {
 
     public static final String[] fileSizeUnits = {"bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB",
@@ -38,7 +40,7 @@ public class UnitConvertUtils {
             }
             value = value / 1024;
         }
-        return String.format("%.2f %s", value, fileSizeUnits[index]);
+        return String.format(Locale.getDefault(), "%.2f %s", value, fileSizeUnits[index]);
     }
 
     public static String calculateProperCount(long count) {
@@ -53,6 +55,10 @@ public class UnitConvertUtils {
             }
             value = value / 1000.0;
         }
-        return String.format("%.2f %s", value, countUnits[index]);
+        if (value < 10) {
+            return String.format(Locale.getDefault(), "%.1f %s", value, countUnits[index]);
+        } else {
+            return String.format(Locale.getDefault(), "%.0f %s", value, countUnits[index]);
+        }
     }
 }

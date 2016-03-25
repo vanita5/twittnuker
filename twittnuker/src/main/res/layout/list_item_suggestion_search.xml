@@ -21,20 +21,21 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/element_size_normal"
+    android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
     android:gravity="center_vertical"
     android:minHeight="?android:listPreferredItemHeightSmall"
     android:orientation="horizontal"
     android:padding="@dimen/element_spacing_small">
 
-    <de.vanita5.twittnuker.view.SquareIconActionButton
+    <de.vanita5.twittnuker.view.IconActionButton
         android:id="@android:id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/element_size_quick_search_bar_item_icon"
+        android:layout_height="@dimen/element_size_quick_search_bar_item_icon"
         android:layout_weight="0"
         android:background="@null"
         android:clickable="false"
@@ -42,7 +43,8 @@
         android:contentDescription="@string/icon"
         android:focusable="false"
         android:scaleType="centerInside"
-        tools:src="@drawable/ic_action_search"/>
+        tools:src="@drawable/ic_action_search"
+        tools:tint="?android:textColorSecondary"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -61,14 +63,15 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:textColorPrimary"
             tools:text="Mariotaku"/>
 
     </LinearLayout>
 
-    <de.vanita5.twittnuker.view.SquareIconActionButton
+    <de.vanita5.twittnuker.view.IconActionButton
         android:id="@+id/edit_query"
         android:layout_width="@dimen/element_size_normal"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/element_size_normal"
         android:layout_weight="0"
         android:background="?actionBarItemBackground"
         android:clickable="true"

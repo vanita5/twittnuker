@@ -218,6 +218,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
             activity.status_retweet_user_color = status.retweet_user_color;
             activity.status_quoted_user_color = status.quoted_user_color;
 
+        } else {
+            activity.account_color = credentials.color;
         }
         ParcelableActivityValuesCreator.writeTo(activity, values);
         return values;
