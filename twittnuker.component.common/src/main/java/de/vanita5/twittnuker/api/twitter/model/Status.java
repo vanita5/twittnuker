@@ -59,6 +59,9 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
     @JsonField(name = "text")
     String text;
 
+    @JsonField(name = "statusnet_html")
+    String statusnetHtml;
+
     @JsonField(name = "source")
     String source;
 
@@ -146,6 +149,12 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
     @JsonField(name = "external_url")
     String externalUrl;
 
+    /**
+     * For GNU social
+     */
+    @JsonField(name = "statusnet_conversation_id")
+    String statusnetConversationId;
+
 
     /**
      * For GNU social
@@ -194,10 +203,17 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
 
 
     public String getText() {
-
         return text;
     }
 
+    public String getHtmlText() {
+        if (statusnetHtml != null) return statusnetHtml;
+        return text;
+    }
+
+    public String getStatusnetHtml() {
+        return statusnetHtml;
+    }
 
     public String getSource() {
         return source;
@@ -350,6 +366,10 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
 
     public String getExternalUrl() {
         return externalUrl;
+    }
+
+    public String getStatusnetConversationId() {
+        return statusnetConversationId;
     }
 
     public Attention[] getAttentions() {

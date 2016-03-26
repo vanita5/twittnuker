@@ -28,9 +28,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
@@ -46,6 +43,9 @@ import de.vanita5.twittnuker.util.Nullables;
 import de.vanita5.twittnuker.util.ParcelUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConversationLoader extends TwitterAPIStatusesLoader {
 
@@ -85,7 +85,11 @@ public class ConversationLoader extends TwitterAPIStatusesLoader {
             }
             case ParcelableAccount.Type.STATUSNET: {
                 mCanLoadAllReplies = true;
-                return twitter.getStatusNetConversation(status.id, paging);
+                if (status.extras != null && status.extras.statusnet_conversation_id != null) {
+                    return twitter.getStatusNetConversation(status.extras.statusnet_conversation_id,
+                            paging);
+                }
+                return twitter.showConversation(status.id, paging);
             }
             case ParcelableAccount.Type.FANFOU: {
                 mCanLoadAllReplies = true;
