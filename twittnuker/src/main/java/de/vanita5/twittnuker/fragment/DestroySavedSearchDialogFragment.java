@@ -33,7 +33,6 @@ import android.support.v7.app.AlertDialog;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class DestroySavedSearchDialogFragment extends BaseSupportDialogFragment implements
         DialogInterface.OnClickListener {
@@ -58,8 +57,8 @@ public class DestroySavedSearchDialogFragment extends BaseSupportDialogFragment 
     @NonNull
     @Override
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
-        final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
-        final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+        final Context context = getActivity();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final String name = getSearchName();
         if (name != null) {
             builder.setTitle(getString(R.string.destroy_saved_search, name));

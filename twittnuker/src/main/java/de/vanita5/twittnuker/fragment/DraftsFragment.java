@@ -77,7 +77,6 @@ import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.JsonSerializer;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -331,7 +330,7 @@ public class DraftsFragment extends BaseSupportFragment implements Constants, Lo
         @NonNull
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
-            final Context context = ThemeUtils.getDialogThemedContext(getActivity());
+            final Context context = getActivity();
             final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(R.string.delete_drafts_confirm);
             builder.setPositiveButton(android.R.string.ok, this);

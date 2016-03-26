@@ -33,7 +33,6 @@ import android.support.v7.app.AlertDialog;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class DestroyStatusDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
 
@@ -56,8 +55,8 @@ public class DestroyStatusDialogFragment extends BaseSupportDialogFragment imple
     @NonNull
     @Override
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
-        final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
-        final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+        final Context context = getActivity();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.destroy_status);
         builder.setMessage(R.string.destroy_status_confirm_message);
         builder.setPositiveButton(android.R.string.ok, this);

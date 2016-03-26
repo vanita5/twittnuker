@@ -60,6 +60,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.mariotaku.restfu.http.Authorization;
@@ -100,7 +101,6 @@ import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.LoginVerificationEx
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.WrongUserPassException;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserAgentUtils;
@@ -622,8 +622,8 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
         @NonNull
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
-            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
-            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+            final Context context = getActivity();
+            final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(context);
             builder.setTitle(R.string.sign_in_method_introduction_title);
             builder.setMessage(R.string.sign_in_method_introduction);
             builder.setPositiveButton(android.R.string.ok, null);

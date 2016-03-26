@@ -67,7 +67,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
@@ -285,8 +284,8 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final FragmentActivity activity = getActivity();
-            final Context wrapped = ThemeUtils.getDialogThemedContext(activity);
-            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+            final Context context = activity;
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setView(R.layout.dialog_auto_complete_textview);
 
             builder.setTitle(R.string.add_rule);

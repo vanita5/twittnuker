@@ -56,7 +56,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
 import java.util.Map;
 
@@ -232,8 +231,8 @@ public class HostMappingsListFragment extends BaseListFragment implements MultiC
         @NonNull
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
-            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
-            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+            final Context context = getActivity();
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setView(R.layout.dialog_host_mapping);
             builder.setTitle(R.string.add_host_mapping);
             builder.setPositiveButton(android.R.string.ok, this);

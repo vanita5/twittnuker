@@ -75,7 +75,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Mentions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.IntentUtils;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereCollectionUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
@@ -354,8 +353,8 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
         @NonNull
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
-            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
-            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+            final Context context = getContext();
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setNegativeButton(android.R.string.cancel, null);
             builder.setPositiveButton(android.R.string.ok, this);
             builder.setTitle(R.string.account_delete_confirm_title);

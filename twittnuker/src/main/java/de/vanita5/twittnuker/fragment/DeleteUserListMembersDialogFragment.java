@@ -37,7 +37,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
 public class DeleteUserListMembersDialogFragment extends BaseSupportDialogFragment implements
         DialogInterface.OnClickListener {
@@ -63,8 +62,8 @@ public class DeleteUserListMembersDialogFragment extends BaseSupportDialogFragme
     @Override
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
         final FragmentActivity activity = getActivity();
-        final Context wrapped = ThemeUtils.getDialogThemedContext(activity);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+        final Context context = activity;
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final ParcelableUser[] users = getUsers();
         final ParcelableUserList userList = getUserList();
         if (users == null || userList == null) throw new NullPointerException();

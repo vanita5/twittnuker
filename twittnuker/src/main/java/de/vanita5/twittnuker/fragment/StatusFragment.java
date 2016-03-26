@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -85,6 +84,7 @@ import android.widget.ImageView;
 import android.widget.Space;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -848,8 +848,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
         @NonNull
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
-            final Context wrapped = ThemeUtils.getDialogThemedContext(getActivity());
-            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
+            final Context context = getActivity();
+            final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(context);
             builder.setTitle(android.R.string.dialog_alert_title);
             builder.setMessage(R.string.sensitive_content_warning);
             builder.setPositiveButton(android.R.string.ok, this);
