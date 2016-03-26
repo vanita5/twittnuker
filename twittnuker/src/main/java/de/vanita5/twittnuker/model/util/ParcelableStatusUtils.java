@@ -32,11 +32,13 @@ import android.text.TextUtils;
 import android.text.style.URLSpan;
 
 import de.vanita5.twittnuker.api.statusnet.model.Attention;
+import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
 import de.vanita5.twittnuker.api.twitter.model.Place;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SpanItem;
 import de.vanita5.twittnuker.model.UserKey;
@@ -110,7 +112,7 @@ public class ParcelableStatusUtils {
             result.quoted_timestamp = quoted.getCreatedAt().getTime();
             result.quoted_source = quoted.getSource();
             result.quoted_media = ParcelableMediaUtils.fromStatus(quoted);
-            result.quoted_location = ParcelableLocationUtils.fromGeoLocation(quoted.getGeoLocation());
+            result.quoted_location = getLocation(quoted);
             result.quoted_place_full_name = getPlaceFullName(quoted);
 
             result.quoted_user_key = UserKeyUtils.fromUser(quotedUser);
@@ -177,7 +179,7 @@ public class ParcelableStatusUtils {
         }
         result.media = ParcelableMediaUtils.fromStatus(status);
         result.source = status.getSource();
-        result.location = ParcelableLocationUtils.fromGeoLocation(status.getGeoLocation());
+        result.location = getLocation(status);
         result.is_favorite = status.isFavorited();
         if (result.account_key.maybeEquals(result.retweeted_by_user_key)) {
             result.my_retweet_id = result.id;
@@ -232,8 +234,26 @@ public class ParcelableStatusUtils {
     @Nullable
     private static String getPlaceFullName(@NonNull Status status) {
         Place place = status.getPlace();
-        if (place == null) return status.getLocation();
-        return place.getFullName();
+        if (place != null) return place.getFullName();
+        final String location = status.getLocation();
+        if (ParcelableLocation.valueOf(location) == null) {
+            return location;
+        }
+        return null;
+    }
+
+    @Nullable
+    private static ParcelableLocation getLocation(@NonNull Status status) {
+        GeoLocation geoLocation = status.getGeoLocation();
+        if (geoLocation != null) {
+            return ParcelableLocationUtils.fromGeoLocation(geoLocation);
+        }
+        final String locationString = status.getLocation();
+        final ParcelableLocation location = ParcelableLocation.valueOf(locationString);
+        if (location != null) {
+            return location;
+        }
+        return null;
     }
 
     private static long getTime(final Date date) {
@@ -276,9 +296,6 @@ public class ParcelableStatusUtils {
         }
         if (status.retweeted_by_user_key != null) {
             status.retweet_user_color = manager.getUserColor(status.retweeted_by_user_key);
-        }
-
-        if (status.in_reply_to_user_id != null) {
         }
     }
 }
