@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name" translatable="false">Twittnuker</string>
     <string name="theme_twidere" translatable="false">Twidere</string>
     <string name="developer_name" translatable="false">vanita5</string>
     <string name="twidere_project_account">Twidere Project</string>
