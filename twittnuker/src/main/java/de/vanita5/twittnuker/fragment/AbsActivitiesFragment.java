@@ -467,6 +467,13 @@ public abstract class AbsActivitiesFragment extends AbsContentListRecyclerViewFr
         if (mReadStateManager.setPosition(readPositionTag, activity.timestamp)) {
             mTwitterWrapper.setActivitiesAboutMeUnreadAsync(getAccountKeys(), activity.timestamp);
         }
+
+        for (UserKey accountKey : getAccountKeys()) {
+            final String tag = Utils.getReadPositionTagWithAccounts(getReadPositionTag(),
+                    accountKey);
+            mReadStateManager.setPosition(tag, activity.timestamp);
+        }
+
         mReadStateManager.setPosition(getCurrentReadPositionTag(), activity.timestamp, true);
     }
 

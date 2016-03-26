@@ -105,6 +105,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
 
     @Override
     public void afterExecute(List<TwitterWrapper.StatusListResponse> result) {
+        context.getContentResolver().notifyChange(getContentUri(), null);
         bus.post(new GetStatusesTaskEvent(getContentUri(), false, AsyncTwitterWrapper.getException(result)));
     }
 
@@ -167,7 +168,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
                 final List<Status> statuses = getStatuses(twitter, paging);
                 InternalTwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
                 storeStatus(accountKey, credentials, statuses, sinceId, maxId, sinceSortId,
-                        maxSortId, loadItemLimit, true);
+                        maxSortId, loadItemLimit, false);
                 // TODO cache related data and preload
                 final CacheUsersStatusesTask cacheTask = new CacheUsersStatusesTask(context);
                 cacheTask.setParams(new TwitterWrapper.StatusListResponse(accountKey, statuses));
@@ -267,7 +268,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
             final String noGapWhere = Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_KEY),
                     Expression.equalsArgs(Statuses.STATUS_ID)).getSQL();
             final String[] noGapWhereArgs = {accountKey.toString(), maxId};
-            resolver.update(getContentUri(), noGapValues, noGapWhere, noGapWhereArgs);
+            resolver.update(insertUri, noGapValues, noGapWhere, noGapWhereArgs);
         }
     }
 

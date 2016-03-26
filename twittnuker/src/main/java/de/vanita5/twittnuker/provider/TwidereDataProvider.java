@@ -1068,11 +1068,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         if (uri == null) return;
         switch (tableId) {
             case TABLE_ID_ACCOUNTS: {
-                DataStoreUtils.clearAccountColor();
                 DataStoreUtils.clearAccountName();
                 break;
             }
         }
+        if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return;
         notifyContentObserver(Utils.getNotificationUri(tableId, uri));
     }
 

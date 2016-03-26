@@ -32,6 +32,7 @@ import android.util.Log;
 
 import com.squareup.otto.Bus;
 
+import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -49,13 +50,13 @@ import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
-import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.UriUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
@@ -127,7 +128,8 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
             // We should delete old activities has intersection with new items
             try {
                 final ResponseList<Activity> activities = getActivities(twitter, credentials, paging);
-                storeActivities(cr, loadItemLimit, credentials, noItemsBefore, activities, sinceId, maxId);
+                storeActivities(cr, loadItemLimit, credentials, noItemsBefore, activities, sinceId,
+                        maxId, false);
                 if (saveReadPosition) {
                     saveReadPosition(accountKey,credentials, twitter);
                 }
@@ -153,7 +155,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
 
     private void storeActivities(ContentResolver cr, int loadItemLimit, ParcelableCredentials credentials,
                                  boolean noItemsBefore, ResponseList<Activity> activities,
-                                 final String sinceId, final String maxId) {
+                                 final String sinceId, final String maxId, boolean notify) {
         long[] deleteBound = new long[2];
         Arrays.fill(deleteBound, -1);
         List<ContentValues> valuesList = new ArrayList<>();
@@ -175,6 +177,8 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
             values.put(Activities.INSERTED_DATE, System.currentTimeMillis());
             valuesList.add(values);
         }
+        final Uri contentUri = UriUtils.appendQueryParameters(getContentUri(), QUERY_PARAM_NOTIFY,
+                notify);
         if (deleteBound[0] > 0 && deleteBound[1] > 0) {
             final Expression where = Expression.and(
                     Expression.equalsArgs(Activities.ACCOUNT_KEY),
@@ -183,7 +187,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
             );
             final String[] whereArgs = {credentials.account_key.toString(), String.valueOf(deleteBound[0]),
                     String.valueOf(deleteBound[1])};
-            int rowsDeleted = cr.delete(getContentUri(), where.getSQL(), whereArgs);
+            int rowsDeleted = cr.delete(contentUri, where.getSQL(), whereArgs);
             // Why loadItemLimit / 2? because it will not acting strange in most cases
             boolean insertGap = valuesList.size() >= loadItemLimit && !noItemsBefore
                     && rowsDeleted <= 0 && activities.size() > loadItemLimit / 2;
@@ -191,7 +195,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
                 valuesList.get(valuesList.size() - 1).put(Activities.IS_GAP, true);
             }
         }
-        ContentResolverUtils.bulkInsert(cr, getContentUri(), valuesList);
+        ContentResolverUtils.bulkInsert(cr, contentUri, valuesList);
 
         if (maxId != null && sinceId == null) {
             final ContentValues noGapValues = new ContentValues();
@@ -200,7 +204,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
                     Expression.equalsArgs(Activities.MIN_REQUEST_POSITION),
                     Expression.equalsArgs(Activities.MAX_REQUEST_POSITION)).getSQL();
             final String[] noGapWhereArgs = {credentials.toString(), maxId, maxId};
-            cr.update(getContentUri(), noGapValues, noGapWhere, noGapWhereArgs);
+            cr.update(contentUri, noGapValues, noGapWhere, noGapWhereArgs);
         }
     }
 
@@ -214,6 +218,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
 
     @Override
     public void afterExecute(Object result) {
+        context.getContentResolver().notifyChange(getContentUri(), null);
         bus.post(new GetActivitiesTaskEvent(getContentUri(), false, null));
     }
 
