@@ -40,7 +40,9 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.Utils;
 
 public class CreateUserBlockTask extends AbsFriendshipOperationTask {
@@ -68,12 +70,19 @@ public class CreateUserBlockTask extends AbsFriendshipOperationTask {
         Utils.setLastSeen(context, args.userKey, -1);
         for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
             final Expression where = Expression.and(
-                    Expression.equalsArgs(TwidereDataStore.AccountSupportColumns.ACCOUNT_KEY),
-                    Expression.equalsArgs(TwidereDataStore.Statuses.USER_KEY)
+                    Expression.equalsArgs(Statuses.ACCOUNT_KEY),
+                    Expression.equalsArgs(Statuses.USER_KEY)
             );
             final String[] whereArgs = {args.accountKey.toString(), args.userKey.toString()};
             resolver.delete(uri, where.getSQL(), whereArgs);
-
+        }
+        for (final Uri uri : TwidereDataStore.ACTIVITIES_URIS) {
+            final Expression where = Expression.and(
+                    Expression.equalsArgs(Activities.ACCOUNT_KEY),
+                    Expression.equalsArgs(Activities.STATUS_USER_KEY)
+            );
+            final String[] whereArgs = {args.accountKey.toString(), args.userKey.toString()};
+            resolver.delete(uri, where.getSQL(), whereArgs);
         }
         // I bet you don't want to see this user in your auto complete list.
         final ContentValues values = new ContentValues();
