@@ -70,6 +70,8 @@ import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
+import org.mariotaku.abstask.library.AbstractTask;
+import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
@@ -91,8 +93,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.RegistrationIntentService;
 import de.vanita5.twittnuker.service.StreamingService;
-import org.mariotaku.abstask.library.AbstractTask;
-import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
