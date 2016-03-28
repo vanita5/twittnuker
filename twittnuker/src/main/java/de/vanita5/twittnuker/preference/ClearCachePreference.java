@@ -26,10 +26,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import java.io.File;
-import java.io.FileFilter;
-
 import de.vanita5.twittnuker.R;
+
+import java.io.File;
 
 public class ClearCachePreference extends AsyncTaskPreference {
 
@@ -51,14 +50,20 @@ public class ClearCachePreference extends AsyncTaskPreference {
         if (context == null) return;
         final File externalCacheDir = context.getExternalCacheDir();
         if (externalCacheDir != null) {
-            for (final File file : externalCacheDir.listFiles((FileFilter) null)) {
-                deleteRecursive(file);
+            final File[] files = externalCacheDir.listFiles();
+            if (files != null) {
+                for (final File file : files) {
+                    deleteRecursive(file);
+                }
             }
         }
         final File internalCacheDir = context.getCacheDir();
         if (internalCacheDir != null) {
-            for (final File file : internalCacheDir.listFiles((FileFilter) null)) {
-                deleteRecursive(file);
+            final File[] files = internalCacheDir.listFiles();
+            if (files != null) {
+                for (final File file : files) {
+                    deleteRecursive(file);
+                }
             }
         }
     }
