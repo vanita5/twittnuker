@@ -27,6 +27,9 @@ import android.support.annotation.StringDef;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 @JsonObject
 public class ExtendedProfile {
 
@@ -84,9 +87,10 @@ public class ExtendedProfile {
         }
 
         @StringDef({Visibility.MUTUALFOLLOW, Visibility.PUBLIC})
+        @Retention(RetentionPolicy.SOURCE)
         public @interface Visibility {
-            String MUTUALFOLLOW = ("mutualfollow");
-            String PUBLIC = ("public");
+            String MUTUALFOLLOW = "mutualfollow";
+            String PUBLIC = "public";
 
         }
     }

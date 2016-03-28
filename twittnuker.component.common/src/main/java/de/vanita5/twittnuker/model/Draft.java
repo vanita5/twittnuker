@@ -100,7 +100,7 @@ public class Draft implements Parcelable {
     };
 
     @StringDef({Action.UPDATE_STATUS, Action.REPLY, Action.QUOTE, Action.SEND_DIRECT_MESSAGE})
-    @Retention(RetentionPolicy.CLASS)
+    @Retention(RetentionPolicy.SOURCE)
     public @interface Action {
 
         String UPDATE_STATUS = "update_status";

@@ -30,6 +30,8 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Date;
 
 @JsonObject
@@ -148,6 +150,7 @@ public class UserList extends TwitterResponseObject implements Comparable<UserLi
     }
 
     @StringDef({Mode.PRIVATE, Mode.PUBLIC})
+    @Retention(RetentionPolicy.SOURCE)
     public @interface Mode {
         String PUBLIC = "public";
         String PRIVATE = "private";

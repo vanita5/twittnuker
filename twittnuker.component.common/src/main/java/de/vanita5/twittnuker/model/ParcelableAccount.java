@@ -36,11 +36,13 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 import org.mariotaku.library.objectcursor.annotation.AfterCursorObjectCreated;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
-
 import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 @CursorObject(valuesCreator = true)
 @ParcelablePlease(allFields = false)
@@ -177,8 +179,8 @@ public class ParcelableAccount implements Parcelable {
     }
 
     @StringDef({Type.TWITTER, Type.STATUSNET, Type.FANFOU})
+    @Retention(RetentionPolicy.SOURCE)
     public @interface Type {
-
         String TWITTER = "twitter";
         String STATUSNET = "statusnet";
         String FANFOU = "fanfou";

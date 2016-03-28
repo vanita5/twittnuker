@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.util;
 import com.bluelinelabs.logansquare.JsonMapper;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.ParameterizedType;
-import com.bluelinelabs.logansquare.ParameterizedTypeAccessor;
+import com.bluelinelabs.logansquare.Twidere_ParameterizedTypeAccessor;
 
 import de.vanita5.twittnuker.common.BuildConfig;
 
@@ -43,11 +43,11 @@ public class LoganSquareMapperFinder {
     private static final ExecutorService pool = Executors.newSingleThreadExecutor();
 
     public static <T> JsonMapper<T> mapperFor(Class<T> cls) throws ClassLoaderDeadLockException {
-        return mapperFor(ParameterizedTypeAccessor.<T>create(cls));
+        return mapperFor(Twidere_ParameterizedTypeAccessor.<T>create(cls));
     }
 
     public static <T> JsonMapper<T> mapperFor(Type type) throws ClassLoaderDeadLockException {
-        return mapperFor(ParameterizedTypeAccessor.<T>create(type));
+        return mapperFor(Twidere_ParameterizedTypeAccessor.<T>create(type));
     }
 
     public static <T> JsonMapper<T> mapperFor(final ParameterizedType<T> type) throws ClassLoaderDeadLockException {

@@ -20,16 +20,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.annotation;
+package de.vanita5.twittnuker.model;
 
-import android.support.annotation.IntDef;
+import org.mariotaku.library.objectcursor.annotation.CursorField;
+import org.mariotaku.library.objectcursor.annotation.CursorObject;
+import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Entries;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+@CursorObject
+public class ParcelableMessageEntry {
 
-@IntDef({PreferenceType.BOOLEAN, PreferenceType.INT, PreferenceType.LONG, PreferenceType.FLOAT,
-        PreferenceType.STRING, PreferenceType.NULL, PreferenceType.INVALID})
-@Retention(RetentionPolicy.SOURCE)
-public @interface PreferenceType {
-    int BOOLEAN = 1, INT = 2, LONG = 3, FLOAT = 4, STRING = 5, NULL = 0, INVALID = -1;
+    @CursorField(value = Entries._ID, excludeWrite = true)
+    public long id;
+    @CursorField(value = Entries.ACCOUNT_KEY, converter = UserKeyCursorFieldConverter.class)
+    public UserKey account_key;
+    @CursorField(value = Entries.CONVERSATION_ID)
+    public String conversation_id;
+    @CursorField(value = Entries.UPDATED_AT)
+    public long updated_at;
+    @CursorField(value = Entries.TEXT_CONTENT)
+    public String text_content;
+
 }
