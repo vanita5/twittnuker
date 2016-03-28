@@ -22,20 +22,39 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 import android.util.Log;
 
+import com.bluelinelabs.logansquare.JsonMapper;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
+import org.mariotaku.library.objectcursor.ObjectCursor;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.annotation.Preference;
 import de.vanita5.twittnuker.annotation.PreferenceType;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
+import de.vanita5.twittnuker.model.FiltersData;
+import de.vanita5.twittnuker.model.FiltersData$BaseItemCursorIndices;
+import de.vanita5.twittnuker.model.FiltersData$BaseItemValuesCreator;
+import de.vanita5.twittnuker.model.FiltersData$UserItemCursorIndices;
+import de.vanita5.twittnuker.model.FiltersData$UserItemValuesCreator;
+import de.vanita5.twittnuker.model.Tab;
+import de.vanita5.twittnuker.model.TabCursorIndices;
+import de.vanita5.twittnuker.model.TabValuesCreator;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
+import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,7 +62,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -56,16 +77,18 @@ public class DataImportExportUtils implements Constants {
     public static final String ENTRY_HOST_MAPPING = "host_mapping.json";
     public static final String ENTRY_KEYBOARD_SHORTCUTS = "keyboard_shortcuts.json";
     public static final String ENTRY_FILTERS = "filters.json";
+    public static final String ENTRY_TABS = "tabs.json";
 
-    public static final int FLAG_PREFERENCES = 0x1;
-    public static final int FLAG_NICKNAMES = 0x2;
-    public static final int FLAG_USER_COLORS = 0x4;
-    public static final int FLAG_HOST_MAPPING = 0x8;
-    public static final int FLAG_KEYBOARD_SHORTCUTS = 0x10;
-    public static final int FLAG_FILTERS = 0x20;
-    public static final int FLAG_ALL = FLAG_PREFERENCES | FLAG_NICKNAMES | FLAG_USER_COLORS
-            | FLAG_HOST_MAPPING | FLAG_KEYBOARD_SHORTCUTS | FLAG_FILTERS;
+    public static final int FLAG_PREFERENCES = 0b1;
+    public static final int FLAG_USER_COLORS = 0b100;
+    public static final int FLAG_HOST_MAPPING = 0b1000;
+    public static final int FLAG_KEYBOARD_SHORTCUTS = 0b10000;
+    public static final int FLAG_FILTERS = 0b100000;
+    public static final int FLAG_TABS = 0b1000000;
+    public static final int FLAG_ALL = FLAG_PREFERENCES | FLAG_USER_COLORS
+            | FLAG_HOST_MAPPING | FLAG_KEYBOARD_SHORTCUTS | FLAG_FILTERS | FLAG_TABS;
 
+    @WorkerThread
     public static void exportData(final Context context, @NonNull final File dst, final int flags) throws IOException {
         dst.delete();
         final FileOutputStream fos = new FileOutputStream(dst);
@@ -83,6 +106,40 @@ public class DataImportExportUtils implements Constants {
             if (hasFlag(flags, FLAG_KEYBOARD_SHORTCUTS)) {
                 exportSharedPreferencesData(zos, context, KEYBOARD_SHORTCUTS_PREFERENCES_NAME, ENTRY_KEYBOARD_SHORTCUTS, ConvertToStringProcessStrategy.SINGLETON);
             }
+            if (hasFlag(flags, FLAG_FILTERS)) {
+                // TODO export filters
+                FiltersData data = new FiltersData();
+
+                final ContentResolver cr = context.getContentResolver();
+                data.setUsers(queryAll(cr, Filters.Users.CONTENT_URI, Filters.Users.COLUMNS,
+                        FiltersData$UserItemCursorIndices.class));
+                data.setKeywords(queryAll(cr, Filters.Keywords.CONTENT_URI, Filters.Keywords.COLUMNS,
+                        FiltersData$BaseItemCursorIndices.class));
+                data.setSources(queryAll(cr, Filters.Sources.CONTENT_URI, Filters.Sources.COLUMNS,
+                        FiltersData$BaseItemCursorIndices.class));
+                data.setLinks(queryAll(cr, Filters.Links.CONTENT_URI, Filters.Links.COLUMNS,
+                        FiltersData$BaseItemCursorIndices.class));
+                exportItem(zos, ENTRY_FILTERS, FiltersData.class, data);
+            }
+            if (hasFlag(flags, FLAG_TABS)) {
+                // TODO export tabs
+                final ContentResolver cr = context.getContentResolver();
+                final Cursor c = cr.query(Tabs.CONTENT_URI, Tabs.COLUMNS, null, null, null);
+                if (c != null) {
+                    final List<Tab> tabs = new ArrayList<>(c.getCount());
+                    try {
+                        TabCursorIndices ci = new TabCursorIndices(c);
+                        c.moveToFirst();
+                        while (!c.isAfterLast()) {
+                            tabs.add(ci.newObject(c));
+                            c.moveToNext();
+                        }
+                    } finally {
+                        c.close();
+                    }
+                    exportItemsList(zos, ENTRY_TABS, Tab.class, tabs);
+                }
+            }
             zos.finish();
             zos.flush();
         } finally {
@@ -91,6 +148,30 @@ public class DataImportExportUtils implements Constants {
         }
     }
 
+    private static <T> List<T> queryAll(ContentResolver cr, Uri uri, String[] projection,
+                                        Class<? extends ObjectCursor.CursorIndices<T>> cls) {
+        Cursor c = cr.query(uri, projection, null, null, null);
+        if (c == null) return null;
+        try {
+            final ObjectCursor.CursorIndices<T> ci;
+            try {
+                ci = cls.getConstructor(Cursor.class).newInstance(c);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            List<T> items = new ArrayList<>(c.getCount());
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                items.add(ci.newObject(c));
+                c.moveToNext();
+            }
+            return items;
+        } finally {
+            c.close();
+        }
+    }
+
+    @WorkerThread
     public static int getImportedSettingsFlags(@NonNull final File src) throws IOException {
         final ZipFile zipFile = new ZipFile(src);
         int flags = 0;
@@ -108,6 +189,9 @@ public class DataImportExportUtils implements Constants {
         }
         if (zipFile.getEntry(ENTRY_FILTERS) != null) {
             flags |= FLAG_FILTERS;
+        }
+        if (zipFile.getEntry(ENTRY_TABS) != null) {
+            flags |= FLAG_TABS;
         }
         zipFile.close();
         return flags;
@@ -146,7 +230,50 @@ public class DataImportExportUtils implements Constants {
             importSharedPreferencesData(zipFile, context, KEYBOARD_SHORTCUTS_PREFERENCES_NAME, ENTRY_KEYBOARD_SHORTCUTS, ConvertToStringProcessStrategy.SINGLETON);
         }
         if (hasFlag(flags, FLAG_FILTERS)) {
+            importItem(context, zipFile, ENTRY_FILTERS, FiltersData.class, new ContentResolverProcessStrategy<FiltersData>() {
+                @Override
+                public boolean importItem(ContentResolver cr, FiltersData filtersData) {
+                    if (filtersData == null) return false;
+                    insertBase(cr, Filters.Keywords.CONTENT_URI, filtersData.getKeywords());
+                    insertBase(cr, Filters.Sources.CONTENT_URI, filtersData.getSources());
+                    insertBase(cr, Filters.Links.CONTENT_URI, filtersData.getLinks());
+                    insertUser(cr, Filters.Users.CONTENT_URI, filtersData.getUsers());
+                    return true;
+                }
 
+                void insertBase(ContentResolver cr, Uri uri, List<FiltersData.BaseItem> items) {
+                    if (items == null) return;
+                    List<ContentValues> values = new ArrayList<>(items.size());
+                    for (FiltersData.BaseItem item : items) {
+                        values.add(FiltersData$BaseItemValuesCreator.create(item));
+                    }
+                    ContentResolverUtils.bulkInsert(cr, uri, values);
+                }
+
+                void insertUser(ContentResolver cr, Uri uri, List<FiltersData.UserItem> items) {
+                    if (items == null) return;
+                    List<ContentValues> values = new ArrayList<>(items.size());
+                    for (FiltersData.UserItem item : items) {
+                        values.add(FiltersData$UserItemValuesCreator.create(item));
+                    }
+                    ContentResolverUtils.bulkInsert(cr, uri, values);
+                }
+            });
+        }
+        if (hasFlag(flags, FLAG_TABS)) {
+            importItemsList(context, zipFile, ENTRY_TABS, Tab.class, new ContentResolverProcessStrategy<List<Tab>>() {
+                @Override
+                public boolean importItem(ContentResolver cr, List<Tab> items) {
+                    if (items == null) return false;
+                    List<ContentValues> values = new ArrayList<>(items.size());
+                    for (Tab item : items) {
+                        values.add(TabValuesCreator.create(item));
+                    }
+                    cr.delete(Tabs.CONTENT_URI, null, null);
+                    ContentResolverUtils.bulkInsert(cr, Tabs.CONTENT_URI, values);
+                    return true;
+                }
+            });
         }
         zipFile.close();
     }
@@ -157,7 +284,7 @@ public class DataImportExportUtils implements Constants {
 
     private static void importSharedPreferencesData(@NonNull final ZipFile zipFile, @NonNull final Context context,
                                                     @NonNull final String preferencesName, @NonNull final String entryName,
-                                                    @NonNull final ProcessStrategy strategy) throws IOException {
+                                                    @NonNull final SharedPreferencesProcessStrategy strategy) throws IOException {
         final ZipEntry entry = zipFile.getEntry(entryName);
         if (entry == null) return;
         final JsonParser jsonParser = LoganSquare.JSON_FACTORY.createParser(zipFile.getInputStream(entry));
@@ -179,7 +306,7 @@ public class DataImportExportUtils implements Constants {
 
     private static void exportSharedPreferencesData(@NonNull final ZipOutputStream zos, final Context context,
                                                     @NonNull final String preferencesName, @NonNull final String entryName,
-                                                    @NonNull final ProcessStrategy strategy) throws IOException {
+                                                    @NonNull final SharedPreferencesProcessStrategy strategy) throws IOException {
         final SharedPreferences preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
         final Map<String, ?> map = preferences.getAll();
         zos.putNextEntry(new ZipEntry(entryName));
@@ -193,15 +320,69 @@ public class DataImportExportUtils implements Constants {
         zos.closeEntry();
     }
 
-    private interface ProcessStrategy {
+    private static <T> void importItemsList(@NonNull final Context context,
+                                            @NonNull final ZipFile zipFile,
+                                            @NonNull final String entryName,
+                                            @NonNull final Class<T> itemCls,
+                                            @NonNull final ContentResolverProcessStrategy<List<T>> strategy)
+            throws IOException {
+        final ZipEntry entry = zipFile.getEntry(entryName);
+        if (entry == null) return;
+        final JsonMapper<T> mapper = LoganSquareMapperFinder.mapperFor(itemCls);
+        List<T> itemsList = mapper.parseList(zipFile.getInputStream(entry));
+        strategy.importItem(context.getContentResolver(), itemsList);
+    }
+
+
+    private static <T> void exportItemsList(@NonNull final ZipOutputStream zos,
+                                            @NonNull final String entryName,
+                                            @NonNull final Class<T> itemCls,
+                                            @NonNull final List<T> itemList) throws IOException {
+        zos.putNextEntry(new ZipEntry(entryName));
+        final JsonGenerator jsonGenerator = LoganSquare.JSON_FACTORY.createGenerator(zos);
+        LoganSquareMapperFinder.mapperFor(itemCls).serialize(itemList, jsonGenerator);
+        jsonGenerator.flush();
+        zos.closeEntry();
+    }
+
+    private static <T> void importItem(@NonNull final Context context,
+                                       @NonNull final ZipFile zipFile,
+                                       @NonNull final String entryName,
+                                       @NonNull final Class<T> itemCls,
+                                       @NonNull final ContentResolverProcessStrategy<T> strategy)
+            throws IOException {
+        final ZipEntry entry = zipFile.getEntry(entryName);
+        if (entry == null) return;
+        final JsonMapper<T> mapper = LoganSquareMapperFinder.mapperFor(itemCls);
+        T item = mapper.parse(zipFile.getInputStream(entry));
+        strategy.importItem(context.getContentResolver(), item);
+    }
+
+
+    private static <T> void exportItem(@NonNull final ZipOutputStream zos,
+                                       @NonNull final String entryName,
+                                       @NonNull final Class<T> itemCls,
+                                       @NonNull final T item) throws IOException {
+        zos.putNextEntry(new ZipEntry(entryName));
+        final JsonGenerator jsonGenerator = LoganSquare.JSON_FACTORY.createGenerator(zos);
+        LoganSquareMapperFinder.mapperFor(itemCls).serialize(item, jsonGenerator, true);
+        jsonGenerator.flush();
+        zos.closeEntry();
+    }
+
+    private interface ContentResolverProcessStrategy<T> {
+        boolean importItem(ContentResolver cr, T item);
+    }
+
+    private interface SharedPreferencesProcessStrategy {
         boolean importValue(JsonParser jsonParser, String key, SharedPreferences.Editor editor) throws IOException;
 
         boolean exportValue(JsonGenerator jsonGenerator, String key, SharedPreferences preferences) throws IOException;
     }
 
-    private static final class ConvertToStringProcessStrategy implements ProcessStrategy {
+    private static final class ConvertToStringProcessStrategy implements SharedPreferencesProcessStrategy {
 
-        private static final ProcessStrategy SINGLETON = new ConvertToStringProcessStrategy();
+        private static final SharedPreferencesProcessStrategy SINGLETON = new ConvertToStringProcessStrategy();
 
         @Override
         public boolean importValue(JsonParser jsonParser, String key, SharedPreferences.Editor editor) throws IOException {
@@ -223,9 +404,9 @@ public class DataImportExportUtils implements Constants {
         }
     }
 
-    private static final class ConvertToIntProcessStrategy implements ProcessStrategy {
+    private static final class ConvertToIntProcessStrategy implements SharedPreferencesProcessStrategy {
 
-        private static final ProcessStrategy SINGLETON = new ConvertToIntProcessStrategy();
+        private static final SharedPreferencesProcessStrategy SINGLETON = new ConvertToIntProcessStrategy();
 
         @Override
         public boolean importValue(JsonParser jsonParser, String key, SharedPreferences.Editor editor) throws IOException {
@@ -247,7 +428,7 @@ public class DataImportExportUtils implements Constants {
         }
     }
 
-    private static final class AnnotationProcessStrategy implements ProcessStrategy {
+    private static final class AnnotationProcessStrategy implements SharedPreferencesProcessStrategy {
 
         private final HashMap<String, Preference> supportedMap;
 

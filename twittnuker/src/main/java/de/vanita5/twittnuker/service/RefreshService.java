@@ -175,9 +175,7 @@ public class RefreshService extends Service implements Constants {
                         if (BuildConfig.DEBUG) {
                             Log.d(LOGTAG, String.format("Auto refreshing trends for %s", Arrays.toString(refreshIds)));
                         }
-                        if (!isLocalTrendsRefreshing()) {
-                            getLocalTrends(refreshIds);
-                        }
+                        getLocalTrends(refreshIds);
                         break;
                     }
                 }
@@ -281,10 +279,6 @@ public class RefreshService extends Service implements Constants {
 
     private boolean isHomeTimelineRefreshing() {
         return mTwitterWrapper.isHomeTimelineRefreshing();
-    }
-
-    private boolean isLocalTrendsRefreshing() {
-        return mTwitterWrapper.isLocalTrendsRefreshing();
     }
 
     private boolean isReceivedDirectMessagesRefreshing() {

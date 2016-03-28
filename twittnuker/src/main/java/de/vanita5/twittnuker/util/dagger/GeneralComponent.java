@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.task.AbsFriendshipOperationTask;
 import de.vanita5.twittnuker.task.GetDirectMessagesTask;
+import de.vanita5.twittnuker.task.GetTrendsTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
 import de.vanita5.twittnuker.task.twitter.GetStatusesTask;
@@ -138,4 +139,6 @@ public interface GeneralComponent {
     void inject(ParcelableUserLoader loader);
 
     void inject(ParcelableStatusLoader loader);
+
+    void inject(GetTrendsTask task);
 }

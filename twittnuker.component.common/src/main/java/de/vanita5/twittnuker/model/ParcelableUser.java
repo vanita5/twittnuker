@@ -210,14 +210,6 @@ public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
     }
 
 
-    public static int calculateHashCode(long accountId, long userId) {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (accountId ^ accountId >>> 32);
-        result = prime * result + (int) (userId ^ userId >>> 32);
-        return result;
-    }
-
     @AfterCursorObjectCreated
     void afterCursorObjectCreated() {
         is_cache = true;
@@ -242,7 +234,8 @@ public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
 
         ParcelableUser user = (ParcelableUser) o;
 
-        if (!account_key.equals(user.account_key)) return false;
+        if (account_key != null ? !account_key.equals(user.account_key) : user.account_key != null)
+            return false;
         return key.equals(user.key);
 
     }
@@ -252,9 +245,9 @@ public class ParcelableUser implements Parcelable, Comparable<ParcelableUser> {
         return calculateHashCode(account_key, key);
     }
 
-    public static int calculateHashCode(UserKey accountKey, UserKey userKey) {
-        int result = accountKey.hashCode();
-        result = 31 * result + userKey.hashCode();
+    public static int calculateHashCode(UserKey accountKey, UserKey key) {
+        int result = accountKey != null ? key.hashCode() : 0;
+        result = 31 * result + key.hashCode();
         return result;
     }
 

@@ -24,12 +24,12 @@ package de.vanita5.twittnuker.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment;
 import de.vanita5.twittnuker.loader.UserListTimelineLoader;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.util.List;
@@ -92,6 +92,8 @@ public class UserListTimelineFragment extends ParcelableStatusesFragment {
             }
             sb.append('_');
             sb.append(listName);
+        } else {
+            return null;
         }
         return sb.toString();
     }

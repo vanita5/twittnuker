@@ -28,25 +28,35 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.squareup.otto.Bus;
+
 import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.message.TrendsRefreshedEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public abstract class GetTrendsTask extends AbstractTask<Object, Object, Object> {
 
     private final Context mContext;
     private final UserKey mAccountId;
 
+    @Inject
+    protected Bus mBus;
+
     public GetTrendsTask(Context context, final UserKey accountKey) {
+        GeneralComponentHelper.build(context).inject(this);
         this.mContext = context;
         this.mAccountId = accountKey;
     }
@@ -64,6 +74,11 @@ public abstract class GetTrendsTask extends AbstractTask<Object, Object, Object>
         } catch (final TwitterException e) {
             return null;
         }
+    }
+
+    @Override
+    protected void afterExecute(Object o) {
+        mBus.post(new TrendsRefreshedEvent());
     }
 
     protected abstract Uri getContentUri();
