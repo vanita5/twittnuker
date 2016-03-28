@@ -1,4 +1,4 @@
-/*
+package de.vanita5.twittnuker.model;/*
  * Twittnuker - Twitter client for Android
  *
  * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
