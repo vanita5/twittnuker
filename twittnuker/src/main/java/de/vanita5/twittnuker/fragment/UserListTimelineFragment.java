@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserListTimelineFragment extends ParcelableStatusesFragment {
@@ -60,13 +61,27 @@ public class UserListTimelineFragment extends ParcelableStatusesFragment {
     protected String[] getSavedStatusesFileArgs() {
         final Bundle args = getArguments();
         assert args != null;
+        final UserKey accountKey = Utils.getAccountKey(getContext(), args);
         final long listId = args.getLong(EXTRA_LIST_ID, -1);
-        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
         final String userId = args.getString(EXTRA_USER_ID);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         final String listName = args.getString(EXTRA_LIST_NAME);
-        return new String[]{AUTHORITY_USER_LIST_TIMELINE, "account" + accountKey, "list_id" + listId,
-                "list_name" + listName, "user_id" + userId, "screen_name" + screenName};
+        final List<String> result = new ArrayList<>();
+        result.add(AUTHORITY_USER_LIST_TIMELINE);
+        result.add("account=" + accountKey);
+        if (listId > 0) {
+            result.add("list_id=" + listId);
+        } else if (listName != null) {
+            if (userId != null) {
+                result.add("user_id=" + userId);
+            } else if (screenName != null) {
+                result.add("screen_name=" + screenName);
+            }
+            return null;
+        } else {
+            return null;
+        }
+        return result.toArray(new String[result.size()]);
     }
 
     @Override

@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PublicTimelineFragment extends ParcelableStatusesFragment {
@@ -53,9 +54,12 @@ public class PublicTimelineFragment extends ParcelableStatusesFragment {
     @Override
     protected String[] getSavedStatusesFileArgs() {
         final Bundle args = getArguments();
-        if (args == null) return null;
-        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
-        return new String[]{AUTHORITY_PUBLIC_TIMELINE, "account" + accountKey};
+        assert args != null;
+        final UserKey accountKey = Utils.getAccountKey(getContext(), args);
+        List<String> result = new ArrayList<>();
+        result.add(AUTHORITY_PUBLIC_TIMELINE);
+        result.add("account=" + accountKey);
+        return result.toArray(new String[result.size()]);
     }
 
     @Override

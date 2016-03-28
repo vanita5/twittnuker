@@ -26,12 +26,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment;
 import de.vanita5.twittnuker.loader.UserTimelineLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserTimelineFragment extends ParcelableStatusesFragment {
@@ -56,11 +56,21 @@ public class UserTimelineFragment extends ParcelableStatusesFragment {
     @Override
     protected String[] getSavedStatusesFileArgs() {
         final Bundle args = getArguments();
-        if (args == null) return null;
-        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        assert args != null;
+        final UserKey accountKey = Utils.getAccountKey(getContext(), args);
         final String userId = args.getString(EXTRA_USER_ID);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
-        return new String[]{AUTHORITY_USER_TIMELINE, "account" + accountKey, "user" + userId + "name" + screenName};
+        final List<String> result = new ArrayList<>();
+        result.add(AUTHORITY_USER_TIMELINE);
+        result.add("account=" + accountKey);
+        if (userId != null) {
+            result.add("user_id=" + userId);
+        } else if (screenName != null) {
+            result.add("screen_name=" + screenName);
+        } else {
+            return null;
+        }
+        return result.toArray(new String[result.size()]);
     }
 
     @Override

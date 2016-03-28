@@ -27,10 +27,11 @@ import android.os.Bundle;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.loader.RetweetsOfMeLoader;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RetweetsOfMeFragment extends ParcelableStatusesFragment {
@@ -60,9 +61,12 @@ public class RetweetsOfMeFragment extends ParcelableStatusesFragment {
     @Override
     protected String[] getSavedStatusesFileArgs() {
         final Bundle args = getArguments();
-        if (args == null) return null;
-        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
-        return new String[]{AUTHORITY_RETWEETS_OF_ME, "account" + accountKey};
+        assert args != null;
+        final UserKey accountKey = Utils.getAccountKey(getContext(), args);
+        List<String> result = new ArrayList<>();
+        result.add(AUTHORITY_RETWEETS_OF_ME);
+        result.add("account=" + accountKey);
+        return result.toArray(new String[result.size()]);
     }
 
 }

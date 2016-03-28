@@ -27,7 +27,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.fragment.ParcelableStatusesFragment;
 import de.vanita5.twittnuker.loader.TweetSearchLoader;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
@@ -35,6 +34,7 @@ import de.vanita5.twittnuker.util.Utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StatusesSearchFragment extends ParcelableStatusesFragment {
@@ -65,12 +65,15 @@ public class StatusesSearchFragment extends ParcelableStatusesFragment {
     @Override
     protected String[] getSavedStatusesFileArgs() {
         final Bundle args = getArguments();
-        if (args == null) return null;
-        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        assert args != null;
+        final UserKey accountKey = Utils.getAccountKey(getContext(), args);
         final String query = args.getString(EXTRA_QUERY);
-        return new String[]{AUTHORITY_SEARCH_TWEETS, "account" + accountKey, "query" + query};
+        final List<String> result = new ArrayList<>();
+        result.add(AUTHORITY_SEARCH_TWEETS);
+        result.add("account=" + accountKey);
+        result.add("query=" + query);
+        return result.toArray(new String[result.size()]);
     }
-
 
     @Override
     protected String getReadPositionTagWithArguments() {

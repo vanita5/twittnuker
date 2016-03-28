@@ -26,11 +26,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 
-import de.vanita5.twittnuker.fragment.StatusesSearchFragment;
 import de.vanita5.twittnuker.loader.UserMentionsLoader;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.util.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserMentionsFragment extends StatusesSearchFragment {
@@ -53,12 +54,17 @@ public class UserMentionsFragment extends StatusesSearchFragment {
                 loadingMore);
     }
 
+
     @Override
     protected String[] getSavedStatusesFileArgs() {
         final Bundle args = getArguments();
-        if (args == null) return null;
-        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
-        final String screen_name = args.getString(EXTRA_SCREEN_NAME);
-        return new String[]{AUTHORITY_USER_MENTIONS, "account" + accountKey, "screen_name" + screen_name};
+        assert args != null;
+        final UserKey accountKey = Utils.getAccountKey(getContext(), args);
+        final String screenName = args.getString(EXTRA_SCREEN_NAME);
+        final List<String> result = new ArrayList<>();
+        result.add(AUTHORITY_USER_MENTIONS);
+        result.add("account=" + accountKey);
+        result.add("screen_name=" + screenName);
+        return result.toArray(new String[result.size()]);
     }
 }
