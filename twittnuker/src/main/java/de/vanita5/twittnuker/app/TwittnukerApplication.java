@@ -34,6 +34,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -168,12 +169,15 @@ public class TwittnukerApplication extends Application implements Constants,
                     .primaryColor(themeColor)
                     .accentColor(themeColor)
                     .coloredActionBar(true)
+                    .coloredStatusBar(true)
                     .commit();
         }
         if (!ATE.config(this, VALUE_THEME_NAME_DARK).isConfigured()) {
             ATE.config(this, VALUE_THEME_NAME_DARK)
                     .accentColor(themeColor)
                     .coloredActionBar(false)
+                    .coloredStatusBar(true)
+                    .statusBarColor(Color.BLACK)
                     .commit();
         }
         if (!ATE.config(this, null).isConfigured()) {
@@ -322,7 +326,8 @@ public class TwittnukerApplication extends Application implements Constants,
                 ATE.config(this, VALUE_THEME_NAME_DARK)
                         .accentColor(themeColor)
                         .coloredActionBar(false)
-                        .coloredStatusBar(false)
+                        .coloredStatusBar(true)
+                        .statusBarColor(Color.BLACK)
                         .commit();
                 ATE.config(this, null)
                         .accentColor(themeColor)

@@ -354,6 +354,11 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
                 setAccountSelectorVisible(!isAccountSelectorVisible());
                 break;
             }
+            case R.id.reply_label: {
+                if (mReplyLabel.getVisibility() != View.VISIBLE) return;
+                mReplyLabel.setSingleLine(mReplyLabel.getLineCount() > 1);
+                break;
+            }
         }
     }
 
@@ -597,6 +602,7 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         setupEditText();
         mAccountSelectorContainer.setOnClickListener(this);
         mAccountSelectorButton.setOnClickListener(this);
+        mReplyLabel.setOnClickListener(this);
         final boolean attachLocation = mPreferences.getBoolean(KEY_ATTACH_LOCATION);
         final boolean attachPreciseLocation = mPreferences.getBoolean(KEY_ATTACH_PRECISE_LOCATION);
         if (attachLocation) {
@@ -1211,8 +1217,8 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
 
         /*
          * No media & Not reply: [[Take photo][Add image]][Attach location][Drafts]
-         * Has media & Not reply: [[Take photo][Add image]][Medias menu][Attach location][Drafts]
-         * Is reply: [Medias menu][View status][Attach location][Drafts]
+         * Has media & Not reply: [[Take photo][Add image]][Media menu][Attach location][Drafts]
+         * Is reply: [Media menu][View status][Attach location][Drafts]
          */
         MenuUtils.setMenuItemAvailability(menu, R.id.take_photo, true); //always
         MenuUtils.setMenuItemAvailability(menu, R.id.add_image, true); //always

@@ -25,11 +25,9 @@ package de.vanita5.twittnuker.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
@@ -53,6 +51,7 @@ import android.view.View.OnClickListener;
 import android.widget.CheckBox;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
@@ -69,6 +68,8 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.message.UserListSubscriptionEvent;
+import de.vanita5.twittnuker.model.message.UserListUpdatedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils;
 import de.vanita5.twittnuker.text.validator.UserListNameValidator;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -86,26 +87,6 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
     private boolean mUserListLoaderInitialized;
 
     private ParcelableUserList mUserList;
-    private final BroadcastReceiver mStatusReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            if (getActivity() == null || !isAdded() || isDetached()) return;
-            final String action = intent.getAction();
-            final ParcelableUserList userList = intent.getParcelableExtra(EXTRA_USER_LIST);
-            if (userList == null || mUserList == null)
-                return;
-            if (BROADCAST_USER_LIST_DETAILS_UPDATED.equals(action)) {
-                if (userList.id == mUserList.id) {
-                    getUserListInfo(true);
-                }
-            } else if (BROADCAST_USER_LIST_SUBSCRIBED.equals(action) || BROADCAST_USER_LIST_UNSUBSCRIBED.equals(action)) {
-                if (userList.id == mUserList.id) {
-                    getUserListInfo(true);
-                }
-            }
-        }
-    };
 
     public void displayUserList(final ParcelableUserList userList) {
         final FragmentActivity activity = getActivity();
@@ -211,15 +192,12 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
     @Override
     public void onStart() {
         super.onStart();
-        final IntentFilter filter = new IntentFilter(BROADCAST_USER_LIST_DETAILS_UPDATED);
-        filter.addAction(BROADCAST_USER_LIST_SUBSCRIBED);
-        filter.addAction(BROADCAST_USER_LIST_UNSUBSCRIBED);
-        registerReceiver(mStatusReceiver, filter);
+        mBus.register(this);
     }
 
     @Override
     public void onStop() {
-        unregisterReceiver(mStatusReceiver);
+        mBus.unregister(this);
         super.onStop();
     }
 
@@ -374,6 +352,22 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
 
     }
 
+    @Subscribe
+    public void onUserListUpdated(UserListUpdatedEvent event) {
+        if (mUserList == null) return;
+        if (event.getUserList().id == mUserList.id) {
+            getUserListInfo(true);
+        }
+    }
+
+    @Subscribe
+    public void onUserListSubscriptionChanged(UserListSubscriptionEvent event) {
+        if (mUserList == null) return;
+        if (event.getUserList().id == mUserList.id) {
+            getUserListInfo(true);
+        }
+    }
+
     public static class EditUserListDialogFragment extends BaseSupportDialogFragment implements
             DialogInterface.OnClickListener {
 
@@ -390,6 +384,7 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
                     final MaterialEditText editName = (MaterialEditText) alertDialog.findViewById(R.id.name);
                     final MaterialEditText editDescription = (MaterialEditText) alertDialog.findViewById(R.id.description);
                     final CheckBox editIsPublic = (CheckBox) alertDialog.findViewById(R.id.is_public);
+                    assert editName != null && editDescription != null && editIsPublic != null;
                     final String name = ParseUtils.parseString(editName.getText());
                     final String description = ParseUtils.parseString(editDescription.getText());
                     final boolean isPublic = editIsPublic.isChecked();

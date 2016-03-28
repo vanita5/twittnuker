@@ -40,6 +40,8 @@ import org.apache.commons.collections.primitives.ArrayIntList;
 import org.apache.commons.collections.primitives.ArrayLongList;
 import org.apache.commons.collections.primitives.IntList;
 import org.apache.commons.collections.primitives.LongList;
+import org.mariotaku.abstask.library.AbstractTask;
+import org.mariotaku.abstask.library.TaskStarter;
 import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -77,6 +79,8 @@ import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.message.StatusRetweetedEvent;
 import de.vanita5.twittnuker.model.message.UserListCreatedEvent;
 import de.vanita5.twittnuker.model.message.UserListDestroyedEvent;
+import de.vanita5.twittnuker.model.message.UserListSubscriptionEvent;
+import de.vanita5.twittnuker.model.message.UserListUpdatedEvent;
 import de.vanita5.twittnuker.model.message.UsersBlockedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
@@ -93,7 +97,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
-import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.task.AcceptFriendshipTask;
 import de.vanita5.twittnuker.task.CreateFriendshipTask;
 import de.vanita5.twittnuker.task.CreateUserBlockTask;
@@ -110,7 +113,6 @@ import de.vanita5.twittnuker.task.GetSavedSearchesTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.task.ReportSpamAndBlockTask;
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
-import org.mariotaku.abstask.library.TaskStarter;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -912,9 +914,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (succeed) {
                 final String message = mContext.getString(R.string.subscribed_to_list, result.getData().name);
                 Utils.showOkMessage(mContext, message, false);
-                final Intent intent = new Intent(BROADCAST_USER_LIST_SUBSCRIBED);
-                intent.putExtra(EXTRA_USER_LIST, result.getData());
-                mContext.sendBroadcast(intent);
+                bus.post(new UserListSubscriptionEvent(UserListSubscriptionEvent.Action.SUBSCRIBE,
+                        result.getData()));
             } else {
                 Utils.showErrorMessage(mContext, R.string.action_subscribing_to_list, result.getException(), true);
             }
@@ -1364,9 +1365,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (succeed) {
                 final String message = mContext.getString(R.string.unsubscribed_from_list, result.getData().name);
                 Utils.showOkMessage(mContext, message, false);
-                final Intent intent = new Intent(BROADCAST_USER_LIST_UNSUBSCRIBED);
-                intent.putExtra(EXTRA_USER_LIST, result.getData());
-                mContext.sendBroadcast(intent);
+                bus.post(new UserListSubscriptionEvent(UserListSubscriptionEvent.Action.UNSUBSCRIBE,
+                        result.getData()));
             } else {
                 Utils.showErrorMessage(mContext, R.string.action_unsubscribing_from_list, result.getException(), true);
             }
@@ -1589,12 +1589,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableUserList> result) {
-            if (result.hasData() && result.getData().id > 0) {
+            if (result.hasData()) {
                 final String message = mContext.getString(R.string.updated_list_details, result.getData().name);
                 Utils.showOkMessage(mContext, message, false);
-                final Intent intent = new Intent(BROADCAST_USER_LIST_DETAILS_UPDATED);
-                intent.putExtra(EXTRA_LIST_ID, listId);
-                mContext.sendBroadcast(intent);
+                bus.post(new UserListUpdatedEvent(result.getData()));
             } else {
                 Utils.showErrorMessage(mContext, R.string.action_updating_details, result.getException(), true);
             }

@@ -38,9 +38,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.SimpleRefreshTaskParam;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
@@ -78,17 +78,25 @@ public class RefreshService extends Service implements Constants {
             if (BuildConfig.DEBUG) {
                 Log.d(LOGTAG, String.format("Refresh service received action %s", action));
             }
-            if (BROADCAST_RESCHEDULE_HOME_TIMELINE_REFRESHING.equals(action)) {
-                rescheduleHomeTimelineRefreshing();
-            } else if (BROADCAST_RESCHEDULE_MENTIONS_REFRESHING.equals(action)) {
-                rescheduleMentionsRefreshing();
-            } else if (BROADCAST_RESCHEDULE_DIRECT_MESSAGES_REFRESHING.equals(action)) {
-                rescheduleDirectMessagesRefreshing();
-            } else if (BROADCAST_RESCHEDULE_TRENDS_REFRESHING.equals(action)) {
-                rescheduleTrendsRefreshing();
-            } else if (isAutoRefreshAllowed()) {
-                if (BROADCAST_REFRESH_HOME_TIMELINE.equals(action)) {
-                    if (!isHomeTimelineRefreshing()) {
+            switch (action) {
+                case BROADCAST_RESCHEDULE_HOME_TIMELINE_REFRESHING: {
+                    rescheduleHomeTimelineRefreshing();
+                    break;
+                }
+                case BROADCAST_RESCHEDULE_MENTIONS_REFRESHING: {
+                    rescheduleMentionsRefreshing();
+                    break;
+                }
+                case BROADCAST_RESCHEDULE_DIRECT_MESSAGES_REFRESHING: {
+                    rescheduleDirectMessagesRefreshing();
+                    break;
+                }
+                case BROADCAST_RESCHEDULE_TRENDS_REFRESHING: {
+                    rescheduleTrendsRefreshing();
+                    break;
+                }
+                case BROADCAST_REFRESH_HOME_TIMELINE: {
+                    if (isAutoRefreshAllowed() && !isHomeTimelineRefreshing()) {
                         mTwitterWrapper.getHomeTimelineAsync(new SimpleRefreshTaskParam() {
                             private UserKey[] accountIds;
 
@@ -109,28 +117,34 @@ public class RefreshService extends Service implements Constants {
                             }
                         });
                     }
-                } else if (BROADCAST_REFRESH_NOTIFICATIONS.equals(action)) {
-                    mTwitterWrapper.getActivitiesAboutMeAsync(new SimpleRefreshTaskParam() {
-                        private UserKey[] accountIds;
+                    break;
+                }
+                case BROADCAST_REFRESH_NOTIFICATIONS: {
+                    if (isAutoRefreshAllowed()) {
+                        mTwitterWrapper.getActivitiesAboutMeAsync(new SimpleRefreshTaskParam() {
+                            private UserKey[] accountIds;
 
-                        @NonNull
-                        @Override
-                        public UserKey[] getAccountKeysWorker() {
-                            if (accountIds != null) return accountIds;
-                            final AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(context,
-                                    DataStoreUtils.getAccountKeys(context));
-                            return accountIds = getRefreshableIds(prefs, MentionsRefreshableFilter.INSTANCE);
-                        }
+                            @NonNull
+                            @Override
+                            public UserKey[] getAccountKeysWorker() {
+                                if (accountIds != null) return accountIds;
+                                final AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(context,
+                                        DataStoreUtils.getAccountKeys(context));
+                                return accountIds = getRefreshableIds(prefs, MentionsRefreshableFilter.INSTANCE);
+                            }
 
-                        @Nullable
-                        @Override
-                        public String[] getSinceIds() {
-                            return DataStoreUtils.getNewestActivityMaxPositions(context,
-                                    Activities.AboutMe.CONTENT_URI, getAccountKeys());
-                        }
-                    });
-                } else if (BROADCAST_REFRESH_DIRECT_MESSAGES.equals(action)) {
-                    if (!isReceivedDirectMessagesRefreshing()) {
+                            @Nullable
+                            @Override
+                            public String[] getSinceIds() {
+                                return DataStoreUtils.getNewestActivityMaxPositions(context,
+                                        Activities.AboutMe.CONTENT_URI, getAccountKeys());
+                            }
+                        });
+                    }
+                    break;
+                }
+                case BROADCAST_REFRESH_DIRECT_MESSAGES: {
+                    if (isAutoRefreshAllowed() && !isReceivedDirectMessagesRefreshing()) {
                         mTwitterWrapper.getReceivedDirectMessagesAsync(new SimpleRefreshTaskParam() {
                             private UserKey[] accountIds;
 
@@ -151,15 +165,20 @@ public class RefreshService extends Service implements Constants {
                             }
                         });
                     }
-                } else if (BROADCAST_REFRESH_TRENDS.equals(action)) {
-                    final AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(context,
-                            DataStoreUtils.getAccountKeys(context));
-                    final UserKey[] refreshIds = getRefreshableIds(prefs, TrendsRefreshableFilter.INSTANCE);
-                    if (BuildConfig.DEBUG) {
-                        Log.d(LOGTAG, String.format("Auto refreshing trends for %s", Arrays.toString(refreshIds)));
-                    }
-                    if (!isLocalTrendsRefreshing()) {
-                        getLocalTrends(refreshIds);
+                    break;
+                }
+                case BROADCAST_REFRESH_TRENDS: {
+                    if (isAutoRefreshAllowed()) {
+                        final AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(context,
+                                DataStoreUtils.getAccountKeys(context));
+                        final UserKey[] refreshIds = getRefreshableIds(prefs, TrendsRefreshableFilter.INSTANCE);
+                        if (BuildConfig.DEBUG) {
+                            Log.d(LOGTAG, String.format("Auto refreshing trends for %s", Arrays.toString(refreshIds)));
+                        }
+                        if (!isLocalTrendsRefreshing()) {
+                            getLocalTrends(refreshIds);
+                        }
+                        break;
                     }
                 }
             }
