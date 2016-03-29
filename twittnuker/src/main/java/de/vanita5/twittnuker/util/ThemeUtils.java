@@ -59,7 +59,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.graphic.iface.DoNotWrapDrawable;
 import de.vanita5.twittnuker.preference.ThemeBackgroundPreference;
@@ -308,14 +307,9 @@ public class ThemeUtils implements Constants {
     }
 
     public static Drawable getWindowBackgroundFromTheme(final Context context) {
-        final TypedArray a = context.obtainStyledAttributes(new int[]{R.attr.windowNormalBackground,
-                android.R.attr.windowBackground});
+        final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.windowBackground});
         try {
-            if (a.hasValue(0)) {
-                return a.getDrawable(0);
-            } else {
-                return a.getDrawable(1);
-            }
+            return a.getDrawable(0);
         } finally {
             a.recycle();
         }
@@ -401,24 +395,6 @@ public class ThemeUtils implements Constants {
         if (contentLayout instanceof FrameLayout) {
             ViewSupport.setForeground(contentLayout, overlay);
         }
-    }
-
-    public static void setupDrawerBackground(Context context, View view) {
-        if (!(context instanceof IThemedActivity)) return;
-        final String backgroundOption = ((IThemedActivity) context).getThemeBackgroundOption();
-        final int alpha = ((IThemedActivity) context).getCurrentThemeBackgroundAlpha();
-        final Drawable d;
-        if (isSolidBackground(backgroundOption)) {
-            d = new ColorDrawable(!isLightTheme(context) ? Color.BLACK : Color.WHITE);
-        } else {
-            d = getWindowBackgroundFromTheme(context);
-        }
-        if (d == null) throw new NullPointerException();
-        d.mutate();
-        if (isTransparentBackground(backgroundOption)) {
-            d.setAlpha(alpha);
-        }
-        ViewSupport.setBackground(view, d);
     }
 
     public static void wrapMenuIcon(@NonNull Menu menu, int itemColor, int subItemColor, int... excludeGroups) {

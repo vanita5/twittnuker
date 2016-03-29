@@ -40,6 +40,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.multidex.MultiDex;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.ActionBarContextView;
@@ -104,7 +105,7 @@ public class TwittnukerApplication extends Application implements Constants,
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        //MultiDex.install(this);
+        MultiDex.install(this);
     }
 
     public Handler getHandler() {

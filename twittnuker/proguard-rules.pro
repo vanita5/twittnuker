@@ -1,14 +1,9 @@
--dontobfuscate
+#-dontobfuscate
 
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
 
--keepclassmembers class android.support.v7.internal.app.WindowDecorActionBar {
-    private android.support.v7.internal.widget.ActionBarContextView mContextView;
-    private android.support.v7.internal.widget.DecorToolbar mDecorToolbar;
-}
-
--keepclassmembers class android.support.v7.internal.widget.ActionBarOverlayLayout {
-    private android.graphics.drawable.Drawable mWindowContentOverlay;
+-keepclassmembers class de.vanita5.twittnuker.activity.BrowserSignInActivity$InjectorJavaScriptInterface {
+    public *;
 }
 
 -keep public class * extends android.app.Activity
@@ -87,6 +82,11 @@
 -dontwarn com.twitter.Autolink
 -dontwarn com.google.appengine.api.urlfetch.*
 -dontwarn com.makeramen.roundedimageview.**
+-dontwarn com.squareup.haha.**
+-dontwarn com.google.android.gms.**
+-dontwarn com.google.android.youtube.**
+-dontwarn jnamed**
+-dontwarn com.bluelinelabs.logansquare.**
 
 -keepattributes *Annotation*
 -keepattributes EnclosingMethod
@@ -143,7 +143,6 @@
 -dontwarn java.beans.**
 
 -keep public class com.google.android.gms.* { public *; }
--dontwarn com.google.android.gms.**
 -dontwarn com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 
 # retrofit
@@ -162,26 +161,16 @@
 -keep class org.eclipse.mat.** { *; }
 -keep class com.squareup.leakcanary.** { *; }
 -keep class com.squareup.haha.** { *; }
--dontwarn com.squareup.haha.guava.**
--dontwarn com.squareup.haha.perflib.**
--dontwarn com.squareup.haha.trove.**
 -dontwarn com.squareup.leakcanary.**
 
 # Marshmallow removed Notification.setLatestEventInfo()
 -dontwarn android.app.Notification
-
--keepclassmembers class de.vanita5.twittnuker.activity.BrowserSignInActivity.InjectorJavaScriptInterface {
-    public *;
-}
 
 -dontwarn de.vanita5.twittnuker.api.twitter.model.TwitterResponse$AccessLevel
 
 # app-theme-engine
 -dontwarn com.afollestad.appthemeengine.**
 
-# Fuck shitsung
--keep class !android.support.v7.view.menu.*MenuBuilder*, android.support.v7.** { *; }
--keep interface android.support.v7.* { *; }
-
-# Fuck xiaomi
--keep class !org.apache.commons.lang3.** { *; }
+# Fuck shitsung http://stackoverflow.com/a/34896262/859190
+# ... and fuck xiaomi http://crashes.to/s/675ac9aff5e
+-keep class !android.support.v7.view.menu.MenuBuilder, !org.apache.commons.** { *; }
