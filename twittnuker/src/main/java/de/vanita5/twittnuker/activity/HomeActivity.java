@@ -76,6 +76,7 @@ import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
+import de.vanita5.twittnuker.fragment.MessagesEntriesFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.fragment.AccountsDashboardFragment;
@@ -914,6 +915,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         final SupportTabSpec tab = mPagerAdapter.getTab(position);
         if (DirectMessagesFragment.class == tab.cls) {
             IntentUtils.openMessageConversation(this, null, null);
+        } else if (MessagesEntriesFragment.class == tab.cls) {
+            IntentUtils.openMessageConversation(this, null, null);
         } else if (TrendsSuggestionsFragment.class == tab.cls) {
             openSearchView(null);
         } else {
@@ -928,6 +931,9 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         if (mPagerAdapter.getCount() == 0) return;
         final SupportTabSpec tab = mPagerAdapter.getTab(position);
         if (DirectMessagesFragment.class == tab.cls) {
+            icon = R.drawable.ic_action_add;
+            title = R.string.new_direct_message;
+        } else if (MessagesEntriesFragment.class == tab.cls) {
             icon = R.drawable.ic_action_add;
             title = R.string.new_direct_message;
         } else if (TrendsSuggestionsFragment.class == tab.cls) {

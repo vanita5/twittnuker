@@ -23,8 +23,6 @@
 package de.vanita5.twittnuker.fragment;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -46,12 +44,10 @@ import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
-import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
-import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.ParcelUtils;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
@@ -169,18 +165,8 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
     public void onUserClick(UserViewHolder holder, int position) {
         final ParcelableUser user = getAdapter().getUser(position);
         final FragmentActivity activity = getActivity();
-        if (UserKeyUtils.isSameHost(user.account_key, user.key)) {
-            IntentUtils.openUserProfile(activity, user, null,
-                    mPreferences.getBoolean(KEY_NEW_DOCUMENT_API), getUserReferral());
-        } else if (user.extras != null && user.extras.statusnet_profile_url != null) {
-            final Uri uri = Uri.parse(user.extras.statusnet_profile_url);
-            final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(intent);
-        } else {
-            final Uri uri = LinkCreator.getTwitterUserLink(user.screen_name);
-            final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(intent);
-        }
+        IntentUtils.openUserProfile(activity, user, null, mPreferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                getUserReferral());
     }
 
     @Override

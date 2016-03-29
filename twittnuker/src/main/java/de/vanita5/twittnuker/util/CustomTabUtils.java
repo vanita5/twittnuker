@@ -39,6 +39,7 @@ import android.text.TextUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.CustomTabType;
@@ -47,6 +48,7 @@ import de.vanita5.twittnuker.fragment.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.HomeTimelineFragment;
 import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.InvalidTabFragment;
+import de.vanita5.twittnuker.fragment.MessagesEntriesFragment;
 import de.vanita5.twittnuker.fragment.RetweetsOfMeFragment;
 import de.vanita5.twittnuker.fragment.StatusesSearchFragment;
 import de.vanita5.twittnuker.fragment.TrendsSuggestionsFragment;
@@ -88,9 +90,15 @@ public class CustomTabUtils implements Constants {
                 ExtraConfiguration.newBoolean(EXTRA_MY_FOLLOWING_ONLY, R.string.following_only, false),
                 ExtraConfiguration.newBoolean(EXTRA_MENTIONS_ONLY, R.string.mentions_only, false)));
 
-        CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.DIRECT_MESSAGES, new CustomTabConfiguration(
-                DirectMessagesFragment.class, R.string.direct_messages, R.drawable.ic_action_message,
-                CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 2, false));
+        if (BuildConfig.DEBUG) {
+            CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.DIRECT_MESSAGES, new CustomTabConfiguration(
+                    DirectMessagesFragment.class, R.string.direct_messages, R.drawable.ic_action_message,
+                    CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 2, false));
+        } else {
+            CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.DIRECT_MESSAGES, new CustomTabConfiguration(
+                    MessagesEntriesFragment.class, R.string.direct_messages, R.drawable.ic_action_message,
+                    CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 2, false));
+        }
 
         CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.TRENDS_SUGGESTIONS, new CustomTabConfiguration(
                 TrendsSuggestionsFragment.class, R.string.trends, R.drawable.ic_action_hashtag,

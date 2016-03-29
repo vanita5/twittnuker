@@ -178,3 +178,10 @@
 
 # app-theme-engine
 -dontwarn com.afollestad.appthemeengine.**
+
+# Fuck shitsung
+-keep class !android.support.v7.view.menu.*MenuBuilder*, android.support.v7.** { *; }
+-keep interface android.support.v7.* { *; }
+
+# Fuck xiaomi
+-keep class !org.apache.commons.lang3.** { *; }

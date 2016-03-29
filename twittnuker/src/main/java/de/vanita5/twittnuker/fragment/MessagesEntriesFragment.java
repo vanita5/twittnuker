@@ -20,20 +20,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.statusnet;
+package de.vanita5.twittnuker.fragment;
 
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.param.Query;
-import de.vanita5.twittnuker.api.statusnet.api.GroupResources;
-import de.vanita5.twittnuker.api.statusnet.api.SearchResources;
-import de.vanita5.twittnuker.api.statusnet.api.StatusNetResources;
-import de.vanita5.twittnuker.api.statusnet.api.UserResources;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import android.support.v4.app.Fragment;
 
-public interface StatusNet extends StatusNetResources, GroupResources, SearchResources, UserResources {
-
-    @GET("/externalprofile/show.json")
-    User showExternalProfile(@Query("profileurl") String profileUrl) throws TwitterException;
-
+public class MessagesEntriesFragment extends Fragment {
 }

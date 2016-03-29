@@ -28,9 +28,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import org.mariotaku.abstask.library.TaskStarter;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -48,7 +50,6 @@ import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.task.UpdateAccountInfoTask;
-import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
@@ -63,14 +64,15 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
     private final boolean mOmitIntentExtra, mLoadFromCache;
     private final Bundle mExtras;
     private final UserKey mAccountKey;
-    private final String mUserId;
+    private final UserKey mUserKey;
     private final String mScreenName;
 
     @Inject
     UserColorNameManager mUserColorNameManager;
 
-    public ParcelableUserLoader(final Context context, final UserKey accountKey, final String userId,
-                                final String screenName, final Bundle extras, final boolean omitIntentExtra,
+    public ParcelableUserLoader(final Context context, final UserKey accountKey,
+                                final UserKey userKey, final String screenName,
+                                final Bundle extras, final boolean omitIntentExtra,
                                 final boolean loadFromCache) {
         super(context);
         GeneralComponentHelper.build(context).inject(this);
@@ -78,7 +80,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
         this.mLoadFromCache = loadFromCache;
         this.mExtras = extras;
         this.mAccountKey = accountKey;
-        this.mUserId = userId;
+        this.mUserKey = userKey;
         this.mScreenName = screenName;
     }
 
@@ -112,9 +114,9 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
         if (mLoadFromCache) {
             final Expression where;
             final String[] whereArgs;
-            if (mUserId != null) {
+            if (mUserKey != null) {
                 where = Expression.equalsArgs(CachedUsers.USER_KEY);
-                whereArgs = new String[]{mUserId};
+                whereArgs = new String[]{mUserKey.toString()};
             } else {
                 where = Expression.equalsArgs(CachedUsers.SCREEN_NAME);
                 whereArgs = new String[]{mScreenName};
@@ -140,8 +142,19 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
             if (mExtras != null && UserFragment.Referral.SELF_PROFILE.equals(mExtras.getString(EXTRA_REFERRAL))) {
                 twitterUser = twitter.verifyCredentials();
             } else {
-                twitterUser = TwitterWrapper.tryShowUser(twitter, mUserId, mScreenName,
-                    credentials.account_type);
+                String mProfileUrl = null;
+                if (mExtras != null) {
+                    mProfileUrl = mExtras.getString(EXTRA_PROFILE_URL);
+                }
+                if (TwitterAPIFactory.isStatusNetCredentials(credentials) && mUserKey != null &&
+                        mProfileUrl != null && !TextUtils.equals(credentials.account_key.getHost(),
+                        mUserKey.getHost())) {
+                    twitterUser = twitter.showExternalProfile(mProfileUrl);
+                } else {
+                    final String id = mUserKey != null ? mUserKey.getId() : null;
+                    twitterUser = TwitterWrapper.tryShowUser(twitter, id, mScreenName,
+                        credentials.account_type);
+                }
             }
             final ContentValues cachedUserValues = createCachedUser(twitterUser);
             resolver.insert(CachedUsers.CONTENT_URI, cachedUserValues);

@@ -52,6 +52,7 @@ import android.widget.Toast;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.twitter.Validator;
 
+import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.ThemedImagePickerActivity;
@@ -70,7 +71,6 @@ import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.task.UpdateAccountInfoTask;
 import de.vanita5.twittnuker.task.UpdateProfileBannerImageTask;
-import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
@@ -174,8 +174,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
     public Loader<SingleResponse<ParcelableUser>> onCreateLoader(final int id, final Bundle args) {
         mProgressContainer.setVisibility(View.VISIBLE);
         mEditProfileContent.setVisibility(View.GONE);
-        return new ParcelableUserLoader(getActivity(), mAccountId, mAccountId.getId(), null,
-                getArguments(), false, false);
+        return new ParcelableUserLoader(getActivity(), mAccountId, mAccountId, null, getArguments(),
+                false, false);
     }
 
     @Override

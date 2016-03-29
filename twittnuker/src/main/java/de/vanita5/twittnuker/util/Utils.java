@@ -143,6 +143,7 @@ import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.ItemsListFragment;
 import de.vanita5.twittnuker.fragment.ListsFragment;
 import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
+import de.vanita5.twittnuker.fragment.MessagesEntriesFragment;
 import de.vanita5.twittnuker.fragment.MutesUsersListFragment;
 import de.vanita5.twittnuker.fragment.PublicTimelineFragment;
 import de.vanita5.twittnuker.fragment.SavedSearchesListFragment;
@@ -460,11 +461,15 @@ public final class Utils implements Constants {
                 fragment = new UserFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
                 final String paramUserId = uri.getQueryParameter(QUERY_PARAM_USER_ID);
+                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 }
                 if (!args.containsKey(EXTRA_USER_ID)) {
                     args.putString(EXTRA_USER_ID, paramUserId);
+                }
+                if (!args.containsKey(EXTRA_USER_KEY)) {
+                    args.putParcelable(EXTRA_USER_KEY, paramUserKey);
                 }
                 args.putString(EXTRA_REFERRAL, intent.getStringExtra(EXTRA_REFERRAL));
                 break;
@@ -572,7 +577,11 @@ public final class Utils implements Constants {
                 break;
             }
             case LINK_ID_DIRECT_MESSAGES: {
-                fragment = new DirectMessagesFragment();
+                if (BuildConfig.DEBUG) {
+                    fragment = new MessagesEntriesFragment();
+                } else {
+                    fragment = new DirectMessagesFragment();
+                }
                 break;
             }
             case LINK_ID_INTERACTIONS: {

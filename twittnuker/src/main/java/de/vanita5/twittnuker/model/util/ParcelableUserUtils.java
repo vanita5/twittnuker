@@ -88,6 +88,9 @@ public class ParcelableUserUtils implements TwittnukerConstants{
 
         ParcelableUser.Extras extras = new ParcelableUser.Extras();
         extras.ostatus_uri = user.getOstatusUri();
+        extras.statusnet_blocking = user.isStatusnetBlocking();
+        extras.statusnet_blocked_by = user.isBlocksYou();
+        extras.statusnet_followed_by = user.isFollowsYou();
         extras.statusnet_profile_url = user.getStatusnetProfileUrl();
         extras.profile_image_url_original = user.getProfileImageUrlOriginal();
         extras.profile_image_url_profile_size = user.getProfileImageUrlProfileSize();
