@@ -1014,6 +1014,15 @@ public final class MediaViewerActivity extends AbsMediaViewerActivity implements
         protected void recycleMedia() {
             mGifView.setInputSource(null);
         }
+
+
+        private ParcelableMedia getMedia() {
+            return getArguments().getParcelable(EXTRA_MEDIA);
+        }
+
+        private UserKey getAccountKey() {
+            return getArguments().getParcelable(EXTRA_ACCOUNT_KEY);
+        }
     }
 
     public static class VideoPageFragment extends CacheDownloadMediaViewerFragment
