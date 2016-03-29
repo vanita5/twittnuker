@@ -24,8 +24,6 @@ package de.vanita5.twittnuker.loader;
 
 import android.content.Context;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
@@ -33,16 +31,18 @@ import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.UserKey;
 
+import java.util.List;
+
 public class UserListsLoader extends BaseUserListsLoader {
 
-    private final String mUserId;
+    private final UserKey mUserKey;
     private final String mScreenName;
     private final boolean mReverse;
 
-    public UserListsLoader(final Context context, final UserKey accountKey, final String userId,
+    public UserListsLoader(final Context context, final UserKey accountKey, final UserKey userKey,
                            final String screenName, final boolean reverse, final List<ParcelableUserList> data) {
         super(context, accountKey, 0, data);
-        mUserId = userId;
+        mUserKey = userKey;
         mScreenName = screenName;
         mReverse = reverse;
     }
@@ -50,8 +50,8 @@ public class UserListsLoader extends BaseUserListsLoader {
     @Override
     public ResponseList<UserList> getUserLists(final Twitter twitter) throws TwitterException {
         if (twitter == null) return null;
-        if (mUserId != null) {
-            return twitter.getUserLists(mUserId, mReverse);
+        if (mUserKey != null) {
+            return twitter.getUserLists(mUserKey.getId(), mReverse);
         } else if (mScreenName != null) {
             return twitter.getUserListsByScreenName(mScreenName, mReverse);
         }

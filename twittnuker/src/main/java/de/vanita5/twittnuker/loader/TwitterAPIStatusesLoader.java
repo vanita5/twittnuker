@@ -73,6 +73,7 @@ import javax.inject.Inject;
 
 public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader {
 
+    @Nullable
     private final UserKey mAccountKey;
     private final String mMaxId, mSinceId;
     @Nullable
@@ -218,6 +219,7 @@ public abstract class TwitterAPIStatusesLoader extends ParcelableStatusesLoader 
         return mMaxId;
     }
 
+    @Nullable
     public UserKey getAccountKey() {
         return mAccountKey;
     }

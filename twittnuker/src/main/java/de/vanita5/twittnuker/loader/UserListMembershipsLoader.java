@@ -24,8 +24,6 @@ package de.vanita5.twittnuker.loader;
 
 import android.content.Context;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
@@ -34,16 +32,18 @@ import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.UserKey;
 
+import java.util.List;
+
 public class UserListMembershipsLoader extends BaseUserListsLoader {
 
-    private final String mUserId;
+    private final UserKey mUserKey;
     private final String mScreenName;
 
     public UserListMembershipsLoader(final Context context, final UserKey accountKey,
-                                     final String userId, final String screenName,
+                                     final UserKey userKey, final String screenName,
                                      final long cursor, final List<ParcelableUserList> data) {
         super(context, accountKey, cursor, data);
-        mUserId = userId;
+        mUserKey = userKey;
         mScreenName = screenName;
     }
 
@@ -52,8 +52,8 @@ public class UserListMembershipsLoader extends BaseUserListsLoader {
         if (twitter == null) return null;
         final Paging paging = new Paging();
         paging.cursor(getCursor());
-        if (mUserId != null) {
-            return twitter.getUserListMemberships(mUserId, paging);
+        if (mUserKey != null) {
+            return twitter.getUserListMemberships(mUserKey.getId(), paging);
         } else if (mScreenName != null) {
             return twitter.getUserListMembershipsByScreenName(mScreenName, paging);
         }

@@ -27,8 +27,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
@@ -39,19 +37,21 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 
+import java.util.List;
+
 public class UserListTimelineLoader extends TwitterAPIStatusesLoader {
 
-    private final String mUserId;
+    private final UserKey mUserKey;
     private final String mScreenName, mListName;
     private final long mListId;
 
     public UserListTimelineLoader(final Context context, final UserKey accountKey, final long listId,
-                                  final String userId, final String screenName, final String listName,
+                                  final UserKey userKey, final String screenName, final String listName,
                                   final String sinceId, final String maxId, final List<ParcelableStatus> data,
                                   final String[] savedStatusesArgs, final int tabPosition, boolean fromUser, boolean loadingMore) {
         super(context, accountKey, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser, loadingMore);
         mListId = listId;
-        mUserId = userId;
+        mUserKey = userKey;
         mScreenName = screenName;
         mListName = listName;
     }
@@ -63,8 +63,8 @@ public class UserListTimelineLoader extends TwitterAPIStatusesLoader {
             return twitter.getUserListStatuses(mListId, paging);
         else if (mListName == null)
             throw new TwitterException("No list name or id given");
-        else if (mUserId != null)
-            return twitter.getUserListStatuses(mListName.replace(' ', '-'), mUserId, paging);
+        else if (mUserKey != null)
+            return twitter.getUserListStatuses(mListName.replace(' ', '-'), mUserKey.getId(), paging);
         else if (mScreenName != null)
             return twitter.getUserListStatuses(mListName.replace(' ', '-'), mScreenName, paging);
         throw new TwitterException("User id or screen name is required for list name");

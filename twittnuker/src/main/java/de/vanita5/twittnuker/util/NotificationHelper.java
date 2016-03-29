@@ -305,8 +305,8 @@ public class NotificationHelper implements Constants {
                     final Uri.Builder viewProfileBuilder = new Uri.Builder();
                     viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
                     viewProfileBuilder.authority(AUTHORITY_USER);
-                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
-                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, status.retweeted_by_user_key != null ? status.retweeted_by_user_key.getId() : null);
+                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, status.account_key.toString());
+                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_KEY, status.retweeted_by_user_key != null ? status.retweeted_by_user_key.toString() : null);
                     final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
                     viewProfileIntent.setPackage(TWITTNUKER_PACKAGE_NAME);
                     builder.addAction(R.drawable.ic_action_profile, mContext.getString(R.string.view_user_profile),
@@ -398,8 +398,8 @@ public class NotificationHelper implements Constants {
                         final Uri.Builder viewProfileBuilder = new Uri.Builder();
                         viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
                         viewProfileBuilder.authority(AUTHORITY_USER);
-                        viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
-                        viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(notification.getSourceUser().getId()));
+                        viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, notification.getAccountKey().toString());
+                        viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_KEY, notification.getObjectUserKey().toString());
                         final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
                         viewProfileIntent.setPackage(TWITTNUKER_PACKAGE_NAME);
                         builder.addAction(R.drawable.ic_action_profile, mContext.getString(R.string.view_user_profile),
@@ -417,9 +417,9 @@ public class NotificationHelper implements Constants {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_USER);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getAccountKey()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, notification.getAccountKey().toString());
                     uriBuilder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, notification.getFromUser());
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, notification.getObjectUserKey().getId());
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_USER_KEY, notification.getObjectUserKey().toString());
 //                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
                     UriExtraUtils.addExtra(uriBuilder, "item_user_id", notification.getObjectUserKey().getId());
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));

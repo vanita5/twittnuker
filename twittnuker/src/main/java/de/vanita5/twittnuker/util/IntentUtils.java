@@ -155,16 +155,18 @@ public class IntentUtils implements Constants {
                 options, newDocument);
     }
 
-    public static void openUserTimeline(@NonNull  final Context context, @Nullable final UserKey accountKey,
-                                        final String userId, final String screenName) {
+    public static void openUserTimeline(@NonNull  final Context context,
+                                        @Nullable final UserKey accountKey,
+                                        @Nullable final UserKey userKey,
+                                        @Nullable final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_TIMELINE);
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
-        if (userId != null) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, userId);
+        if (userKey != null) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userKey.toString());
         }
         if (screenName != null) {
             builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
@@ -457,15 +459,16 @@ public class IntentUtils implements Constants {
 
     public static void openUserFavorites(@NonNull final Context context,
                                          @Nullable final UserKey accountKey,
-                                         final String userId, final String screenName) {
+                                         @Nullable final UserKey userKey,
+                                         @Nullable final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_FAVORITES);
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
-        if (userId != null) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, userId);
+        if (userKey != null) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userKey.toString());
         }
         if (screenName != null) {
             builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
@@ -476,16 +479,17 @@ public class IntentUtils implements Constants {
     }
 
     public static void openUserFollowers(@NonNull final Context context,
-                                         @Nullable final UserKey accountKey, final String userId,
-                                         final String screenName) {
+                                         @Nullable final UserKey accountKey,
+                                         @Nullable final UserKey userKey,
+                                         @Nullable final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_FOLLOWERS);
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
-        if (userId != null) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, userId);
+        if (userKey != null) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userKey.toString());
         }
         if (screenName != null) {
             builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
@@ -495,16 +499,17 @@ public class IntentUtils implements Constants {
     }
 
     public static void openUserFriends(@NonNull final Context context,
-                                       @Nullable final UserKey accountKey, final String userId,
-                                       final String screenName) {
+                                       @Nullable final UserKey accountKey,
+                                       @Nullable final UserKey userKey,
+                                       @Nullable final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_FRIENDS);
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
-        if (userId != null) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, userId);
+        if (userKey != null) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userKey.toString());
         }
         if (screenName != null) {
             builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
@@ -516,7 +521,8 @@ public class IntentUtils implements Constants {
 
     public static void openUserListDetails(@NonNull final Context context,
                                            @Nullable final UserKey accountKey, final long listId,
-                                           final String userId, final String screenName, final String listName) {
+                                           @Nullable final UserKey userId,
+                                           @Nullable final String screenName, final String listName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_LIST);
@@ -527,7 +533,7 @@ public class IntentUtils implements Constants {
             builder.appendQueryParameter(QUERY_PARAM_LIST_ID, String.valueOf(listId));
         }
         if (userId != null) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, userId);
+            builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userId.toString());
         }
         if (screenName != null) {
             builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
@@ -539,16 +545,17 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openUserListDetails(@NonNull final Context context, @NonNull final ParcelableUserList userList) {
-        final UserKey userId = userList.user_key;
+    public static void openUserListDetails(@NonNull final Context context,
+                                           @NonNull final ParcelableUserList userList) {
+        final UserKey userKey = userList.user_key;
         final long listId = userList.id;
         final Bundle extras = new Bundle();
         extras.putParcelable(EXTRA_USER_LIST, userList);
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_LIST);
-        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, String.valueOf(userList.account_key));
-        builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, userList.account_key.toString());
+        builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userKey.toString());
         builder.appendQueryParameter(QUERY_PARAM_LIST_ID, String.valueOf(listId));
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         intent.setExtrasClassLoader(context.getClassLoader());
@@ -571,16 +578,18 @@ public class IntentUtils implements Constants {
         context.startActivity(intent);
     }
 
-    public static void openUserLists(@NonNull final Context context, @Nullable final UserKey accountKey, final String userId,
-                                     final String screenName) {
+    public static void openUserLists(@NonNull final Context context,
+                                     @Nullable final UserKey accountKey,
+                                     @Nullable final UserKey userKey,
+                                     @Nullable final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_LISTS);
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
-        if (userId != null) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, userId);
+        if (userKey != null) {
+            builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userKey.toString());
         }
         if (screenName != null) {
             builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
@@ -590,8 +599,10 @@ public class IntentUtils implements Constants {
     }
 
 
-    public static void openUserGroups(@NonNull final Context context, @Nullable final UserKey accountKey, final String userId,
-                                      final String screenName) {
+    public static void openUserGroups(@NonNull final Context context,
+                                      @Nullable final UserKey accountKey,
+                                      @Nullable final UserKey userId,
+                                      @Nullable final String screenName) {
         final Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME_TWITTNUKER);
         builder.authority(AUTHORITY_USER_GROUPS);
@@ -599,7 +610,7 @@ public class IntentUtils implements Constants {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString());
         }
         if (userId != null) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, userId);
+            builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userId.toString());
         }
         if (screenName != null) {
             builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
@@ -639,25 +650,6 @@ public class IntentUtils implements Constants {
         }
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         context.startActivity(intent);
-    }
-
-    public static void openUserMediaTimeline(final Activity activity, final UserKey accountKey,
-                                             final long userId, final String screenName) {
-        if (activity == null) return;
-        final Uri.Builder builder = new Uri.Builder();
-        builder.scheme(SCHEME_TWITTNUKER);
-        builder.authority(AUTHORITY_USER_MEDIA_TIMELINE);
-        if (accountKey != null) {
-            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, String.valueOf(accountKey));
-        }
-        if (userId > 0) {
-            builder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(userId));
-        }
-        if (screenName != null) {
-            builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName);
-        }
-        final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        activity.startActivity(intent);
     }
 
     public static void openAccountsManager(Context context) {

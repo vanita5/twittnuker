@@ -26,7 +26,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.Loader;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,11 +34,9 @@ import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableUserListsAdapter;
-import de.vanita5.twittnuker.fragment.CreateUserListDialogFragment;
-import de.vanita5.twittnuker.fragment.ParcelableUserListsFragment;
 import de.vanita5.twittnuker.loader.UserListsLoader;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.UserListDestroyedEvent;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -52,9 +49,9 @@ public class UserListsFragment extends ParcelableUserListsFragment {
     public Loader<List<ParcelableUserList>> onCreateUserListsLoader(final Context context,
                                                                     final Bundle args, final boolean fromUser) {
         final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
-        final String userId = args.getString(EXTRA_USER_ID);
+        final UserKey userKey = args.getParcelable(EXTRA_USER_KEY);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
-        return new UserListsLoader(getActivity(), accountKey, userId, screenName, true, getData());
+        return new UserListsLoader(getActivity(), accountKey, userKey, screenName, true, getData());
     }
 
     @Override
@@ -88,8 +85,7 @@ public class UserListsFragment extends ParcelableUserListsFragment {
         final MenuItem item = menu.findItem(R.id.new_user_list);
         final UserKey accountId = getAccountKey();
         if (accountId == null || item == null) return;
-        final String userId = getUserId();
-        if (TextUtils.equals(accountId.getId(), userId)) {
+        if (accountId.equals(getUserId())) {
             MenuUtils.setMenuItemAvailability(menu, R.id.new_user_list, true);
         } else {
             MenuUtils.setMenuItemAvailability(menu, R.id.new_user_list, Utils.isMyAccount(getActivity(), getScreenName()));
@@ -100,8 +96,8 @@ public class UserListsFragment extends ParcelableUserListsFragment {
         return getArguments().getString(EXTRA_SCREEN_NAME);
     }
 
-    private String getUserId() {
-        return getArguments().getString(EXTRA_USER_ID);
+    private UserKey getUserId() {
+        return getArguments().getParcelable(EXTRA_USER_KEY);
     }
 
     @Override

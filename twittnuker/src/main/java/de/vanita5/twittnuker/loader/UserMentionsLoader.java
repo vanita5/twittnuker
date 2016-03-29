@@ -25,13 +25,13 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import java.util.List;
-import java.util.Locale;
-
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
+
+import java.util.List;
+import java.util.Locale;
 
 public class UserMentionsLoader extends TweetSearchLoader {
 
@@ -46,8 +46,10 @@ public class UserMentionsLoader extends TweetSearchLoader {
     @NonNull
     @Override
     protected String processQuery(ParcelableCredentials credentials, @NonNull final String query) {
+        final UserKey accountKey = getAccountKey();
+        if (accountKey == null) return query;
         final String screenName = query.startsWith("@") ? query.substring(1) : query;
-        if (TwitterAPIFactory.isTwitterCredentials(getContext(), getAccountKey())) {
+        if (TwitterAPIFactory.isTwitterCredentials(getContext(), accountKey)) {
             return String.format(Locale.ROOT, "to:%s exclude:retweets", screenName);
         }
         return String.format(Locale.ROOT, "@%s -RT", screenName);
