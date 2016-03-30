@@ -42,8 +42,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.multidex.MultiDex;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.ActionBarContextView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.Config;
@@ -68,16 +71,17 @@ import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 import de.vanita5.twittnuker.util.theme.ActionBarContextViewViewProcessor;
-import de.vanita5.twittnuker.util.theme.ExtendedSwipeRefreshLayoutViewProcessor;
 import de.vanita5.twittnuker.util.theme.FloatingActionButtonViewProcessor;
 import de.vanita5.twittnuker.util.theme.FontFamilyTagProcessor;
 import de.vanita5.twittnuker.util.theme.IconActionButtonTagProcessor;
+import de.vanita5.twittnuker.util.theme.ImageViewViewProcessor;
 import de.vanita5.twittnuker.util.theme.OptimalLinkColorTagProcessor;
 import de.vanita5.twittnuker.util.theme.ProfileImageViewViewProcessor;
 import de.vanita5.twittnuker.util.theme.ProgressWheelViewProcessor;
+import de.vanita5.twittnuker.util.theme.SwipeRefreshLayoutViewProcessor;
 import de.vanita5.twittnuker.util.theme.TabPagerIndicatorViewProcessor;
+import de.vanita5.twittnuker.util.theme.TextViewViewProcessor;
 import de.vanita5.twittnuker.util.theme.TimelineContentTextViewViewProcessor;
-import de.vanita5.twittnuker.view.ExtendedSwipeRefreshLayout;
 import de.vanita5.twittnuker.view.ProfileImageView;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 import de.vanita5.twittnuker.view.ThemedMultiValueSwitch;
@@ -144,8 +148,10 @@ public class TwittnukerApplication extends Application implements Constants,
         ATE.registerViewProcessor(TabPagerIndicator.class, new TabPagerIndicatorViewProcessor());
         ATE.registerViewProcessor(FloatingActionButton.class, new FloatingActionButtonViewProcessor());
         ATE.registerViewProcessor(ActionBarContextView.class, new ActionBarContextViewViewProcessor());
-        ATE.registerViewProcessor(ExtendedSwipeRefreshLayout.class, new ExtendedSwipeRefreshLayoutViewProcessor());
+        ATE.registerViewProcessor(SwipeRefreshLayout.class, new SwipeRefreshLayoutViewProcessor());
         ATE.registerViewProcessor(TimelineContentTextView.class, new TimelineContentTextViewViewProcessor());
+        ATE.registerViewProcessor(TextView.class, new TextViewViewProcessor());
+        ATE.registerViewProcessor(ImageView.class, new ImageViewViewProcessor());
         ATE.registerViewProcessor(ProgressWheel.class, new ProgressWheelViewProcessor());
         ATE.registerViewProcessor(ProfileImageView.class, mProfileImageViewViewProcessor);
         ATE.registerTagProcessor(OptimalLinkColorTagProcessor.TAG, new OptimalLinkColorTagProcessor());
@@ -166,16 +172,17 @@ public class TwittnukerApplication extends Application implements Constants,
         final int themeColor = preferences.getInt(KEY_THEME_COLOR, ContextCompat.getColor(this,
                 R.color.branding_color));
         if (!ATE.config(this, VALUE_THEME_NAME_LIGHT).isConfigured()) {
+            //noinspection WrongConstant
             ATE.config(this, VALUE_THEME_NAME_LIGHT)
                     .primaryColor(themeColor)
-                    .accentColor(themeColor)
+                    .accentColor(ThemeUtils.getOptimalAccentColor(themeColor))
                     .coloredActionBar(true)
                     .coloredStatusBar(true)
                     .commit();
         }
         if (!ATE.config(this, VALUE_THEME_NAME_DARK).isConfigured()) {
             ATE.config(this, VALUE_THEME_NAME_DARK)
-                    .accentColor(themeColor)
+                    .accentColor(ThemeUtils.getOptimalAccentColor(themeColor))
                     .coloredActionBar(false)
                     .coloredStatusBar(true)
                     .statusBarColor(Color.BLACK)
@@ -183,7 +190,7 @@ public class TwittnukerApplication extends Application implements Constants,
         }
         if (!ATE.config(this, null).isConfigured()) {
             ATE.config(this, null)
-                    .accentColor(themeColor)
+                    .accentColor(ThemeUtils.getOptimalAccentColor(themeColor))
                     .coloredActionBar(false)
                     .coloredStatusBar(false)
                     .commit();
@@ -318,20 +325,21 @@ public class TwittnukerApplication extends Application implements Constants,
             case KEY_THEME_COLOR: {
                 final int themeColor = preferences.getInt(key, ContextCompat.getColor(this,
                         R.color.branding_color));
+                //noinspection WrongConstant
                 ATE.config(this, VALUE_THEME_NAME_LIGHT)
                         .primaryColor(themeColor)
-                        .accentColor(themeColor)
+                        .accentColor(ThemeUtils.getOptimalAccentColor(themeColor))
                         .coloredActionBar(true)
                         .coloredStatusBar(true)
                         .commit();
                 ATE.config(this, VALUE_THEME_NAME_DARK)
-                        .accentColor(themeColor)
+                        .accentColor(ThemeUtils.getOptimalAccentColor(themeColor))
                         .coloredActionBar(false)
                         .coloredStatusBar(true)
                         .statusBarColor(Color.BLACK)
                         .commit();
                 ATE.config(this, null)
-                        .accentColor(themeColor)
+                        .accentColor(ThemeUtils.getOptimalAccentColor(themeColor))
                         .coloredActionBar(false)
                         .coloredStatusBar(false)
                         .commit();

@@ -24,15 +24,23 @@ package de.vanita5.twittnuker.util.theme;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
 import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.viewprocessors.ViewProcessor;
 
-import de.vanita5.twittnuker.view.ExtendedSwipeRefreshLayout;
+import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class ExtendedSwipeRefreshLayoutViewProcessor implements ViewProcessor<ExtendedSwipeRefreshLayout, Object> {
+public class ImageViewViewProcessor implements ViewProcessor<ImageView, Void> {
     @Override
-    public void process(@NonNull Context context, String key, ExtendedSwipeRefreshLayout target, Object extra) {
-        target.setColorSchemeColors(Config.accentColor(context, key));
+    public void process(@NonNull Context context, @Nullable String key, @Nullable ImageView target, @Nullable Void extra) {
+        if (target == null) return;
+        switch (target.getId()) {
+            case android.support.v7.appcompat.R.id.action_mode_close_button: {
+                target.setColorFilter(ThemeUtils.getColorDependent(Config.toolbarColor(context, key, null)));
+                break;
+            }
+        }
     }
 }

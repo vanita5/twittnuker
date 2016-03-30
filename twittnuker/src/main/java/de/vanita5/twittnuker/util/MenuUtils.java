@@ -223,8 +223,7 @@ public class MenuUtils implements Constants {
         if (translate != null) {
             final boolean isOfficialKey = Utils.isOfficialCredentials(context, account);
             final SharedPreferencesWrapper prefs = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-            final boolean forcePrivateApis = prefs.getBoolean(SharedPreferenceConstants.KEY_FORCE_USING_PRIVATE_APIS, false);
-            setMenuItemAvailability(menu, R.id.translate, forcePrivateApis || isOfficialKey);
+            setMenuItemAvailability(menu, R.id.translate, isOfficialKey);
         }
         final MenuItem shareItem = menu.findItem(R.id.share);
         final ActionProvider shareProvider = MenuItemCompat.getActionProvider(shareItem);

@@ -23,28 +23,15 @@
 package de.vanita5.twittnuker.util.theme;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.viewprocessors.ViewProcessor;
 
-import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.view.TabPagerIndicator;
-
-public class TabPagerIndicatorViewProcessor implements ViewProcessor<TabPagerIndicator, Object> {
+public class SwipeRefreshLayoutViewProcessor implements ViewProcessor<SwipeRefreshLayout, Object> {
     @Override
-    public void process(@NonNull Context context, String key, TabPagerIndicator target, Object extra) {
-        final int primaryColor = Config.primaryColor(context, key);
-        final boolean isDark = !ThemeUtils.isLightColor(primaryColor);
-        final int primaryColorDependent = isDark ? Color.WHITE : Color.BLACK;
-        target.setIconColor(primaryColorDependent);
-        target.setLabelColor(primaryColorDependent);
-        if (Config.coloredActionBar(context, key)) {
-            target.setStripColor(primaryColorDependent);
-        } else {
-            target.setStripColor(Config.accentColor(context, key));
-        }
-        target.updateAppearance();
+    public void process(@NonNull Context context, String key, SwipeRefreshLayout target, Object extra) {
+        target.setColorSchemeColors(Config.accentColor(context, key));
     }
 }

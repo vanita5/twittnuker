@@ -290,8 +290,6 @@ public interface SharedPreferenceConstants {
     String KEY_PEBBLE_NOTIFICATIONS = "pebble_notifications";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_SWIPE_BACK = "swipe_back";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
-    String KEY_FORCE_USING_PRIVATE_APIS = "force_using_private_apis";
     @Preference(type = STRING, hasDefault = true, defaultString = VALUE_COMPOSE_NOW_ACTION_COMPOSE)
     String KEY_COMPOSE_NOW_ACTION = "compose_now_action";
     String KEY_FALLBACK_TWITTER_LINK_HANDLER = "fallback_twitter_link_handler";
