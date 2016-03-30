@@ -782,6 +782,7 @@
     <string name="drawer_toggle">Menu Button</string>
     <string name="group">Gruppe</string>
     <string name="your_coarse_location">Dein ungefährer Standort</string>
+    <string name="location_countrywide">Landesweit</string>
 
 
     <!-- Twittnuker -->
