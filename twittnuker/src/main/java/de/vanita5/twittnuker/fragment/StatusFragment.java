@@ -102,8 +102,6 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
-import de.vanita5.twittnuker.constant.IntentConstants;
-import de.vanita5.twittnuker.fragment.AbsStatusesFragment.DefaultOnLikedListener;
 import de.vanita5.twittnuker.loader.ConversationLoader;
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader;
 import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
@@ -420,32 +418,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     @Override
     public void onItemActionClick(ViewHolder holder, int id, int position) {
         final ParcelableStatus status = mStatusAdapter.getStatus(position);
-        if (status == null) return;
-        switch (id) {
-            case R.id.reply: {
-                final Context context = getActivity();
-                final Intent intent = new Intent(IntentConstants.INTENT_ACTION_REPLY);
-                intent.setPackage(context.getPackageName());
-                intent.putExtra(IntentConstants.EXTRA_STATUS, status);
-                context.startActivity(intent);
-                break;
-            }
-            case R.id.retweet: {
-                RetweetQuoteDialogFragment.show(getFragmentManager(), status);
-                break;
-            }
-            case R.id.favorite: {
-                final AsyncTwitterWrapper twitter = mTwitterWrapper;
-                if (twitter == null) return;
-                if (status.is_favorite) {
-                    twitter.destroyFavoriteAsync(status.account_key, status.id);
-                } else {
-                    ((StatusViewHolder) holder).playLikeAnimation(new DefaultOnLikedListener(twitter,
-                            status));
-                }
-                break;
-            }
-        }
+        AbsStatusesFragment.handleStatusActionClick(getContext(), getFragmentManager(), mTwitterWrapper,
+                (StatusViewHolder) holder, status, id);
     }
 
     @Override

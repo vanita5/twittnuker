@@ -28,7 +28,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
+import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam;
@@ -288,6 +289,47 @@ public abstract class AbsStatusesFragment extends AbsContentListRecyclerViewFrag
         IntentUtils.openMedia(getActivity(), status, media, null, true);
     }
 
+    @Override
+    public void onItemActionClick(RecyclerView.ViewHolder holder, int id, int position) {
+        final Context context = getContext();
+        if (context == null) return;
+        final ParcelableStatusesAdapter adapter = getAdapter();
+        final ParcelableStatus status = adapter.getStatus(position);
+        if (status == null) return;
+        handleStatusActionClick(context, getFragmentManager(), mTwitterWrapper,
+                (StatusViewHolder) holder, status, id);
+    }
+
+    public static void handleStatusActionClick(Context context, FragmentManager fm,
+                                               AsyncTwitterWrapper twitter, StatusViewHolder holder,
+                                               ParcelableStatus status, int id) {
+
+        if (status == null) return;
+        switch (id) {
+            case R.id.reply: {
+                final Intent intent = new Intent(IntentConstants.INTENT_ACTION_REPLY);
+                intent.setPackage(context.getPackageName());
+                intent.putExtra(IntentConstants.EXTRA_STATUS, status);
+                context.startActivity(intent);
+                break;
+            }
+            case R.id.retweet: {
+                RetweetQuoteDialogFragment.show(fm, status);
+                break;
+            }
+            case R.id.favorite: {
+                if (twitter == null) return;
+                if (status.is_favorite) {
+                    twitter.destroyFavoriteAsync(status.account_key, status.id);
+                } else {
+                    holder.playLikeAnimation(new DefaultOnLikedListener(twitter,
+                            status));
+                }
+                break;
+            }
+        }
+    }
+
     protected void saveReadPosition() {
         final LinearLayoutManager layoutManager = getLayoutManager();
         if (layoutManager != null) {
@@ -296,38 +338,6 @@ public abstract class AbsStatusesFragment extends AbsContentListRecyclerViewFrag
     }
 
     protected void onHasMoreDataChanged(boolean hasMoreData) {
-    }
-
-    @Override
-    public void onItemActionClick(RecyclerView.ViewHolder holder, int id, int position) {
-        final ParcelableStatusesAdapter adapter = getAdapter();
-        final ParcelableStatus status = adapter.getStatus(position);
-        if (status == null) return;
-        final FragmentActivity activity = getActivity();
-        switch (id) {
-            case R.id.reply: {
-                final Intent intent = new Intent(INTENT_ACTION_REPLY);
-                intent.setPackage(activity.getPackageName());
-                intent.putExtra(EXTRA_STATUS, status);
-                activity.startActivity(intent);
-                break;
-            }
-            case R.id.retweet: {
-                RetweetQuoteDialogFragment.show(getFragmentManager(), status);
-                break;
-            }
-            case R.id.favorite: {
-                final AsyncTwitterWrapper twitter = mTwitterWrapper;
-                if (twitter == null) return;
-                if (status.is_favorite) {
-                    twitter.destroyFavoriteAsync(status.account_key, status.id);
-                } else {
-                    ((StatusViewHolder) holder).playLikeAnimation(new DefaultOnLikedListener(twitter,
-                            status));
-                }
-                break;
-            }
-        }
     }
 
     @Override
