@@ -26,15 +26,15 @@ import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.KeyValue;
 import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.annotation.param.Params;
+import org.mariotaku.restfu.annotation.param.Raw;
 import org.mariotaku.restfu.http.BodyType;
 import org.mariotaku.restfu.http.mime.Body;
-import org.mariotaku.restfu.http.mime.FileBody;
 import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
+import de.vanita5.twittnuker.api.twitter.model.NewMediaMetadata;
 import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
 
 import java.io.File;
 
-@SuppressWarnings("RedundantThrows")
 public interface TwitterUpload {
 
     @POST("/media/upload.json")
@@ -60,4 +60,7 @@ public interface TwitterUpload {
     @POST("/media/upload.json")
     @Params(@KeyValue(key = "command", value = "FINALIZE"))
     MediaUploadResponse initUploadMedia(@Param("media_id") long mediaId) throws TwitterException;
+
+    @POST("/media/metadata/create.json")
+    ResponseCode createMetadata(@Raw NewMediaMetadata metadata) throws TwitterException;
 }

@@ -52,7 +52,7 @@ public class StatusUpdate extends SimpleValueMap {
         put("long", location.getLongitude());
     }
 
-    public void setMediaIds(final long... mediaIds) {
+    public void setMediaIds(final String... mediaIds) {
         remove("media_ids");
         if (mediaIds == null) return;
         put("media_ids", RestFuUtils.toString(mediaIds, ','));
@@ -82,7 +82,7 @@ public class StatusUpdate extends SimpleValueMap {
         return this;
     }
 
-    public StatusUpdate mediaIds(final long... mediaIds) {
+    public StatusUpdate mediaIds(final String... mediaIds) {
         setMediaIds(mediaIds);
         return this;
     }

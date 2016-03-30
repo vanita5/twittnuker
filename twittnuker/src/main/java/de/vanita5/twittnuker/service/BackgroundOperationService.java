@@ -60,6 +60,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterUpload;
 import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
+import de.vanita5.twittnuker.api.twitter.model.NewMediaMetadata;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
@@ -735,7 +736,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                 if (upload == null) {
                     throw new UpdateStatusException("Twitter instance is null");
                 }
-                final long[] mediaIds = new long[statusUpdate.media.length];
+                final String[] mediaIds = new String[statusUpdate.media.length];
 
                 for (int i = 0, j = mediaIds.length; i < j; i++) {
                     final ParcelableMediaUpdate media = statusUpdate.media[i];
@@ -744,6 +745,10 @@ public class BackgroundOperationService extends IntentService implements Constan
                     try {
                         body = getBodyFromMedia(resolver, builder, media, statusUpdate);
                         uploadResp = upload.uploadMedia(body);
+                        if (!TextUtils.isEmpty(media.alt_text)) {
+                            upload.createMetadata(new NewMediaMetadata(uploadResp.getId(),
+                                    media.alt_text));
+                        }
                     } finally {
                         Utils.closeSilently(body);
                     }

@@ -26,63 +26,47 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 @JsonObject
-public class MediaUploadResponse extends TwitterResponseObject implements TwitterResponse {
-
+public class NewMediaMetadata {
     @JsonField(name = "media_id")
     String mediaId;
-    @JsonField(name = "size")
-    long size;
-    @JsonField(name = "image")
-    Image image;
-    @JsonField(name = "video")
-    Video video;
+    @JsonField(name = "alt_text")
+    AltText altText;
 
-    public String getId() {
-        return mediaId;
+    NewMediaMetadata() {
+
     }
 
-    public Image getImage() {
-        return image;
+    public NewMediaMetadata(String mediaId, String altText) {
+        this.mediaId = mediaId;
+        this.altText = new AltText(altText);
     }
 
-    public long getSize() {
-        return size;
-    }
-
-    public Video getVideo() {
-        return video;
+    @Override
+    public String toString() {
+        return "NewMediaMetadata{" +
+                "mediaId='" + mediaId + '\'' +
+                ", altText=" + altText +
+                '}';
     }
 
     @JsonObject
-    public static class Video {
-        @JsonField(name = "video_type")
-        String videoType;
+    public static class AltText {
+        @JsonField(name = "text")
+        String text;
 
-        public String getVideoType() {
-            return videoType;
-        }
-    }
+        AltText() {
 
-    @JsonObject
-    public static class Image {
-
-        @JsonField(name = "width")
-        int width;
-        @JsonField(name = "height")
-        int height;
-        @JsonField(name = "image_type")
-        String imageType;
-
-        public int getHeight() {
-            return height;
         }
 
-        public String getImageType() {
-            return imageType;
+        public AltText(String text) {
+            this.text = text;
         }
 
-        public int getWidth() {
-            return width;
+        @Override
+        public String toString() {
+            return "AltText{" +
+                    "text='" + text + '\'' +
+                    '}';
         }
     }
 }

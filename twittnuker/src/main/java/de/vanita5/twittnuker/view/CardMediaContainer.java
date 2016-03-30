@@ -141,6 +141,11 @@ public class CardMediaContainer extends ViewGroup implements Constants {
                 if (imageView instanceof MediaPreviewImageView) {
                     ((MediaPreviewImageView) imageView).setHasPlayIcon(ParcelableMediaUtils.hasPlayIcon(media.type));
                 }
+                if (TextUtils.isEmpty(media.alt_text)) {
+                    child.setContentDescription(getContext().getString(R.string.media));
+                } else {
+                    child.setContentDescription(media.alt_text);
+                }
                 child.setTag(media);
                 child.setVisibility(VISIBLE);
                 if (i == j - 1) {

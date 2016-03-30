@@ -43,7 +43,9 @@ import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
         @KeyValue(key = "include_cards", valueKey = "include_cards"),
         @KeyValue(key = "cards_platform", valueKey = "cards_platform"),
         @KeyValue(key = "include_reply_count", valueKey = "include_reply_count"),
-        @KeyValue(key = "include_descendent_reply_count", valueKey = "include_descendent_reply_count")})
+        @KeyValue(key = "include_descendent_reply_count", valueKey = "include_descendent_reply_count"),
+        @KeyValue(key = "include_ext_alt_text", valueKey = "include_ext_alt_text")
+})
 public interface TweetResources {
     @POST("/statuses/destroy/{id}.json")
     Status destroyStatus(@Path("id") String statusId) throws TwitterException;

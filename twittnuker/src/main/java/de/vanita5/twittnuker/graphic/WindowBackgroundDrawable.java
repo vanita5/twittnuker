@@ -20,16 +20,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter;
+package de.vanita5.twittnuker.graphic;
 
-import de.vanita5.twittnuker.api.twitter.api.PrivateActivityResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateDirectMessagesResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateFriendsFollowersResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateScheduleResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateTimelineResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateTweetResources;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 
-public interface TwitterPrivate extends PrivateActivityResources, PrivateTweetResources,
-        PrivateTimelineResources, PrivateFriendsFollowersResources, PrivateDirectMessagesResources,
-        PrivateScheduleResources {
+public class WindowBackgroundDrawable extends Drawable {
+
+    private final int color;
+
+    public WindowBackgroundDrawable(int color) {
+        this.color = color;
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.drawColor(color);
+    }
+
+    @Override
+    public void setAlpha(int alpha) {
+        // No-op
+    }
+
+    @Override
+    public void setColorFilter(ColorFilter colorFilter) {
+        // No-op
+    }
+
+    @Override
+    public int getOpacity() {
+        return PixelFormat.TRANSLUCENT;
+    }
 }
