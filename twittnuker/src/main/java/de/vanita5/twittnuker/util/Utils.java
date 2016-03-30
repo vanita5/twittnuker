@@ -598,7 +598,7 @@ public final class Utils implements Constants {
                         && isEmpty(paramListId)) {
                     return null;
                 }
-                args.putLong(EXTRA_LIST_ID, NumberUtils.toLong(paramListId, -1));
+                args.putString(EXTRA_LIST_ID, paramListId);
                 args.putParcelable(EXTRA_USER_KEY, paramUserKey);
                 args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 args.putString(EXTRA_LIST_NAME, paramListName);
@@ -649,7 +649,7 @@ public final class Utils implements Constants {
                         && isEmpty(paramListId)) {
                     return null;
                 }
-                args.putLong(EXTRA_LIST_ID, NumberUtils.toLong(paramListId, -1));
+                args.putString(EXTRA_LIST_ID, paramListId);
                 args.putParcelable(EXTRA_USER_KEY, paramUserKey);
                 args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 args.putString(EXTRA_LIST_NAME, paramListName);
@@ -664,7 +664,7 @@ public final class Utils implements Constants {
                 if ((isEmpty(paramListName) || isEmpty(paramScreenName) && paramUserKey == null)
                         && isEmpty(paramListId))
                     return null;
-                args.putLong(EXTRA_LIST_ID, NumberUtils.toLong(paramListId, -1));
+                args.putString(EXTRA_LIST_ID, paramListId);
                 args.putParcelable(EXTRA_USER_KEY, paramUserKey);
                 args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 args.putString(EXTRA_LIST_NAME, paramListName);
@@ -679,7 +679,7 @@ public final class Utils implements Constants {
                 if (isEmpty(paramListId)
                         && (isEmpty(paramListName) || isEmpty(paramScreenName) && paramUserKey == null))
                     return null;
-                args.putLong(EXTRA_LIST_ID, NumberUtils.toLong(paramListId, -1));
+                args.putString(EXTRA_LIST_ID, paramListId);
                 args.putParcelable(EXTRA_USER_KEY, paramUserKey);
                 args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 args.putString(EXTRA_LIST_NAME, paramListName);

@@ -37,7 +37,8 @@
         android:layout_alignTop="@+id/profile_images_container"
         android:padding="@dimen/element_spacing_small"
         android:scaleType="centerInside"
-        tools:src="@drawable/ic_indicator_retweet"/>
+        tools:src="@drawable/ic_indicator_retweet"
+        tools:tint="@color/highlight_retweet"/>
 
     <Space
         android:id="@+id/profile_image_space"
@@ -66,7 +67,8 @@
             android:layout_width="@dimen/profile_image_size_activity_small"
             android:layout_height="@dimen/profile_image_size_activity_small"
             android:layout_margin="2dp"
-            android:contentDescription="@string/profile_image"/>
+            android:contentDescription="@string/profile_image"
+            tools:src="@mipmap/ic_launcher"/>
 
         <de.vanita5.twittnuker.view.ProfileImageView
             android:id="@+id/activity_profile_image_1"
@@ -74,7 +76,8 @@
             android:layout_width="@dimen/profile_image_size_activity_small"
             android:layout_height="@dimen/profile_image_size_activity_small"
             android:layout_margin="2dp"
-            android:contentDescription="@string/profile_image"/>
+            android:contentDescription="@string/profile_image"
+            tools:src="@mipmap/ic_launcher"/>
 
         <de.vanita5.twittnuker.view.ProfileImageView
             android:id="@+id/activity_profile_image_2"
@@ -82,7 +85,8 @@
             android:layout_width="@dimen/profile_image_size_activity_small"
             android:layout_height="@dimen/profile_image_size_activity_small"
             android:layout_margin="2dp"
-            android:contentDescription="@string/profile_image"/>
+            android:contentDescription="@string/profile_image"
+            tools:src="@mipmap/ic_launcher"/>
 
         <de.vanita5.twittnuker.view.ProfileImageView
             android:id="@+id/activity_profile_image_3"
@@ -90,7 +94,8 @@
             android:layout_width="@dimen/profile_image_size_activity_small"
             android:layout_height="@dimen/profile_image_size_activity_small"
             android:layout_margin="2dp"
-            android:contentDescription="@string/profile_image"/>
+            android:contentDescription="@string/profile_image"
+            tools:src="@mipmap/ic_launcher"/>
 
         <de.vanita5.twittnuker.view.ProfileImageView
             android:id="@+id/activity_profile_image_4"
@@ -98,7 +103,8 @@
             android:layout_width="@dimen/profile_image_size_activity_small"
             android:layout_height="@dimen/profile_image_size_activity_small"
             android:layout_margin="2dp"
-            android:contentDescription="@string/profile_image"/>
+            android:contentDescription="@string/profile_image"
+            tools:src="@mipmap/ic_launcher"/>
 
         <de.vanita5.twittnuker.view.BadgeView
             android:id="@+id/activity_profile_image_more_number"
@@ -108,6 +114,7 @@
             android:layout_margin="2dp"
             android:gravity="center"
             android:textColor="?android:attr/textColorPrimary"
+            tools:src="@mipmap/ic_launcher"
             tools:text="11"/>
     </LinearLayout>
 

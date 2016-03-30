@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.fragment;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -62,8 +61,7 @@ public class DeleteUserListMembersDialogFragment extends BaseSupportDialogFragme
     @Override
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
         final FragmentActivity activity = getActivity();
-        final Context context = activity;
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         final ParcelableUser[] users = getUsers();
         final ParcelableUserList userList = getUserList();
         if (users == null || userList == null) throw new NullPointerException();

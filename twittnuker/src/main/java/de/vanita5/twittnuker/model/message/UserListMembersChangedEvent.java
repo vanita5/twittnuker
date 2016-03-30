@@ -20,41 +20,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface;
+package de.vanita5.twittnuker.model.message;
 
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
-import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 
-public interface IUserListsAdapter<Data> extends IContentCardAdapter {
+public class UserListMembersChangedEvent {
 
-    ParcelableUserList getUserList(int position);
+    @Action
+    private final int action;
+    @NonNull
+    private final ParcelableUserList userList;
+    @NonNull
+    private final ParcelableUser[] users;
 
-    String getUserListId(int position);
+    public UserListMembersChangedEvent(@Action int action, @NonNull ParcelableUserList userList,
+                                       @NonNull ParcelableUser[] users) {
+        this.action = action;
+        this.userList = userList;
+        this.users = users;
+    }
 
-    int getUserListsCount();
-
-    boolean setData(Data data);
-
-    boolean shouldShowAccountsColor();
-
-    boolean isNameFirst();
+    @Action
+    public int getAction() {
+        return action;
+    }
 
     @NonNull
-    @Override
-    MediaLoaderWrapper getMediaLoader();
-
-    @Nullable
-    UserListClickListener getUserListClickListener();
-
-    interface UserListClickListener {
-
-        void onUserListClick(UserListViewHolder holder, int position);
-
-        boolean onUserListLongClick(UserListViewHolder holder, int position);
-
+    public ParcelableUserList getUserList() {
+        return userList;
     }
+
+    @NonNull
+    public ParcelableUser[] getUsers() {
+        return users;
+    }
+
+    @IntDef({Action.ADDED, Action.REMOVED})
+    public @interface Action {
+        int ADDED = 1;
+        int REMOVED = 2;
+    }
+
 }

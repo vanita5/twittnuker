@@ -23,9 +23,9 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-	<item
-		android:id="@id/delete_from_list"
-		android:icon="@android:drawable/ic_menu_delete"
-		android:title="@string/delete"/>
+    <item
+        android:id="@id/delete_from_list"
+        android:icon="@drawable/ic_action_delete"
+        android:title="@string/delete"/>
 
 </menu>
