@@ -64,6 +64,7 @@ import de.vanita5.twittnuker.model.tab.argument.TabArguments;
 import de.vanita5.twittnuker.model.tab.argument.TextQueryArguments;
 import de.vanita5.twittnuker.model.tab.argument.UserArguments;
 import de.vanita5.twittnuker.model.tab.argument.UserListArguments;
+import de.vanita5.twittnuker.model.tab.extra.TabExtras;
 import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.InternalParseUtils;
@@ -352,7 +353,10 @@ public class CustomTabEditorActivity extends BaseActivity implements OnClickList
             iconKey = intent.getStringExtra(EXTRA_ICON);
             mEditTabName.setText(intent.getStringExtra(EXTRA_NAME));
             if (savedInstanceState == null && intent.hasExtra(EXTRA_EXTRAS)) {
-                mExtrasBundle.putAll(InternalParseUtils.jsonToBundle(intent.getStringExtra(EXTRA_EXTRAS)));
+                TabExtras extras = CustomTabUtils.parseTabExtras(type, intent.getStringExtra(EXTRA_EXTRAS));
+                if (extras != null) {
+                    extras.copyToBundle(mExtrasBundle);
+                }
             }
         }
         final int selection = mTabIconsAdapter.getIconPosition(iconKey);

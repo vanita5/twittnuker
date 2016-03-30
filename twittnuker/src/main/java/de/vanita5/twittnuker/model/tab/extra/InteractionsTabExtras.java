@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.model.tab.extra;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -29,6 +30,8 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
+
+import de.vanita5.twittnuker.constant.IntentConstants;
 
 @ParcelablePlease
 @JsonObject
@@ -59,6 +62,13 @@ public class InteractionsTabExtras extends TabExtras implements Parcelable {
     }
 
     @Override
+    public void copyToBundle(Bundle bundle) {
+        super.copyToBundle(bundle);
+        bundle.putBoolean(IntentConstants.EXTRA_MY_FOLLOWING_ONLY, myFollowingOnly);
+        bundle.putBoolean(IntentConstants.EXTRA_MENTIONS_ONLY, mentionsOnly);
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -69,12 +79,14 @@ public class InteractionsTabExtras extends TabExtras implements Parcelable {
     }
 
     public static final Creator<InteractionsTabExtras> CREATOR = new Creator<InteractionsTabExtras>() {
+        @Override
         public InteractionsTabExtras createFromParcel(Parcel source) {
             InteractionsTabExtras target = new InteractionsTabExtras();
             InteractionsTabExtrasParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
+        @Override
         public InteractionsTabExtras[] newArray(int size) {
             return new InteractionsTabExtras[size];
         }
