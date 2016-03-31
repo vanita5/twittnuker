@@ -460,7 +460,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER: {
                 fragment = new UserFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 }
@@ -473,7 +473,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_LIST_MEMBERSHIPS: {
                 fragment = new UserListMembershipsFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 }
@@ -485,7 +485,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_TIMELINE: {
                 fragment = new UserTimelineFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 }
@@ -498,7 +498,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_MEDIA_TIMELINE: {
                 fragment = new UserMediaTimelineFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 }
@@ -511,7 +511,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_FAVORITES: {
                 fragment = new UserFavoritesFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 }
@@ -525,7 +525,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_FOLLOWERS: {
                 fragment = new UserFollowersFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 }
@@ -538,7 +538,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_FRIENDS: {
                 fragment = new UserFriendsFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 }
@@ -591,7 +591,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_LIST: {
                 fragment = new UserListFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 final String paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
                 final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
                 if ((isEmpty(paramListName) || isEmpty(paramScreenName) && paramUserKey == null)
@@ -616,7 +616,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_LISTS: {
                 fragment = new ListsFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 }
@@ -629,7 +629,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_GROUPS: {
                 fragment = new UserGroupsFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName);
                 }
@@ -642,7 +642,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_LIST_TIMELINE: {
                 fragment = new UserListTimelineFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 final String paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
                 final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
                 if ((isEmpty(paramListName) || isEmpty(paramScreenName) && paramUserKey == null)
@@ -658,7 +658,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_LIST_MEMBERS: {
                 fragment = new UserListMembersFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 final String paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
                 final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
                 if ((isEmpty(paramListName) || isEmpty(paramScreenName) && paramUserKey == null)
@@ -673,7 +673,7 @@ public final class Utils implements Constants {
             case LINK_ID_USER_LIST_SUBSCRIBERS: {
                 fragment = new UserListSubscribersFragment();
                 final String paramScreenName = uri.getQueryParameter(QUERY_PARAM_SCREEN_NAME);
-                final UserKey paramUserKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_USER_KEY));
+                final UserKey paramUserKey = UserKey.valueOf(getUserKeyParam(uri));
                 final String paramListId = uri.getQueryParameter(QUERY_PARAM_LIST_ID);
                 final String paramListName = uri.getQueryParameter(QUERY_PARAM_LIST_NAME);
                 if (isEmpty(paramListId)
@@ -757,6 +757,14 @@ public final class Utils implements Constants {
         args.putParcelable(EXTRA_ACCOUNT_KEY, accountKey);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static String getUserKeyParam(Uri uri) {
+        final String paramUserKey = uri.getQueryParameter(QUERY_PARAM_USER_KEY);
+        if (paramUserKey == null) {
+            return uri.getQueryParameter(QUERY_PARAM_USER_ID);
+        }
+        return paramUserKey;
     }
 
     public static Intent createStatusShareIntent(@NonNull final Context context, @NonNull final ParcelableStatus status) {
