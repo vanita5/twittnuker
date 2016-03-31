@@ -93,6 +93,7 @@ import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.SpanItem;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.model.UnreadItem;
 import de.vanita5.twittnuker.model.UserKey;
@@ -121,6 +122,7 @@ import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ImagePreloader;
+import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.NotificationHelper;
@@ -1085,7 +1087,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final Context context = getContext();
         if (uri == null || valuesArray == null || valuesArray.length == 0 || context == null)
             return;
-        preloadImages(valuesArray);
+        preloadMedia(valuesArray);
         switch (tableId) {
             case TABLE_ID_STATUSES: {
                 mBackgroundExecutor.execute(new Runnable() {
@@ -1492,19 +1494,29 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         }
     }
 
-    private void preloadImages(final ContentValues... values) {
+    private void preloadMedia(final ContentValues... values) {
         if (values == null) return;
+        final boolean preloadProfileImages = mPreferences.getBoolean(KEY_PRELOAD_PROFILE_IMAGES, true);
+        final boolean preloadPreviewMedia = mPreferences.getBoolean(KEY_PRELOAD_PREVIEW_IMAGES, true);
         for (final ContentValues v : values) {
-            if (mPreferences.getBoolean(KEY_PRELOAD_PROFILE_IMAGES, false)) {
+            if (preloadProfileImages) {
                 mImagePreloader.preloadImage(v.getAsString(Statuses.USER_PROFILE_IMAGE_URL));
                 mImagePreloader.preloadImage(v.getAsString(DirectMessages.SENDER_PROFILE_IMAGE_URL));
                 mImagePreloader.preloadImage(v.getAsString(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL));
             }
-            if (mPreferences.getBoolean(KEY_PRELOAD_PREVIEW_IMAGES, false)) {
-                final String textHtml = v.getAsString(Statuses.TEXT_HTML);
-                for (final String link : PreviewMediaExtractor.getSupportedLinksInStatus(textHtml)) {
-                    mImagePreloader.preloadImage(link);
-                }
+            if (preloadPreviewMedia) {
+                preloadSpans(JsonSerializer.parseList(v.getAsString(Statuses.SPANS), SpanItem.class));
+                preloadSpans(JsonSerializer.parseList(v.getAsString(Statuses.QUOTED_SPANS), SpanItem.class));
+            }
+        }
+    }
+
+    private void preloadSpans(List<SpanItem> spans) {
+        if (spans == null) return;
+        for (SpanItem span : spans) {
+            if (span.link == null) continue;
+            if (PreviewMediaExtractor.isSupported(span.link)) {
+                mImagePreloader.preloadImage(span.link);
             }
         }
     }

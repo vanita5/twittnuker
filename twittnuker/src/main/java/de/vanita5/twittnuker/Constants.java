@@ -31,7 +31,7 @@ package de.vanita5.twittnuker;
 public interface Constants extends TwittnukerConstants {
 
     String DATABASES_NAME = "twittnuker.sqlite";
-    int DATABASES_VERSION = 138;
+    int DATABASES_VERSION = 139;
 
     int MENU_GROUP_STATUS_SHARE = 20;
 
