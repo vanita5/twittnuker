@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
@@ -35,6 +36,9 @@ import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * Created by mariotaku on 15/5/26.
  */
@@ -44,25 +48,23 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 public class ParcelableCredentials extends ParcelableAccount implements Parcelable {
 
     public static final Creator<ParcelableCredentials> CREATOR = new Creator<ParcelableCredentials>() {
+        @Override
         public ParcelableCredentials createFromParcel(Parcel source) {
             ParcelableCredentials target = new ParcelableCredentials();
             ParcelableCredentialsParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
+        @Override
         public ParcelableCredentials[] newArray(int size) {
             return new ParcelableCredentials[size];
         }
     };
 
-    public static final int AUTH_TYPE_OAUTH = 0;
-    public static final int AUTH_TYPE_XAUTH = 1;
-    public static final int AUTH_TYPE_BASIC = 2;
-    public static final int AUTH_TYPE_TWIP_O_MODE = 3;
-
     @ParcelableThisPlease
     @JsonField(name = "auth_type")
     @CursorField(Accounts.AUTH_TYPE)
+    @AuthType
     public int auth_type;
     @ParcelableThisPlease
     @JsonField(name = "consumer_key")
@@ -135,5 +137,15 @@ public class ParcelableCredentials extends ParcelableAccount implements Parcelab
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         ParcelableCredentialsParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    @IntDef({AuthType.OAUTH, AuthType.XAUTH, AuthType.BASIC, AuthType.TWIP_O_MODE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface AuthType {
+
+        int OAUTH = 0;
+        int XAUTH = 1;
+        int BASIC = 2;
+        int TWIP_O_MODE = 3;
     }
 }

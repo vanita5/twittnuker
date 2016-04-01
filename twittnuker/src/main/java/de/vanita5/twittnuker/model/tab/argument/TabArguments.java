@@ -66,7 +66,8 @@ public class TabArguments implements TwittnukerConstants {
         } else if (accountId != null) {
             final long id = NumberUtils.toLong(accountId, Long.MIN_VALUE);
             if (id != Long.MIN_VALUE && id <= 0) {
-                bundle.putParcelableArray(EXTRA_ACCOUNT_KEYS, new UserKey[0]);
+                // account_id = -1, means no account selected
+                bundle.putParcelableArray(EXTRA_ACCOUNT_KEYS, null);
                 return;
             }
             bundle.putParcelableArray(EXTRA_ACCOUNT_KEYS, new UserKey[]{UserKey.valueOf(accountId)});

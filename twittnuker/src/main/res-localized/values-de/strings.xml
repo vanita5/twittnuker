@@ -777,6 +777,7 @@
     <string name="external_user_host_format">Externer Benutzer auf <xliff:g id="host">%s</xliff:g></string>
     <string name="external_group_host_format">Externe Gruppe auf <xliff:g id="host">%s</xliff:g></string>
     <string name="error_too_many_photos_fanfou">Zu viele Bilder</string>
+    <string name="load_defaults">Voreinstellungen</string>
     <string name="new_document_api">New Document API</string>
     <string name="new_document_api_summary">Öffne Profile und Medien in neuen Tasks</string>
     <string name="drawer_toggle">Menu Button</string>

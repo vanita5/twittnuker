@@ -1740,7 +1740,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                     Utils.setLastSeen(context, userKey, System.currentTimeMillis());
                 }
                 Utils.updateRelationship(context, mAccountKey, userKey, relationship);
-                return SingleResponse.getInstance(new UserRelationship(mAccountKey, relationship, isFiltering));
+                return SingleResponse.getInstance(new UserRelationship(mAccountKey, userKey,
+                        relationship, isFiltering));
             } catch (final TwitterException e) {
                 return SingleResponse.getInstance(e);
             }
@@ -1756,16 +1757,16 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         boolean filtering;
         boolean can_dm;
 
-        public UserRelationship(@NonNull UserKey accountKey, @NonNull Relationship relationship,
-                                boolean filtering) {
-            super(accountKey, relationship.getTargetUserId(), relationship);
+        public UserRelationship(@NonNull UserKey accountKey, @NonNull UserKey userKey,
+                                @NonNull Relationship relationship, boolean filtering) {
+            super(relationship, accountKey, userKey);
             this.filtering = filtering;
             this.can_dm = relationship.canSourceDMTarget();
         }
 
         public UserRelationship(@NonNull ParcelableUser user, boolean filtering) {
             this.account_key = user.account_key;
-            this.user_id = user.key.getId();
+            this.user_key = user.key;
             this.filtering = filtering;
             if (user.extras != null) {
                 this.following = user.is_following;
@@ -1780,8 +1781,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             if (!account_key.equals(user.account_key)) {
                 return false;
             }
-            return (user.extras != null && TextUtils.equals(user_id, user.extras.unique_id))
-                    || TextUtils.equals(user_id, user.key.getId());
+            return (user.extras != null && TextUtils.equals(user_key.getId(), user.extras.unique_id))
+                    || TextUtils.equals(user_key.getId(), user.key.getId());
         }
 
     }

@@ -779,6 +779,11 @@
     <string name="provider_default">Twitter</string>
     <!-- Fanfou is a Chinese micro blogging website http://fanfou.com/ -->
     <string name="provider_fanfou">Fanfou</string>
+    <string name="provider_quitter_se">Quitter.se</string>
+    <string name="provider_loadaverage_org">LoadAverage.org</string>
+    <string name="provider_gnusocial_net">GNUSocial.net</string>
+    <string name="provider_android">Twitter for Android</string>
+    <string name="provider_tweetdeck">TweetDeck</string>
     <string name="new_document_api">New Document API</string>
     <string name="new_document_api_summary">Open profiles and the media viewer in a new task</string>
     <string name="drawer_toggle">Drawer toggle</string>

@@ -34,6 +34,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.MenuInflater;
@@ -42,6 +43,7 @@ import android.view.View;
 
 import com.squareup.otto.Subscribe;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
@@ -274,6 +276,9 @@ public abstract class AbsStatusesFragment extends AbsContentListRecyclerViewFrag
     public void onGapClick(GapViewHolder holder, int position) {
         final ParcelableStatusesAdapter adapter = getAdapter();
         final ParcelableStatus status = adapter.getStatus(position);
+        if (BuildConfig.DEBUG) {
+            Log.v(LOGTAG, "Load activity gap " + status);
+        }
         if (status == null) return;
         final UserKey[] accountIds = {status.account_key};
         final String[] maxIds = {status.id};

@@ -20,19 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker;
+package de.vanita5.twittnuker.api.fanfou.api;
 
-/**
- * Constants that sould not be available for the public (API Keys)
- */
-public interface SecretConstants {
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Param;
+import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 
-    String TWITLONGER_API_KEY = "";
+public interface DirectMessagesResources {
 
-    /**
-     * Twitter OAuth keys
-     */
-    String TWITTER_CONSUMER_KEY = "K4KihyAG8rUOi9ysqDc5fw";
-    String TWITTER_CONSUMER_SECRET = "TP9kXNAvNpdH2KcKCuH2DHAbtzzaZ04KIwzOGiOKB0";
+    @POST("/direct_messages/new.json")
+    DirectMessage sendFanfouDirectMessage(@Param("user") String user, @Param("text") String text,
+                                          @Param("in_reply_to_id") String inReplyToId)
+            throws TwitterException;
 
 }

@@ -53,12 +53,14 @@ import android.support.v4.widget.DrawerLayoutAccessor;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.SparseIntArray;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -103,9 +105,11 @@ import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
+import de.vanita5.twittnuker.util.TwidereViewUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.ExtendedRelativeLayout;
 import de.vanita5.twittnuker.view.ExtendedViewPager;
+import de.vanita5.twittnuker.view.HomeDrawerLayout;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 import java.util.Collections;
@@ -131,7 +135,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
     private Toolbar mToolbar;
     private View mWindowOverlay;
     private TabPagerIndicator mTabIndicator;
-    private DrawerLayout mDrawerLayout;
+    private HomeDrawerLayout mDrawerLayout;
     private View mEmptyTabHint;
     private FloatingActionButton mActionsButton;
     private ExtendedRelativeLayout mHomeContent;
@@ -711,7 +715,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         super.onContentChanged();
         mTabIndicator = (TabPagerIndicator) findViewById(R.id.main_tabs);
         mToolbar = (Toolbar) findViewById(R.id.action_bar);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.home_menu);
+        mDrawerLayout = (HomeDrawerLayout) findViewById(R.id.home_menu);
         mViewPager = (ExtendedViewPager) findViewById(R.id.main_pager);
         mEmptyTabHint = findViewById(R.id.empty_tab_hint);
         mActionsButton = (FloatingActionButton) findViewById(R.id.actions_button);
@@ -906,6 +910,20 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow_start, GravityCompat.START);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerLayout.addDrawerListener(this);
+        mDrawerLayout.setShouldDisableDecider(new HomeDrawerLayout.ShouldDisableDecider() {
+            @Override
+            public boolean shouldDisableTouch(MotionEvent e) {
+                final Fragment fragment = getLeftDrawerFragment();
+                if (fragment instanceof AccountsDashboardFragment) {
+                    RecyclerView accountsSelector = ((AccountsDashboardFragment) fragment)
+                            .getAccountsSelector();
+                    if (accountsSelector != null) {
+                        return TwidereViewUtils.hitView(e.getRawX(), e.getRawY(), accountsSelector);
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     private void triggerActionsClick() {
@@ -1016,7 +1034,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
                                 true, ReadPositionTag.HOME_TIMELINE, accountKeys);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
                         final int count = DataStoreUtils.getStatusesCount(mContext, Statuses.CONTENT_URI,
-                                position, Statuses.STATUS_TIMESTAMP, accountKeys);
+                                position, Statuses.STATUS_TIMESTAMP, true, accountKeys);
                         result.put(i, count);
                         publishProgress(new TabBadge(i, count));
                         break;
