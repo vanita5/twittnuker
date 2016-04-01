@@ -26,28 +26,29 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
 
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.fragment.AccountRefreshSettingsFragment;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 
-public class AutoRefreshAccountsListPreference extends AccountsListPreference {
+public class AutoRefreshAccountsListPreference extends AccountsListPreference implements TwittnukerConstants {
 
-	public AutoRefreshAccountsListPreference(final Context context) {
-		super(context);
-	}
+    public AutoRefreshAccountsListPreference(final Context context) {
+        super(context);
+    }
 
-	public AutoRefreshAccountsListPreference(final Context context, final AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public AutoRefreshAccountsListPreference(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public AutoRefreshAccountsListPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public AutoRefreshAccountsListPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
-	protected void setupPreference(final AccountItemPreference preference, final ParcelableAccount account) {
-		preference.setFragment(AccountRefreshSettingsFragment.class.getName());
-		final Bundle args = preference.getExtras();
-		args.putParcelable(EXTRA_ACCOUNT, account);
-	}
+    @Override
+    protected void setupPreference(final AccountItemPreference preference, final ParcelableAccount account) {
+        preference.setFragment(AccountRefreshSettingsFragment.class.getName());
+        final Bundle args = preference.getExtras();
+        args.putParcelable(EXTRA_ACCOUNT, account);
+    }
 
 }

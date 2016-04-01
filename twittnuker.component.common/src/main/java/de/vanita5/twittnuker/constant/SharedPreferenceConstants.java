@@ -112,7 +112,7 @@ public interface SharedPreferenceConstants {
     String DEFAULT_IMAGE_UPLOAD_FORMAT = FORMAT_PATTERN_TEXT + " " + FORMAT_PATTERN_LINK;
 
     String DEFAULT_REFRESH_INTERVAL = "15";
-    boolean DEFAULT_AUTO_REFRESH = false;
+    boolean DEFAULT_AUTO_REFRESH = true;
     boolean DEFAULT_AUTO_REFRESH_HOME_TIMELINE = false;
     boolean DEFAULT_AUTO_REFRESH_MENTIONS = true;
     boolean DEFAULT_AUTO_REFRESH_DIRECT_MESSAGES = true;
