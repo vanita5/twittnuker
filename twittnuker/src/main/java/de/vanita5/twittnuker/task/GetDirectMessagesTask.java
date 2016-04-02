@@ -35,9 +35,9 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
-import de.vanita5.twittnuker.api.twitter.TwitterErrorCode;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
@@ -117,7 +117,7 @@ public abstract class GetDirectMessagesTask extends AbstractTask<RefreshTaskPara
                 storeMessages(accountKey, messages, isOutgoing(), true);
                 errorInfoStore.remove(ErrorInfoStore.KEY_DIRECT_MESSAGES, accountKey);
             } catch (final TwitterException e) {
-                if (e.getErrorCode() == TwitterErrorCode.NO_DM_PERMISSION) {
+                if (e.getErrorCode() == ErrorInfo.NO_DIRECT_MESSAGE_PERMISSION) {
                     errorInfoStore.put(ErrorInfoStore.KEY_DIRECT_MESSAGES, accountKey,
                             ErrorInfoStore.CODE_NO_DM_PERMISSION);
                 } else if (e.isCausedByNetworkIssue()) {

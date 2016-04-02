@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -53,6 +54,7 @@ import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserFollowState;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras;
@@ -904,6 +906,48 @@ public class DataStoreUtils implements Constants {
             return messageIds;
         } finally {
             cur.close();
+        }
+    }
+
+    public static void deleteStatus(@NonNull ContentResolver cr, @NonNull UserKey accountKey,
+                                    @NonNull String statusId, @Nullable ParcelableStatus status) {
+
+        final String host = accountKey.getHost();
+        if (host != null) {
+            for (final Uri uri : STATUSES_URIS) {
+                final String deleteWhere = Expression.and(
+                        Expression.likeRaw(new Column(Statuses.ACCOUNT_KEY), "%@?"),
+                        Expression.or(
+                                Expression.equalsArgs(Statuses.STATUS_ID),
+                                Expression.equalsArgs(Statuses.RETWEET_ID)
+                        )).getSQL();
+                cr.delete(uri, deleteWhere, new String[]{host, statusId, statusId});
+                final String updateWhere = Expression.and(
+                        Expression.likeRaw(new Column(Statuses.ACCOUNT_KEY), "%@?"),
+                        Expression.equalsArgs(Statuses.MY_RETWEET_ID)
+                ).getSQL();
+                if (status != null) {
+                    final ContentValues values = new ContentValues();
+                    values.put(Statuses.MY_RETWEET_ID, -1);
+                    values.put(Statuses.RETWEET_COUNT, status.retweet_count - 1);
+                    cr.update(uri, values, updateWhere, new String[]{host, statusId});
+                }
+            }
+        } else {
+            for (final Uri uri : STATUSES_URIS) {
+                final String deleteWhere = Expression.or(
+                        Expression.equalsArgs(Statuses.STATUS_ID),
+                        Expression.equalsArgs(Statuses.RETWEET_ID)
+                ).getSQL();
+                cr.delete(uri, deleteWhere, new String[]{statusId, statusId});
+                final String updateWhere = Expression.equalsArgs(Statuses.MY_RETWEET_ID).getSQL();
+                if (status != null) {
+                    final ContentValues values = new ContentValues();
+                    values.put(Statuses.MY_RETWEET_ID, -1);
+                    values.put(Statuses.RETWEET_COUNT, status.retweet_count - 1);
+                    cr.update(uri, values, updateWhere, new String[]{statusId});
+                }
+            }
         }
     }
 

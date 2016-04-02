@@ -35,7 +35,7 @@
         android:order="21"
         android:title="@string/theme">
         <extra
-            android:name="recreate_activity"
+            android:name="restart_activity"
             android:value="true"/>
     </de.vanita5.twittnuker.preference.EntrySummaryListPreference>
 

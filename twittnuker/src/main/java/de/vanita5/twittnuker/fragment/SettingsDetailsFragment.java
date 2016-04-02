@@ -27,7 +27,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceScreen;
 
@@ -35,7 +34,7 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.util.Utils;
 
-public class SettingsDetailsFragment extends PreferenceFragmentCompat implements Constants,
+public class SettingsDetailsFragment extends BasePreferenceFragment implements Constants,
         OnSharedPreferenceChangeListener {
 
     @Override
@@ -112,8 +111,6 @@ public class SettingsDetailsFragment extends PreferenceFragmentCompat implements
                 SettingsActivity.setShouldNotifyChange(activity);
             }
             if (extras.containsKey(EXTRA_RESTART_ACTIVITY)) {
-                activity.recreate();
-            } else if (extras.containsKey(EXTRA_RECREATE_ACTIVITY)) {
                 activity.recreate();
             }
         }

@@ -88,6 +88,7 @@ public class ThemeBackgroundPreference extends DialogPreference implements Const
         // Always persist/notify the first time.
         if (!TextUtils.equals(getPersistedString(null), value)) {
             persistString(value);
+            callChangeListener(value);
             notifyChanged();
         }
         updateSummary();
@@ -161,7 +162,6 @@ public class ThemeBackgroundPreference extends DialogPreference implements Const
             editor.putInt(KEY_THEME_BACKGROUND_ALPHA, getSliderAlpha());
             editor.apply();
             preference.saveValue();
-            preference.notifyChanged();
         }
 
         private void updateAlphaVisibility() {
