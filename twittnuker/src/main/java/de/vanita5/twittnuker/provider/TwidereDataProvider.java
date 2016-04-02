@@ -1344,6 +1344,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         }
         builder.setColor(pref.getNotificationLightColor());
         builder.setDefaults(notificationDefaults);
+        builder.setOnlyAlertOnce(true);
     }
 
     private void showMessagesNotification(AccountPreferences pref, StringLongPair[] pairs, ContentValues[] valuesArray) {
