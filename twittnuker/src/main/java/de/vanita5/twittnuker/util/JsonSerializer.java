@@ -135,6 +135,7 @@ public class JsonSerializer {
 
 
     public static <E> List<E> parseList(String json, Class<E> cls) {
+        if (json == null) return null;
         FileInputStream is = null;
         //noinspection TryFinallyCanBeTryWithResources
         try {
