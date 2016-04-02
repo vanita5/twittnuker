@@ -48,7 +48,6 @@ import android.view.MenuItem;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.activity.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.constant.IntentConstants;
@@ -65,8 +64,6 @@ import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 
 import java.util.List;
-
-import static de.vanita5.twittnuker.TwittnukerConstants.*;
 
 public class MenuUtils implements Constants {
     public static void setMenuItemAvailability(final Menu menu, final int id, final boolean available) {
@@ -322,6 +319,7 @@ public class MenuUtils implements Constants {
             case R.id.open_in_browser: {
                 final Intent intent = new Intent(Intent.ACTION_VIEW, LinkCreator.getStatusWebLink(status));
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setPackage(IntentUtils.getDefaultBrowserPackage(context));
 //                IntentSupport.setSelector(intent, new Intent(Intent.ACTION_VIEW).addCategory(IntentSupport.CATEGORY_APP_BROWSER));
                 context.startActivity(intent);
                 break;

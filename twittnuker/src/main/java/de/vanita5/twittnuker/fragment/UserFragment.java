@@ -92,7 +92,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.abstask.library.TaskStarter;
 import org.mariotaku.sqliteqb.library.Expression;
-import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.BaseActivity;
@@ -1058,11 +1057,10 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             }
             case R.id.open_in_browser: {
                 final Uri uri = LinkCreator.getUserWebLink(user);
-                if (uri != null) {
-                    final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                    startActivity(intent);
-                }
+                final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setPackage(IntentUtils.getDefaultBrowserPackage(getContext()));
+                startActivity(intent);
                 return true;
             }
             default: {
@@ -1070,7 +1068,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                     try {
                         startActivity(item.getIntent());
                     } catch (final ActivityNotFoundException e) {
-                        if (BuildConfig.DEBUG) Log.w(LOGTAG, e);
+                        Log.w(LOGTAG, e);
                         return false;
                     }
                 }
