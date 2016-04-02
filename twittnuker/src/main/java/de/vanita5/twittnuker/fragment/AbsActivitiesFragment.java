@@ -309,7 +309,8 @@ public abstract class AbsActivitiesFragment extends AbsContentListRecyclerViewFr
         final ParcelableActivitiesAdapter adapter = getAdapter();
         final ParcelableStatus status = ParcelableActivityUtils.getActivityStatus(adapter.getActivity(position));
         if (status == null) return;
-        IntentUtils.openMedia(getActivity(), status, media, null, true);
+        IntentUtils.openMedia(getActivity(), status, media, null,
+                mPreferences.getBoolean(KEY_NEW_DOCUMENT_API));
     }
 
     @Override

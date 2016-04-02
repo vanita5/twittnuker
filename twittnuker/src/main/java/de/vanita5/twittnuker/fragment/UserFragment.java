@@ -1260,7 +1260,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 ParcelableMedia profileImage = ParcelableMediaUtils.image(url);
                 profileImage.type = ParcelableMedia.Type.IMAGE;
                 final ParcelableMedia[] media = {profileImage};
-                IntentUtils.openMedia(activity, user.account_key, false, null, media, null, true);
+                IntentUtils.openMedia(activity, user.account_key, false, null, media, null,
+                        mPreferences.getBoolean(KEY_NEW_DOCUMENT_API));
                 break;
             }
             case R.id.profile_banner: {
@@ -1271,7 +1272,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 ParcelableMedia profileBanner = ParcelableMediaUtils.image(url);
                 profileBanner.type = ParcelableMedia.Type.IMAGE;
                 final ParcelableMedia[] media = {profileBanner};
-                IntentUtils.openMedia(activity, user.account_key, false, null, media, null, true);
+                IntentUtils.openMedia(activity, user.account_key, false, null, media, null,
+                        mPreferences.getBoolean(KEY_NEW_DOCUMENT_API));
                 break;
             }
             case R.id.tweets_container: {
