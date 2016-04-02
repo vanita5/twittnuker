@@ -31,6 +31,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -39,13 +40,16 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountSelectorActivity extends BaseActivity implements
         LoaderCallbacks<Cursor>, OnClickListener, OnItemClickListener {
@@ -102,16 +106,28 @@ public class AccountSelectorActivity extends BaseActivity implements
 
     @Override
     public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
+        final List<Expression> conditions = new ArrayList<>();
+        final List<String> conditionArgs = new ArrayList<>();
+        if (isOAuthOnly()) {
+            conditions.add(Expression.equalsArgs(Accounts.AUTH_TYPE));
+            conditionArgs.add(String.valueOf(ParcelableCredentials.AuthType.OAUTH));
+        }
+        final String accountHost = getAccountHost();
+        if (!TextUtils.isEmpty(accountHost)) {
+            conditions.add(Expression.likeRaw(new Columns.Column(Accounts.ACCOUNT_KEY), "'%@'||?"));
+            conditionArgs.add(accountHost);
+        }
         final String where;
         final String[] whereArgs;
-        if (isOAuthOnly()) {
-            where = Expression.equalsArgs(Accounts.AUTH_TYPE).getSQL();
-            whereArgs = new String[]{String.valueOf(ParcelableCredentials.AuthType.OAUTH)};
-        } else {
+        if (conditions.isEmpty()) {
             where = null;
             whereArgs = null;
+        } else {
+            where = Expression.and(conditions.toArray(new Expression[conditions.size()])).getSQL();
+            whereArgs = conditionArgs.toArray(new String[conditionArgs.size()]);
         }
-        return new CursorLoader(this, Accounts.CONTENT_URI, Accounts.COLUMNS, where, whereArgs, null);
+        return new CursorLoader(this, Accounts.CONTENT_URI, Accounts.COLUMNS, where, whereArgs,
+                Accounts.SORT_POSITION);
     }
 
     @Override
@@ -123,6 +139,9 @@ public class AccountSelectorActivity extends BaseActivity implements
                 mListView.setItemChecked(i, ArrayUtils.contains(activatedIds, mAdapter.getItemId(i)));
             }
         }
+        if (mAdapter.getCount() == 1 && isSingleSelection()) {
+            selectSingleAccount(0);
+        }
     }
 
     @Override
@@ -132,10 +151,21 @@ public class AccountSelectorActivity extends BaseActivity implements
 
     @Override
     public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id) {
-        final Intent data = new Intent();
+        selectSingleAccount(position);
+    }
+
+    public void selectSingleAccount(int position) {
         final ParcelableAccount account = mAdapter.getAccount(position);
+        final Intent data = new Intent();
         data.putExtra(EXTRA_ID, account.account_key.getId());
-        data.putExtra(EXTRA_KEY, account.account_key);
+        data.putExtra(EXTRA_ACCOUNT_KEY, account.account_key);
+
+        final Intent startIntent = getStartIntent();
+        if (startIntent != null) {
+            startIntent.putExtra(EXTRA_ACCOUNT_KEY, account.account_key);
+            startActivity(startIntent);
+        }
+
         setResult(RESULT_OK, data);
         finish();
     }
@@ -189,6 +219,11 @@ public class AccountSelectorActivity extends BaseActivity implements
         return intent.getBooleanExtra(EXTRA_OAUTH_ONLY, false);
     }
 
+    private String getAccountHost() {
+        final Intent intent = getIntent();
+        return intent.getStringExtra(EXTRA_ACCOUNT_HOST);
+    }
+
     private boolean isSelectNoneAllowed() {
         final Intent intent = getIntent();
         return intent.getBooleanExtra(EXTRA_ALLOW_SELECT_NONE, false);
@@ -197,6 +232,16 @@ public class AccountSelectorActivity extends BaseActivity implements
     private boolean isSingleSelection() {
         final Intent intent = getIntent();
         return intent.getBooleanExtra(EXTRA_SINGLE_SELECTION, false);
+    }
+
+    private boolean shouldSelectOnlyItem() {
+        final Intent intent = getIntent();
+        return intent.getBooleanExtra(EXTRA_SELECT_ONLY_ITEM, false);
+    }
+
+    private Intent getStartIntent() {
+        final Intent intent = getIntent();
+        return intent.getParcelableExtra(EXTRA_START_INTENT);
     }
 
 }

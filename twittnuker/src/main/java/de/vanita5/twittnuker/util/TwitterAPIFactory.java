@@ -59,6 +59,7 @@ import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterCaps;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
+import de.vanita5.twittnuker.api.twitter.TwitterOAuth2;
 import de.vanita5.twittnuker.api.twitter.TwitterUpload;
 import de.vanita5.twittnuker.api.twitter.TwitterUserStream;
 import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
@@ -283,7 +284,10 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             versionSuffix = noVersionSuffix ? null : "/1.1/";
         } else if (TwitterOAuth.class.isAssignableFrom(cls)) {
             domain = "api";
-            versionSuffix = "/oauth";
+            versionSuffix = null;
+        } else if (TwitterOAuth2.class.isAssignableFrom(cls)) {
+            domain = "api";
+            versionSuffix = null;
         } else if (TwitterUserStream.class.isAssignableFrom(cls)) {
             domain = "userstream";
             versionSuffix = noVersionSuffix ? null : "/1.1/";

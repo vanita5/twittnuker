@@ -50,7 +50,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
-import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.AddStatusFilterDialogFragment;
 import de.vanita5.twittnuker.fragment.DestroyStatusDialogFragment;
@@ -262,14 +261,14 @@ public class MenuUtils implements Constants {
                 break;
             }
             case R.id.quote: {
-                final Intent intent = new Intent(IntentConstants.INTENT_ACTION_QUOTE);
-                intent.putExtra(IntentConstants.EXTRA_STATUS, status);
+                final Intent intent = new Intent(INTENT_ACTION_QUOTE);
+                intent.putExtra(EXTRA_STATUS, status);
                 context.startActivity(intent);
                 break;
             }
             case R.id.reply: {
-                final Intent intent = new Intent(IntentConstants.INTENT_ACTION_REPLY);
-                intent.putExtra(IntentConstants.EXTRA_STATUS, status);
+                final Intent intent = new Intent(INTENT_ACTION_REPLY);
+                intent.putExtra(EXTRA_STATUS, status);
                 context.startActivity(intent);
                 break;
             }
@@ -294,10 +293,10 @@ public class MenuUtils implements Constants {
                 final Intent intent = new Intent(context, ColorPickerDialogActivity.class);
                 final int color = colorNameManager.getUserColor(status.user_key);
                 if (color != 0) {
-                    intent.putExtra(IntentConstants.EXTRA_COLOR, color);
+                    intent.putExtra(EXTRA_COLOR, color);
                 }
-                intent.putExtra(IntentConstants.EXTRA_CLEAR_BUTTON, color != 0);
-                intent.putExtra(IntentConstants.EXTRA_ALPHA_SLIDER, false);
+                intent.putExtra(EXTRA_CLEAR_BUTTON, color != 0);
+                intent.putExtra(EXTRA_ALPHA_SLIDER, false);
                 if (fragment != null) {
                     fragment.startActivityForResult(intent, REQUEST_SET_COLOR);
                 } else if (context instanceof Activity) {
@@ -306,9 +305,10 @@ public class MenuUtils implements Constants {
                 break;
             }
             case R.id.open_with_account: {
-                final Intent intent = new Intent(IntentConstants.INTENT_ACTION_SELECT_ACCOUNT);
+                final Intent intent = new Intent(INTENT_ACTION_SELECT_ACCOUNT);
                 intent.setClass(context, AccountSelectorActivity.class);
-                intent.putExtra(IntentConstants.EXTRA_SINGLE_SELECTION, true);
+                intent.putExtra(EXTRA_SINGLE_SELECTION, true);
+                intent.putExtra(EXTRA_ACCOUNT_HOST, status.user_key.getHost());
                 if (fragment != null) {
                     fragment.startActivityForResult(intent, REQUEST_SELECT_ACCOUNT);
                 } else if (context instanceof Activity) {

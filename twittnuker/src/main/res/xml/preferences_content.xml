@@ -85,7 +85,7 @@
 
 
         <de.vanita5.twittnuker.preference.ComponentStatePreference
-            android:name="de.vanita5.twittnuker.activity.TwitterLinkHandlerActivity"
+            android:name="de.vanita5.twittnuker.activity.WebLinkHandlerActivity"
             android:key="twitter_link_handler"
             android:title="@string/open_twitter_links"/>
 

@@ -115,6 +115,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_QUOTE = "quote";
 
     String QUERY_PARAM_ACCOUNT_KEY = "account_key";
+    String QUERY_PARAM_ACCOUNT_HOST = "account_host";
     String QUERY_PARAM_ACCOUNT_NAME = "account_name";
     String QUERY_PARAM_STATUS_ID = "status_id";
     String QUERY_PARAM_USER_KEY = "user_key";
