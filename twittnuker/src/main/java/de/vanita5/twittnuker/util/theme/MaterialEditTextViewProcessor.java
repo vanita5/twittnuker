@@ -20,34 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.themed;
+package de.vanita5.twittnuker.util.theme;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
-import android.util.AttributeSet;
+import android.support.annotation.Nullable;
 
+import com.afollestad.appthemeengine.Config;
+import com.afollestad.appthemeengine.viewprocessors.ViewProcessor;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView;
-
-public class BackgroundTintMaterialEditText extends MaterialEditText implements IThemeBackgroundTintView {
-
-	public BackgroundTintMaterialEditText(Context context) {
-		super(context);
-	}
-
-	public BackgroundTintMaterialEditText(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
-
-	public BackgroundTintMaterialEditText(Context context, AttributeSet attrs, int style) {
-		super(context, attrs, style);
-	}
-
-	@Override
-    public void setBackgroundTintColor(@NonNull ColorStateList color) {
-		setPrimaryColor(color.getDefaultColor());
-	}
-
+public class MaterialEditTextViewProcessor implements ViewProcessor<MaterialEditText, Void> {
+    @Override
+    public void process(@NonNull Context context, @Nullable String key, @Nullable MaterialEditText target, @Nullable Void extra) {
+        if (target == null) return;
+        int accentColor = Config.accentColor(context, key);
+        target.setPrimaryColor(accentColor);
+    }
 }

@@ -51,6 +51,7 @@ import android.widget.TextView;
 import com.afollestad.appthemeengine.ATE;
 import com.afollestad.appthemeengine.Config;
 import com.pnikosis.materialishprogress.ProgressWheel;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.BuildConfig;
@@ -75,6 +76,7 @@ import de.vanita5.twittnuker.util.theme.FloatingActionButtonViewProcessor;
 import de.vanita5.twittnuker.util.theme.FontFamilyTagProcessor;
 import de.vanita5.twittnuker.util.theme.IconActionButtonTagProcessor;
 import de.vanita5.twittnuker.util.theme.ImageViewViewProcessor;
+import de.vanita5.twittnuker.util.theme.MaterialEditTextViewProcessor;
 import de.vanita5.twittnuker.util.theme.OptimalLinkColorTagProcessor;
 import de.vanita5.twittnuker.util.theme.ProfileImageViewViewProcessor;
 import de.vanita5.twittnuker.util.theme.ProgressWheelViewProcessor;
@@ -152,6 +154,7 @@ public class TwittnukerApplication extends Application implements Constants,
         ATE.registerViewProcessor(TimelineContentTextView.class, new TimelineContentTextViewViewProcessor());
         ATE.registerViewProcessor(TextView.class, new TextViewViewProcessor());
         ATE.registerViewProcessor(ImageView.class, new ImageViewViewProcessor());
+        ATE.registerViewProcessor(MaterialEditText.class, new MaterialEditTextViewProcessor());
         ATE.registerViewProcessor(ProgressWheel.class, new ProgressWheelViewProcessor());
         ATE.registerViewProcessor(ProfileImageView.class, mProfileImageViewViewProcessor);
         ATE.registerTagProcessor(OptimalLinkColorTagProcessor.TAG, new OptimalLinkColorTagProcessor());

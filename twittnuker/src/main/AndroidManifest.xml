@@ -389,16 +389,6 @@
             android:label="@string/import_settings"
             android:theme="@style/Theme.Twidere.NoDisplay"/>
         <activity
-            android:name=".activity.ActivityPickerActivity"
-            android:icon="@drawable/ic_action_twittnuker"
-            android:theme="@style/Theme.Twidere.Dialog">
-            <intent-filter>
-                <action android:name="de.vanita5.twittnuker.PICK_ACTIVITY"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".activity.TwitterLinkHandlerActivity"
             android:excludeFromRecents="true"
             android:icon="@drawable/ic_action_twittnuker"

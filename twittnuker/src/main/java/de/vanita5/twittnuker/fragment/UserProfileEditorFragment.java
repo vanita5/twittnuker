@@ -25,8 +25,6 @@ package de.vanita5.twittnuker.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -52,6 +50,7 @@ import android.widget.Toast;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.twitter.Validator;
 
+import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
@@ -70,8 +69,8 @@ import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.task.UpdateAccountInfoTask;
+import de.vanita5.twittnuker.task.UpdateProfileBackgroundImageTask;
 import de.vanita5.twittnuker.task.UpdateProfileBannerImageTask;
-import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
@@ -93,15 +92,17 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
     private static final int REQUEST_UPLOAD_PROFILE_IMAGE = 1;
     private static final int REQUEST_UPLOAD_PROFILE_BANNER_IMAGE = 2;
-    private static final int REQUEST_PICK_LINK_COLOR = 3;
-    private static final int REQUEST_PICK_BACKGROUND_COLOR = 4;
+    private static final int REQUEST_UPLOAD_PROFILE_BACKGROUND_IMAGE = 3;
+    private static final int REQUEST_PICK_LINK_COLOR = 11;
+    private static final int REQUEST_PICK_BACKGROUND_COLOR = 12;
 
     private static final int RESULT_REMOVE_BANNER = 101;
     private static final String UPDATE_PROFILE_DIALOG_FRAGMENT_TAG = "update_profile";
 
-    private AsyncTask<Object, Object, ?> mTask;
+    private AbstractTask<?, ?, UserProfileEditorFragment> mTask;
     private ImageView mProfileImageView;
     private ImageView mProfileBannerView;
+    private ImageView mProfileBackgroundView;
     private MaterialEditText mEditName;
     private MaterialEditText mEditDescription;
     private MaterialEditText mEditLocation;
@@ -109,6 +110,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
     private View mProgressContainer, mEditProfileContent;
     private View mEditProfileImage;
     private View mEditProfileBanner;
+    private View mEditProfileBackground;
     private View mSetLinkColor, mSetBackgroundColor;
     private ForegroundColorView mLinkColor, mBackgroundColor;
     private UserKey mAccountId;
@@ -132,7 +134,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
     @Override
     public void onClick(final View view) {
         final ParcelableUser user = mUser;
-        if (user == null || (mTask != null && mTask.getStatus() == AsyncTask.Status.RUNNING))
+        if (user == null || (mTask != null && !mTask.isFinished()))
             return;
         switch (view.getId()) {
             case R.id.profile_image: {
@@ -151,6 +153,11 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
                 final Intent intent = ThemedImagePickerActivity.withThemed(getActivity()).aspectRatio(3, 1)
                         .maximumSize(1500, 500).addEntry(getString(R.string.remove), "remove_banner", RESULT_REMOVE_BANNER).build();
                 startActivityForResult(intent, REQUEST_UPLOAD_PROFILE_BANNER_IMAGE);
+                break;
+            }
+            case R.id.edit_profile_background: {
+                final Intent intent = ThemedImagePickerActivity.withThemed(getActivity()).build();
+                startActivityForResult(intent, REQUEST_UPLOAD_PROFILE_BACKGROUND_IMAGE);
                 break;
             }
             case R.id.set_link_color: {
@@ -209,7 +216,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
                 final int backgroundColor = mBackgroundColor.getColor();
                 mTask = new UpdateProfileTaskInternal(this, mAccountId, mUser, name, url, location,
                         description, linkColor, backgroundColor);
-                AsyncTaskUtils.executeTask(mTask);
+                TaskStarter.execute(mTask);
                 return true;
             }
         }
@@ -239,8 +246,12 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
         mProfileImageView.setOnClickListener(this);
         mProfileBannerView.setOnClickListener(this);
-        mEditProfileBanner.setOnClickListener(this);
+        mProfileBackgroundView.setOnClickListener(this);
+
         mEditProfileImage.setOnClickListener(this);
+        mEditProfileBanner.setOnClickListener(this);
+        mEditProfileBackground.setOnClickListener(this);
+
         mSetLinkColor.setOnClickListener(this);
         mSetBackgroundColor.setOnClickListener(this);
 
@@ -282,14 +293,16 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         super.onViewCreated(view, savedInstanceState);
         mProgressContainer = view.findViewById(R.id.progress_container);
         mEditProfileContent = view.findViewById(R.id.edit_profile_content);
-        mProfileBannerView = (ImageView) view.findViewById(R.id.profile_banner);
         mProfileImageView = (ImageView) view.findViewById(R.id.profile_image);
+        mProfileBannerView = (ImageView) view.findViewById(R.id.profile_banner);
+        mProfileBackgroundView = (ImageView) view.findViewById(R.id.profile_background);
         mEditName = (MaterialEditText) view.findViewById(R.id.name);
         mEditDescription = (MaterialEditText) view.findViewById(R.id.description);
         mEditLocation = (MaterialEditText) view.findViewById(R.id.location);
         mEditUrl = (MaterialEditText) view.findViewById(R.id.url);
         mEditProfileImage = view.findViewById(R.id.edit_profile_image);
         mEditProfileBanner = view.findViewById(R.id.edit_profile_banner);
+        mEditProfileBackground = view.findViewById(R.id.edit_profile_background);
         mLinkColor = (ForegroundColorView) view.findViewById(R.id.link_color);
         mBackgroundColor = (ForegroundColorView) view.findViewById(R.id.background_color);
         mSetLinkColor = view.findViewById(R.id.set_link_color);
@@ -301,17 +314,26 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         if (resultCode == FragmentActivity.RESULT_CANCELED) return;
         switch (requestCode) {
             case REQUEST_UPLOAD_PROFILE_BANNER_IMAGE: {
-                if (mTask != null && mTask.getStatus() == Status.RUNNING) return;
+                if (mTask != null && !mTask.isFinished()) return;
                 if (resultCode == RESULT_REMOVE_BANNER) {
                     mTask = new RemoveProfileBannerTaskInternal(mAccountId);
                 } else {
-                    mTask = new UpdateProfileBannerImageTaskInternal(getActivity(), mAccountId, data.getData(), true);
+                    mTask = new UpdateProfileBannerImageTaskInternal(getActivity(), mAccountId,
+                            data.getData(), true);
                 }
                 break;
             }
+            case REQUEST_UPLOAD_PROFILE_BACKGROUND_IMAGE: {
+                //TODO upload profile background
+                if (mTask != null && !mTask.isFinished()) return;
+                mTask = new UpdateProfileBackgroundImageTaskInternal(getActivity(), mAccountId,
+                        data.getData(), false, true);
+                break;
+            }
             case REQUEST_UPLOAD_PROFILE_IMAGE: {
-                if (mTask != null && mTask.getStatus() == Status.RUNNING) return;
-                mTask = new UpdateProfileImageTaskInternal(getActivity(), mAccountId, data.getData(), true);
+                if (mTask != null && !mTask.isFinished()) return;
+                mTask = new UpdateProfileImageTaskInternal(getActivity(), mAccountId,
+                        data.getData(), true);
                 break;
             }
             case REQUEST_PICK_LINK_COLOR: {
@@ -344,10 +366,16 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             mEditLocation.setText(user.location);
             mEditUrl.setText(isEmpty(user.url_expanded) ? user.url : user.url_expanded);
             mMediaLoader.displayProfileImage(mProfileImageView, user);
-            final int def_width = getResources().getDisplayMetrics().widthPixels;
-            mMediaLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, def_width);
+            final int defWidth = getResources().getDisplayMetrics().widthPixels;
+            mMediaLoader.displayProfileBanner(mProfileBannerView, user.profile_banner_url, defWidth);
+            mMediaLoader.displayImage(mProfileBackgroundView, user.profile_background_url);
             mLinkColor.setColor(user.link_color);
             mBackgroundColor.setColor(user.background_color);
+            if (USER_TYPE_FANFOU_COM.equals(user.key.getHost())) {
+                mEditProfileBanner.setVisibility(View.GONE);
+            } else {
+                mEditProfileBanner.setVisibility(View.VISIBLE);
+            }
         } else {
             mProgressContainer.setVisibility(View.GONE);
             mEditProfileContent.setVisibility(View.GONE);
@@ -371,8 +399,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
     @Override
     public void onResume() {
         super.onResume();
-        if (mTask != null && mTask.getStatus() == Status.PENDING) {
-            AsyncTaskUtils.executeTask(mTask);
+        if (mTask != null && !mTask.isFinished()) {
+            TaskStarter.execute(mTask);
         }
     }
 
@@ -418,7 +446,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
 
     }
 
-    static class UpdateProfileTaskInternal extends AsyncTask<Object, Object, SingleResponse<ParcelableUser>> {
+    static class UpdateProfileTaskInternal extends AbstractTask<Object, SingleResponse<ParcelableUser>,
+            UserProfileEditorFragment> {
 
         private static final String DIALOG_FRAGMENT_TAG = "updating_user_profile";
         private final UserProfileEditorFragment mFragment;
@@ -452,7 +481,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected SingleResponse<ParcelableUser> doInBackground(final Object... params) {
+        protected SingleResponse<ParcelableUser> doLongOperation(final Object params) {
             final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(mActivity, mAccountKey);
             if (credentials == null) return SingleResponse.getInstance();
             final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mActivity, credentials,
@@ -498,8 +527,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
-            super.onPostExecute(result);
+        protected void afterExecute(SingleResponse<ParcelableUser> result) {
+            super.afterExecute(result);
             if (result.hasData()) {
                 final ParcelableAccount account = result.getExtras().getParcelable(EXTRA_ACCOUNT);
                 if (account != null) {
@@ -521,7 +550,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected void onPreExecute() {
+        protected void beforeExecute() {
+            super.beforeExecute();
             mFragment.executeAfterFragmentResumed(new Action() {
                 @Override
                 public void execute(IBaseFragment fragment) {
@@ -529,12 +559,11 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
                     df.setCancelable(false);
                 }
             });
-            super.onPreExecute();
         }
 
     }
 
-    class RemoveProfileBannerTaskInternal extends AsyncTask<Object, Object, SingleResponse<Boolean>> {
+    class RemoveProfileBannerTaskInternal extends AbstractTask<Object, SingleResponse<Boolean>, UserProfileEditorFragment> {
 
         private final UserKey mAccountKey;
 
@@ -543,13 +572,13 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected SingleResponse<Boolean> doInBackground(final Object... params) {
+        protected SingleResponse<Boolean> doLongOperation(final Object params) {
             return TwitterWrapper.deleteProfileBannerImage(getActivity(), mAccountKey);
         }
 
         @Override
-        protected void onPostExecute(final SingleResponse<Boolean> result) {
-            super.onPostExecute(result);
+        protected void afterExecute(final SingleResponse<Boolean> result) {
+            super.afterExecute(result);
             if (result.getData() != null && result.getData()) {
                 getUserInfo();
                 Toast.makeText(getActivity(), R.string.profile_banner_image_updated, Toast.LENGTH_SHORT).show();
@@ -561,14 +590,14 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+        protected void beforeExecute() {
+            super.beforeExecute();
             setUpdateState(true);
         }
 
     }
 
-    private class UpdateProfileBannerImageTaskInternal extends UpdateProfileBannerImageTask {
+    private class UpdateProfileBannerImageTaskInternal extends UpdateProfileBannerImageTask<UserProfileEditorFragment> {
 
         public UpdateProfileBannerImageTaskInternal(final Context context, final UserKey accountKey,
                                                     final Uri imageUri, final boolean deleteImage) {
@@ -576,21 +605,44 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
-            super.onPostExecute(result);
+        protected void afterExecute(final SingleResponse<ParcelableUser> result) {
+            super.afterExecute(result);
             setUpdateState(false);
             getUserInfo();
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+        protected void beforeExecute() {
+            super.beforeExecute();
             setUpdateState(true);
         }
 
     }
 
-    private class UpdateProfileImageTaskInternal extends UpdateProfileImageTask {
+    private class UpdateProfileBackgroundImageTaskInternal extends UpdateProfileBackgroundImageTask<UserProfileEditorFragment> {
+
+        public UpdateProfileBackgroundImageTaskInternal(final Context context, final UserKey accountKey,
+                                                        final Uri imageUri, final boolean tile,
+                                                        final boolean deleteImage) {
+            super(context, accountKey, imageUri, tile, deleteImage);
+        }
+
+        @Override
+        protected void afterExecute(final SingleResponse<ParcelableUser> result) {
+            super.afterExecute(result);
+            setUpdateState(false);
+            getUserInfo();
+        }
+
+        @Override
+        protected void beforeExecute() {
+            super.beforeExecute();
+            setUpdateState(true);
+        }
+
+    }
+
+    private class UpdateProfileImageTaskInternal extends UpdateProfileImageTask<UserProfileEditorFragment> {
 
         public UpdateProfileImageTaskInternal(final Context context, final UserKey accountKey,
                                               final Uri imageUri, final boolean deleteImage) {
@@ -598,8 +650,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected void onPostExecute(final SingleResponse<ParcelableUser> result) {
-            super.onPostExecute(result);
+        protected void afterExecute(SingleResponse<ParcelableUser> result) {
+            super.afterExecute(result);
             if (result != null && result.getData() != null) {
                 displayUser(result.getData());
             }
@@ -607,8 +659,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+        protected void beforeExecute() {
+            super.beforeExecute();
             setUpdateState(true);
         }
 

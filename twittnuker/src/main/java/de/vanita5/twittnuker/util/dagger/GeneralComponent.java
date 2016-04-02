@@ -35,9 +35,9 @@ import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.adapter.DummyItemAdapter;
 import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
+import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.BaseListFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
-import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseSupportFragment;
 import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
@@ -54,10 +54,13 @@ import de.vanita5.twittnuker.task.AbsFriendshipOperationTask;
 import de.vanita5.twittnuker.task.GetDirectMessagesTask;
 import de.vanita5.twittnuker.task.GetTrendsTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
+import de.vanita5.twittnuker.task.UpdateProfileBackgroundImageTask;
+import de.vanita5.twittnuker.task.UpdateProfileBannerImageTask;
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
 import de.vanita5.twittnuker.task.twitter.GetStatusesTask;
 import de.vanita5.twittnuker.text.util.EmojiEditableFactory;
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.MultiSelectEventHandler;
 import de.vanita5.twittnuker.util.NotificationHelper;
 
@@ -141,4 +144,10 @@ public interface GeneralComponent {
     void inject(ParcelableStatusLoader loader);
 
     void inject(GetTrendsTask task);
+
+    void inject(UpdateProfileBackgroundImageTask<Object> task);
+
+    void inject(UpdateProfileBannerImageTask<Object> task);
+
+    void inject(AsyncTwitterWrapper.UpdateProfileImageTask<Object> task);
 }

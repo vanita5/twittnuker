@@ -300,6 +300,7 @@
     <string name="action_updating_profile">Aktualisieren des Profils</string>
     <string name="action_updating_profile_image">Aktualisieren des Profilbilds</string>
     <string name="action_updating_profile_banner_image">Aktualisieren des Profiltitelbilds</string>
+    <string name="action_updating_profile_background_image">Aktualisieren des Profilhintergrunds</string>
     <string name="action_removing_profile_banner_image">Löschen des Profiltitelbild</string>
     <string name="action_updating_details">Aktualisieren der Details</string>
     <string name="action_blocking">Blockieren</string>
@@ -595,6 +596,7 @@
     <string name="function">Funktionen</string>
     <string name="replies">Antworten</string>
     <string name="profile_banner">Profil Banner</string>
+    <string name="profile_background">Profil Hintergrund</string>
     <string name="profile">Profil</string>
     <string name="listed">gelisted</string>
     <string name="state_blocking">Blockieren</string>
