@@ -23,6 +23,10 @@
 package de.vanita5.twittnuker.fragment;
 
 import android.content.Context;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -40,6 +44,7 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableGroupUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.Utils;
 
 public class GroupFragment extends AbsToolbarTabPagesFragment implements
         LoaderCallbacks<SingleResponse<ParcelableGroup>> {
@@ -56,6 +61,18 @@ public class GroupFragment extends AbsToolbarTabPagesFragment implements
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Utils.setNdefPushMessageCallback(getActivity(), new NfcAdapter.CreateNdefMessageCallback() {
+
+            @Override
+            public NdefMessage createNdefMessage(NfcEvent event) {
+                final ParcelableGroup group = getGroup();
+                if (group == null || group.url == null) return null;
+                return new NdefMessage(new NdefRecord[]{
+                        NdefRecord.createUri(group.url),
+                });
+            }
+        });
+
         getGroupInfo(false);
     }
 
@@ -107,6 +124,10 @@ public class GroupFragment extends AbsToolbarTabPagesFragment implements
         } else {
             lm.restartLoader(0, args, this);
         }
+    }
+
+    public ParcelableGroup getGroup() {
+        return mGroup;
     }
 
     static class ParcelableGroupLoader extends AsyncTaskLoader<SingleResponse<ParcelableGroup>> {
