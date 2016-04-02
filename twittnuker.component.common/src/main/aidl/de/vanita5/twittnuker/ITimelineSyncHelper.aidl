@@ -24,7 +24,7 @@ package de.vanita5.twittnuker;
 
 interface ITimelineSyncHelper {
 
-    boolean put(long accountId, String key, long value);
+    boolean put(String accountKey, String key, long value);
 
-    long  get(long accountId, String key);
+    long get(String accountKey, String key);
 }

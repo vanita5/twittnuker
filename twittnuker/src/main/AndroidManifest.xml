@@ -395,30 +395,12 @@
             android:taskAffinity=":twittnuker_twitter_link_handler"
             android:theme="@style/Theme.Twidere.NoDisplay">
             <intent-filter>
-                <data
-                    android:host="twitter.com"
-                    android:pathPrefix="/"
-                    android:scheme="http"/>
-                <data
-                    android:host="twitter.com"
-                    android:pathPrefix="/"
-                    android:scheme="https"/>
-                <data
-                    android:host="www.twitter.com"
-                    android:pathPrefix="/"
-                    android:scheme="http"/>
-                <data
-                    android:host="www.twitter.com"
-                    android:pathPrefix="/"
-                    android:scheme="https"/>
-                <data
-                    android:host="mobile.twitter.com"
-                    android:pathPrefix="/"
-                    android:scheme="http"/>
-                <data
-                    android:host="mobile.twitter.com"
-                    android:pathPrefix="/"
-                    android:scheme="https"/>
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
+
+                <data android:host="twitter.com"/>
+                <data android:host="www.twitter.com"/>
+                <data android:host="mobile.twitter.com"/>
 
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
@@ -449,9 +431,9 @@
             android:theme="@style/Theme.Twidere.Dialog"/>
         <activity
             android:name=".activity.HiddenSettingsActivity"
+            android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/hidden_settings"
             android:launchMode="singleTop"
-            android:icon="@drawable/ic_action_twittnuker"
             android:theme="@style/Theme.Twidere"
             android:windowSoftInputMode="adjustResize"/>
         <activity

@@ -292,7 +292,6 @@ public interface SharedPreferenceConstants {
     String KEY_SWIPE_BACK = "swipe_back";
     @Preference(type = STRING, hasDefault = true, defaultString = VALUE_COMPOSE_NOW_ACTION_COMPOSE)
     String KEY_COMPOSE_NOW_ACTION = "compose_now_action";
-    String KEY_FALLBACK_TWITTER_LINK_HANDLER = "fallback_twitter_link_handler";
 
     @Preference(type = STRING, hasDefault = true, defaultString = VALUE_MEDIA_PREVIEW_STYLE_CROP)
     String KEY_MEDIA_PREVIEW_STYLE = "media_preview_style";

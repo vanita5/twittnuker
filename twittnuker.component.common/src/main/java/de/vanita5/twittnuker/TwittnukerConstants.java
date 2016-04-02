@@ -163,7 +163,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int REQUEST_ADD_TO_LIST = 15;
     int REQUEST_SELECT_USER = 16;
     int REQUEST_SELECT_USER_LIST = 17;
-    int REQUEST_PICK_ACTIVITY = 18;
     int REQUEST_SETTINGS = 19;
     int REQUEST_OPEN_DOCUMENT = 20;
     int REQUEST_REQUEST_PERMISSIONS = 30;
