@@ -58,6 +58,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.EditTextEnterHandler;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MenuUtils;
+import de.vanita5.twittnuker.util.TwidereBugReporter;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.view.ComposeEditText;
 import de.vanita5.twittnuker.view.StatusTextCountView;
@@ -93,8 +94,10 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
                     retweetOrQuote(mTwitterWrapper, credentials, status);
                 } else if (isMyRetweet(status)) {
                     mTwitterWrapper.cancelRetweetAsync(status.account_key, status.id, status.my_retweet_id);
-                } else if (!status.user_is_protected) {
+                } else if (useQuote(!status.user_is_protected, credentials)) {
                     retweetOrQuote(mTwitterWrapper, credentials, status);
+                } else {
+                    TwidereBugReporter.logException(new IllegalStateException(status.toString()));
                 }
             }
         });
@@ -129,7 +132,8 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
                 dialog.findViewById(R.id.item_menu).setVisibility(View.GONE);
                 dialog.findViewById(R.id.action_buttons).setVisibility(View.GONE);
                 dialog.findViewById(R.id.item_content).setFocusable(false);
-                dialog.findViewById(R.id.comment_container).setVisibility(status.user_is_protected ? View.GONE : View.VISIBLE);
+                final boolean useQuote = useQuote(!status.user_is_protected, credentials);
+                dialog.findViewById(R.id.comment_container).setVisibility(useQuote ? View.VISIBLE : View.GONE);
                 final ComposeEditText editComment = (ComposeEditText) dialog.findViewById(R.id.edit_comment);
                 editComment.setAccountKey(status.account_key);
 
@@ -158,7 +162,7 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        updateTextCount(getDialog(), s, status);
+                        updateTextCount(getDialog(), s, status, credentials);
                     }
 
                     @Override
@@ -193,24 +197,29 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
                 });
 
 
-                updateTextCount(dialog, editComment.getText(), status);
+                updateTextCount(dialog, editComment.getText(), status, credentials);
             }
         });
         return dialog;
     }
 
-    private void updateTextCount(DialogInterface dialog, CharSequence s, ParcelableStatus status) {
+    private void updateTextCount(DialogInterface dialog, CharSequence s, ParcelableStatus status, ParcelableCredentials credentials) {
         if (!(dialog instanceof AlertDialog)) return;
         final AlertDialog alertDialog = (AlertDialog) dialog;
         final Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
         if (positiveButton == null) return;
         if (s.length() > 0) {
             positiveButton.setText(R.string.comment);
+            positiveButton.setEnabled(true);
         } else if(isMyRetweet(status)) {
             positiveButton.setText(R.string.cancel_retweet);
-            positiveButton.setTextColor(getResources().getColor(R.color.material_red));
+            positiveButton.setEnabled(true);
+        } else if (useQuote(false, credentials)) {
+            positiveButton.setText(R.string.retweet);
+            positiveButton.setEnabled(true);
         } else {
             positiveButton.setText(R.string.retweet);
+            positiveButton.setEnabled(!status.user_is_protected);
         }
         final String statusLink = LinkCreator.getStatusWebLink(status).toString();
         final StatusTextCountView textCountView = (StatusTextCountView) alertDialog.findViewById(R.id.comment_text_count);
@@ -273,8 +282,8 @@ public class RetweetQuoteDialogFragment extends BaseSupportDialogFragment implem
         }
     }
 
-    private boolean useQuote(boolean hasComment, ParcelableAccount account) {
-        return hasComment || ParcelableAccount.Type.FANFOU.equals(account.account_type);
+    private boolean useQuote(boolean preCondition, ParcelableAccount account) {
+        return preCondition || ParcelableAccount.Type.FANFOU.equals(account.account_type);
     }
 
     public static RetweetQuoteDialogFragment show(final FragmentManager fm, final ParcelableStatus status) {
