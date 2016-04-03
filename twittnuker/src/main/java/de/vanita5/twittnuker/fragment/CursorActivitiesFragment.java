@@ -47,7 +47,6 @@ import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader;
-import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -59,7 +58,6 @@ import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent;
 import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.message.StatusRetweetedEvent;
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
@@ -124,7 +122,7 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment {
         adapter.setShowAccountsColor(accountKeys.length > 1);
         final String[] projection = Activities.COLUMNS;
         return new CursorActivitiesLoader(context, uri, projection, selection, expression.whereArgs,
-                sortOrder, fromUser, accountKeys);
+                sortOrder, fromUser);
     }
 
     @Override
@@ -394,19 +392,17 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment {
     }
 
     public static class CursorActivitiesLoader extends ExtendedObjectCursorLoader<ParcelableActivity> {
-        private final UserKey[] mAccountKeys;
 
         public CursorActivitiesLoader(Context context, Uri uri, String[] projection,
-                                      String selection, String[] selectionArgs, String sortOrder,
-                                      boolean fromUser, UserKey[] accountKeys) {
-            super(context, ParcelableActivityCursorIndices.class, uri, projection, selection, selectionArgs, sortOrder, fromUser);
-            mAccountKeys = accountKeys;
+                                      String selection, String[] selectionArgs,
+                                      String sortOrder, boolean fromUser) {
+            super(context, ParcelableActivityCursorIndices.class, uri, projection, selection,
+                    selectionArgs, sortOrder, fromUser);
         }
 
         @Override
         protected ObjectCursor<ParcelableActivity> createObjectCursor(Cursor cursor, ObjectCursor.CursorIndices<ParcelableActivity> indices) {
             final String[] filteredUserIds = DataStoreUtils.getFilteredUserIds(getContext());
-            final ParcelableAccount[] accounts = ParcelableAccountUtils.getAccounts(getContext(), mAccountKeys);
             return new ActivityCursor(cursor, indices, filteredUserIds);
         }
 
