@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
 
 import com.squareup.otto.Subscribe;
 
@@ -49,6 +50,7 @@ import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SimpleRefreshTaskParam;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.AccountChangedEvent;
@@ -300,6 +302,41 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment {
     }
 
 
+    private void updateFavoritedStatus(ParcelableStatus status) {
+        final Context context = getActivity();
+        if (context == null) return;
+        replaceStatusStates(status);
+    }
+
+
+    public final void replaceStatusStates(final ParcelableStatus result) {
+        if (result == null) return;
+        final LinearLayoutManager lm = getLayoutManager();
+        final ParcelableActivitiesAdapter adapter = getAdapter();
+        int rangeStart = Math.max(adapter.getActivityStartIndex(), lm.findFirstVisibleItemPosition());
+        int rangeEnd = Math.min(lm.findLastVisibleItemPosition(), adapter.getActivityStartIndex()
+                + adapter.getActivityCount() - 1);
+        for (int i = rangeStart, j = rangeEnd + 1; i < j; i++) {
+            ParcelableActivity activity = adapter.getActivity(i);
+            if (result.account_key.equals(activity.account_key) && result.id.equals(activity.status_id)) {
+                if (!result.id.equals(activity.status_id)) continue;
+                ParcelableStatus[][] statusesMatrix = {activity.target_statuses,
+                        activity.target_object_statuses};
+                for (ParcelableStatus[] statusesArray : statusesMatrix) {
+                    if (statusesArray == null) continue;
+                    for (ParcelableStatus status : statusesArray) {
+                        if (!result.id.equals(status.id)) continue;
+                        status.is_favorite = result.is_favorite;
+                        status.reply_count = result.reply_count;
+                        status.retweet_count = result.retweet_count;
+                        status.favorite_count = result.favorite_count;
+                    }
+                }
+            }
+        }
+        adapter.notifyItemRangeChanged(rangeStart, rangeEnd);
+    }
+
     protected class CursorActivitiesBusCallback {
 
         @Subscribe
@@ -315,7 +352,9 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment {
 
         @Subscribe
         public void notifyFavoriteTask(FavoriteTaskEvent event) {
-
+            if (event.isSucceeded()) {
+                updateFavoritedStatus(event.getStatus());
+            }
         }
 
         @Subscribe
