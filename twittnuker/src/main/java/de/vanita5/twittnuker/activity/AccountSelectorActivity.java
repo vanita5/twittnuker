@@ -44,6 +44,7 @@ import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -241,7 +242,9 @@ public class AccountSelectorActivity extends BaseActivity implements
 
     private Intent getStartIntent() {
         final Intent intent = getIntent();
-        return intent.getParcelableExtra(EXTRA_START_INTENT);
+        final Intent startIntent = intent.getParcelableExtra(EXTRA_START_INTENT);
+        startIntent.setExtrasClassLoader(TwittnukerApplication.class.getClassLoader());
+        return startIntent;
     }
 
 }
