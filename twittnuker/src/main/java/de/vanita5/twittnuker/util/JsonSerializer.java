@@ -133,10 +133,9 @@ public class JsonSerializer {
         }
     }
 
-
-    public static <E> List<E> parseList(String json, Class<E> cls) {
+    @Nullable
+    public static <E> List<E> parseList(@Nullable String json, Class<E> cls) {
         if (json == null) return null;
-        FileInputStream is = null;
         //noinspection TryFinallyCanBeTryWithResources
         try {
             return LoganSquareMapperFinder.mapperFor(cls).parseList(json);

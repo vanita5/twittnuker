@@ -784,6 +784,7 @@
     <string name="provider_quitter_se">Quitter.se</string>
     <string name="provider_loadaverage_org">LoadAverage.org</string>
     <string name="provider_gnusocial_net">GNUSocial.net</string>
+    <string name="provider_gnusocial_de">GNUSocial.de</string>
     <string name="provider_android">Twitter for Android</string>
     <string name="provider_tweetdeck">TweetDeck</string>
     <string name="new_document_api">New Document API</string>
