@@ -417,7 +417,8 @@ public abstract class AbsStatusesFragment extends AbsContentListRecyclerViewFrag
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mScrollListener.setReversed(mPreferences.getBoolean(KEY_READ_FROM_BOTTOM));
+        //no reverse
+//        mScrollListener.setReversed(mPreferences.getBoolean(KEY_READ_FROM_BOTTOM));
         final ParcelableStatusesAdapter adapter = getAdapter();
         final RecyclerView recyclerView = getRecyclerView();
         final LinearLayoutManager layoutManager = getLayoutManager();

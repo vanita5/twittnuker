@@ -127,7 +127,8 @@ public class ContentScrollHandler {
         }
         mScrollSum += dy;
         if (Math.abs(mScrollSum) > mTouchSlop) {
-            mContentListSupport.setControlVisible(mReversed ^ dy < 0);
+            //no reverse
+            mContentListSupport.setControlVisible(dy < 0);
             mScrollSum = 0;
         }
         if (scrollState == idleState) {
