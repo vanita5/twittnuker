@@ -112,6 +112,7 @@ import org.mariotaku.restfu.RestFuUtils;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
 import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
 import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
@@ -209,7 +210,6 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
     private AsyncTask<Object, Object, ?> mTask;
     private SupportMenuInflater mMenuInflater;
     private ItemTouchHelper mItemTouchHelper;
-    private SetProgressVisibleRunnable mSetProgressVisibleRunnable;
 
     // Views
     private RecyclerView mAttachedMediaPreview;
@@ -242,7 +242,6 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
     private boolean mImageUploaderUsed, mStatusShortenerUsed;
     private boolean mNavigateBackPressed;
     private boolean mTextChanged;
-    private boolean mFragmentResumed;
     private int mKeyMetaState;
 
     // Listeners
@@ -1253,28 +1252,9 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
 
     private void setProgressVisible(final boolean visible) {
         if (isFinishing()) return;
-        mSetProgressVisibleRunnable = new SetProgressVisibleRunnable(this, visible);
-        if (mFragmentResumed) {
-            runOnUiThread(mSetProgressVisibleRunnable);
-            mSetProgressVisibleRunnable = null;
-        }
+        executeAfterFragmentResumed(new SetProgressVisibleAction(visible));
     }
 
-    @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-        mFragmentResumed = true;
-        if (mSetProgressVisibleRunnable != null) {
-            runOnUiThread(mSetProgressVisibleRunnable);
-            mSetProgressVisibleRunnable = null;
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mFragmentResumed = false;
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -1490,21 +1470,19 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
 
     }
 
-    static class SetProgressVisibleRunnable implements Runnable {
+    static class SetProgressVisibleAction implements Action {
 
-        final WeakReference<ComposeActivity> activityRef;
         final boolean visible;
 
-        SetProgressVisibleRunnable(ComposeActivity activity, boolean visible) {
-            this.activityRef = new WeakReference<>(activity);
+        SetProgressVisibleAction(boolean visible) {
             this.visible = visible;
         }
 
         @Override
-        public void run() {
-            final ComposeActivity activity = activityRef.get();
-            if (activity == null) return;
-            final FragmentManager fm = activity.getSupportFragmentManager();
+        public void execute(IExtendedActivity activity) {
+            final ComposeActivity composeActivity = (ComposeActivity) activity;
+            if (composeActivity == null) return;
+            final FragmentManager fm = composeActivity.getSupportFragmentManager();
             final Fragment f = fm.findFragmentByTag(DISCARD_STATUS_DIALOG_FRAGMENT_TAG);
             if (!visible && f instanceof DialogFragment) {
                 ((DialogFragment) f).dismiss();

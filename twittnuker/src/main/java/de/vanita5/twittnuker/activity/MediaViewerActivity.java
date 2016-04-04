@@ -34,7 +34,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -77,6 +76,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.CacheProvider;
+import de.vanita5.twittnuker.provider.ShareProvider;
 import de.vanita5.twittnuker.task.SaveFileTask;
 import de.vanita5.twittnuker.task.SaveMediaToGalleryTask;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
@@ -109,10 +109,8 @@ public final class MediaViewerActivity extends BaseActivity implements Constants
     MediaDownloader mMediaDownloader;
 
     private ParcelableMedia[] mMedia;
-    private ActionHelper mActionHelper = new ActionHelper(this);
     private SaveFileTask mSaveFileTask;
     private int mSaveToStoragePosition = -1;
-    private File mShareFile;
 
 
     private Helper mHelper;
@@ -128,27 +126,12 @@ public final class MediaViewerActivity extends BaseActivity implements Constants
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
-    @Override
-    protected void onPause() {
-        mActionHelper.dispatchOnPause();
-        super.onPause();
-    }
-
-    @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-        mActionHelper.dispatchOnResumeFragments();
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_SHARE_MEDIA: {
-                if (mShareFile != null) {
-                    mShareFile.delete();
-                    mShareFile = null;
-                }
+                ShareProvider.clearTempFiles(this);
                 break;
             }
         }
@@ -299,11 +282,6 @@ public final class MediaViewerActivity extends BaseActivity implements Constants
     }
 
     @Override
-    public void executeAfterFragmentResumed(Action action) {
-        mActionHelper.executeAfterFragmentResumed(action);
-    }
-
-    @Override
     public void setBarVisibility(boolean visible) {
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar == null) return;
@@ -417,7 +395,7 @@ public final class MediaViewerActivity extends BaseActivity implements Constants
             // TODO show error
             return;
         }
-        final File destination = new File(getCacheDir(), "shared_files");
+        final File destination = ShareProvider.getFilesDir(this);
         final SaveFileTask task = new SaveFileTask(this, result.cacheUri, destination,
                 new CacheProvider.CacheFileTypeCallback(this, type)) {
             private static final String PROGRESS_FRAGMENT_TAG = "progress";
@@ -457,8 +435,7 @@ public final class MediaViewerActivity extends BaseActivity implements Constants
                 final MediaViewerActivity activity = (MediaViewerActivity) getContext();
                 if (activity == null) return;
 
-                activity.mShareFile = savedFile;
-                final Uri fileUri = FileProvider.getUriForFile(activity, AUTHORITY_TWITTNUKER_FILE,
+                final Uri fileUri = ShareProvider.getUriForFile(activity, AUTHORITY_TWITTNUKER_SHARE,
                         savedFile);
 
                 final Intent intent = new Intent(Intent.ACTION_SEND);
