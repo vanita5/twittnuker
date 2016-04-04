@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.util.dagger;
 
 import android.support.v7.widget.RecyclerView;
 
+import de.vanita5.twittnuker.activity.APIEditorActivity;
 import de.vanita5.twittnuker.activity.BaseActivity;
 import de.vanita5.twittnuker.activity.ComposeActivity;
 import de.vanita5.twittnuker.activity.MediaViewerActivity;
@@ -150,4 +151,6 @@ public interface GeneralComponent {
     void inject(UpdateProfileBannerImageTask<Object> task);
 
     void inject(AsyncTwitterWrapper.UpdateProfileImageTask<Object> task);
+
+    void inject(APIEditorActivity.LoadDefaultsChooserDialogFragment.DefaultAPIConfigLoader loader);
 }

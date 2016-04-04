@@ -29,8 +29,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -38,17 +42,33 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.http.HttpRequest;
+import org.mariotaku.restfu.http.HttpResponse;
+import org.mariotaku.restfu.http.RestHttpClient;
+
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.CustomAPIConfig;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import static de.vanita5.twittnuker.util.Utils.getNonEmptyString;
 import static de.vanita5.twittnuker.util.Utils.trim;
@@ -267,26 +287,91 @@ public class APIEditorActivity extends BaseActivity implements OnCheckedChangeLi
     }
 
     public static class LoadDefaultsChooserDialogFragment extends BaseSupportDialogFragment
-            implements DialogInterface.OnClickListener {
-        private CustomAPIConfig[] mAPIConfigs;
+            implements DialogInterface.OnClickListener, LoaderManager.LoaderCallbacks<List<CustomAPIConfig>> {
+        private ArrayAdapter<CustomAPIConfig> mAdapter;
 
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final Context context = getContext();
-            mAPIConfigs = CustomAPIConfig.listDefault(context);
+            List<CustomAPIConfig> configs = CustomAPIConfig.listDefault(context);
+            mAdapter = new CustomAPIConfigArrayAdapter(context, configs);
             final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(context);
-            String[] entries = new String[mAPIConfigs.length];
-            for (int i = 0, mAPIConfigsLength = mAPIConfigs.length; i < mAPIConfigsLength; i++) {
-                entries[i] = mAPIConfigs[i].getLocalizedName(context);
-            }
-            builder.setItems(entries, this);
+            builder.setAdapter(mAdapter, this);
+            getLoaderManager().initLoader(0, null, this);
             return builder.create();
         }
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            ((APIEditorActivity) getActivity()).setAPIConfig(mAPIConfigs[which]);
+            ((APIEditorActivity) getActivity()).setAPIConfig(mAdapter.getItem(which));
+        }
+
+        @Override
+        public Loader<List<CustomAPIConfig>> onCreateLoader(int id, Bundle args) {
+            return new DefaultAPIConfigLoader(getContext());
+        }
+
+        @Override
+        public void onLoadFinished(Loader<List<CustomAPIConfig>> loader, List<CustomAPIConfig> data) {
+            if (data != null) {
+                mAdapter.clear();
+                mAdapter.addAll(data);
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<List<CustomAPIConfig>> loader) {
+
+        }
+
+        public static class DefaultAPIConfigLoader extends AsyncTaskLoader<List<CustomAPIConfig>> {
+            public static final String DEFAULT_API_CONFIGS_URL = "https://raw.githubusercontent.com/vanita5/twittnuker/master/twittnuker/src/main/assets/data/default_api_configs.json";
+            @Inject
+            RestHttpClient mClient;
+
+            public DefaultAPIConfigLoader(Context context) {
+                super(context);
+                GeneralComponentHelper.build(context).inject(this);
+            }
+
+            @Override
+            public List<CustomAPIConfig> loadInBackground() {
+                HttpRequest request = new HttpRequest(GET.METHOD, DEFAULT_API_CONFIGS_URL,
+                        null, null, null);
+                HttpResponse response = null;
+                try {
+                    response = mClient.newCall(request).execute();
+                    if (response.isSuccessful()) {
+                        final InputStream is = response.getBody().stream();
+                        return JsonSerializer.parseList(is, CustomAPIConfig.class);
+                    }
+                } catch (IOException e) {
+                    // Ignore
+                } finally {
+                    Utils.closeSilently(response);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onStartLoading() {
+                forceLoad();
+            }
+        }
+
+        private class CustomAPIConfigArrayAdapter extends ArrayAdapter<CustomAPIConfig> {
+            public CustomAPIConfigArrayAdapter(Context context, List<CustomAPIConfig> defaultItems) {
+                super(context, R.layout.md_listitem, defaultItems);
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                final View view = super.getView(position, convertView, parent);
+                CustomAPIConfig config = getItem(position);
+                ((TextView) view.findViewById(com.afollestad.materialdialogs.R.id.title)).setText(config.getLocalizedName(getContext()));
+                return view;
+            }
         }
     }
 }
