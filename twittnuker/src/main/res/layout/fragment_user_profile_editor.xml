@@ -121,7 +121,7 @@
                     android:orientation="horizontal"
                     android:padding="@dimen/element_spacing_normal">
 
-                    <org.mariotaku.twidere.view.ForegroundImageView
+                    <de.vanita5.twittnuker.view.ForegroundImageView
                         android:id="@+id/profile_background"
                         android:layout_width="@dimen/element_size_mlarge"
                         android:layout_height="@dimen/element_size_mlarge"

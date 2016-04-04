@@ -79,7 +79,7 @@ import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.activity.QuickSearchBarActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.annotation.CustomTabType;
-import de.vanita5.twittnuker.menu.support.AccountToggleProvider;
+import de.vanita5.twittnuker.menu.AccountToggleProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.model.UserKey;

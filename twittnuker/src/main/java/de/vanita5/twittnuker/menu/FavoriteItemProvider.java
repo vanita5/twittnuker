@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.menu.support;
+package de.vanita5.twittnuker.menu;
 
 import android.content.Context;
 import android.graphics.PorterDuff;

@@ -40,7 +40,7 @@
         android:id="@id/favorite"
         android:icon="@drawable/ic_action_heart"
         android:title="@string/like"
-        app:actionProviderClass="de.vanita5.twittnuker.menu.support.FavoriteItemProvider"
+        app:actionProviderClass="de.vanita5.twittnuker.menu.FavoriteItemProvider"
         app:showAsAction="always" />
     <item
         android:id="@id/love"

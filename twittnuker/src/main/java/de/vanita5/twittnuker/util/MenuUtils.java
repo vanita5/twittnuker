@@ -56,7 +56,7 @@ import de.vanita5.twittnuker.fragment.DestroyStatusDialogFragment;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
 import de.vanita5.twittnuker.menu.SupportStatusShareProvider;
-import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
+import de.vanita5.twittnuker.menu.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;

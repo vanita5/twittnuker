@@ -104,7 +104,7 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
 import de.vanita5.twittnuker.loader.ConversationLoader;
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader;
-import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
+import de.vanita5.twittnuker.menu.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;

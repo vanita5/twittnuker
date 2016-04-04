@@ -28,11 +28,14 @@ import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 
+import de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate;
+
 import java.io.IOException;
 
 /**
  * Created by mariotaku on 15/5/10.
  */
+@NoObfuscate
 public class IDs extends TwitterResponseObject implements TwitterResponse, CursorSupport {
 
     long previousCursor;

@@ -165,7 +165,7 @@ import de.vanita5.twittnuker.fragment.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.UserProfileEditorFragment;
 import de.vanita5.twittnuker.fragment.UserTimelineFragment;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
-import de.vanita5.twittnuker.menu.support.FavoriteItemProvider;
+import de.vanita5.twittnuker.menu.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;

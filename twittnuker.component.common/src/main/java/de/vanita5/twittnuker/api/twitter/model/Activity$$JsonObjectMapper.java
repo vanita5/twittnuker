@@ -33,6 +33,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+/**
+ * ObjectMapper for Activity object
+ */
 public class Activity$$JsonObjectMapper extends JsonMapper<Activity> {
 
     private static final JsonMapper<User> USER_JSON_MAPPER = LoganSquare.mapperFor(User.class);
@@ -74,6 +77,7 @@ public class Activity$$JsonObjectMapper extends JsonMapper<Activity> {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void parseField(Activity instance, String fieldName, JsonParser jsonParser) throws IOException {
         if ("action".equals(fieldName)) {
             //noinspection ResourceType
