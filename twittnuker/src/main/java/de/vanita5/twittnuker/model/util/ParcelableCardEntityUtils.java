@@ -29,14 +29,15 @@ import android.support.v4.util.ArrayMap;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-
+import org.apache.commons.lang3.time.DateUtils;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
+import de.vanita5.twittnuker.model.UserKey;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 public class ParcelableCardEntityUtils implements TwittnukerConstants {
@@ -99,6 +100,13 @@ public class ParcelableCardEntityUtils implements TwittnukerConstants {
             return DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.parse(value.value);
         } catch (ParseException e) {
             return def;
+        } catch (NoSuchMethodError e) {
+            // Fuck Xiaomi http://crashes.to/s/a84a3d257dc
+            try {
+                return DateUtils.parseDate(value.value, Locale.ENGLISH, "yyyy-MM-dd'T'HH:mm:ssZZ");
+            } catch (ParseException e1) {
+                return def;
+            }
         }
     }
 }
