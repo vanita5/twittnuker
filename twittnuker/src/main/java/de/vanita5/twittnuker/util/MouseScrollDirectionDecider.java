@@ -128,6 +128,11 @@ public class MouseScrollDirectionDecider {
             }
         }
 
+        @Override
+        public void setOverScrollMode(int mode) {
+            super.setOverScrollMode(OVER_SCROLL_NEVER);
+        }
+
     }
 
     @SuppressLint("ViewConstructor")
@@ -159,6 +164,11 @@ public class MouseScrollDirectionDecider {
                     decider.setHorizontalDirection(0);
                 }
             }
+        }
+
+        @Override
+        public void setOverScrollMode(int mode) {
+            super.setOverScrollMode(OVER_SCROLL_NEVER);
         }
     }
 
