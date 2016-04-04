@@ -42,6 +42,13 @@ Twidere updates will almost always be merged, so you can expect the latest featu
 Do you have more ideas on how to improve the app? Feel free to contribute!
 
 
+### Translation ###
+
+**General translation (Twidere / Upstream):** [![Crowdin](https://d322cqt584bo4o.cloudfront.net/twidere/localized.svg)](https://crowdin.com/project/twidere)
+
+For Twittnuker specific translation, please make a pull request or open an issue!
+
+
 ## Credits ##
 
 ### Open source projects ###
