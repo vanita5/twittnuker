@@ -76,6 +76,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.menu.MenuBuilder;
 import android.system.ErrnoException;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -106,6 +107,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.FastDateParser;
 import org.json.JSONException;
 import org.mariotaku.sqliteqb.library.AllColumns;
 import org.mariotaku.sqliteqb.library.Columns;
@@ -2263,6 +2265,16 @@ public final class Utils implements Constants {
             } else {
                 Log.i("PlayServices", "This device is not supported.");
             }
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkDeviceCompatible() {
+        try {
+            MenuBuilder.class.getDeclaredField("mContext");
+            FastDateParser.class.getDeclaredMethod("parse", String.class);
+        } catch (Exception e) {
             return false;
         }
         return true;

@@ -794,6 +794,8 @@
     <string name="group">Group</string>
     <string name="your_coarse_location">Your coarse location</string>
     <string name="location_countrywide">Countrywide</string>
+    <string name="error_title_device_incompatible">Incompatible device</string>
+    <string name="error_message_device_incompatible">This device is not compatible with Twittnuker. Upgrading to the latest Android OS is recommended.\nYou can send the information below to help me to report this issue to the device manufacturer.</string>
 
 
 

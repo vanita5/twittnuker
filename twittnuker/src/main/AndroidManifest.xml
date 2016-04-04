@@ -443,6 +443,10 @@
             android:theme="@style/Theme.Twidere.NoActionBar"
             android:windowSoftInputMode="adjustResize"/>
         <activity
+            android:name=".activity.IncompatibleAlertActivity"
+            android:label="@string/error_title_device_incompatible"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog"/>
+        <activity
             android:name=".activity.DonationsActivity"
             android:label="@string/donation"
             android:theme="@style/Theme.Twidere.NoActionBar">

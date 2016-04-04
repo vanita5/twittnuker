@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.Utils;
 
 public class MainActivity extends Activity implements Constants {
 
@@ -41,8 +42,13 @@ public class MainActivity extends Activity implements Constants {
             StrictModeUtils.detectAllThreadPolicy();
         }
         super.onCreate(savedInstanceState);
-        final Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
+        if (Utils.checkDeviceCompatible()) {
+            final Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+        } else {
+            final Intent intent = new Intent(this, IncompatibleAlertActivity.class);
+            startActivity(intent);
+        }
         finish();
     }
 
