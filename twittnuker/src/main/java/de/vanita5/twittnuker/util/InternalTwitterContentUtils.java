@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.EntitySupport;
+import de.vanita5.twittnuker.api.twitter.model.ExtendedEntitySupport;
 import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
@@ -260,6 +261,7 @@ public class InternalTwitterContentUtils {
 
     public static Pair<String, List<SpanItem>> formatStatusTextWithIndices(final Status status) {
         if (status == null) return null;
+        //TODO handle twitter video url
         final HtmlBuilder builder = new HtmlBuilder(status.getText(), false, true, false);
         parseEntities(builder, status);
         return builder.buildWithIndices();
@@ -271,13 +273,19 @@ public class InternalTwitterContentUtils {
 
     private static void parseEntities(final HtmlBuilder builder, final EntitySupport entities) {
         // Format media.
-        final MediaEntity[] mediaEntities = entities.getMediaEntities();
+        MediaEntity[] mediaEntities = null;
+        if (entities instanceof ExtendedEntitySupport) {
+            mediaEntities = ((ExtendedEntitySupport) entities).getExtendedMediaEntities();
+        }
+        if (mediaEntities == null) {
+            mediaEntities = entities.getMediaEntities();
+        }
         if (mediaEntities != null) {
             for (final MediaEntity mediaEntity : mediaEntities) {
                 final int start = mediaEntity.getStart(), end = mediaEntity.getEnd();
                 final String mediaUrl = getMediaUrl(mediaEntity);
                 if (mediaUrl != null && start >= 0 && end >= 0) {
-                    builder.addLink(mediaUrl, mediaEntity.getDisplayUrl(), start, end);
+                    builder.addLink(mediaEntity.getExpandedUrl(), mediaEntity.getDisplayUrl(), start, end);
                 }
             }
         }

@@ -1090,7 +1090,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 countsUsersHeightHolder.setVisibility(View.GONE);
             }
 
-            final ParcelableMedia[] media = IntentUtils.getPrimaryMedia(status);
+            final ParcelableMedia[] media = ParcelableMediaUtils.getPrimaryMedia(status);
 
             if (ArrayUtils.isEmpty(media)) {
                 mediaPreviewContainer.setVisibility(View.GONE);
