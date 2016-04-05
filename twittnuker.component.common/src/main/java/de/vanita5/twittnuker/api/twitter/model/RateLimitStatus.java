@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.api.twitter.model;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.mariotaku.restfu.http.RestHttpResponse;
+import org.mariotaku.restfu.http.HttpResponse;
 
 /**
  * A data class representing Twitter REST API's rate limit status
@@ -125,7 +125,7 @@ public final class RateLimitStatus {
                 '}';
     }
 
-    public static RateLimitStatus createFromResponseHeader(final RestHttpResponse res) {
+    public static RateLimitStatus createFromResponseHeader(final HttpResponse res) {
         if (null == res) return null;
         int remainingHits;// "X-Rate-Limit-Remaining"
         int limit;// "X-Rate-Limit-Limit"
@@ -150,33 +150,5 @@ public final class RateLimitStatus {
             return null;
         return new RateLimitStatus(limit, remainingHits, resetTimeInSeconds);
     }
-
-//	static Map<String, RateLimitStatus> createRateLimitStatuses(final HttpResponse res, final Configuration conf)
-//			throws TwitterException {
-//		final JSONObject json = res.asJSONObject();
-//		final Map<String, RateLimitStatus> map = createRateLimitStatuses(json);
-//		return map;
-//	}
-//
-//	static Map<String, RateLimitStatus> createRateLimitStatuses(final InputStream stream) throws TwitterException {
-//		final Map<String, RateLimitStatus> map = new HashMap<String, RateLimitStatus>();
-//		try {
-//			final JSONObject resources = json.getJSONObject("resources");
-//			final Iterator<?> resourceKeys = resources.keys();
-//			while (resourceKeys.hasNext()) {
-//				final JSONObject resource = resources.getJSONObject((String) resourceKeys.next());
-//				final Iterator<?> endpointKeys = resource.keys();
-//				while (endpointKeys.hasNext()) {
-//					final String endpoint = (String) endpointKeys.next();
-//					final JSONObject rateLimitStatusJSON = resource.getJSONObject(endpoint);
-//					final RateLimitStatus rateLimitStatus = new RateLimitStatus(rateLimitStatusJSON);
-//					map.put(endpoint, rateLimitStatus);
-//				}
-//			}
-//			return Collections.unmodifiableMap(map);
-//		} catch (final JSONException jsone) {
-//			throw new TwitterException(jsone);
-//		}
-//	}
 
 }

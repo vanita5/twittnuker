@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,42 +33,27 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
-import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.api.twitter.model.User;
+
+import de.vanita5.twittnuker.model.util.UserKeyConverter;
+import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
 
-import java.util.Comparator;
-import java.util.Date;
-
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
+import java.util.Arrays;
 
 @ParcelablePlease(allFields = false)
 @JsonObject
 @CursorObject(valuesCreator = true)
 public class ParcelableDirectMessage implements Parcelable, Comparable<ParcelableDirectMessage> {
 
-    public static final Comparator<ParcelableDirectMessage> MESSAGE_ID_COMPARATOR = new Comparator<ParcelableDirectMessage>() {
-
-        @Override
-        public int compare(final ParcelableDirectMessage object1, final ParcelableDirectMessage object2) {
-            final long diff = object2.id - object1.id;
-            if (diff > Integer.MAX_VALUE) return Integer.MAX_VALUE;
-            if (diff < Integer.MIN_VALUE) return Integer.MIN_VALUE;
-            return (int) diff;
-        }
-    };
-
-
     @ParcelableThisPlease
-    @JsonField(name = "account_id")
-    @CursorField(DirectMessages.ACCOUNT_ID)
-    public long account_id;
+    @JsonField(name = "account_id", typeConverter = UserKeyConverter.class)
+    @CursorField(value = DirectMessages.ACCOUNT_KEY, converter = UserKeyCursorFieldConverter.class)
+    public UserKey account_key;
     @ParcelableThisPlease
     @JsonField(name = "id")
     @CursorField(DirectMessages.MESSAGE_ID)
-    public long id;
+    public String id;
     @ParcelableThisPlease
     @JsonField(name = "timestamp")
     @CursorField(DirectMessages.MESSAGE_TIMESTAMP)
@@ -77,11 +62,11 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
     @ParcelableThisPlease
     @JsonField(name = "sender_id")
     @CursorField(DirectMessages.SENDER_ID)
-    public long sender_id;
+    public String sender_id;
     @ParcelableThisPlease
     @JsonField(name = "recipient_id")
     @CursorField(DirectMessages.RECIPIENT_ID)
-    public long recipient_id;
+    public String recipient_id;
 
     @ParcelableThisPlease
     @JsonField(name = "is_outgoing")
@@ -135,73 +120,54 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
     public ParcelableDirectMessage() {
     }
 
-    public ParcelableDirectMessage(final DirectMessage message, final long account_id, final boolean is_outgoing) {
-        this.account_id = account_id;
-        this.is_outgoing = is_outgoing;
-        final User sender = message.getSender(), recipient = message.getRecipient();
-        assert sender != null && recipient != null;
-        final String sender_profile_image_url = TwitterContentUtils.getProfileImageUrl(sender);
-        final String recipient_profile_image_url = TwitterContentUtils.getProfileImageUrl(recipient);
-        id = message.getId();
-        timestamp = getTime(message.getCreatedAt());
-        sender_id = sender.getId();
-        recipient_id = recipient.getId();
-        text_html = TwitterContentUtils.formatDirectMessageText(message);
-        text_plain = message.getText();
-        sender_name = sender.getName();
-        recipient_name = recipient.getName();
-        sender_screen_name = sender.getScreenName();
-        recipient_screen_name = recipient.getScreenName();
-        this.sender_profile_image_url = sender_profile_image_url;
-        this.recipient_profile_image_url = recipient_profile_image_url;
-        text_unescaped = toPlainText(text_html);
-        media = ParcelableMedia.fromEntities(message);
-    }
-
-
     @Override
     public int compareTo(@NonNull final ParcelableDirectMessage another) {
-        final long diff = another.id - id;
+        final long diff = timestamp - another.timestamp;
         if (diff > Integer.MAX_VALUE) return Integer.MAX_VALUE;
         if (diff < Integer.MIN_VALUE) return Integer.MIN_VALUE;
         return (int) diff;
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (!(obj instanceof ParcelableDirectMessage)) return false;
-        final ParcelableDirectMessage other = (ParcelableDirectMessage) obj;
-        if (account_id != other.account_id) return false;
-        if (id != other.id) return false;
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ParcelableDirectMessage that = (ParcelableDirectMessage) o;
+
+        if (!account_key.equals(that.account_key)) return false;
+        return id.equals(that.id);
+
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (account_id ^ account_id >>> 32);
-        result = prime * result + (int) (id ^ id >>> 32);
+        int result = account_key.hashCode();
+        result = 31 * result + id.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
-        return "ParcelableDirectMessage{account_id=" + account_id + ", id=" + id + ", timestamp=" + timestamp
-                + ", sender_id=" + sender_id + ", recipient_id=" + recipient_id + ", is_outgoing=" + is_outgoing
-                + ", text_html=" + text_html + ", text_plain=" + text_plain + ", text_unescaped=" + text_unescaped
-                + ", sender_name=" + sender_name + ", recipient_name=" + recipient_name + ", sender_screen_name="
-                + sender_screen_name + ", recipient_screen_name=" + recipient_screen_name
-                + ", sender_profile_image_url=" + sender_profile_image_url + ", recipient_profile_image_url="
-                + recipient_profile_image_url + "}";
+        return "ParcelableDirectMessage{" +
+                "account_key=" + account_key +
+                ", id=" + id +
+                ", timestamp=" + timestamp +
+                ", sender_id=" + sender_id +
+                ", recipient_id=" + recipient_id +
+                ", is_outgoing=" + is_outgoing +
+                ", text_html='" + text_html + '\'' +
+                ", text_plain='" + text_plain + '\'' +
+                ", text_unescaped='" + text_unescaped + '\'' +
+                ", sender_name='" + sender_name + '\'' +
+                ", recipient_name='" + recipient_name + '\'' +
+                ", sender_screen_name='" + sender_screen_name + '\'' +
+                ", recipient_screen_name='" + recipient_screen_name + '\'' +
+                ", sender_profile_image_url='" + sender_profile_image_url + '\'' +
+                ", recipient_profile_image_url='" + recipient_profile_image_url + '\'' +
+                ", media=" + Arrays.toString(media) +
+                '}';
     }
-
-    private static long getTime(final Date date) {
-        return date != null ? date.getTime() : 0;
-    }
-
 
     @Override
     public int describeContents() {
@@ -218,7 +184,7 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
             ParcelableDirectMessage target = new ParcelableDirectMessage();
             ParcelableDirectMessageParcelablePlease.readFromParcel(target, source);
             return target;
-    }
+        }
 
         public ParcelableDirectMessage[] newArray(int size) {
             return new ParcelableDirectMessage[size];

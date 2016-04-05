@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,18 +26,26 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.IStatusShortener;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.StatusShortenResult;
 
-public final class StatusShortenerInterface extends AbsServiceInterface<IStatusShortener> implements IStatusShortener {
+import java.util.List;
 
-    protected StatusShortenerInterface(Context context, String shortenerName) {
-        super(context, shortenerName);
+public final class StatusShortenerInterface extends AbsServiceInterface<IStatusShortener> {
+
+    protected StatusShortenerInterface(Context context, String shortenerName, Bundle metaData) {
+        super(context, shortenerName, metaData);
     }
 
     @Override
@@ -45,26 +53,48 @@ public final class StatusShortenerInterface extends AbsServiceInterface<IStatusS
         return IStatusShortener.Stub.asInterface(obj);
     }
 
-    @Override
-    public StatusShortenResult shorten(final ParcelableStatusUpdate status, final String overrideStatusText)
-            throws RemoteException {
+    public StatusShortenResult shorten(final ParcelableStatusUpdate status,
+                                       final UserKey currentAccountId,
+                                       final String overrideStatusText) {
         final IStatusShortener iface = getInterface();
         if (iface == null) return null;
         try {
-            return iface.shorten(status, overrideStatusText);
+            final String statusJson = JsonSerializer.serialize(status, ParcelableStatusUpdate.class);
+            final String resultJson = iface.shorten(statusJson, currentAccountId.toString(),
+                    overrideStatusText);
+            return JsonSerializer.parse(resultJson, StatusShortenResult.class);
         } catch (final RemoteException e) {
-            Log.w(LOGTAG, e);
+            if (BuildConfig.DEBUG) {
+                Log.w(LOGTAG, e);
+            }
         }
         return null;
     }
 
-    public static StatusShortenerInterface getInstance(final Application application, final String shortener_name) {
-        if (shortener_name == null) return null;
+    public boolean callback(StatusShortenResult result, ParcelableStatus status) {
+        final IStatusShortener iface = getInterface();
+        if (iface == null) return false;
+        try {
+            final String resultJson = JsonSerializer.serialize(result, StatusShortenResult.class);
+            final String statusJson = JsonSerializer.serialize(status, ParcelableStatus.class);
+            return iface.callback(resultJson, statusJson);
+        } catch (final RemoteException e) {
+            if (BuildConfig.DEBUG) {
+                Log.w(LOGTAG, e);
+            }
+        }
+        return false;
+    }
+
+    public static StatusShortenerInterface getInstance(final Application application, final String shortenerName) {
+        if (shortenerName == null) return null;
         final Intent intent = new Intent(INTENT_ACTION_EXTENSION_SHORTEN_STATUS);
-        final ComponentName component = ComponentName.unflattenFromString(shortener_name);
+        final ComponentName component = ComponentName.unflattenFromString(shortenerName);
         intent.setComponent(component);
-        if (application.getPackageManager().queryIntentServices(intent, 0).size() != 1) return null;
-        return new StatusShortenerInterface(application, shortener_name);
+        final PackageManager pm = application.getPackageManager();
+        final List<ResolveInfo> services = pm.queryIntentServices(intent, PackageManager.GET_META_DATA);
+        if (services.size() != 1) return null;
+        return new StatusShortenerInterface(application, shortenerName, services.get(0).serviceInfo.metaData);
     }
 
 }

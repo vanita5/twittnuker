@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -21,38 +21,34 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<de.vanita5.twittnuker.view.TintedStatusNativeActionModeAwareLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.v4.widget.SlidingPaneLayout
+    android:id="@+id/sliding_pane"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:setPadding="true">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start">
 
-        <FrameLayout
-            android:id="@+id/settings_content"
+        <ListView
+            android:id="@+id/entries_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/twidere_action_bar_container" />
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            tools:listitem="@layout/list_item_preference_header_item"/>
+    </FrameLayout>
 
-        <de.vanita5.twittnuker.view.TwidereActionBarContainer
-            android:id="@+id/twidere_action_bar_container"
-            style="?attr/actionBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:layout_alignParentTop="true"
-            android:touchscreenBlocksFocus="true"
-            tools:ignore="UnusedAttribute" />
-
-        <View
-            android:id="@+id/window_overlay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/twidere_action_bar_container"
-            android:background="?android:windowContentOverlay" />
-    </RelativeLayout>
-</de.vanita5.twittnuker.view.TintedStatusNativeActionModeAwareLayout>
+    <FrameLayout
+        android:id="@+id/detail_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:layout_marginLeft="@dimen/element_size_normal"
+        android:layout_marginStart="@dimen/element_size_normal"
+        android:clickable="true"
+        tools:background="?android:colorBackground"/>
+</android.support.v4.widget.SlidingPaneLayout>

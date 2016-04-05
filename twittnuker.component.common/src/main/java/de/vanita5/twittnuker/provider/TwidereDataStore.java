@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import de.vanita5.twittnuker.model.ParcelableActivityTableInfo;
+import de.vanita5.twittnuker.model.ParcelableStatusTableInfo;
+
 @SuppressWarnings("unused")
 public interface TwidereDataStore {
 
@@ -46,6 +49,8 @@ public interface TwidereDataStore {
 
     String CONTENT_PATH_EMPTY = "empty_content";
 
+    String CONTENT_PATH_RAW_QUERY = "raw_query";
+
     String CONTENT_PATH_DATABASE_READY = "database_ready";
 
     Uri BASE_CONTENT_URI = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT)
@@ -55,6 +60,8 @@ public interface TwidereDataStore {
 
     Uri CONTENT_URI_EMPTY = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH_EMPTY);
 
+    Uri CONTENT_URI_RAW_QUERY = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH_RAW_QUERY);
+
     Uri CONTENT_URI_DATABASE_READY = Uri.withAppendedPath(BASE_CONTENT_URI,
             CONTENT_PATH_DATABASE_READY);
 
@@ -63,8 +70,20 @@ public interface TwidereDataStore {
             CachedHashtags.CONTENT_URI, CachedTrends.Local.CONTENT_URI};
     Uri[] DIRECT_MESSAGES_URIS = new Uri[]{DirectMessages.Inbox.CONTENT_URI,
             DirectMessages.Outbox.CONTENT_URI};
+    Uri[] ACTIVITIES_URIS = new Uri[]{Activities.AboutMe.CONTENT_URI};
 
-    interface Accounts extends BaseColumns {
+    interface InsertedDateColumns {
+        String INSERTED_DATE = "inserted_date";
+        String INSERTED_DATE_TYPE = TYPE_INT;
+    }
+
+    interface AccountSupportColumns {
+
+        String ACCOUNT_KEY = "account_id";
+
+    }
+
+    interface Accounts extends BaseColumns, AccountSupportColumns {
 
         String TABLE_NAME = "accounts";
         String CONTENT_PATH = TABLE_NAME;
@@ -78,11 +97,6 @@ public interface TwidereDataStore {
 
         String NAME = "name";
 
-        /**
-         * Unique ID of the account<br>
-         * Type: INTEGER (long)
-         */
-        String ACCOUNT_ID = "account_id";
 
         /**
          * Auth type of the account.</br> Type: INTEGER
@@ -140,17 +154,25 @@ public interface TwidereDataStore {
         String SAME_OAUTH_SIGNING_URL = "same_oauth_signing_url";
         String NO_VERSION_SUFFIX = "no_version_suffix";
 
-        String[] COLUMNS_NO_CREDENTIALS = {_ID, NAME, SCREEN_NAME, ACCOUNT_ID,
-                CONSUMER_KEY, CONSUMER_SECRET, PROFILE_IMAGE_URL, PROFILE_BANNER_URL, COLOR, IS_ACTIVATED};
+        String ACCOUNT_TYPE = "account_type";
 
-        String[] COLUMNS = {_ID, NAME, SCREEN_NAME, ACCOUNT_ID, AUTH_TYPE,
-                BASIC_AUTH_USERNAME, BASIC_AUTH_PASSWORD, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, CONSUMER_KEY,
-                CONSUMER_SECRET, API_URL_FORMAT, SAME_OAUTH_SIGNING_URL, NO_VERSION_SUFFIX, PROFILE_IMAGE_URL, PROFILE_BANNER_URL, COLOR,
-                IS_ACTIVATED, SORT_POSITION};
+        String ACCOUNT_EXTRAS = "account_extras";
+
+        String ACCOUNT_USER = "account_user";
+
+        String[] COLUMNS_NO_CREDENTIALS = {_ID, NAME, SCREEN_NAME, ACCOUNT_KEY, PROFILE_IMAGE_URL,
+                PROFILE_BANNER_URL, COLOR, IS_ACTIVATED, SORT_POSITION, ACCOUNT_TYPE, ACCOUNT_USER};
+
+        String[] COLUMNS = {_ID, NAME, SCREEN_NAME, ACCOUNT_KEY, AUTH_TYPE, BASIC_AUTH_USERNAME,
+                BASIC_AUTH_PASSWORD, OAUTH_TOKEN, OAUTH_TOKEN_SECRET, CONSUMER_KEY, CONSUMER_SECRET,
+                API_URL_FORMAT, SAME_OAUTH_SIGNING_URL, NO_VERSION_SUFFIX, PROFILE_IMAGE_URL,
+                PROFILE_BANNER_URL, COLOR, IS_ACTIVATED, SORT_POSITION, ACCOUNT_TYPE, ACCOUNT_EXTRAS,
+                ACCOUNT_USER};
 
         String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL,
-                TYPE_INT_UNIQUE, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-                TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_BOOLEAN, TYPE_INT};
+                TYPE_TEXT_NOT_NULL_UNIQUE, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
+                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT,
+                TYPE_INT, TYPE_BOOLEAN, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT};
 
     }
 
@@ -221,7 +243,7 @@ public interface TwidereDataStore {
         Uri CONTENT_URI_WITH_SCORE = Uri.withAppendedPath(BASE_CONTENT_URI,
                 CONTENT_PATH_WITH_SCORE);
 
-        String USER_ID = "user_id";
+        String USER_KEY = "user_id";
 
         String CREATED_AT = "created_at";
 
@@ -235,6 +257,8 @@ public interface TwidereDataStore {
 
         String DESCRIPTION_HTML = "description_html";
 
+        String DESCRIPTION_UNESCAPED = "description_unescaped";
+
         String DESCRIPTION_EXPANDED = "description_expanded";
 
         String LOCATION = "location";
@@ -244,6 +268,8 @@ public interface TwidereDataStore {
         String URL_EXPANDED = "url_expanded";
 
         String PROFILE_BANNER_URL = "profile_banner_url";
+
+        String PROFILE_BACKGROUND_URL = "profile_background_url";
 
         String FOLLOWERS_COUNT = "followers_count";
 
@@ -278,19 +304,22 @@ public interface TwidereDataStore {
 
         String SCORE = "score";
 
-        String[] COLUMNS = {_ID, USER_ID, CREATED_AT, NAME, SCREEN_NAME,
-                DESCRIPTION_PLAIN, LOCATION, URL, PROFILE_IMAGE_URL, PROFILE_BANNER_URL, IS_PROTECTED,
-                IS_VERIFIED, IS_FOLLOWING, FOLLOWERS_COUNT, FRIENDS_COUNT, STATUSES_COUNT, FAVORITES_COUNT,
-                LISTED_COUNT, MEDIA_COUNT, DESCRIPTION_HTML, DESCRIPTION_EXPANDED, URL_EXPANDED,
-                BACKGROUND_COLOR, LINK_COLOR, TEXT_COLOR, LAST_SEEN};
+        String EXTRAS = "extras";
 
-        String[] BASIC_COLUMNS = {_ID, USER_ID,
-                NAME, SCREEN_NAME, PROFILE_IMAGE_URL};
+        String[] COLUMNS = {_ID, USER_KEY, CREATED_AT, NAME, SCREEN_NAME, DESCRIPTION_PLAIN, LOCATION,
+                URL, PROFILE_IMAGE_URL, PROFILE_BANNER_URL, PROFILE_BACKGROUND_URL, IS_PROTECTED,
+                IS_VERIFIED, IS_FOLLOWING, FOLLOWERS_COUNT, FRIENDS_COUNT, STATUSES_COUNT,
+                FAVORITES_COUNT, LISTED_COUNT, MEDIA_COUNT, DESCRIPTION_HTML, DESCRIPTION_EXPANDED,
+                URL_EXPANDED, BACKGROUND_COLOR, LINK_COLOR, TEXT_COLOR, LAST_SEEN,
+                DESCRIPTION_UNESCAPED, EXTRAS};
 
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT_UNIQUE, TYPE_INT,
-                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_BOOLEAN,
-                TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT,
-                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT};
+        String[] BASIC_COLUMNS = {_ID, USER_KEY, NAME, SCREEN_NAME, PROFILE_IMAGE_URL};
+
+        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL, TYPE_INT, TYPE_TEXT, TYPE_TEXT,
+                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_BOOLEAN,
+                TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT,
+                TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT,
+                TYPE_TEXT, TYPE_TEXT};
 
     }
 
@@ -354,14 +383,22 @@ public interface TwidereDataStore {
         String[] COLUMNS = {_ID, NAME, PATH};
     }
 
-    interface DirectMessages extends BaseColumns {
+    interface Messages extends BaseColumns, InsertedDateColumns, AccountSupportColumns {
+
+        interface Entries extends BaseColumns, InsertedDateColumns, AccountSupportColumns {
+            String CONVERSATION_ID = "conversation_id";
+            String UPDATED_AT = "updated_at";
+            String TEXT_CONTENT = "text_content";
+        }
+    }
+
+    interface DirectMessages extends BaseColumns, InsertedDateColumns, AccountSupportColumns {
 
         String TABLE_NAME = "messages";
         String CONTENT_PATH = TABLE_NAME;
 
         Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
 
-        String ACCOUNT_ID = "account_id";
         String MESSAGE_ID = "message_id";
         String MESSAGE_TIMESTAMP = "message_timestamp";
         String SENDER_ID = "sender_id";
@@ -382,13 +419,13 @@ public interface TwidereDataStore {
 
         String MEDIA_JSON = "media_json";
 
-        String[] COLUMNS = {_ID, ACCOUNT_ID, MESSAGE_ID, MESSAGE_TIMESTAMP,
+        String[] COLUMNS = {_ID, ACCOUNT_KEY, MESSAGE_ID, MESSAGE_TIMESTAMP,
                 SENDER_ID, RECIPIENT_ID, CONVERSATION_ID, IS_OUTGOING, TEXT_HTML, TEXT_PLAIN, TEXT_UNESCAPED,
                 SENDER_NAME, RECIPIENT_NAME, SENDER_SCREEN_NAME, RECIPIENT_SCREEN_NAME, SENDER_PROFILE_IMAGE_URL,
-                RECIPIENT_PROFILE_IMAGE_URL, MEDIA_JSON};
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT, TYPE_INT, TYPE_INT,
-                TYPE_INT, TYPE_INT, TYPE_INT, TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT};
+                RECIPIENT_PROFILE_IMAGE_URL, MEDIA_JSON, INSERTED_DATE};
+        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL, TYPE_INT,
+                TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL, TYPE_INT, TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
+                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, INSERTED_DATE_TYPE};
 
         String DEFAULT_SORT_ORDER = MESSAGE_ID + " DESC";
 
@@ -417,11 +454,10 @@ public interface TwidereDataStore {
             String CONTENT_PATH_SEGMENT = "conversation_entries";
             String CONTENT_PATH = DirectMessages.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
 
-            Uri CONTENT_URI = Uri
-                    .withAppendedPath(DirectMessages.CONTENT_URI, CONTENT_PATH_SEGMENT);
+            Uri CONTENT_URI = Uri.withAppendedPath(DirectMessages.CONTENT_URI, CONTENT_PATH_SEGMENT);
 
             String MESSAGE_ID = DirectMessages.MESSAGE_ID;
-            String ACCOUNT_ID = DirectMessages.ACCOUNT_ID;
+            String ACCOUNT_KEY = DirectMessages.ACCOUNT_KEY;
             String IS_OUTGOING = DirectMessages.IS_OUTGOING;
             String MESSAGE_TIMESTAMP = DirectMessages.MESSAGE_TIMESTAMP;
             String NAME = "name";
@@ -433,7 +469,7 @@ public interface TwidereDataStore {
             int IDX__ID = 0;
             int IDX_MESSAGE_TIMESTAMP = 1;
             int IDX_MESSAGE_ID = 2;
-            int IDX_ACCOUNT_ID = 3;
+            int IDX_ACCOUNT_KEY = 3;
             int IDX_IS_OUTGOING = 4;
             int IDX_NAME = 5;
             int IDX_SCREEN_NAME = 6;
@@ -499,7 +535,7 @@ public interface TwidereDataStore {
         String[] COLUMNS = {_ID, HOST, ADDRESS};
     }
 
-    interface SavedSearches extends BaseColumns {
+    interface SavedSearches extends BaseColumns, AccountSupportColumns {
 
         String TABLE_NAME = "saved_searches";
 
@@ -507,24 +543,17 @@ public interface TwidereDataStore {
 
         Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
 
-        String ACCOUNT_ID = "account_id";
         String SEARCH_ID = "search_id";
         String QUERY = "query";
         String NAME = "name";
         String CREATED_AT = "created_at";
 
-        String[] COLUMNS = {_ID, ACCOUNT_ID, SEARCH_ID, CREATED_AT,
-                QUERY, NAME};
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT, TYPE_INT,
-                TYPE_INT, TYPE_TEXT, TYPE_TEXT};
+        String[] COLUMNS = {_ID, ACCOUNT_KEY, SEARCH_ID, CREATED_AT, QUERY, NAME};
+        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT, TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT};
         String DEFAULT_SORT_ORDER = CREATED_AT + " DESC";
     }
 
     interface Drafts extends BaseColumns {
-
-        int ACTION_UPDATE_STATUS = 1;
-        int ACTION_SEND_DIRECT_MESSAGE = 2;
-        int ACTION_CREATE_FRIENDSHIP = 3;
 
         String TABLE_NAME = "drafts";
         String CONTENT_PATH = TABLE_NAME;
@@ -547,6 +576,8 @@ public interface TwidereDataStore {
          */
         String ACCOUNT_IDS = "account_ids";
 
+        String ACCOUNT_KEYS = "account_keys";
+
         String LOCATION = "location";
 
         String IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id";
@@ -565,7 +596,7 @@ public interface TwidereDataStore {
                 IN_REPLY_TO_STATUS_ID, IS_POSSIBLY_SENSITIVE, TIMESTAMP, ACTION_TYPE, ACTION_EXTRAS};
 
         String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-                TYPE_INT, TYPE_INT, TYPE_BOOLEAN, TYPE_INT, TYPE_INT, TYPE_TEXT};
+                TYPE_INT, TYPE_INT, TYPE_BOOLEAN, TYPE_INT, TYPE_TEXT, TYPE_TEXT};
 
     }
 
@@ -618,13 +649,13 @@ public interface TwidereDataStore {
             String CONTENT_PATH = Filters.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
             Uri CONTENT_URI = Uri.withAppendedPath(Filters.CONTENT_URI, CONTENT_PATH_SEGMENT);
 
-            String USER_ID = "user_id";
+            String USER_KEY = "user_id";
             String NAME = "name";
             String SCREEN_NAME = "screen_name";
 
-            String[] COLUMNS = {_ID, USER_ID, NAME, SCREEN_NAME};
+            String[] COLUMNS = {_ID, USER_KEY, NAME, SCREEN_NAME};
 
-            String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT_UNIQUE, TYPE_TEXT_NOT_NULL,
+            String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL,
                     TYPE_TEXT_NOT_NULL};
         }
     }
@@ -686,24 +717,12 @@ public interface TwidereDataStore {
         String[] COLUMNS = {_ID, KEY, VALUE, TYPE};
     }
 
-    interface Statuses extends BaseColumns {
+    interface Statuses extends BaseColumns, InsertedDateColumns, AccountSupportColumns {
 
         String TABLE_NAME = "statuses";
         String CONTENT_PATH = TABLE_NAME;
 
         Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
-        /**
-         * Account ID of the status.<br>
-         * Type: TEXT
-         */
-        String ACCOUNT_ID = "account_id";
-
-        /**
-         * Status content, in HTML. Please note, this is not actually original
-         * text.<br>
-         * Type: TEXT
-         */
-        String TEXT_HTML = "text_html";
 
         /**
          *
@@ -733,10 +752,14 @@ public interface TwidereDataStore {
         String USER_PROFILE_IMAGE_URL = "profile_image_url";
 
         /**
-         * Unique id of the status.<br>
-         * Type: INTEGER UNIQUE(long)
+         * Id of the status.<br>
          */
         String STATUS_ID = "status_id";
+
+        /**
+         * Sort ID of the status.<br>
+         */
+        String SORT_ID = "sort_id";
 
         /**
          * Retweet count of the status.<br>
@@ -777,7 +800,7 @@ public interface TwidereDataStore {
          * User's ID of the status.<br>
          * Type: INTEGER (long)
          */
-        String USER_ID = "user_id";
+        String USER_KEY = "user_id";
 
         String IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id";
 
@@ -799,7 +822,7 @@ public interface TwidereDataStore {
 
         String RETWEET_TIMESTAMP = "retweet_timestamp";
 
-        String RETWEETED_BY_USER_ID = "retweeted_by_user_id";
+        String RETWEETED_BY_USER_KEY = "retweeted_by_user_id";
 
         String RETWEETED_BY_USER_NAME = "retweeted_by_user_name";
 
@@ -823,74 +846,74 @@ public interface TwidereDataStore {
 
         String CARD_NAME = "card_type";
 
-        String SORT_ORDER_TIMESTAMP_DESC = STATUS_TIMESTAMP + " DESC";
-
-        String SORT_ORDER_STATUS_ID_DESC = STATUS_ID + " DESC";
-
-        String DEFAULT_SORT_ORDER = SORT_ORDER_TIMESTAMP_DESC;
-
         String QUOTED_ID = "quoted_id";
-        String QUOTED_TEXT_HTML = "quoted_text_html";
+
         String QUOTED_TEXT_PLAIN = "quoted_text_plain";
         String QUOTED_TEXT_UNESCAPED = "quoted_text_unescaped";
         String QUOTED_MEDIA_JSON = "quoted_media_json";
         String QUOTED_TIMESTAMP = "quoted_timestamp";
         String QUOTED_SOURCE = "quoted_source";
-        String QUOTED_USER_ID = "quoted_user_id";
+        String QUOTED_USER_KEY = "quoted_user_id";
         String QUOTED_USER_NAME = "quoted_user_name";
         String QUOTED_USER_SCREEN_NAME = "quoted_user_screen_name";
         String QUOTED_USER_PROFILE_IMAGE = "quoted_user_profile_image";
         String QUOTED_USER_IS_VERIFIED = "quoted_user_is_verified";
         String QUOTED_USER_IS_PROTECTED = "quoted_user_is_protected";
-
+        String QUOTED_LOCATION = "quoted_location";
+        String QUOTED_PLACE_FULL_NAME = "quoted_place_full_name";
         String RETWEETED = "retweeted";
 
-        String[] COLUMNS = {_ID, ACCOUNT_ID, STATUS_ID, USER_ID,
-                STATUS_TIMESTAMP, TEXT_HTML, TEXT_PLAIN, TEXT_UNESCAPED, USER_NAME, USER_SCREEN_NAME,
-                USER_PROFILE_IMAGE_URL, IN_REPLY_TO_STATUS_ID, IN_REPLY_TO_USER_ID, IN_REPLY_TO_USER_NAME,
-                IN_REPLY_TO_USER_SCREEN_NAME, SOURCE, LOCATION, RETWEET_COUNT, FAVORITE_COUNT, REPLY_COUNT,
-                RETWEET_ID, RETWEET_TIMESTAMP, RETWEETED_BY_USER_ID, RETWEETED_BY_USER_NAME,
-                RETWEETED_BY_USER_SCREEN_NAME, RETWEETED_BY_USER_PROFILE_IMAGE, QUOTED_ID, QUOTED_TEXT_HTML,
-                QUOTED_TEXT_PLAIN, QUOTED_TEXT_UNESCAPED, QUOTED_TIMESTAMP, QUOTED_SOURCE, QUOTED_USER_ID,
-                QUOTED_USER_NAME, QUOTED_USER_SCREEN_NAME, QUOTED_USER_PROFILE_IMAGE,
-                QUOTED_USER_IS_VERIFIED, QUOTED_USER_IS_PROTECTED, MY_RETWEET_ID, IS_RETWEET,
-                IS_QUOTE, IS_FAVORITE, IS_PROTECTED, IS_VERIFIED, IS_FOLLOWING, IS_GAP,
-                IS_POSSIBLY_SENSITIVE, MEDIA_JSON, MENTIONS_JSON, QUOTED_MEDIA_JSON, CARD_NAME, CARD,
-                PLACE_FULL_NAME, LANG, RETWEETED};
+        String EXTRAS = "extras";
 
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT, TYPE_INT,
-                TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-                TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT,
-                TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT,
-                TYPE_TEXT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_TEXT, TYPE_INT,
-                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_INT, TYPE_BOOLEAN,
-                TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN, TYPE_BOOLEAN,
-                TYPE_BOOLEAN, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_BOOLEAN};
+        String SPANS = "spans";
+        String QUOTED_SPANS = "quoted_spans";
+        String POSITION_KEY = "position_key";
+
+        String ACCOUNT_COLOR = "account_color";
+
+        String USER_COLOR = "user_color";
+        String QUOTED_USER_COLOR = "quoted_user_color";
+        String RETWEET_USER_COLOR = "retweet_user_color";
+
+
+        String DEFAULT_SORT_ORDER = STATUS_TIMESTAMP + " DESC, " + SORT_ID + " DESC, " + STATUS_ID
+                + " DESC";
+
+        String[] COLUMNS = ParcelableStatusTableInfo.COLUMNS;
+
+        String[] TYPES = ParcelableStatusTableInfo.TYPES;
 
     }
 
-    interface Activities extends BaseColumns {
+    interface Activities extends BaseColumns, InsertedDateColumns, AccountSupportColumns {
 
-        String ACCOUNT_ID = "account_id";
         String ACTION = "action";
-        String RAW_ACTION = "raw_action";
         String TIMESTAMP = "timestamp";
         String STATUS_ID = "status_id";
         String STATUS_RETWEET_ID = "status_retweet_id";
-        String STATUS_USER_ID = "status_user_id";
-        String STATUS_RETWEETED_BY_USER_ID = "status_retweeted_by_user_id";
-        String STATUS_QUOTED_USER_ID = "status_quoted_user_id";
+        String STATUS_MY_RETWEET_ID = "status_my_retweet_id";
+        String STATUS_USER_KEY = "status_user_id";
+        String STATUS_RETWEETED_BY_USER_KEY = "status_retweeted_by_user_id";
+        String STATUS_QUOTED_USER_KEY = "status_quoted_user_id";
         String STATUS_SOURCE = "status_source";
         String STATUS_QUOTE_SOURCE = "status_quote_source";
         String STATUS_TEXT_PLAIN = "status_text_plain";
         String STATUS_QUOTE_TEXT_PLAIN = "status_quote_text_plain";
-        String STATUS_TEXT_HTML = "status_text_html";
-        String STATUS_QUOTE_TEXT_HTML = "status_quote_text_html";
+        String STATUS_SPANS = "status_spans";
+        String STATUS_QUOTE_SPANS = "status_quote_spans";
         String STATUS_USER_FOLLOWING = "status_user_following";
         String IS_GAP = "status_is_gap";
-        String MIN_POSITION = "min_position";
-        String MAX_POSITION = "max_position";
+
+        String ACCOUNT_COLOR = "account_color";
+        String STATUS_USER_COLOR = "status_user_color";
+        String STATUS_QUOTED_USER_COLOR = "status_quoted_user_color";
+        String STATUS_RETWEET_USER_COLOR = "status_retweet_user_color";
+
+        String MIN_SORT_POSITION = "min_position";
+        String MAX_SORT_POSITION = "max_position";
+
+        String MIN_REQUEST_POSITION = "min_request_position";
+        String MAX_REQUEST_POSITION = "max_request_position";
         String SOURCES = "sources";
         String SOURCE_IDS = "source_ids";
         String TARGET_STATUSES = "target_statuses";
@@ -900,16 +923,10 @@ public interface TwidereDataStore {
         String TARGET_OBJECT_USER_LISTS = "target_object_user_lists";
         String TARGET_OBJECT_USERS = "target_object_users";
 
-        String[] COLUMNS = {_ID, ACCOUNT_ID, ACTION, TIMESTAMP, STATUS_ID, STATUS_USER_ID,
-                STATUS_RETWEETED_BY_USER_ID, STATUS_QUOTED_USER_ID, STATUS_SOURCE, STATUS_QUOTE_SOURCE,
-                STATUS_TEXT_PLAIN, STATUS_QUOTE_TEXT_PLAIN, STATUS_TEXT_HTML, STATUS_QUOTE_TEXT_HTML,
-                IS_GAP, MIN_POSITION, MAX_POSITION, SOURCES, SOURCE_IDS, TARGET_STATUSES, TARGET_USERS,
-                TARGET_USER_LISTS, TARGET_OBJECT_STATUSES, TARGET_OBJECT_USER_LISTS, TARGET_OBJECT_USERS,
-                STATUS_RETWEET_ID, STATUS_USER_FOLLOWING};
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT, TYPE_INT,
-                TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-                TYPE_BOOLEAN, TYPE_INT, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT,
-                TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_INT, TYPE_BOOLEAN};
+        String POSITION_KEY = "position_key";
+
+        String[] COLUMNS = ParcelableActivityTableInfo.COLUMNS;
+        String[] TYPES = ParcelableActivityTableInfo.TYPES;
 
         String DEFAULT_SORT_ORDER = TIMESTAMP + " DESC";
 
@@ -957,16 +974,14 @@ public interface TwidereDataStore {
         String DEFAULT_SORT_ORDER = POSITION + " ASC";
     }
 
-    interface CachedRelationships extends BaseColumns {
+    interface CachedRelationships extends BaseColumns, AccountSupportColumns {
 
         String TABLE_NAME = "cached_relationships";
         String CONTENT_PATH = TABLE_NAME;
 
         Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
 
-        String ACCOUNT_ID = "account_id";
-
-        String USER_ID = "user_id";
+        String USER_KEY = "user_id";
 
         String FOLLOWING = "following";
 
@@ -980,13 +995,14 @@ public interface TwidereDataStore {
 
         String RETWEET_ENABLED = "retweet_enabled";
 
-        String[] COLUMNS = {_ID, ACCOUNT_ID, USER_ID, FOLLOWING, FOLLOWED_BY, BLOCKING,
+        String[] COLUMNS = {_ID, ACCOUNT_KEY, USER_KEY, FOLLOWING, FOLLOWED_BY, BLOCKING,
                 BLOCKED_BY, MUTING, RETWEET_ENABLED};
 
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT, TYPE_INT, TYPE_BOOLEAN_DEFAULT_FALSE,
+        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL,
                 TYPE_BOOLEAN_DEFAULT_FALSE, TYPE_BOOLEAN_DEFAULT_FALSE, TYPE_BOOLEAN_DEFAULT_FALSE,
-                TYPE_BOOLEAN_DEFAULT_FALSE, TYPE_BOOLEAN_DEFAULT_TRUE};
+                TYPE_BOOLEAN_DEFAULT_FALSE, TYPE_BOOLEAN_DEFAULT_FALSE, TYPE_BOOLEAN_DEFAULT_TRUE};
     }
+
 
     interface UnreadCounts extends BaseColumns {
 
@@ -1014,39 +1030,13 @@ public interface TwidereDataStore {
         }
     }
 
-    interface NetworkUsages extends BaseColumns {
-
-        String TABLE_NAME = "network_usages";
-        String CONTENT_PATH = TABLE_NAME;
-
-        Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
-
-        String TIME_IN_HOURS = "time_in_hours";
-
-        String REQUEST_TYPE = "request_type";
-
-        String REQUEST_NETWORK = "request_network";
-
-        String KILOBYTES_SENT = "kilobytes_sent";
-
-        String KILOBYTES_RECEIVED = "kilobytes_received";
-
-        String[] COLUMNS = {_ID, TIME_IN_HOURS, REQUEST_TYPE, REQUEST_NETWORK, KILOBYTES_SENT,
-                KILOBYTES_RECEIVED};
-
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT, TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL,
-                TYPE_DOUBLE_NOT_NULL, TYPE_DOUBLE_NOT_NULL};
-    }
-
-    interface PushNotifications extends BaseColumns {
+    interface PushNotifications extends BaseColumns, AccountSupportColumns {
 
         String TABLE_NAME = "push_notifications";
 
         String CONTENT_PATH = TABLE_NAME;
 
         Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
-
-        String ACCOUNT_ID = "account_id";
 
         String OBJECT_ID = "object_id";
 
@@ -1060,13 +1050,13 @@ public interface TwidereDataStore {
 
         String TIMESTAMP = "timestamp";
 
-        String[] COLUMNS = {_ID, ACCOUNT_ID, OBJECT_ID, OBJECT_USER_ID, FROM_USER, MESSAGE, NOTIFICATION_TYPE,
+        String[] COLUMNS = {_ID, ACCOUNT_KEY, OBJECT_ID, OBJECT_USER_ID, FROM_USER, MESSAGE, NOTIFICATION_TYPE,
                 TIMESTAMP};
 
-        String[] MATRIX_COLUMNS = {ACCOUNT_ID, OBJECT_ID, OBJECT_USER_ID, FROM_USER, MESSAGE, NOTIFICATION_TYPE,
+        String[] MATRIX_COLUMNS = {ACCOUNT_KEY, OBJECT_ID, OBJECT_USER_ID, FROM_USER, MESSAGE, NOTIFICATION_TYPE,
                 TIMESTAMP};
 
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_INT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT_NOT_NULL,
+        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT, TYPE_TEXT_NOT_NULL,
                 TYPE_TEXT, TYPE_TEXT_NOT_NULL, TYPE_INT};
 
         String DEFAULT_SORT_ORDER = TIMESTAMP + " DESC";

@@ -57,6 +57,8 @@
     <item name="statuses" type="id"/>
     <item name="favorites" type="id"/>
     <item name="lists" type="id"/>
+    <item name="groups" type="id"/>
+    <item name="public_timeline" type="id"/>
     <item name="center" type="id"/>
     <item name="filters" type="id"/>
     <item name="list_memberships" type="id"/>
@@ -76,4 +78,6 @@
     <item name="inverse_selection" type="id"/>
     <item name="reset" type="id"/>
     <item name="info" type="id"/>
+    <item name="messages" type="id"/>
+    <item name="interactions" type="id"/>
 </resources>

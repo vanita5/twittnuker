@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,20 +22,22 @@
 
 package de.vanita5.twittnuker.service;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.os.Build;
 
+@SuppressLint("Registered")
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class BackgroundJobService extends JobService {
-	@Override
-	public boolean onStartJob(JobParameters params) {
-		return false;
-	}
+    @Override
+    public boolean onStartJob(JobParameters params) {
+        return false;
+    }
 
-	@Override
-	public boolean onStopJob(JobParameters params) {
-		return false;
-	}
+    @Override
+    public boolean onStopJob(JobParameters params) {
+        return false;
+    }
 }

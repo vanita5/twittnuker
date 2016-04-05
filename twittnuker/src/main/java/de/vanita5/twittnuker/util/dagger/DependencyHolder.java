@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,13 +25,16 @@ package de.vanita5.twittnuker.util.dagger;
 import android.content.Context;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.okhttp.Dns;
 
 import org.mariotaku.restfu.http.RestHttpClient;
 import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ExternalThemeManager;
 import de.vanita5.twittnuker.util.ReadStateManager;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.TwidereValidator;
+import de.vanita5.twittnuker.util.net.TwidereDns;
+import okhttp3.ConnectionPool;
 
 import javax.inject.Inject;
 
@@ -47,11 +50,17 @@ public class DependencyHolder {
     @Inject
     ActivityTracker mActivityTracker;
     @Inject
-    Dns mDns;
+    TwidereDns mDns;
     @Inject
     AsyncTwitterWrapper mAsyncTwitterWrapper;
     @Inject
     ImageLoader mImageLoader;
+    @Inject
+    TwidereValidator mValidator;
+    @Inject
+    SharedPreferencesWrapper mPreferences;
+    @Inject
+    ConnectionPool mConnectionPoll;
 
     DependencyHolder(Context context) {
         GeneralComponentHelper.build(context).inject(this);
@@ -78,7 +87,7 @@ public class DependencyHolder {
         return mActivityTracker;
     }
 
-    public Dns getDns() {
+    public TwidereDns getDns() {
         return mDns;
     }
 
@@ -86,7 +95,19 @@ public class DependencyHolder {
         return mAsyncTwitterWrapper;
     }
 
-    public ImageLoader getmImageLoader() {
+    public ImageLoader getImageLoader() {
         return mImageLoader;
+    }
+
+    public TwidereValidator getValidator() {
+        return mValidator;
+    }
+
+    public SharedPreferencesWrapper getPreferences() {
+        return mPreferences;
+    }
+
+    public ConnectionPool getConnectionPoll() {
+        return mConnectionPoll;
     }
 }

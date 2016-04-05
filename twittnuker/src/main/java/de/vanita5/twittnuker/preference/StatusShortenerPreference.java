@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.preference.DialogPreference;
+import android.support.v7.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,27 +41,27 @@ public class StatusShortenerPreference extends DialogPreference implements Const
 
     private final ServiceSpec DEFAULT_NO_SERVICE = new ServiceSpec(getContext().getString(R.string.status_shortener_default), null);
     private final ServiceSpec HOTOTIN_SERVICE = new ServiceSpec(getContext().getString(R.string.tweet_shortener_hototin), SERVICE_SHORTENER_HOTOTIN);
-	private final ServiceSpec TWITLONGER_SERVICE = new ServiceSpec(getContext().getString(R.string.tweet_shortener_twitlonger), SERVICE_SHORTENER_TWITLONGER);
+    private final ServiceSpec TWITLONGER_SERVICE = new ServiceSpec(getContext().getString(R.string.tweet_shortener_twitlonger), SERVICE_SHORTENER_TWITLONGER);
 
-    private final ServiceSpec[] AVAILABLE_SERVICES = { DEFAULT_NO_SERVICE, HOTOTIN_SERVICE, TWITLONGER_SERVICE };
+    private final ServiceSpec[] AVAILABLE_SERVICES = {DEFAULT_NO_SERVICE, HOTOTIN_SERVICE, TWITLONGER_SERVICE};
 
-	private SharedPreferences mPreferences;
+    private SharedPreferences mPreferences;
 
-	private ServiceSpec[] mAvailableTweetShorteners;
+    private ServiceSpec[] mAvailableTweetShorteners;
 
-	public StatusShortenerPreference(final Context context) {
-		this(context, null);
-	}
+    public StatusShortenerPreference(final Context context) {
+        this(context, null);
+    }
 
-	public StatusShortenerPreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceStyle);
-	}
+    public StatusShortenerPreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, android.R.attr.preferenceStyle);
+    }
 
-	public StatusShortenerPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public StatusShortenerPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-    @Override
+    /*@Override
     protected View onCreateView(ViewGroup parent) {
         mPreferences = getSharedPreferences();
         final String component = mPreferences.getString(KEY_STATUS_SHORTENER, null);
@@ -70,42 +70,42 @@ public class StatusShortenerPreference extends DialogPreference implements Const
     }
 
     @Override
-	public void onClick(final DialogInterface dialog, final int which) {
-		final SharedPreferences.Editor editor = getEditor();
-		if (editor == null) return;
-		final ServiceSpec spec = mAvailableTweetShorteners[which];
-		if (spec != null) {
-			editor.putString(KEY_STATUS_SHORTENER, spec.service);
-			editor.commit();
-		}
+    public void onClick(final DialogInterface dialog, final int which) {
+        final SharedPreferences.Editor editor = getEditor();
+        if (editor == null) return;
+        final ServiceSpec spec = mAvailableTweetShorteners[which];
+        if (spec != null) {
+            editor.putString(KEY_STATUS_SHORTENER, spec.service);
+            editor.commit();
+        }
         setSummary(spec.name);
-		dialog.dismiss();
-	}
+        dialog.dismiss();
+    }*/
 
-	@Override
-	public void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
-		super.onPrepareDialogBuilder(builder);
-		if (mPreferences == null) return;
-		final String component = mPreferences.getString(KEY_STATUS_SHORTENER, null);
-		final ArrayList<ServiceSpec> specs = new ArrayList<ServiceSpec>();
+    /*@Override
+    public void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
+        super.onPrepareDialogBuilder(builder);
+        if (mPreferences == null) return;
+        final String component = mPreferences.getString(KEY_STATUS_SHORTENER, null);
+        final ArrayList<ServiceSpec> specs = new ArrayList<ServiceSpec>();
         for (ServiceSpec spec : AVAILABLE_SERVICES) {
             specs.add(spec);
         }
-		mAvailableTweetShorteners = specs.toArray(new ServiceSpec[specs.size()]);
-		builder.setSingleChoiceItems(mAvailableTweetShorteners, getIndex(component), StatusShortenerPreference.this);
-		builder.setNegativeButton(android.R.string.cancel, null);
-	}
+        mAvailableTweetShorteners = specs.toArray(new ServiceSpec[specs.size()]);
+        builder.setSingleChoiceItems(mAvailableTweetShorteners, getIndex(component), StatusShortenerPreference.this);
+        builder.setNegativeButton(android.R.string.cancel, null);
+    }*/
 
-	private int getIndex(final String service) {
-		if (mAvailableTweetShorteners == null) return -1;
-		if (service == null) return 0;
-		final int count = mAvailableTweetShorteners.length;
-		for (int i = 0; i < count; i++) {
-			final ServiceSpec spec = mAvailableTweetShorteners[i];
-			if (service.equals(spec.service)) return i;
-		}
-		return -1;
-	}
+    private int getIndex(final String service) {
+        if (mAvailableTweetShorteners == null) return -1;
+        if (service == null) return 0;
+        final int count = mAvailableTweetShorteners.length;
+        for (int i = 0; i < count; i++) {
+            final ServiceSpec spec = mAvailableTweetShorteners[i];
+            if (service.equals(spec.service)) return i;
+        }
+        return -1;
+    }
 
     private String getServiceName(String service) {
         if (service == null) return getContext().getString(R.string.status_shortener_default);

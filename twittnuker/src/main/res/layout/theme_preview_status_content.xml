@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -21,29 +21,29 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/theme_preview_status_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical">
+<LinearLayout android:id="@+id/theme_preview_status_content"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-	<RelativeLayout
-		android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         tools:ignore="UselessParent">
 
-		<include
-			android:id="@+id/status_content"
-			layout="@layout/header_status"/>
+        <include
+            android:id="@+id/status_content"
+            layout="@layout/header_status"/>
 
-		<View
-			android:id="@+id/theme_preview_window_content_overlay"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_alignBottom="@+id/status_content"
-			android:layout_alignTop="@+id/status_content"/>
-	</RelativeLayout>
+        <View
+            android:id="@+id/theme_preview_window_content_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/status_content"
+            android:layout_alignTop="@+id/status_content"/>
+    </RelativeLayout>
 
 </LinearLayout>

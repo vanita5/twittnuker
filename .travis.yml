@@ -4,12 +4,20 @@ sudo: false
 
 env:
   global:
-    MALLOC_ARENA_MAX=2
-    JAVA_OPTS="-Xmx2048m -UseGCOverheadLimit"
-    GRADLE_OPTS=-Xmx1024m -Dorg.gradle.parallel=false
+    - secure: "Gdkx8y1CNcBaSRGSPYra0XEz19yHAQO0ZYnN2+zGBKF7oDBVj+mAijttNZ8PMNS2mzsyZTu5GLakCGUxQe89N9eJ0icKDZc7moH58mqjjJahntKXwb21bBmIWtvZQMT7vF3+SBtbwjczh7N7srzyQNLYZ3bTSWZfSm3XbzpHidY="
+    - secure: "TnMd1gCo4Hqks+ha+x8OsksdcV0j/4m684fc0VN9rbgGiC1DQ2h85gGDfwy2PpUCV0qiENQY3qsKzZvADIwlYSpPY4Z2clB6MH4rs7Esh4/8VX3v+EG7HbkPCbXx/eWHauT8X/bLYTbMBAv+VrUFX+D8EoLM3tp/WPOs26Pp6BQ="
+    - MALLOC_ARENA_MAX=2
+    - JAVA_OPTS="-Xmx2048m"
+    - GRADLE_OPTS=-Xmx1024m -Dorg.gradle.parallel=false
+    - ADB_INSTALL_TIMEOUT=8
 
 jdk:
   - oraclejdk8
+
+addons:
+  apt:
+    packages:
+      - sshpass
 
 android:
   components:
@@ -33,17 +41,26 @@ android:
     # if you need to run emulator(s) during your tests
     # - sys-img-armeabi-v7a-android-19
     # - sys-img-x86-android-17
+    - sys-img-armeabi-v7a-android-23
 
 cache:
   directories:
-    - $HOME/.local/opt
-
-before_script:
-  - "echo $JAVA_OPTS"
-  - "export JAVA_OPTS=-Xmx2048m"
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 
 before_install:
-  - ./travis/scripts/install_android_ndk.sh
-  - export PATH=$HOME/.local/bin:$PATH
+  - echo no | android create avd --force -n test -t android-23 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 
-script: ./gradlew build --no-daemon --stacktrace
+script:
+  - ./gradlew assembleDebug --no-daemon --stacktrace
+  - ./gradlew assembleDebugAndroidTest
+  - adb install twittnuker/build/outputs/apk/twittnuker-debug.apk
+  - adb install twittnuker/build/outputs/apk/twittnuker-debug-androidTest-unaligned.apk
+  - adb shell am instrument -w de.vanita5.twittnuker.test/android.support.test.runner.AndroidJUnitRunner
+
+after_success:
+  - export SSHPASS=$DEPLOY_PASS
+  - sshpass -e scp -o stricthostkeychecking=no -o LogLevel=quiet twittnuker/build/outputs/apk/twittnuker-debug.apk $DEPLOY_SCP

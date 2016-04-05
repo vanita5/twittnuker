@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,43 +24,45 @@ package de.vanita5.twittnuker.activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceManager;
+import android.support.v7.preference.PreferenceScreen;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
+import com.afollestad.appthemeengine.Config;
+import com.afollestad.appthemeengine.util.ATEUtil;
+import com.afollestad.materialdialogs.AlertDialogWrapper;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.DataImportActivity;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
-import de.vanita5.twittnuker.adapter.TabsAdapter;
-import de.vanita5.twittnuker.fragment.BaseDialogFragment;
-import de.vanita5.twittnuker.fragment.BaseFragment;
+import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
+import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
-import de.vanita5.twittnuker.fragment.CustomTabsFragment;
-import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
-import de.vanita5.twittnuker.fragment.support.ActivitiesAboutMeFragment;
-import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
-import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
+import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseSupportFragment;
+import de.vanita5.twittnuker.fragment.DirectMessagesFragment;
+import de.vanita5.twittnuker.fragment.HomeTimelineFragment;
+import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment;
+import de.vanita5.twittnuker.fragment.MessagesEntriesFragment;
+import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.preference.WizardPageHeaderPreference;
@@ -68,8 +70,10 @@ import de.vanita5.twittnuker.preference.WizardPageNavPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.CustomTabUtils;
-import de.vanita5.twittnuker.util.TwidereMathUtils;
+import de.vanita5.twittnuker.util.InternalParseUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.TwidereMathUtils;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.LinePageIndicator;
 
@@ -78,9 +82,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
-
-public class SettingsWizardActivity extends Activity implements Constants {
+public class SettingsWizardActivity extends BaseActivity implements Constants {
 
     public static final String WIZARD_PREFERENCE_KEY_NEXT_PAGE = "next_page";
     public static final String WIZARD_PREFERENCE_KEY_USE_DEFAULTS = "use_defaults";
@@ -92,7 +94,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
     private ViewPager mViewPager;
 
     private LinePageIndicator mIndicator;
-    private TabsAdapter mAdapter;
+    private SupportTabsAdapter mAdapter;
 
     private AbsInitialSettingsTask mTask;
 
@@ -147,6 +149,12 @@ public class SettingsWizardActivity extends Activity implements Constants {
     }
 
     @Override
+    public int getStatusBarColor() {
+        if (VALUE_THEME_NAME_DARK.equals(getATEKey())) return Color.BLACK;
+        return ATEUtil.darkenColor(ThemeUtils.getColorBackground(this));
+    }
+
+    @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         switch (requestCode) {
             case REQUEST_IMPORT_SETTINGS: {
@@ -165,23 +173,33 @@ public class SettingsWizardActivity extends Activity implements Constants {
     }
 
     @Override
+    public String getThemeBackgroundOption() {
+        return ThemeUtils.getThemeBackgroundOption(this);
+    }
+
+    @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_wizard);
-        mAdapter = new TabsAdapter(this, getFragmentManager(), null);
+        mAdapter = new SupportTabsAdapter(this, getSupportFragmentManager(), null);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setEnabled(false);
         mIndicator.setViewPager(mViewPager);
+        mIndicator.setSelectedColor(Config.accentColor(this, getATEKey()));
         initPages();
+        final int initialPage = getIntent().getIntExtra(EXTRA_PAGE, -1);
+        if (initialPage != -1) {
+            mViewPager.setCurrentItem(initialPage, false);
+        }
     }
 
     private void initPages() {
-        mAdapter.addTab(WizardPageWelcomeFragment.class, null, getString(R.string.wizard_page_welcome_title), null, 0);
-        mAdapter.addTab(WizardPageThemeFragment.class, null, getString(R.string.theme), null, 0);
-        mAdapter.addTab(WizardPageTabsFragment.class, null, getString(R.string.tabs), null, 0);
-        mAdapter.addTab(WizardPageCardsFragment.class, null, getString(R.string.cards), null, 0);
-        mAdapter.addTab(WizardPageHintsFragment.class, null, getString(R.string.hints), null, 0);
-        mAdapter.addTab(WizardPageFinishedFragment.class, null, getString(R.string.wizard_page_finished_title), null, 0);
+        mAdapter.addTab(WizardPageWelcomeFragment.class, null, getString(R.string.wizard_page_welcome_title), null, 0, null);
+        mAdapter.addTab(WizardPageThemeFragment.class, null, getString(R.string.theme), null, 0, null);
+        mAdapter.addTab(WizardPageTabsFragment.class, null, getString(R.string.tabs), null, 0, null);
+        mAdapter.addTab(WizardPageCardsFragment.class, null, getString(R.string.cards), null, 0, null);
+        mAdapter.addTab(WizardPageHintsFragment.class, null, getString(R.string.hints), null, 0, null);
+        mAdapter.addTab(WizardPageFinishedFragment.class, null, getString(R.string.wizard_page_finished_title), null, 0, null);
     }
 
     private void openImportSettingsDialog() {
@@ -190,7 +208,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
     }
 
     public static abstract class BaseWizardPageFragment extends BasePreferenceFragment implements
-            OnPreferenceClickListener {
+            Preference.OnPreferenceClickListener {
 
         public void gotoFinishPage() {
             final Activity a = getActivity();
@@ -214,9 +232,11 @@ public class SettingsWizardActivity extends Activity implements Constants {
         }
 
         @Override
-        public void onActivityCreated(final Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            final PreferenceManager preferenceManager = getPreferenceManager();
+            preferenceManager.setSharedPreferencesName(SHARED_PREFERENCES_NAME);
             addPreferencesFromResource(getPreferenceResource());
+
             final Context context = getActivity();
             final Preference wizardHeader = new WizardPageHeaderPreference(context);
             wizardHeader.setTitle(getHeaderTitle());
@@ -232,6 +252,23 @@ public class SettingsWizardActivity extends Activity implements Constants {
                 nextPage.setTitle(nextPageTitle);
                 nextPage.setOnPreferenceClickListener(this);
                 screen.addPreference(nextPage);
+            }
+
+
+            final Preference.OnPreferenceChangeListener listener = new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    final Bundle extras = preference.getExtras();
+                    if (extras != null && extras.getBoolean(EXTRA_RESTART_ACTIVITY)) {
+                        ((SettingsWizardActivity) getActivity()).restartWithCurrentPage();
+                        return true;
+                    }
+                    return true;
+                }
+            };
+
+            for (int i = 0, j = screen.getPreferenceCount(); i < j; i++) {
+                screen.getPreference(i).setOnPreferenceChangeListener(listener);
             }
         }
 
@@ -255,6 +292,13 @@ public class SettingsWizardActivity extends Activity implements Constants {
 
     }
 
+    private void restartWithCurrentPage() {
+        final Intent intent = getIntent();
+        intent.putExtra(EXTRA_PAGE, mViewPager.getCurrentItem());
+        setIntent(intent);
+        recreate();
+    }
+
     public static class WizardPageCardsFragment extends BaseWizardPageFragment {
 
         @Override
@@ -269,11 +313,11 @@ public class SettingsWizardActivity extends Activity implements Constants {
 
         @Override
         protected int getPreferenceResource() {
-            return R.xml.settings_cards;
+            return R.xml.preferences_cards;
         }
     }
 
-    public static class WizardPageFinishedFragment extends BaseFragment implements OnClickListener {
+    public static class WizardPageFinishedFragment extends BaseSupportFragment implements OnClickListener {
 
         @Override
         public void onClick(final View v) {
@@ -374,8 +418,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
             final String key = preference.getKey();
             if (WIZARD_PREFERENCE_KEY_EDIT_CUSTOM_TABS.equals(key)) {
                 final Intent intent = new Intent(getActivity(), SettingsActivity.class);
-                intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT, CustomTabsFragment.class.getName());
-                intent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT_TITLE, R.string.tabs);
+                intent.putExtra(SettingsActivity.EXTRA_INITIAL_TAG, "tabs");
                 startActivityForResult(intent, REQUEST_CUSTOM_TABS);
             } else if (WIZARD_PREFERENCE_KEY_USE_DEFAULTS.equals(key)) {
                 applyInitialTabSettings();
@@ -403,7 +446,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
             return R.xml.settings_wizard_page_tab;
         }
 
-        public static class TabsUnchangedDialogFragment extends BaseDialogFragment implements
+        public static class TabsUnchangedDialogFragment extends BaseSupportDialogFragment implements
                 DialogInterface.OnClickListener {
 
             @Override
@@ -416,9 +459,10 @@ public class SettingsWizardActivity extends Activity implements Constants {
                 gotoNextPage();
             }
 
+            @NonNull
             @Override
             public Dialog onCreateDialog(final Bundle savedInstanceState) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
                 builder.setMessage(R.string.wizard_page_tabs_unchanged_message);
                 builder.setPositiveButton(android.R.string.ok, this);
                 return builder.create();
@@ -434,7 +478,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
         }
     }
 
-    public static class WizardPageThemeFragment extends BaseWizardPageFragment implements OnPreferenceClickListener {
+    public static class WizardPageThemeFragment extends BaseWizardPageFragment implements Preference.OnPreferenceClickListener {
 
         @Override
         protected int getHeaderSummary() {
@@ -448,11 +492,11 @@ public class SettingsWizardActivity extends Activity implements Constants {
 
         @Override
         protected int getPreferenceResource() {
-            return R.xml.settings_theme;
+            return R.xml.preferences_theme;
         }
     }
 
-    public static class WizardPageWelcomeFragment extends BaseWizardPageFragment implements OnPreferenceClickListener {
+    public static class WizardPageWelcomeFragment extends BaseWizardPageFragment implements Preference.OnPreferenceClickListener {
 
         public void applyInitialSettings() {
             final Activity a = getActivity();
@@ -514,9 +558,9 @@ public class SettingsWizardActivity extends Activity implements Constants {
 
         private static final String FRAGMENT_TAG = "initial_settings_dialog";
 
-        private static final String[] DEFAULT_TAB_TYPES = {TAB_TYPE_HOME_TIMELINE,
-                TAB_TYPE_NOTIFICATIONS_TIMELINE, TAB_TYPE_DIRECT_MESSAGES,
-                TAB_TYPE_TRENDS_SUGGESTIONS};
+        private static final String[] DEFAULT_TAB_TYPES = {CustomTabType.HOME_TIMELINE,
+                CustomTabType.NOTIFICATIONS_TIMELINE, CustomTabType.DIRECT_MESSAGES,
+                CustomTabType.TRENDS_SUGGESTIONS};
 
         private final SettingsWizardActivity mActivity;
 
@@ -545,7 +589,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
                 if (type != null) {
                     final ContentValues values = new ContentValues();
                     values.put(Tabs.TYPE, type);
-                    values.put(Tabs.ARGUMENTS, ParseUtils.bundleToJSON(spec.args));
+                    values.put(Tabs.ARGUMENTS, InternalParseUtils.bundleToJSON(spec.args));
                     values.put(Tabs.NAME, ParseUtils.parseString(spec.name));
                     if (spec.icon instanceof Integer) {
                         values.put(Tabs.ICON, CustomTabUtils.findTabIconKey((Integer) spec.icon));
@@ -568,7 +612,7 @@ public class SettingsWizardActivity extends Activity implements Constants {
 
         @Override
         protected void onPostExecute(final Boolean result) {
-            final FragmentManager fm = mActivity.getFragmentManager();
+            final FragmentManager fm = mActivity.getSupportFragmentManager();
             final DialogFragment f = (DialogFragment) fm.findFragmentByTag(FRAGMENT_TAG);
             if (f != null) {
                 f.dismiss();
@@ -578,14 +622,15 @@ public class SettingsWizardActivity extends Activity implements Constants {
 
         @Override
         protected void onPreExecute() {
-            ProgressDialogFragment.show(mActivity, FRAGMENT_TAG).setCancelable(false);
+            SupportProgressDialogFragment.show(mActivity, FRAGMENT_TAG).setCancelable(false);
         }
 
         private boolean wasConfigured(final List<SupportTabSpec> tabs) {
             for (final SupportTabSpec spec : tabs) {
-                if (classEquals(spec.cls, HomeTimelineFragment.class)
-                        || classEquals(spec.cls, ActivitiesAboutMeFragment.class)
-                        || classEquals(spec.cls, DirectMessagesFragment.class)) return true;
+                if (spec.cls == HomeTimelineFragment.class
+                        || spec.cls == InteractionsTimelineFragment.class
+                        || spec.cls == DirectMessagesFragment.class
+                        || spec.cls == MessagesEntriesFragment.class) return true;
             }
             return false;
         }

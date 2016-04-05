@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,20 +23,63 @@
 package de.vanita5.twittnuker.util;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public class UriUtils {
 
-	public static Uri appendQueryParameters(final Uri uri, final String key, long value) {
-		return appendQueryParameters(uri, key, ParseUtils.parseString(value));
-	}
+    public static Uri appendQueryParameters(final Uri uri, final String key, long value) {
+        return appendQueryParameters(uri, key, ParseUtils.parseString(value));
+    }
 
-	public static Uri appendQueryParameters(final Uri uri, final String key, String value) {
-		final Uri.Builder builder = uri.buildUpon();
-		builder.appendQueryParameter(key, value);
-		return builder.build();
-	}
+    public static Uri appendQueryParameters(final Uri uri, final String key, String value) {
+        final Uri.Builder builder = uri.buildUpon();
+        builder.appendQueryParameter(key, value);
+        return builder.build();
+    }
 
-	public static Uri appendQueryParameters(Uri uri, String key, boolean value) {
-		return appendQueryParameters(uri, key, ParseUtils.parseString(value));
-	}
+    public static Uri appendQueryParameters(Uri uri, String key, boolean value) {
+        return appendQueryParameters(uri, key, ParseUtils.parseString(value));
+    }
+
+    @Nullable
+    public static String getAuthority(@NonNull String link) {
+        int start = link.indexOf("://");
+        if (start < 0) return null;
+        int end = link.indexOf('/', start + 3);
+        if (end < 0) {
+            end = link.length();
+        }
+        return link.substring(start + 3, end);
+    }
+
+
+    @Nullable
+    public static int[] getAuthorityRange(@NonNull String link) {
+        int start = link.indexOf("://");
+        if (start < 0) return null;
+        int end = link.indexOf('/', start + 3);
+        if (end < 0) {
+            end = link.length();
+        }
+        return new int[]{start + 3, end};
+    }
+
+    @Nullable
+    public static String getPath(@NonNull String link) {
+        int start = link.indexOf("://");
+        if (start < 0) return null;
+        start = link.indexOf('/', start + 3);
+        if (start < 0) {
+            return "";
+        }
+        int end = link.indexOf('?', start);
+        if (end < 0) {
+            end = link.indexOf('#', start);
+            if (end < 0) {
+                end = link.length();
+            }
+        }
+        return link.substring(start, end);
+    }
 }

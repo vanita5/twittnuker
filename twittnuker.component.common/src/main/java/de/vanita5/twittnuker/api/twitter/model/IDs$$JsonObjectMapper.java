@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@ public class IDs$$JsonObjectMapper extends JsonMapper<IDs> {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void parseField(IDs instance, String fieldName, JsonParser jsonParser) throws IOException {
         if ("ids".equals(fieldName)) {
             parseIDsArray(instance, jsonParser);
@@ -72,13 +73,13 @@ public class IDs$$JsonObjectMapper extends JsonMapper<IDs> {
     }
 
     private void parseIDsArray(IDs instance, JsonParser jsonParser) throws IOException {
-        List<Long> collection1 = new ArrayList<>();
+        List<String> collection1 = new ArrayList<>();
         while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
-            collection1.add(jsonParser.getValueAsLong());
+            collection1.add(jsonParser.getValueAsString());
         }
-        long[] array = new long[collection1.size()];
+        String[] array = new String[collection1.size()];
         int i = 0;
-        for (long value : collection1) {
+        for (String value : collection1) {
             array[i++] = value;
         }
         instance.ids = array;

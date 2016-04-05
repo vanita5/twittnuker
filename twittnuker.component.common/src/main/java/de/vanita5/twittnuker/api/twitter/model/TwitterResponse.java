@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,29 +22,29 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.restfu.http.RestHttpResponse;
+import android.support.annotation.IntDef;
 
-/**
- * Super interface of Twitter Response data interfaces which indicates that rate
- * limit status is avaialble.
- * 
- * @author Yusuke Yamamoto - yusuke at mac.com
- * @see DirectMessage
- * @see Status
- * @see User
- */
-public interface TwitterResponse  {
-	int NONE = 0;
+import org.mariotaku.restfu.http.HttpResponse;
 
-	int READ = 1;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-	int READ_WRITE = 2;
-	int READ_WRITE_DIRECTMESSAGES = 3;
+public interface TwitterResponse {
 
-	void processResponseHeader(RestHttpResponse resp);
+    void processResponseHeader(HttpResponse resp);
 
-	int getAccessLevel();
+    @AccessLevel
+    int getAccessLevel();
 
-	RateLimitStatus getRateLimitStatus();
+    RateLimitStatus getRateLimitStatus();
 
+    @IntDef({AccessLevel.NONE, AccessLevel.READ, AccessLevel.READ_WRITE, AccessLevel.READ_WRITE_DIRECTMESSAGES})
+    @Retention(RetentionPolicy.SOURCE)
+    @interface AccessLevel {
+
+        int NONE = 0;
+        int READ = 1;
+        int READ_WRITE = 2;
+        int READ_WRITE_DIRECTMESSAGES = 3;
+    }
 }

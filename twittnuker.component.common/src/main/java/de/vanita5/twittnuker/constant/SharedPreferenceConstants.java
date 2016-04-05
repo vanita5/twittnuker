@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,10 @@ import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.annotation.Preference;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 
-import static de.vanita5.twittnuker.annotation.Preference.Type.BOOLEAN;
-import static de.vanita5.twittnuker.annotation.Preference.Type.INT;
-import static de.vanita5.twittnuker.annotation.Preference.Type.LONG;
-import static de.vanita5.twittnuker.annotation.Preference.Type.STRING;
+import static de.vanita5.twittnuker.annotation.PreferenceType.BOOLEAN;
+import static de.vanita5.twittnuker.annotation.PreferenceType.INT;
+import static de.vanita5.twittnuker.annotation.PreferenceType.LONG;
+import static de.vanita5.twittnuker.annotation.PreferenceType.STRING;
 
 public interface SharedPreferenceConstants {
 
@@ -83,7 +83,7 @@ public interface SharedPreferenceConstants {
     String VALUE_THEME_BACKGROUND_SOLID = "solid";
     String VALUE_THEME_BACKGROUND_TRANSPARENT = "transparent";
 
-    String VALUE_THEME_NAME_TWIDERE = "twidere";
+    String VALUE_THEME_NAME_AUTO = "auto";
     String VALUE_THEME_NAME_DARK = "dark";
     String VALUE_THEME_NAME_LIGHT = "light";
 
@@ -112,7 +112,7 @@ public interface SharedPreferenceConstants {
     String DEFAULT_IMAGE_UPLOAD_FORMAT = FORMAT_PATTERN_TEXT + " " + FORMAT_PATTERN_LINK;
 
     String DEFAULT_REFRESH_INTERVAL = "15";
-    boolean DEFAULT_AUTO_REFRESH = false;
+    boolean DEFAULT_AUTO_REFRESH = true;
     boolean DEFAULT_AUTO_REFRESH_HOME_TIMELINE = false;
     boolean DEFAULT_AUTO_REFRESH_MENTIONS = true;
     boolean DEFAULT_AUTO_REFRESH_DIRECT_MESSAGES = true;
@@ -156,8 +156,8 @@ public interface SharedPreferenceConstants {
     String KEY_LEFTSIDE_COMPOSE_BUTTON = "leftside_compose_button";
     @Preference(type = BOOLEAN, exportable = false, hasDefault = true, defaultBoolean = false)
     String KEY_ATTACH_LOCATION = "attach_location";
-    @Preference(type = BOOLEAN)
-    String KEY_IGNORE_SSL_ERROR = "ignore_ssl_error";
+    @Preference(type = BOOLEAN, exportable = false, hasDefault = true, defaultBoolean = true)
+    String KEY_ATTACH_PRECISE_LOCATION = "attach_precise_location";
     @Preference(type = STRING)
     String KEY_QUOTE_FORMAT = "quote_format";
     @Preference(type = BOOLEAN)
@@ -220,9 +220,12 @@ public interface SharedPreferenceConstants {
     @Preference(type = STRING, exportable = false)
     String KEY_COMPOSE_ACCOUNTS = "compose_accounts";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    String KEY_BUILTIN_DNS_RESOLVER = "builtin_dns_resolver";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_TCP_DNS_QUERY = "tcp_dns_query";
     @Preference(type = STRING, hasDefault = true, defaultString = "")
     String KEY_DNS_SERVER = "dns_server";
+    @Preference(type = INT, hasDefault = true, defaultInt = 10)
     String KEY_CONNECTION_TIMEOUT = "connection_timeout";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_NAME_FIRST = "name_first";
@@ -246,11 +249,11 @@ public interface SharedPreferenceConstants {
     String KEY_NO_CLOSE_AFTER_TWEET_SENT = "no_close_after_tweet_sent";
     @Preference(type = STRING, hasDefault = false)
     String KEY_API_URL_FORMAT = "api_url_format";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_SAME_OAUTH_SIGNING_URL = "same_oauth_signing_url";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_NO_VERSION_SUFFIX = "no_version_suffix";
-    @Preference(type = INT, hasDefault = true, defaultInt = ParcelableCredentials.AUTH_TYPE_OAUTH)
+    @Preference(type = INT, hasDefault = true, defaultInt = ParcelableCredentials.AuthType.OAUTH)
     String KEY_AUTH_TYPE = "auth_type";
     @Preference(type = STRING, hasDefault = true, defaultString = TwittnukerConstants.TWITTER_CONSUMER_KEY)
     String KEY_CONSUMER_KEY = "consumer_key";
@@ -267,6 +270,7 @@ public interface SharedPreferenceConstants {
     String KEY_NOTIFICATION_TYPE_MENTIONS = "notification_type_mentions";
     String KEY_NOTIFICATION_TYPE_DIRECT_MESSAGES = "notification_type_direct_messages";
     String KEY_NOTIFICATION_FOLLOWING_ONLY = "notification_following_only";
+    String KEY_NOTIFICATION_MENTIONS_ONLY = "notification_mentions_only";
 
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_COMPACT_CARDS = "compact_cards";
@@ -286,24 +290,18 @@ public interface SharedPreferenceConstants {
     String KEY_PEBBLE_NOTIFICATIONS = "pebble_notifications";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_SWIPE_BACK = "swipe_back";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
-    String KEY_FORCE_USING_PRIVATE_APIS = "force_using_private_apis";
-    @Preference(type = STRING, hasDefault = true, defaultString = "140")
-    String KEY_STATUS_TEXT_LIMIT = "status_text_limit";
     @Preference(type = STRING, hasDefault = true, defaultString = VALUE_COMPOSE_NOW_ACTION_COMPOSE)
     String KEY_COMPOSE_NOW_ACTION = "compose_now_action";
-    String KEY_FALLBACK_TWITTER_LINK_HANDLER = "fallback_twitter_link_handler";
 
     @Preference(type = STRING, hasDefault = true, defaultString = VALUE_MEDIA_PREVIEW_STYLE_CROP)
     String KEY_MEDIA_PREVIEW_STYLE = "media_preview_style";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_MEDIA_PREVIEW = "media_preview";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
-    String KEY_SORT_TIMELINE_BY_ID = "sort_timeline_by_id";
     @Preference(type = STRING, hasDefault = true)
     String KEY_PROFILE_IMAGE_STYLE = "profile_image_style";
 
-    String KEY_QUICK_MENU_EXPANDED = "quick_menu_expanded";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    String KEY_BANDWIDTH_SAVING_MODE = "bandwidth_saving_mode";
 
     @Preference(type = STRING)
     String KEY_TRANSLATION_DESTINATION = "translation_destination";
@@ -313,8 +311,10 @@ public interface SharedPreferenceConstants {
     String KEY_CARD_HIGHLIGHT_OPTION = "card_highlight_option";
     @Preference(type = LONG, exportable = false)
     String KEY_API_LAST_CHANGE = "api_last_change";
-    @Preference(type = LONG, exportable = false)
-    String KEY_DEFAULT_ACCOUNT_ID = "default_account_id";
+    @Preference(type = STRING, exportable = false)
+    String KEY_DEFAULT_ACCOUNT_KEY = "default_account_key";
+    @Preference(type = BOOLEAN, exportable = true, defaultBoolean = true)
+    String KEY_RETRY_ON_NETWORK_ISSUE = "retry_on_network_issue";
 
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_HIDE_CARD_ACTIONS = "hide_card_actions";
@@ -330,6 +330,10 @@ public interface SharedPreferenceConstants {
     String KEY_I_WANT_MY_STARS_BACK = "i_want_my_stars_back";
     @Preference(type = STRING, hasDefault = false)
     String KEY_EMOJI_SUPPORT = "emoji_support";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
+    String KEY_NEW_DOCUMENT_API = "new_document_api";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
+    String KEY_DRAWER_TOGGLE = "drawer_toggle";
 
     //GCM
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)

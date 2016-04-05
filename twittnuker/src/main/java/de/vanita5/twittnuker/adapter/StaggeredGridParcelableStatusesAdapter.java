@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,12 +35,16 @@ import com.commonsware.cwac.layouts.AspectLockedFrameLayout;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
+import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
+import de.vanita5.twittnuker.view.MediaPreviewImageView;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
-public class StaggeredGridParcelableStatusesAdapter extends AbsParcelableStatusesAdapter {
+public class StaggeredGridParcelableStatusesAdapter extends ParcelableStatusesAdapter {
 
     public StaggeredGridParcelableStatusesAdapter(Context context, boolean compact) {
         super(context, compact);
@@ -66,7 +70,7 @@ public class StaggeredGridParcelableStatusesAdapter extends AbsParcelableStatuse
         private final SimpleAspectRatioSource aspectRatioSource = new SimpleAspectRatioSource();
 
         private final AspectLockedFrameLayout mediaImageContainer;
-        private final ImageView mediaImageView;
+        private final MediaPreviewImageView mediaImageView;
         private final ImageView mediaProfileImageView;
         private final TextView mediaTextView;
         private final IStatusesAdapter<?> adapter;
@@ -77,7 +81,7 @@ public class StaggeredGridParcelableStatusesAdapter extends AbsParcelableStatuse
             this.adapter = adapter;
             mediaImageContainer = (AspectLockedFrameLayout) itemView.findViewById(R.id.media_image_container);
             mediaImageContainer.setAspectRatioSource(aspectRatioSource);
-            mediaImageView = (ImageView) itemView.findViewById(R.id.media_image);
+            mediaImageView = (MediaPreviewImageView) itemView.findViewById(R.id.media_image);
             mediaProfileImageView = (ImageView) itemView.findViewById(R.id.media_profile_image);
             mediaTextView = (TextView) itemView.findViewById(R.id.media_text);
         }
@@ -89,17 +93,19 @@ public class StaggeredGridParcelableStatusesAdapter extends AbsParcelableStatuse
             final ParcelableMedia[] media = status.media;
             if (media == null || media.length < 1) return;
             final ParcelableMedia firstMedia = media[0];
-            if (status.text_plain.codePointCount(0, status.text_plain.length()) == firstMedia.end) {
-                mediaTextView.setText(status.text_unescaped.substring(0, firstMedia.start));
+            mediaTextView.setText(status.text_unescaped);
+            if (firstMedia.width > 0 && firstMedia.height > 0) {
+                aspectRatioSource.setSize(firstMedia.width, firstMedia.height);
             } else {
-                mediaTextView.setText(status.text_unescaped);
+                aspectRatioSource.setSize(100, 100);
             }
-            aspectRatioSource.setSize(firstMedia.width, firstMedia.height);
             mediaImageContainer.setTag(firstMedia);
             mediaImageContainer.requestLayout();
-            loader.displayProfileImage(mediaProfileImageView, status.user_profile_image_url);
+
+            mediaImageView.setHasPlayIcon(ParcelableMediaUtils.hasPlayIcon(firstMedia.type));
+            loader.displayProfileImage(mediaProfileImageView, status);
             loader.displayPreviewImageWithCredentials(mediaImageView, firstMedia.preview_url,
-                    status.account_id, adapter.getMediaLoadingHandler());
+                    status.account_key, adapter.getMediaLoadingHandler());
         }
 
         @Override
@@ -135,7 +141,7 @@ public class StaggeredGridParcelableStatusesAdapter extends AbsParcelableStatuse
         }
 
         @Override
-        public void onMediaClick(View view, ParcelableMedia media, long accountId) {
+        public void onMediaClick(View view, ParcelableMedia media, UserKey accountKey, long extraId) {
         }
 
         @Override
@@ -149,8 +155,13 @@ public class StaggeredGridParcelableStatusesAdapter extends AbsParcelableStatuse
 
         }
 
+        @Override
+        public void playLikeAnimation(LikeAnimationDrawable.OnLikedListener listener) {
+
+        }
+
         public void setOnClickListeners() {
-            setStatusClickListener(adapter);
+            setStatusClickListener(adapter.getStatusClickListener());
         }
 
         public void setupViewOptions() {

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,18 +22,13 @@
 
 package de.vanita5.twittnuker.fragment;
 
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,60 +37,49 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.UserListSelectorActivity;
+import de.vanita5.twittnuker.activity.UserListSelectorActivity;
+import de.vanita5.twittnuker.activity.iface.IControlBarActivity;
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter;
-import de.vanita5.twittnuker.fragment.support.AbsContentListViewFragment;
-import de.vanita5.twittnuker.fragment.support.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
 
-import static de.vanita5.twittnuker.util.Utils.getDefaultAccountId;
+import static de.vanita5.twittnuker.util.Utils.getDefaultAccountKey;
 
-public abstract class BaseFiltersFragment extends AbsContentListViewFragment<SimpleCursorAdapter> implements LoaderManager.LoaderCallbacks<Cursor>,
-        MultiChoiceModeListener {
+public abstract class BaseFiltersFragment extends AbsContentListViewFragment<SimpleCursorAdapter>
+        implements LoaderManager.LoaderCallbacks<Cursor>, MultiChoiceModeListener {
 
     private static final String EXTRA_AUTO_COMPLETE_TYPE = "auto_complete_type";
     private static final int AUTO_COMPLETE_TYPE_SOURCES = 2;
-    private final BroadcastReceiver mStateReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            if (getActivity() == null || !isAdded() || isDetached()) return;
-            final String action = intent.getAction();
-            if (BROADCAST_FILTERS_UPDATED.equals(action)) {
-                getLoaderManager().restartLoader(0, null, BaseFiltersFragment.this);
-            }
-        }
-
-    };
     private ContentResolver mResolver;
     private ActionMode mActionMode;
 
@@ -114,30 +98,17 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
         showProgress();
     }
 
-    @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        final View view = super.onCreateView(inflater, container, savedInstanceState);
-        assert view != null;
-        final ListView listView = (ListView) view.findViewById(R.id.list_view);
-        final Resources res = getResources();
-        final float density = res.getDisplayMetrics().density;
-        final int padding = (int) density * 16;
-        listView.setPadding(padding, 0, padding, 0);
-        return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        final IntentFilter filter = new IntentFilter(BROADCAST_FILTERS_UPDATED);
-        registerReceiver(mStateReceiver, filter);
-    }
-
-    @Override
-    public void onStop() {
-        unregisterReceiver(mStateReceiver);
-        super.onStop();
-    }
+//    @Override
+//    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
+//        final View view = super.onCreateView(inflater, container, savedInstanceState);
+//        assert view != null;
+//        final ListView listView = (ListView) view.findViewById(R.id.list_view);
+//        final Resources res = getResources();
+//        final float density = res.getDisplayMetrics().density;
+//        final int padding = (int) density * 16;
+//        listView.setPadding(padding, 0, padding, 0);
+//        return view;
+//    }
 
     @Override
     public void setUserVisibleHint(final boolean isVisibleToUser) {
@@ -148,8 +119,18 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
     }
 
     @Override
+    public void setControlVisible(boolean visible) {
+        super.setControlVisible(visible || !isQuickReturnEnabled());
+    }
+
+    private boolean isQuickReturnEnabled() {
+        return mActionMode == null;
+    }
+
+    @Override
     public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
         mActionMode = mode;
+        setControlVisible(true);
         mode.getMenuInflater().inflate(R.menu.action_multi_select_items, menu);
         return true;
     }
@@ -165,7 +146,8 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
         final ListView listView = getListView();
         switch (item.getItemId()) {
             case R.id.delete: {
-                final Expression where = Expression.in(new Column(Filters._ID), new RawItemArray(listView.getCheckedItemIds()));
+                final Expression where = Expression.in(new Column(Filters._ID),
+                        new RawItemArray(listView.getCheckedItemIds()));
                 mResolver.delete(getContentUri(), where.getSQL(), null);
                 break;
             }
@@ -186,7 +168,33 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
 
     @Override
     public void onDestroyActionMode(final ActionMode mode) {
+        mActionMode = null;
+    }
 
+    @Override
+    public void onItemCheckedStateChanged(final ActionMode mode, final int position, final long id,
+                                          final boolean checked) {
+        updateTitle(mode);
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+        if (ViewCompat.isLaidOut(view)) {
+            int childCount = view.getChildCount();
+            if (childCount > 0) {
+                final View firstChild = view.getChildAt(0);
+                final FragmentActivity activity = getActivity();
+                int controlBarHeight = 0;
+                if (activity instanceof IControlBarActivity) {
+                    controlBarHeight = ((IControlBarActivity) activity).getControlBarHeight();
+                }
+                final boolean visible = firstChild.getTop() > controlBarHeight;
+                setControlVisible(visible);
+            } else {
+                setControlVisible(true);
+            }
+        }
     }
 
     @Override
@@ -216,6 +224,7 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
         inflater.inflate(R.menu.menu_filters, menu);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -231,11 +240,6 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onItemCheckedStateChanged(final ActionMode mode, final int position, final long id,
-                                          final boolean checked) {
-        updateTitle(mode);
-    }
 
     @Override
     public boolean isRefreshing() {
@@ -259,19 +263,17 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
 
     public static final class AddItemFragment extends BaseSupportDialogFragment implements OnClickListener {
 
-        private AutoCompleteTextView mEditText;
-
-        private android.support.v4.widget.SimpleCursorAdapter mUserAutoCompleteAdapter;
-
         @Override
         public void onClick(final DialogInterface dialog, final int which) {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
-                    if (mEditText.length() <= 0) return;
+                    final String text = getText();
+                    if (TextUtils.isEmpty(text)) return;
                     final ContentValues values = new ContentValues();
-                    values.put(Filters.VALUE, getText());
+                    values.put(Filters.VALUE, text);
                     final Bundle args = getArguments();
                     final Uri uri = args.getParcelable(EXTRA_URI);
+                    assert uri != null;
                     getContentResolver().insert(uri, values);
                     break;
             }
@@ -282,38 +284,47 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
             final FragmentActivity activity = getActivity();
-            final Context wrapped = ThemeUtils.getDialogThemedContext(activity);
-            final AlertDialog.Builder builder = new AlertDialog.Builder(wrapped);
-            buildDialog(builder);
-            final View view = LayoutInflater.from(wrapped).inflate(R.layout.dialog_auto_complete_textview, null);
-            builder.setView(view);
-            mEditText = (AutoCompleteTextView) view.findViewById(R.id.edit_text);
-            final Bundle args = getArguments();
-            final int auto_complete_type = args != null ? args.getInt(EXTRA_AUTO_COMPLETE_TYPE, 0) : 0;
-            if (auto_complete_type != 0) {
-                if (auto_complete_type == AUTO_COMPLETE_TYPE_SOURCES) {
-                    mUserAutoCompleteAdapter = new SourceAutoCompleteAdapter(activity);
-                } else {
-                    final ComposeAutoCompleteAdapter adapter = new ComposeAutoCompleteAdapter(activity);
-                    adapter.setAccountId(Utils.getDefaultAccountId(activity));
-                    mUserAutoCompleteAdapter = adapter;
-                }
-                mEditText.setAdapter(mUserAutoCompleteAdapter);
-                mEditText.setThreshold(1);
-            }
+            final Context context = activity;
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setView(R.layout.dialog_auto_complete_textview);
+
             builder.setTitle(R.string.add_rule);
             builder.setPositiveButton(android.R.string.ok, this);
             builder.setNegativeButton(android.R.string.cancel, this);
-            return builder.create();
+            final AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    AlertDialog alertDialog = (AlertDialog) dialog;
+                    final AutoCompleteTextView editText = (AutoCompleteTextView) alertDialog.findViewById(R.id.edit_text);
+                    assert editText != null;
+                    final Bundle args = getArguments();
+                    final int autoCompleteType;
+                    autoCompleteType = args.getInt(EXTRA_AUTO_COMPLETE_TYPE, 0);
+                    if (autoCompleteType != 0) {
+                        SimpleCursorAdapter mUserAutoCompleteAdapter;
+                        if (autoCompleteType == AUTO_COMPLETE_TYPE_SOURCES) {
+                            mUserAutoCompleteAdapter = new SourceAutoCompleteAdapter(activity);
+                        } else {
+                            final ComposeAutoCompleteAdapter adapter = new ComposeAutoCompleteAdapter(activity);
+                            adapter.setAccountKey(Utils.getDefaultAccountKey(activity));
+                            mUserAutoCompleteAdapter = adapter;
+                        }
+                        editText.setAdapter(mUserAutoCompleteAdapter);
+                        editText.setThreshold(1);
+                    }
+                }
+            });
+            return dialog;
         }
 
         protected String getText() {
-            return ParseUtils.parseString(mEditText.getText());
+            AlertDialog alertDialog = (AlertDialog) getDialog();
+            final AutoCompleteTextView editText = (AutoCompleteTextView) alertDialog.findViewById(R.id.edit_text);
+            assert editText != null;
+            return ParseUtils.parseString(editText.getText());
         }
 
-        private void buildDialog(final Builder builder) {
-
-        }
     }
 
     private static final class FilterListAdapter extends SimpleCursorAdapter {
@@ -399,52 +410,13 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
                     final ParcelableUser user = data.getParcelableExtra(EXTRA_USER);
                     final ContentValues values = ContentValuesCreator.createFilteredUser(user);
                     final ContentResolver resolver = getContentResolver();
-                    resolver.delete(Filters.Users.CONTENT_URI, Expression.equals(Filters.Users.USER_ID, user.id).getSQL(), null);
+                    final String where = Expression.equalsArgs(Filters.Users.USER_KEY).getSQL();
+                    final String[] whereArgs = {user.key.toString()};
+                    resolver.delete(Filters.Users.CONTENT_URI, where, whereArgs);
                     resolver.insert(Filters.Users.CONTENT_URI, values);
                     break;
                 }
             }
-        }
-
-        public static final class FilterUsersListAdapter extends SimpleCursorAdapter {
-
-            @Inject
-            UserColorNameManager mUserColorNameManager;
-            @Inject
-            SharedPreferencesWrapper mPreferences;
-
-            private final boolean mNameFirst;
-            private int mUserIdIdx, mNameIdx, mScreenNameIdx;
-
-            FilterUsersListAdapter(final Context context) {
-                super(context, android.R.layout.simple_list_item_activated_1, null, new String[0], new int[0], 0);
-                GeneralComponentHelper.build(context).inject(this);
-                mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
-            }
-
-            @Override
-            public void bindView(@NonNull final View view, final Context context, @NonNull final Cursor cursor) {
-                super.bindView(view, context, cursor);
-                final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-                final long userId = cursor.getLong(mUserIdIdx);
-                final String name = cursor.getString(mNameIdx);
-                final String screenName = cursor.getString(mScreenNameIdx);
-                final String displayName = mUserColorNameManager.getDisplayName(userId, name, screenName,
-                        mNameFirst, false);
-                text1.setText(displayName);
-            }
-
-            @Override
-            public Cursor swapCursor(final Cursor c) {
-                final Cursor old = super.swapCursor(c);
-                if (c != null) {
-                    mUserIdIdx = c.getColumnIndex(Filters.Users.USER_ID);
-                    mNameIdx = c.getColumnIndex(Filters.Users.NAME);
-                    mScreenNameIdx = c.getColumnIndex(Filters.Users.SCREEN_NAME);
-                }
-                return old;
-            }
-
         }
 
         @Override
@@ -462,8 +434,8 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
             switch (item.getItemId()) {
                 case R.id.add: {
                     final Intent intent = new Intent(INTENT_ACTION_SELECT_USER);
-                    intent.setClass(getActivity(), UserListSelectorActivity.class);
-                    intent.putExtra(EXTRA_ACCOUNT_ID, getDefaultAccountId(getActivity()));
+                    intent.setClass(getContext(), UserListSelectorActivity.class);
+                    intent.putExtra(EXTRA_ACCOUNT_KEY, getDefaultAccountKey(getActivity()));
                     startActivityForResult(intent, REQUEST_SELECT_USER);
                     return true;
                 }
@@ -475,6 +447,49 @@ public abstract class BaseFiltersFragment extends AbsContentListViewFragment<Sim
         @Override
         protected SimpleCursorAdapter onCreateAdapter(Context context, boolean isCompact) {
             return new FilterUsersListAdapter(getActivity());
+        }
+
+        public static final class FilterUsersListAdapter extends SimpleCursorAdapter {
+
+            private final boolean mNameFirst;
+            @Inject
+            UserColorNameManager mUserColorNameManager;
+            @Inject
+            SharedPreferencesWrapper mPreferences;
+            private int mUserIdIdx, mNameIdx, mScreenNameIdx;
+
+            FilterUsersListAdapter(final Context context) {
+                super(context, android.R.layout.simple_list_item_activated_2, null, new String[0], new int[0], 0);
+                GeneralComponentHelper.build(context).inject(this);
+                mNameFirst = mPreferences.getBoolean(KEY_NAME_FIRST, true);
+            }
+
+            @Override
+            public void bindView(@NonNull final View view, final Context context, @NonNull final Cursor cursor) {
+                super.bindView(view, context, cursor);
+                final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+                final UserKey userId = UserKey.valueOf(cursor.getString(mUserIdIdx));
+                assert userId != null;
+                final String name = cursor.getString(mNameIdx);
+                final String screenName = cursor.getString(mScreenNameIdx);
+                final String displayName = mUserColorNameManager.getDisplayName(userId, name, screenName,
+                        mNameFirst);
+                text1.setText(displayName);
+                text2.setText(userId.getHost());
+            }
+
+            @Override
+            public Cursor swapCursor(final Cursor c) {
+                final Cursor old = super.swapCursor(c);
+                if (c != null) {
+                    mUserIdIdx = c.getColumnIndex(Filters.Users.USER_KEY);
+                    mNameIdx = c.getColumnIndex(Filters.Users.NAME);
+                    mScreenNameIdx = c.getColumnIndex(Filters.Users.SCREEN_NAME);
+                }
+                return old;
+            }
+
         }
 
     }

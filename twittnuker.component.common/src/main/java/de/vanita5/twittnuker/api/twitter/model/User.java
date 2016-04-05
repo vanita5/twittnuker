@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,13 @@ import java.util.Date;
 public class User extends TwitterResponseObject implements Comparable<User> {
 
     @JsonField(name = "id")
-    long id;
+    String id;
+
+    /**
+     * Fanfou uses this ID
+     */
+    @JsonField(name = "unique_id")
+    String uniqueId;
 
     @JsonField(name = "name")
     String name;
@@ -68,19 +74,22 @@ public class User extends TwitterResponseObject implements Comparable<User> {
     boolean isProtected;
 
     @JsonField(name = "followers_count")
-    long followersCount;
+    long followersCount = -1;
 
     @JsonField(name = "friends_count")
-    long friendsCount;
+    long friendsCount = -1;
 
     @JsonField(name = "listed_count")
-    long listedCount;
+    long listedCount = -1;
+
+    @JsonField(name = "groups_count")
+    long groupsCount = -1;
 
     @JsonField(name = "created_at", typeConverter = TwitterDateConverter.class)
     Date createdAt;
 
     @JsonField(name = "favourites_count")
-    long favouritesCount;
+    long favouritesCount = -1;
 
     @JsonField(name = "utc_offset")
     int utcOffset;
@@ -95,10 +104,13 @@ public class User extends TwitterResponseObject implements Comparable<User> {
     boolean isVerified;
 
     @JsonField(name = "statuses_count")
-    long statusesCount;
+    long statusesCount = -1;
 
     @JsonField(name = "media_count")
-    long mediaCount;
+    long mediaCount = -1;
+
+    @JsonField(name = "photo_count")
+    long photoCount = -1;
 
     @JsonField(name = "lang")
     String lang;
@@ -117,6 +129,11 @@ public class User extends TwitterResponseObject implements Comparable<User> {
 
     @JsonField(name = "profile_background_color")
     String profileBackgroundColor;
+    /**
+     * For GNU social compatibility
+     */
+    @JsonField(name = "backgroundcolor")
+    String backgroundcolor;
 
     @JsonField(name = "profile_background_image_url")
     String profileBackgroundImageUrl;
@@ -133,11 +150,29 @@ public class User extends TwitterResponseObject implements Comparable<User> {
     @JsonField(name = "profile_image_url_https")
     String profileImageUrlHttps;
 
+    /**
+     * Fanfou has this field
+     */
+    @JsonField(name = "profile_image_url_large")
+    String profileImageUrlLarge;
+
     @JsonField(name = "profile_banner_url")
     String profileBannerUrl;
 
+    /**
+     * For GNU social compatibility
+     */
+    @JsonField(name = "cover_photo")
+    String coverPhoto;
+
     @JsonField(name = "profile_link_color")
     String profileLinkColor;
+
+    /**
+     * For GNU social compatibility
+     */
+    @JsonField(name = "linkcolor")
+    String linkcolor;
 
     @JsonField(name = "profile_sidebar_border_color")
     String profileSidebarBorderColor;
@@ -181,6 +216,26 @@ public class User extends TwitterResponseObject implements Comparable<User> {
     @JsonField(name = "needs_phone_verification")
     boolean needsPhoneVerification;
 
+    @JsonField(name = "statusnet_profile_url")
+    String statusnetProfileUrl;
+
+    @JsonField(name = "ostatus_uri")
+    String ostatusUri;
+
+    @JsonField(name = "profile_image_url_original")
+    String profileImageUrlOriginal;
+
+    @JsonField(name = "profile_image_url_profile_size")
+    String profileImageUrlProfileSize;
+
+    @JsonField(name = "follows_you")
+    boolean followsYou;
+
+    @JsonField(name = "blocks_you")
+    boolean blocksYou;
+
+    @JsonField(name = "statusnet_blocking")
+    boolean statusnetBlocking;
 
     public boolean canMediaTag() {
         return canMediaTag;
@@ -253,7 +308,7 @@ public class User extends TwitterResponseObject implements Comparable<User> {
     }
 
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
@@ -277,6 +332,9 @@ public class User extends TwitterResponseObject implements Comparable<User> {
         return listedCount;
     }
 
+    public long getGroupsCount() {
+        return groupsCount;
+    }
 
     public String getLocation() {
         return location;
@@ -284,7 +342,8 @@ public class User extends TwitterResponseObject implements Comparable<User> {
 
 
     public long getMediaCount() {
-        return mediaCount;
+        if (mediaCount != -1) return mediaCount;
+        return photoCount;
     }
 
 
@@ -304,7 +363,8 @@ public class User extends TwitterResponseObject implements Comparable<User> {
 
 
     public String getProfileBackgroundColor() {
-        return profileBackgroundColor;
+        if (profileBackgroundColor != null) return profileBackgroundColor;
+        return backgroundcolor;
     }
 
 
@@ -319,7 +379,8 @@ public class User extends TwitterResponseObject implements Comparable<User> {
 
 
     public String getProfileBannerImageUrl() {
-        return profileBannerUrl;
+        if (profileBannerUrl != null) return profileBannerUrl;
+        return coverPhoto;
     }
 
 
@@ -327,14 +388,17 @@ public class User extends TwitterResponseObject implements Comparable<User> {
         return profileImageUrl;
     }
 
-
     public String getProfileImageUrlHttps() {
         return profileImageUrlHttps;
     }
 
+    public String getProfileImageUrlLarge() {
+        return profileImageUrlLarge;
+    }
 
     public String getProfileLinkColor() {
-        return profileLinkColor;
+        if (profileLinkColor != null) return profileLinkColor;
+        return linkcolor;
     }
 
 
@@ -423,10 +487,51 @@ public class User extends TwitterResponseObject implements Comparable<User> {
         return createdAt;
     }
 
+    public String getOstatusUri() {
+        return ostatusUri;
+    }
+
+    public String getStatusnetProfileUrl() {
+        return statusnetProfileUrl;
+    }
+
+    public boolean isCanMediaTag() {
+        return canMediaTag;
+    }
+
+    public boolean isHasCustomTimelines() {
+        return hasCustomTimelines;
+    }
+
+    public String getProfileImageUrlProfileSize() {
+        return profileImageUrlProfileSize;
+    }
+
+    public String getProfileImageUrlOriginal() {
+        return profileImageUrlOriginal;
+    }
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public boolean isStatusnetBlocking() {
+        return statusnetBlocking;
+    }
+
+    public boolean isBlocksYou() {
+        return blocksYou;
+    }
+
+    public boolean isFollowsYou() {
+        return followsYou;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id='" + id + '\'' +
+                ", uniqueId='" + uniqueId + '\'' +
                 ", name='" + name + '\'' +
                 ", screenName='" + screenName + '\'' +
                 ", location='" + location + '\'' +
@@ -438,6 +543,7 @@ public class User extends TwitterResponseObject implements Comparable<User> {
                 ", followersCount=" + followersCount +
                 ", friendsCount=" + friendsCount +
                 ", listedCount=" + listedCount +
+                ", groupsCount=" + groupsCount +
                 ", createdAt=" + createdAt +
                 ", favouritesCount=" + favouritesCount +
                 ", utcOffset=" + utcOffset +
@@ -446,19 +552,24 @@ public class User extends TwitterResponseObject implements Comparable<User> {
                 ", isVerified=" + isVerified +
                 ", statusesCount=" + statusesCount +
                 ", mediaCount=" + mediaCount +
+                ", photoCount=" + photoCount +
                 ", lang='" + lang + '\'' +
                 ", status=" + status +
                 ", contributorsEnabled=" + contributorsEnabled +
                 ", isTranslator=" + isTranslator +
                 ", isTranslationEnabled=" + isTranslationEnabled +
                 ", profileBackgroundColor='" + profileBackgroundColor + '\'' +
+                ", backgroundcolor='" + backgroundcolor + '\'' +
                 ", profileBackgroundImageUrl='" + profileBackgroundImageUrl + '\'' +
                 ", profileBackgroundImageUrlHttps='" + profileBackgroundImageUrlHttps + '\'' +
                 ", profileBackgroundTile=" + profileBackgroundTile +
                 ", profileImageUrl='" + profileImageUrl + '\'' +
                 ", profileImageUrlHttps='" + profileImageUrlHttps + '\'' +
+                ", profileImageUrlLarge='" + profileImageUrlLarge + '\'' +
                 ", profileBannerUrl='" + profileBannerUrl + '\'' +
+                ", coverPhoto='" + coverPhoto + '\'' +
                 ", profileLinkColor='" + profileLinkColor + '\'' +
+                ", linkcolor='" + linkcolor + '\'' +
                 ", profileSidebarBorderColor='" + profileSidebarBorderColor + '\'' +
                 ", profileSidebarFillColor='" + profileSidebarFillColor + '\'' +
                 ", profileTextColor='" + profileTextColor + '\'' +
@@ -473,16 +584,23 @@ public class User extends TwitterResponseObject implements Comparable<User> {
                 ", notifications=" + notifications +
                 ", isSuspended=" + isSuspended +
                 ", needsPhoneVerification=" + needsPhoneVerification +
+                ", statusnetProfileUrl='" + statusnetProfileUrl + '\'' +
+                ", ostatusUri='" + ostatusUri + '\'' +
+                ", profileImageUrlOriginal='" + profileImageUrlOriginal + '\'' +
+                ", profileImageUrlProfileSize='" + profileImageUrlProfileSize + '\'' +
+                ", followsYou=" + followsYou +
+                ", blocksYou=" + blocksYou +
+                ", statusnetBlocking=" + statusnetBlocking +
                 "} " + super.toString();
     }
 
     @Override
     public int compareTo(@NonNull final User that) {
-        return (int) (id - that.getId());
+        return id.compareTo(that.getId());
     }
 
     @OnJsonParseComplete
     void onJsonParseComplete() throws IOException {
-        if (id <= 0 || screenName == null) throw new IOException("Malformed User object");
+        if (id == null || screenName == null) throw new IOException("Malformed User object");
     }
 }

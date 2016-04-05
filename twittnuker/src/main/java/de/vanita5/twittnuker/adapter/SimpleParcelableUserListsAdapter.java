@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<Parcelabl
 
     @Override
     public long getItemId(final int position) {
-        return getItem(position) != null ? getItem(position).id : -1;
+        return getItem(position) != null ? getItem(position).hashCode() : -1;
     }
 
     @Override
@@ -70,8 +70,8 @@ public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<Parcelabl
         holder.icon.setImageDrawable(null);
 
         final ParcelableUserList user_list = getItem(position);
-        final String display_name = mUserColorNameManager.getDisplayName(user_list, isDisplayNameFirst(),
-                false);
+        final String display_name = mUserColorNameManager.getDisplayName(user_list, isDisplayNameFirst()
+        );
         holder.text1.setText(user_list.name);
         holder.text2.setText(mContext.getString(R.string.created_by, display_name));
         holder.icon.setVisibility(isProfileImageDisplayed() ? View.VISIBLE : View.GONE);
@@ -83,13 +83,14 @@ public class SimpleParcelableUserListsAdapter extends BaseArrayAdapter<Parcelabl
         return view;
     }
 
-    public void setData(final List<ParcelableUserList> data, final boolean clear_old) {
-        if (clear_old) {
+    public void setData(final List<ParcelableUserList> data, final boolean clearOld) {
+        if (clearOld) {
             clear();
         }
         if (data == null) return;
         for (final ParcelableUserList user : data) {
-            if (clear_old || findItemPosition(user.id) < 0) {
+            //TODO improve compare
+            if (clearOld || findItemPosition(user.hashCode()) < 0) {
                 add(user);
             }
         }

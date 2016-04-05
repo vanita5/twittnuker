@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,7 @@
 package de.vanita5.twittnuker.api.twitter.api;
 
 import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Body;
-import org.mariotaku.restfu.annotation.param.Form;
+import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
@@ -36,10 +35,10 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 public interface SpamReportingResources {
 
     @POST("/users/report_spam.json")
-    @Body(BodyType.FORM)
-    User reportSpam(@Form("user_id") long userId) throws TwitterException;
+    @BodyType(BodyType.FORM)
+    User reportSpam(@Param("user_id") String userId) throws TwitterException;
 
     @POST("/users/report_spam.json")
-    @Body(BodyType.FORM)
-    User reportSpam(@Form("screen_name") String screenName) throws TwitterException;
+    @BodyType(BodyType.FORM)
+    User reportSpamByScreenName(@Param("screen_name") String screenName) throws TwitterException;
 }

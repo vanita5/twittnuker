@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ public class Relationship extends TwitterResponseObject implements TwitterRespon
         return object.target.screenName;
     }
 
-    public long getTargetUserId() {
+    public String getTargetUserId() {
         return object.target.id;
     }
 
@@ -82,7 +82,7 @@ public class Relationship extends TwitterResponseObject implements TwitterRespon
         return object.source.screenName;
     }
 
-    public long getSourceUserId() {
+    public String getSourceUserId() {
         return object.source.id;
     }
 
@@ -122,9 +122,9 @@ public class Relationship extends TwitterResponseObject implements TwitterRespon
         @JsonObject
         public static class Target {
             @JsonField(name = "id")
-            long id;
+            String id;
             @JsonField(name = "screen_name")
-            public String screenName;
+            String screenName;
             @JsonField(name = "following")
             boolean following;
             @JsonField(name = "followed_by")
@@ -136,9 +136,9 @@ public class Relationship extends TwitterResponseObject implements TwitterRespon
         @JsonObject
         public static class Source {
             @JsonField(name = "id")
-            long id;
+            String id;
             @JsonField(name = "screen_name")
-            public String screenName;
+            String screenName;
             @JsonField(name = "blocked_by")
             boolean blockedBy;
             @JsonField(name = "blocking")

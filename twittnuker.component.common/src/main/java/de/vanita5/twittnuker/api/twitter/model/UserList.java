@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,19 +23,21 @@
 package de.vanita5.twittnuker.api.twitter.model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
 
 import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Date;
 
 @JsonObject
 public class UserList extends TwitterResponseObject implements Comparable<UserList>, TwitterResponse {
     @JsonField(name = "id")
-    long id;
+    String id;
 
     @JsonField(name = "name")
     String name;
@@ -49,8 +51,9 @@ public class UserList extends TwitterResponseObject implements Comparable<UserLi
     @JsonField(name = "member_count")
     long memberCount;
 
-    @JsonField(name = "mode", typeConverter = Mode.Converter.class)
-    Mode mode;
+    @Mode
+    @JsonField(name = "mode")
+    String mode;
 
     @JsonField(name = "description")
     String description;
@@ -70,7 +73,7 @@ public class UserList extends TwitterResponseObject implements Comparable<UserLi
     @JsonField(name = "user")
     User user;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
@@ -91,7 +94,8 @@ public class UserList extends TwitterResponseObject implements Comparable<UserLi
         return memberCount;
     }
 
-    public Mode getMode() {
+    @Mode
+    public String getMode() {
         return mode;
     }
 
@@ -121,7 +125,7 @@ public class UserList extends TwitterResponseObject implements Comparable<UserLi
 
     @Override
     public int compareTo(@NonNull UserList another) {
-        return (int) (id - another.id);
+        return id.compareTo(another.id);
     }
 
     @Override
@@ -142,40 +146,11 @@ public class UserList extends TwitterResponseObject implements Comparable<UserLi
                 "} " + super.toString();
     }
 
-    public enum Mode {
-        PUBLIC("public"), PRIVATE("private");
+    @StringDef({Mode.PRIVATE, Mode.PUBLIC})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Mode {
+        String PUBLIC = "public";
+        String PRIVATE = "private";
 
-        private final String mode;
-
-        Mode(String mode) {
-            this.mode = mode;
-        }
-
-        public static Mode parse(String str) {
-            switch (str) {
-                case "public":
-                    return PUBLIC;
-                case "private":
-                    return PRIVATE;
-            }
-            throw new UnsupportedOperationException();
-        }
-
-        public String getMode() {
-            return mode;
-        }
-
-        public static class Converter extends StringBasedTypeConverter<Mode> {
-
-            @Override
-            public Mode getFromString(String string) {
-                return Mode.parse(string);
-            }
-
-            @Override
-            public String convertToString(Mode object) {
-                return object.mode;
-            }
-        }
     }
 }

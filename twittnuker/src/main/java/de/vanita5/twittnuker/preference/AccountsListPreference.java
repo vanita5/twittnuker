@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,14 +28,17 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.AsyncTask;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.internal.widget.PreferenceImageView;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceCategory;
+import android.support.v7.preference.PreferenceManager;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -44,8 +47,8 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.BitmapUtils;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -55,7 +58,6 @@ import javax.inject.Inject;
 
 public abstract class AccountsListPreference extends PreferenceCategory implements Constants {
 
-    private static final int[] ATTRS = {R.attr.switchKey, R.attr.switchDefault};
     @Nullable
     private final String mSwitchKey;
     private final boolean mSwitchDefault;
@@ -65,14 +67,14 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
     }
 
     public AccountsListPreference(final Context context, final AttributeSet attrs) {
-        this(context, attrs, android.R.attr.preferenceCategoryStyle);
+        this(context, attrs, R.attr.preferenceCategoryStyle);
     }
 
     public AccountsListPreference(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
-        final TypedArray a = context.obtainStyledAttributes(attrs, ATTRS);
-        mSwitchKey = a.getString(0);
-        mSwitchDefault = a.getBoolean(1, false);
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AccountsListPreference);
+        mSwitchKey = a.getString(R.styleable.AccountsListPreference_switchKey);
+        mSwitchDefault = a.getBoolean(R.styleable.AccountsListPreference_switchDefault, false);
         a.recycle();
     }
 
@@ -92,7 +94,8 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
     @Override
     protected void onAttachedToHierarchy(@NonNull final PreferenceManager preferenceManager) {
         super.onAttachedToHierarchy(preferenceManager);
-        AsyncTaskUtils.executeTask(new LoadAccountsTask(this));
+        if (getPreferenceCount() > 0) return;
+        setAccountsData(DataStoreUtils.getAccountsList(getContext(), false));
     }
 
     protected abstract void setupPreference(AccountItemPreference preference, ParcelableAccount account);
@@ -110,10 +113,13 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
                                      final boolean switchDefault) {
             super(context);
             GeneralComponentHelper.build(context).inject(this);
-            final String switchPreferenceName = ACCOUNT_PREFERENCES_NAME_PREFIX + account.account_id;
+            final String switchPreferenceName = ACCOUNT_PREFERENCES_NAME_PREFIX + account.account_key;
             mAccount = account;
             mSwitchPreference = context.getSharedPreferences(switchPreferenceName, Context.MODE_PRIVATE);
             mSwitchPreference.registerOnSharedPreferenceChangeListener(this);
+            setTitle(mAccount.name);
+            setSummary(String.format("@%s", mAccount.screen_name));
+            mImageLoader.loadProfileImage(mAccount, this);
         }
 
         @Override
@@ -124,7 +130,9 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
         @Override
         public void onLoadingComplete(final String imageUri, final View view, final Bitmap loadedImage) {
             final Bitmap roundedBitmap = BitmapUtils.getCircleBitmap(loadedImage);
-            setIcon(new BitmapDrawable(getContext().getResources(), roundedBitmap));
+            final BitmapDrawable icon = new BitmapDrawable(getContext().getResources(), roundedBitmap);
+            icon.setGravity(Gravity.FILL);
+            setIcon(icon);
         }
 
         @Override
@@ -142,52 +150,29 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
             notifyChanged();
         }
 
-        @Override
-        protected void onAttachedToHierarchy(@NonNull final PreferenceManager preferenceManager) {
-            super.onAttachedToHierarchy(preferenceManager);
-            setTitle(mAccount.name);
-            setSummary(String.format("@%s", mAccount.screen_name));
-//            setIcon(R.drawable.ic_profile_image_default);
-            mImageLoader.loadProfileImage(mAccount.profile_image_url, this);
-        }
 
         @Override
-        protected void onBindView(@NonNull final View view) {
-            super.onBindView(view);
-//            final View iconView = view.findViewById(android.R.id.icon);
-//            if (iconView instanceof ImageView) {
-//                final ImageView imageView = (ImageView) iconView;
-//                imageView.setScaleType(ScaleType.CENTER_CROP);
-//            }
-            final View titleView = view.findViewById(android.R.id.title);
+        public void onBindViewHolder(PreferenceViewHolder holder) {
+            super.onBindViewHolder(holder);
+            final View iconView = holder.findViewById(android.R.id.icon);
+            if (iconView instanceof PreferenceImageView) {
+                final PreferenceImageView imageView = (PreferenceImageView) iconView;
+                final int maxSize = getContext().getResources().getDimensionPixelSize(R.dimen.element_size_normal);
+                imageView.setMinimumWidth(maxSize);
+                imageView.setMinimumHeight(maxSize);
+                imageView.setMaxWidth(maxSize);
+                imageView.setMaxHeight(maxSize);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            }
+            final View titleView = holder.findViewById(android.R.id.title);
             if (titleView instanceof TextView) {
                 ((TextView) titleView).setSingleLine(true);
             }
-            final View summaryView = view.findViewById(android.R.id.summary);
+            final View summaryView = holder.findViewById(android.R.id.summary);
             if (summaryView instanceof TextView) {
                 ((TextView) summaryView).setSingleLine(true);
             }
         }
-    }
-
-    private static class LoadAccountsTask extends AsyncTask<Object, Object, List<ParcelableAccount>> {
-
-        private final AccountsListPreference mPreference;
-
-        public LoadAccountsTask(final AccountsListPreference preference) {
-            mPreference = preference;
-        }
-
-        @Override
-        protected List<ParcelableAccount> doInBackground(final Object... params) {
-            return ParcelableAccount.getAccountsList(mPreference.getContext(), false);
-        }
-
-        @Override
-        protected void onPostExecute(final List<ParcelableAccount> result) {
-            mPreference.setAccountsData(result);
-        }
-
     }
 
 }

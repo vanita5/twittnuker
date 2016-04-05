@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.view.ColorLabelRelativeLayout;
+import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 public class AccountViewHolder {
 
@@ -36,17 +36,19 @@ public class AccountViewHolder {
     public final TextView name, screenName;
     public final CompoundButton toggle;
     public final View toggleContainer;
-    private final ColorLabelRelativeLayout content;
+    public final ImageView accountType;
+    private final IColorLabelView content;
     private final View dragHandle;
 
     public AccountViewHolder(final View view) {
-        content = (ColorLabelRelativeLayout) view;
+        content = (IColorLabelView) view;
         name = (TextView) view.findViewById(android.R.id.text1);
         screenName = (TextView) view.findViewById(android.R.id.text2);
         profileImage = (ImageView) view.findViewById(android.R.id.icon);
         toggle = (CompoundButton) view.findViewById(android.R.id.toggle);
         toggleContainer = view.findViewById(R.id.toggle_container);
         dragHandle = view.findViewById(R.id.drag_handle);
+        accountType = (ImageView) view.findViewById(R.id.account_type);
     }
 
     public void setAccountColor(final int color) {

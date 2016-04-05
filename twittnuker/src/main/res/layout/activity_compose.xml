@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -20,9 +20,11 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
     android:id="@+id/compose_activity"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:minWidth="@dimen/compose_min_width"
@@ -34,64 +36,108 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <LinearLayout
+        <ScrollView
             android:id="@+id/edit_text_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <de.vanita5.twittnuker.view.ComposeEditText
-                android:id="@+id/edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@null"
-                android:gravity="top"
-                android:hint="@string/status_hint"
-                android:inputType="textMultiLine|textLongMessage|textCapSentences"
-                android:minLines="6"
-                android:padding="@dimen/element_spacing_normal"
-                android:scrollbars="vertical"
-                android:singleLine="false" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/attached_media_preview"
-                android:layout_width="match_parent"
-                android:layout_height="128dp"
-                android:layout_weight="0"
-                tools:listitem="@layout/grid_item_media_editor" />
-
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/location_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="?selectableItemBackground"
-                android:clickable="true"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="@dimen/element_spacing_normal">
+                android:orientation="vertical">
 
-                <de.vanita5.twittnuker.view.ActionIconView
-                    android:id="@+id/location_icon"
-                    android:layout_width="@dimen/element_size_small"
-                    android:layout_height="@dimen/element_size_small"
-                    android:layout_marginLeft="@dimen/element_spacing_normal"
-                    android:layout_marginRight="@dimen/element_spacing_normal"
-                    android:color="?android:textColorSecondary"
-                    android:src="@drawable/ic_action_location" />
-
-                <de.vanita5.twittnuker.view.themed.ThemedTextView
-                    android:id="@+id/location_text"
+                <TextView
+                    android:id="@+id/reply_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/element_spacing_normal"
-                    android:layout_marginRight="@dimen/element_spacing_normal" />
+                    android:background="?android:panelColorBackground"
+                    android:ellipsize="end"
+                    android:padding="@dimen/element_spacing_normal"
+                    android:singleLine="true"
+                    tools:text="In reply to name: A quick brown fox jumps over the lazy dog"/>
+
+                <View
+                    android:id="@+id/reply_label_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?dividerVertical"/>
+
+                <de.vanita5.twittnuker.view.ComposeEditText
+                    android:id="@+id/edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="top"
+                    android:hint="@string/status_hint"
+                    android:inputType="textMultiLine|textLongMessage|textCapSentences"
+                    android:minLines="@integer/default_compose_min_lines"
+                    android:padding="@dimen/element_spacing_normal"
+                    android:singleLine="false"
+                    tools:minLines="@integer/media_compose_min_lines"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/attached_media_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="128dp"
+                    android:clipChildren="false"
+                    tools:listitem="@layout/grid_item_media_editor" />
+
+                <RelativeLayout
+                    android:id="@+id/location_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackground"
+                    android:clickable="false"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/element_spacing_normal"
+                    android:paddingLeft="@dimen/element_spacing_normal"
+                    android:paddingRight="@dimen/element_spacing_normal"
+                    android:paddingTop="@dimen/element_spacing_normal">
+
+                    <de.vanita5.twittnuker.view.IconActionView
+                        android:id="@+id/location_icon"
+                        android:layout_width="@dimen/element_size_small"
+                        android:layout_height="@dimen/element_size_small"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_action_location"
+                        android:tag="iab_activated_color|accent_color"
+                        app:iabActivatedColor="?colorAccent"
+                        app:iabColor="?android:textColorSecondary"
+                        tools:activated="true"/>
+
+                    <TextView
+                        android:id="@+id/location_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/element_spacing_normal"
+                        android:layout_marginRight="@dimen/element_spacing_normal"
+                        android:layout_toEndOf="@+id/location_icon"
+                        android:layout_toLeftOf="@+id/location_switch"
+                        android:layout_toRightOf="@+id/location_icon"
+                        android:layout_toStartOf="@+id/location_switch"
+                        android:paddingLeft="@dimen/element_spacing_normal"
+                        android:paddingRight="@dimen/element_spacing_normal"
+                        android:singleLine="true"
+                        tools:text="11.4, 51.4"/>
+
+                    <de.vanita5.twittnuker.view.ThemedMultiValueSwitch
+                        android:id="@+id/location_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:tag="mvs_tint|accent_color"
+                        tools:max="3"
+                        tools:position="2"/>
+
+                </RelativeLayout>
 
             </LinearLayout>
-
-        </LinearLayout>
+        </ScrollView>
 
         <FrameLayout
             android:id="@+id/account_selector_container"
@@ -115,16 +161,120 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?dividerVertical"/>
+
+    <RelativeLayout
         android:id="@+id/compose_bottombar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
+        android:layout_height="?actionBarSize"
         android:background="?android:panelColorBackground"
-        android:divider="?android:dividerVertical"
-        android:orientation="vertical"
-        android:showDividers="beginning">
+        android:baselineAligned="false">
 
-        <include layout="@layout/activity_compose_bottombar" />
-    </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/account_selector_button"
+            style="?actionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:clickable="true"
+            android:paddingBottom="@dimen/element_spacing_msmall"
+            android:paddingEnd="@dimen/element_spacing_msmall"
+            android:paddingLeft="@dimen/element_spacing_msmall"
+            android:paddingRight="@dimen/element_spacing_msmall"
+            android:paddingStart="@dimen/element_spacing_msmall"
+            android:paddingTop="@dimen/element_spacing_msmall">
+
+            <de.vanita5.twittnuker.view.SquareFrameLayout
+                android:id="@+id/account_profile_image_frame"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <de.vanita5.twittnuker.view.ProfileImageView
+                    android:id="@+id/account_profile_image"
+                    style="?profileImageStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    app:sivBackgroundColor="?android:colorBackground"
+                    app:sivBorder="true"
+                    app:sivBorderWidth="@dimen/line_width_compose_account_profile_image"
+                    tools:src="@mipmap/ic_launcher"/>
+            </de.vanita5.twittnuker.view.SquareFrameLayout>
+
+            <de.vanita5.twittnuker.view.BadgeView
+                android:id="@+id/accounts_count"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@id/account_profile_image_frame"
+                android:layout_alignEnd="@id/account_profile_image_frame"
+                android:layout_alignLeft="@id/account_profile_image_frame"
+                android:layout_alignRight="@id/account_profile_image_frame"
+                android:layout_alignStart="@id/account_profile_image_frame"
+                android:layout_alignTop="@id/account_profile_image_frame"
+                android:layout_gravity="center"
+                android:contentDescription="@string/select_accounts_for_compose"
+                android:textColor="?android:colorForeground"/>
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/account_selector_button"
+            android:layout_toLeftOf="@+id/send"
+            android:layout_toRightOf="@+id/account_selector_button"
+            android:layout_toStartOf="@+id/send"
+            android:scrollbars="none">
+
+            <android.support.v7.widget.TwidereActionMenuView
+                android:id="@+id/menu_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@null"
+                android:tag="ate_ignore"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/send"
+            style="?actionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/send"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/element_spacing_normal"
+            android:paddingEnd="@dimen/element_spacing_normal"
+            android:paddingLeft="@dimen/element_spacing_large"
+            android:paddingRight="@dimen/element_spacing_normal"
+            android:paddingStart="@dimen/element_spacing_large"
+            android:paddingTop="@dimen/element_spacing_normal">
+
+            <de.vanita5.twittnuker.view.StatusTextCountView
+                android:id="@+id/status_text_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minWidth="@dimen/element_size_small"
+                android:textAppearance="?android:textAppearanceSmall"
+                tools:text="140"/>
+
+            <de.vanita5.twittnuker.view.IconActionView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/send"
+                android:cropToPadding="false"
+                android:padding="@dimen/element_spacing_xsmall"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_action_send"
+                tools:tint="?android:textColorSecondary"/>
+
+        </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

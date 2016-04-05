@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,21 +24,16 @@ package de.vanita5.twittnuker.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
 import de.vanita5.twittnuker.util.StrictModeUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
+import de.vanita5.twittnuker.util.Utils;
 
 public class MainActivity extends Activity implements Constants {
-
-    @Override
-    public void finish() {
-        super.finish();
-        ThemeUtils.overrideActivityCloseAnimation(this);
-    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -46,13 +41,21 @@ public class MainActivity extends Activity implements Constants {
             StrictModeUtils.detectAllVmPolicy();
             StrictModeUtils.detectAllThreadPolicy();
         }
-        ThemeUtils.overrideActivityOpenAnimation(this);
         super.onCreate(savedInstanceState);
-        setVisible(true);
-        final Intent intent = new Intent(this, HomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(intent);
+        if (Utils.checkDeviceCompatible()) {
+            final Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+        } else {
+            final Intent intent = new Intent(this, IncompatibleAlertActivity.class);
+            startActivity(intent);
+        }
         finish();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        ThemeUtils.fixNightMode(getResources(), newConfig);
+        super.onConfigurationChanged(newConfig);
     }
 
 }

@@ -1,74 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Twittnuker - Twitter client for Android
+  ~
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~
+  ~ This program incorporates a modified version of Twidere.
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@id/mention"
         android:icon="@drawable/ic_action_at"
         android:title="@string/mention_this_user"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@id/send_direct_message"
-        android:icon="@drawable/ic_action_new_message"
+        android:icon="@drawable/ic_action_message"
         android:title="@string/send_direct_message"
-        android:visible="false" />
+        android:visible="false"/>
     <item
         android:id="@id/add_to_list"
         android:icon="@drawable/ic_action_add_to_list"
-        android:title="@string/add_to_list" />
+        android:title="@string/add_to_list"/>
     <item
         android:id="@id/set_color"
         android:icon="@drawable/ic_action_color_palette"
-        android:title="@string/set_color" />
+        android:title="@string/set_color"/>
     <item
         android:id="@id/add_to_filter"
         android:icon="@drawable/ic_action_speaker_muted"
-        android:title="@string/add_to_filter" />
+        android:title="@string/add_to_filter"/>
     <item
         android:id="@+id/incoming_friendships"
         android:icon="@drawable/ic_action_profile"
-        android:title="@string/incoming_friendships" />
+        android:title="@string/incoming_friendships"/>
     <item
         android:id="@+id/user_mentions"
         android:icon="@drawable/ic_action_at"
-        android:title="@string/user_mentions" />
+        android:title="@string/user_mentions"/>
     <item
         android:id="@+id/saved_searches"
         android:icon="@drawable/ic_action_search"
-        android:title="@string/saved_searches" />
+        android:title="@string/saved_searches"/>
     <item
         android:id="@+id/scheduled_statuses"
         android:icon="@drawable/ic_action_time"
-        android:title="@string/scheduled_statuses" />
+        android:title="@string/scheduled_statuses"/>
     <item
         android:id="@id/enable_retweets"
         android:checkable="true"
         android:icon="@drawable/ic_action_retweet"
-        android:title="@string/enable_retweets" />
+        android:title="@string/enable_retweets"/>
     <item
         android:id="@id/mute_user"
         android:checkable="true"
         android:icon="@drawable/ic_action_mic_muted"
-        android:title="@string/twitter_mute_user" />
+        android:title="@string/twitter_mute_user"/>
     <item
         android:id="@id/block"
         android:icon="@drawable/ic_action_block"
-        android:title="@string/block" />
+        android:title="@string/block"/>
     <item
         android:id="@id/report_spam"
         android:icon="@drawable/ic_action_warning"
-        android:title="@string/report_for_spam" />
+        android:title="@string/report_for_spam"/>
     <item
         android:id="@+id/muted_users"
         android:icon="@drawable/ic_action_mic_muted"
-        android:title="@string/twitter_muted_users" />
+        android:title="@string/twitter_muted_users"/>
     <item
         android:id="@+id/blocked_users"
         android:icon="@drawable/ic_action_block"
-        android:title="@string/blocked_users" />
+        android:title="@string/blocked_users"/>
     <item
         android:id="@id/open_with_account"
         android:icon="@drawable/ic_action_accounts"
-        android:title="@string/open_with_account" />
+        android:title="@string/open_with_account"/>
+
+    <item
+        android:id="@id/open_in_browser"
+        android:icon="@drawable/ic_action_web"
+        android:title="@string/open_in_browser"/>
 
 </menu>

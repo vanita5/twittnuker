@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.Utils;
@@ -57,10 +56,10 @@ public abstract class SaveFileTask extends AsyncTask<Object, Object, SaveFileTas
     private final FileInfoCallback getMimeType;
 
     public SaveFileTask(@NonNull final Context context, @NonNull final Uri source,
-                        @NonNull final File destination, @NonNull final FileInfoCallback getMimeType) {
+                        @NonNull final File destination, @NonNull final FileInfoCallback callback) {
         this.contextRef = new WeakReference<>(context);
         this.source = source;
-        this.getMimeType = getMimeType;
+        this.getMimeType = callback;
         this.destination = destination;
     }
 
@@ -72,13 +71,23 @@ public abstract class SaveFileTask extends AsyncTask<Object, Object, SaveFileTas
         Source ioSrc = null;
         BufferedSink sink = null;
         try {
-            final String name = fileInfoCallback.getFilename(source);
+            String name = fileInfoCallback.getFilename(source);
             if (isEmpty(name)) return null;
+            if (name.length() > 32) {
+                name = name.substring(0, 32);
+            }
             final String mimeType = fileInfoCallback.getMimeType(source);
             final String extension = fileInfoCallback.getExtension(mimeType);
-            final String nameToSave = getFileNameWithExtension(name, extension);
             if (!destinationDir.isDirectory() && !destinationDir.mkdirs()) return null;
-            final File saveFile = new File(destinationDir, nameToSave);
+            String nameToSave = getFileNameWithExtension(name, extension,
+                    fileInfoCallback.getSpecialCharacter(), null);
+            File saveFile = new File(destinationDir, nameToSave);
+            if (saveFile.exists()) {
+                nameToSave = getFileNameWithExtension(name, extension,
+                        fileInfoCallback.getSpecialCharacter(),
+                        String.valueOf(System.currentTimeMillis()));
+                saveFile = new File(destinationDir, nameToSave);
+            }
             final InputStream in = cr.openInputStream(source);
             if (in == null) return null;
             ioSrc = Okio.source(in);
@@ -115,12 +124,16 @@ public abstract class SaveFileTask extends AsyncTask<Object, Object, SaveFileTas
     @Override
     protected final void onPostExecute(@Nullable final SaveFileResult result) {
         dismissProgress();
-        if (result != null) {
+        if (result != null && result.savedFile != null) {
             onFileSaved(result.savedFile, result.mimeType);
+        } else {
+            onFileSaveFailed();
         }
     }
 
-    protected abstract void onFileSaved(File savedFile, String mimeType);
+    protected abstract void onFileSaved(@NonNull File savedFile, @Nullable String mimeType);
+
+    protected abstract void onFileSaveFailed();
 
     protected abstract void showProgress();
 
@@ -131,11 +144,30 @@ public abstract class SaveFileTask extends AsyncTask<Object, Object, SaveFileTas
         return contextRef.get();
     }
 
-    private static String getFileNameWithExtension(String name, @Nullable String extension) {
-        if (extension == null) return name;
-        int lastDotIdx = name.lastIndexOf('.');
-        if (lastDotIdx < 0) return name + "." + extension;
-        return name.substring(0, lastDotIdx) + "." + extension;
+    @NonNull
+    static String getFileNameWithExtension(@NonNull String name, @Nullable String extension,
+                                           char specialCharacter, @Nullable String suffix) {
+        StringBuilder sb = new StringBuilder();
+        int end = name.length();
+        if (extension != null) {
+            if (name.endsWith(extension)) {
+                for (int i = end - extension.length() - 1; i >= 0; i--) {
+                    if (name.charAt(i) != specialCharacter) {
+                        end = i + 1;
+                        break;
+                    }
+                }
+            }
+        }
+        sb.append(name, 0, end);
+        if (suffix != null) {
+            sb.append(suffix);
+        }
+        if (extension != null) {
+            sb.append('.');
+            sb.append(extension);
+        }
+        return sb.toString();
     }
 
     public interface FileInfoCallback {
@@ -147,6 +179,8 @@ public abstract class SaveFileTask extends AsyncTask<Object, Object, SaveFileTas
 
         @Nullable
         String getExtension(@Nullable String mimeType);
+
+        char getSpecialCharacter();
     }
 
     public static final class SaveFileResult {
@@ -167,31 +201,4 @@ public abstract class SaveFileTask extends AsyncTask<Object, Object, SaveFileTas
         }
     }
 
-    public static class StringFileInfoCallback implements FileInfoCallback {
-        private final String filename;
-        private final String mimeType;
-
-        public StringFileInfoCallback(String filename, String mimeType) {
-            this.filename = filename;
-            this.mimeType = mimeType;
-        }
-
-        @Nullable
-        @Override
-        public String getFilename(@NonNull Uri source) {
-            return filename;
-        }
-
-        @Override
-        @Nullable
-        public String getMimeType(@NonNull Uri source) {
-            return mimeType;
-        }
-
-        @Override
-        @Nullable
-        public String getExtension(@Nullable String mimeType) {
-            return MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
-        }
-    }
 }

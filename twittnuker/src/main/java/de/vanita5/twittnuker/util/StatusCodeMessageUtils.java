@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,13 +26,9 @@ import android.content.Context;
 import android.util.SparseIntArray;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
 
 public class StatusCodeMessageUtils {
-
-    public static final int PAGE_NOT_FOUND = 34;
-    public static final int RATE_LIMIT_EXCEEDED = 88;
-    public static final int NOT_AUTHORIZED = 179;
-    public static final int STATUS_IS_DUPLICATE = 187;
 
     private static final SparseIntArray TWITTER_ERROR_CODE_MESSAGES = new SparseIntArray();
 
@@ -40,8 +36,8 @@ public class StatusCodeMessageUtils {
 
     static {
         TWITTER_ERROR_CODE_MESSAGES.put(32, R.string.error_twitter_32);
-        TWITTER_ERROR_CODE_MESSAGES.put(PAGE_NOT_FOUND, R.string.error_twitter_34);
-        TWITTER_ERROR_CODE_MESSAGES.put(RATE_LIMIT_EXCEEDED, R.string.error_twitter_88);
+        TWITTER_ERROR_CODE_MESSAGES.put(ErrorInfo.PAGE_NOT_FOUND, R.string.error_twitter_34);
+        TWITTER_ERROR_CODE_MESSAGES.put(ErrorInfo.RATE_LIMIT_EXCEEDED, R.string.error_twitter_88);
         TWITTER_ERROR_CODE_MESSAGES.put(89, R.string.error_twitter_89);
         TWITTER_ERROR_CODE_MESSAGES.put(64, R.string.error_twitter_64);
         TWITTER_ERROR_CODE_MESSAGES.put(130, R.string.error_twitter_130);
@@ -49,11 +45,12 @@ public class StatusCodeMessageUtils {
         TWITTER_ERROR_CODE_MESSAGES.put(135, R.string.error_twitter_135);
         TWITTER_ERROR_CODE_MESSAGES.put(136, R.string.error_twitter_136);
         TWITTER_ERROR_CODE_MESSAGES.put(139, R.string.error_twitter_139);
+        TWITTER_ERROR_CODE_MESSAGES.put(144, R.string.error_twitter_144);
         TWITTER_ERROR_CODE_MESSAGES.put(161, R.string.error_twitter_161);
         TWITTER_ERROR_CODE_MESSAGES.put(162, R.string.error_twitter_162);
         TWITTER_ERROR_CODE_MESSAGES.put(172, R.string.error_twitter_172);
-        TWITTER_ERROR_CODE_MESSAGES.put(NOT_AUTHORIZED, R.string.error_twitter_179);
-        TWITTER_ERROR_CODE_MESSAGES.put(STATUS_IS_DUPLICATE, R.string.error_twitter_187);
+        TWITTER_ERROR_CODE_MESSAGES.put(ErrorInfo.NOT_AUTHORIZED, R.string.error_twitter_179);
+        TWITTER_ERROR_CODE_MESSAGES.put(ErrorInfo.STATUS_IS_DUPLICATE, R.string.error_twitter_187);
         TWITTER_ERROR_CODE_MESSAGES.put(193, R.string.error_twitter_193);
         TWITTER_ERROR_CODE_MESSAGES.put(215, R.string.error_twitter_215);
 

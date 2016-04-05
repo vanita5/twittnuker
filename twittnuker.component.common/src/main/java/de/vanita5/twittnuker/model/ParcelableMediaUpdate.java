@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,15 +25,10 @@ package de.vanita5.twittnuker.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
-
-import java.io.IOException;
-import java.util.List;
 
 @JsonObject
 @ParcelablePlease
@@ -46,17 +41,15 @@ public class ParcelableMediaUpdate implements Parcelable {
     @JsonField(name = "type")
     public int type;
 
+    @JsonField(name = "alt_text")
+    public String alt_text;
+
     public ParcelableMediaUpdate() {
     }
 
     public ParcelableMediaUpdate(@NonNull final String uri, final int type) {
         this.uri = uri;
         this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return "ParcelableMediaUpdate{uri=" + uri + ", type=" + type + "}";
     }
 
     @Override
@@ -67,7 +60,8 @@ public class ParcelableMediaUpdate implements Parcelable {
         ParcelableMediaUpdate that = (ParcelableMediaUpdate) o;
 
         if (type != that.type) return false;
-        return uri.equals(that.uri);
+        if (!uri.equals(that.uri)) return false;
+        return alt_text != null ? alt_text.equals(that.alt_text) : that.alt_text == null;
 
     }
 
@@ -75,18 +69,17 @@ public class ParcelableMediaUpdate implements Parcelable {
     public int hashCode() {
         int result = uri.hashCode();
         result = 31 * result + type;
+        result = 31 * result + (alt_text != null ? alt_text.hashCode() : 0);
         return result;
     }
 
-    @Deprecated
-    public static ParcelableMediaUpdate[] fromJSONString(final String json) {
-        if (TextUtils.isEmpty(json)) return null;
-        try {
-            final List<ParcelableMediaUpdate> list = LoganSquare.parseList(json, ParcelableMediaUpdate.class);
-            return list.toArray(new ParcelableMediaUpdate[list.size()]);
-        } catch (final IOException e) {
-            return null;
-        }
+    @Override
+    public String toString() {
+        return "ParcelableMediaUpdate{" +
+                "uri='" + uri + '\'' +
+                ", type=" + type +
+                ", alt_text='" + alt_text + '\'' +
+                '}';
     }
 
     @Override
@@ -100,12 +93,14 @@ public class ParcelableMediaUpdate implements Parcelable {
     }
 
     public static final Creator<ParcelableMediaUpdate> CREATOR = new Creator<ParcelableMediaUpdate>() {
+        @Override
         public ParcelableMediaUpdate createFromParcel(Parcel source) {
             ParcelableMediaUpdate target = new ParcelableMediaUpdate();
             ParcelableMediaUpdateParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
+        @Override
         public ParcelableMediaUpdate[] newArray(int size) {
             return new ParcelableMediaUpdate[size];
         }

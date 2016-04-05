@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Twittnuker - Twitter client for Android
+  ~
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~
+  ~ This program incorporates a modified version of Twidere.
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!--suppress AndroidElementNotAllowed -->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                  android:title="@string/theme">
+
+    <de.vanita5.twittnuker.preference.EntrySummaryListPreference
+        android:defaultValue="light"
+        android:entries="@array/entries_theme"
+        android:entryValues="@array/values_theme"
+        android:key="theme"
+        android:order="21"
+        android:title="@string/theme">
+        <extra
+            android:name="restart_activity"
+            android:value="true"/>
+    </de.vanita5.twittnuker.preference.EntrySummaryListPreference>
+
+    <de.vanita5.twittnuker.preference.ThemeBackgroundPreference
+        android:defaultValue="default"
+        android:order="22"
+        android:title="@string/background">
+        <extra
+            android:name="notify_change"
+            android:value="true"/>
+        <extra
+            android:name="restart_activity"
+            android:value="true"/>
+    </de.vanita5.twittnuker.preference.ThemeBackgroundPreference>
+
+    <de.vanita5.twittnuker.preference.ColorPickerPreference
+        android:key="theme_color"
+        android:order="23"
+        android:title="@string/color"
+        app:defaultColor="@color/branding_color">
+        <extra
+            android:name="notify_change"
+            android:value="true"/>
+        <extra
+            android:name="restart_activity"
+            android:value="true"/>
+    </de.vanita5.twittnuker.preference.ColorPickerPreference>
+
+    <de.vanita5.twittnuker.preference.EmojiSupportPreference
+        android:key="emoji_support"
+        android:order="25"
+        android:title="@string/emoji_support">
+        <extra
+            android:name="notify_change"
+            android:value="true"/>
+    </de.vanita5.twittnuker.preference.EmojiSupportPreference>
+
+</PreferenceScreen>

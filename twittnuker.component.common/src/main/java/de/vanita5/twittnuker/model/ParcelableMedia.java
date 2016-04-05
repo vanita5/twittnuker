@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,28 +35,11 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.math.NumberUtils;
-import de.vanita5.twittnuker.api.twitter.model.CardEntity;
-import de.vanita5.twittnuker.api.twitter.model.CardEntity.BindingValue;
-import de.vanita5.twittnuker.api.twitter.model.CardEntity.ImageValue;
-import de.vanita5.twittnuker.api.twitter.model.CardEntity.StringValue;
-import de.vanita5.twittnuker.api.twitter.model.EntitySupport;
-import de.vanita5.twittnuker.api.twitter.model.ExtendedEntitySupport;
 import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
-import de.vanita5.twittnuker.api.twitter.model.MediaEntity.Size;
-import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
-import de.vanita5.twittnuker.util.TwidereArrayUtils;
-import de.vanita5.twittnuker.util.TwitterContentUtils;
-import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 @JsonObject
 @ParcelablePlease
@@ -96,14 +79,23 @@ public class ParcelableMedia implements Parcelable {
     @ParcelableNoThanks
     public ParcelableCardEntity card;
     @JsonField(name = "page_url")
-    String page_url;
+    public String page_url;
+    @ParcelableThisPlease
+    @JsonField(name = "open_browser")
+    public boolean open_browser;
+    @ParcelableThisPlease
+    @JsonField(name = "alt_text")
+    public String alt_text;
+
     public static final Creator<ParcelableMedia> CREATOR = new Creator<ParcelableMedia>() {
+        @Override
         public ParcelableMedia createFromParcel(Parcel source) {
             ParcelableMedia target = new ParcelableMedia();
             ParcelableMediaParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
+        @Override
         public ParcelableMedia[] newArray(int size) {
             return new ParcelableMedia[size];
         }
@@ -114,19 +106,6 @@ public class ParcelableMedia implements Parcelable {
     }
 
 
-    public ParcelableMedia(final MediaEntity entity) {
-        url = TwitterContentUtils.getMediaUrl(entity);
-        media_url = TwitterContentUtils.getMediaUrl(entity);
-        preview_url = TwitterContentUtils.getMediaUrl(entity);
-        start = entity.getStart();
-        end = entity.getEnd();
-        type = getTypeInt(entity.getType());
-        final Size size = entity.getSizes().get(Size.LARGE);
-        width = size != null ? size.getWidth() : 0;
-        height = size != null ? size.getHeight() : 0;
-        video_info = VideoInfo.fromMediaEntityInfo(entity.getVideoInfo());
-    }
-
     public ParcelableMedia(ParcelableMediaUpdate update) {
         media_url = update.uri;
         url = update.uri;
@@ -134,165 +113,6 @@ public class ParcelableMedia implements Parcelable {
         type = update.type;
     }
 
-    @Nullable
-    public static ParcelableMedia[] fromEntities(@Nullable final EntitySupport entities) {
-        if (entities == null) return null;
-        final List<ParcelableMedia> list = new ArrayList<>();
-        final MediaEntity[] mediaEntities;
-        if (entities instanceof ExtendedEntitySupport) {
-            final ExtendedEntitySupport extendedEntities = (ExtendedEntitySupport) entities;
-            final MediaEntity[] extendedMediaEntities = extendedEntities.getExtendedMediaEntities();
-            mediaEntities = extendedMediaEntities != null ? extendedMediaEntities : entities.getMediaEntities();
-        } else {
-            mediaEntities = entities.getMediaEntities();
-        }
-        if (mediaEntities != null) {
-            for (final MediaEntity media : mediaEntities) {
-                final String mediaURL = TwitterContentUtils.getMediaUrl(media);
-                if (mediaURL != null) {
-                    list.add(new ParcelableMedia(media));
-                }
-            }
-        }
-        final UrlEntity[] urlEntities = entities.getUrlEntities();
-        if (urlEntities != null) {
-            for (final UrlEntity url : urlEntities) {
-                final String expanded = url.getExpandedUrl();
-                final ParcelableMedia media = PreviewMediaExtractor.fromLink(expanded);
-                if (media != null) {
-                    media.start = url.getStart();
-                    media.end = url.getEnd();
-                    list.add(media);
-                }
-            }
-        }
-        if (list.isEmpty()) return null;
-        return list.toArray(new ParcelableMedia[list.size()]);
-    }
-
-    @Nullable
-    public static ParcelableMedia[] fromMediaUpdates(@Nullable final ParcelableMediaUpdate[] mediaUpdates) {
-        if (mediaUpdates == null) return null;
-        final ParcelableMedia[] media = new ParcelableMedia[mediaUpdates.length];
-        for (int i = 0, j = mediaUpdates.length; i < j; i++) {
-            final ParcelableMediaUpdate mediaUpdate = mediaUpdates[i];
-            media[i] = new ParcelableMedia(mediaUpdate);
-        }
-        return media;
-    }
-
-    @Nullable
-    public static ParcelableMedia[] fromStatus(final Status status) {
-        final ParcelableMedia[] fromEntities = fromEntities(status);
-        final ParcelableMedia[] fromCard = fromCard(status.getCard(), status.getUrlEntities());
-        if (fromEntities == null) {
-            return fromCard;
-        } else if (fromCard == null) {
-            return fromEntities;
-        }
-        final ParcelableMedia[] merged = new ParcelableMedia[fromCard.length + fromEntities.length];
-        TwidereArrayUtils.mergeArray(merged, fromEntities, fromCard);
-        return merged;
-    }
-
-    @Nullable
-    private static ParcelableMedia[] fromCard(@Nullable CardEntity card, @Nullable UrlEntity[] entities) {
-        if (card == null) return null;
-        final String name = card.getName();
-        if ("animated_gif".equals(name) || "player".equals(name)) {
-            final ParcelableMedia media = new ParcelableMedia();
-            final BindingValue playerStreamUrl = card.getBindingValue("player_stream_url");
-            media.card = ParcelableCardEntity.fromCardEntity(card, -1);
-            media.url = card.getUrl();
-            if ("animated_gif".equals(name)) {
-                media.media_url = ((StringValue) playerStreamUrl).getValue();
-                media.type = Type.TYPE_CARD_ANIMATED_GIF;
-            } else if (playerStreamUrl instanceof StringValue) {
-                media.media_url = ((StringValue) playerStreamUrl).getValue();
-                media.type = Type.TYPE_VIDEO;
-            } else {
-                media.type = Type.TYPE_EXTERNAL_PLAYER;
-            }
-            final BindingValue playerImage = card.getBindingValue("player_image");
-            if (playerImage instanceof ImageValue) {
-                media.preview_url = ((ImageValue) playerImage).getUrl();
-                media.width = ((ImageValue) playerImage).getWidth();
-                media.height = ((ImageValue) playerImage).getHeight();
-            }
-            final BindingValue playerWidth = card.getBindingValue("player_width");
-            final BindingValue playerHeight = card.getBindingValue("player_height");
-            if (playerWidth instanceof StringValue && playerHeight instanceof StringValue) {
-                media.width = NumberUtils.toInt(((StringValue) playerWidth).getValue(), -1);
-                media.height = NumberUtils.toInt(((StringValue) playerHeight).getValue(), -1);
-            }
-            if (entities != null) {
-                for (UrlEntity entity : entities) {
-                    if (entity.getUrl().equals(media.url)) {
-                        media.start = entity.getStart();
-                        media.end = entity.getEnd();
-                        break;
-                    }
-                }
-            }
-            return new ParcelableMedia[]{media};
-        } else if ("summary_large_image".equals(name)) {
-            final BindingValue photoImageFullSize = card.getBindingValue("photo_image_full_size");
-            if (!(photoImageFullSize instanceof ImageValue))
-                return null;
-
-            final ParcelableMedia media = new ParcelableMedia();
-            media.url = card.getUrl();
-            media.card = ParcelableCardEntity.fromCardEntity(card, -1);
-            media.type = Type.TYPE_IMAGE;
-            media.media_url = ((ImageValue) photoImageFullSize).getUrl();
-            media.width = ((ImageValue) photoImageFullSize).getWidth();
-            media.height = ((ImageValue) photoImageFullSize).getHeight();
-            final BindingValue summaryPhotoImage = card.getBindingValue("summary_photo_image");
-            if (summaryPhotoImage instanceof ImageValue) {
-                media.preview_url = ((ImageValue) summaryPhotoImage).getUrl();
-            }
-            if (entities != null) {
-                for (UrlEntity entity : entities) {
-                    if (entity.getUrl().equals(media.url)) {
-                        media.start = entity.getStart();
-                        media.end = entity.getEnd();
-                        break;
-                    }
-                }
-            }
-            return new ParcelableMedia[]{media};
-        }
-        return null;
-    }
-
-    private static int getTypeInt(MediaEntity.Type type) {
-        switch (type) {
-            case PHOTO:
-                return Type.TYPE_IMAGE;
-            case VIDEO:
-                return Type.TYPE_VIDEO;
-            case ANIMATED_GIF:
-                return Type.TYPE_ANIMATED_GIF;
-        }
-        return Type.TYPE_UNKNOWN;
-    }
-
-
-    public static ParcelableMedia image(final String url) {
-        ParcelableMedia media = new ParcelableMedia();
-        media.type = Type.TYPE_VARIABLE_TYPE;
-        media.url = url;
-        media.media_url = url;
-        media.preview_url = url;
-        return media;
-    }
-
-    public static ParcelableMedia variableType(@NonNull String link) {
-        ParcelableMedia media = new ParcelableMedia();
-        media.type = Type.TYPE_VARIABLE_TYPE;
-        media.url = link;
-        return media;
-    }
 
     @OnJsonParseComplete
     void onParseComplete() {
@@ -302,57 +122,60 @@ public class ParcelableMedia implements Parcelable {
     }
 
     @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("media_url", media_url)
-                .append("page_url", url)
-                .append("preview_url", preview_url)
-                .append("start", start)
-                .append("end", end)
-                .append("type", type)
-                .append("width", width)
-                .append("height", height)
-                .append("video_info", video_info)
-                .append("card", card)
-                .toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
 
         ParcelableMedia media = (ParcelableMedia) o;
 
-        return new EqualsBuilder()
-                .append(start, media.start)
-                .append(end, media.end)
-                .append(type, media.type)
-                .append(width, media.width)
-                .append(height, media.height)
-                .append(media_url, media.media_url)
-                .append(url, media.url)
-                .append(preview_url, media.preview_url)
-                .append(video_info, media.video_info)
-                .append(card, media.card)
-                .isEquals();
+        if (start != media.start) return false;
+        if (end != media.end) return false;
+        if (type != media.type) return false;
+        if (width != media.width) return false;
+        if (height != media.height) return false;
+        if (!url.equals(media.url)) return false;
+        if (media_url != null ? !media_url.equals(media.media_url) : media.media_url != null)
+            return false;
+        if (preview_url != null ? !preview_url.equals(media.preview_url) : media.preview_url != null)
+            return false;
+        if (video_info != null ? !video_info.equals(media.video_info) : media.video_info != null)
+            return false;
+        if (card != null ? !card.equals(media.card) : media.card != null) return false;
+        return !(page_url != null ? !page_url.equals(media.page_url) : media.page_url != null);
+
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(media_url)
-                .append(url)
-                .append(preview_url)
-                .append(start)
-                .append(end)
-                .append(type)
-                .append(width)
-                .append(height)
-                .append(video_info)
-                .append(card)
-                .toHashCode();
+        int result = url.hashCode();
+        result = 31 * result + (media_url != null ? media_url.hashCode() : 0);
+        result = 31 * result + (preview_url != null ? preview_url.hashCode() : 0);
+        result = 31 * result + start;
+        result = 31 * result + end;
+        result = 31 * result + type;
+        result = 31 * result + width;
+        result = 31 * result + height;
+        result = 31 * result + (video_info != null ? video_info.hashCode() : 0);
+        result = 31 * result + (card != null ? card.hashCode() : 0);
+        result = 31 * result + (page_url != null ? page_url.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ParcelableMedia{" +
+                "url='" + url + '\'' +
+                ", media_url='" + media_url + '\'' +
+                ", preview_url='" + preview_url + '\'' +
+                ", start=" + start +
+                ", end=" + end +
+                ", type=" + type +
+                ", width=" + width +
+                ", height=" + height +
+                ", video_info=" + video_info +
+                ", card=" + card +
+                ", page_url='" + page_url + '\'' +
+                '}';
     }
 
     @Override
@@ -365,25 +188,18 @@ public class ParcelableMedia implements Parcelable {
         ParcelableMediaParcelablePlease.writeToParcel(this, dest, flags);
     }
 
-    @IntDef({Type.TYPE_UNKNOWN, Type.TYPE_IMAGE, Type.TYPE_VIDEO, Type.TYPE_ANIMATED_GIF,
-            Type.TYPE_CARD_ANIMATED_GIF, Type.TYPE_EXTERNAL_PLAYER, Type.TYPE_VARIABLE_TYPE})
+    @IntDef({Type.UNKNOWN, Type.IMAGE, Type.VIDEO, Type.ANIMATED_GIF, Type.CARD_ANIMATED_GIF,
+            Type.EXTERNAL_PLAYER, Type.VARIABLE_TYPE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Type {
 
-        @Type
-        int TYPE_UNKNOWN = 0;
-        @Type
-        int TYPE_IMAGE = 1;
-        @Type
-        int TYPE_VIDEO = 2;
-        @Type
-        int TYPE_ANIMATED_GIF = 3;
-        @Type
-        int TYPE_CARD_ANIMATED_GIF = 4;
-        @Type
-        int TYPE_EXTERNAL_PLAYER = 5;
-        @Type
-        int TYPE_VARIABLE_TYPE = 6;
+        int UNKNOWN = 0;
+        int IMAGE = 1;
+        int VIDEO = 2;
+        int ANIMATED_GIF = 3;
+        int CARD_ANIMATED_GIF = 4;
+        int EXTERNAL_PLAYER = 5;
+        int VARIABLE_TYPE = 6;
     }
 
     @ParcelablePlease
@@ -397,12 +213,14 @@ public class ParcelableMedia implements Parcelable {
         @JsonField(name = "duration")
         public long duration;
         public static final Creator<VideoInfo> CREATOR = new Creator<VideoInfo>() {
+            @Override
             public VideoInfo createFromParcel(Parcel source) {
                 VideoInfo target = new VideoInfo();
                 ParcelableMedia$VideoInfoParcelablePlease.readFromParcel(target, source);
                 return target;
             }
 
+            @Override
             public VideoInfo[] newArray(int size) {
                 return new VideoInfo[size];
             }
@@ -423,33 +241,31 @@ public class ParcelableMedia implements Parcelable {
         }
 
         @Override
-        public String toString() {
-            return new ToStringBuilder(this)
-                    .append("variants", variants)
-                    .append("duration", duration)
-                    .toString();
-        }
-
-        @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-
             if (o == null || getClass() != o.getClass()) return false;
 
             VideoInfo videoInfo = (VideoInfo) o;
 
-            return new EqualsBuilder()
-                    .append(duration, videoInfo.duration)
-                    .append(variants, videoInfo.variants)
-                    .isEquals();
+            if (duration != videoInfo.duration) return false;
+            // Probably incorrect - comparing Object[] arrays with Arrays.equals
+            return Arrays.equals(variants, videoInfo.variants);
+
         }
 
         @Override
         public int hashCode() {
-            return new HashCodeBuilder(17, 37)
-                    .append(variants)
-                    .append(duration)
-                    .toHashCode();
+            int result = variants != null ? Arrays.hashCode(variants) : 0;
+            result = 31 * result + (int) (duration ^ (duration >>> 32));
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "VideoInfo{" +
+                    "variants=" + Arrays.toString(variants) +
+                    ", duration=" + duration +
+                    '}';
         }
 
         @Override
@@ -475,12 +291,14 @@ public class ParcelableMedia implements Parcelable {
             @JsonField(name = "bitrate")
             public long bitrate;
             public static final Creator<Variant> CREATOR = new Creator<Variant>() {
+                @Override
                 public Variant createFromParcel(Parcel source) {
                     Variant target = new Variant();
                     ParcelableMedia$VideoInfo$VariantParcelablePlease.readFromParcel(target, source);
                     return target;
                 }
 
+                @Override
                 public Variant[] newArray(int size) {
                     return new Variant[size];
                 }
@@ -507,34 +325,32 @@ public class ParcelableMedia implements Parcelable {
             @Override
             public boolean equals(Object o) {
                 if (this == o) return true;
-
                 if (o == null || getClass() != o.getClass()) return false;
 
                 Variant variant = (Variant) o;
 
-                return new EqualsBuilder()
-                        .append(bitrate, variant.bitrate)
-                        .append(content_type, variant.content_type)
-                        .append(url, variant.url)
-                        .isEquals();
+                if (bitrate != variant.bitrate) return false;
+                if (content_type != null ? !content_type.equals(variant.content_type) : variant.content_type != null)
+                    return false;
+                return !(url != null ? !url.equals(variant.url) : variant.url != null);
+
             }
 
             @Override
             public int hashCode() {
-                return new HashCodeBuilder(17, 37)
-                        .append(content_type)
-                        .append(url)
-                        .append(bitrate)
-                        .toHashCode();
+                int result = content_type != null ? content_type.hashCode() : 0;
+                result = 31 * result + (url != null ? url.hashCode() : 0);
+                result = 31 * result + (int) (bitrate ^ (bitrate >>> 32));
+                return result;
             }
 
             @Override
             public String toString() {
-                return new ToStringBuilder(this)
-                        .append("content_type", content_type)
-                        .append("url", url)
-                        .append("bitrate", bitrate)
-                        .toString();
+                return "Variant{" +
+                        "content_type='" + content_type + '\'' +
+                        ", url='" + url + '\'' +
+                        ", bitrate=" + bitrate +
+                        '}';
             }
 
             @Override

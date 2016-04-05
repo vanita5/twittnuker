@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,20 +22,26 @@
 
 package de.vanita5.twittnuker.api.twitter.api;
 
-import org.mariotaku.restfu.annotation.param.MethodExtra;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.KeyValue;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Queries;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 
-@SuppressWarnings("RedundantThrows")
-@MethodExtra(name = "extra_params", values = {"include_entities"})
+@Queries({@KeyValue(key = "include_entities", valueKey = "include_entities")})
 public interface PrivateFriendsFollowersResources extends PrivateResources {
 
-	User acceptFriendship(long userId) throws TwitterException;
+    @POST("/friendships/accept.json")
+    User acceptFriendship(@Param("user_id") long userId) throws TwitterException;
 
-	User acceptFriendship(String screenName) throws TwitterException;
+    @POST("/friendships/accept.json")
+    User acceptFriendship(@Param("screen_name") String screenName) throws TwitterException;
 
-	User denyFriendship(long userId) throws TwitterException;
+    @POST("/friendships/deny.json")
+    User denyFriendship(@Param("user_id") long userId) throws TwitterException;
 
-	User denyFriendship(String screenName) throws TwitterException;
+    @POST("/friendships/deny.json")
+    User denyFriendship(@Param("screen_name") String screenName) throws TwitterException;
 
 }

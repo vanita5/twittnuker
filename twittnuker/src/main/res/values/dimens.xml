@@ -3,11 +3,13 @@
 
     <dimen name="element_size_xsmall">16dp</dimen>
     <dimen name="element_size_small">24dp</dimen>
+    <dimen name="element_size_msmall">36dp</dimen>
     <dimen name="element_size_normal">48dp</dimen>
     <dimen name="element_size_mlarge">64dp</dimen>
 
 
     <dimen name="button_size_content_card">42dp</dimen>
+    <dimen name="button_size_content_card_compact">36dp</dimen>
     <dimen name="element_spacing_xsmall">2dp</dimen>
     <dimen name="element_spacing_small">4dp</dimen>
     <dimen name="element_spacing_msmall">6dp</dimen>
@@ -15,6 +17,7 @@
     <dimen name="element_spacing_mlarge">12dp</dimen>
     <dimen name="element_spacing_large">16dp</dimen>
     <dimen name="element_spacing_xlarge">24dp</dimen>
+    <dimen name="element_spacing_minus_xsmall">-2dp</dimen>
     <dimen name="element_spacing_minus_small">-4dp</dimen>
     <dimen name="element_spacing_minus_msmall">-6dp</dimen>
     <dimen name="element_spacing_minus_normal">-8dp</dimen>
@@ -51,9 +54,6 @@
     <dimen name="text_size_wizard_text">20sp</dimen>
     <dimen name="line_indicator_line_width_wizard">24dp</dimen>
     <dimen name="line_indicator_stroke_width_wizard">3dp</dimen>
-
-    <!-- Size of the item menu -->
-    <dimen name="item_menu_card_padding_compact">28dp</dimen>
 
     <!-- Dimensions for color picker -->
     <dimen name="color_button_width">48dp</dimen>
@@ -97,5 +97,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="height_player_control_panel">40dp</dimen>
+    <dimen name="toolbar_elevation">8dp</dimen>
+
+    <dimen name="element_size_quick_search_bar_item_icon">40dp</dimen>
 
 </resources>

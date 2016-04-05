@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +22,49 @@
 
 package de.vanita5.twittnuker.activity.iface;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public interface IExtendedActivity {
 
     void executeAfterFragmentResumed(Action action);
 
     interface Action {
         void execute(IExtendedActivity activity);
+    }
+
+    class ActionHelper {
+
+        private final IExtendedActivity mActivity;
+
+        private boolean mFragmentResumed;
+        private Queue<Action> mActionQueue = new LinkedList<>();
+
+        public ActionHelper(IExtendedActivity activity) {
+            mActivity = activity;
+        }
+
+        public void dispatchOnPause() {
+            mFragmentResumed = false;
+        }
+
+        public void dispatchOnResumeFragments() {
+            mFragmentResumed = true;
+            executePending();
+        }
+
+
+        private void executePending() {
+            if (!mFragmentResumed) return;
+            Action action;
+            while ((action = mActionQueue.poll()) != null) {
+                action.execute(mActivity);
+            }
+        }
+
+        public void executeAfterFragmentResumed(Action action) {
+            mActionQueue.add(action);
+            executePending();
+        }
     }
 }

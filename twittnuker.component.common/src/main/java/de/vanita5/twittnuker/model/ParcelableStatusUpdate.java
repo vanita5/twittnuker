@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,157 +22,84 @@
 
 package de.vanita5.twittnuker.model;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import java.util.Arrays;
 
+@ParcelablePlease
 @JsonObject
 public class ParcelableStatusUpdate implements Parcelable {
 
-	public static final Parcelable.Creator<ParcelableStatusUpdate> CREATOR = new Parcelable.Creator<ParcelableStatusUpdate>() {
-		@Override
-		public ParcelableStatusUpdate createFromParcel(final Parcel in) {
-			return new ParcelableStatusUpdate(in);
-		}
-
-		@Override
-		public ParcelableStatusUpdate[] newArray(final int size) {
-			return new ParcelableStatusUpdate[size];
-		}
-	};
-
+    @SuppressWarnings("NullableProblems")
     @JsonField(name = "accounts")
-	public ParcelableAccount[] accounts;
+    @NonNull
+    @ParcelableThisPlease
+    public ParcelableAccount[] accounts;
     @JsonField(name = "media")
-	public ParcelableMediaUpdate[] media;
+    @ParcelableThisPlease
+    public ParcelableMediaUpdate[] media;
     @JsonField(name = "text")
-	public String text;
+    @ParcelableThisPlease
+    public String text;
     @JsonField(name = "location")
-	public ParcelableLocation location;
-    @JsonField(name = "in_reply_to_status_id")
-	public long in_reply_to_status_id;
-    @JsonField(name = "boolean")
+    @ParcelableThisPlease
+    public ParcelableLocation location;
+    @JsonField(name = "display_coordinates")
+    @ParcelableThisPlease
+    public boolean display_coordinates = true;
+    @JsonField(name = "in_reply_to_status")
+    @ParcelableThisPlease
+    public ParcelableStatus in_reply_to_status;
+    @JsonField(name = "is_possibly_sensitive")
+    @ParcelableThisPlease
     public boolean is_possibly_sensitive;
+    @JsonField(name = "repost_status_id")
+    @ParcelableThisPlease
+    public String repost_status_id;
 
     public ParcelableStatusUpdate() {
     }
 
-	/**
-	 * @deprecated It has too much arguments to call, use
-	 *             <b>ParcelableStatusUpdate.Builder</b> instead.
-	 */
-	@Deprecated
-	public ParcelableStatusUpdate(final ParcelableAccount[] accounts, final String text, final ParcelableLocation location,
-                                  final ParcelableMediaUpdate[] media, final long in_reply_to_status_id, final boolean is_possibly_sensitive) {
-        this.accounts = accounts;
-		this.text = text;
-		this.location = location;
-        this.media = media;
-		this.in_reply_to_status_id = in_reply_to_status_id;
-		this.is_possibly_sensitive = is_possibly_sensitive;
-	}
-
-    public ParcelableStatusUpdate(final Context context, final DraftItem draft) {
-        accounts = ParcelableAccount.getAccounts(context, draft.account_ids);
-        text = draft.text;
-        location = draft.location;
-        media = draft.media;
-        in_reply_to_status_id = draft.in_reply_to_status_id;
-        is_possibly_sensitive = draft.is_possibly_sensitive;
+    @Override
+    public String toString() {
+        return "ParcelableStatusUpdate{" +
+                "accounts=" + Arrays.toString(accounts) +
+                ", media=" + Arrays.toString(media) +
+                ", text='" + text + '\'' +
+                ", location=" + location +
+                ", display_coordinates=" + display_coordinates +
+                ", in_reply_to_status=" + in_reply_to_status +
+                ", is_possibly_sensitive=" + is_possibly_sensitive +
+                ", repost_status_id='" + repost_status_id + '\'' +
+                '}';
     }
 
-	public ParcelableStatusUpdate(final Parcel in) {
-        accounts = in.createTypedArray(ParcelableAccount.CREATOR);
-		text = in.readString();
-		location = in.readParcelable(ParcelableLocation.class.getClassLoader());
-        media = in.createTypedArray(ParcelableMediaUpdate.CREATOR);
-		in_reply_to_status_id = in.readLong();
-		is_possibly_sensitive = in.readInt() == 1;
-	}
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-	@Override
-	public int describeContents() {
-		return 0;
-	}
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        ParcelableStatusUpdateParcelablePlease.writeToParcel(this, dest, flags);
+    }
 
-	@Override
-	public String toString() {
-        return "ParcelableStatusUpdate{accounts=" + Arrays.toString(accounts) + ", media=" + Arrays.toString(media)
-				+ ", text=" + text + ", location=" + location + ", in_reply_to_status_id=" + in_reply_to_status_id
-				+ ", is_possibly_sensitive=" + is_possibly_sensitive + "}";
-	}
+    public static final Creator<ParcelableStatusUpdate> CREATOR = new Creator<ParcelableStatusUpdate>() {
+        public ParcelableStatusUpdate createFromParcel(Parcel source) {
+            ParcelableStatusUpdate target = new ParcelableStatusUpdate();
+            ParcelableStatusUpdateParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
 
-	@Override
-	public void writeToParcel(final Parcel dest, final int flags) {
-        dest.writeTypedArray(accounts, flags);
-		dest.writeString(text);
-		dest.writeParcelable(location, flags);
-        dest.writeTypedArray(media, flags);
-		dest.writeLong(in_reply_to_status_id);
-		dest.writeInt(is_possibly_sensitive ? 1 : 0);
-	}
-
-	public static final class Builder {
-
-        private ParcelableAccount[] accounts;
-		private String text;
-		private ParcelableLocation location;
-        private ParcelableMediaUpdate[] media;
-		private long in_reply_to_status_id;
-		private boolean is_possibly_sensitive;
-
-		public Builder() {
-
-		}
-
-		public Builder(final ParcelableStatusUpdate base) {
-            accounts(base.accounts);
-			text(base.text);
-            media(base.media);
-			location(base.location);
-			inReplyToStatusId(base.in_reply_to_status_id);
-			isPossiblySensitive(base.is_possibly_sensitive);
-		}
-
-        public Builder accounts(final ParcelableAccount[] accounts) {
-            this.accounts = accounts;
-			return this;
-		}
-
-		public ParcelableStatusUpdate build() {
-            return new ParcelableStatusUpdate(accounts, text, location, media, in_reply_to_status_id,
-                    is_possibly_sensitive);
-		}
-
-		public Builder inReplyToStatusId(final long in_reply_to_status_id) {
-			this.in_reply_to_status_id = in_reply_to_status_id;
-			return this;
-		}
-
-		public Builder isPossiblySensitive(final boolean is_possibly_sensitive) {
-			this.is_possibly_sensitive = is_possibly_sensitive;
-			return this;
-		}
-
-		public Builder location(final ParcelableLocation location) {
-			this.location = location;
-			return this;
-		}
-
-        public Builder media(final ParcelableMediaUpdate... media) {
-            this.media = media;
-			return this;
-		}
-
-		public Builder text(final String text) {
-			this.text = text;
-			return this;
-		}
-	}
-
+        public ParcelableStatusUpdate[] newArray(int size) {
+            return new ParcelableStatusUpdate[size];
+        }
+    };
 }

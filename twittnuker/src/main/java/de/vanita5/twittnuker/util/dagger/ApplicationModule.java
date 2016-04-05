@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util.dagger;
 
+import android.app.Application;
 import android.content.Context;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -33,19 +34,22 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.utils.L;
-import com.squareup.okhttp.Dns;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
+import com.twitter.Extractor;
 
+import org.mariotaku.mediaviewer.library.FileCache;
+import org.mariotaku.mediaviewer.library.MediaDownloader;
 import org.mariotaku.restfu.http.RestHttpClient;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.ExternalThemeManager;
+import de.vanita5.twittnuker.util.HttpClientFactory;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MultiSelectManager;
@@ -53,12 +57,14 @@ import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache;
 import de.vanita5.twittnuker.util.imageloader.TwidereImageDownloader;
 import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator;
+import de.vanita5.twittnuker.util.media.TwidereMediaDownloader;
+import de.vanita5.twittnuker.util.media.UILFileCache;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 
 import java.io.File;
@@ -68,15 +74,18 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.ConnectionPool;
 
 import static de.vanita5.twittnuker.util.Utils.getInternalCacheDir;
 
 @Module
 public class ApplicationModule implements Constants {
 
-    private final TwittnukerApplication application;
+    private static ApplicationModule sApplicationModule;
 
-    public ApplicationModule(TwittnukerApplication application) {
+    private final Application application;
+
+    public ApplicationModule(Application application) {
         if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
             throw new RuntimeException("Module must be created inside main thread");
         }
@@ -84,7 +93,9 @@ public class ApplicationModule implements Constants {
     }
 
     static ApplicationModule get(@NonNull Context context) {
-        return TwittnukerApplication.getInstance(context).getApplicationModule();
+        if (sApplicationModule != null) return sApplicationModule;
+        Application application = (Application) context.getApplicationContext();
+        return sApplicationModule = new ApplicationModule(application);
     }
 
     @Provides
@@ -126,8 +137,15 @@ public class ApplicationModule implements Constants {
 
     @Provides
     @Singleton
-    public RestHttpClient restHttpClient() {
-        return TwitterAPIFactory.getDefaultHttpClient(application);
+    public RestHttpClient restHttpClient(final SharedPreferencesWrapper prefs, final TwidereDns dns,
+                                         final ConnectionPool connectionPool) {
+        return HttpClientFactory.createRestHttpClient(application, prefs, dns, connectionPool);
+    }
+
+    @Provides
+    @Singleton
+    public ConnectionPool connectionPoll() {
+        return new ConnectionPool();
     }
 
     @Provides
@@ -144,7 +162,7 @@ public class ApplicationModule implements Constants {
 
     @Provides
     @Singleton
-    public ImageLoader imageLoader(SharedPreferencesWrapper preferences, RestHttpClient client) {
+    public ImageLoader imageLoader(SharedPreferencesWrapper preferences, MediaDownloader downloader) {
         final ImageLoader loader = ImageLoader.getInstance();
         final ImageLoaderConfiguration.Builder cb = new ImageLoaderConfiguration.Builder(application);
         cb.threadPriority(Thread.NORM_PRIORITY - 2);
@@ -152,7 +170,7 @@ public class ApplicationModule implements Constants {
         cb.tasksProcessingOrder(QueueProcessingType.LIFO);
         // cb.memoryCache(new ImageMemoryCache(40));
         cb.diskCache(createDiskCache("images", preferences));
-        cb.imageDownloader(new TwidereImageDownloader(application, preferences, client));
+        cb.imageDownloader(new TwidereImageDownloader(application, downloader));
         L.writeDebugLogs(BuildConfig.DEBUG);
         loader.init(cb.build());
         return loader;
@@ -166,12 +184,9 @@ public class ApplicationModule implements Constants {
 
     @Provides
     @Singleton
-    public AsyncTwitterWrapper asyncTwitterWrapper(UserColorNameManager userColorNameManager,
-                                                   ReadStateManager readStateManager,
-                                                   Bus bus, SharedPreferencesWrapper preferences,
+    public AsyncTwitterWrapper asyncTwitterWrapper(Bus bus, SharedPreferencesWrapper preferences,
                                                    AsyncTaskManager asyncTaskManager) {
-        return new AsyncTwitterWrapper(application, userColorNameManager, readStateManager, bus,
-                preferences, asyncTaskManager);
+        return new AsyncTwitterWrapper(application, bus, preferences, asyncTaskManager);
     }
 
     @Provides
@@ -188,14 +203,44 @@ public class ApplicationModule implements Constants {
 
     @Provides
     @Singleton
-    public Dns dns() {
-        return new TwidereDns(application);
+    public TwidereDns dns(SharedPreferencesWrapper preferences) {
+        return new TwidereDns(application, preferences);
     }
 
     @Provides
     @Singleton
     public DiskCache providesDiskCache(SharedPreferencesWrapper preferences) {
         return createDiskCache("files", preferences);
+    }
+
+    @Provides
+    @Singleton
+    public FileCache fileCache(DiskCache cache) {
+        return new UILFileCache(cache);
+    }
+
+    @Provides
+    @Singleton
+    public MediaDownloader mediaDownloader(RestHttpClient client) {
+        return new TwidereMediaDownloader(application, client);
+    }
+
+    @Provides
+    @Singleton
+    public TwidereValidator twidereValidator(SharedPreferencesWrapper preferences) {
+        return new TwidereValidator();
+    }
+
+    @Provides
+    @Singleton
+    public Extractor extractor() {
+        return new Extractor();
+    }
+
+    @Provides
+    @Singleton
+    public ErrorInfoStore errorInfoStore() {
+        return new ErrorInfoStore(application);
     }
 
     @Provides
@@ -216,16 +261,5 @@ public class ApplicationModule implements Constants {
         } catch (IOException e) {
             return new ReadOnlyDiskLRUNameCache(cacheDir, fallbackCacheDir, fileNameGenerator);
         }
-    }
-
-    public void reloadConnectivitySettings() {
-//        imageDownloader.reloadConnectivitySettings();
-//        if (restHttpClient instanceof OkHttpRestClient) {
-//             OkHttpClient okHttpClient = ((OkHttpRestClient) restHttpClient).getClient();
-//            TwitterAPIFactory.updateHttpClientConfiguration(application, sharedPreferences, okHttpClient);
-//        }
-    }
-
-    public void onLowMemory() {
     }
 }

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.api.twitter.api;
 
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Body;
-import org.mariotaku.restfu.annotation.param.Form;
-import org.mariotaku.restfu.annotation.param.MethodExtra;
+import org.mariotaku.restfu.annotation.param.KeyValue;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Queries;
 import org.mariotaku.restfu.annotation.param.Query;
 import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -36,25 +36,28 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 
 @SuppressWarnings("RedundantThrows")
-@MethodExtra(name = "extra_params", values = {"include_my_retweet", "include_rts", "include_entities",
-        "include_cards", "cards_platform", "include_reply_count", "include_descendent_reply_count",
-        "model_version", "skip_aggregation"})
+@Queries({@KeyValue(key = "include_my_retweet", valueKey = "include_my_retweet"),
+        @KeyValue(key = "include_rts", valueKey = "include_entities"),
+        @KeyValue(key = "include_entities", valueKey = "include_entities"),
+        @KeyValue(key = "include_cards", valueKey = "include_cards"),
+        @KeyValue(key = "cards_platform", valueKey = "cards_platform"),
+        @KeyValue(key = "include_reply_count", valueKey = "include_reply_count"),
+        @KeyValue(key = "include_descendent_reply_count", valueKey = "include_descendent_reply_count"),
+        @KeyValue(key = "model_version", valueKey = "model_version"),
+        @KeyValue(key = "skip_aggregation", valueKey = "skip_aggregation")})
 public interface PrivateActivityResources extends PrivateResources {
 
     @GET("/activity/about_me.json")
     ResponseList<Activity> getActivitiesAboutMe(@Query Paging paging) throws TwitterException;
 
-    @GET("/activity/by_friends.json")
-    ResponseList<Activity> getActivitiesByFriends(@Query Paging paging) throws TwitterException;
-
-    @MethodExtra(name = "extra_params", values = {})
+    @Queries({})
     @GET("/activity/about_me/unread.json")
     CursorTimestampResponse getActivitiesAboutMeUnread(@Query("cursor") boolean cursor) throws TwitterException;
 
-    @MethodExtra(name = "extra_params", values = {})
+    @Queries({})
     @POST("/activity/about_me/unread.json")
-    @Body(BodyType.FORM)
-    CursorTimestampResponse setActivitiesAboutMeUnread(@Form("cursor") long cursor) throws TwitterException;
+    @BodyType(BodyType.FORM)
+    CursorTimestampResponse setActivitiesAboutMeUnread(@Param("cursor") long cursor) throws TwitterException;
 
 
 }

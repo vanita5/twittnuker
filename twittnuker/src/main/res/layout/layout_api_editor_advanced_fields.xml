@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -22,16 +22,18 @@
   -->
 
 <LinearLayout
+    android:id="@+id/advanced_api_config"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/advanced_api_config"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingEnd="0dp"
     android:paddingLeft="@dimen/element_spacing_normal"
     android:paddingRight="0dp"
-    android:paddingStart="@dimen/element_spacing_normal">
+    android:paddingStart="@dimen/element_spacing_normal"
+    tools:showIn="@layout/layout_api_editor">
 
     <CheckBox
         android:id="@+id/same_oauth_signing_url"
@@ -40,7 +42,8 @@
         android:paddingBottom="@dimen/element_spacing_normal"
         android:paddingTop="@dimen/element_spacing_normal"
         android:text="@string/same_oauth_signing_url"
-        android:textAppearance="?android:attr/textAppearanceSmall"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        tools:checked="true"/>
 
     <CheckBox
         android:id="@+id/no_version_suffix"
@@ -49,7 +52,8 @@
         android:paddingBottom="@dimen/element_spacing_normal"
         android:paddingTop="@dimen/element_spacing_normal"
         android:text="@string/no_version_suffix"
-        android:textAppearance="?android:attr/textAppearanceSmall"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        tools:checked="false"/>
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/consumer_key"
@@ -61,7 +65,8 @@
         android:singleLine="true"
         app:met_baseColor="?android:textColorPrimary"
         app:met_floatingLabel="normal"
-        app:met_floatingLabelText="@string/consumer_key"/>
+        app:met_floatingLabelText="@string/consumer_key"
+        tools:text="0123456789ABCD"/>
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/consumer_secret"
@@ -73,6 +78,7 @@
         android:singleLine="true"
         app:met_baseColor="?android:textColorPrimary"
         app:met_floatingLabel="normal"
-        app:met_floatingLabelText="@string/consumer_secret"/>
+        app:met_floatingLabelText="@string/consumer_secret"
+        tools:text="0123456789ABCD"/>
 
 </LinearLayout>

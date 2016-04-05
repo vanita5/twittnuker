@@ -1,3 +1,25 @@
+/*
+ * Twittnuker - Twitter client for Android
+ *
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.vanita5.twittnuker.activity.iface;
 
 import android.animation.Animator;
@@ -8,6 +30,9 @@ import android.view.animation.DecelerateInterpolator;
 
 public interface IControlBarActivity {
 
+    /**
+     * @param offset 0: invisible, 1: visible
+     */
     void setControlBarOffset(float offset);
 
     void setControlBarVisibleAnimate(boolean visible);
@@ -34,6 +59,7 @@ public interface IControlBarActivity {
 
         private final IControlBarActivity mActivity;
         private int mControlAnimationDirection;
+        private ObjectAnimator mCurrentControlAnimation;
 
         public ControlBarShowHideHelper(IControlBarActivity activity) {
             mActivity = activity;
@@ -66,7 +92,13 @@ public interface IControlBarActivity {
         }
 
         public void setControlBarVisibleAnimate(final boolean visible, final ControlBarAnimationListener listener) {
-            if (mControlAnimationDirection != 0) return;
+            final int newDirection = visible ? 1 : -1;
+            if (mControlAnimationDirection == newDirection) return;
+            if (mCurrentControlAnimation != null && mControlAnimationDirection != 0) {
+                mCurrentControlAnimation.cancel();
+                mCurrentControlAnimation = null;
+                mControlAnimationDirection = newDirection;
+            }
             final ObjectAnimator animator;
             final float offset = mActivity.getControlBarOffset();
             if (visible) {
@@ -85,6 +117,7 @@ public interface IControlBarActivity {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mControlAnimationDirection = 0;
+                    mCurrentControlAnimation = null;
                     if (listener != null) {
                         listener.onControlBarVisibleAnimationFinish(visible);
                     }
@@ -93,6 +126,7 @@ public interface IControlBarActivity {
                 @Override
                 public void onAnimationCancel(Animator animation) {
                     mControlAnimationDirection = 0;
+                    mCurrentControlAnimation = null;
                 }
 
                 @Override
@@ -102,7 +136,8 @@ public interface IControlBarActivity {
             });
             animator.setDuration(DURATION);
             animator.start();
-            mControlAnimationDirection = visible ? 1 : -1;
+            mCurrentControlAnimation = animator;
+            mControlAnimationDirection = newDirection;
         }
     }
 }

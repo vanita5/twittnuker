@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,49 +37,51 @@ public class ForegroundImageView extends ImageView implements IForegroundView {
 
     private final ForegroundViewHelper mForegroundViewHelper;
 
-	public ForegroundImageView(final Context context) {
-		this(context, null);
-	}
+    public ForegroundImageView(final Context context) {
+        super(context);
+        mForegroundViewHelper = new ForegroundViewHelper(this, context, null, 0);
+    }
 
-	public ForegroundImageView(final Context context, final AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public ForegroundImageView(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        mForegroundViewHelper = new ForegroundViewHelper(this, context, attrs, 0);
+    }
 
-	public ForegroundImageView(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
+    public ForegroundImageView(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
         mForegroundViewHelper = new ForegroundViewHelper(this, context, attrs, defStyle);
-	}
+    }
 
-	@Override
-	public Drawable getForeground() {
+    @Override
+    public Drawable getForeground() {
         if (mForegroundViewHelper != null) {
             return mForegroundViewHelper.getForeground();
         }
         return null;
     }
 
-	/**
-	 * Supply a Drawable that is to be rendered on top of all of the child views
-	 * in the frame layout. Any padding in the Drawable will be taken into
-	 * account by ensuring that the children are inset to be placed inside of
-	 * the padding area.
-	 * 
-	 * @param drawable The Drawable to be drawn on top of the children.
-	 * @attr ref android.R.styleable#FrameLayout_foreground
-	 */
+    /**
+     * Supply a Drawable that is to be rendered on top of all of the child views
+     * in the frame layout. Any padding in the Drawable will be taken into
+     * account by ensuring that the children are inset to be placed inside of
+     * the padding area.
+     *
+     * @param drawable The Drawable to be drawn on top of the children.
+     * @attr ref android.R.styleable#FrameLayout_foreground
+     */
     @Override
-	public void setForeground(final Drawable drawable) {
+    public void setForeground(final Drawable drawable) {
         if (mForegroundViewHelper != null) {
             mForegroundViewHelper.setForeground(drawable);
         }
     }
 
-	/**
-	 * Describes how the foreground is positioned. Defaults to START and TOP.
-	 * 
-	 * @param foregroundGravity See {@link android.view.Gravity}
-	 * @attr ref android.R.styleable#FrameLayout_foregroundGravity
-	 */
+    /**
+     * Describes how the foreground is positioned. Defaults to START and TOP.
+     *
+     * @param foregroundGravity See {@link android.view.Gravity}
+     * @attr ref android.R.styleable#FrameLayout_foregroundGravity
+     */
     @Override
     public void setForegroundGravity(final int foregroundGravity) {
         if (mForegroundViewHelper != null) {
@@ -87,7 +89,7 @@ public class ForegroundImageView extends ImageView implements IForegroundView {
         }
     }
 
-	@Override
+    @Override
     protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         if (mForegroundViewHelper != null) {
@@ -95,20 +97,20 @@ public class ForegroundImageView extends ImageView implements IForegroundView {
         }
     }
 
-	@Override
-	protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
+    @Override
+    protected void onLayout(final boolean changed, final int left, final int top, final int right, final int bottom) {
         if (mForegroundViewHelper != null) {
-		    mForegroundViewHelper.dispatchOnLayout(changed, left, top, right, bottom);
+            mForegroundViewHelper.dispatchOnLayout(changed, left, top, right, bottom);
         }
-		super.onLayout(changed, left, top, right, bottom);
-	}
+        super.onLayout(changed, left, top, right, bottom);
+    }
 
-	@Override
+    @Override
     protected boolean verifyDrawable(final Drawable who) {
         return super.verifyDrawable(who) || (mForegroundViewHelper != null && mForegroundViewHelper.verifyDrawable(who));
-	}
+    }
 
-	@Override
+    @Override
     public void jumpDrawablesToCurrentState() {
         super.jumpDrawablesToCurrentState();
         if (mForegroundViewHelper != null) {

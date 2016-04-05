@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -21,26 +21,29 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
+<!--suppress AndroidElementNotAllowed -->
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/network">
+    android:title="@string/advanced">
 
     <PreferenceCategory
         android:key="category_connectivity"
         android:title="@string/connectivity">
 
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
-            android:defaultValue="true"
-            android:key="fast_image_loading"
-            android:summary="@string/fast_image_loading_summary"
-            android:title="@string/fast_image_loading"/>
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
+            android:key="builtin_dns_resolver"
+            android:title="@string/builtin_dns_resolver"/>
+
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:dependency="builtin_dns_resolver"
             android:key="tcp_dns_query"
             android:summary="@string/tcp_dns_query_summary"
             android:title="@string/tcp_dns_query"/>
 
-        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
+        <de.vanita5.twittnuker.preference.ThemedEditTextPreference
+            android:dependency="builtin_dns_resolver"
             android:dialogTitle="@string/dns_server"
             android:inputType="textVisiblePassword"
             android:key="dns_server"
@@ -57,38 +60,38 @@
     <PreferenceCategory
         android:key="category_proxy"
         android:title="@string/proxy">
-        <de.vanita5.twittnuker.preference.AutoFixCheckBoxPreference
+        <SwitchPreferenceCompat
             android:defaultValue="false"
             android:disableDependentsState="false"
             android:key="enable_proxy"
             android:summary="@string/proxy_summary"
             android:title="@string/proxy"/>
 
-        <de.vanita5.twittnuker.preference.SummaryListPreference
+        <de.vanita5.twittnuker.preference.EntrySummaryListPreference
             android:defaultValue="http"
             android:dependency="enable_proxy"
             android:entries="@array/entries_proxy_type"
             android:entryValues="@array/values_proxy_type"
             android:key="proxy_type"
             android:title="@string/proxy_type"/>
-        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
+        <de.vanita5.twittnuker.preference.ThemedEditTextPreference
             android:dependency="enable_proxy"
             android:key="proxy_host"
             android:singleLine="true"
             android:title="@string/proxy_host"/>
-        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
+        <de.vanita5.twittnuker.preference.ThemedEditTextPreference
             android:dependency="enable_proxy"
             android:inputType="number"
             android:key="proxy_port"
             android:singleLine="true"
             android:title="@string/proxy_port"/>
-        <de.vanita5.twittnuker.preference.SummaryEditTextPreference
+        <de.vanita5.twittnuker.preference.ThemedEditTextPreference
             android:dependency="enable_proxy"
             android:inputType="textEmailAddress"
             android:key="proxy_username"
             android:singleLine="true"
             android:title="@string/proxy_username"/>
-        <de.vanita5.twittnuker.preference.AutoFixEditTextPreference
+        <de.vanita5.twittnuker.preference.ThemedEditTextPreference
             android:dependency="enable_proxy"
             android:inputType="textPassword"
             android:key="proxy_password"
@@ -100,6 +103,7 @@
         android:title="@string/api">
 
         <de.vanita5.twittnuker.preference.DefaultAPIPreference
+            android:key="default_api"
             android:summary="@string/default_api_settings_summary"
             android:title="@string/default_api_settings"/>
 

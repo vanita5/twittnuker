@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,23 +19,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package de.vanita5.twittnuker.api.twitter.auth;
 
 
-import org.mariotaku.restfu.Pair;
-import org.mariotaku.restfu.Utils;
+import org.mariotaku.restfu.RestConverter;
+import org.mariotaku.restfu.RestFuUtils;
 import org.mariotaku.restfu.http.ContentType;
-import org.mariotaku.restfu.http.RestHttpResponse;
+import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.ValueMap;
-import org.mariotaku.restfu.http.mime.TypedData;
+import org.mariotaku.restfu.http.mime.Body;
+
+import de.vanita5.twittnuker.api.twitter.TwitterException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by mariotaku on 15/2/4.
@@ -43,7 +43,7 @@ import java.util.List;
 public class OAuthToken implements ValueMap {
 
     private String screenName;
-    private long userId;
+    private String userId;
 
     private String oauthToken, oauthTokenSecret;
 
@@ -51,7 +51,7 @@ public class OAuthToken implements ValueMap {
         return screenName;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -69,28 +69,30 @@ public class OAuthToken implements ValueMap {
     }
 
     public OAuthToken(String body, Charset charset) throws ParseException {
-        List<Pair<String, String>> params = new ArrayList<>();
-        Utils.parseGetParameters(body, params, charset.name());
-        for (Pair<String, String> param : params) {
-            switch (param.first) {
-                case "oauth_token": {
-                    oauthToken = param.second;
-                    break;
-                }
-                case "oauth_token_secret": {
-                    oauthTokenSecret = param.second;
-                    break;
-                }
-                case "user_id": {
-                    userId = Long.parseLong(param.second);
-                    break;
-                }
-                case "screen_name": {
-                    screenName = param.second;
-                    break;
+        RestFuUtils.parseQuery(body, charset.name(), new RestFuUtils.KeyValueConsumer() {
+
+            @Override
+            public void consume(String key, String value) {
+                switch (key) {
+                    case "oauth_token": {
+                        oauthToken = value;
+                        break;
+                    }
+                    case "oauth_token_secret": {
+                        oauthTokenSecret = value;
+                        break;
+                    }
+                    case "user_id": {
+                        userId = value;
+                        break;
+                    }
+                    case "screen_name": {
+                        screenName = value;
+                        break;
+                    }
                 }
             }
-        }
+        });
         if (oauthToken == null || oauthTokenSecret == null) {
             throw new ParseException("Unable to parse request token", -1);
         }
@@ -126,10 +128,10 @@ public class OAuthToken implements ValueMap {
         return new String[]{"oauth_token", "oauth_token_secret"};
     }
 
-    public static class Converter implements org.mariotaku.restfu.Converter {
+    public static class ResponseConverter implements RestConverter<HttpResponse, OAuthToken, TwitterException> {
         @Override
-        public Object convert(RestHttpResponse response, Type type) throws IOException {
-            final TypedData body = response.getBody();
+        public OAuthToken convert(HttpResponse response) throws IOException, ConvertException {
+            final Body body = response.getBody();
             try {
                 final ContentType contentType = body.contentType();
                 final ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -141,10 +143,10 @@ public class OAuthToken implements ValueMap {
                 try {
                     return new OAuthToken(os.toString(charset.name()), charset);
                 } catch (ParseException e) {
-                    throw new IOException(e);
+                    throw new ConvertException(e);
                 }
             } finally {
-                Utils.closeSilently(body);
+                RestFuUtils.closeSilently(body);
             }
         }
     }

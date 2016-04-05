@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,108 +23,150 @@
 package de.vanita5.twittnuker.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.app.ThemedAppCompatDelegateFactory;
-import android.support.v7.view.ActionMode;
-import android.support.v7.widget.Toolbar;
+import android.support.annotation.XmlRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SlidingPaneLayout;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.view.ViewGroup.MarginLayoutParams;
-import android.view.ViewParent;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.DataExportActivity;
-import de.vanita5.twittnuker.activity.support.DataImportActivity;
-import de.vanita5.twittnuker.graphic.EmptyDrawable;
+import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.CustomTabsFragment;
+import de.vanita5.twittnuker.fragment.SettingsDetailsFragment;
+import de.vanita5.twittnuker.fragment.SupportBrowserFragment;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.TwidereActionModeForChildListener;
-import de.vanita5.twittnuker.util.support.ViewSupport;
-import de.vanita5.twittnuker.util.support.view.ViewOutlineProviderCompat;
-import de.vanita5.twittnuker.view.TintedStatusNativeActionModeAwareLayout;
-import de.vanita5.twittnuker.view.holder.ViewListHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SettingsActivity extends BasePreferenceActivity {
+public class SettingsActivity extends BaseActivity implements OnItemClickListener,
+        OnPreferenceStartFragmentCallback {
+
+    public static final String EXTRA_INITIAL_TAG = "initial_tag";
 
     private static final int RESULT_SETTINGS_CHANGED = 10;
 
-    private HeaderAdapter mAdapter;
+    private ListView mEntriesListView;
+    private SlidingPaneLayout mSlidingPaneLayout;
 
     private boolean mShouldNotifyChange;
-    private TwidereActionModeForChildListener mTwidereActionModeForChildListener;
-    private ThemedAppCompatDelegateFactory.ThemedAppCompatDelegate mDelegate;
+    private EntriesAdapter mEntriesAdapter;
+    private View mDetailFragmentContainer;
 
     public static void setShouldNotifyChange(Activity activity) {
         if (!(activity instanceof SettingsActivity)) return;
         ((SettingsActivity) activity).setShouldNotifyChange(true);
     }
 
-    public HeaderAdapter getHeaderAdapter() {
-        if (mAdapter != null) return mAdapter;
-        return mAdapter = new HeaderAdapter(this);
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+        mEntriesListView = (ListView) findViewById(R.id.entries_list);
+        mSlidingPaneLayout = (SlidingPaneLayout) findViewById(R.id.sliding_pane);
+        mDetailFragmentContainer = findViewById(R.id.detail_fragment_container);
     }
 
-    @Override
-    public int getThemeColor() {
-        return ThemeUtils.getUserAccentColor(this);
-    }
 
     @Override
-    public int getActionBarColor() {
-        return ThemeUtils.getActionBarColor(this);
-    }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
 
-    @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getNoActionBarThemeResource(this);
-    }
+        final int backgroundAlpha = getCurrentThemeBackgroundAlpha();
 
-    @Override
-    public void onBuildHeaders(final List<Header> target) {
-        loadHeadersFromResource(R.xml.settings_headers, target);
-        final HeaderAdapter adapter = getHeaderAdapter();
-        adapter.clear();
-        adapter.addAll(target);
-    }
+        mDetailFragmentContainer.setBackgroundColor((backgroundAlpha << 24 | 0xFFFFFF) & ThemeUtils.getThemeBackgroundColor(this));
 
-    @Override
-    protected boolean isValidFragment(final String fragmentName) {
-        final Class<?> cls;
-        try {
-            cls = Class.forName(fragmentName);
-        } catch (final ClassNotFoundException e) {
-            return false;
+        mSlidingPaneLayout.setShadowResourceLeft(R.drawable.sliding_pane_shadow_left);
+        mSlidingPaneLayout.setShadowResourceRight(R.drawable.sliding_pane_shadow_right);
+        mSlidingPaneLayout.setSliderFadeColor(0);
+        mEntriesAdapter = new EntriesAdapter(this);
+        initEntries();
+        mEntriesListView.setAdapter(mEntriesAdapter);
+        mEntriesListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        mEntriesListView.setOnItemClickListener(this);
+
+        if (savedInstanceState == null) {
+            String initialTag = getIntent().getStringExtra(EXTRA_INITIAL_TAG);
+            int initialItem = -1, firstEntry = -1;
+            for (int i = 0, j = mEntriesAdapter.getCount(); i < j; i++) {
+                Entry entry = mEntriesAdapter.getItem(i);
+                if (entry instanceof PreferenceEntry) {
+                    if (firstEntry == -1) {
+                        firstEntry = i;
+                    }
+                    if (TextUtils.equals(initialTag, ((PreferenceEntry) entry).tag)) {
+                        initialItem = i;
+                        break;
+                    }
+                }
+            }
+            if (initialItem == -1) {
+                initialItem = firstEntry;
+            }
+            if (initialItem != -1) {
+                openDetails(initialItem);
+                mEntriesListView.setItemChecked(initialItem, true);
+            }
         }
-        return Fragment.class.isAssignableFrom(cls);
+    }
+
+    private void initEntries() {
+        mEntriesAdapter.addHeader(getString(R.string.appearance));
+        mEntriesAdapter.addPreference("theme", R.drawable.ic_action_color_palette, getString(R.string.theme),
+                R.xml.preferences_theme);
+        mEntriesAdapter.addPreference("cards", R.drawable.ic_action_card, getString(R.string.cards),
+                R.xml.preferences_cards);
+
+        mEntriesAdapter.addHeader(getString(R.string.function));
+        mEntriesAdapter.addPreference("tabs", R.drawable.ic_action_tab, getString(R.string.tabs),
+                CustomTabsFragment.class);
+        mEntriesAdapter.addPreference("refresh", R.drawable.ic_action_refresh, getString(R.string.refresh),
+                R.xml.preferences_refresh);
+        mEntriesAdapter.addPreference("notifications", R.drawable.ic_action_notification, getString(R.string.notifications),
+                R.xml.preferences_notifications);
+        mEntriesAdapter.addPreference("network", R.drawable.ic_action_web, getString(R.string.network),
+                R.xml.preferences_network);
+        mEntriesAdapter.addPreference("compose", R.drawable.ic_action_status_compose, getString(R.string.compose),
+                R.xml.preferences_compose);
+        mEntriesAdapter.addPreference("content", R.drawable.ic_action_twittnuker_square, getString(R.string.content),
+                R.xml.preferences_content);
+        mEntriesAdapter.addPreference("storage", R.drawable.ic_action_storage, getString(R.string.storage),
+                R.xml.preferences_storage);
+        mEntriesAdapter.addPreference("other", R.drawable.ic_action_more_horizontal, getString(R.string.other_settings),
+                R.xml.preferences_other);
+
+        mEntriesAdapter.addHeader(getString(R.string.about));
+        mEntriesAdapter.addPreference("about", R.drawable.ic_action_info, getString(R.string.about),
+                R.xml.preferences_about);
+        final Bundle browserArgs = new Bundle();
+        browserArgs.putString(EXTRA_URI, "file:///android_asset/gpl-3.0-standalone.html");
+        mEntriesAdapter.addPreference("license", R.drawable.ic_action_open_source, getString(R.string.open_source_license),
+                SupportBrowserFragment.class, browserArgs);
     }
 
     @Override
@@ -135,86 +177,24 @@ public class SettingsActivity extends BasePreferenceActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onHeaderClick(@NonNull final Header header, final int position) {
-        super.onHeaderClick(header, position);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void startWithFragment(String fragmentName, Bundle args,
-                                  Fragment resultTo, int resultRequestCode, int titleRes, int shortTitleRes) {
-        Intent intent = onBuildStartFragmentIntent(fragmentName, args, titleRes, shortTitleRes);
-        if (resultTo == null) {
-            startActivityForResult(intent, resultRequestCode);
-        } else {
-            resultTo.startActivityForResult(intent, resultRequestCode);
-        }
-    }
-
-    @Override
-    public void switchToHeader(final String fragmentName, final Bundle args) {
-        if (fragmentName == null) return;
-        super.switchToHeader(fragmentName, args);
-    }
-
-    @Override
-    public void switchToHeader(@NonNull final Header header) {
-        if (header.fragment == null && header.intent == null) return;
-        super.switchToHeader(header);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        if (!isTopSettings()) return false;
-        getMenuInflater().inflate(R.menu.menu_settings, menu);
-        return true;
-    }
 
     private boolean isTopSettings() {
-        return getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT) == null;
+        return Boolean.parseBoolean("true");
     }
 
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.import_settings: {
-                final Intent intent = new Intent(this, DataImportActivity.class);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.export_settings: {
-                final Intent intent = new Intent(this, DataExportActivity.class);
-                startActivity(intent);
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void finish() {
         if (shouldNotifyChange()) {
             final Intent data = new Intent();
             data.putExtra(EXTRA_CHANGED, true);
-            setResult(isTopSettings() ? RESULT_OK : RESULT_SETTINGS_CHANGED, data);
+            setResult(RESULT_SETTINGS_CHANGED, data);
         }
         super.finish();
     }
 
     private void finishNoRestart() {
         super.finish();
-    }
-
-    @Override
-    public void setListAdapter(final ListAdapter adapter) {
-        if (adapter == null) {
-            super.setListAdapter(null);
-        } else {
-            super.setListAdapter(getHeaderAdapter());
-        }
     }
 
     @Override
@@ -238,74 +218,6 @@ public class SettingsActivity extends BasePreferenceActivity {
         return super.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState);
     }
 
-    @Override
-    protected void onCreate(final Bundle savedInstanceState) {
-//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
-        super.onCreate(savedInstanceState);
-
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-        setSupportActionBar(toolbar);
-
-        mTwidereActionModeForChildListener = new TwidereActionModeForChildListener(this, this, false);
-        final TintedStatusNativeActionModeAwareLayout layout = (TintedStatusNativeActionModeAwareLayout) findViewById(R.id.main_content);
-        layout.setActionModeForChildListener(mTwidereActionModeForChildListener);
-
-        ThemeUtils.setCompatContentViewOverlay(this, new EmptyDrawable());
-        final View actionBarContainer = findViewById(R.id.twidere_action_bar_container);
-        ViewCompat.setElevation(actionBarContainer, ThemeUtils.getSupportActionBarElevation(this));
-        ViewSupport.setOutlineProvider(actionBarContainer, ViewOutlineProviderCompat.BACKGROUND);
-        final View windowOverlay = findViewById(R.id.window_overlay);
-        ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this, getCurrentThemeResourceId()));
-        setIntent(getIntent().addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
-
-
-        final String backgroundOption = getCurrentThemeBackgroundOption();
-        final boolean isTransparent = ThemeUtils.isTransparentBackground(backgroundOption);
-        final int actionBarAlpha = isTransparent ? ThemeUtils.getActionBarAlpha(ThemeUtils.getUserThemeBackgroundAlpha(this)) : 0xFF;
-
-        actionBarContainer.setAlpha(actionBarAlpha / 255f);
-        windowOverlay.setAlpha(actionBarAlpha / 255f);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-        if (savedInstanceState != null) {
-            invalidateHeaders();
-        }
-        final ListView listView = getListView();
-        if (listView != null) {
-            listView.setChoiceMode(isMultiPane() ? ListView.CHOICE_MODE_SINGLE : ListView.CHOICE_MODE_NONE);
-            final LayoutParams lp = listView.getLayoutParams();
-            if (lp instanceof MarginLayoutParams) {
-                final MarginLayoutParams mlp = (MarginLayoutParams) lp;
-                mlp.leftMargin = 0;
-                mlp.topMargin = 0;
-                mlp.rightMargin = 0;
-                mlp.bottomMargin = 0;
-                listView.setLayoutParams(mlp);
-            }
-            final ViewParent listParent = listView.getParent();
-            if (listParent instanceof ViewGroup) {
-                ((ViewGroup) listParent).setPadding(0, 0, 0, 0);
-            }
-        }
-    }
-
-    @Override
-    public AppCompatDelegate getDelegate() {
-        if (mDelegate == null) {
-            mDelegate = ThemedAppCompatDelegateFactory.create(this, this);
-        }
-        return mDelegate;
-    }
 
     private void setShouldNotifyChange(boolean notify) {
         mShouldNotifyChange = notify;
@@ -315,26 +227,203 @@ public class SettingsActivity extends BasePreferenceActivity {
         return mShouldNotifyChange;
     }
 
+
     @Override
     public void onBackPressed() {
-        if (mTwidereActionModeForChildListener.finishExisting()) {
-            return;
-        }
         if (isTopSettings() && shouldNotifyChange()) {
             final RestartConfirmDialogFragment df = new RestartConfirmDialogFragment();
-            df.show(getFragmentManager().beginTransaction(), "restart_confirm");
+            df.show(getSupportFragmentManager(), "restart_confirm");
             return;
         }
         super.onBackPressed();
     }
 
-    @Nullable
     @Override
-    public ActionMode onWindowStartingSupportActionMode(final ActionMode.Callback callback) {
-        return null;
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat fragment, Preference preference) {
+        final FragmentManager fm = getSupportFragmentManager();
+        final FragmentTransaction ft = fm.beginTransaction();
+        final Fragment f = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
+        ft.replace(R.id.detail_fragment_container, f);
+        ft.addToBackStack(String.valueOf(preference.getTitle()));
+        ft.commit();
+        return true;
     }
 
-    public static class RestartConfirmDialogFragment extends DialogFragment implements DialogInterface.OnClickListener {
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        openDetails(position);
+    }
+
+    protected void openDetails(int position) {
+        if (isFinishing()) return;
+        final Entry entry = mEntriesAdapter.getItem(position);
+        if (!(entry instanceof PreferenceEntry)) return;
+        final PreferenceEntry pe = (PreferenceEntry) entry;
+        final FragmentManager fm = getSupportFragmentManager();
+        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        final FragmentTransaction ft = fm.beginTransaction();
+        if (pe.preference != 0) {
+            final Bundle args = new Bundle();
+            args.putInt(EXTRA_RESID, pe.preference);
+            final Fragment f = Fragment.instantiate(this, SettingsDetailsFragment.class.getName(),
+                    args);
+            ft.replace(R.id.detail_fragment_container, f);
+        } else if (pe.fragment != null) {
+            ft.replace(R.id.detail_fragment_container, Fragment.instantiate(this, pe.fragment,
+                    pe.args));
+        }
+        ft.setBreadCrumbTitle(pe.title);
+        ft.commit();
+        mSlidingPaneLayout.closePane();
+    }
+
+    static class EntriesAdapter extends BaseAdapter {
+
+        static final int VIEW_TYPE_PREFERENCE_ENTRY = 0;
+        static final int VIEW_TYPE_HEADER_ENTRY = 1;
+
+        private final Context mContext;
+        private final LayoutInflater mInflater;
+        private final List<Entry> mEntries;
+
+        public EntriesAdapter(Context context) {
+            mContext = context;
+            mInflater = LayoutInflater.from(context);
+            mEntries = new ArrayList<>();
+        }
+
+        public void addPreference(String tag, @DrawableRes int icon, String title, @XmlRes int preference) {
+            mEntries.add(new PreferenceEntry(tag, icon, title, preference, null, null));
+            notifyDataSetChanged();
+        }
+
+        public void addPreference(String tag, @DrawableRes int icon, String title, Class<? extends Fragment> cls) {
+            addPreference(tag, icon, title, cls, null);
+        }
+
+
+        public void addPreference(String tag, @DrawableRes int icon, String title, Class<? extends Fragment> cls,
+                                  @Nullable Bundle args) {
+            mEntries.add(new PreferenceEntry(tag, icon, title, 0, cls.getName(), args));
+            notifyDataSetChanged();
+        }
+
+        public void addHeader(String title) {
+            mEntries.add(new HeaderEntry(title));
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return mEntries.size();
+        }
+
+        @Override
+        public Entry getItem(int position) {
+            return mEntries.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return getItem(position).hashCode();
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return getItemViewType(position) == VIEW_TYPE_PREFERENCE_ENTRY;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return 2;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            final Entry entry = getItem(position);
+            if (entry instanceof PreferenceEntry) {
+                return VIEW_TYPE_PREFERENCE_ENTRY;
+            } else if (entry instanceof HeaderEntry) {
+                return VIEW_TYPE_HEADER_ENTRY;
+            }
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final int viewType = getItemViewType(position);
+            final Entry entry = getItem(position);
+            final View view;
+            if (convertView != null) {
+                view = convertView;
+            } else {
+                switch (viewType) {
+                    case VIEW_TYPE_PREFERENCE_ENTRY: {
+                        view = mInflater.inflate(R.layout.list_item_preference_header_item, parent, false);
+                        break;
+                    }
+                    case VIEW_TYPE_HEADER_ENTRY: {
+                        view = mInflater.inflate(R.layout.list_item_preference_header_category, parent, false);
+                        break;
+                    }
+                    default: {
+                        throw new UnsupportedOperationException();
+                    }
+                }
+            }
+            entry.bind(view);
+            return view;
+        }
+    }
+
+    static abstract class Entry {
+        public abstract void bind(View view);
+
+    }
+
+    static class PreferenceEntry extends Entry {
+        @NonNull
+        private final String tag;
+        private final int icon;
+        private final String title;
+        private final int preference;
+        private final String fragment;
+
+        private final Bundle args;
+
+        public PreferenceEntry(@NonNull String tag, int icon, String title, int preference, String fragment, Bundle args) {
+            this.tag = tag;
+            this.icon = icon;
+            this.title = title;
+            this.preference = preference;
+            this.fragment = fragment;
+            this.args = args;
+        }
+
+        @Override
+        public void bind(View view) {
+            ((ImageView) view.findViewById(android.R.id.icon)).setImageResource(icon);
+            ((TextView) view.findViewById(android.R.id.title)).setText(title);
+        }
+
+    }
+
+    static class HeaderEntry extends Entry {
+
+        private final String title;
+
+        public HeaderEntry(String title) {
+            this.title = title;
+        }
+
+        @Override
+        public void bind(View view) {
+            ((TextView) view.findViewById(android.R.id.title)).setText(title);
+        }
+    }
+
+    public static class RestartConfirmDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -361,172 +450,5 @@ public class SettingsActivity extends BasePreferenceActivity {
         }
     }
 
-    private static class HeaderAdapter extends BaseAdapter {
-
-        static final int HEADER_TYPE_NORMAL = 0;
-        static final int HEADER_TYPE_CATEGORY = 1;
-
-        private final Resources mResources;
-        private final int mActionIconColor;
-        private final ArrayList<Header> mHeaders;
-        private final LayoutInflater mInflater;
-
-        public HeaderAdapter(final Context context) {
-            mInflater = LayoutInflater.from(context);
-            mHeaders = new ArrayList<>();
-            mResources = context.getResources();
-            mActionIconColor = ThemeUtils.getThemeForegroundColor(context);
-        }
-
-        private static int getHeaderType(final Header header) {
-            if (header.fragment != null || header.intent != null)
-                return HEADER_TYPE_NORMAL;
-            else return HEADER_TYPE_CATEGORY;
-
-        }
-
-        public void add(Header header) {
-            mHeaders.add(header);
-            notifyDataSetChanged();
-        }
-
-        public void addAll(List<Header> headers) {
-            mHeaders.addAll(headers);
-            notifyDataSetChanged();
-        }
-
-        public void clear() {
-            mHeaders.clear();
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public int getCount() {
-            return mHeaders.size();
-        }
-
-        @Override
-        public Header getItem(final int position) {
-            return mHeaders.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, final View convertView, final ViewGroup parent) {
-            final Header header = getItem(position);
-            final int viewType = getHeaderType(header);
-            final View view = convertView != null ? convertView : inflateItemView(viewType, parent);
-            switch (viewType) {
-                case HEADER_TYPE_CATEGORY: {
-                    bindCategoryHeader(view, position, header);
-                    break;
-                }
-                default: {
-                    bindHeader(view, position, header);
-                    break;
-                }
-            }
-            return view;
-        }
-
-        @Override
-        public boolean areAllItemsEnabled() {
-            return false;
-        }
-
-        @Override
-        public boolean isEnabled(final int position) {
-            return getItemViewType(position) == HEADER_TYPE_NORMAL;
-        }
-
-        @Override
-        public int getItemViewType(final int position) {
-            final Header header = getItem(position);
-            return getHeaderType(header);
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return 3;
-        }
-
-        private void bindCategoryHeader(View view, int position, Header header) {
-            final TextView title = (TextView) view.findViewById(android.R.id.title);
-            if (!TextUtils.isEmpty(header.title)) {
-                title.setText(header.title);
-            } else {
-                title.setText(header.titleRes);
-            }
-        }
-
-        private void bindHeader(View view, int position, Header header) {
-            final HeaderViewHolder holder;
-            final Object tag = view.getTag();
-            if (tag instanceof HeaderViewHolder) {
-                holder = (HeaderViewHolder) tag;
-            } else {
-                holder = new HeaderViewHolder(view);
-                view.setTag(holder);
-            }
-            final CharSequence title = header.getTitle(mResources);
-            holder.title.setText(title);
-            final CharSequence summary = header.getSummary(mResources);
-            if (!TextUtils.isEmpty(summary)) {
-                holder.summary.setVisibility(View.VISIBLE);
-                holder.summary.setText(summary);
-            } else {
-                holder.summary.setVisibility(View.GONE);
-            }
-            if (header.iconRes != 0) {
-                holder.icon.setImageResource(header.iconRes);
-            } else {
-                holder.icon.setImageDrawable(null);
-            }
-            holder.icon.setColorFilter(mActionIconColor, Mode.SRC_ATOP);
-
-        }
-
-        private int getCategoriesCount(final int start, final int end) {
-            int categoriesCount = 0;
-            for (int i = start; i < end; i++) {
-                if (getHeaderType(mHeaders.get(i)) == HEADER_TYPE_CATEGORY) {
-                    categoriesCount++;
-                }
-            }
-            return categoriesCount;
-        }
-
-        private View inflateItemView(int viewType, ViewGroup parent) {
-            final int layoutRes;
-            switch (viewType) {
-                case HEADER_TYPE_CATEGORY: {
-                    layoutRes = R.layout.list_item_preference_header_category;
-                    break;
-                }
-                default: {
-                    layoutRes = R.layout.list_item_preference_header_item;
-                    break;
-                }
-            }
-            return mInflater.inflate(layoutRes, parent, false);
-        }
-
-        private static class HeaderViewHolder extends ViewListHolder {
-            private final TextView title, summary;
-            private final ImageView icon;
-
-            HeaderViewHolder(final View view) {
-                super(view);
-                title = (TextView) findViewById(android.R.id.title);
-                summary = (TextView) findViewById(android.R.id.summary);
-                icon = (ImageView) findViewById(android.R.id.icon);
-            }
-        }
-
-    }
 
 }

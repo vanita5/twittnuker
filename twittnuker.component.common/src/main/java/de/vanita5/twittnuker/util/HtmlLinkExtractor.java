@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,61 +28,61 @@ import java.util.regex.Pattern;
 
 public class HtmlLinkExtractor {
 
-	private final Pattern patternTag, patternLink;
+    private final Pattern patternTag, patternLink;
 
-	private static final String HTML_A_TAG_PATTERN = "(?i)<a([^>]+)>(.+?)</a>";
-	private static final String HTML_A_HREF_TAG_PATTERN = "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
+    private static final String HTML_A_TAG_PATTERN = "(?i)<a([^>]+)>(.+?)</a>";
+    private static final String HTML_A_HREF_TAG_PATTERN = "\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
 
-	public HtmlLinkExtractor() {
-		patternTag = Pattern.compile(HTML_A_TAG_PATTERN);
-		patternLink = Pattern.compile(HTML_A_HREF_TAG_PATTERN);
-	}
+    public HtmlLinkExtractor() {
+        patternTag = Pattern.compile(HTML_A_TAG_PATTERN);
+        patternLink = Pattern.compile(HTML_A_HREF_TAG_PATTERN);
+    }
 
-	/**
-	 * Validate html with regular expression
-	 * 
-	 * @param html html content for validation
-	 * @return Vector links and link text
-	 */
-	public Vector<HtmlLink> grabLinks(final String html) {
-		final Vector<HtmlLink> result = new Vector<HtmlLink>();
+    /**
+     * Validate html with regular expression
+     *
+     * @param html html content for validation
+     * @return Vector links and link text
+     */
+    public Vector<HtmlLink> grabLinks(final String html) {
+        final Vector<HtmlLink> result = new Vector<>();
         final Matcher matcherTag = patternTag.matcher(html);
-		while (matcherTag.find()) {
-			final String href = matcherTag.group(1); // href
-			final String linkText = matcherTag.group(2); // link text
+        while (matcherTag.find()) {
+            final String href = matcherTag.group(1); // href
+            final String linkText = matcherTag.group(2); // link text
             final Matcher matcherLink = patternLink.matcher(href);
-			while (matcherLink.find()) {
-				final String link = matcherLink.group(1); // link
-				final HtmlLink obj = new HtmlLink(link, linkText);
-				result.add(obj);
-			}
-		}
-		return result;
-	}
+            while (matcherLink.find()) {
+                final String link = matcherLink.group(1); // link
+                final HtmlLink obj = new HtmlLink(link, linkText);
+                result.add(obj);
+            }
+        }
+        return result;
+    }
 
-	public static class HtmlLink {
+    public static class HtmlLink {
 
-		private final String link;
-		private final String text;
+        private final String link;
+        private final String text;
 
-		private HtmlLink(final String link, final String text) {
-			this.link = replaceInvalidChar(link);
-			this.text = text;
+        private HtmlLink(final String link, final String text) {
+            this.link = replaceInvalidChar(link);
+            this.text = text;
         }
 
-		public String getLink() {
-			return link;
-		}
+        public String getLink() {
+            return link;
+        }
 
-		public String getLinkText() {
-			return text;
-		}
+        public String getLinkText() {
+            return text;
+        }
 
-		private static String replaceInvalidChar(String link) {
-			link = link.replaceAll("'", "");
-			link = link.replaceAll("\"", "");
-			return link;
-		}
+        private static String replaceInvalidChar(String link) {
+            link = link.replaceAll("'", "");
+            link = link.replaceAll("\"", "");
+            return link;
+        }
 
-	}
+    }
 }

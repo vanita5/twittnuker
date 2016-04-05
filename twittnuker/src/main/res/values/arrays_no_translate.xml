@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
     <string-array name="values_theme">
         <item>light</item>
         <item>dark</item>
+        <item>auto</item>
     </string-array>
     <string-array name="values_theme_background">
         <item>default</item>
@@ -72,7 +73,25 @@
     </string-array>
     <string-array name="values_proxy_type">
         <item>http</item>
-        <item>socks</item>
+        <!--<item>socks</item>-->
+    </string-array>
+    <string-array name="values_media_preload">
+        <item>wifi</item>
+    </string-array>
+    <string-array name="values_home_refresh_content">
+        <item>mentions</item>
+        <item>messages</item>
+        <item>trends</item>
+    </string-array>
+    <string-array name="values_notification_content">
+        <item>home</item>
+        <item>mentions</item>
+        <item>inbox</item>
+    </string-array>
+    <string-array name="values_compose_location">
+        <item>none</item>
+        <item>place</item>
+        <item>coordinate</item>
     </string-array>
 
 </resources>

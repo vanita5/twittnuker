@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,13 @@ import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
+import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
+import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.holder.AccountViewHolder;
@@ -57,9 +61,9 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             final Object tag = buttonView.getTag();
-            if (!(tag instanceof Long) || mOnAccountToggleListener == null) return;
-            final long accountId = (Long) tag;
-            mOnAccountToggleListener.onAccountToggle(accountId, isChecked);
+            if (!(tag instanceof String) || mOnAccountToggleListener == null) return;
+            final UserKey accountKey = UserKey.valueOf((String) tag);
+            mOnAccountToggleListener.onAccountToggle(accountKey, isChecked);
         }
     };
 
@@ -82,13 +86,22 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
         holder.screenName.setText(String.format("@%s", cursor.getString(mIndices.screen_name)));
         holder.setAccountColor(color);
         if (mDisplayProfileImage) {
-            mImageLoader.displayProfileImage(holder.profileImage, cursor.getString(mIndices.profile_image_url));
+            final ParcelableUser user = JsonSerializer.parse(cursor.getString(mIndices.account_user),
+                    ParcelableUser.class);
+            if (user != null) {
+                mImageLoader.displayProfileImage(holder.profileImage, user);
+            } else {
+                mImageLoader.displayProfileImage(holder.profileImage,
+                        cursor.getString(mIndices.profile_image_url));
+            }
         } else {
             mImageLoader.cancelDisplayTask(holder.profileImage);
         }
+        final String accountType = cursor.getString(mIndices.account_type);
+        holder.accountType.setImageResource(ParcelableAccountUtils.getAccountTypeIcon(accountType));
         holder.toggle.setChecked(cursor.getShort(mIndices.is_activated) == 1);
         holder.toggle.setOnCheckedChangeListener(mCheckedChangeListener);
-        holder.toggle.setTag(cursor.getLong(mIndices.account_id));
+        holder.toggle.setTag(cursor.getString(mIndices.account_key));
         holder.toggleContainer.setVisibility(mSwitchEnabled ? View.VISIBLE : View.GONE);
         holder.setSortEnabled(mSortEnabled);
         super.bindView(view, context, cursor);
@@ -183,6 +196,6 @@ public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Cons
     }
 
     public interface OnAccountToggleListener {
-        void onAccountToggle(long accountId, boolean state);
+        void onAccountToggle(UserKey accountId, boolean state);
     }
 }

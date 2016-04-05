@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,72 +23,35 @@
 package de.vanita5.twittnuker.activity;
 
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.view.MarginLayoutParamsCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.WindowCompat;
-import android.view.View;
-import android.view.WindowManager;
+import android.support.v7.widget.Toolbar;
 
 import com.soundcloud.android.crop.CropImageActivity;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IThemedActivity;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.support.ViewSupport;
-import de.vanita5.twittnuker.view.ShapedImageView;
-import de.vanita5.twittnuker.view.TintedStatusFrameLayout;
 
 public class ImageCropperActivity extends CropImageActivity implements IThemedActivity {
 
     // Data fields
-    private int mCurrentThemeResource, mCurrentThemeColor, mCurrentActionBarColor, mCurrentThemeBackgroundAlpha;
-    @ShapedImageView.ShapeStyle
-    private int mProfileImageStyle;
+    private int mCurrentThemeColor, mCurrentActionBarColor;
+    private int mCurrentThemeBackgroundAlpha;
     private String mCurrentThemeBackgroundOption;
-    private String mCurrentThemeFontFamily;
 
-
-    private TintedStatusFrameLayout mMainContent;
-    private View mDoneCancelBar;
+    private Toolbar mDoneCancelBar;
 
     @Override
     public void onContentChanged() {
         super.onContentChanged();
-        mMainContent = (TintedStatusFrameLayout) findViewById(R.id.main_content);
-        mDoneCancelBar = findViewById(R.id.done_cancel_bar);
+        mDoneCancelBar = (Toolbar) findViewById(R.id.done_cancel_bar);
     }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-        final int themeColor = getThemeColor();
-        final int themeResId = getCurrentThemeResourceId();
-        final String backgroundOption = getCurrentThemeBackgroundOption();
-        mMainContent.setDrawColor(true);
-        mMainContent.setDrawShadow(false);
-        mMainContent.setColor(themeColor);
-        ViewSupport.setBackground(mDoneCancelBar, ThemeUtils.getActionBarBackground(this, themeResId,
-                themeColor, backgroundOption, true));
-        ViewCompat.setElevation(mDoneCancelBar, ThemeUtils.getSupportActionBarElevation(this));
-        final View windowOverlay = findViewById(R.id.window_overlay);
-        ViewSupport.setBackground(windowOverlay, ThemeUtils.getNormalWindowContentOverlay(this, themeResId));
-    }
 
-    @Override
-    public int getThemeColor() {
-        return ThemeUtils.getUserAccentColor(this);
-    }
-
-    @Override
-    public int getActionBarColor() {
-        return ThemeUtils.getActionBarColor(this);
     }
 
     @Override
@@ -98,23 +61,6 @@ public class ImageCropperActivity extends CropImageActivity implements IThemedAc
 
 
     @Override
-    public void setTheme(final int resid) {
-        super.setTheme(mCurrentThemeResource = getThemeResourceId());
-        ThemeUtils.applyWindowBackground(this, getWindow(), mCurrentThemeResource,
-                mCurrentThemeBackgroundOption, mCurrentThemeBackgroundAlpha);
-    }
-
-    @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getNoActionBarThemeResource(this);
-    }
-
-    @Override
-    public String getCurrentThemeFontFamily() {
-        return mCurrentThemeFontFamily;
-    }
-
-    @Override
     public int getCurrentThemeBackgroundAlpha() {
         return mCurrentThemeBackgroundAlpha;
     }
@@ -122,21 +68,6 @@ public class ImageCropperActivity extends CropImageActivity implements IThemedAc
     @Override
     public String getCurrentThemeBackgroundOption() {
         return mCurrentThemeBackgroundOption;
-    }
-
-    @Override
-    public int getCurrentThemeColor() {
-        return mCurrentThemeColor;
-    }
-
-    @Override
-    public int getCurrentActionBarColor() {
-        return mCurrentActionBarColor;
-    }
-
-    @Override
-    public final int getCurrentThemeResourceId() {
-        return mCurrentThemeResource;
     }
 
     @Override
@@ -150,29 +81,9 @@ public class ImageCropperActivity extends CropImageActivity implements IThemedAc
     }
 
     @Override
-    public String getThemeFontFamily() {
-        return ThemeUtils.getThemeFontFamily(this);
-    }
-
-    @Override
-    @ShapedImageView.ShapeStyle
-    public int getCurrentProfileImageStyle() {
-        return mProfileImageStyle;
-    }
-
-    @Override
-    public final void restart() {
-        Utils.restartActivity(this);
-    }
-
-    @Override
     protected void onApplyThemeResource(@NonNull Resources.Theme theme, int resId, boolean first) {
-        mCurrentThemeColor = getThemeColor();
-        mCurrentActionBarColor = getActionBarColor();
-        mCurrentThemeFontFamily = getThemeFontFamily();
         mCurrentThemeBackgroundAlpha = getThemeBackgroundAlpha();
         mCurrentThemeBackgroundOption = getThemeBackgroundOption();
-        mProfileImageStyle = Utils.getProfileImageStyle(this);
         super.onApplyThemeResource(theme, resId, first);
     }
 

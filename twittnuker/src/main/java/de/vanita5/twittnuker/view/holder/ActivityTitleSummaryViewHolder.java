@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,9 @@
 package de.vanita5.twittnuker.view.holder;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
+import android.support.v4.view.MarginLayoutParamsCompat;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,38 +33,44 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.AbsActivitiesAdapter;
+import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
+import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter;
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.view.ActionIconView;
+import de.vanita5.twittnuker.view.IconActionView;
 import de.vanita5.twittnuker.view.BadgeView;
+import de.vanita5.twittnuker.view.ShortTimeView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
 public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.OnClickListener {
 
     private final IColorLabelView itemContent;
 
-    private final AbsActivitiesAdapter adapter;
-    private final ActionIconView activityTypeView;
+    private final ParcelableActivitiesAdapter adapter;
+    private final IconActionView activityTypeView;
     private final TextView titleView;
     private final TextView summaryView;
+    private final ShortTimeView timeView;
     private final ViewGroup profileImagesContainer;
     private final BadgeView profileImageMoreNumber;
     private final ImageView[] profileImageViews;
-    private ActivityClickListener activityClickListener;
+    private final View profileImageSpace;
 
-    public ActivityTitleSummaryViewHolder(AbsActivitiesAdapter adapter, View itemView) {
+    private IActivitiesAdapter.ActivityEventListener mActivityEventListener;
+
+    public ActivityTitleSummaryViewHolder(ParcelableActivitiesAdapter adapter, View itemView, boolean isCompact) {
         super(itemView);
         this.adapter = adapter;
 
         itemContent = (IColorLabelView) itemView.findViewById(R.id.item_content);
-
-        activityTypeView = (ActionIconView) itemView.findViewById(R.id.activity_type);
+        activityTypeView = (IconActionView) itemView.findViewById(R.id.activity_type);
         titleView = (TextView) itemView.findViewById(R.id.title);
         summaryView = (TextView) itemView.findViewById(R.id.summary);
+        timeView = (ShortTimeView) itemView.findViewById(R.id.time);
+        profileImageSpace = itemView.findViewById(R.id.profile_image_space);
 
         profileImagesContainer = (ViewGroup) itemView.findViewById(R.id.profile_images_container);
         profileImageViews = new ImageView[5];
@@ -72,6 +80,15 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
         profileImageViews[3] = (ImageView) itemView.findViewById(R.id.activity_profile_image_3);
         profileImageViews[4] = (ImageView) itemView.findViewById(R.id.activity_profile_image_4);
         profileImageMoreNumber = (BadgeView) itemView.findViewById(R.id.activity_profile_image_more_number);
+
+        if (isCompact) {
+            final Resources resources = adapter.getContext().getResources();
+            final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) titleView.getLayoutParams();
+            final int spacing = resources.getDimensionPixelSize(R.dimen.element_spacing_small);
+            lp.leftMargin = spacing;
+            MarginLayoutParamsCompat.setMarginStart(lp, spacing);
+        }
+        timeView.setShowAbsoluteTime(adapter.isShowAbsoluteTime());
     }
 
     public void displayActivity(ParcelableActivity activity, boolean byFriends) {
@@ -89,6 +106,12 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
         titleView.setText(message.getTitle());
         summaryView.setText(message.getSummary());
         summaryView.setVisibility(summaryView.length() > 0 ? View.VISIBLE : View.GONE);
+        timeView.setTime(activity.timestamp);
+        if (adapter.shouldShowAccountsColor()) {
+            itemContent.drawEnd(activity.account_color);
+        } else {
+            itemContent.drawEnd();
+        }
         displayUserProfileImages(sources);
     }
 
@@ -99,9 +122,14 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
     public void setTextSize(float textSize) {
         titleView.setTextSize(textSize);
         summaryView.setTextSize(textSize * 0.85f);
+        timeView.setTextSize(textSize * 0.80f);
     }
 
     private void displayUserProfileImages(final ParcelableUser[] statuses) {
+        final boolean shouldDisplayImages = adapter.isProfileImageEnabled();
+        profileImagesContainer.setVisibility(shouldDisplayImages ? View.VISIBLE : View.GONE);
+        profileImageSpace.setVisibility(shouldDisplayImages ? View.VISIBLE : View.GONE);
+        if (!shouldDisplayImages) return;
         final MediaLoaderWrapper imageLoader = adapter.getMediaLoader();
         if (statuses == null) {
             for (final ImageView view : profileImageViews) {
@@ -111,15 +139,12 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
             return;
         }
         final int length = Math.min(profileImageViews.length, statuses.length);
-        final boolean shouldDisplayImages = adapter.isProfileImageEnabled();
-        profileImagesContainer.setVisibility(shouldDisplayImages ? View.VISIBLE : View.GONE);
-        if (!shouldDisplayImages) return;
         for (int i = 0, j = profileImageViews.length; i < j; i++) {
             final ImageView view = profileImageViews[i];
             view.setImageDrawable(null);
             if (i < length) {
                 view.setVisibility(View.VISIBLE);
-                imageLoader.displayProfileImage(view, statuses[i].profile_image_url);
+                imageLoader.displayProfileImage(view, statuses[i]);
             } else {
                 imageLoader.cancelDisplayTask(view);
                 view.setVisibility(View.GONE);
@@ -135,11 +160,11 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
     }
 
     public void setOnClickListeners() {
-        setActivityClickListener(adapter);
+        setActivityEventListener(adapter.getActivityEventListener());
     }
 
-    public void setActivityClickListener(ActivityClickListener listener) {
-        activityClickListener = listener;
+    public void setActivityEventListener(IActivitiesAdapter.ActivityEventListener listener) {
+        mActivityEventListener = listener;
         ((View) itemContent).setOnClickListener(this);
 //        ((View) itemContent).setOnLongClickListener(this);
 
@@ -147,18 +172,14 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
 
     @Override
     public void onClick(View v) {
-        if (activityClickListener == null) return;
+        if (mActivityEventListener == null) return;
         final int position = getLayoutPosition();
         switch (v.getId()) {
             case R.id.item_content: {
-                activityClickListener.onActivityClick(this, position);
+                mActivityEventListener.onActivityClick(this, position);
                 break;
             }
         }
     }
 
-    public interface ActivityClickListener {
-
-        void onActivityClick(ActivityTitleSummaryViewHolder holder, int position);
-    }
 }

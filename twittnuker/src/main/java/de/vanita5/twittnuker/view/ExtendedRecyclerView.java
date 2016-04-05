@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,67 +27,82 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.ContextMenu;
 import android.view.InputDevice;
 import android.view.MotionEvent;
+import android.view.View;
 
 import de.vanita5.twittnuker.util.MouseScrollDirectionDecider;
 
 public class ExtendedRecyclerView extends RecyclerView {
 
     private final MouseScrollDirectionDecider mMouseScrollDirectionDecider;
-	// This value is used when handling generic motion events.
-	private float mScrollFactor = Float.MIN_VALUE;
+    // This value is used when handling generic motion events.
+    private float mScrollFactor = Float.MIN_VALUE;
+    private ContextMenuInfo mContextMenuInfo;
 
-	public ExtendedRecyclerView(Context context) {
+    public ExtendedRecyclerView(Context context) {
         this(context, null);
-	}
+    }
 
-	public ExtendedRecyclerView(Context context, AttributeSet attrs) {
+    public ExtendedRecyclerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
-	}
+    }
 
-	public ExtendedRecyclerView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-        mMouseScrollDirectionDecider = new MouseScrollDirectionDecider(context, getScrollFactorBackport());
-	}
+    public ExtendedRecyclerView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        mMouseScrollDirectionDecider = new MouseScrollDirectionDecider(getScrollFactorBackport());
+    }
 
-	@Override
-	public boolean onGenericMotionEvent(MotionEvent event) {
-		final LayoutManager lm = getLayoutManager();
-		if (lm == null) {
-			return false;
-		}
-		if ((event.getSource() & InputDevice.SOURCE_CLASS_POINTER) != 0) {
-			if (event.getAction() == MotionEventCompat.ACTION_SCROLL) {
-				final float vScroll, hScroll;
-				if (lm.canScrollVertically()) {
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mMouseScrollDirectionDecider.attach(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        mMouseScrollDirectionDecider.detach();
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        final LayoutManager lm = getLayoutManager();
+        if (lm == null) {
+            return false;
+        }
+        if ((event.getSource() & InputDevice.SOURCE_CLASS_POINTER) != 0) {
+            if (event.getAction() == MotionEventCompat.ACTION_SCROLL) {
+                final float vScroll, hScroll;
+                if (lm.canScrollVertically()) {
                     vScroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
                     if (!mMouseScrollDirectionDecider.isVerticalAvailable()) {
                         mMouseScrollDirectionDecider.guessDirection(event);
                     }
-				} else {
-					vScroll = 0f;
-				}
-				if (lm.canScrollHorizontally()) {
+                } else {
+                    vScroll = 0f;
+                }
+                if (lm.canScrollHorizontally()) {
                     hScroll = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
                     if (!mMouseScrollDirectionDecider.isHorizontalAvailable()) {
                         mMouseScrollDirectionDecider.guessDirection(event);
                     }
-				} else {
-					hScroll = 0f;
-				}
-                if ((vScroll != 0 || hScroll != 0)) {
-					final float scrollFactor = getScrollFactorBackport();
+                } else {
+                    hScroll = 0f;
+                }
+                if (vScroll != 0 || hScroll != 0) {
+                    final float scrollFactor = getScrollFactorBackport();
                     float horizontalDirection = mMouseScrollDirectionDecider.getHorizontalDirection();
                     float verticalDirection = mMouseScrollDirectionDecider.getVerticalDirection();
                     final float hFactor = scrollFactor * (horizontalDirection != 0 ? horizontalDirection : -1);
                     final float vFactor = scrollFactor * (verticalDirection != 0 ? verticalDirection : -1);
                     scrollBy((int) (hScroll * hFactor), (int) (vScroll * vFactor));
-				}
-			}
-		}
-		return false;
-	}
+                }
+            }
+        }
+        return false;
+    }
 
     @Override
     public int computeVerticalScrollRange() {
@@ -125,22 +140,50 @@ public class ExtendedRecyclerView extends RecyclerView {
         return super.computeVerticalScrollExtent();
     }
 
-	/**
-	 * Ported from View.getVerticalScrollFactor.
-	 */
-	private float getScrollFactorBackport() {
-		if (mScrollFactor == Float.MIN_VALUE) {
-			TypedValue outValue = new TypedValue();
-			if (getContext().getTheme().resolveAttribute(
-					android.R.attr.listPreferredItemHeight, outValue, true)) {
-				mScrollFactor = outValue.getDimension(
-						getContext().getResources().getDisplayMetrics());
-			} else {
-				return 0; //listPreferredItemHeight is not defined, no generic scrolling
-			}
+    @Override
+    protected ContextMenu.ContextMenuInfo getContextMenuInfo() {
+        return mContextMenuInfo;
+    }
 
-		}
-		return mScrollFactor;
-	}
+    @Override
+    public boolean showContextMenuForChild(View originalView) {
+        if (originalView.getParent() != this) {
+            return false;
+        }
+        final int position = getChildLayoutPosition(originalView);
+        if (position == RecyclerView.NO_POSITION) return false;
+        mContextMenuInfo = new ContextMenuInfo(position);
+        return super.showContextMenuForChild(originalView);
+    }
+
+    /**
+     * Ported from View.getVerticalScrollFactor.
+     */
+    private float getScrollFactorBackport() {
+        if (mScrollFactor == Float.MIN_VALUE) {
+            TypedValue outValue = new TypedValue();
+            if (getContext().getTheme().resolveAttribute(
+                    android.R.attr.listPreferredItemHeight, outValue, true)) {
+                mScrollFactor = outValue.getDimension(
+                        getContext().getResources().getDisplayMetrics());
+            } else {
+                return 0; //listPreferredItemHeight is not defined, no generic scrolling
+            }
+
+        }
+        return mScrollFactor;
+    }
+
+    public static class ContextMenuInfo implements ContextMenu.ContextMenuInfo {
+        private final int position;
+
+        public ContextMenuInfo(int position) {
+            this.position = position;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+    }
 
 }

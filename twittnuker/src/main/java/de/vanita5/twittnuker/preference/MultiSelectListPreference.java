@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,84 +22,112 @@
 
 package de.vanita5.twittnuker.preference;
 
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.SharedPreferences;
-import android.preference.DialogPreference;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.preference.DialogPreference;
+import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.AttributeSet;
 
-abstract class MultiSelectListPreference extends DialogPreference implements OnMultiChoiceClickListener,
-		OnClickListener {
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 
-	private final boolean[] mValues, mDefaultValues;
-	private SharedPreferences mPreferences;
-	private final String[] mNames, mKeys;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 
-	protected MultiSelectListPreference(final Context context) {
-		this(context, null);
-	}
+abstract class MultiSelectListPreference extends DialogPreference implements IDialogPreference {
 
-	protected MultiSelectListPreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceStyle);
-	}
+    protected MultiSelectListPreference(final Context context) {
+        this(context, null);
+    }
 
-	protected MultiSelectListPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-		mNames = getNames();
-		mKeys = getKeys();
-		mDefaultValues = getDefaults();
-		final int length = mNames.length;
-		if (length != mKeys.length || length != mDefaultValues.length) throw new IllegalArgumentException();
-		mValues = new boolean[length];
+    protected MultiSelectListPreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.dialogPreferenceStyle);
+    }
 
-	}
+    protected MultiSelectListPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
-	public void onClick(final DialogInterface dialog, final int which) {
-		if (mPreferences == null) return;
-		switch (which) {
-			case DialogInterface.BUTTON_POSITIVE:
-				final SharedPreferences.Editor editor = mPreferences.edit();
-				final int length = mKeys.length;
-				for (int i = 0; i < length; i++) {
-					editor.putBoolean(mKeys[i], mValues[i]);
-				}
-				editor.apply();
-				break;
-		}
 
-	}
+    @Override
+    public void displayDialog(PreferenceFragmentCompat fragment) {
+        final MultiSelectListDialogFragment df = MultiSelectListDialogFragment.newInstance(getKey());
+        df.setTargetFragment(fragment, 0);
+        df.show(fragment.getChildFragmentManager(), getKey());
+    }
 
-	@Override
-	public void onClick(final DialogInterface dialog, final int which, final boolean isChecked) {
-		mValues[which] = isChecked;
-	}
+    protected abstract boolean[] getDefaults();
 
-	@Override
-	public void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
-		super.onPrepareDialogBuilder(builder);
-		mPreferences = getDefaultSharedPreferences();
-		if (mPreferences == null) return;
-		final int length = mKeys.length;
-		for (int i = 0; i < length; i++) {
-			mValues[i] = mPreferences.getBoolean(mKeys[i], mDefaultValues[i]);
-		}
-		builder.setPositiveButton(android.R.string.ok, this);
-		builder.setNegativeButton(android.R.string.cancel, null);
-		builder.setMultiChoiceItems(mNames, mValues, this);
-	}
+    @NonNull
+    protected SharedPreferences getDefaultSharedPreferences() {
+        return getSharedPreferences();
+    }
 
-	protected abstract boolean[] getDefaults();
+    protected abstract String[] getKeys();
 
-	protected SharedPreferences getDefaultSharedPreferences() {
-		return getSharedPreferences();
-	}
+    protected abstract String[] getNames();
 
-	protected abstract String[] getKeys();
+    public final static class MultiSelectListDialogFragment extends PreferenceDialogFragmentCompat implements
+            OnMultiChoiceClickListener, OnClickListener {
 
-	protected abstract String[] getNames();
+        private boolean[] mValues;
+        private boolean[] mDefaultValues;
+        private SharedPreferences mPreferences;
+        private String[] mNames, mKeys;
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final MultiSelectListPreference preference = (MultiSelectListPreference) getPreference();
+            mNames = preference.getNames();
+            mKeys = preference.getKeys();
+            mDefaultValues = preference.getDefaults();
+
+            final int length = mKeys.length;
+            if (length != mNames.length || length != mDefaultValues.length)
+            throw new IllegalArgumentException();
+        mValues = new boolean[length];
+            mPreferences = preference.getDefaultSharedPreferences();
+            final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getContext());
+            for (int i = 0; i < length; i++) {
+                mValues[i] = mPreferences.getBoolean(mKeys[i], mDefaultValues[i]);
+            }
+            builder.setTitle(preference.getDialogTitle());
+            builder.setPositiveButton(android.R.string.ok, this);
+            builder.setNegativeButton(android.R.string.cancel, null);
+            builder.setMultiChoiceItems(mNames, mValues, this);
+            return builder.create();
+        }
+
+        @Override
+        public void onDialogClosed(boolean positive) {
+            if (mPreferences == null || !positive) return;
+                final SharedPreferences.Editor editor = mPreferences.edit();
+                final int length = mKeys.length;
+                for (int i = 0; i < length; i++) {
+                    editor.putBoolean(mKeys[i], mValues[i]);
+                }
+                editor.apply();
+        }
+
+        @Override
+        public void onClick(final DialogInterface dialog, final int which, final boolean isChecked) {
+            mValues[which] = isChecked;
+        }
+
+        public static MultiSelectListDialogFragment newInstance(String key) {
+            final MultiSelectListDialogFragment df = new MultiSelectListDialogFragment();
+            final Bundle args = new Bundle();
+            args.putString(PreferenceDialogFragmentCompat.ARG_KEY, key);
+            df.setArguments(args);
+            return df;
+        }
+    }
 
 }

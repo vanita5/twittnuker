@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +25,6 @@ package de.vanita5.twittnuker.util;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Response;
-
 import org.attoparser.AttoParseException;
 import org.attoparser.IAttoHandler;
 import org.attoparser.IAttoParser;
@@ -37,37 +32,41 @@ import org.attoparser.markup.MarkupAttoParser;
 import org.attoparser.markup.html.AbstractStandardNonValidatingHtmlAttoHandler;
 import org.attoparser.markup.html.HtmlParsingConfiguration;
 import org.attoparser.markup.html.elements.IHtmlElement;
-import org.mariotaku.restfu.Pair;
 import org.mariotaku.restfu.RestAPIFactory;
 import org.mariotaku.restfu.RestClient;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.http.Endpoint;
-import org.mariotaku.restfu.http.RestHttpRequest;
-import org.mariotaku.restfu.http.RestHttpResponse;
-import org.mariotaku.restfu.http.mime.BaseTypedData;
-import org.mariotaku.restfu.http.mime.FormTypedBody;
-import org.mariotaku.restfu.okhttp.OkHttpRestClient;
+import org.mariotaku.restfu.http.HttpRequest;
+import org.mariotaku.restfu.http.HttpResponse;
+import org.mariotaku.restfu.http.MultiValueMap;
+import org.mariotaku.restfu.http.RestHttpClient;
+import org.mariotaku.restfu.http.mime.FormBody;
+import org.mariotaku.restfu.http.mime.SimpleBody;
+import org.mariotaku.restfu.okhttp3.OkHttpRestClient;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
-import de.vanita5.twittnuker.model.RequestType;
+import de.vanita5.twittnuker.util.net.SimpleCookieJar;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.net.CookieManager;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 public class OAuthPasswordAuthenticator implements Constants {
 
     private static final IAttoParser PARSER = new MarkupAttoParser();
 
     private final TwitterOAuth oauth;
-    private final OkHttpRestClient client;
+    private final RestHttpClient client;
     private final Endpoint endpoint;
     private final LoginVerificationCallback loginVerificationCallback;
     private final String userAgent;
@@ -77,42 +76,15 @@ public class OAuthPasswordAuthenticator implements Constants {
                                       final String userAgent) {
         final RestClient restClient = RestAPIFactory.getRestClient(oauth);
         this.oauth = oauth;
-        this.client = (OkHttpRestClient) restClient.getRestClient();
-        final OkHttpClient okhttp = client.getClient();
-        okhttp.setCookieHandler(new CookieManager());
-        okhttp.networkInterceptors().add(new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                final Response response = chain.proceed(chain.request());
-                if (!response.isRedirect()) {
-                    return response;
-                }
-                final String location = response.header("Location");
-                final Response.Builder builder = response.newBuilder();
-                if (!TextUtils.isEmpty(location) && !endpoint.checkEndpoint(location)) {
-                    final HttpUrl originalLocation = HttpUrl.get(URI.create("https://api.twitter.com/").resolve(location));
-                    final HttpUrl.Builder locationBuilder = HttpUrl.parse(endpoint.getUrl()).newBuilder();
-                    for (String pathSegments : originalLocation.pathSegments()) {
-                        locationBuilder.addPathSegment(pathSegments);
-                    }
-                    for (int i = 0, j = originalLocation.querySize(); i < j; i++) {
-                        final String name = originalLocation.queryParameterName(i);
-                        final String value = originalLocation.queryParameterValue(i);
-                        locationBuilder.addQueryParameter(name, value);
-                    }
-                    final String encodedFragment = originalLocation.encodedFragment();
-                    if (encodedFragment != null) {
-                        locationBuilder.encodedFragment(encodedFragment);
-                    }
-                    final HttpUrl newLocation = locationBuilder.build();
-                    builder.header("Location", newLocation.toString());
-                }
-                return builder.build();
-            }
-        });
         this.endpoint = restClient.getEndpoint();
         this.loginVerificationCallback = loginVerificationCallback;
         this.userAgent = userAgent;
+
+        final OkHttpClient oldClient = ((OkHttpRestClient) restClient.getRestClient()).getClient();
+        final OkHttpClient.Builder builder = oldClient.newBuilder();
+        builder.cookieJar(new SimpleCookieJar());
+        builder.addNetworkInterceptor(new EndpointInterceptor(endpoint));
+        this.client = new OkHttpRestClient(builder.build());
     }
 
     public OAuthToken getOAuthAccessToken(final String username, final String password) throws AuthenticationException {
@@ -130,12 +102,12 @@ public class OAuthPasswordAuthenticator implements Constants {
             if (!TextUtils.isEmpty(authorizeResponseData.oauthPin)) {
                 // Here we got OAuth PIN, just get access token directly
                 return oauth.getAccessToken(requestToken, authorizeResponseData.oauthPin);
-            } else if (authorizeResponseData.verification == null) {
+            } else if (authorizeResponseData.challenge == null) {
                 // No OAuth pin, or verification challenge, so treat as wrong password
                 throw new WrongUserPassException();
             }
             // Go to password verification flow
-            final String challengeType = authorizeResponseData.verification.challengeType;
+            final String challengeType = authorizeResponseData.challenge.challengeType;
             final String loginVerification = loginVerificationCallback.getLoginVerification(challengeType);
             final AuthorizeRequestData verificationData = getVerificationData(authorizeResponseData,
                     loginVerification);
@@ -152,32 +124,31 @@ public class OAuthPasswordAuthenticator implements Constants {
 
     private AuthorizeRequestData getVerificationData(AuthorizeResponseData authorizeResponseData,
                                                      @Nullable String challengeResponse) throws IOException, LoginVerificationException {
-        RestHttpResponse response = null;
+        HttpResponse response = null;
         try {
             final AuthorizeRequestData data = new AuthorizeRequestData();
-            final List<Pair<String, String>> params = new ArrayList<>();
-            final AuthorizeResponseData.Verification verification = authorizeResponseData.verification;
-            params.add(Pair.create("authenticity_token", verification.authenticityToken));
-            params.add(Pair.create("user_id", verification.userId));
-            params.add(Pair.create("challenge_id", verification.challengeId));
-            params.add(Pair.create("challenge_type", verification.challengeType));
-            params.add(Pair.create("platform", verification.platform));
-            params.add(Pair.create("redirect_after_login", verification.redirectAfterLogin));
-            final ArrayList<Pair<String, String>> requestHeaders = new ArrayList<>();
-            requestHeaders.add(Pair.create("User-Agent", userAgent));
+            final MultiValueMap<String> params = new MultiValueMap<>();
+            final AuthorizeResponseData.Verification verification = authorizeResponseData.challenge;
+            params.add("authenticity_token", verification.authenticityToken);
+            params.add("user_id", verification.userId);
+            params.add("challenge_id", verification.challengeId);
+            params.add("challenge_type", verification.challengeType);
+            params.add("platform", verification.platform);
+            params.add("redirect_after_login", verification.redirectAfterLogin);
+            final MultiValueMap<String> requestHeaders = new MultiValueMap<>();
+            requestHeaders.add("User-Agent", userAgent);
 
             if (!TextUtils.isEmpty(challengeResponse)) {
-                params.add(Pair.create("challenge_response", challengeResponse));
+                params.add("challenge_response", challengeResponse);
             }
-            final FormTypedBody authorizationResultBody = new FormTypedBody(params);
+            final FormBody authorizationResultBody = new FormBody(params);
 
-            final RestHttpRequest.Builder authorizeResultBuilder = new RestHttpRequest.Builder();
+            final HttpRequest.Builder authorizeResultBuilder = new HttpRequest.Builder();
             authorizeResultBuilder.method(POST.METHOD);
             authorizeResultBuilder.url(endpoint.construct("/account/login_verification"));
             authorizeResultBuilder.headers(requestHeaders);
             authorizeResultBuilder.body(authorizationResultBody);
-            authorizeResultBuilder.extra(RequestType.API);
-            response = client.execute(authorizeResultBuilder.build());
+            response = client.newCall(authorizeResultBuilder.build()).execute();
             parseAuthorizeRequestData(response, data);
             if (TextUtils.isEmpty(data.authenticityToken)) {
                 throw new LoginVerificationException();
@@ -190,7 +161,7 @@ public class OAuthPasswordAuthenticator implements Constants {
         }
     }
 
-    private void parseAuthorizeRequestData(RestHttpResponse response, final AuthorizeRequestData data) throws AttoParseException, IOException {
+    private void parseAuthorizeRequestData(HttpResponse response, final AuthorizeRequestData data) throws AttoParseException, IOException {
         final HtmlParsingConfiguration conf = new HtmlParsingConfiguration();
         final IAttoHandler handler = new AbstractStandardNonValidatingHtmlAttoHandler(conf) {
             boolean isOAuthFormOpened;
@@ -236,39 +207,38 @@ public class OAuthPasswordAuthenticator implements Constants {
                 }
             }
         };
-        PARSER.parse(BaseTypedData.reader(response.getBody()), handler);
+        PARSER.parse(SimpleBody.reader(response.getBody()), handler);
     }
 
     private AuthorizeResponseData getAuthorizeResponseData(OAuthToken requestToken,
                                                            AuthorizeRequestData authorizeRequestData,
                                                            String username, String password) throws IOException, AuthenticationException {
-        RestHttpResponse response = null;
+        HttpResponse response = null;
         try {
             final AuthorizeResponseData data = new AuthorizeResponseData();
-            final List<Pair<String, String>> params = new ArrayList<>();
-            params.add(Pair.create("oauth_token", requestToken.getOauthToken()));
-            params.add(Pair.create("authenticity_token", authorizeRequestData.authenticityToken));
-            params.add(Pair.create("redirect_after_login", authorizeRequestData.redirectAfterLogin));
+            final MultiValueMap<String> params = new MultiValueMap<>();
+            params.add("oauth_token", requestToken.getOauthToken());
+            params.add("authenticity_token", authorizeRequestData.authenticityToken);
+            params.add("redirect_after_login", authorizeRequestData.redirectAfterLogin);
             if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
-                params.add(Pair.create("session[username_or_email]", username));
-                params.add(Pair.create("session[password]", password));
+                params.add("session[username_or_email]", username);
+                params.add("session[password]", password);
             }
-            final FormTypedBody authorizationResultBody = new FormTypedBody(params);
-            final ArrayList<Pair<String, String>> requestHeaders = new ArrayList<>();
-            requestHeaders.add(Pair.create("User-Agent", userAgent));
+            final FormBody authorizationResultBody = new FormBody(params);
+            final MultiValueMap<String> requestHeaders = new MultiValueMap<>();
+            requestHeaders.add("User-Agent", userAgent);
             data.referer = authorizeRequestData.referer;
 
-            final RestHttpRequest.Builder authorizeResultBuilder = new RestHttpRequest.Builder();
+            final HttpRequest.Builder authorizeResultBuilder = new HttpRequest.Builder();
             authorizeResultBuilder.method(POST.METHOD);
             authorizeResultBuilder.url(endpoint.construct("/oauth/authorize"));
             authorizeResultBuilder.headers(requestHeaders);
             authorizeResultBuilder.body(authorizationResultBody);
-            authorizeResultBuilder.extra(RequestType.API);
-            response = client.execute(authorizeResultBuilder.build());
+            response = client.newCall(authorizeResultBuilder.build()).execute();
             final HtmlParsingConfiguration conf = new HtmlParsingConfiguration();
             final IAttoHandler handler = new AbstractStandardNonValidatingHtmlAttoHandler(conf) {
                 boolean isOAuthPinDivOpened;
-                boolean isLoginVerificationFormOpened;
+                boolean isChallengeFormOpened;
 
                 @Override
                 public void handleHtmlStandaloneElement(IHtmlElement element, boolean minimized,
@@ -286,7 +256,7 @@ public class OAuthPasswordAuthenticator implements Constants {
                             break;
                         }
                         case "form": {
-                            isLoginVerificationFormOpened = false;
+                            isChallengeFormOpened = false;
                             break;
                         }
                     }
@@ -297,51 +267,61 @@ public class OAuthPasswordAuthenticator implements Constants {
                                                   Map<String, String> attributes, int line, int col) {
                     switch (elementName) {
                         case "div": {
-                            if (attributes != null && "oauth_pin".equals(attributes.get("id"))) {
+                            if (attributes == null) break;
+                            if ("oauth_pin".equals(attributes.get("id"))) {
                                 isOAuthPinDivOpened = true;
                             }
+
                             break;
                         }
                         case "form": {
-                            if (attributes != null && "login-verification-form".equals(attributes.get("id"))) {
-                                isLoginVerificationFormOpened = true;
+                            if (attributes == null) break;
+                            final String id = attributes.get("id");
+                            if (id == null) break;
+                            switch (id) {
+                                case "login-verification-form":
+                                case "login-challenge-form": {
+                                    isChallengeFormOpened = true;
+                                    break;
+                                }
                             }
                             break;
                         }
                         case "input":
-                            if (isLoginVerificationFormOpened && attributes != null) {
+                            if (attributes == null) break;
+                            if (isChallengeFormOpened) {
                                 final String name = attributes.get("name");
                                 if (TextUtils.isEmpty(name)) break;
                                 final String value = attributes.get("value");
                                 switch (name) {
                                     case "authenticity_token": {
                                         ensureVerification();
-                                        data.verification.authenticityToken = value;
+                                        data.challenge.authenticityToken = value;
                                         break;
                                     }
                                     case "challenge_id": {
                                         ensureVerification();
-                                        data.verification.challengeId = value;
+                                        data.challenge.challengeId = value;
                                         break;
                                     }
                                     case "challenge_type": {
                                         ensureVerification();
-                                        data.verification.challengeType = value;
+                                        data.challenge.challengeType = value;
                                         break;
                                     }
                                     case "platform": {
                                         ensureVerification();
-                                        data.verification.platform = value;
+                                        data.challenge.platform = value;
                                         break;
                                     }
                                     case "user_id": {
                                         ensureVerification();
-                                        data.verification.userId = value;
+                                        data.challenge.userId = value;
                                         break;
                                     }
                                     case "redirect_after_login": {
                                         ensureVerification();
-                                        data.verification.redirectAfterLogin = value;
+                                        data.challenge.redirectAfterLogin = value;
                                         break;
                                     }
                                 }
@@ -351,8 +331,8 @@ public class OAuthPasswordAuthenticator implements Constants {
                 }
 
                 private void ensureVerification() {
-                    if (data.verification == null) {
-                        data.verification = new AuthorizeResponseData.Verification();
+                    if (data.challenge == null) {
+                        data.challenge = new AuthorizeResponseData.Verification();
                     }
                 }
 
@@ -366,7 +346,7 @@ public class OAuthPasswordAuthenticator implements Constants {
                     }
                 }
             };
-            PARSER.parse(BaseTypedData.reader(response.getBody()), handler);
+            PARSER.parse(SimpleBody.reader(response.getBody()), handler);
             return data;
         } catch (AttoParseException e) {
             throw new AuthenticationException("Malformed HTML", e);
@@ -377,21 +357,20 @@ public class OAuthPasswordAuthenticator implements Constants {
 
     private AuthorizeRequestData getAuthorizeRequestData(OAuthToken requestToken) throws IOException,
             AuthenticationException {
-        RestHttpResponse response = null;
+        HttpResponse response = null;
         try {
             final AuthorizeRequestData data = new AuthorizeRequestData();
-            final RestHttpRequest.Builder authorizePageBuilder = new RestHttpRequest.Builder();
+            final HttpRequest.Builder authorizePageBuilder = new HttpRequest.Builder();
             authorizePageBuilder.method(GET.METHOD);
-            authorizePageBuilder.url(endpoint.construct("/oauth/authorize",
-                    Pair.create("oauth_token", requestToken.getOauthToken())));
+            authorizePageBuilder.url(endpoint.construct("/oauth/authorize", new String[]{"oauth_token",
+                    requestToken.getOauthToken()}));
             data.referer = Endpoint.constructUrl("https://api.twitter.com/oauth/authorize",
-                    Pair.create("oauth_token", requestToken.getOauthToken()));
-            final ArrayList<Pair<String, String>> requestHeaders = new ArrayList<>();
-            requestHeaders.add(Pair.create("User-Agent", userAgent));
+                    new String[]{"oauth_token", requestToken.getOauthToken()});
+            final MultiValueMap<String> requestHeaders = new MultiValueMap<>();
+            requestHeaders.add("User-Agent", userAgent);
             authorizePageBuilder.headers(requestHeaders);
-            authorizePageBuilder.extra(RequestType.API);
-            final RestHttpRequest authorizePageRequest = authorizePageBuilder.build();
-            response = client.execute(authorizePageRequest);
+            final HttpRequest authorizePageRequest = authorizePageBuilder.build();
+            response = client.newCall(authorizePageRequest).execute();
             parseAuthorizeRequestData(response, data);
             if (TextUtils.isEmpty(data.authenticityToken)) {
                 throw new AuthenticationException();
@@ -455,18 +434,18 @@ public class OAuthPasswordAuthenticator implements Constants {
 
     public static class AuthenticationException extends Exception {
 
-        AuthenticationException() {
+        public AuthenticationException() {
         }
 
-        AuthenticationException(final Exception cause) {
+        public AuthenticationException(final Exception cause) {
             super(cause);
         }
 
-        AuthenticationException(String detailMessage, Throwable throwable) {
+        public AuthenticationException(String detailMessage, Throwable throwable) {
             super(detailMessage, throwable);
         }
 
-        AuthenticationException(final String message) {
+        public AuthenticationException(final String message) {
             super(message);
         }
     }
@@ -519,7 +498,7 @@ public class OAuthPasswordAuthenticator implements Constants {
         String referer;
 
         public String oauthPin;
-        public Verification verification;
+        public Verification challenge;
 
         static class Verification {
 
@@ -542,5 +521,42 @@ public class OAuthPasswordAuthenticator implements Constants {
     public static class OAuthPinData {
 
         public String oauthPin;
+    }
+
+    private static class EndpointInterceptor implements Interceptor {
+        private final Endpoint endpoint;
+
+        public EndpointInterceptor(Endpoint endpoint) {
+            this.endpoint = endpoint;
+        }
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            final Response response = chain.proceed(chain.request());
+            if (!response.isRedirect()) {
+                return response;
+            }
+            final String location = response.header("Location");
+            final Response.Builder builder = response.newBuilder();
+            if (!TextUtils.isEmpty(location) && !endpoint.checkEndpoint(location)) {
+                final HttpUrl originalLocation = HttpUrl.get(URI.create("https://api.twitter.com/").resolve(location));
+                final HttpUrl.Builder locationBuilder = HttpUrl.parse(endpoint.getUrl()).newBuilder();
+                for (String pathSegments : originalLocation.pathSegments()) {
+                    locationBuilder.addPathSegment(pathSegments);
+                }
+                for (int i = 0, j = originalLocation.querySize(); i < j; i++) {
+                    final String name = originalLocation.queryParameterName(i);
+                    final String value = originalLocation.queryParameterValue(i);
+                    locationBuilder.addQueryParameter(name, value);
+                }
+                final String encodedFragment = originalLocation.encodedFragment();
+                if (encodedFragment != null) {
+                    locationBuilder.encodedFragment(encodedFragment);
+                }
+                final HttpUrl newLocation = locationBuilder.build();
+                builder.header("Location", newLocation.toString());
+            }
+            return builder.build();
+        }
     }
 }

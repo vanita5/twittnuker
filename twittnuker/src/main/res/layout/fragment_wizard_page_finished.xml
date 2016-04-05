@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -24,64 +24,64 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center"
-		android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:gravity="center_horizontal"
-			android:orientation="vertical"
-			android:paddingLeft="@dimen/element_spacing_large"
-			android:paddingRight="@dimen/element_spacing_large">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/element_spacing_large"
+            android:paddingRight="@dimen/element_spacing_large">
 
-			<ImageView
-				android:layout_width="@dimen/icon_size_wizard_large"
-				android:layout_height="@dimen/icon_size_wizard_large"
-				android:contentDescription="@string/app_name"
-				android:padding="@dimen/element_spacing_large"
-				android:scaleType="fitCenter"
-				android:src="@drawable/ic_launcher_web"/>
+            <ImageView
+                android:layout_width="@dimen/icon_size_wizard_large"
+                android:layout_height="@dimen/icon_size_wizard_large"
+                android:contentDescription="@string/app_name"
+                android:padding="@dimen/element_spacing_large"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_launcher_web"/>
 
-			<TextView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:gravity="center"
-				android:lineSpacingMultiplier="1.25"
-				android:padding="@dimen/element_spacing_normal"
-				android:text="@string/wizard_page_finished_text"
-				android:textAppearance="?android:attr/textAppearanceMedium"
-				android:textSize="@dimen/text_size_wizard_text"
-				android:textStyle="normal"/>
-		</LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.25"
+                android:padding="@dimen/element_spacing_normal"
+                android:text="@string/wizard_page_finished_text"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/text_size_wizard_text"
+                android:textStyle="normal"/>
+        </LinearLayout>
 
-		<FrameLayout
-			android:id="@+id/exit_wizard"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+        <FrameLayout
+            android:id="@+id/exit_wizard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="?selectableItemBackground"
-			android:clickable="true"
-			android:padding="@dimen/element_spacing_large">
+            android:clickable="true"
+            android:padding="@dimen/element_spacing_large">
 
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center"
-				android:fontFamily="sans-serif-condensed"
-				android:singleLine="true"
-				android:text="@android:string/ok"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:textColor="?android:colorActivatedHighlight"
-				android:textSize="@dimen/text_size_wizard_nav_item"
+            <de.vanita5.twittnuker.view.WizardHighlightTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-condensed"
+                android:singleLine="true"
+                android:tag="text_color|accent_color"
+                android:text="@android:string/ok"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="@dimen/text_size_wizard_nav_item"
                 android:textStyle="bold"
                 tools:ignore="UnusedAttribute"/>
-		</FrameLayout>
-	</LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
 
 </ScrollView>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Twittnuker - Twitter client for Android
+  ~
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~
+  ~ This program incorporates a modified version of Twidere.
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!--suppress AndroidElementNotAllowed -->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/about">
+
+    <PreferenceCategory
+        android:key="cat_about"
+        android:title="@string/about">
+        <de.vanita5.twittnuker.preference.AppVersionPreference />
+
+        <Preference
+            android:summary="@string/project_name"
+            android:title="@string/project_account">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="twittnuker://user?user_key=2238101485@twitter.com&amp;finish_only=true" />
+        </Preference>
+        <Preference
+            android:summary="@string/developer_name"
+            android:title="@string/developed_by">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="twittnuker://user?user_key=335920521@twitter.com&amp;finish_only=true" />
+        </Preference>
+        <Preference
+            android:summary="@string/twidere_project_account"
+            android:title="@string/twidere_developed_by">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="twittnuker://user?user_key=583328497@twitter.com&amp;finish_only=true" />
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="cat_donate"
+        android:title="@string/donation">
+        <Preference
+            android:summary="@string/donation_summary"
+            android:title="@string/donation">
+            <intent android:action="de.vanita5.twittnuker.activity.DonationsActivity"/>
+        </Preference>
+    </PreferenceCategory>
+    <!--<PreferenceCategory-->
+        <!--android:key="cat_donate"-->
+        <!--android:title="@string/donate">-->
+        <!--<Preference-->
+            <!--android:summary="@string/donate_summary"-->
+            <!--android:title="@string/donate_twidere_via_paypal">-->
+            <!--<intent-->
+                <!--android:action="android.intent.action.VIEW"-->
+                <!--android:data="https://github.com/TwidereProject/Twidere-Android#donation" />-->
+        <!--</Preference>-->
+        <!--<Preference-->
+            <!--android:summary="@string/contributors_list_summary"-->
+            <!--android:title="@string/donators">-->
+            <!--<intent-->
+                <!--android:action="android.intent.action.VIEW"-->
+                <!--android:data="twidere://user_list_members?list_id=86301024&amp;user_key=583328497@twitter.com&amp;finish_only=true" />-->
+        <!--</Preference>-->
+    <!--</PreferenceCategory>-->
+    <!--Übersetzen / Auskommentiert-->
+    <!--<PreferenceCategory-->
+        <!--android:key="cat_translate"-->
+        <!--android:title="@string/translate">-->
+        <!--<Preference android:title="@string/translate">-->
+            <!--<intent-->
+                <!--android:action="android.intent.action.VIEW"-->
+                <!--android:data="http://crowdin.net/project/twidere" />-->
+        <!--</Preference>-->
+        <!--<Preference-->
+            <!--android:summary="@string/contributors_list_summary"-->
+            <!--android:title="@string/translators">-->
+            <!--<intent-->
+                <!--android:action="android.intent.action.VIEW"-->
+                <!--android:data="twidere://user_list_members?list_id=99024901&amp;user_key=583328497@twitter.com&amp;finish_only=true" />-->
+        <!--</Preference>-->
+    <!--</PreferenceCategory>-->
+    <PreferenceCategory android:title="@string/special_thanks_to">
+        <Preference
+            android:summary="for the Twittnuker Launcher icon"
+            android:title="trvmmergemyt">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="twittnuker://user?user_key=1036836883@twitter.com&amp;finish_only=true"/>
+        </Preference>
+        <Preference
+            android:summary="for some logos"
+            android:title="kinaudiz">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="twittnuker://user?user_key=2754101507@twitter.com&amp;finish_only=true" />
+        </Preference>
+        <Preference
+            android:summary="for the awesome Twittnuker website"
+            android:title="pixeldesu">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="twittnuker://user?user_key=2823141749@twitter.com&amp;finish_only=true" />
+        </Preference>
+        <Preference
+            android:summary="for the screenshots provided"
+            android:title="nilsding and therealkings86">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="twittnuker://user_list_members?list_id=112765631&amp;user_key=2493385122@twitter.com&amp;finish_only=true" />
+        </Preference>
+        <Preference
+            android:summary="for the Japanese translation"
+            android:title="Noumi Ryoko (AndroPlus)">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="twittnuker://user?user_key=210818534@twitter.com&amp;finish_only=true" />
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/contact">
+        <Preference
+            android:summary="@string/mail_summary"
+            android:title="@string/mail">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="mailto:mail@twittnuker.org" />
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

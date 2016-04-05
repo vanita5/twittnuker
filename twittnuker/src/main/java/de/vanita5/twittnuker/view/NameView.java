@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v4.text.BidiFormatter;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -37,11 +38,13 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.view.themed.ThemedTextView;
+import de.vanita5.twittnuker.text.util.SafeEditableFactory;
+import de.vanita5.twittnuker.text.util.SafeSpannableFactory;
 
-public class NameView extends ThemedTextView {
+public class NameView extends AppCompatTextView {
 
     private boolean mNameFirst;
+    private boolean mTwoLine;
 
     private String mName, mScreenName;
 
@@ -59,15 +62,22 @@ public class NameView extends ThemedTextView {
 
     public NameView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setSingleLine(true);
+        setSpannableFactory(new SafeSpannableFactory());
+        setEditableFactory(new SafeEditableFactory());
         setEllipsize(TextUtils.TruncateAt.END);
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.NameView, defStyleAttr, 0);
         setPrimaryTextColor(a.getColor(R.styleable.NameView_nv_primaryTextColor, 0));
         setSecondaryTextColor(a.getColor(R.styleable.NameView_nv_secondaryTextColor, 0));
+        setTwoLine(a.getBoolean(R.styleable.NameView_nv_twoLine, false));
         mPrimaryTextStyle = new StyleSpan(a.getInt(R.styleable.NameView_nv_primaryTextStyle, 0));
         mSecondaryTextStyle = new StyleSpan(a.getInt(R.styleable.NameView_nv_secondaryTextStyle, 0));
         a.recycle();
         setNameFirst(true);
+        if (isInEditMode()) {
+            setName("Name");
+            setScreenName("@screenname");
+            updateText();
+        }
     }
 
     public void setPrimaryTextColor(final int color) {
@@ -95,13 +105,12 @@ public class NameView extends ThemedTextView {
     }
 
     public void updateText(@Nullable BidiFormatter formatter) {
-        if (isInEditMode()) return;
         final SpannableStringBuilder sb = new SpannableStringBuilder();
         final String primaryText = mNameFirst ? mName : mScreenName;
         final String secondaryText = mNameFirst ? mScreenName : mName;
         if (primaryText != null) {
             int start = sb.length();
-            if (formatter != null) {
+            if (formatter != null && !isInEditMode()) {
                 sb.append(formatter.unicodeWrap(primaryText));
             } else {
                 sb.append(primaryText);
@@ -111,10 +120,10 @@ public class NameView extends ThemedTextView {
             sb.setSpan(mPrimaryTextStyle, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             sb.setSpan(mPrimaryTextSize, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        sb.append(" ");
+        sb.append(mTwoLine ? '\n' : ' ');
         if (secondaryText != null) {
             int start = sb.length();
-            if (formatter != null) {
+            if (formatter != null && !isInEditMode()) {
                 sb.append(formatter.unicodeWrap(secondaryText));
             } else {
                 sb.append(secondaryText);
@@ -144,6 +153,16 @@ public class NameView extends ThemedTextView {
 
     public void setSecondaryTextSize(final float textSize) {
         mSecondaryTextSize = new AbsoluteSizeSpan((int) calculateTextSize(TypedValue.COMPLEX_UNIT_SP, textSize));
+    }
+
+    public void setTwoLine(boolean twoLine) {
+        mTwoLine = twoLine;
+        if (twoLine) {
+            setSingleLine(false);
+            setMaxLines(2);
+        } else {
+            setSingleLine(true);
+        }
     }
 
 }

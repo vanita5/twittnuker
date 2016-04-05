@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,24 @@
 
 package de.vanita5.twittnuker.adapter.iface;
 
-import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.support.annotation.Nullable;
+
+import de.vanita5.twittnuker.view.holder.GapViewHolder;
 
 public interface IGapSupportedAdapter {
 
     int ITEM_VIEW_TYPE_GAP = 1;
 
-	boolean isGapItem(int position);
+    boolean isGapItem(int position);
 
-    void onGapClick(ViewHolder holder, int position);
+    @Nullable
+    GapClickListener getGapClickListener();
+
+    interface GapClickListener {
+
+        void onGapClick(GapViewHolder holder, int position);
+
+    }
+
 
 }

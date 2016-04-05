@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,21 +25,23 @@ package de.vanita5.twittnuker.util.net;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import de.vanita5.twittnuker.util.Utils;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
-
-import de.vanita5.twittnuker.util.Utils;
 
 public class SystemHosts {
 
     private static final String HOSTS_PATH = "/system/etc/hosts";
 
     @NonNull
-    public InetAddress[] resolve(String hostToResolve) throws IOException {
+    public List<InetAddress> resolve(String hostToResolve) throws IOException {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(HOSTS_PATH));
@@ -53,8 +55,8 @@ public class SystemHosts {
                     final String host = scanner.next();
                     if (host.startsWith("#")) break;
                     if (TextUtils.equals(hostToResolve, host)) {
-                        final InetAddress resolved = InetAddressUtils.getResolvedIPAddress(host, address);
-                        if (resolved != null) return new InetAddress[]{resolved};
+                        final InetAddress resolved = TwidereDns.getResolvedIPAddress(host, address);
+                        if (resolved != null) return Collections.singletonList(resolved);
                     }
                 }
             }

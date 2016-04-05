@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter;
+import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.util.ReadStateManager.OnReadStateChangeListener;
@@ -52,9 +54,10 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
     private final int mTextSize;
     private final int mProfileImageStyle;
     private final int mMediaPreviewStyle;
-    private final OnSharedPreferenceChangeListener mReadStateChangeListener;
-
     private final boolean mDisplayProfileImage;
+    private final boolean mShowAbsoluteTime;
+
+    private final OnSharedPreferenceChangeListener mReadStateChangeListener;
     private boolean mShowAccountsColor;
     private Cursor mCursor;
     private MessageEntriesAdapterListener mListener;
@@ -67,6 +70,7 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
         mMediaPreviewStyle = Utils.getMediaPreviewStyle(mPreferences.getString(KEY_MEDIA_PREVIEW_STYLE, null));
         mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true);
         mTextSize = mPreferences.getInt(KEY_TEXT_SIZE, context.getResources().getInteger(R.integer.default_text_size));
+        mShowAbsoluteTime = mPreferences.getBoolean(KEY_SHOW_ABSOLUTE_TIME, false);
         mReadStateChangeListener = new OnSharedPreferenceChangeListener() {
 
             @Override
@@ -84,6 +88,11 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
     @Override
     public float getTextSize() {
         return mTextSize;
+    }
+
+    @Override
+    public boolean isShowAbsoluteTime() {
+        return mShowAbsoluteTime;
     }
 
     @Override
@@ -106,7 +115,7 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 //        switch (view.getId()) {
 //            case R.id.profile_image: {
 //                if (mContext instanceof Activity) {
-//                    final long account_id = getAccountId(position);
+//                    final long account_id = getAccountKey(position);
 //                    final long user_id = getConversationId(position);
 //                    final String screen_name = getScreenName(position);
 //                    openUserProfile(mContext, account_id, user_id, screen_name, null);
@@ -145,6 +154,9 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     @Override
     public int getItemViewType(int position) {
+        if ((getLoadMoreIndicatorPosition() & IndicatorPosition.START) != 0 && position == 0) {
+            return ITEM_VIEW_TYPE_LOAD_INDICATOR;
+        }
         if (position == getMessagesCount()) {
             return ITEM_VIEW_TYPE_LOAD_INDICATOR;
         }
@@ -153,7 +165,15 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     @Override
     public final int getItemCount() {
-        return getMessagesCount() + (isLoadMoreIndicatorVisible() ? 1 : 0);
+        final int position = getLoadMoreIndicatorPosition();
+        int count = getMessagesCount();
+        if ((position & IndicatorPosition.START) != 0) {
+            count++;
+        }
+        if ((position & IndicatorPosition.END) != 0) {
+            count++;
+        }
+        return count;
     }
 
     public void onMessageClick(int position) {
@@ -185,7 +205,7 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
     }
 
     public void updateReadState() {
-        mPositionPairs = mReadStateManager.getPositionPairs(TAB_TYPE_DIRECT_MESSAGES);
+        mPositionPairs = mReadStateManager.getPositionPairs(CustomTabType.DIRECT_MESSAGES);
         notifyDataSetChanged();
     }
 
@@ -197,7 +217,7 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     private boolean isUnread(Cursor c) {
         if (mPositionPairs == null) return true;
-        final long accountId = c.getLong(ConversationEntries.IDX_ACCOUNT_ID);
+        final long accountId = c.getLong(ConversationEntries.IDX_ACCOUNT_KEY);
         final long conversationId = c.getLong(ConversationEntries.IDX_CONVERSATION_ID);
         final long messageId = c.getLong(ConversationEntries.IDX_MESSAGE_ID);
         final String key = accountId + "-" + conversationId;
@@ -225,12 +245,13 @@ public class MessageEntriesAdapter extends LoadMoreSupportAdapter<ViewHolder> im
 
     public static class DirectMessageEntry {
 
-        public final long account_id, conversation_id;
+        public final UserKey account_key;
+        public final String conversation_id;
         public final String screen_name, name;
 
         DirectMessageEntry(Cursor cursor) {
-            account_id = cursor.getLong(ConversationEntries.IDX_ACCOUNT_ID);
-            conversation_id = cursor.getLong(ConversationEntries.IDX_CONVERSATION_ID);
+            account_key = UserKey.valueOf(cursor.getString(ConversationEntries.IDX_ACCOUNT_KEY));
+            conversation_id = cursor.getString(ConversationEntries.IDX_CONVERSATION_ID);
             screen_name = cursor.getString(ConversationEntries.IDX_SCREEN_NAME);
             name = cursor.getString(ConversationEntries.IDX_NAME);
         }

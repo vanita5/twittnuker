@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
   -->
 
 <RelativeLayout
+    android:id="@+id/account_dashboard_header"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -31,7 +32,7 @@
     tools:layout_height="160dp"
     tools:layout_width="280dp">
 
-    <de.vanita5.twittnuker.view.ForegroundImageView
+    <ViewSwitcher
         android:id="@+id/account_profile_banner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -41,7 +42,7 @@
         android:focusable="false"
         android:foreground="@color/drawer_banner_foreground"
         android:scaleType="centerCrop"
-        tools:src="@drawable/nyan_stars_background"/>
+        tools:background="@drawable/nyan_stars_background"/>
 
     <FrameLayout
         android:id="@+id/profile_container"
@@ -59,7 +60,7 @@
             android:paddingRight="@dimen/element_spacing_large"
             android:paddingTop="@dimen/element_spacing_normal">
 
-            <de.vanita5.twittnuker.view.ShapedImageView
+            <de.vanita5.twittnuker.view.ProfileImageView
                 android:id="@+id/profile_image"
                 style="?profileImageStyle"
                 android:layout_width="@dimen/icon_size_profile_image_dashboard_current"
@@ -83,7 +84,9 @@
                 android:layout_toEndOf="@id/profile_image"
                 android:layout_toRightOf="@id/profile_image"
                 android:focusable="false"
-                tools:visibility="invisible" />
+                tools:listitem="@layout/adapter_item_dashboard_account"
+                tools:paddingStart="@dimen/element_spacing_large"
+                tools:visibility="visible"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -109,7 +112,7 @@
                         android:focusable="false"
                         android:singleLine="true"
                         android:textAppearance="?android:textAppearanceSmall"
-                        android:textColor="?attr/textColorDrawerNamePrimary"
+                        android:textColor="@android:color/white"
                         android:textStyle="bold"
                         tools:text="Name"/>
 
@@ -120,7 +123,7 @@
                         android:focusable="false"
                         android:singleLine="true"
                         android:textAppearance="?android:textAppearanceSmall"
-                        android:textColor="?textColorDrawerNameSecondary"
+                        android:textColor="@color/light_gray"
                         tools:text="\@username"/>
 
                 </LinearLayout>
@@ -128,15 +131,17 @@
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/element_size_normal"
-                    android:focusable="false">
+                    android:focusable="false"
+                    android:foregroundGravity="center"
+                    tools:foreground="@drawable/ic_action_status_compose">
 
                     <android.support.v7.widget.ActionMenuView
                         android:id="@+id/account_dashboard_menu"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:tag="ate_ignore"/>
                 </FrameLayout>
-
 
             </LinearLayout>
         </RelativeLayout>

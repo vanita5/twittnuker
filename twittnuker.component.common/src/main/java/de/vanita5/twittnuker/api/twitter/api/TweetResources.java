@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,12 +24,11 @@ package de.vanita5.twittnuker.api.twitter.api;
 
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Body;
-import org.mariotaku.restfu.annotation.param.Form;
-import org.mariotaku.restfu.annotation.param.MethodExtra;
+import org.mariotaku.restfu.annotation.param.KeyValue;
+import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.annotation.param.Path;
+import org.mariotaku.restfu.annotation.param.Queries;
 import org.mariotaku.restfu.annotation.param.Query;
-import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.IDs;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
@@ -38,32 +37,35 @@ import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.StatusUpdate;
 
 @SuppressWarnings("RedundantThrows")
-@MethodExtra(name = "extra_params", values = {"include_my_retweet", "include_rts", "include_entities",
-        "include_cards", "cards_platform", "include_reply_count", "include_descendent_reply_count"})
+@Queries({@KeyValue(key = "include_my_retweet", valueKey = "include_my_retweet"),
+        @KeyValue(key = "include_rts", valueKey = "include_entities"),
+        @KeyValue(key = "include_entities", valueKey = "include_entities"),
+        @KeyValue(key = "include_cards", valueKey = "include_cards"),
+        @KeyValue(key = "cards_platform", valueKey = "cards_platform"),
+        @KeyValue(key = "include_reply_count", valueKey = "include_reply_count"),
+        @KeyValue(key = "include_descendent_reply_count", valueKey = "include_descendent_reply_count"),
+        @KeyValue(key = "include_ext_alt_text", valueKey = "include_ext_alt_text")
+})
 public interface TweetResources {
     @POST("/statuses/destroy/{id}.json")
-    @Body(BodyType.FORM)
-    Status destroyStatus(@Path("id") long statusId) throws TwitterException;
+    Status destroyStatus(@Path("id") String statusId) throws TwitterException;
 
     @GET("/statuses/retweeters/ids.json")
-    IDs getRetweetersIDs(@Query("id") long statusId, @Query Paging paging) throws TwitterException;
+    IDs getRetweetersIDs(@Query("id") String statusId, @Query Paging paging) throws TwitterException;
 
     @GET("/statuses/retweets/{id}.json")
-    ResponseList<Status> getRetweets(@Path("id") long statusId, @Query Paging paging) throws TwitterException;
+    ResponseList<Status> getRetweets(@Path("id") String statusId, @Query Paging paging) throws TwitterException;
 
     @POST("/statuses/retweet/{id}.json")
-    @Body(BodyType.FORM)
-    Status retweetStatus(@Path("id") long statusId) throws TwitterException;
+    Status retweetStatus(@Path("id") String statusId) throws TwitterException;
 
     @GET("/statuses/show.json")
-    Status showStatus(@Query("id") long id) throws TwitterException;
+    Status showStatus(@Query("id") String id) throws TwitterException;
 
     @POST("/statuses/update.json")
-    @Body(BodyType.FORM)
-    Status updateStatus(@Form StatusUpdate latestStatus) throws TwitterException;
+    Status updateStatus(@Param StatusUpdate latestStatus) throws TwitterException;
 
     @POST("/statuses/lookup.json")
-    @Body(BodyType.FORM)
-    ResponseList<Status> lookupStatuses(@Form("id") long[] ids) throws TwitterException;
+    ResponseList<Status> lookupStatuses(@Param(value = "id", arrayDelimiter = ',') String[] ids) throws TwitterException;
 
 }

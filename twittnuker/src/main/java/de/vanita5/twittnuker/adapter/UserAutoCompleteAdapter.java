@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FilterQueryProvider;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.mariotaku.sqliteqb.library.Columns;
@@ -36,12 +37,12 @@ import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.OrderBy;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.view.ProfileImageView;
 
 import javax.inject.Inject;
 
@@ -61,8 +62,7 @@ public class UserAutoCompleteAdapter extends SimpleCursorAdapter implements Cons
     private final boolean mDisplayProfileImage;
 
     private int mIdIdx, mNameIdx, mScreenNameIdx, mProfileImageIdx;
-    private long mAccountId;
-    private char mToken;
+    private UserKey mAccountKey;
 
     public UserAutoCompleteAdapter(final Context context) {
         super(context, R.layout.list_item_auto_complete, null, FROM, TO, 0);
@@ -74,13 +74,13 @@ public class UserAutoCompleteAdapter extends SimpleCursorAdapter implements Cons
     public void bindView(final View view, final Context context, final Cursor cursor) {
         final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
         final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-        final ProfileImageView icon = (ProfileImageView) view.findViewById(android.R.id.icon);
+        final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
 
         // Clear images in order to prevent images in recycled view shown.
         icon.setImageDrawable(null);
 
         text1.setText(cursor.getString(mNameIdx));
-        text2.setText('@' + cursor.getString(mScreenNameIdx));
+        text2.setText(String.format("@%s", cursor.getString(mScreenNameIdx)));
         if (mDisplayProfileImage) {
             final String profileImageUrl = cursor.getString(mProfileImageIdx);
             mProfileImageLoader.displayProfileImage(icon, profileImageUrl);
@@ -115,25 +115,26 @@ public class UserAutoCompleteAdapter extends SimpleCursorAdapter implements Cons
         final Expression usersSelection = Expression.or(
                 Expression.likeRaw(new Columns.Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
                 Expression.likeRaw(new Columns.Column(CachedUsers.NAME), "?||'%'", "^"));
+        //TODO
         final String[] selectionArgs = new String[]{queryEscaped, queryEscaped};
         final String[] order = {CachedUsers.LAST_SEEN, CachedUsers.SCORE, CachedUsers.SCREEN_NAME,
                 CachedUsers.NAME};
         final boolean[] ascending = {false, false, true, true};
         final OrderBy orderBy = new OrderBy(order, ascending);
-        final Uri uri = Uri.withAppendedPath(CachedUsers.CONTENT_URI_WITH_SCORE, String.valueOf(mAccountId));
+        final Uri uri = Uri.withAppendedPath(CachedUsers.CONTENT_URI_WITH_SCORE, String.valueOf(mAccountKey));
         return mContext.getContentResolver().query(uri, CachedUsers.COLUMNS, usersSelection.getSQL(),
                 selectionArgs, orderBy.getSQL());
     }
 
 
-    public void setAccountId(long accountId) {
-        mAccountId = accountId;
+    public void setAccountKey(UserKey accountKey) {
+        mAccountKey = accountKey;
     }
 
     @Override
     public Cursor swapCursor(final Cursor cursor) {
         if (cursor != null) {
-            mIdIdx = cursor.getColumnIndex(CachedUsers.USER_ID);
+            mIdIdx = cursor.getColumnIndex(CachedUsers.USER_KEY);
             mNameIdx = cursor.getColumnIndex(CachedUsers.NAME);
             mScreenNameIdx = cursor.getColumnIndex(CachedUsers.SCREEN_NAME);
             mProfileImageIdx = cursor.getColumnIndex(CachedUsers.PROFILE_IMAGE_URL);

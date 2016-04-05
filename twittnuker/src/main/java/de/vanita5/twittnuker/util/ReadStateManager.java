@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,9 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.annotation.NotificationType;
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
 
@@ -66,11 +69,6 @@ public class ReadStateManager implements Constants {
         return pairs;
     }
 
-
-    public long getPosition(final String key, final long keyId) {
-        return getPosition(key, String.valueOf(keyId));
-    }
-
     public long getPosition(final String key, final String keyId) {
         if (TextUtils.isEmpty(key)) return -1;
         final Set<String> set = mPreferences.getStringSet(key, null);
@@ -94,10 +92,6 @@ public class ReadStateManager implements Constants {
         mPreferences.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
-
-    public boolean setPosition(final String key, final long keyId, final long position, boolean acceptOlder) {
-        return setPosition(key, String.valueOf(keyId), position, acceptOlder);
-    }
 
     public boolean setPosition(final String key, final String keyId, final long position, boolean acceptOlder) {
         if (TextUtils.isEmpty(key)) return false;
@@ -147,20 +141,56 @@ public class ReadStateManager implements Constants {
         return true;
     }
 
-    public boolean setPosition(final String key, final long id) {
-        return setPosition(key, id, false);
+    public boolean setPosition(final String key, final long position) {
+        return setPosition(key, position, false);
     }
 
-    public boolean setPosition(final String key, final long id, boolean acceptOlder) {
-        if (TextUtils.isEmpty(key) || !acceptOlder && getPosition(key) >= id) return false;
+    public boolean setPosition(final String key, final long position, boolean acceptOlder) {
+        if (TextUtils.isEmpty(key) || !acceptOlder && getPosition(key) >= position) return false;
         final SharedPreferences.Editor editor = mPreferences.edit();
-        editor.putLong(key, id);
+        editor.putLong(key, position);
         editor.apply();
         return true;
     }
 
     public interface OnReadStateChangeListener {
         void onReadStateChanged();
+    }
+
+    @Nullable
+    @ReadPositionTag
+    public static String getReadPositionTagForNotificationType(@NotificationType String notificationType) {
+        if (notificationType == null) return null;
+        switch (notificationType) {
+            case NotificationType.HOME_TIMELINE: {
+                return ReadPositionTag.HOME_TIMELINE;
+            }
+            case NotificationType.DIRECT_MESSAGES: {
+                return ReadPositionTag.DIRECT_MESSAGES;
+            }
+            case NotificationType.INTERACTIONS: {
+                return ReadPositionTag.ACTIVITIES_ABOUT_ME;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    @ReadPositionTag
+    public static String getReadPositionTagForTabType(@CustomTabType String tabType) {
+        if (tabType == null) return null;
+        switch (tabType) {
+            case CustomTabType.HOME_TIMELINE: {
+                return ReadPositionTag.HOME_TIMELINE;
+            }
+            case CustomTabType.NOTIFICATIONS_TIMELINE: {
+                return ReadPositionTag.ACTIVITIES_ABOUT_ME;
+            }
+            case CustomTabType.DIRECT_MESSAGES: {
+                return ReadPositionTag.DIRECT_MESSAGES;
+            }
+        }
+        return null;
     }
 
 }

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,12 +36,14 @@ import com.twitter.Extractor;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.BaseAppCompatActivity;
+import de.vanita5.twittnuker.activity.BaseActivity;
 import de.vanita5.twittnuker.menu.AccountActionProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
+import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import java.util.ArrayList;
@@ -54,9 +56,6 @@ import java.util.TreeSet;
 
 import javax.inject.Inject;
 
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkDelete;
-import static de.vanita5.twittnuker.util.content.ContentResolverUtils.bulkInsert;
-
 @SuppressLint("Registered")
 public class MultiSelectEventHandler implements Constants, ActionMode.Callback, MultiSelectManager.Callback {
 
@@ -68,13 +67,13 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
 
     private ActionMode mActionMode;
 
-    private final BaseAppCompatActivity mActivity;
+    private final BaseActivity mActivity;
 
     private AccountActionProvider mAccountActionProvider;
 
     public static final int MENU_GROUP = 201;
 
-    public MultiSelectEventHandler(final BaseAppCompatActivity activity) {
+    public MultiSelectEventHandler(final BaseActivity activity) {
         GeneralComponentHelper.build(activity).inject(this);
         mActivity = activity;
     }
@@ -125,9 +124,9 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
                 final Object firstObj = selectedItems.get(0);
                 if (firstObj instanceof ParcelableStatus) {
                     final ParcelableStatus first_status = (ParcelableStatus) firstObj;
-                    bundle.putLong(EXTRA_IN_REPLY_TO_ID, first_status.id);
+                    bundle.putString(EXTRA_IN_REPLY_TO_ID, first_status.id);
                 }
-                bundle.putLong(EXTRA_ACCOUNT_ID, mMultiSelectManager.getAccountId());
+                bundle.putParcelable(EXTRA_ACCOUNT_KEY, mMultiSelectManager.getAccountKey());
                 bundle.putStringArray(EXTRA_SCREEN_NAMES, allMentions.toArray(new String[allMentions.size()]));
                 intent.putExtras(bundle);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -138,39 +137,39 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
             case R.id.mute_user: {
                 final ContentResolver resolver = mActivity.getContentResolver();
                 final ArrayList<ContentValues> valuesList = new ArrayList<>();
-                final Set<Long> userIds = new HashSet<>();
+                final Set<UserKey> userIds = new HashSet<>();
                 for (final Object object : selectedItems) {
                     if (object instanceof ParcelableStatus) {
                         final ParcelableStatus status = (ParcelableStatus) object;
-                        userIds.add(status.user_id);
+                        userIds.add(status.user_key);
                         valuesList.add(ContentValuesCreator.createFilteredUser(status));
                     } else if (object instanceof ParcelableUser) {
                         final ParcelableUser user = (ParcelableUser) object;
-                        userIds.add(user.id);
+                        userIds.add(user.key);
                         valuesList.add(ContentValuesCreator.createFilteredUser(user));
                     }
                 }
-                bulkDelete(resolver, Filters.Users.CONTENT_URI, Filters.Users.USER_ID, userIds, null, false);
-                bulkInsert(resolver, Filters.Users.CONTENT_URI, valuesList);
+                ContentResolverUtils.bulkDelete(resolver, Filters.Users.CONTENT_URI,
+                        Filters.Users.USER_KEY, userIds, null);
+                ContentResolverUtils.bulkInsert(resolver, Filters.Users.CONTENT_URI, valuesList);
                 Toast.makeText(mActivity, R.string.message_users_muted, Toast.LENGTH_SHORT).show();
                 mode.finish();
-                mActivity.sendBroadcast(new Intent(BROADCAST_MULTI_MUTESTATE_CHANGED));
                 break;
             }
             case R.id.block: {
-                final long accountId = mMultiSelectManager.getAccountId();
-                final long[] userIds = MultiSelectManager.getSelectedUserIds(selectedItems);
-                if (accountId > 0 && userIds != null) {
-                    mTwitterWrapper.createMultiBlockAsync(accountId, userIds);
+                final UserKey accountKey = mMultiSelectManager.getAccountKey();
+                final String[] userIds = UserKey.getIds(MultiSelectManager.getSelectedUserIds(selectedItems));
+                if (accountKey != null && userIds != null) {
+                    mTwitterWrapper.createMultiBlockAsync(accountKey, userIds);
                 }
                 mode.finish();
                 break;
             }
             case R.id.report_spam: {
-                final long accountId = mMultiSelectManager.getAccountId();
-                final long[] userIds = MultiSelectManager.getSelectedUserIds(selectedItems);
-                if (accountId > 0 && userIds != null) {
-                    mTwitterWrapper.reportMultiSpam(accountId, userIds);
+                final UserKey accountKey = mMultiSelectManager.getAccountKey();
+                final String[] userIds = UserKey.getIds(MultiSelectManager.getSelectedUserIds(selectedItems));
+                if (accountKey != null && userIds != null) {
+                    mTwitterWrapper.reportMultiSpam(accountKey, userIds);
                 }
                 mode.finish();
                 break;
@@ -180,9 +179,9 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
             final Intent intent = item.getIntent();
             if (intent == null || !intent.hasExtra(EXTRA_ACCOUNT)) return false;
             final ParcelableAccount account = intent.getParcelableExtra(EXTRA_ACCOUNT);
-            mMultiSelectManager.setAccountId(account.account_id);
+            mMultiSelectManager.setAccountKey(account.account_key);
             if (mAccountActionProvider != null) {
-                mAccountActionProvider.setSelectedAccountIds(account.account_id);
+                mAccountActionProvider.setSelectedAccountIds(account.account_key);
             }
             mode.invalidate();
         }
@@ -193,7 +192,7 @@ public class MultiSelectEventHandler implements Constants, ActionMode.Callback, 
     public boolean onCreateActionMode(final ActionMode mode, final Menu menu) {
         mode.getMenuInflater().inflate(R.menu.action_multi_select_contents, menu);
         mAccountActionProvider = (AccountActionProvider) menu.findItem(R.id.select_account).getActionProvider();
-        mAccountActionProvider.setSelectedAccountIds(mMultiSelectManager.getFirstSelectAccountId());
+        mAccountActionProvider.setSelectedAccountIds(mMultiSelectManager.getFirstSelectAccountKey());
         return true;
     }
 

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,16 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 @JsonObject
 public class MediaUploadResponse extends TwitterResponseObject implements TwitterResponse {
 
-    public long getId() {
+    @JsonField(name = "media_id")
+    String mediaId;
+    @JsonField(name = "size")
+    long size;
+    @JsonField(name = "image")
+    Image image;
+    @JsonField(name = "video")
+    Video video;
+
+    public String getId() {
         return mediaId;
     }
 
@@ -40,13 +49,19 @@ public class MediaUploadResponse extends TwitterResponseObject implements Twitte
         return size;
     }
 
-    @JsonField(name = "media_id")
-    long mediaId;
-    @JsonField(name = "size")
-    long size;
-    @JsonField(name = "image")
-    Image image;
+    public Video getVideo() {
+        return video;
+    }
 
+    @JsonObject
+    public static class Video {
+        @JsonField(name = "video_type")
+        String videoType;
+
+        public String getVideoType() {
+            return videoType;
+        }
+    }
 
     @JsonObject
     public static class Image {

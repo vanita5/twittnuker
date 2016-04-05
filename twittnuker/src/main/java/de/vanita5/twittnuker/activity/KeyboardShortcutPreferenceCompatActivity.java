@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutSpec;
-import de.vanita5.twittnuker.util.ThemeUtils;
 
-public class KeyboardShortcutPreferenceCompatActivity extends BaseThemedActivity implements Constants, OnClickListener {
+public class KeyboardShortcutPreferenceCompatActivity extends BaseActivity implements
+        Constants, OnClickListener {
 
     public static final String EXTRA_CONTEXT_TAG = "context_tag";
     public static final String EXTRA_KEY_ACTION = "key_action";
@@ -51,21 +51,6 @@ public class KeyboardShortcutPreferenceCompatActivity extends BaseThemedActivity
     @Override
     public String getThemeBackgroundOption() {
         return VALUE_THEME_BACKGROUND_DEFAULT;
-    }
-
-    @Override
-    public int getThemeColor() {
-        return ThemeUtils.getThemeColor(this);
-    }
-
-    @Override
-    public int getActionBarColor() {
-        return ThemeUtils.getActionBarColor(this);
-    }
-
-    @Override
-    public int getThemeResourceId() {
-        return ThemeUtils.getDialogThemeResource(this);
     }
 
     @Override
@@ -84,12 +69,12 @@ public class KeyboardShortcutPreferenceCompatActivity extends BaseThemedActivity
         switch (v.getId()) {
             case R.id.button_positive: {
                 if (mKeySpec == null) return;
-                mKeyboardShortcutHandler.register(mKeySpec, getKeyAction());
+                mKeyboardShortcutsHandler.register(mKeySpec, getKeyAction());
                 finish();
                 break;
             }
             case R.id.button_neutral: {
-                mKeyboardShortcutHandler.unregister(getKeyAction());
+                mKeyboardShortcutsHandler.unregister(getKeyAction());
                 finish();
                 break;
             }
@@ -122,10 +107,10 @@ public class KeyboardShortcutPreferenceCompatActivity extends BaseThemedActivity
         }
         mKeySpec = spec;
         mKeysLabel.setText(spec.toKeyString());
-        final String oldAction = mKeyboardShortcutHandler.findAction(spec);
+        final String oldAction = mKeyboardShortcutsHandler.findAction(spec);
         final KeyboardShortcutSpec copyOfSpec = spec.copy();
         copyOfSpec.setContextTag(null);
-        final String oldGeneralAction = mKeyboardShortcutHandler.findAction(copyOfSpec);
+        final String oldGeneralAction = mKeyboardShortcutsHandler.findAction(copyOfSpec);
         if (!TextUtils.isEmpty(oldAction) && !keyAction.equals(oldAction)) {
             // Conflicts with keys in same context tag
             mConflictLabel.setVisibility(View.VISIBLE);

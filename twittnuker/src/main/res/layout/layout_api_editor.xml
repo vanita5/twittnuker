@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -32,6 +33,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
+
+        <Button
+            android:id="@+id/load_defaults"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/load_defaults"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,7 +56,7 @@
                 android:text="@string/api_url_format"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
 
-            <de.vanita5.twittnuker.view.ActionIconView
+            <de.vanita5.twittnuker.view.IconActionView
                 android:id="@+id/api_url_format_help"
                 android:layout_width="@dimen/element_size_small"
                 android:layout_height="@dimen/element_size_small"
@@ -63,7 +71,8 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textUri"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            tools:text="https://api.twitter.com/"/>
 
         <TextView
             android:id="@+id/label_auth_type"
@@ -88,7 +97,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/oauth"/>
+                    android:text="@string/oauth"
+                    tools:checked="true"/>
 
                 <RadioButton
                     android:id="@+id/basic"

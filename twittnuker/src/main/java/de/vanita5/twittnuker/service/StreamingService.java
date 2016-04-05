@@ -1,3 +1,25 @@
+/*
+ * Twittnuker - Twitter client for Android
+ *
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.vanita5.twittnuker.service;
 
 import android.app.NotificationManager;
@@ -11,42 +33,47 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.util.LongSparseArray;
+import android.support.v4.util.SimpleArrayMap;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.mariotaku.restfu.http.Authorization;
 import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.Endpoint;
-import org.mariotaku.restfu.http.RestHttpResponse;
-import org.mariotaku.restfu.http.mime.TypedData;
+import org.mariotaku.restfu.http.HttpResponse;
+import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
+import de.vanita5.twittnuker.activity.HomeActivity;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.api.twitter.model.DeletionEvent;
 import de.vanita5.twittnuker.api.twitter.model.Warning;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterUserStream;
 import de.vanita5.twittnuker.api.twitter.UserStreamCallback;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.StatusDeletionNotice;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
+import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -60,7 +87,6 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 import java.io.ByteArrayOutputStream;
@@ -70,7 +96,7 @@ import java.util.List;
 
 public class StreamingService extends Service implements Constants {
 
-    private final LongSparseArray<UserStreamCallback> mCallbacks = new LongSparseArray<>();
+    private final SimpleArrayMap<UserKey, UserStreamCallback> mCallbacks = new SimpleArrayMap<>();
     private ContentResolver mResolver;
 
     private SharedPreferences mPreferences;
@@ -78,8 +104,8 @@ public class StreamingService extends Service implements Constants {
 
     private AsyncTwitterWrapper mTwitterWrapper;
 
-    private long[] mAccountIds;
-    private boolean isStreaming = false;
+    private UserKey[] mAccountKeys;
+    private boolean mNetworkOK;
 
     private static final Uri[] STATUSES_URIS = new Uri[]{Statuses.CONTENT_URI, Mentions.CONTENT_URI};
     private static final Uri[] MESSAGES_URIS = new Uri[]{DirectMessages.Inbox.CONTENT_URI,
@@ -91,17 +117,23 @@ public class StreamingService extends Service implements Constants {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
 
-            if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) {
-                if (BuildConfig.DEBUG) Log.d(Constants.LOGTAG, "StreamingService: Received NETWORK_STATE_CHANGED_ACTION");
-                NetworkInfo wifi = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-
-                if (wifi.isConnected() || mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) {
-                    initStreaming();
-                } else {
-                    clearTwitterInstances();
-                }
-            } else if (BROADCAST_REFRESH_STREAMING_SERVICE.equals(action)) {
-//                clearTwitterInstances();
+//            if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action)) {
+//                if (BuildConfig.DEBUG) Log.d(Constants.LOGTAG, "StreamingService: Received NETWORK_STATE_CHANGED_ACTION");
+//                NetworkInfo wifi = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+//
+//                if ((wifi.isConnected() && !mNetworkOK) || mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)) {
+//                    mNetworkOK = true;
+//                    Log.d(LOGTAG, "Wifi OK");
+//                    initStreaming();
+//                } else {
+//                    mNetworkOK = false;
+//                    Log.d(LOGTAG, "Wifi BAD");
+//                    clearTwitterInstances();
+//                }
+//            } else
+            if (BROADCAST_REFRESH_STREAMING_SERVICE.equals(action)) {
+                Log.d(LOGTAG, "Refresh Streaming Service");
+                clearTwitterInstances();
                 initStreaming();
             }
         }
@@ -116,7 +148,8 @@ public class StreamingService extends Service implements Constants {
 
         @Override
         public void onChange(final boolean selfChange, final Uri uri) {
-            if (!TwidereArrayUtils.contentMatch(mAccountIds, DataStoreUtils.getActivatedAccountIds(StreamingService.this))) {
+            if (!TwidereArrayUtils.contentMatch(mAccountKeys, DataStoreUtils.getActivatedAccountKeys(StreamingService.this))) {
+                clearTwitterInstances();
                 initStreaming();
             }
         }
@@ -140,8 +173,12 @@ public class StreamingService extends Service implements Constants {
         DependencyHolder holder = DependencyHolder.get(this);
         mTwitterWrapper = holder.getAsyncTwitterWrapper();
 
+//        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+//        NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+//        mNetworkOK = wifi.isConnected();
+
         IntentFilter filter = new IntentFilter();
-        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+//        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         filter.addAction(BROADCAST_REFRESH_STREAMING_SERVICE);
         registerReceiver(mStateReceiver, filter);
 
@@ -165,41 +202,40 @@ public class StreamingService extends Service implements Constants {
             new Thread(new ShutdownStreamTwitterRunnable(mCallbacks.valueAt(i))).start();
         }
         mCallbacks.clear();
-        isStreaming = false;
-        mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
+        updateStreamState();
     }
 
     @SuppressWarnings("deprecation")
     private void initStreaming() {
-        if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
-
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
-                || wifi.isConnected()) {
-            setTwitterInstances();
-            updateStreamState();
-        }
+        //FIXME temporary fix for fc
+        Toast.makeText(this, "Streaming is broken. Disabling...", Toast.LENGTH_SHORT).show();
+        mPreferences.edit().putBoolean(KEY_STREAMING_ENABLED, false).apply();
+//        if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
+//
+////        if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
+////                || mNetworkOK) {
+//            setTwitterInstances();
+////        }
     }
 
     private boolean setTwitterInstances() {
-        final List<ParcelableCredentials> accountsList = ParcelableAccount.getCredentialsList(this, true);
-        final long[] accountIds = new long[accountsList.size()];
-        for (int i = 0, j = accountIds.length; i < j; i++) {
-            accountIds[i] = accountsList.get(i).account_id;
+        final List<ParcelableCredentials> accountsList = DataStoreUtils.getCredentialsList(this, true);
+        final UserKey[] accountKeys = new UserKey[accountsList.size()];
+        for (int i = 0, j = accountKeys.length; i < j; i++) {
+            final ParcelableCredentials credentials = accountsList.get(i);
+            accountKeys[i] = credentials.account_key;
         }
         if (BuildConfig.DEBUG) {
             Log.d(Constants.LOGTAG, "Setting up twitter stream instances");
         }
-        mAccountIds = accountIds;
+        mAccountKeys = accountKeys;
 //        clearTwitterInstances();
         boolean result = false;
         for (int i = 0, j = accountsList.size(); i < j; i++) {
             final ParcelableCredentials account = accountsList.get(i);
 
-            if (mCallbacks.indexOfKey(account.account_id) >= 0) {
-                Log.d(Constants.LOGTAG, String.format("Stream Callback %d already exists!!!", account.account_id));
+            if (mCallbacks.indexOfKey(account.account_key) >= 0) {
+                Log.d(Constants.LOGTAG, String.format("Stream Callback %s already exists!!!", account.account_key.toString()));
                 return false;
             }
 
@@ -207,37 +243,34 @@ public class StreamingService extends Service implements Constants {
             final Authorization authorization = TwitterAPIFactory.getAuthorization(account);
             final TwitterUserStream twitter = TwitterAPIFactory.getInstance(this, endpoint, authorization, TwitterUserStream.class);
             final TwidereUserStreamCallback callback = new TwidereUserStreamCallback(this, account, mPreferences);
-            refreshBefore(new long[]{account.account_id});
-            mCallbacks.put(account.account_id, callback);
-            Log.d(Constants.LOGTAG, String.format("Stream %d starts...", account.account_id));
+            refreshBefore(new UserKey[]{account.account_key});
+            mCallbacks.put(account.account_key, callback);
+            Log.d(Constants.LOGTAG, String.format("Stream %s starts...", account.account_key));
             new Thread() {
                 @Override
                 public void run() {
                     twitter.getUserStream(callback);
-                    Log.d(Constants.LOGTAG, String.format("Stream %d disconnected", account.account_id));
-                    mCallbacks.remove(account.account_id);
-                    updateStreamState();
-                    try {
-                        Thread.sleep(60*1000*10);
-                    } catch (InterruptedException ignored) {}
-                    initStreaming();
                 }
             }.start();
             result |= true;
         }
+        updateStreamState();
         return result;
     }
 
-    private void refreshBefore(final long[] mAccountId) {
+    private void refreshBefore(final UserKey[] mAccountId) {
         if (mPreferences.getBoolean(KEY_REFRESH_BEFORE_STREAMING, true)) {
             mTwitterWrapper.refreshAll(mAccountId);
         }
     }
 
     private void updateStreamState() {
-        if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, true)) return;
+        Log.d(LOGTAG, "updateStreamState()");
+        if (!mPreferences.getBoolean(KEY_STREAMING_NOTIFICATION, true)) {
+            mNotificationManager.cancel(NOTIFICATION_ID_STREAMING);
+            return;
+        }
         if (mCallbacks.size() > 0) {
-            isStreaming = true;
             final Intent intent = new Intent(this, HomeActivity.class);
             final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
             builder.setOngoing(true)
@@ -294,11 +327,12 @@ public class StreamingService extends Service implements Constants {
         private void createNotification(final String fromUser, final String type, final String msg,
                                         ParcelableStatus status, User sourceUser) {
             if (mPreferences.getBoolean(KEY_STREAMING_NOTIFICATIONS, true)) {
-                AccountPreferences pref = new AccountPreferences(context, account.account_id);
+                AccountPreferences pref = new AccountPreferences(context,
+                        account.account_key);
                 NotificationContent notification = new NotificationContent();
-                notification.setAccountId(account.account_id);
+                notification.setAccountKey(account.account_key);
                 notification.setObjectId(status != null ? String.valueOf(status.id) : null);
-                notification.setObjectUserId(status != null ? String.valueOf(status.user_id) : null);
+                notification.setObjectUserKey(status != null ? status.user_key : null);
                 notification.setFromUser(fromUser);
                 notification.setType(type);
                 notification.setMessage(msg);
@@ -325,39 +359,43 @@ public class StreamingService extends Service implements Constants {
         }
 
         @Override
-        public void onDeletionNotice(final long directMessageId, final long userId) {
-            final String where = DirectMessages.MESSAGE_ID + " = " + directMessageId;
+        public void onDirectMessageDeleted(final DeletionEvent event) {
+            final String where = Expression.equalsArgs(DirectMessages.MESSAGE_ID).getSQL();
+            final String[] whereArgs = {event.getId()};
             for (final Uri uri : MESSAGES_URIS) {
-                resolver.delete(uri, where, null);
+                resolver.delete(uri, where, whereArgs);
             }
         }
 
         @Override
-        public void onDeletionNotice(final StatusDeletionNotice statusDeletionNotice) {
-            final long statusId = statusDeletionNotice.getStatusId();
-            resolver.delete(Statuses.CONTENT_URI, Expression.equals(Statuses.STATUS_ID, statusId).getSQL(), null);
-            resolver.delete(Activities.AboutMe.CONTENT_URI, Expression.equals(Activities.AboutMe.STATUS_ID, statusId).getSQL(), null);
+        public void onStatusDeleted(final DeletionEvent event) {
+            final String statusId = event.getId();
+            resolver.delete(Statuses.CONTENT_URI, Expression.equalsArgs(Statuses.STATUS_ID).getSQL(),
+                    new String[]{statusId});
+            resolver.delete(Activities.AboutMe.CONTENT_URI, Expression.equalsArgs(Activities.STATUS_ID).getSQL(),
+                    new String[]{statusId});
         }
 
         @Override
         public void onDirectMessage(final DirectMessage directMessage) {
-            if (directMessage == null || directMessage.getId() <= 0) return;
+            if (directMessage == null || directMessage.getId() == null) return;
+            final String where = Expression.and(Expression.equalsArgs(DirectMessages.ACCOUNT_KEY),
+                    Expression.equalsArgs(DirectMessages.MESSAGE_ID)).getSQL();
+            final String[] whereArgs = {account.account_key.toString(), directMessage.getId()};
             for (final Uri uri : MESSAGES_URIS) {
-                final String where = DirectMessages.ACCOUNT_ID + " = " + account.account_id + " AND "
-                        + DirectMessages.MESSAGE_ID + " = " + directMessage.getId();
-                resolver.delete(uri, where, null);
+                resolver.delete(uri, where, whereArgs);
             }
             final User sender = directMessage.getSender(), recipient = directMessage.getRecipient();
-            if (sender.getId() == account.account_id) {
+            if (TextUtils.equals(sender.getId(), account.account_key.getId())) {
                 final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage,
-                        account.account_id, true);
+                        account.account_key, true);
                 if (values != null) {
                     resolver.insert(DirectMessages.Outbox.CONTENT_URI, values);
                 }
             }
-            if (recipient.getId() == account.account_id) {
+            if (TextUtils.equals(recipient.getId(), account.account_key.getId())) {
                 final ContentValues values = ContentValuesCreator.createDirectMessage(directMessage,
-                        account.account_id, false);
+                        account.account_key, false);
                 final Uri.Builder builder = DirectMessages.Inbox.CONTENT_URI.buildUpon();
                 builder.appendQueryParameter(QUERY_PARAM_NOTIFY, "true");
                 if (values != null) {
@@ -371,10 +409,10 @@ public class StreamingService extends Service implements Constants {
         public void onException(final Throwable ex) {
             if (ex instanceof TwitterException) {
                 Log.w(LOGTAG, String.format("Error %d", ((TwitterException) ex).getStatusCode()), ex);
-                final RestHttpResponse response = ((TwitterException) ex).getHttpResponse();
+                final HttpResponse response = ((TwitterException) ex).getHttpResponse();
                 if (response != null) {
                     try {
-                        final TypedData body = response.getBody();
+                        final Body body = response.getBody();
                         if (body != null) {
                             final ByteArrayOutputStream os = new ByteArrayOutputStream();
                             body.writeTo(os);
@@ -393,7 +431,7 @@ public class StreamingService extends Service implements Constants {
                             Log.w(LOGTAG, os.toString(charsetName));
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Log.w(LOGTAG, e);
                     }
                 }
             } else {
@@ -403,17 +441,31 @@ public class StreamingService extends Service implements Constants {
 
         @Override
         public void onFavorite(final User source, final User target, final Status favoritedStatus) {
-            if (favoritedStatus.getUser().getId() == account.account_id) {
+//            ParcelableActivity activity = new ParcelableActivity();
+//            activity.account_id = account.account_id;
+//            activity.timestamp = favoritedStatus.getCreatedAt() != null ? favoritedStatus.getCreatedAt().getTime() : System.currentTimeMillis();
+//            activity.action = Activity.Action.FAVORITE.literal;
+//            activity.sources = ParcelableUser.fromUsers(new User[]{source}, source.getId());
+//            activity.target_users = ParcelableUser.fromUsers(new User[]{target}, target.getId());
+//            activity.target_statuses = ParcelableStatus.fromStatuses(new Status[]{favoritedStatus}, favoritedStatus.getId());
+//            activity.source_ids = new long[] { source.getId() };
+//            activity.is_gap = false;
+//
+//            ContentValues values = ParcelableActivityValuesCreator.create(activity);
+//            resolver.insert(Activities.AboutMe.CONTENT_URI, values);
+
+            if (TextUtils.equals(favoritedStatus.getUser().getId(), account.account_key.getId())) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
                         Utils.parseURLEntities(favoritedStatus.getText(), favoritedStatus.getUrlEntities()),
-                        new ParcelableStatus(favoritedStatus, account.account_id, false),
+                        ParcelableStatusUtils.fromStatus(favoritedStatus,
+                                account.account_key, false),
                         source);
             }
         }
 
         @Override
         public void onFollow(final User source, final User followedUser) {
-            if (followedUser.getId() == account.account_id) {
+            if (TextUtils.equals(followedUser.getId(), account.account_key.getId())) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FOLLOWER,
                         null, null, source);
             }
@@ -426,11 +478,12 @@ public class StreamingService extends Service implements Constants {
 
         @Override
         public void onScrubGeo(final long userId, final long upToStatusId) {
-            final String where = Statuses.USER_ID + " = " + userId + " AND " + Statuses.STATUS_ID + " >= "
-                    + upToStatusId;
+            final String where = Expression.and(Expression.equalsArgs(Statuses.USER_KEY),
+                    Expression.greaterEqualsArgs(Statuses.SORT_ID)).getSQL();
+            final String[] whereArgs = {String.valueOf(userId), String.valueOf(upToStatusId)};
             final ContentValues values = new ContentValues();
             values.putNull(Statuses.LOCATION);
-            resolver.update(Statuses.CONTENT_URI, values, where, null);
+            resolver.update(Statuses.CONTENT_URI, values, where, whereArgs);
         }
 
         @Override
@@ -440,26 +493,37 @@ public class StreamingService extends Service implements Constants {
 
         @Override
         public void onStatus(final Status status) {
-            final ContentValues values = ContentValuesCreator.createStatus(status, account.account_id);
+            final ContentValues values = ContentValuesCreator.createStatus(status, account.account_key);
             if (!statusStreamStarted && !mPreferences.getBoolean(KEY_REFRESH_BEFORE_STREAMING, true)) {
                 statusStreamStarted = true;
                 values.put(Statuses.IS_GAP, true);
             }
-            final String where = Statuses.ACCOUNT_ID + " = " + account.account_id + " AND " + Statuses.STATUS_ID + " = "
-                    + status.getId();
-            resolver.delete(Statuses.CONTENT_URI, where, null);
-            resolver.delete(Mentions.CONTENT_URI, where, null);
+            final String where = Expression.and(Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY),
+                    Expression.equalsArgs(Statuses.STATUS_ID)).getSQL();
+            final String[] whereArgs = {account.account_key.toString(), String.valueOf(status.getId())};
+            resolver.delete(Statuses.CONTENT_URI, where, whereArgs);
+            resolver.delete(Activities.AboutMe.CONTENT_URI, where, whereArgs);
             resolver.insert(Statuses.CONTENT_URI, values);
             final Status rt = status.getRetweetedStatus();
             if (rt != null && rt.getText().contains("@" + account.screen_name) || rt == null
                     && status.getText().contains("@" + account.screen_name)) {
-                resolver.insert(Mentions.CONTENT_URI, values);
+
+                Activity activity = Activity.fromMention(account.account_key.getId(), status);
+                final ParcelableActivity parcelableActivity = ParcelableActivityUtils.fromActivity(activity,
+                        account.account_key, false);
+                parcelableActivity.timestamp = status.getCreatedAt() != null ? status.getCreatedAt().getTime(): System.currentTimeMillis();
+                final ContentValues activityValues = ParcelableActivityValuesCreator.create(parcelableActivity);
+                resolver.insert(Activities.AboutMe.CONTENT_URI, activityValues);
             }
-            if (rt != null && rt.getUser().getId() == account.account_id) {
+
+            //Retweet
+            if (rt != null && TextUtils.equals(rt.getUser().getId(), account.account_key.getId())) {
                 createNotification(status.getUser().getScreenName(),
                         NotificationContent.NOTIFICATION_TYPE_RETWEET,
                         Utils.parseURLEntities(rt.getText(), rt.getUrlEntities()),
-                        new ParcelableStatus(status, account.account_id, false), status.getUser());
+                        ParcelableStatusUtils.fromStatus(status,
+                                account.account_key, false), status.getUser());
+                //TODO insert retweet activity
             }
         }
 
@@ -476,11 +540,10 @@ public class StreamingService extends Service implements Constants {
         }
 
         @Override
-        public void onUnfavorite(final User source, final User target, final Status unfavoritedStatus) {
+        public void onUnfavorite(final User source, final User target, final Status targetStatus) {
             final String message = String.format("%s unfavorited %s's tweet: %s", source.getScreenName(),
-                    target.getScreenName(), unfavoritedStatus.getText());
+                    target.getScreenName(), targetStatus.getText());
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-
         }
 
         @Override

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.text;
 import android.text.SpannableStringBuilder;
 
 import de.vanita5.twittnuker.util.CheckUtils;
+import de.vanita5.twittnuker.util.TwidereStringUtils;
 
 /**
  * Created by Ningyuan on 2015/5/1.
@@ -33,6 +34,7 @@ public class SafeSpannableStringBuilder extends SpannableStringBuilder {
 
     public SafeSpannableStringBuilder(CharSequence source) {
         super(source);
+        TwidereStringUtils.fixSHY(this);
     }
 
     @Override

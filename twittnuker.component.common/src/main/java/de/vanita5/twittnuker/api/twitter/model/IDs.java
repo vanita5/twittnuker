@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,21 +22,25 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import com.bluelinelabs.logansquare.JsonMapper;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+
+import de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate;
 
 import java.io.IOException;
 
 /**
  * Created by mariotaku on 15/5/10.
  */
+@NoObfuscate
 public class IDs extends TwitterResponseObject implements TwitterResponse, CursorSupport {
 
     long previousCursor;
     long nextCursor;
-    long[] ids;
+    String[] ids;
 
     @Override
     public long getNextCursor() {
@@ -58,14 +62,17 @@ public class IDs extends TwitterResponseObject implements TwitterResponse, Curso
         return previousCursor != 0;
     }
 
-    public long[] getIDs() {
+    public String[] getIDs() {
         return ids;
     }
 
     public static class Converter implements TypeConverter<IDs> {
+
+        private static final JsonMapper<IDs> IDS_JSON_MAPPER = LoganSquare.mapperFor(IDs.class);
+
         @Override
         public IDs parse(JsonParser jsonParser) throws IOException {
-            return LoganSquare.mapperFor(IDs.class).parse(jsonParser);
+            return IDS_JSON_MAPPER.parse(jsonParser);
         }
 
         @Override
@@ -73,7 +80,7 @@ public class IDs extends TwitterResponseObject implements TwitterResponse, Curso
             if (writeFieldNameForObject) {
                 jsonGenerator.writeFieldName(fieldName);
             }
-            LoganSquare.mapperFor(IDs.class).serialize(object, jsonGenerator, true);
+            IDS_JSON_MAPPER.serialize(object, jsonGenerator, true);
         }
     }
 }

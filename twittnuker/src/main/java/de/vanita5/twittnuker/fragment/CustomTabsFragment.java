@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,19 +23,20 @@
 package de.vanita5.twittnuker.fragment;
 
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.ActionMode;
@@ -54,6 +55,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.afollestad.appthemeengine.ATEActivity;
+import com.afollestad.appthemeengine.Config;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.DropListener;
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
@@ -62,14 +65,14 @@ import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.CustomTabEditorActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
-import de.vanita5.twittnuker.activity.support.CustomTabEditorActivity;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
 
 import java.util.ArrayList;
@@ -85,7 +88,7 @@ import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
 import static de.vanita5.twittnuker.util.CustomTabUtils.isTabAdded;
 import static de.vanita5.twittnuker.util.CustomTabUtils.isTabTypeValid;
 
-public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<Cursor>,
+public class CustomTabsFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>,
         MultiChoiceModeListener, OnItemClickListener {
 
     private ContentResolver mResolver;
@@ -222,9 +225,8 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
         inflater.inflate(R.menu.menu_custom_tabs, menu);
         final Resources res = getResources();
-        final boolean hasOfficialKeyAccounts = Utils.hasAccountSignedWithOfficialKeys(getActivity());
-        final boolean forcePrivateAPI = mPreferences.getBoolean(KEY_FORCE_USING_PRIVATE_APIS, false);
-        final long[] accountIds = DataStoreUtils.getAccountIds(getActivity());
+        final FragmentActivity activity = getActivity();
+        final UserKey[] accountIds = DataStoreUtils.getAccountKeys(activity);
         final MenuItem itemAdd = menu.findItem(R.id.add_submenu);
         if (itemAdd != null && itemAdd.hasSubMenu()) {
             final SubMenu subMenu = itemAdd.getSubMenu();
@@ -237,23 +239,23 @@ public class CustomTabsFragment extends BaseFragment implements LoaderCallbacks<
                 final String type = entry.getKey();
                 final CustomTabConfiguration conf = entry.getValue();
 
-                final boolean isOfficialKeyAccountRequired = TAB_TYPE_ACTIVITIES_ABOUT_ME.equals(type)
-                        || TAB_TYPE_ACTIVITIES_BY_FRIENDS.equals(type);
                 final boolean accountIdRequired = conf.getAccountRequirement() == CustomTabConfiguration.ACCOUNT_REQUIRED;
 
                 final Intent intent = new Intent(INTENT_ACTION_ADD_TAB);
-                intent.setClass(getActivity(), CustomTabEditorActivity.class);
+                intent.setClass(activity, CustomTabEditorActivity.class);
                 intent.putExtra(EXTRA_TYPE, type);
-                intent.putExtra(EXTRA_OFFICIAL_KEY_ONLY, isOfficialKeyAccountRequired);
 
                 final MenuItem subItem = subMenu.add(conf.getDefaultTitle());
                 final boolean disabledByNoAccount = accountIdRequired && accountIds.length == 0;
-                final boolean disabledByNoOfficialKey = !forcePrivateAPI && isOfficialKeyAccountRequired && !hasOfficialKeyAccounts;
-                final boolean disabledByDuplicateTab = conf.isSingleTab() && isTabAdded(getActivity(), type);
-                final boolean shouldDisable = disabledByDuplicateTab || disabledByNoOfficialKey || disabledByNoAccount;
+                final boolean disabledByDuplicateTab = conf.isSingleTab() && isTabAdded(activity, type);
+                final boolean shouldDisable = disabledByDuplicateTab || disabledByNoAccount;
                 subItem.setVisible(!shouldDisable);
                 subItem.setEnabled(!shouldDisable);
                 final Drawable icon = ResourcesCompat.getDrawable(res, conf.getDefaultIcon(), null);
+                if (icon != null && activity instanceof ATEActivity) {
+                    icon.mutate().setColorFilter(Config.textColorPrimary(activity,
+                            ((ATEActivity) activity).getATEKey()), Mode.SRC_ATOP);
+                }
                 subItem.setIcon(icon);
                 subItem.setIntent(intent);
             }

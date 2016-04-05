@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.view;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatMultiAutoCompleteTextView;
 import android.text.InputType;
 import android.text.Selection;
 import android.text.method.ArrowKeyMovementMethod;
@@ -34,27 +33,26 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.afollestad.appthemeengine.inflation.ATEMultiAutoCompleteTextView;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.EmojiSupportUtils;
 import de.vanita5.twittnuker.util.widget.StatusTextTokenizer;
 import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView;
 
-public class ComposeEditText extends AppCompatMultiAutoCompleteTextView implements IThemeBackgroundTintView {
+public class ComposeEditText extends ATEMultiAutoCompleteTextView implements IThemeBackgroundTintView {
 
     private ComposeAutoCompleteAdapter mAdapter;
-    private long mAccountId;
+    private UserKey mAccountKey;
 
     public ComposeEditText(final Context context) {
         this(context, null);
     }
 
     public ComposeEditText(final Context context, final AttributeSet attrs) {
-        this(context, attrs, R.attr.autoCompleteTextViewStyle);
-    }
-
-    public ComposeEditText(final Context context, final AttributeSet attrs, final int defStyle) {
-        super(context, attrs, defStyle);
+        super(context, attrs);
         EmojiSupportUtils.initForTextView(this);
         setTokenizer(new StatusTextTokenizer());
         setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -72,8 +70,8 @@ public class ComposeEditText extends AppCompatMultiAutoCompleteTextView implemen
         setSupportBackgroundTintList(color);
     }
 
-    public void setAccountId(long accountId) {
-        mAccountId = accountId;
+    public void setAccountKey(UserKey accountKey) {
+        mAccountKey = accountKey;
         updateAccountId();
     }
 
@@ -103,7 +101,7 @@ public class ComposeEditText extends AppCompatMultiAutoCompleteTextView implemen
 
     private void updateAccountId() {
         if (mAdapter == null) return;
-        mAdapter.setAccountId(mAccountId);
+        mAdapter.setAccountKey(mAccountKey);
     }
 
     private void removeIMESuggestions() {

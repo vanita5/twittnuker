@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,24 +23,44 @@
 package de.vanita5.twittnuker.api.twitter;
 
 import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Body;
-import org.mariotaku.restfu.annotation.param.Part;
+import org.mariotaku.restfu.annotation.param.KeyValue;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Params;
+import org.mariotaku.restfu.annotation.param.Raw;
 import org.mariotaku.restfu.http.BodyType;
-import org.mariotaku.restfu.http.mime.FileTypedData;
+import org.mariotaku.restfu.http.mime.Body;
+import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
+import de.vanita5.twittnuker.api.twitter.model.NewMediaMetadata;
+import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
 
 import java.io.File;
 
-import de.vanita5.twittnuker.api.twitter.model.MediaUploadResponse;
-
-@SuppressWarnings("RedundantThrows")
 public interface TwitterUpload {
 
-	@POST("/media/upload.json")
-	@Body(BodyType.MULTIPART)
-	MediaUploadResponse uploadMedia(@Part("media") File file) throws TwitterException;
+    @POST("/media/upload.json")
+    @BodyType(BodyType.MULTIPART)
+    MediaUploadResponse uploadMedia(@Param("media") File file) throws TwitterException;
 
-	@POST("/media/upload.json")
-	@Body(BodyType.MULTIPART)
-	MediaUploadResponse uploadMedia(@Part("media") FileTypedData data) throws TwitterException;
+    @POST("/media/upload.json")
+    @BodyType(BodyType.MULTIPART)
+    MediaUploadResponse uploadMedia(@Param("media") Body data) throws TwitterException;
 
+
+    @POST("/media/upload.json")
+    @Params(@KeyValue(key = "command", value = "INIT"))
+    MediaUploadResponse initUploadMedia(@Param("media_type") String mediaType,
+                                        @Param("total_bytes") long totalBytes) throws TwitterException;
+
+    @POST("/media/upload.json")
+    @Params(@KeyValue(key = "command", value = "APPEND"))
+    ResponseCode initUploadMedia(@Param("media_id") long mediaId,
+                                 @Param("segment_index") int segmentIndex,
+                                 @Param("media") Body media) throws TwitterException;
+
+    @POST("/media/upload.json")
+    @Params(@KeyValue(key = "command", value = "FINALIZE"))
+    MediaUploadResponse initUploadMedia(@Param("media_id") long mediaId) throws TwitterException;
+
+    @POST("/media/metadata/create.json")
+    ResponseCode createMetadata(@Raw NewMediaMetadata metadata) throws TwitterException;
 }

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,37 +23,36 @@
 package de.vanita5.twittnuker.preference;
 
 import android.content.Context;
-import android.preference.Preference;
-import android.support.annotation.NonNull;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 
 public final class WizardPageHeaderPreference extends Preference {
 
-	public WizardPageHeaderPreference(final Context context) {
-		this(context, null);
-	}
+    public WizardPageHeaderPreference(final Context context) {
+        this(context, null);
+    }
 
-	public WizardPageHeaderPreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceStyle);
-	}
+    public WizardPageHeaderPreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.preferenceStyle);
+    }
 
-	public WizardPageHeaderPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-		setLayoutResource(R.layout.header_wizard_page);
-		setSelectable(false);
-	}
+    public WizardPageHeaderPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+        setLayoutResource(R.layout.header_wizard_page);
+        setSelectable(false);
+    }
 
-	@Override
-	protected void onBindView(@NonNull final View view) {
-		super.onBindView(view);
-		final TextView title = (TextView) view.findViewById(android.R.id.title);
-		final TextView summary = (TextView) view.findViewById(android.R.id.summary);
-		title.setText(getTitle());
-		summary.setText(getSummary());
-	}
+    @Override
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        final TextView title = (TextView) holder.findViewById(android.R.id.title);
+        final TextView summary = (TextView) holder.findViewById(android.R.id.summary);
+        title.setText(getTitle());
+        summary.setText(getSummary());
+    }
 
 }

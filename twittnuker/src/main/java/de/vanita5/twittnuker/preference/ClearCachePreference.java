@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,52 +26,59 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import de.vanita5.twittnuker.R;
+
 import java.io.File;
-import java.io.FileFilter;
 
 public class ClearCachePreference extends AsyncTaskPreference {
 
-	public ClearCachePreference(final Context context) {
-		this(context, null);
-	}
+    public ClearCachePreference(final Context context) {
+        this(context, null);
+    }
 
-	public ClearCachePreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceStyle);
-	}
+    public ClearCachePreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.preferenceStyle);
+    }
 
-	public ClearCachePreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public ClearCachePreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	@Override
-	protected void doInBackground() {
-		final Context context = getContext();
-		if (context == null) return;
+    @Override
+    protected void doInBackground() {
+        final Context context = getContext();
+        if (context == null) return;
         final File externalCacheDir = context.getExternalCacheDir();
         if (externalCacheDir != null) {
-            for (final File file : externalCacheDir.listFiles((FileFilter) null)) {
-				deleteRecursive(file);
-			}
-		}
+            final File[] files = externalCacheDir.listFiles();
+            if (files != null) {
+                for (final File file : files) {
+                    deleteRecursive(file);
+                }
+            }
+        }
         final File internalCacheDir = context.getCacheDir();
         if (internalCacheDir != null) {
-            for (final File file : internalCacheDir.listFiles((FileFilter) null)) {
-				deleteRecursive(file);
-			}
-		}
-	}
+            final File[] files = internalCacheDir.listFiles();
+            if (files != null) {
+                for (final File file : files) {
+                    deleteRecursive(file);
+                }
+            }
+        }
+    }
 
-	private static void deleteRecursive(final File f) {
-		if (f.isDirectory()) {
+    private static void deleteRecursive(final File f) {
+        if (f.isDirectory()) {
             final File[] files = f.listFiles();
             if (files == null) return;
             for (final File c : files) {
-				deleteRecursive(c);
-			}
-		}
+                deleteRecursive(c);
+            }
+        }
         if (!f.delete()) {
             Log.w(LOGTAG, String.format("Unable to delete %s", f));
         }
-	}
+    }
 
 }

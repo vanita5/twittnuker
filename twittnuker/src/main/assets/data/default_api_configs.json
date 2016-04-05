@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Twittnuker",
+    "localized_name": "@string/provider_default",
+    "api_url_format": "https://[DOMAIN.]twitter.com/",
+    "auth_type": "oauth",
+    "same_oauth_url": true,
+    "no_version_suffix": false,
+    "consumer_key": "K4KihyAG8rUOi9ysqDc5fw",
+    "consumer_secret": "TP9kXNAvNpdH2KcKCuH2DHAbtzzaZ04KIwzOGiOKB0"
+  },
+  {
+    "name": "Quitter.se",
+    "localized_name": "@string/provider_quitter_se",
+    "api_url_format": "https://quitter.se/api/",
+    "auth_type": "oauth",
+    "same_oauth_url": true,
+    "no_version_suffix": true,
+    "consumer_key": "47551dbbe57e086677f0df7a48aeb302",
+    "consumer_secret": "ce087083a1195b5e99ec0b65d9056fce"
+  },
+  {
+    "name": "GNUSocial.net",
+    "localized_name": "@string/provider_gnusocial_net",
+    "api_url_format": "https://gnusocial.net/api/",
+    "auth_type": "oauth",
+    "same_oauth_url": true,
+    "no_version_suffix": true,
+    "consumer_key": "2d56ea222ccd3c0ebc660bc6b7c662c1",
+    "consumer_secret": "ef7c8987fe402a53d85ae954a5ebdc60"
+  },
+  {
+    "name": "GNU Social.de",
+    "localized_name": "@string/provider_gnusocial_de",
+    "api_url_format": "https://gnusocial.de/api/",
+    "auth_type": "oauth",
+    "same_oauth_url": true,
+    "no_version_suffix": true,
+    "consumer_key": "b5317b658e454bc8016bb58b6a0ad3c1",
+    "consumer_secret": "713003dd0bbd9e917bd13a1262ef0c47"
+  },
+  {
+    "name": "Fanfou",
+    "localized_name": "@string/provider_fanfou",
+    "api_url_format": "http://api.fanfou.com/",
+    "auth_type": "oauth",
+    "same_oauth_url": true,
+    "no_version_suffix": true,
+    "consumer_key": "a51624a67585267ab72086984869fb9b",
+    "consumer_secret": "d4f0ad96bae1e5104ae34f5ff9690fb7"
+  },
+  {
+    "name": "Twitter for Android",
+    "localized_name": "@string/provider_android",
+    "api_url_format": "https://[DOMAIN.]twitter.com/",
+    "auth_type": "oauth",
+    "same_oauth_url": true,
+    "no_version_suffix": false,
+    "consumer_key": "3nVuSoBZnx6U4vzUxf5w",
+    "consumer_secret": "Bcs59EFbbsdF6Sl9Ng71smgStWEGwXXKSjYvPVt7qys"
+  },
+  {
+    "name": "TweetDeck",
+    "localized_name": "@string/provider_tweetdeck",
+    "api_url_format": "https://[DOMAIN.]twitter.com/",
+    "auth_type": "oauth",
+    "same_oauth_url": true,
+    "no_version_suffix": false,
+    "consumer_key": "yT577ApRtZw51q4NPMPPOQ",
+    "consumer_secret": "3neq3XqN5fO3obqwZoajavGFCUrC42ZfbrLXy5sCv8"
+  }
+]

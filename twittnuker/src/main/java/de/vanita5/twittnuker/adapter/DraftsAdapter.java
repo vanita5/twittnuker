@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,13 @@ import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.DraftItemCursorIndices;
+import de.vanita5.twittnuker.model.Draft;
+import de.vanita5.twittnuker.model.DraftCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
+import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -57,7 +59,7 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
     private final int mMediaPreviewStyle;
 
     private float mTextSize;
-    private DraftItemCursorIndices mIndices;
+    private DraftCursorIndices mIndices;
 
     public DraftsAdapter(final Context context) {
         super(context, R.layout.list_item_draft, null, new String[0], new int[0], 0);
@@ -71,17 +73,31 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
         final DraftViewHolder holder = (DraftViewHolder) view.getTag();
         final long[] accountIds = TwidereArrayUtils.parseLongArray(cursor.getString(mIndices.account_ids), ',');
         final String text = cursor.getString(mIndices.text);
-        final ParcelableMediaUpdate[] mediaUpdates = ParcelableMediaUpdate.fromJSONString(cursor.getString(mIndices.media));
+        final ParcelableMediaUpdate[] mediaUpdates = JsonSerializer.parseArray(cursor.getString(mIndices.media),
+                ParcelableMediaUpdate.class);
         final long timestamp = cursor.getLong(mIndices.timestamp);
-        final int actionType = cursor.getInt(mIndices.action_type);
+        String actionType = cursor.getString(mIndices.action_type);
         final String actionName = getActionName(context, actionType);
         holder.media_preview_container.setStyle(mMediaPreviewStyle);
-        if (actionType == Drafts.ACTION_UPDATE_STATUS) {
-            final ParcelableMedia[] media = ParcelableMedia.fromMediaUpdates(mediaUpdates);
-            holder.media_preview_container.setVisibility(View.VISIBLE);
-            holder.media_preview_container.displayMedia(media, mImageLoader, -1L, null, mMediaLoadingHandler);
-        } else {
-            holder.media_preview_container.setVisibility(View.GONE);
+        if (actionType == null) {
+            actionType = Draft.Action.UPDATE_STATUS;
+        }
+        switch (actionType) {
+            case Draft.Action.UPDATE_STATUS:
+            case Draft.Action.UPDATE_STATUS_COMPAT_1:
+            case Draft.Action.UPDATE_STATUS_COMPAT_2:
+            case Draft.Action.REPLY:
+            case Draft.Action.QUOTE: {
+                final ParcelableMedia[] media = ParcelableMediaUtils.fromMediaUpdates(mediaUpdates);
+                holder.media_preview_container.setVisibility(View.VISIBLE);
+                holder.media_preview_container.displayMedia(media, mImageLoader, null, -1, null,
+                        mMediaLoadingHandler);
+                break;
+            }
+            default: {
+                holder.media_preview_container.setVisibility(View.GONE);
+                break;
+            }
         }
         holder.content.drawEnd(DataStoreUtils.getAccountColors(context, accountIds));
         holder.setTextSize(mTextSize);
@@ -119,17 +135,24 @@ public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
     public Cursor swapCursor(final Cursor c) {
         final Cursor old = super.swapCursor(c);
         if (c != null) {
-            mIndices = new DraftItemCursorIndices(c);
+            mIndices = new DraftCursorIndices(c);
         }
         return old;
     }
 
-    private static String getActionName(final Context context, final int actionType) {
-        if (actionType <= 0) return context.getString(R.string.update_status);
+    private static String getActionName(final Context context, final String actionType) {
+        if (TextUtils.isEmpty(actionType)) return context.getString(R.string.update_status);
         switch (actionType) {
-            case Drafts.ACTION_UPDATE_STATUS:
+            case Draft.Action.UPDATE_STATUS:
+            case Draft.Action.UPDATE_STATUS_COMPAT_1:
+            case Draft.Action.UPDATE_STATUS_COMPAT_2:
                 return context.getString(R.string.update_status);
-            case Drafts.ACTION_SEND_DIRECT_MESSAGE:
+            case Draft.Action.REPLY:
+                return context.getString(R.string.reply);
+            case Draft.Action.QUOTE:
+                return context.getString(R.string.quote);
+            case Draft.Action.SEND_DIRECT_MESSAGE:
+            case Draft.Action.SEND_DIRECT_MESSAGE_COMPAT:
                 return context.getString(R.string.send_direct_message);
         }
         return null;

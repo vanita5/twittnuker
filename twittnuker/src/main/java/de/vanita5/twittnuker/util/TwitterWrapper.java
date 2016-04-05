@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,25 +22,29 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.util.LongSparseArray;
+import android.support.v4.util.SimpleArrayMap;
+import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
-import org.mariotaku.restfu.http.mime.FileTypedData;
-
+import org.mariotaku.restfu.http.ContentType;
+import org.mariotaku.restfu.http.mime.FileBody;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Status;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ListResponse;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SingleResponse;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 
@@ -53,10 +57,10 @@ import java.util.Set;
 
 public class TwitterWrapper implements Constants {
 
-    public static int clearNotification(final Context context, final int notificationType, final long accountId) {
+    public static int clearNotification(final Context context, final int notificationType, final UserKey accountId) {
         final Uri.Builder builder = Notifications.CONTENT_URI.buildUpon();
         builder.appendPath(String.valueOf(notificationType));
-        if (accountId > 0) {
+        if (accountId != null) {
             builder.appendPath(String.valueOf(accountId));
         }
         return context.getContentResolver().delete(builder.build(), null, null);
@@ -68,8 +72,9 @@ public class TwitterWrapper implements Constants {
         return context.getContentResolver().delete(uri, null, null);
     }
 
-    public static SingleResponse<Boolean> deleteProfileBannerImage(final Context context, final long account_id) {
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, account_id, false);
+    public static SingleResponse<Boolean> deleteProfileBannerImage(final Context context,
+                                                                   final UserKey accountKey) {
+        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountKey, false);
         if (twitter == null) return new SingleResponse<>(false, null);
         try {
             twitter.removeProfileBannerImage();
@@ -92,12 +97,13 @@ public class TwitterWrapper implements Constants {
         return result;
     }
 
-    public static int removeUnreadCounts(final Context context, final int position, final LongSparseArray<Set<Long>> counts) {
+    public static int removeUnreadCounts(final Context context, final int position,
+                                         final SimpleArrayMap<UserKey, Set<String>> counts) {
         if (context == null || position < 0 || counts == null) return 0;
         int result = 0;
         for (int i = 0, j = counts.size(); i < j; i++) {
-            final long key = counts.keyAt(i);
-            final Set<Long> value = counts.valueAt(i);
+            final UserKey key = counts.keyAt(i);
+            final Set<String> value = counts.valueAt(i);
             final Uri.Builder builder = UnreadCounts.CONTENT_URI.buildUpon();
             builder.appendPath(String.valueOf(position));
             builder.appendPath(String.valueOf(key));
@@ -108,42 +114,47 @@ public class TwitterWrapper implements Constants {
     }
 
     @NonNull
-    public static User showUser(final Twitter twitter, final long id, final String screenName) throws TwitterException {
-//        if (twitter.getId() == id || twitter.getScreenName().equalsIgnoreCase(screenName)) {
-//            return twitter.verifyCredentials();
-//        } else
-        if (id != -1) {
+    public static User showUser(final Twitter twitter, final String id, final String screenName,
+                                final String accountType) throws TwitterException {
+        if (id != null) {
+            if (ParcelableAccount.Type.FANFOU.equals(accountType)) {
+                return twitter.showFanfouUser(id);
+            }
             return twitter.showUser(id);
         } else if (screenName != null) {
-            return twitter.showUser(screenName);
+            if (ParcelableAccount.Type.FANFOU.equals(accountType)) {
+                return twitter.showFanfouUser(screenName);
+            }
+            return twitter.showUserByScreenName(screenName);
         }
-        throw new IllegalArgumentException();
+        throw new TwitterException("Invalid user id or screen name");
     }
 
     @NonNull
-    public static User showUserAlternative(final Twitter twitter, final long id, final String screenName)
+    public static User showUserAlternative(final Twitter twitter, final String id,
+                                           final String screenName)
             throws TwitterException {
         final String searchScreenName;
         if (screenName != null) {
             searchScreenName = screenName;
-        } else if (id != -1) {
+        } else if (id != null) {
             searchScreenName = twitter.showFriendship(id).getTargetUserScreenName();
         } else
             throw new IllegalArgumentException();
         final Paging paging = new Paging();
         paging.count(1);
         for (final User user : twitter.searchUsers(searchScreenName, paging)) {
-            if (user.getId() == id || searchScreenName.equalsIgnoreCase(user.getScreenName()))
+            if (TextUtils.equals(user.getId(), id) || searchScreenName.equalsIgnoreCase(user.getScreenName()))
                 return user;
         }
-        if (id != -1) {
+        if (id != null) {
             final ResponseList<Status> timeline = twitter.getUserTimeline(id, paging);
             for (final Status status : timeline) {
                 final User user = status.getUser();
-                if (user.getId() == id) return user;
+                if (TextUtils.equals(user.getId(), id)) return user;
             }
         } else {
-            final ResponseList<Status> timeline = twitter.getUserTimeline(screenName, paging);
+            final ResponseList<Status> timeline = twitter.getUserTimelineByScreenName(screenName, paging);
             for (final Status status : timeline) {
                 final User user = status.getUser();
                 if (searchScreenName.equalsIgnoreCase(user.getScreenName()))
@@ -154,33 +165,50 @@ public class TwitterWrapper implements Constants {
     }
 
     @NonNull
-    public static User tryShowUser(final Twitter twitter, final long id, final String screenName)
+    public static User tryShowUser(final Twitter twitter, final String id, final String screenName,
+                                   String accountType)
             throws TwitterException {
         try {
-            return showUser(twitter, id, screenName);
+            return showUser(twitter, id, screenName, accountType);
         } catch (final TwitterException e) {
-            if (e.getCause() instanceof IOException)
-                throw e;
+            // Twitter specific error for private API calling through proxy
+            if (e.getStatusCode() == 200) {
+                return showUserAlternative(twitter, id, screenName);
+            }
+            throw e;
         }
-        return showUserAlternative(twitter, id, screenName);
-    }
-
-    public static void updateProfileBannerImage(final Context context, final long accountId,
-                                                final Uri imageUri, final boolean deleteImage)
-            throws FileNotFoundException, TwitterException {
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId, false);
-        updateProfileBannerImage(context, twitter, imageUri, deleteImage);
     }
 
     public static void updateProfileBannerImage(final Context context, final Twitter twitter,
                                                 final Uri imageUri, final boolean deleteImage)
-            throws FileNotFoundException, TwitterException {
-        InputStream is = null;
+            throws IOException, TwitterException {
+        FileBody fileBody = null;
         try {
-            is = context.getContentResolver().openInputStream(imageUri);
-            twitter.updateProfileBannerImage(new FileTypedData(is, "image", -1, null));
+            fileBody = getFileBody(context, imageUri);
+            twitter.updateProfileBannerImage(fileBody);
         } finally {
-            Utils.closeSilently(is);
+            Utils.closeSilently(fileBody);
+            if (deleteImage && "file".equals(imageUri.getScheme())) {
+                final File file = new File(imageUri.getPath());
+                if (!file.delete()) {
+                    Log.w(LOGTAG, String.format("Unable to delete %s", file));
+                }
+            }
+        }
+    }
+
+    public static void updateProfileBackgroundImage(@NonNull final Context context,
+                                                    @NonNull final Twitter twitter,
+                                                    @NonNull final Uri imageUri,
+                                                    final boolean tile,
+                                                    final boolean deleteImage)
+            throws IOException, TwitterException {
+        FileBody fileBody = null;
+        try {
+            fileBody = getFileBody(context, imageUri);
+            twitter.updateProfileBackgroundImage(fileBody, tile);
+        } finally {
+            Utils.closeSilently(fileBody);
             if (deleteImage && "file".equals(imageUri.getScheme())) {
                 final File file = new File(imageUri.getPath());
                 if (!file.delete()) {
@@ -192,13 +220,13 @@ public class TwitterWrapper implements Constants {
 
     public static User updateProfileImage(final Context context, final Twitter twitter,
                                           final Uri imageUri, final boolean deleteImage)
-            throws FileNotFoundException, TwitterException {
-        InputStream is = null;
+            throws IOException, TwitterException {
+        FileBody fileBody = null;
         try {
-            is = context.getContentResolver().openInputStream(imageUri);
-            return twitter.updateProfileImage(new FileTypedData(is, "image", -1, null));
+            fileBody = getFileBody(context, imageUri);
+            return twitter.updateProfileImage(fileBody);
         } finally {
-            Utils.closeSilently(is);
+            Utils.closeSilently(fileBody);
             if (deleteImage && "file".equals(imageUri.getScheme())) {
                 final File file = new File(imageUri.getPath());
                 if (!file.delete()) {
@@ -208,34 +236,51 @@ public class TwitterWrapper implements Constants {
         }
     }
 
-    public static User updateProfileImage(final Context context, final long accountId,
-                                          final Uri imageUri, final boolean deleteImage)
-            throws FileNotFoundException, TwitterException {
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId, true);
-        return updateProfileImage(context, twitter, imageUri, deleteImage);
+    private static FileBody getFileBody(Context context, Uri imageUri) throws IOException {
+        final ContentResolver cr = context.getContentResolver();
+        String type = cr.getType(imageUri);
+        if (type == null) {
+            type = Utils.getImageMimeType(cr, imageUri);
+        }
+        final ContentType contentType;
+        final String extension;
+        if (type != null) {
+            contentType = ContentType.parse(type);
+            extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(type);
+        } else {
+            contentType = null;
+            extension = null;
+        }
+        final InputStream is = cr.openInputStream(imageUri);
+        if (is == null) throw new FileNotFoundException(imageUri.toString());
+
+        final String fileName;
+        if (extension != null) {
+            fileName = "image." + extension;
+        } else {
+            fileName = "image";
+        }
+        return new FileBody(is, fileName, is.available(), contentType);
     }
 
     public static final class MessageListResponse extends TwitterListResponse<DirectMessage> {
 
-        public final boolean truncated;
-
-        public MessageListResponse(final long accountId, final Exception exception) {
-            this(accountId, -1, -1, null, false, exception);
+        public MessageListResponse(final UserKey accountKey, final Exception exception) {
+            this(accountKey, null, null, null, exception);
         }
 
-        public MessageListResponse(final long accountId, final List<DirectMessage> list) {
-            this(accountId, -1, -1, list, false, null);
+        public MessageListResponse(final UserKey accountKey, final List<DirectMessage> list) {
+            this(accountKey, null, null, list, null);
         }
 
-        public MessageListResponse(final long accountId, final long maxId, final long sinceId,
-                                   final List<DirectMessage> list, final boolean truncated) {
-            this(accountId, maxId, sinceId, list, truncated, null);
+        public MessageListResponse(final UserKey accountKey, final String maxId, final String sinceId,
+                                   final List<DirectMessage> list) {
+            this(accountKey, maxId, sinceId, list, null);
         }
 
-        MessageListResponse(final long accountId, final long maxId, final long sinceId,
-                            final List<DirectMessage> list, final boolean truncated, final Exception exception) {
-            super(accountId, maxId, sinceId, list, exception);
-            this.truncated = truncated;
+        MessageListResponse(final UserKey accountKey, final String maxId, final String sinceId,
+                            final List<DirectMessage> list, final Exception exception) {
+            super(accountKey, maxId, sinceId, list, exception);
         }
 
     }
@@ -244,47 +289,22 @@ public class TwitterWrapper implements Constants {
 
         public final boolean truncated;
 
-        public StatusListResponse(final long accountId, final Exception exception) {
-            this(accountId, -1, -1, null, false, exception);
+        public StatusListResponse(final UserKey accountKey, final Exception exception) {
+            this(accountKey, null, null, null, false, exception);
         }
 
-        public StatusListResponse(final long accountId, final List<Status> list) {
-            this(accountId, -1, -1, list, false, null);
+        public StatusListResponse(final UserKey accountKey, final List<Status> list) {
+            this(accountKey, null, null, list, false, null);
         }
 
-        public StatusListResponse(final long accountId, final long maxId, final long sinceId,
+        public StatusListResponse(final UserKey accountKey, final String maxId, final String sinceId,
                                   final List<Status> list, final boolean truncated) {
-            this(accountId, maxId, sinceId, list, truncated, null);
+            this(accountKey, maxId, sinceId, list, truncated, null);
         }
 
-        StatusListResponse(final long accountId, final long maxId, final long sinceId, final List<Status> list,
+        StatusListResponse(final UserKey accountKey, final String maxId, final String sinceId, final List<Status> list,
                            final boolean truncated, final Exception exception) {
-            super(accountId, maxId, sinceId, list, exception);
-            this.truncated = truncated;
-        }
-
-    }
-
-    public static final class ActivityListResponse extends TwitterListResponse<Activity> {
-
-        public final boolean truncated;
-
-        public ActivityListResponse(final long accountId, final Exception exception) {
-            this(accountId, -1, -1, null, false, exception);
-        }
-
-        public ActivityListResponse(final long accountId, final List<Activity> list) {
-            this(accountId, -1, -1, list, false, null);
-        }
-
-        public ActivityListResponse(final long accountId, final long maxId, final long sinceId,
-                                    final List<Activity> list, final boolean truncated) {
-            this(accountId, maxId, sinceId, list, truncated, null);
-        }
-
-        ActivityListResponse(final long accountId, final long maxId, final long sinceId, final List<Activity> list,
-                             final boolean truncated, final Exception exception) {
-            super(accountId, maxId, sinceId, list, exception);
+            super(accountKey, maxId, sinceId, list, exception);
             this.truncated = truncated;
         }
 
@@ -292,20 +312,24 @@ public class TwitterWrapper implements Constants {
 
     public static class TwitterListResponse<Data> extends ListResponse<Data> {
 
-        public final long accountId, maxId, sinceId;
+        public final UserKey accountKey;
+        public final String maxId;
+        public final String sinceId;
 
-        public TwitterListResponse(final long accountId, final Exception exception) {
-            this(accountId, -1, -1, null, exception);
+        public TwitterListResponse(final UserKey accountKey,
+                                   final Exception exception) {
+            this(accountKey, null, null, null, exception);
         }
 
-        public TwitterListResponse(final long accountId, final long maxId, final long sinceId, final List<Data> list) {
-            this(accountId, maxId, sinceId, list, null);
+        public TwitterListResponse(final UserKey accountKey, final String maxId,
+                                   final String sinceId, final List<Data> list) {
+            this(accountKey, maxId, sinceId, list, null);
         }
 
-        TwitterListResponse(final long accountId, final long maxId, final long sinceId, final List<Data> list,
-                            final Exception exception) {
+        TwitterListResponse(final UserKey accountKey, final String maxId, final String sinceId,
+                            final List<Data> list, final Exception exception) {
             super(list, exception);
-            this.accountId = accountId;
+            this.accountKey = accountKey;
             this.maxId = maxId;
             this.sinceId = sinceId;
         }

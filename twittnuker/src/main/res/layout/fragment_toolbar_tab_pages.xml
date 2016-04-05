@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Twittnuker - Twitter client for Android
+  ~
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~
+  ~ This program incorporates a modified version of Twidere.
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <de.vanita5.twittnuker.view.ExtendedViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <de.vanita5.twittnuker.view.ExtendedLinearLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/toolbar_elevation"
+        android:orientation="vertical"
+        android:tag="background|primary_color">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:popupTheme="?actionBarPopupTheme"/>
+
+        <de.vanita5.twittnuker.view.TabPagerIndicator
+            android:id="@+id/toolbar_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/element_size_normal"
+            app:tabDividerVerticalPadding="@dimen/element_spacing_mlarge"
+            app:tabExpandEnabled="true"
+            app:tabHorizontalPadding="@dimen/element_spacing_large"
+            app:tabShowDivider="true"
+            tools:ignore="UnusedAttribute"
+            tools:listitem="@layout/layout_tab_item"/>
+    </de.vanita5.twittnuker.view.ExtendedLinearLayout>
+
+    <View
+        android:id="@+id/window_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_container"
+        android:background="?android:windowContentOverlay"/>
+
+</RelativeLayout>

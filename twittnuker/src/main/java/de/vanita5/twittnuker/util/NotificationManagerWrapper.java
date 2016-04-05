@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 
-import de.vanita5.twittnuker.app.TwittnukerApplication;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -36,8 +34,8 @@ public class NotificationManagerWrapper {
     private final NotificationManager notificationManager;
     private final List<PostedNotification> notifications = new CopyOnWriteArrayList<>();
 
-    public NotificationManagerWrapper(TwittnukerApplication application) {
-        notificationManager = (NotificationManager) application.getSystemService(Context.NOTIFICATION_SERVICE);
+    public NotificationManagerWrapper(Context context) {
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     public void notify(String tag, int id, Notification notification) {

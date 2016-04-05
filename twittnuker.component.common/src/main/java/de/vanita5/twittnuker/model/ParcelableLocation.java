@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,40 +24,29 @@ package de.vanita5.twittnuker.model;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
-import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
-import de.vanita5.twittnuker.util.ParseUtils;
 
 import java.lang.reflect.ParameterizedType;
 
+@ParcelablePlease
 @JsonObject
 public class ParcelableLocation implements Parcelable {
 
+    @ParcelableThisPlease
     @JsonField(name = "latitude")
     public double latitude;
+    @ParcelableThisPlease
     @JsonField(name = "longitude")
     public double longitude;
-
-    public static final Parcelable.Creator<ParcelableLocation> CREATOR = new Parcelable.Creator<ParcelableLocation>() {
-        @Override
-        public ParcelableLocation createFromParcel(final Parcel in) {
-            return new ParcelableLocation(in);
-        }
-
-        @Override
-        public ParcelableLocation[] newArray(final int size) {
-            return new ParcelableLocation[size];
-        }
-    };
 
     public ParcelableLocation() {
     }
@@ -65,42 +54,6 @@ public class ParcelableLocation implements Parcelable {
     public ParcelableLocation(final double latitude, final double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    public ParcelableLocation(@Nullable final GeoLocation location) {
-        latitude = location != null ? location.getLatitude() : Double.NaN;
-        longitude = location != null ? location.getLongitude() : Double.NaN;
-    }
-
-    public ParcelableLocation(@Nullable final Location location) {
-        latitude = location != null ? location.getLatitude() : Double.NaN;
-        longitude = location != null ? location.getLongitude() : Double.NaN;
-    }
-
-    public ParcelableLocation(final Parcel in) {
-        latitude = in.readDouble();
-        longitude = in.readDouble();
-    }
-
-    public ParcelableLocation(final String locationString) {
-        if (locationString == null) {
-            latitude = Double.NaN;
-            longitude = Double.NaN;
-            return;
-        }
-        final String[] longlat = locationString.split(",");
-        if (longlat.length != 2) {
-            latitude = Double.NaN;
-            longitude = Double.NaN;
-        } else {
-            latitude = NumberUtils.toDouble(longlat[0], Double.NaN);
-            longitude = NumberUtils.toDouble(longlat[1], Double.NaN);
-        }
-    }
-
-    @Override
-    public int describeContents() {
-        return hashCode();
     }
 
     @Override
@@ -116,24 +69,6 @@ public class ParcelableLocation implements Parcelable {
         return true;
     }
 
-    @Nullable
-    public static ParcelableLocation fromGeoLocation(@Nullable GeoLocation geoLocation) {
-        if (geoLocation == null) return null;
-        return new ParcelableLocation(geoLocation);
-    }
-
-    @Nullable
-    public static ParcelableLocation fromLocation(@Nullable Location location) {
-        if (location == null) return null;
-        return new ParcelableLocation(location);
-    }
-
-    public String getHumanReadableString(int decimalDigits) {
-        return String.format("%s,%s", ParseUtils.parsePrettyDecimal(latitude, decimalDigits),
-                ParseUtils.parsePrettyDecimal(longitude, decimalDigits));
-    }
-
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -146,61 +81,63 @@ public class ParcelableLocation implements Parcelable {
         return result;
     }
 
-    public boolean isValid() {
-        return isValidLocation(latitude, longitude);
-    }
-
-    public static boolean isValidLocation(double latitude, double longitude) {
-        return !Double.isNaN(latitude) && !Double.isNaN(longitude);
-    }
-
-    public GeoLocation toGeoLocation() {
-        return isValid() ? new GeoLocation(latitude, longitude) : null;
-    }
 
     @Override
     public String toString() {
-        return "ParcelableLocation{latitude=" + latitude + ", longitude=" + longitude + "}";
-    }
-
-    @Override
-    public void writeToParcel(final Parcel out, final int flags) {
-        out.writeDouble(latitude);
-        out.writeDouble(longitude);
-    }
-
-    public static ParcelableLocation fromString(final String string) {
-        final ParcelableLocation location = new ParcelableLocation(string);
-        if (ParcelableLocation.isValidLocation(location)) return location;
-        return null;
-    }
-
-    public static boolean isValidLocation(final ParcelableLocation location) {
-        return location != null && location.isValid();
-    }
-
-    public static GeoLocation toGeoLocation(final ParcelableLocation location) {
-        return isValidLocation(location) ? location.toGeoLocation() : null;
-    }
-
-    public static String toString(final ParcelableLocation location) {
-        if (!isValidLocation(location)) return null;
-        return toString(location.latitude, location.longitude);
-    }
-
-    public static String toString(double latitude, double longitude) {
         return latitude + "," + longitude;
+    }
+
+    @Nullable
+    public static ParcelableLocation valueOf(@Nullable final String locationString) {
+        if (locationString == null) return null;
+        final String[] longlat = locationString.split(",");
+        if (longlat.length != 2) {
+            return null;
+        }
+
+        ParcelableLocation obj = new ParcelableLocation();
+        try {
+            obj.latitude = Double.parseDouble(longlat[0]);
+            obj.longitude = Double.parseDouble(longlat[1]);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        if (Double.isNaN(obj.latitude) || Double.isNaN(obj.longitude)) return null;
+        return obj;
     }
 
     public static class Converter implements CursorFieldConverter<ParcelableLocation> {
         @Override
         public ParcelableLocation parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
-            return ParcelableLocation.fromString(cursor.getString(columnIndex));
+            return valueOf(cursor.getString(columnIndex));
         }
 
         @Override
         public void writeField(ContentValues values, ParcelableLocation object, String columnName, ParameterizedType fieldType) {
-            values.put(columnName, ParcelableLocation.toString(object));
+            if (object == null) return;
+            values.put(columnName, object.toString());
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        ParcelableLocationParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static final Creator<ParcelableLocation> CREATOR = new Creator<ParcelableLocation>() {
+        public ParcelableLocation createFromParcel(Parcel source) {
+            ParcelableLocation target = new ParcelableLocation();
+            ParcelableLocationParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        public ParcelableLocation[] newArray(int size) {
+            return new ParcelableLocation[size];
+        }
+    };
 }

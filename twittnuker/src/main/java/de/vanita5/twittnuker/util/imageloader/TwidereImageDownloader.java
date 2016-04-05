@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,81 +23,43 @@
 package de.vanita5.twittnuker.util.imageloader;
 
 import android.content.Context;
-import android.net.Uri;
-import android.os.Build;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.nostra13.universalimageloader.core.assist.ContentLengthInputStream;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 
-import org.mariotaku.restfu.Pair;
-import org.mariotaku.restfu.RestRequestInfo;
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.http.Authorization;
-import org.mariotaku.restfu.http.Endpoint;
-import org.mariotaku.restfu.http.RestHttpClient;
-import org.mariotaku.restfu.http.RestHttpRequest;
-import org.mariotaku.restfu.http.RestHttpResponse;
-import org.mariotaku.restfu.http.mime.TypedData;
+import org.mariotaku.mediaviewer.library.CacheDownloadLoader;
+import org.mariotaku.mediaviewer.library.MediaDownloader;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthEndpoint;
-import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
-import de.vanita5.twittnuker.model.ParcelableMedia;
-import de.vanita5.twittnuker.model.RequestType;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereLinkify;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
-import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 public class TwidereImageDownloader extends BaseImageDownloader implements Constants {
 
-    private final Context mContext;
-    private final SharedPreferencesWrapper mPreferences;
-    private final RestHttpClient mClient;
-
-    private final String mUserAgent;
-
+    private final MediaDownloader mMediaDownloader;
     private final String mTwitterProfileImageSize;
 
-    public TwidereImageDownloader(final Context context, SharedPreferencesWrapper preferences, RestHttpClient client) {
+    public TwidereImageDownloader(final Context context, MediaDownloader downloader) {
         super(context);
-        mContext = context;
-        mPreferences = preferences;
-        mClient = client;
+        mMediaDownloader = downloader;
         mTwitterProfileImageSize = context.getString(R.string.profile_image_size);
-        mUserAgent = UserAgentUtils.getDefaultUserAgentString(context);
-        reloadConnectivitySettings();
-    }
-
-    public void reloadConnectivitySettings() {
-        //
     }
 
     @Override
-    protected InputStream getStreamFromNetwork(final String uriString, final Object extras) throws IOException {
+    protected InputStream getStreamFromNetwork(String uriString, final Object extras) throws IOException {
         if (uriString == null) return null;
-        final ParcelableMedia media = PreviewMediaExtractor.fromLink(uriString, mClient, extras);
         try {
-            final String mediaUrl = media != null ? media.media_url : uriString;
             if (isTwitterProfileImage(uriString)) {
-                final String replaced = Utils.getTwitterProfileImageOfSize(mediaUrl, mTwitterProfileImageSize);
-                return getStreamFromNetworkInternal(replaced, extras);
-            } else
-                return getStreamFromNetworkInternal(mediaUrl, extras);
+                uriString = Utils.getTwitterProfileImageOfSize(uriString, mTwitterProfileImageSize);
+            }
+            return getStreamFromNetworkInternal(uriString, extras);
         } catch (final FileNotFoundException e) {
             if (isTwitterProfileImage(uriString) && !uriString.contains("_normal.")) {
                 return getStreamFromNetworkInternal(Utils.getNormalTwitterProfileImage(uriString), extras);
@@ -106,103 +68,13 @@ public class TwidereImageDownloader extends BaseImageDownloader implements Const
         }
     }
 
-    private Uri getReplacedUri(@NonNull final Uri uri, final String apiUrlFormat) {
-        if (apiUrlFormat == null) return uri;
-        if (isTwitterUri(uri)) {
-            final StringBuilder sb = new StringBuilder();
-            final String host = uri.getHost();
-            final String domain = host.substring(0, host.lastIndexOf(".twitter.com"));
-            final String path = uri.getPath();
-            sb.append(TwitterAPIFactory.getApiUrl(apiUrlFormat, domain, path));
-            final String query = uri.getQuery();
-            if (!TextUtils.isEmpty(query)) {
-                sb.append("?");
-                sb.append(query);
-            }
-            final String fragment = uri.getFragment();
-            if (!TextUtils.isEmpty(fragment)) {
-                sb.append("#");
-                sb.append(fragment);
-            }
-            return Uri.parse(sb.toString());
-        }
-        return uri;
-    }
-
     private ContentLengthInputStream getStreamFromNetworkInternal(final String uriString, final Object extras) throws IOException {
-        final Uri uri = Uri.parse(uriString);
-        final Authorization auth;
-        final ParcelableCredentials account;
-        if (isTwitterAuthRequired(uri) && extras instanceof AccountExtra) {
-            final AccountExtra accountExtra = (AccountExtra) extras;
-            account = ParcelableAccount.getCredentials(mContext, accountExtra.account_id);
-            auth = TwitterAPIFactory.getAuthorization(account);
-        } else {
-            account = null;
-            auth = null;
-        }
-        Uri modifiedUri = getReplacedUri(uri, account != null ? account.api_url_format : null);
-
-        final List<Pair<String, String>> additionalHeaders = new ArrayList<>();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            additionalHeaders.add(Pair.create("Accept", "image/webp, */*"));
-        }
-        additionalHeaders.add(Pair.create("User-Agent", mUserAgent));
-        final String method = GET.METHOD;
-        final String requestUri;
-        if (auth != null && auth.hasAuthorization()) {
-            final Endpoint endpoint;
-            if (auth instanceof OAuthAuthorization) {
-                endpoint = new OAuthEndpoint(getEndpoint(modifiedUri), getEndpoint(uri));
-            } else {
-                endpoint = new Endpoint(getEndpoint(modifiedUri));
-            }
-            final List<Pair<String, String>> queries = new ArrayList<>();
-            for (String name : uri.getQueryParameterNames()) {
-                for (String value : uri.getQueryParameters(name)) {
-                    queries.add(Pair.create(name, value));
-                }
-            }
-            final RestRequestInfo info = new RestRequestInfo(method, uri.getPath(), queries, null,
-                    additionalHeaders, null, null, null, null);
-            additionalHeaders.add(Pair.create("Authorization", auth.getHeader(endpoint, info)));
-            requestUri = modifiedUri.toString();
-        } else {
-            requestUri = modifiedUri.toString();
-        }
-        final RestHttpRequest.Builder builder = new RestHttpRequest.Builder();
-        builder.method(method);
-        builder.url(requestUri);
-        builder.headers(additionalHeaders);
-        builder.extra(RequestType.MEDIA);
-        final RestHttpResponse resp = mClient.execute(builder.build());
-        final TypedData body = resp.getBody();
-        return new ContentLengthInputStream(body.stream(), (int) body.length());
-    }
-
-    private String getEndpoint(Uri uri) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(uri.getScheme());
-        sb.append("://");
-        sb.append(uri.getHost());
-        if (uri.getPort() != -1) {
-            sb.append(':');
-            sb.append(uri.getPort());
-        }
-        sb.append("/");
-        return sb.toString();
-    }
-
-    private boolean isTwitterAuthRequired(final Uri uri) {
-        return uri != null && "ton.twitter.com".equalsIgnoreCase(uri.getHost());
+        CacheDownloadLoader.DownloadResult result = mMediaDownloader.get(uriString, extras);
+        return new ContentLengthInputStream(result.getStream(), (int) result.getLength());
     }
 
     private boolean isTwitterProfileImage(final String uriString) {
         return !TextUtils.isEmpty(uriString) && TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES.matcher(uriString).matches();
-    }
-
-    private boolean isTwitterUri(final Uri uri) {
-        return uri != null && "ton.twitter.com".equalsIgnoreCase(uri.getHost());
     }
 
 }

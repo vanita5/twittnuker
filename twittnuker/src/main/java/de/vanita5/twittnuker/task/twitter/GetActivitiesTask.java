@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,124 +26,233 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
+import android.util.Log;
 
+import com.squareup.otto.Bus;
+
+import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.sqliteqb.library.Expression;
+
+import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.provider.TwidereDataStore;
-import de.vanita5.twittnuker.task.ManagedAsyncTask;
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.RefreshTaskParam;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent;
+import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.ErrorInfoStore;
+import de.vanita5.twittnuker.util.ReadStateManager;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.UriUtils;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
-import de.vanita5.twittnuker.util.message.GetActivitiesTaskEvent;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class GetActivitiesTask extends ManagedAsyncTask<Object, Object, Object> {
+import javax.inject.Inject;
 
-    protected final AsyncTwitterWrapper twitterWrapper;
-    protected final long[] accountIds;
-    protected final long[] maxIds;
-    protected final long[] sinceIds;
+public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, Object, Object> implements Constants {
 
-    public GetActivitiesTask(AsyncTwitterWrapper twitterWrapper, String tag, long[] accountIds, long[] maxIds, long[] sinceIds) {
-        super(twitterWrapper.getContext(), tag);
-        this.twitterWrapper = twitterWrapper;
-        this.accountIds = accountIds;
-        this.maxIds = maxIds;
-        this.sinceIds = sinceIds;
+    protected final Context context;
+    @Inject
+    protected SharedPreferencesWrapper preferences;
+    @Inject
+    protected Bus bus;
+    @Inject
+    protected ErrorInfoStore errorInfoStore;
+    @Inject
+    protected ReadStateManager readStateManager;
+    @Inject
+    protected UserColorNameManager userColorNameManager;
+
+    public GetActivitiesTask(Context context) {
+        this.context = context;
+        GeneralComponentHelper.build(context).inject(this);
     }
 
     @Override
-    protected Object doInBackground(Object... params) {
-        final Context context = twitterWrapper.getContext();
+    public Object doLongOperation(RefreshTaskParam param) {
+        if (param.shouldAbort()) return null;
+        final UserKey[] accountIds = param.getAccountKeys();
+        final String[] maxIds = param.getMaxIds();
+        final long[] maxSortIds = param.getMaxSortIds();
+        final String[] sinceIds = param.getSinceIds();
         final ContentResolver cr = context.getContentResolver();
-        final int loadItemLimit = twitterWrapper.getPreferences().getInt(KEY_LOAD_ITEM_LIMIT);
-        boolean getReadPosition = false;
+        final int loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT);
+        boolean saveReadPosition = false;
         for (int i = 0; i < accountIds.length; i++) {
-            final long accountId = accountIds[i];
-            final boolean noItemsBefore = DataStoreUtils.getActivityCountInDatabase(context,
-                    getContentUri(), accountId) <= 0;
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountId,
+            final UserKey accountKey = accountIds[i];
+            final boolean noItemsBefore = DataStoreUtils.getActivitiesCount(context, getContentUri(),
+                    accountKey) <= 0;
+            final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context,
+                    accountKey);
+            if (credentials == null) continue;
+            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, credentials, true,
                     true);
+            if (twitter == null) continue;
             final Paging paging = new Paging();
             paging.count(loadItemLimit);
-            if (maxIds != null && maxIds[i] > 0) {
-                paging.maxId(maxIds[i]);
+            String maxId = null;
+            long maxSortId = -1;
+            if (maxIds != null) {
+                maxId = maxIds[i];
+                if (maxSortIds != null) {
+                    maxSortId = maxSortIds[i];
+                }
+                if (maxId != null) {
+                    paging.maxId(maxId);
+                }
             }
-            if (sinceIds != null && sinceIds[i] > 0) {
-                paging.sinceId(sinceIds[i]);
-                if (maxIds == null || maxIds[i] <= 0) {
-                    paging.setLatestResults(true);
-                    getReadPosition = true;
+            String sinceId = null;
+            if (sinceIds != null) {
+                sinceId = sinceIds[i];
+                if (sinceId != null) {
+                    paging.sinceId(sinceId);
+                    if (maxIds == null || maxId == null) {
+                        paging.setLatestResults(true);
+                        saveReadPosition = true;
+                    }
                 }
             }
             // We should delete old activities has intersection with new items
-            long[] deleteBound = new long[2];
-            Arrays.fill(deleteBound, -1);
             try {
-                List<ContentValues> valuesList = new ArrayList<>();
-                for (Activity activity : getActivities(accountId, twitter, paging)) {
-                    final ParcelableActivity parcelableActivity = new ParcelableActivity(activity, accountId, false);
-                    if (deleteBound[0] < 0) {
-                        deleteBound[0] = parcelableActivity.min_position;
-                    } else {
-                        deleteBound[0] = Math.min(deleteBound[0], parcelableActivity.min_position);
-                    }
-                    if (deleteBound[1] < 0) {
-                        deleteBound[1] = parcelableActivity.max_position;
-                    } else {
-                        deleteBound[1] = Math.max(deleteBound[1], parcelableActivity.max_position);
-                    }
-                    valuesList.add(ContentValuesCreator.createActivity(parcelableActivity));
+                final ResponseList<Activity> activities = getActivities(twitter, credentials, paging);
+                storeActivities(cr, loadItemLimit, credentials, noItemsBefore, activities, sinceId,
+                        maxId, false);
+                if (saveReadPosition) {
+                    saveReadPosition(accountKey,credentials, twitter);
                 }
-                if (deleteBound[0] > 0 && deleteBound[1] > 0) {
-                    Expression where = Expression.and(
-                            Expression.equals(TwidereDataStore.Activities.ACCOUNT_ID, accountId),
-                            Expression.greaterEquals(TwidereDataStore.Activities.MIN_POSITION, deleteBound[0]),
-                            Expression.lesserEquals(TwidereDataStore.Activities.MAX_POSITION, deleteBound[1])
-                    );
-                    int rowsDeleted = cr.delete(getContentUri(), where.getSQL(), null);
-                    boolean insertGap = valuesList.size() >= loadItemLimit && !noItemsBefore
-                            && rowsDeleted <= 0;
-                    if (insertGap && !valuesList.isEmpty()) {
-                        valuesList.get(valuesList.size() - 1).put(TwidereDataStore.Activities.IS_GAP, true);
-                    }
-                }
-                ContentResolverUtils.bulkInsert(cr, getContentUri(), valuesList);
-                if (getReadPosition) {
-                    getReadPosition(accountId, twitter);
-                }
+                errorInfoStore.remove(getErrorInfoKey(), accountKey);
             } catch (TwitterException e) {
-
+                if (BuildConfig.DEBUG) {
+                    Log.w(LOGTAG, e);
+                }
+                if (e.getErrorCode() == 220) {
+                    errorInfoStore.put(getErrorInfoKey(), accountKey,
+                            ErrorInfoStore.CODE_NO_ACCESS_FOR_CREDENTIALS);
+                } else if (e.isCausedByNetworkIssue()) {
+                    errorInfoStore.put(getErrorInfoKey(), accountKey,
+                            ErrorInfoStore.CODE_NETWORK_ERROR);
+                }
             }
         }
         return null;
     }
 
-    protected abstract void getReadPosition(long accountId, Twitter twitter);
+    @NonNull
+    protected abstract String getErrorInfoKey();
 
-    protected abstract ResponseList<Activity> getActivities(long accountId, Twitter twitter, Paging paging) throws TwitterException;
+    private void storeActivities(ContentResolver cr, int loadItemLimit, ParcelableCredentials credentials,
+                                 boolean noItemsBefore, ResponseList<Activity> activities,
+                                 final String sinceId, final String maxId, boolean notify) {
+        long[] deleteBound = new long[2];
+        Arrays.fill(deleteBound, -1);
+        List<ContentValues> valuesList = new ArrayList<>();
+        int minIdx = -1;
+        long minPositionKey = -1;
+        if (!activities.isEmpty()) {
+            final long firstSortId = activities.get(0).getCreatedAt().getTime();
+            final long lastSortId = activities.get(activities.size() - 1).getCreatedAt().getTime();
+            // Get id diff of first and last item
+            final long sortDiff = firstSortId - lastSortId;
+            for (int i = 0, j = activities.size(); i < j; i++) {
+                Activity item = activities.get(i);
+                final ParcelableActivity activity = ParcelableActivityUtils.fromActivity(item,
+                        credentials.account_key, false);
+                activity.position_key = GetStatusesTask.getPositionKey(activity.timestamp,
+                        activity.timestamp, lastSortId, sortDiff, i, j);
+                if (deleteBound[0] < 0) {
+                    deleteBound[0] = activity.min_sort_position;
+                } else {
+                    deleteBound[0] = Math.min(deleteBound[0], activity.min_sort_position);
+                }
+                if (deleteBound[1] < 0) {
+                    deleteBound[1] = activity.max_sort_position;
+                } else {
+                    deleteBound[1] = Math.max(deleteBound[1], activity.max_sort_position);
+                }
+                if (minIdx == -1 || item.compareTo(activities.get(minIdx)) < 0) {
+                    minIdx = i;
+                    minPositionKey = activity.position_key;
+                }
+
+                activity.inserted_date = System.currentTimeMillis();
+                final ContentValues values = ContentValuesCreator.createActivity(activity,
+                        credentials, userColorNameManager);
+                valuesList.add(values);
+            }
+        }
+        int olderCount = -1;
+        if (minPositionKey > 0) {
+            olderCount = DataStoreUtils.getActivitiesCount(context, getContentUri(), minPositionKey,
+                    Activities.POSITION_KEY, false, credentials.account_key);
+        }
+        final Uri writeUri = UriUtils.appendQueryParameters(getContentUri(), QUERY_PARAM_NOTIFY,
+                notify);
+        if (deleteBound[0] > 0 && deleteBound[1] > 0) {
+            final Expression where = Expression.and(
+                    Expression.equalsArgs(Activities.ACCOUNT_KEY),
+                    Expression.greaterEqualsArgs(Activities.MIN_SORT_POSITION),
+                    Expression.lesserEqualsArgs(Activities.MAX_SORT_POSITION)
+            );
+            final String[] whereArgs = {credentials.account_key.toString(), String.valueOf(deleteBound[0]),
+                    String.valueOf(deleteBound[1])};
+            int rowsDeleted = cr.delete(writeUri, where.getSQL(), whereArgs);
+            // Why loadItemLimit / 2? because it will not acting strange in most cases
+            boolean insertGap = valuesList.size() >= loadItemLimit && !noItemsBefore && olderCount > 0
+                    && rowsDeleted <= 0 && activities.size() > loadItemLimit / 2;
+            if (insertGap && !valuesList.isEmpty()) {
+                valuesList.get(valuesList.size() - 1).put(Activities.IS_GAP, true);
+            }
+        }
+        ContentResolverUtils.bulkInsert(cr, writeUri, valuesList);
+
+        if (maxId != null && sinceId == null) {
+            final ContentValues noGapValues = new ContentValues();
+            noGapValues.put(Activities.IS_GAP, false);
+            final String noGapWhere = Expression.and(Expression.equalsArgs(Activities.ACCOUNT_KEY),
+                    Expression.equalsArgs(Activities.MIN_REQUEST_POSITION),
+                    Expression.equalsArgs(Activities.MAX_REQUEST_POSITION)).getSQL();
+            final String[] noGapWhereArgs = {credentials.toString(), maxId, maxId};
+            cr.update(writeUri, noGapValues, noGapWhere, noGapWhereArgs);
+        }
+    }
+
+    protected abstract void saveReadPosition(@NonNull final UserKey accountId,
+                                             ParcelableCredentials credentials, @NonNull final Twitter twitter);
+
+    protected abstract ResponseList<Activity> getActivities(@NonNull final Twitter twitter,
+                                                            @NonNull final ParcelableCredentials credentials,
+                                                            @NonNull final Paging paging)
+            throws TwitterException;
 
     @Override
-    protected void onPostExecute(Object result) {
-        super.onPostExecute(result);
+    public void afterExecute(Object result) {
+        context.getContentResolver().notifyChange(getContentUri(), null);
         bus.post(new GetActivitiesTaskEvent(getContentUri(), false, null));
     }
 
     protected abstract Uri getContentUri();
 
+    @UiThread
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+    public void beforeExecute() {
         bus.post(new GetActivitiesTaskEvent(getContentUri(), true, null));
     }
 }

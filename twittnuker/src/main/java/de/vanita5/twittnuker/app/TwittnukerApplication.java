@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,49 +34,85 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.multidex.MultiDex;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.ActionBarContextView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.squareup.okhttp.Dns;
+import com.afollestad.appthemeengine.ATE;
+import com.afollestad.appthemeengine.Config;
+import com.pnikosis.materialishprogress.ProgressWheel;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.apache.commons.lang3.ArrayUtils;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.AssistLauncherActivity;
 import de.vanita5.twittnuker.activity.MainActivity;
 import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.BugReporter;
 import de.vanita5.twittnuker.util.DebugModeUtils;
 import de.vanita5.twittnuker.util.ExternalThemeManager;
+import de.vanita5.twittnuker.util.HttpClientFactory;
 import de.vanita5.twittnuker.util.StrictModeUtils;
+import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereBugReporter;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
-
-import static de.vanita5.twittnuker.util.Utils.initAccountColor;
-import static de.vanita5.twittnuker.util.Utils.startRefreshServiceIfNeeded;
+import de.vanita5.twittnuker.util.theme.ActionBarContextViewViewProcessor;
+import de.vanita5.twittnuker.util.theme.FloatingActionButtonViewProcessor;
+import de.vanita5.twittnuker.util.theme.FontFamilyTagProcessor;
+import de.vanita5.twittnuker.util.theme.IconActionButtonTagProcessor;
+import de.vanita5.twittnuker.util.theme.ImageViewViewProcessor;
+import de.vanita5.twittnuker.util.theme.MaterialEditTextViewProcessor;
+import de.vanita5.twittnuker.util.theme.OptimalLinkColorTagProcessor;
+import de.vanita5.twittnuker.util.theme.ProfileImageViewViewProcessor;
+import de.vanita5.twittnuker.util.theme.ProgressWheelViewProcessor;
+import de.vanita5.twittnuker.util.theme.SwipeRefreshLayoutViewProcessor;
+import de.vanita5.twittnuker.util.theme.TabPagerIndicatorViewProcessor;
+import de.vanita5.twittnuker.util.theme.TextViewViewProcessor;
+import de.vanita5.twittnuker.util.theme.TimelineContentTextViewViewProcessor;
+import de.vanita5.twittnuker.view.ProfileImageView;
+import de.vanita5.twittnuker.view.TabPagerIndicator;
+import de.vanita5.twittnuker.view.ThemedMultiValueSwitch;
+import de.vanita5.twittnuker.view.TimelineContentTextView;
 
 public class TwittnukerApplication extends Application implements Constants,
         OnSharedPreferenceChangeListener {
 
     private static final String KEY_KEYBOARD_SHORTCUT_INITIALIZED = "keyboard_shortcut_initialized";
+    private static TwittnukerApplication sInstance;
 
     private Handler mHandler;
     private SharedPreferences mPreferences;
     private SQLiteOpenHelper mSQLiteOpenHelper;
     private SQLiteDatabase mDatabase;
 
-    private ApplicationModule mApplicationModule;
+    private ProfileImageViewViewProcessor mProfileImageViewViewProcessor;
+    private FontFamilyTagProcessor mFontFamilyTagProcessor;
 
     @NonNull
     public static TwittnukerApplication getInstance(@NonNull final Context context) {
         return (TwittnukerApplication) context.getApplicationContext();
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     public Handler getHandler() {
         return mHandler;
@@ -104,15 +140,70 @@ public class TwittnukerApplication extends Application implements Constants,
 
     @Override
     public void onCreate() {
+        sInstance = this;
         if (BuildConfig.DEBUG) {
             StrictModeUtils.detectAllVmPolicy();
         }
+        mProfileImageViewViewProcessor = new ProfileImageViewViewProcessor();
+        mFontFamilyTagProcessor = new FontFamilyTagProcessor();
+
+        ATE.registerViewProcessor(TabPagerIndicator.class, new TabPagerIndicatorViewProcessor());
+        ATE.registerViewProcessor(FloatingActionButton.class, new FloatingActionButtonViewProcessor());
+        ATE.registerViewProcessor(ActionBarContextView.class, new ActionBarContextViewViewProcessor());
+        ATE.registerViewProcessor(SwipeRefreshLayout.class, new SwipeRefreshLayoutViewProcessor());
+        ATE.registerViewProcessor(TimelineContentTextView.class, new TimelineContentTextViewViewProcessor());
+        ATE.registerViewProcessor(TextView.class, new TextViewViewProcessor());
+        ATE.registerViewProcessor(ImageView.class, new ImageViewViewProcessor());
+        ATE.registerViewProcessor(MaterialEditText.class, new MaterialEditTextViewProcessor());
+        ATE.registerViewProcessor(ProgressWheel.class, new ProgressWheelViewProcessor());
+        ATE.registerViewProcessor(ProfileImageView.class, mProfileImageViewViewProcessor);
+        ATE.registerTagProcessor(OptimalLinkColorTagProcessor.TAG, new OptimalLinkColorTagProcessor());
+        ATE.registerTagProcessor(FontFamilyTagProcessor.TAG, mFontFamilyTagProcessor);
+        ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR,
+                new IconActionButtonTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR));
+        ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_ACTIVATED,
+                new IconActionButtonTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_ACTIVATED));
+        ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_DISABLED,
+                new IconActionButtonTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_DISABLED));
+        ATE.registerTagProcessor(ThemedMultiValueSwitch.PREFIX_TINT, new ThemedMultiValueSwitch.TintTagProcessor());
+        final SharedPreferences preferences = getSharedPreferences();
+
+
+        mProfileImageViewViewProcessor.setStyle(Utils.getProfileImageStyle(preferences));
+        mFontFamilyTagProcessor.setFontFamily(ThemeUtils.getThemeFontFamily(preferences));
+
+        final int themeColor = preferences.getInt(KEY_THEME_COLOR, ContextCompat.getColor(this,
+                R.color.branding_color));
+        if (!ATE.config(this, VALUE_THEME_NAME_LIGHT).isConfigured()) {
+            //noinspection WrongConstant
+            ATE.config(this, VALUE_THEME_NAME_LIGHT)
+                    .primaryColor(themeColor)
+                    .accentColor(ThemeUtils.getOptimalAccentColor(themeColor, Color.BLACK))
+                    .coloredActionBar(true)
+                    .coloredStatusBar(true)
+                    .commit();
+        }
+        if (!ATE.config(this, VALUE_THEME_NAME_DARK).isConfigured()) {
+            ATE.config(this, VALUE_THEME_NAME_DARK)
+                    .accentColor(ThemeUtils.getOptimalAccentColor(themeColor, Color.WHITE))
+                    .coloredActionBar(false)
+                    .coloredStatusBar(true)
+                    .statusBarColor(Color.BLACK)
+                    .commit();
+        }
+        if (!ATE.config(this, null).isConfigured()) {
+            ATE.config(this, null)
+                    .accentColor(ThemeUtils.getOptimalAccentColor(themeColor, Color.WHITE))
+                    .coloredActionBar(false)
+                    .coloredStatusBar(false)
+                    .commit();
+        }
+        resetTheme(preferences);
         super.onCreate();
+        initializeAsyncTask();
         initDebugMode();
         initBugReport();
         mHandler = new Handler();
-        initializeAsyncTask();
-        initAccountColor(this);
 
         final PackageManager pm = getPackageManager();
         final ComponentName main = new ComponentName(this, MainActivity.class);
@@ -123,9 +214,7 @@ public class TwittnukerApplication extends Application implements Constants,
             pm.setComponentEnabledSetting(assist, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                     PackageManager.DONT_KILL_APP);
         }
-        startRefreshServiceIfNeeded(this);
-
-        reloadConnectivitySettings();
+        Utils.startRefreshServiceIfNeeded(this);
 
         DependencyHolder holder = DependencyHolder.get(this);
         registerActivityLifecycleCallbacks(holder.getActivityTracker());
@@ -174,56 +263,115 @@ public class TwittnukerApplication extends Application implements Constants,
 
     @Override
     public void onLowMemory() {
-        final ApplicationModule module = getApplicationModule();
-        module.onLowMemory();
+        final DependencyHolder holder = DependencyHolder.get(this);
         super.onLowMemory();
     }
 
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
         switch (key) {
-            case KEY_REFRESH_INTERVAL:
+            case KEY_REFRESH_INTERVAL: {
                 stopService(new Intent(this, RefreshService.class));
-                startRefreshServiceIfNeeded(this);
+                Utils.startRefreshServiceIfNeeded(this);
                 break;
+            }
             case KEY_ENABLE_PROXY:
-            case KEY_CONNECTION_TIMEOUT:
             case KEY_PROXY_HOST:
             case KEY_PROXY_PORT:
             case KEY_PROXY_TYPE:
             case KEY_PROXY_USERNAME:
             case KEY_PROXY_PASSWORD:
-                reloadConnectivitySettings();
+            case KEY_CONNECTION_TIMEOUT:
+            case KEY_RETRY_ON_NETWORK_ISSUE: {
+                HttpClientFactory.reloadConnectivitySettings(this);
                 break;
+            }
             case KEY_DNS_SERVER:
             case KEY_TCP_DNS_QUERY:
+            case KEY_BUILTIN_DNS_RESOLVER: {
                 reloadDnsSettings();
                 break;
+            }
             case KEY_CONSUMER_KEY:
             case KEY_CONSUMER_SECRET:
             case KEY_API_URL_FORMAT:
             case KEY_AUTH_TYPE:
-            case KEY_SAME_OAUTH_SIGNING_URL:
+            case KEY_SAME_OAUTH_SIGNING_URL: {
                 final Editor editor = preferences.edit();
                 editor.putLong(KEY_API_LAST_CHANGE, System.currentTimeMillis());
                 editor.apply();
                 break;
-            case KEY_EMOJI_SUPPORT:
-                DependencyHolder.get(this).getExternalThemeManager().initEmojiSupport();
+            }
+            case KEY_EMOJI_SUPPORT: {
+                DependencyHolder.get(this).getExternalThemeManager().reloadEmojiPreferences();
                 break;
+            }
+            case KEY_THEME: {
+                resetTheme(preferences);
+                Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK);
+                break;
+            }
+            case KEY_THEME_BACKGROUND: {
+                Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK);
+                break;
+            }
+            case KEY_PROFILE_IMAGE_STYLE: {
+                Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK);
+                mProfileImageViewViewProcessor.setStyle(Utils.getProfileImageStyle(preferences.getString(key, null)));
+                break;
+            }
+            case KEY_THEME_FONT_FAMILY: {
+                Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK);
+                mFontFamilyTagProcessor.setFontFamily(ThemeUtils.getThemeFontFamily(preferences));
+                break;
+            }
+            case KEY_THEME_COLOR: {
+                final int themeColor = preferences.getInt(key, ContextCompat.getColor(this,
+                        R.color.branding_color));
+                //noinspection WrongConstant
+                ATE.config(this, VALUE_THEME_NAME_LIGHT)
+                        .primaryColor(themeColor)
+                        .accentColor(ThemeUtils.getOptimalAccentColor(themeColor, Color.BLACK))
+                        .coloredActionBar(true)
+                        .coloredStatusBar(true)
+                        .commit();
+                ATE.config(this, VALUE_THEME_NAME_DARK)
+                        .accentColor(ThemeUtils.getOptimalAccentColor(themeColor, Color.WHITE))
+                        .coloredActionBar(false)
+                        .coloredStatusBar(true)
+                        .statusBarColor(Color.BLACK)
+                        .commit();
+                ATE.config(this, null)
+                        .accentColor(ThemeUtils.getOptimalAccentColor(themeColor, Color.BLACK))
+                        .coloredActionBar(false)
+                        .coloredStatusBar(false)
+                        .commit();
+                break;
+            }
+        }
+    }
+
+    private void resetTheme(SharedPreferences preferences) {
+        switch (ThemeUtils.getLocalNightMode(preferences)) {
+            case AppCompatDelegate.MODE_NIGHT_AUTO: {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+                break;
+            }
+            case AppCompatDelegate.MODE_NIGHT_YES: {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            }
+            default: {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            }
         }
     }
 
     private void reloadDnsSettings() {
         DependencyHolder holder = DependencyHolder.get(this);
-        final Dns dns = holder.getDns();
-        if (dns instanceof TwidereDns) {
-            ((TwidereDns) dns).reloadDnsSettings();
-        }
-    }
-
-    public void reloadConnectivitySettings() {
-        getApplicationModule().reloadConnectivitySettings();
+        final TwidereDns dns = holder.getDns();
+        dns.reloadDnsSettings();
     }
 
 
@@ -236,9 +384,8 @@ public class TwittnukerApplication extends Application implements Constants,
         }
     }
 
-    public ApplicationModule getApplicationModule() {
-        if (mApplicationModule != null) return mApplicationModule;
-        return mApplicationModule = new ApplicationModule(this);
+    @Nullable
+    public static TwittnukerApplication getInstance() {
+        return sInstance;
     }
-
 }

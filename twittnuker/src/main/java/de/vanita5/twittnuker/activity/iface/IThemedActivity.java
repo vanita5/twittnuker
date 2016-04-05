@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,37 +22,14 @@
 
 package de.vanita5.twittnuker.activity.iface;
 
-import de.vanita5.twittnuker.view.ShapedImageView;
-
 public interface IThemedActivity {
 
     int getCurrentThemeBackgroundAlpha();
 
     String getCurrentThemeBackgroundOption();
 
-    int getCurrentThemeColor();
-
-    int getCurrentActionBarColor();
-
-    int getCurrentThemeResourceId();
-	
     int getThemeBackgroundAlpha();
 
     String getThemeBackgroundOption();
-
-    int getThemeColor();
-
-	int getActionBarColor();
-
-	String getThemeFontFamily();
-
-    String getCurrentThemeFontFamily();
-
-    int getThemeResourceId();
-
-    @ShapedImageView.ShapeStyle
-    int getCurrentProfileImageStyle();
-
-    void restart();
 
 }

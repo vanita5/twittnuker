@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.fragment;
 
 import android.os.Bundle;
-import android.preference.Preference;
+import android.support.v7.preference.Preference;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -38,12 +38,11 @@ public class AccountNotificationSettingsFragment extends BaseAccountPreferenceFr
         if (preference != null && account != null) {
             preference.setDefaultValue(account.color);
         }
-
     }
 
     @Override
     protected int getPreferencesResource() {
-        return R.xml.settings_account_notifications;
+        return R.xml.preferences_account_notifications;
     }
 
     @Override

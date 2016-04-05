@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,10 @@ public class SavedSearch extends TwitterResponseObject implements Comparable<Sav
 
     @Override
     public int compareTo(@NonNull SavedSearch another) {
-        return (int) (id - another.id);
+        final long diff = id - another.id;
+        if (diff > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+        if (diff < Integer.MIN_VALUE) return Integer.MIN_VALUE;
+        return (int) diff;
     }
 
 }

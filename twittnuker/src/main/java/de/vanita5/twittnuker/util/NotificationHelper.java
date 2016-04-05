@@ -1,3 +1,25 @@
+/*
+ * Twittnuker - Twitter client for Android
+ *
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *
+ * This program incorporates a modified version of Twidere.
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.vanita5.twittnuker.util;
 
 import android.app.Notification;
@@ -11,9 +33,11 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.net.ConnectivityManagerCompat;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -22,6 +46,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.mariotaku.sqliteqb.library.Expression;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,50 +58,53 @@ import javax.inject.Inject;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.HomeActivity;
+import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
 import de.vanita5.twittnuker.receiver.NotificationActionReceiver;
-import de.vanita5.twittnuker.util.dagger.ApplicationModule;
-import de.vanita5.twittnuker.util.dagger.DependencyHolder;
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
 import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
-import static de.vanita5.twittnuker.util.Utils.isNotificationsSilent;
-import static de.vanita5.twittnuker.util.ConnectivityUtils.isOnWifi;
 
 public class NotificationHelper implements Constants {
 
     private Context mContext;
     @Inject
     ImageLoader mMediaLoader;
+    @Inject
+    ActivityTracker mActivityTracker;
     private ImagePreloader mImagePreloader;
     private SharedPreferencesWrapper mSharedPreferences;
 
     public NotificationHelper(final Context context) {
         this.mContext = context;
-        DependencyHolder holder = DependencyHolder.get(context);
-        mMediaLoader = holder.getmImageLoader();
+        GeneralComponentHelper.build(context).inject(this);
         mImagePreloader = new ImagePreloader(context, mMediaLoader);
         mSharedPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
     @Nullable
-    private List<NotificationContent> getCachedNotifications(final long argAccountId) {
+    private List<NotificationContent> getCachedNotifications(final UserKey userKey) {
+        if (userKey == null) return null;
         Cursor c = null;
         List<NotificationContent> results = new ArrayList<>();
         try {
-            if (argAccountId <= 0) return null;
             final ContentResolver resolver = mContext.getContentResolver();
-            final String where = PushNotifications.ACCOUNT_ID + " = " + argAccountId;
+
+            final String where = Expression.equalsArgs(PushNotifications.ACCOUNT_KEY).getSQL();
+            final String[] whereArgs = {userKey.toString()};
+
             c = resolver.query(PushNotifications.CONTENT_URI, PushNotifications.MATRIX_COLUMNS,
-                    where, null, PushNotifications.DEFAULT_SORT_ORDER);
+                    where, whereArgs, PushNotifications.DEFAULT_SORT_ORDER);
 
             if (c == null || c.getCount() == 0) return null;
             c.moveToFirst();
-            final int idxAccountId = c.getColumnIndex(PushNotifications.ACCOUNT_ID);
+            final int idxAccountKey = c.getColumnIndex(PushNotifications.ACCOUNT_KEY);
             final int idxObjectId = c.getColumnIndex(PushNotifications.OBJECT_ID);
             final int idxObjectUserId = c.getColumnIndex(PushNotifications.OBJECT_USER_ID);
             final int idxMessage = c.getColumnIndex(PushNotifications.MESSAGE);
@@ -86,9 +114,9 @@ public class NotificationHelper implements Constants {
 
             while (!c.isAfterLast()) {
                 NotificationContent notification = new NotificationContent();
-                notification.setAccountId(c.getLong(idxAccountId));
+                notification.setAccountKey(UserKey.valueOf(c.getString(idxAccountKey)));
                 notification.setObjectId(c.getString(idxObjectId));
-                notification.setObjectUserId(c.getString(idxObjectUserId));
+                notification.setObjectUserKey(new UserKey(c.getString(idxObjectUserId), TwittnukerConstants.USER_TYPE_TWITTER_COM));
                 notification.setMessage(c.getString(idxMessage));
                 notification.setTimestamp(c.getLong(idxTimestamp));
                 notification.setFromUser(c.getString(idxFromUser));
@@ -103,13 +131,13 @@ public class NotificationHelper implements Constants {
     }
 
     public void cachePushNotification(final NotificationContent notification) {
-        List<NotificationContent> cache = getCachedNotifications(notification.getAccountId());
+        List<NotificationContent> cache = getCachedNotifications(notification.getAccountKey());
         if (cache != null && !cache.isEmpty() && cache.contains(notification)) return;
         final ContentResolver resolver = mContext.getContentResolver();
         final ContentValues values = new ContentValues();
-        values.put(PushNotifications.ACCOUNT_ID, notification.getAccountId());
+        values.put(PushNotifications.ACCOUNT_KEY, String.valueOf(notification.getAccountKey()));
         values.put(PushNotifications.OBJECT_ID, notification.getObjectId());
-        values.put(PushNotifications.OBJECT_USER_ID, notification.getObjectUserId());
+        values.put(PushNotifications.OBJECT_USER_ID, notification.getObjectUserKey().getId());
         values.put(PushNotifications.FROM_USER, notification.getFromUser());
         values.put(PushNotifications.MESSAGE, notification.getMessage());
         values.put(PushNotifications.NOTIFICATION_TYPE, notification.getType());
@@ -117,36 +145,39 @@ public class NotificationHelper implements Constants {
         resolver.insert(PushNotifications.CONTENT_URI, values);
     }
 
-    public void deleteCachedNotifications(final long accountId, final String type) {
+    public void deleteCachedNotifications(final UserKey userKey, final String type) {
         final ContentResolver resolver = mContext.getContentResolver();
-        String where = PushNotifications.ACCOUNT_ID + " = " + accountId;
+
+        String where = Expression.equalsArgs(PushNotifications.ACCOUNT_KEY).getSQL();
+        final String[] whereArgs = {userKey.toString()};
+
         if (type != null && !type.isEmpty()) {
             where += " AND " + PushNotifications.NOTIFICATION_TYPE + " = '" + type + "'";
         }
         Cursor c = resolver.query(PushNotifications.CONTENT_URI, PushNotifications.MATRIX_COLUMNS,
-                where, null, PushNotifications.DEFAULT_SORT_ORDER);
+                where, whereArgs, PushNotifications.DEFAULT_SORT_ORDER);
 
         // Only rebuild notifications if there are entries that will be removed
         if (c == null) return;
         if (c.getCount() > 0) {
-            resolver.delete(PushNotifications.CONTENT_URI, where, null);
-            rebuildNotification(accountId);
+            resolver.delete(PushNotifications.CONTENT_URI, where, whereArgs);
+            rebuildNotification(userKey);
         }
         c.close();
     }
 
-    private void rebuildNotification(final long accountId) {
+    private void rebuildNotification(final UserKey userKey) {
         NotificationManager notificationManager = getNotificationManager();
-        notificationManager.cancel(getAccountNotificationId(NOTIFICATION_ID_PUSH, accountId));
+        notificationManager.cancel(getAccountNotificationId(NOTIFICATION_ID_PUSH, userKey.getId()));
 
-        List<NotificationContent> pendingNotifications = getCachedNotifications(accountId);
-        long[] accountIdArray = {accountId};
+        List<NotificationContent> pendingNotifications = getCachedNotifications(userKey);
+        UserKey[] userKeys = {userKey};
 
         //we trigger rebuilding the notification by just calling buildNotificationByType()
         //with the last notification from the db
         if (pendingNotifications != null && !pendingNotifications.isEmpty()) {
             NotificationContent notification = pendingNotifications.get(0);
-            AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(mContext, accountIdArray);
+            AccountPreferences[] prefs = AccountPreferences.getAccountPreferences(mContext, userKeys);
 
             //Should always contains just one pref
             if (prefs.length == 1) {
@@ -158,31 +189,19 @@ public class NotificationHelper implements Constants {
     private ParcelableStatus getParcelableStatusDummy(NotificationContent notification,
                                                       boolean is_retweet) {
         ParcelableStatus status = new ParcelableStatus();
-        try {
-            status.id = Long.parseLong(notification.getObjectId());
-        } catch (NumberFormatException e) {
-            status.id = -1;
-        }
-        try {
-            status.user_id = Long.parseLong(notification.getObjectUserId());
-        } catch (NumberFormatException e) {
-            status.user_id = -1;
-        }
-        status.account_id = notification.getAccountId();
+        status.id = notification.getObjectId();
+        status.user_key = notification.getObjectUserKey();
+        status.account_key = notification.getAccountKey();
         status.user_screen_name = notification.getFromUser();
         status.user_profile_image_url = notification.getProfileImageUrl();
         status.is_retweet = is_retweet;
         status.is_favorite = false;
         status.text_plain = notification.getMessage();
-        status.text_html = notification.getMessage();
+        status.text_unescaped = notification.getMessage();
         status.timestamp = notification.getTimestamp();
 
         if (is_retweet) {
-            try {
-                status.retweeted_by_user_id = Long.parseLong(notification.getObjectUserId());
-            } catch (NumberFormatException e) {
-                status.retweeted_by_user_id = -1;
-            }
+            status.retweeted_by_user_key = notification.getObjectUserKey();
             status.retweeted_by_user_screen_name = notification.getFromUser();
         }
 
@@ -193,7 +212,7 @@ public class NotificationHelper implements Constants {
                                         final boolean rebuild) {
         final String type = notification.getType();
         final int notificationType = pref.getMentionsNotificationType();
-        List<NotificationContent> pendingNotifications = getCachedNotifications(notification.getAccountId());
+        List<NotificationContent> pendingNotifications = getCachedNotifications(notification.getAccountKey());
         if (pendingNotifications == null) return;
         final int notificationCount = pendingNotifications.size();
 
@@ -222,10 +241,10 @@ public class NotificationHelper implements Constants {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_STATUS);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
@@ -237,7 +256,7 @@ public class NotificationHelper implements Constants {
                     final Intent replyIntent = new Intent(INTENT_ACTION_REPLY);
                     replyIntent.setExtrasClassLoader(mContext.getClassLoader());
                     replyIntent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
-                            notification.getAccountId()));
+                            notification.getAccountKey().getId()));
                     replyIntent.putExtra(EXTRA_STATUS, status);
                     replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     builder.addAction(R.drawable.ic_action_reply, mContext.getString(R.string.reply),
@@ -271,10 +290,10 @@ public class NotificationHelper implements Constants {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_STATUS);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.retweeted_by_user_id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", status.retweeted_by_user_key != null ? status.retweeted_by_user_key.getId() : null);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
@@ -286,8 +305,8 @@ public class NotificationHelper implements Constants {
                     final Uri.Builder viewProfileBuilder = new Uri.Builder();
                     viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
                     viewProfileBuilder.authority(AUTHORITY_USER);
-                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
-                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(status.retweeted_by_user_id));
+                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, status.account_key.toString());
+                    viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_KEY, status.retweeted_by_user_key != null ? status.retweeted_by_user_key.toString() : null);
                     final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
                     viewProfileIntent.setPackage(TWITTNUKER_PACKAGE_NAME);
                     builder.addAction(R.drawable.ic_action_profile, mContext.getString(R.string.view_user_profile),
@@ -308,10 +327,10 @@ public class NotificationHelper implements Constants {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_QUOTE);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_QUOTE);
@@ -323,7 +342,7 @@ public class NotificationHelper implements Constants {
                     final Intent replyIntent = new Intent(INTENT_ACTION_REPLY);
                     replyIntent.setExtrasClassLoader(mContext.getClassLoader());
                     replyIntent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
-                            notification.getAccountId()));
+                            notification.getAccountKey().getId()));
                     replyIntent.putExtra(EXTRA_STATUS, status);
                     replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     builder.addAction(R.drawable.ic_action_reply, mContext.getString(R.string.reply),
@@ -363,10 +382,10 @@ public class NotificationHelper implements Constants {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_STATUS);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_STATUS_ID, String.valueOf(status.id));
                     UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(status.id));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_id));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(status.user_key.getId()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_STATUS);
@@ -379,8 +398,8 @@ public class NotificationHelper implements Constants {
                         final Uri.Builder viewProfileBuilder = new Uri.Builder();
                         viewProfileBuilder.scheme(SCHEME_TWITTNUKER);
                         viewProfileBuilder.authority(AUTHORITY_USER);
-                        viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(status.account_id));
-                        viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, String.valueOf(notification.getSourceUser().getId()));
+                        viewProfileBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, notification.getAccountKey().toString());
+                        viewProfileBuilder.appendQueryParameter(QUERY_PARAM_USER_KEY, notification.getObjectUserKey().toString());
                         final Intent viewProfileIntent = new Intent(Intent.ACTION_VIEW, viewProfileBuilder.build());
                         viewProfileIntent.setPackage(TWITTNUKER_PACKAGE_NAME);
                         builder.addAction(R.drawable.ic_action_profile, mContext.getString(R.string.view_user_profile),
@@ -398,11 +417,11 @@ public class NotificationHelper implements Constants {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_USER);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getAccountId()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, notification.getAccountKey().toString());
                     uriBuilder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, notification.getFromUser());
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_USER_ID, notification.getObjectUserId());
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_USER_KEY, notification.getObjectUserKey().toString());
 //                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(notification.getObjectUserId()));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", notification.getObjectUserKey().getId());
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_USER);
@@ -421,10 +440,10 @@ public class NotificationHelper implements Constants {
                     final Uri.Builder uriBuilder = new Uri.Builder();
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getAccountId()));
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, String.valueOf(notification.getObjectUserId()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getAccountKey()));
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, notification.getObjectUserKey().getId());
 //                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
-                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", String.valueOf(notification.getObjectUserId()));
+                    UriExtraUtils.addExtra(uriBuilder, "item_user_id", notification.getObjectUserKey().getId());
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
                     uriBuilder.appendQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE, AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
@@ -464,7 +483,7 @@ public class NotificationHelper implements Constants {
         builder.setContentTitle("@" + notification.getFromUser());
         builder.setContentText(contentText);
         if (!rebuild) builder.setTicker(ticker);
-        builder.setDeleteIntent(getDeleteIntent(notification.getAccountId()));
+        builder.setDeleteIntent(getDeleteIntent(notification.getAccountKey()));
         builder.setAutoCancel(true);
         builder.setWhen(notification.getTimestamp());
 
@@ -477,7 +496,7 @@ public class NotificationHelper implements Constants {
                 Spanned line = getInboxLineByType(pendingNotification);
                 if (line != null) inboxStyle.addLine(line);
             }
-            inboxStyle.setSummaryText("@" + getAccountScreenName(mContext, notification.getAccountId()));
+            inboxStyle.setSummaryText("@" + getAccountScreenName(mContext, notification.getAccountKey()));
             builder.setNumber(notificationCount);
             builder.setStyle(inboxStyle);
         } else if (notificationCount == 1) {
@@ -491,7 +510,7 @@ public class NotificationHelper implements Constants {
         }
 
         int defaults = 0;
-        if (!isNotificationsSilent(mContext)) {
+        if (isNotificationAudible()) {
             if (AccountPreferences.isNotificationHasRingtone(notificationType)) {
                 final Uri ringtone = pref.getNotificationRingtone();
                 builder.setSound(ringtone);
@@ -509,7 +528,7 @@ public class NotificationHelper implements Constants {
         }
         NotificationManager notificationManager = getNotificationManager();
         notificationManager.notify(getAccountNotificationId(NOTIFICATION_ID_PUSH,
-                notification.getAccountId()), builder.build());
+                notification.getAccountKey().getId()), builder.build());
     }
 
     private void buildErrorNotification(final int type, final AccountPreferences pref) {
@@ -527,7 +546,7 @@ public class NotificationHelper implements Constants {
         builder.setAutoCancel(true);
         builder.setWhen(System.currentTimeMillis());
         int defaults = 0;
-        if (!isNotificationsSilent(mContext)) {
+        if (isNotificationAudible()) {
             if (AccountPreferences.isNotificationHasRingtone(pref.getMentionsNotificationType())) { //TODO Settings for error messages
                 final Uri ringtone = pref.getNotificationRingtone();
                 builder.setSound(ringtone, Notification.STREAM_DEFAULT);
@@ -580,24 +599,24 @@ public class NotificationHelper implements Constants {
         if (NotificationContent.NOTIFICATION_TYPE_MENTION.equals(type)) {
             return Html.fromHtml(String.format("<b>%s:</b> %s", nameEscaped, textEscaped));
         } else if (NotificationContent.NOTIFICATION_TYPE_RETWEET.equals(type)) {
-            return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_retweet) + ":</b> %s",
-                    nameEscaped, textEscaped));
+            return Html.fromHtml(String.format("<b>%s %s:</b> %s",
+                    nameEscaped, mContext.getString(R.string.notification_new_retweet), textEscaped));
         } else if (NotificationContent.NOTIFICATION_TYPE_FAVORITE.equals(type)) {
             if (mSharedPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
-                return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_favorite) + ":</b> %s",
-                        nameEscaped, textEscaped));
+                return Html.fromHtml(String.format("<b>%s %s:</b> %s",
+                        nameEscaped, mContext.getString(R.string.notification_new_favorite),textEscaped));
             } else {
-                return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_like) + ":</b> %s",
-                        nameEscaped, textEscaped));
+                return Html.fromHtml(String.format("<b>%s %s:</b> %s",
+                        nameEscaped, mContext.getString(R.string.notification_new_like), textEscaped));
             }
         } else if (NotificationContent.NOTIFICATION_TYPE_FOLLOWER.equals(type)) {
-            return Html.fromHtml(String.format("<b>%s</b> " + mContext.getString(R.string.notification_new_follower),
-                    nameEscaped));
+            return Html.fromHtml(String.format("<b>%s</b> %s",
+                    nameEscaped, mContext.getString(R.string.notification_new_follower)));
         } else if (NotificationContent.NOTIFICATION_TYPE_DIRECT_MESSAGE.equals(type)) {
-            return Html.fromHtml(String.format("<b>%s:</b>", mContext.getString(R.string.notification_new_direct_message)) + " " + textEscaped);
+            return Html.fromHtml(String.format("<b>%s:</b> %s", mContext.getString(R.string.notification_new_direct_message), textEscaped));
         } else if (NotificationContent.NOTIFICATION_TYPE_QUOTE.equals(type)) {
-            return Html.fromHtml(String.format("<b>%s " + mContext.getString(R.string.notification_new_quote) + ":</b> %s",
-                    nameEscaped, textEscaped));
+            return Html.fromHtml(String.format("<b>%s %s:</b> %s",
+                    nameEscaped, mContext.getString(R.string.notification_new_quote), textEscaped));
         }
         return null;
     }
@@ -609,10 +628,10 @@ public class NotificationHelper implements Constants {
         return text;
     }
 
-    private PendingIntent getDeleteIntent(final long accountId) {
+    private PendingIntent getDeleteIntent(final UserKey accountKey) {
         Intent intent = new Intent(mContext, NotificationActionReceiver.class);
         intent.setAction(INTENT_ACTION_PUSH_NOTIFICATION_CLEARED);
-        intent.putExtra(EXTRA_USER_ID, accountId);
+        intent.putExtra(EXTRA_ACCOUNT_KEY, accountKey);
         return PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
@@ -621,7 +640,7 @@ public class NotificationHelper implements Constants {
         intent.setAction(INTENT_ACTION_RETWEET);
         intent.putExtra(EXTRA_STATUS, status);
         intent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
-                status.account_id));
+                status.account_key.getId()));
         return PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
@@ -630,7 +649,7 @@ public class NotificationHelper implements Constants {
         intent.setAction(INTENT_ACTION_FAVORITE);
         intent.putExtra(EXTRA_STATUS, status);
         intent.putExtra(EXTRA_NOTIFICATION_ID, getAccountNotificationId(NOTIFICATION_ID_PUSH,
-                status.account_id));
+                status.account_key.getId()));
         return PendingIntent.getBroadcast(mContext, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
@@ -639,6 +658,8 @@ public class NotificationHelper implements Constants {
     }
 
     private Bitmap getProfileImageForNotification(final String profileImageUrl) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
         final Resources res = mContext.getResources();
         final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
         final int h = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
@@ -647,9 +668,13 @@ public class NotificationHelper implements Constants {
         Bitmap profileImage = null;
         if (profileImageFile != null && profileImageFile.isFile()) {
             profileImage = BitmapFactory.decodeFile(profileImageFile.getAbsolutePath());
-        } else if (isOnWifi(mContext)) {
+        } else if (ConnectivityManagerCompat.isActiveNetworkMetered(connectivityManager)) {
             profileImage = mMediaLoader.loadImageSync(profileImageUrl);
         }
         return (profileImage != null) ? Bitmap.createScaledBitmap(profileImage, w, h, true) : null;
+    }
+
+    private boolean isNotificationAudible() {
+        return !mActivityTracker.isHomeActivityStarted();
     }
 }

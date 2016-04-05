@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,46 +34,75 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
+
 import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
-import de.vanita5.twittnuker.model.util.LongArrayConverter;
+import de.vanita5.twittnuker.model.util.UserKeyConverter;
+import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
+import de.vanita5.twittnuker.model.util.UserKeysConverter;
+import de.vanita5.twittnuker.model.util.UserKeysCursorFieldConverter;
+import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 
 import java.util.Arrays;
 
 @ParcelablePlease(allFields = false)
 @JsonObject
-@CursorObject(valuesCreator = true)
+@CursorObject(valuesCreator = true, tableInfo = true)
 public class ParcelableActivity implements Comparable<ParcelableActivity>, Parcelable {
 
+    public static final Creator<ParcelableActivity> CREATOR = new Creator<ParcelableActivity>() {
+        @Override
+        public ParcelableActivity createFromParcel(Parcel source) {
+            ParcelableActivity target = new ParcelableActivity();
+            ParcelableActivityParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        @Override
+        public ParcelableActivity[] newArray(int size) {
+            return new ParcelableActivity[size];
+        }
+    };
+
     @ParcelableThisPlease
-    @CursorField(value = Activities._ID, excludeWrite = true)
+    @CursorField(value = Activities._ID, excludeWrite = true, type = TwidereDataStore.TYPE_PRIMARY_KEY)
     public long _id;
     @ParcelableThisPlease
-    @JsonField(name = "account_id")
-    @CursorField(value = Activities.ACCOUNT_ID)
-    public long account_id;
+    @JsonField(name = "position_key")
+    @CursorField(Activities.POSITION_KEY)
+    public long position_key;
+    @ParcelableThisPlease
+    @JsonField(name = "account_id", typeConverter = UserKeyConverter.class)
+    @CursorField(value = Activities.ACCOUNT_KEY, converter = UserKeyCursorFieldConverter.class)
+    public UserKey account_key;
     @ParcelableThisPlease
     @JsonField(name = "timestamp")
     @CursorField(value = Activities.TIMESTAMP)
     public long timestamp;
     @ParcelableThisPlease
     @JsonField(name = "max_position")
-    @CursorField(value = Activities.MAX_POSITION)
-    public long max_position;
+    @CursorField(value = Activities.MAX_SORT_POSITION)
+    public long max_sort_position;
     @ParcelableThisPlease
     @JsonField(name = "min_position")
-    @CursorField(value = Activities.MIN_POSITION)
-    public long min_position;
+    @CursorField(value = Activities.MIN_SORT_POSITION)
+    public long min_sort_position;
+    @JsonField(name = "max_request_position")
+    @CursorField(value = Activities.MAX_REQUEST_POSITION)
+    public String max_position;
+    @ParcelableThisPlease
+    @JsonField(name = "min_request_position")
+    @CursorField(value = Activities.MIN_REQUEST_POSITION)
+    public String min_position;
     @ParcelableThisPlease
     @JsonField(name = "action")
     @CursorField(value = Activities.ACTION)
     public String action;
 
     @ParcelableThisPlease
-    @JsonField(name = "source_ids")
-    @CursorField(value = Activities.SOURCE_IDS, converter = LongArrayConverter.class)
-    public long[] source_ids;
+    @JsonField(name = "source_ids", typeConverter = UserKeysConverter.class)
+    @CursorField(value = Activities.SOURCE_IDS, converter = UserKeysCursorFieldConverter.class)
+    public UserKey[] source_ids;
 
     @ParcelableThisPlease
     @JsonField(name = "sources")
@@ -113,55 +142,93 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     @CursorField(value = Activities.STATUS_USER_FOLLOWING, excludeWrite = true)
     public boolean status_user_following;
 
+    @ParcelableThisPlease
+    @JsonField(name = "account_color")
+    @CursorField(Activities.ACCOUNT_COLOR)
+    public int account_color;
+    @ParcelableThisPlease
+    @JsonField(name = "status_user_color")
+    @CursorField(Activities.STATUS_USER_COLOR)
+    public int status_user_color;
+    @ParcelableThisPlease
+    @JsonField(name = "status_quoted_user_color")
+    @CursorField(Activities.STATUS_QUOTED_USER_COLOR)
+    public int status_quoted_user_color;
+    @ParcelableThisPlease
+    @JsonField(name = "status_retweet_user_color")
+    @CursorField(Activities.STATUS_RETWEET_USER_COLOR)
+    public int status_retweet_user_color;
 
-    public transient long[] after_filtered_source_ids;
+
+    @CursorField(value = Activities.STATUS_QUOTE_SPANS, converter = LoganSquareCursorFieldConverter.class)
+    public SpanItem[] status_quote_spans;
+
+    @CursorField(Activities.STATUS_QUOTE_TEXT_PLAIN)
+    public String status_quote_text_plain;
+
+    @CursorField(Activities.STATUS_QUOTE_SOURCE)
+    public String status_quote_source;
+
+    @CursorField(value = Activities.STATUS_QUOTED_USER_KEY, converter = UserKeyCursorFieldConverter.class)
+    public UserKey status_quoted_user_key;
+
+    @CursorField(value = Activities.STATUS_USER_KEY, converter = UserKeyCursorFieldConverter.class)
+    public UserKey status_user_key;
+
+    @CursorField(value = Activities.STATUS_SPANS, converter = LoganSquareCursorFieldConverter.class)
+    public SpanItem[] status_spans;
+
+    @CursorField(Activities.STATUS_TEXT_PLAIN)
+    public String status_text_plain;
+
+    @CursorField(Activities.STATUS_SOURCE)
+    public String status_source;
+
+    @CursorField(value = Activities.STATUS_RETWEETED_BY_USER_KEY, converter = UserKeyCursorFieldConverter.class)
+    public UserKey status_retweeted_by_user_key;
+
+    @CursorField(Activities.INSERTED_DATE)
+    public long inserted_date;
+
+    @CursorField(Activities.STATUS_ID)
+    @Nullable
+    public String status_id;
+
+    @CursorField(Activities.STATUS_RETWEET_ID)
+    @Nullable
+    public String status_retweet_id;
+
+    @CursorField(Activities.STATUS_MY_RETWEET_ID)
+    @Nullable
+    public String status_my_retweet_id;
+
+    public transient UserKey[] after_filtered_source_ids;
     public transient ParcelableUser[] after_filtered_sources;
+
 
     public ParcelableActivity() {
     }
 
-    public ParcelableActivity(final Activity activity, final long accountId, boolean isGap) {
-        this.account_id = accountId;
-        timestamp = activity.getCreatedAt().getTime();
-        action = activity.getRawAction();
-        max_position = activity.getMaxPosition();
-        min_position = activity.getMinPosition();
-        sources = ParcelableUser.fromUsers(activity.getSources(), accountId);
-        target_users = ParcelableUser.fromUsers(activity.getTargetUsers(), accountId);
-        target_user_lists = ParcelableUserList.fromUserLists(activity.getTargetUserLists(), accountId);
-        target_statuses = ParcelableStatus.fromStatuses(activity.getTargetStatuses(), accountId);
-        target_object_statuses = ParcelableStatus.fromStatuses(activity.getTargetObjectStatuses(), accountId);
-        target_object_user_lists = ParcelableUserList.fromUserLists(activity.getTargetObjectUserLists(), accountId);
-        target_object_users = ParcelableUser.fromUsers(activity.getTargetObjectUsers(), accountId);
-        if (sources != null) {
-            source_ids = new long[sources.length];
-            for (int i = 0; i < sources.length; i++) {
-                source_ids[i] = sources[i].id;
-            }
-        }
-        this.is_gap = isGap;
-    }
-
-    @Nullable
-    public static ParcelableStatus getActivityStatus(ParcelableActivity activity) {
-        if (Activity.Action.MENTION.literal.equals(activity.action)) {
-            return activity.target_object_statuses[0];
-        } else if (Activity.Action.REPLY.literal.equals(activity.action)) {
-            return activity.target_statuses[0];
-        } else if (Activity.Action.QUOTE.literal.equals(activity.action)) {
-            return activity.target_statuses[0];
-        }
-        return null;
+    public static int calculateHashCode(UserKey accountKey, long timestamp, long maxPosition, long minPosition) {
+        int result = accountKey.hashCode();
+        result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
+        result = 31 * result + (int) (maxPosition ^ (maxPosition >>> 32));
+        result = 31 * result + (int) (minPosition ^ (minPosition >>> 32));
+        return result;
     }
 
     @Override
     public String toString() {
         return "ParcelableActivity{" +
-                "account_id=" + account_id +
+                "_id=" + _id +
+                ", account_key=" + account_key +
                 ", timestamp=" + timestamp +
-                ", max_position=" + max_position +
-                ", min_position=" + min_position +
-                ", action=" + action +
+                ", max_sort_position=" + max_sort_position +
+                ", min_sort_position=" + min_sort_position +
+                ", max_position='" + max_position + '\'' +
+                ", min_position='" + min_position + '\'' +
+                ", action='" + action + '\'' +
+                ", source_ids=" + Arrays.toString(source_ids) +
                 ", sources=" + Arrays.toString(sources) +
                 ", target_users=" + Arrays.toString(target_users) +
                 ", target_statuses=" + Arrays.toString(target_statuses) +
@@ -170,7 +237,16 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
                 ", target_object_statuses=" + Arrays.toString(target_object_statuses) +
                 ", target_object_users=" + Arrays.toString(target_object_users) +
                 ", is_gap=" + is_gap +
+                ", status_user_following=" + status_user_following +
+                ", account_color=" + account_color +
+                ", after_filtered_source_ids=" + Arrays.toString(after_filtered_source_ids) +
+                ", after_filtered_sources=" + Arrays.toString(after_filtered_sources) +
                 '}';
+    }
+
+    @Override
+    public int hashCode() {
+        return calculateHashCode(account_key, timestamp, max_sort_position, min_sort_position);
     }
 
     @Override
@@ -185,9 +261,8 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     public boolean equals(final Object that) {
         if (!(that instanceof ParcelableActivity)) return false;
         final ParcelableActivity activity = (ParcelableActivity) that;
-        return max_position == activity.max_position && min_position == activity.min_position;
+        return max_sort_position == activity.max_sort_position && min_sort_position == activity.min_sort_position;
     }
-
 
     @Override
     public int describeContents() {
@@ -198,17 +273,5 @@ public class ParcelableActivity implements Comparable<ParcelableActivity>, Parce
     public void writeToParcel(Parcel dest, int flags) {
         ParcelableActivityParcelablePlease.writeToParcel(this, dest, flags);
     }
-
-    public static final Creator<ParcelableActivity> CREATOR = new Creator<ParcelableActivity>() {
-        public ParcelableActivity createFromParcel(Parcel source) {
-            ParcelableActivity target = new ParcelableActivity();
-            ParcelableActivityParcelablePlease.readFromParcel(target, source);
-            return target;
-        }
-
-        public ParcelableActivity[] newArray(int size) {
-            return new ParcelableActivity[size];
-        }
-    };
 
 }

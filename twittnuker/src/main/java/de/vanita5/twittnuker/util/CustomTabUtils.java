@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,22 +37,35 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.support.ActivitiesAboutMeFragment;
-import de.vanita5.twittnuker.fragment.support.ActivitiesByFriendsFragment;
-import de.vanita5.twittnuker.fragment.support.DirectMessagesFragment;
-import de.vanita5.twittnuker.fragment.support.HomeTimelineFragment;
-import de.vanita5.twittnuker.fragment.support.InvalidTabFragment;
-import de.vanita5.twittnuker.fragment.support.RetweetsOfMeFragment;
-import de.vanita5.twittnuker.fragment.support.StatusesSearchFragment;
-import de.vanita5.twittnuker.fragment.support.TrendsSuggestionsFragment;
-import de.vanita5.twittnuker.fragment.support.UserFavoritesFragment;
-import de.vanita5.twittnuker.fragment.support.UserListTimelineFragment;
-import de.vanita5.twittnuker.fragment.support.UserTimelineFragment;
+import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
+import de.vanita5.twittnuker.fragment.DirectMessagesFragment;
+import de.vanita5.twittnuker.fragment.HomeTimelineFragment;
+import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment;
+import de.vanita5.twittnuker.fragment.InvalidTabFragment;
+import de.vanita5.twittnuker.fragment.MessagesEntriesFragment;
+import de.vanita5.twittnuker.fragment.RetweetsOfMeFragment;
+import de.vanita5.twittnuker.fragment.StatusesSearchFragment;
+import de.vanita5.twittnuker.fragment.TrendsSuggestionsFragment;
+import de.vanita5.twittnuker.fragment.UserFavoritesFragment;
+import de.vanita5.twittnuker.fragment.UserListTimelineFragment;
+import de.vanita5.twittnuker.fragment.UserTimelineFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
+import de.vanita5.twittnuker.model.TabCursorIndices;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.tab.argument.TabArguments;
+import de.vanita5.twittnuker.model.tab.argument.TextQueryArguments;
+import de.vanita5.twittnuker.model.tab.argument.UserArguments;
+import de.vanita5.twittnuker.model.tab.argument.UserListArguments;
+import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras;
+import de.vanita5.twittnuker.model.tab.extra.TabExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 
 import java.io.File;
@@ -62,49 +75,50 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import static de.vanita5.twittnuker.util.CompareUtils.classEquals;
-
 public class CustomTabUtils implements Constants {
     private static final HashMap<String, CustomTabConfiguration> CUSTOM_TABS_CONFIGURATION_MAP = new HashMap<>();
     private static final HashMap<String, Integer> CUSTOM_TABS_ICON_NAME_MAP = new HashMap<>();
 
     static {
-        CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_HOME_TIMELINE, new CustomTabConfiguration(
+        CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.HOME_TIMELINE, new CustomTabConfiguration(
                 HomeTimelineFragment.class, R.string.home, R.drawable.ic_action_home,
                 CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 0, false));
 
-        CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_NOTIFICATIONS_TIMELINE, new CustomTabConfiguration(
-                ActivitiesAboutMeFragment.class, R.string.notifications, R.drawable.ic_action_at,
+        CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.NOTIFICATIONS_TIMELINE, new CustomTabConfiguration(
+                InteractionsTimelineFragment.class, R.string.interactions, R.drawable.ic_action_at,
                 CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 1, false,
-                ExtraConfiguration.newBoolean(EXTRA_MY_FOLLOWING_ONLY, R.string.following_only, false)));
+                ExtraConfiguration.newBoolean(EXTRA_MY_FOLLOWING_ONLY, R.string.following_only, false),
+                ExtraConfiguration.newBoolean(EXTRA_MENTIONS_ONLY, R.string.mentions_only, false)));
 
-        CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_DIRECT_MESSAGES, new CustomTabConfiguration(
-                DirectMessagesFragment.class, R.string.direct_messages, R.drawable.ic_action_message,
-                CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 2, false));
+        if (BuildConfig.DEBUG) {
+            CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.DIRECT_MESSAGES, new CustomTabConfiguration(
+                    MessagesEntriesFragment.class, R.string.direct_messages, R.drawable.ic_action_message,
+                    CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 2, false));
+        } else {
+            CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.DIRECT_MESSAGES, new CustomTabConfiguration(
+                    DirectMessagesFragment.class, R.string.direct_messages, R.drawable.ic_action_message,
+                    CustomTabConfiguration.ACCOUNT_OPTIONAL, CustomTabConfiguration.FIELD_TYPE_NONE, 2, false));
+        }
 
-        CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_TRENDS_SUGGESTIONS, new CustomTabConfiguration(
+        CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.TRENDS_SUGGESTIONS, new CustomTabConfiguration(
                 TrendsSuggestionsFragment.class, R.string.trends, R.drawable.ic_action_hashtag,
                 CustomTabConfiguration.ACCOUNT_NONE, CustomTabConfiguration.FIELD_TYPE_NONE, 3, true));
-        CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_FAVORITES, new CustomTabConfiguration(UserFavoritesFragment.class,
+        CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.FAVORITES, new CustomTabConfiguration(UserFavoritesFragment.class,
                 R.string.likes, R.drawable.ic_action_heart, CustomTabConfiguration.ACCOUNT_REQUIRED,
                 CustomTabConfiguration.FIELD_TYPE_USER, 4));
-        CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_USER_TIMELINE, new CustomTabConfiguration(
+        CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.USER_TIMELINE, new CustomTabConfiguration(
                 UserTimelineFragment.class, R.string.users_statuses, R.drawable.ic_action_quote,
                 CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_USER, 5));
-        CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_SEARCH_STATUSES, new CustomTabConfiguration(
+        CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.SEARCH_STATUSES, new CustomTabConfiguration(
                 StatusesSearchFragment.class, R.string.search_statuses, R.drawable.ic_action_search,
                 CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_TEXT, R.string.query,
                 EXTRA_QUERY, 6));
 
-        CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_LIST_TIMELINE, new CustomTabConfiguration(
+        CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.LIST_TIMELINE, new CustomTabConfiguration(
                 UserListTimelineFragment.class, R.string.list_timeline, R.drawable.ic_action_list,
                 CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_USER_LIST, 7));
 
-        CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_ACTIVITIES_BY_FRIENDS, new CustomTabConfiguration(
-                ActivitiesByFriendsFragment.class, R.string.activities_by_friends,
-                R.drawable.ic_action_accounts, CustomTabConfiguration.ACCOUNT_REQUIRED,
-                CustomTabConfiguration.FIELD_TYPE_NONE, 9));
-        CUSTOM_TABS_CONFIGURATION_MAP.put(TAB_TYPE_RETWEETS_OF_ME, new CustomTabConfiguration(
+        CUSTOM_TABS_CONFIGURATION_MAP.put(CustomTabType.RETWEETS_OF_ME, new CustomTabConfiguration(
                 RetweetsOfMeFragment.class, R.string.retweets_of_me, R.drawable.ic_action_retweet,
                 CustomTabConfiguration.ACCOUNT_REQUIRED, CustomTabConfiguration.FIELD_TYPE_NONE, 10));
 
@@ -145,7 +159,7 @@ public class CustomTabUtils implements Constants {
 
     public static String findTabType(final Class<? extends Fragment> cls) {
         for (final Entry<String, CustomTabConfiguration> entry : getConfigurationMap().entrySet()) {
-            if (classEquals(cls, entry.getValue().getFragmentClass())) return entry.getKey();
+            if (cls == entry.getValue().getFragmentClass()) return entry.getKey();
         }
         return null;
     }
@@ -162,22 +176,33 @@ public class CustomTabUtils implements Constants {
         if (cur == null) return Collections.emptyList();
         final ArrayList<SupportTabSpec> tabs = new ArrayList<>();
         cur.moveToFirst();
-        final int idxName = cur.getColumnIndex(Tabs.NAME), idxIcon = cur.getColumnIndex(Tabs.ICON), idxType = cur
-                .getColumnIndex(Tabs.TYPE), idxArguments = cur.getColumnIndex(Tabs.ARGUMENTS), idxExtras = cur
-                .getColumnIndex(Tabs.EXTRAS), idxPosition = cur.getColumnIndex(Tabs.POSITION);
+        TabCursorIndices indices = new TabCursorIndices(cur);
+        final int idxArguments = cur.getColumnIndex(Tabs.ARGUMENTS);
+        final int idxExtras = cur.getColumnIndex(Tabs.EXTRAS);
         while (!cur.isAfterLast()) {
-            final String type = cur.getString(idxType);
-            final int position = cur.getInt(idxPosition);
-            final String iconType = cur.getString(idxIcon);
-            final String name = cur.getString(idxName);
-            final Bundle args = ParseUtils.jsonToBundle(cur.getString(idxArguments));
+            @CustomTabType
+            final String type = getTabTypeAlias(cur.getString(indices.type));
+            final int position = cur.getInt(indices.position);
+            final String iconType = cur.getString(indices.icon);
+            final String name = cur.getString(indices.name);
+            final Bundle args = new Bundle();
+            final TabArguments tabArguments = parseTabArguments(type, cur.getString(idxArguments));
+            if (tabArguments != null) {
+                tabArguments.copyToBundle(args);
+            }
+            @ReadPositionTag
             final String tag = getTagByType(type);
             args.putInt(EXTRA_TAB_POSITION, position);
-            args.putBundle(EXTRA_EXTRAS, ParseUtils.jsonToBundle(cur.getString(idxExtras)));
+            final TabExtras tabExtras = parseTabExtras(type, cur.getString(idxExtras));
+            if (tabExtras != null) {
+                args.putParcelable(EXTRA_EXTRAS, tabExtras);
+            }
             final CustomTabConfiguration conf = getTabConfiguration(type);
             final Class<? extends Fragment> cls = conf != null ? conf.getFragmentClass() : InvalidTabFragment.class;
-            tabs.add(new SupportTabSpec(TextUtils.isEmpty(name) ? getTabTypeName(context, type) : name,
-                    getTabIconObject(iconType), type, cls, args, position, tag));
+            final String tabTypeName = getTabTypeName(context, type);
+            final Object tabIconObject = getTabIconObject(iconType);
+            tabs.add(new SupportTabSpec(TextUtils.isEmpty(name) ? tabTypeName : name, tabIconObject,
+                    type, cls, args, position, tag));
             cur.moveToNext();
         }
         cur.close();
@@ -186,13 +211,54 @@ public class CustomTabUtils implements Constants {
     }
 
     @Nullable
-    private static String getTagByType(@NonNull String tabType) {
-        switch (getTabTypeAlias(tabType)) {
-            case TAB_TYPE_HOME_TIMELINE:
-            case TAB_TYPE_NOTIFICATIONS_TIMELINE:
-            case TAB_TYPE_ACTIVITIES_ABOUT_ME:
-            case TAB_TYPE_DIRECT_MESSAGES:
-                return tabType;
+    public static TabArguments newTabArguments(@NonNull @CustomTabType String type) {
+        return parseTabArguments(type, "{}");
+    }
+
+    @Nullable
+    public static TabArguments parseTabArguments(@NonNull @CustomTabType String type, String json) {
+        switch (type) {
+            case CustomTabType.HOME_TIMELINE:
+            case CustomTabType.NOTIFICATIONS_TIMELINE:
+            case CustomTabType.DIRECT_MESSAGES:
+            case CustomTabType.RETWEETS_OF_ME: {
+                return JsonSerializer.parse(json, TabArguments.class);
+            }
+            case CustomTabType.USER_TIMELINE:
+            case CustomTabType.FAVORITES: {
+                return JsonSerializer.parse(json, UserArguments.class);
+            }
+            case CustomTabType.LIST_TIMELINE: {
+                return JsonSerializer.parse(json, UserListArguments.class);
+            }
+            case CustomTabType.SEARCH_STATUSES: {
+                return JsonSerializer.parse(json, TextQueryArguments.class);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static TabExtras parseTabExtras(@NonNull @CustomTabType String type, String json) {
+        switch (type) {
+            case CustomTabType.NOTIFICATIONS_TIMELINE: {
+                return JsonSerializer.parse(json, InteractionsTabExtras.class);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    @ReadPositionTag
+    public static String getTagByType(@NonNull @CustomTabType String tabType) {
+        switch (tabType) {
+            case CustomTabType.HOME_TIMELINE:
+                return ReadPositionTag.HOME_TIMELINE;
+            case "activities_about_me":
+            case CustomTabType.NOTIFICATIONS_TIMELINE:
+                return ReadPositionTag.ACTIVITIES_ABOUT_ME;
+            case CustomTabType.DIRECT_MESSAGES:
+                return ReadPositionTag.DIRECT_MESSAGES;
         }
         return null;
     }
@@ -206,12 +272,13 @@ public class CustomTabUtils implements Constants {
         return CUSTOM_TABS_CONFIGURATION_MAP.get(getTabTypeAlias(tabType));
     }
 
-    private static String getTabTypeAlias(String key) {
+    @CustomTabType
+    public static String getTabTypeAlias(String key) {
         if (key == null) return null;
         switch (key) {
             case "mentions_timeline":
             case "activities_about_me":
-                return TAB_TYPE_NOTIFICATIONS_TIMELINE;
+                return CustomTabType.NOTIFICATIONS_TIMELINE;
         }
         return key;
     }
@@ -270,8 +337,8 @@ public class CustomTabUtils implements Constants {
     public static String getTabTypeName(final Context context, final String type) {
         if (context == null) return null;
         final CustomTabConfiguration conf = getTabConfiguration(type);
-        final Integer res_id = conf != null ? conf.getDefaultTitle() : null;
-        return res_id != null ? context.getString(res_id) : null;
+        if (conf == null) return null;
+        return context.getString(conf.getDefaultTitle());
     }
 
     public static boolean isSingleTab(final String type) {
@@ -294,5 +361,17 @@ public class CustomTabUtils implements Constants {
 
     public static boolean isTabTypeValid(final String tabType) {
         return tabType != null && CUSTOM_TABS_CONFIGURATION_MAP.containsKey(getTabTypeAlias(tabType));
+    }
+
+    public static boolean hasAccountId(final Context context, @NonNull final Bundle args,
+                                       final UserKey[] activatedAccountKeys, UserKey accountKey) {
+        final UserKey[] accountKeys = Utils.getAccountKeys(context, args);
+        if (accountKeys != null) {
+            return ArrayUtils.contains(accountKeys, accountKey);
+        }
+        if (activatedAccountKeys != null) {
+            return ArrayUtils.contains(activatedAccountKeys, accountKey);
+        }
+        return false;
     }
 }

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 public class TranslationResult extends TwitterResponseObject implements TwitterResponse {
 
     @JsonField(name = "id")
-    long id;
+    String id;
     @JsonField(name = "lang")
     String lang;
     @JsonField(name = "translated_lang")
@@ -39,7 +39,7 @@ public class TranslationResult extends TwitterResponseObject implements TwitterR
     @JsonField(name = "text")
     String text;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
@@ -57,5 +57,16 @@ public class TranslationResult extends TwitterResponseObject implements TwitterR
 
     public String getTranslationType() {
         return translationType;
+    }
+
+    @Override
+    public String toString() {
+        return "TranslationResult{" +
+                "id='" + id + '\'' +
+                ", lang='" + lang + '\'' +
+                ", translatedLang='" + translatedLang + '\'' +
+                ", translationType='" + translationType + '\'' +
+                ", text='" + text + '\'' +
+                "} " + super.toString();
     }
 }

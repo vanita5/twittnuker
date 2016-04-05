@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,18 +26,62 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.IMediaUploader;
 import de.vanita5.twittnuker.model.MediaUploadResult;
+import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.UploaderMediaItem;
 
-public final class MediaUploaderInterface extends AbsServiceInterface<IMediaUploader> implements IMediaUploader {
-    protected MediaUploaderInterface(Context context, String shortenerName) {
-        super(context, shortenerName);
+import java.util.List;
+
+public final class MediaUploaderInterface extends AbsServiceInterface<IMediaUploader> {
+    protected MediaUploaderInterface(Context context, String uploaderName, Bundle metaData) {
+        super(context, uploaderName, metaData);
+    }
+
+    public MediaUploadResult upload(final ParcelableStatusUpdate status, final UploaderMediaItem[] media)
+            throws RemoteException {
+        final IMediaUploader iface = getInterface();
+        if (iface == null) return null;
+        try {
+            final String statusJson = JsonSerializer.serialize(status, ParcelableStatusUpdate.class);
+            final String mediaJson = JsonSerializer.serialize(media, UploaderMediaItem.class);
+            return JsonSerializer.parse(iface.upload(statusJson, mediaJson), MediaUploadResult.class);
+        } catch (final RemoteException e) {
+            if (BuildConfig.DEBUG) {
+                Log.w(LOGTAG, e);
+            }
+        }
+        return null;
+    }
+
+
+    public boolean callback(MediaUploadResult uploadResult, ParcelableStatus status) {
+        final IMediaUploader iface = getInterface();
+        if (iface == null) return false;
+        try {
+            final String resultJson = JsonSerializer.serialize(uploadResult, MediaUploadResult.class);
+            final String statusJson = JsonSerializer.serialize(status, ParcelableStatus.class);
+            return iface.callback(resultJson, statusJson);
+        } catch (final RemoteException e) {
+            if (BuildConfig.DEBUG) {
+                Log.w(LOGTAG, e);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected IMediaUploader onServiceConnected(ComponentName service, IBinder obj) {
+        return IMediaUploader.Stub.asInterface(obj);
     }
 
     public static MediaUploaderInterface getInstance(final Application application, final String uploaderName) {
@@ -45,25 +89,9 @@ public final class MediaUploaderInterface extends AbsServiceInterface<IMediaUplo
         final Intent intent = new Intent(INTENT_ACTION_EXTENSION_UPLOAD_MEDIA);
         final ComponentName component = ComponentName.unflattenFromString(uploaderName);
         intent.setComponent(component);
-        if (application.getPackageManager().queryIntentServices(intent, 0).size() != 1) return null;
-        return new MediaUploaderInterface(application, uploaderName);
-    }
-
-    @Override
-    public MediaUploadResult upload(final ParcelableStatusUpdate status, final UploaderMediaItem[] media)
-            throws RemoteException {
-        final IMediaUploader iface = getInterface();
-        if (iface == null) return null;
-        try {
-            return iface.upload(status, media);
-        } catch (final RemoteException e) {
-            Log.w(LOGTAG, e);
-        }
-        return null;
-    }
-
-    @Override
-    protected IMediaUploader onServiceConnected(ComponentName service, IBinder obj) {
-        return IMediaUploader.Stub.asInterface(obj);
+        final PackageManager pm = application.getPackageManager();
+        final List<ResolveInfo> services = pm.queryIntentServices(intent, PackageManager.GET_META_DATA);
+        if (services.size() != 1) return null;
+        return new MediaUploaderInterface(application, uploaderName, services.get(0).serviceInfo.metaData);
     }
 }

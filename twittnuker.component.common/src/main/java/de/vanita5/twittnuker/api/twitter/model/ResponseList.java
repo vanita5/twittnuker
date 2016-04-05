@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,9 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.restfu.http.RestHttpResponse;
+import org.mariotaku.restfu.http.HttpResponse;
+
+import de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
 import java.util.AbstractList;
@@ -30,8 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by mariotaku on 15/5/7.
+ * Response list
  */
+@NoObfuscate
 public class ResponseList<T> extends AbstractList<T> implements TwitterResponse {
 
     private List<T> list;
@@ -58,6 +61,16 @@ public class ResponseList<T> extends AbstractList<T> implements TwitterResponse 
     }
 
     @Override
+    public T remove(int location) {
+        return list.remove(location);
+    }
+
+    @Override
+    public void clear() {
+        list.clear();
+    }
+
+    @Override
     public int size() {
         return list.size();
     }
@@ -67,11 +80,12 @@ public class ResponseList<T> extends AbstractList<T> implements TwitterResponse 
     }
 
     @Override
-    public final void processResponseHeader(RestHttpResponse resp) {
+    public final void processResponseHeader(HttpResponse resp) {
         rateLimitStatus = RateLimitStatus.createFromResponseHeader(resp);
         accessLevel = InternalParseUtil.toAccessLevel(resp);
     }
 
+    @AccessLevel
     @Override
     public final int getAccessLevel() {
         return accessLevel;

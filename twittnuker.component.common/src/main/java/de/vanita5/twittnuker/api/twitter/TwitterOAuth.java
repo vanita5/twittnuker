@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,10 +24,10 @@ package de.vanita5.twittnuker.api.twitter;
 
 
 import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Body;
 import org.mariotaku.restfu.annotation.param.Extra;
-import org.mariotaku.restfu.annotation.param.Form;
-import org.mariotaku.restfu.http.BodyType;
+import org.mariotaku.restfu.annotation.param.KeyValue;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Params;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 
 /**
@@ -36,32 +36,20 @@ import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 public interface TwitterOAuth {
 
     @POST("/oauth/request_token")
-	@Body(BodyType.FORM)
-    OAuthToken getRequestToken(@Form("oauth_callback") String oauthCallback) throws TwitterException;
+    OAuthToken getRequestToken(@Param("oauth_callback") String oauthCallback) throws TwitterException;
 
     @POST("/oauth/access_token")
-	@Body(BodyType.FORM)
-	OAuthToken getAccessToken(@Form("x_auth_username") String xauthUsername,
-							  @Form("x_auth_password") String xauthPassword,
-                              @Form("x_auth_mode") XAuthMode xauthMode)throws TwitterException;
+    @Params(@KeyValue(key = "x_auth_mode", value = "client_auth"))
+    OAuthToken getAccessToken(@Param("x_auth_username") String xauthUsername,
+                              @Param("x_auth_password") String xauthPassword) throws TwitterException;
 
 
     @POST("/oauth/access_token")
-	@Body(BodyType.FORM)
-    OAuthToken getAccessToken(@Extra({"oauth_token", "oauth_token_secret"}) OAuthToken requestToken, @Form("oauth_verifier") String oauthVerifier)throws TwitterException;
+    OAuthToken getAccessToken(@Extra({"oauth_token", "oauth_token_secret"}) OAuthToken requestToken,
+                              @Param("oauth_verifier") String oauthVerifier) throws TwitterException;
 
-	enum XAuthMode {
-		CLIENT("client_auth");
+    @POST("/oauth/access_token")
+    OAuthToken getAccessToken(@Extra({"oauth_token", "oauth_token_secret"}) OAuthToken requestToken)
+            throws TwitterException;
 
-		@Override
-		public String toString() {
-			return mode;
-		}
-
-		private final String mode;
-
-		XAuthMode(String mode) {
-			this.mode = mode;
-		}
-	}
 }

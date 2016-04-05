@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,14 +22,19 @@
 
 package de.vanita5.twittnuker.api.twitter.auth;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Base64;
 
 import org.mariotaku.restfu.Pair;
-import org.mariotaku.restfu.RestRequestInfo;
-import org.mariotaku.restfu.Utils;
+import org.mariotaku.restfu.RestFuUtils;
+import org.mariotaku.restfu.RestRequest;
 import org.mariotaku.restfu.http.Authorization;
+import org.mariotaku.restfu.http.BodyType;
 import org.mariotaku.restfu.http.Endpoint;
+import org.mariotaku.restfu.http.MultiValueMap;
+import org.mariotaku.restfu.http.mime.Body;
+import org.mariotaku.restfu.http.mime.StringBody;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -43,8 +48,6 @@ import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
-import okio.ByteString;
 
 public class OAuthAuthorization implements Authorization, OAuthSupport {
 
@@ -82,8 +85,9 @@ public class OAuthAuthorization implements Authorization, OAuthSupport {
     private String generateOAuthSignature(String method, String url,
                                           String oauthNonce, long timestamp,
                                           String oauthToken, String oauthTokenSecret,
-                                          @Nullable List<Pair<String, String>> queries,
-                                          @Nullable List<Pair<String, String>> forms) {
+                                          @Nullable MultiValueMap<String> queries,
+                                          @Nullable MultiValueMap<Body> params,
+                                          @NonNull String bodyType) {
         final List<String> encodeParams = new ArrayList<>();
         encodeParams.add(encodeParameter("oauth_consumer_key", consumerKey));
         encodeParams.add(encodeParameter("oauth_nonce", oauthNonce));
@@ -94,13 +98,13 @@ public class OAuthAuthorization implements Authorization, OAuthSupport {
             encodeParams.add(encodeParameter("oauth_token", oauthToken));
         }
         if (queries != null) {
-            for (Pair<String, String> query : queries) {
+            for (Pair<String, String> query : queries.toList()) {
                 encodeParams.add(encodeParameter(query.first, query.second));
             }
         }
-        if (forms != null) {
-            for (Pair<String, String> form : forms) {
-                encodeParams.add(encodeParameter(form.first, form.second));
+        if (params != null && BodyType.FORM.equals(bodyType)) {
+            for (Pair<String, Body> form : params.toList()) {
+                encodeParams.add(encodeParameter(form.first, ((StringBody) form.second).value()));
             }
         }
         Collections.sort(encodeParams);
@@ -133,7 +137,7 @@ public class OAuthAuthorization implements Authorization, OAuthSupport {
     }
 
     @Override
-    public String getHeader(Endpoint endpoint, RestRequestInfo request) {
+    public String getHeader(Endpoint endpoint, RestRequest request) {
         if (!(endpoint instanceof OAuthEndpoint))
             throw new IllegalArgumentException("OAuthEndpoint required");
         final Map<String, Object> extras = request.getExtras();
@@ -148,10 +152,10 @@ public class OAuthAuthorization implements Authorization, OAuthSupport {
         final OAuthEndpoint oauthEndpoint = (OAuthEndpoint) endpoint;
         final String method = request.getMethod();
         final String url = Endpoint.constructUrl(oauthEndpoint.getSignUrl(), request);
-        final List<Pair<String, String>> queries = request.getQueries();
-        final List<Pair<String, String>> forms = request.getForms();
+        final MultiValueMap<String> queries = request.getQueries();
+        final MultiValueMap<Body> params = request.getParams();
         final List<Pair<String, String>> encodeParams = generateOAuthParams(oauthToken, oauthTokenSecret,
-                method, url, queries, forms);
+                method, url, queries, params, request.getBodyType());
         final StringBuilder headerBuilder = new StringBuilder();
         headerBuilder.append("OAuth ");
         for (int i = 0, j = encodeParams.size(); i < j; i++) {
@@ -169,12 +173,13 @@ public class OAuthAuthorization implements Authorization, OAuthSupport {
 
     public List<Pair<String, String>> generateOAuthParams(String oauthToken,
                                                           String oauthTokenSecret, String method,
-                                                          String url, List<Pair<String, String>> queries,
-                                                          List<Pair<String, String>> forms) {
+                                                          String url, MultiValueMap<String> queries,
+                                                          MultiValueMap<Body> params,
+                                                          String bodyType) {
         final String oauthNonce = generateOAuthNonce();
         final long timestamp = System.currentTimeMillis() / 1000;
         final String oauthSignature = generateOAuthSignature(method, url, oauthNonce, timestamp, oauthToken,
-                oauthTokenSecret, queries, forms);
+                oauthTokenSecret, queries, params, bodyType);
         final List<Pair<String, String>> encodeParams = new ArrayList<>();
         encodeParams.add(Pair.create("oauth_consumer_key", consumerKey));
         encodeParams.add(Pair.create("oauth_nonce", oauthNonce));
@@ -204,18 +209,21 @@ public class OAuthAuthorization implements Authorization, OAuthSupport {
     }
 
     private static String encode(final String value) {
-        return Utils.encode(value, DEFAULT_ENCODING);
+        return RestFuUtils.encode(value, DEFAULT_ENCODING);
     }
 
+    private static final char[] VALID_NONCE_CHARACTERS = {'0', '1', '2', '3', '4', '5', '6', '7',
+            '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+            'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F',
+            'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+            'X', 'Y', 'Z'};
+
     private String generateOAuthNonce() {
-        final byte[] input = new byte[32];
-        secureRandom.nextBytes(input);
-        final ByteString byteString = ByteString.of(input);
-        final String encodedString = byteString.base64Url();
-        if (encodedString == null) {
-            throw new IllegalStateException("Bad nonce " + byteString.hex());
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 32; i++) {
+            sb.append(VALID_NONCE_CHARACTERS[secureRandom.nextInt(VALID_NONCE_CHARACTERS.length)]);
         }
-        return encodedString.replaceAll("[^\\w\\d]", "");
+        return sb.toString();
     }
 
 }

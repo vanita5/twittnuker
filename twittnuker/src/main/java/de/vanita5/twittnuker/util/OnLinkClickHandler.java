@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,20 +26,17 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.StringUtils;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.fragment.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
-
-import static de.vanita5.twittnuker.util.Utils.openStatus;
-import static de.vanita5.twittnuker.util.Utils.openTweetSearch;
-import static de.vanita5.twittnuker.util.Utils.openUserListDetails;
-import static de.vanita5.twittnuker.util.Utils.openUserProfile;
 
 public class OnLinkClickHandler implements OnLinkClickListener, Constants {
 
@@ -47,66 +44,107 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
     protected final Context context;
     @Nullable
     protected final MultiSelectManager manager;
+    @NonNull
+    protected final SharedPreferencesWrapper preferences;
 
-    public OnLinkClickHandler(@NonNull final Context context, @Nullable final MultiSelectManager manager) {
+    public OnLinkClickHandler(@NonNull final Context context, @Nullable final MultiSelectManager manager,
+                              @NonNull SharedPreferencesWrapper preferences) {
         this.context = context;
         this.manager = manager;
+        this.preferences = preferences;
     }
 
     @Override
-    public void onLinkClick(final String link, final String orig, final long accountId, long extraId, final int type,
-                            final boolean sensitive, int start, int end) {
+    public void onLinkClick(final String link, final String orig, final UserKey accountKey,
+                            final long extraId, final int type, final boolean sensitive,
+                            final int start, final int end) {
         if (manager != null && manager.isActive()) return;
 
         switch (type) {
             case TwidereLinkify.LINK_TYPE_MENTION: {
-                openUserProfile(context, accountId, -1, link, null);
+                IntentUtils.openUserProfile(context, accountKey, null, link, null,
+                        preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                        UserFragment.Referral.USER_MENTION);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_HASHTAG: {
-                openTweetSearch(context, accountId, "#" + link);
+                IntentUtils.openTweetSearch(context, accountKey, "#" + link);
                 break;
             }
-            case TwidereLinkify.LINK_TYPE_LINK: {
-                if (PreviewMediaExtractor.isSupported(link)) {
-                    openMedia(accountId, extraId, sensitive, link, start, end);
+            case TwidereLinkify.LINK_TYPE_LINK_IN_TEXT: {
+                if (isMedia(link, extraId)) {
+                    openMedia(accountKey, extraId, sensitive, link, start, end);
                 } else {
                     openLink(link);
                 }
                 break;
             }
+            case TwidereLinkify.LINK_TYPE_ENTITY_URL: {
+                if (isMedia(link, extraId)) {
+                    openMedia(accountKey, extraId, sensitive, link, start, end);
+                } else {
+                    if (orig != null && "fanfou.com".equals(UriUtils.getAuthority(link))) {
+                        // Process special case for fanfou
+                        final char ch = orig.charAt(0);
+                        // Extend selection
+                        final int length = orig.length();
+                        if (TwidereLinkify.isAtSymbol(ch)) {
+                            String id = UriUtils.getPath(link);
+                            if (id != null) {
+                                int idxOfSlash = id.indexOf('/');
+                                if (idxOfSlash == 0) {
+                                    id = id.substring(1);
+                                }
+                                final String screenName = orig.substring(1, length);
+                                IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(id),
+                                        screenName, null, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                                        UserFragment.Referral.USER_MENTION);
+                                break;
+                            }
+                        } else if (TwidereLinkify.isHashSymbol(ch) &&
+                                TwidereLinkify.isHashSymbol(orig.charAt(length - 1))) {
+                            IntentUtils.openSearch(context, accountKey, orig.substring(1, length - 1));
+                            break;
+                        }
+                    }
+                    openLink(link);
+                }
+                break;
+            }
             case TwidereLinkify.LINK_TYPE_LIST: {
-                final String[] mentionList = link.split("/");
+                final String[] mentionList = StringUtils.split(link, "/");
                 if (mentionList.length != 2) {
                     break;
                 }
-                openUserListDetails(context, accountId, -1, -1, mentionList[0], mentionList[1]);
+                IntentUtils.openUserListDetails(context, accountKey, null, null, mentionList[0],
+                        mentionList[1]);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_CASHTAG: {
-                openTweetSearch(context, accountId, link);
+                IntentUtils.openTweetSearch(context, accountKey, link);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_USER_ID: {
-                openUserProfile(context, accountId, NumberUtils.toLong(link, -1), null, null);
+                IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(link), null, null,
+                        preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                        UserFragment.Referral.USER_MENTION);
                 break;
             }
             case TwidereLinkify.LINK_TYPE_STATUS: {
-                openStatus(context, accountId, NumberUtils.toLong(link, -1));
+                IntentUtils.openStatus(context, accountKey, link);
                 break;
             }
         }
     }
 
-    protected boolean isPrivateData() {
-        return false;
+    protected boolean isMedia(String link, long extraId) {
+        return PreviewMediaExtractor.isSupported(link);
     }
 
-    protected void openMedia(long accountId, long extraId, boolean sensitive, String link, int start, int end) {
-        final ParcelableMedia[] media = {ParcelableMedia.image(link)};
-        //TODO open media animation
-        Bundle options = null;
-        Utils.openMedia(context, accountId, sensitive, null, media, options);
+    protected void openMedia(UserKey accountKey, long extraId, boolean sensitive, String link, int start, int end) {
+        final ParcelableMedia[] media = {ParcelableMediaUtils.image(link)};
+        IntentUtils.openMedia(context, accountKey, sensitive, null, media, null,
+                preferences.getBoolean(KEY_NEW_DOCUMENT_API));
     }
 
     protected void openLink(final String link) {

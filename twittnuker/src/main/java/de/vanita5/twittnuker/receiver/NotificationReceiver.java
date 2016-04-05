@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.annotation.NotificationType;
+import de.vanita5.twittnuker.annotation.ReadPositionTag;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.UriExtraUtils;
@@ -47,18 +50,20 @@ public class NotificationReceiver extends BroadcastReceiver implements Constants
                 final Uri uri = intent.getData();
                 if (uri == null) return;
                 DependencyHolder holder = DependencyHolder.get(context);
-                final String type = uri.getQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE);
-                final long accountId = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_ID), -1);
+                @NotificationType
+                final String notificationType = uri.getQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE);
+                final UserKey accountKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY));
                 final long itemId = NumberUtils.toLong(UriExtraUtils.getExtra(uri, "item_id"), -1);
                 final long itemUserId = NumberUtils.toLong(UriExtraUtils.getExtra(uri, "item_user_id"), -1);
                 final boolean itemUserFollowing = Boolean.parseBoolean(UriExtraUtils.getExtra(uri, "item_user_following"));
                 final long timestamp = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_TIMESTAMP), -1);
                 final ReadStateManager manager = holder.getReadStateManager();
                 final String paramReadPosition, paramReadPositions;
-                final String tag = getPositionTag(type);
+                @ReadPositionTag
+                final String tag = getPositionTag(notificationType);
                 if (tag != null && !TextUtils.isEmpty(paramReadPosition = uri.getQueryParameter(QUERY_PARAM_READ_POSITION))) {
                     final long def = -1;
-                    manager.setPosition(Utils.getReadPositionTagWithAccounts(tag, accountId),
+                    manager.setPosition(Utils.getReadPositionTagWithAccounts(tag, accountKey),
                             NumberUtils.toLong(paramReadPosition, def));
                 } else if (!TextUtils.isEmpty(paramReadPositions = uri.getQueryParameter(QUERY_PARAM_READ_POSITIONS))) {
                     try {
@@ -75,20 +80,19 @@ public class NotificationReceiver extends BroadcastReceiver implements Constants
         }
     }
 
-    private static String getPositionTag(@NonNull String type) {
+    @ReadPositionTag
+    @Nullable
+    private static String getPositionTag(@Nullable @NotificationType String type) {
+        if (type == null) return null;
         switch (type) {
-            case AUTHORITY_HOME: {
-                return TAB_TYPE_HOME_TIMELINE;
-            }
-            case AUTHORITY_MENTIONS: {
-                return TAB_TYPE_NOTIFICATIONS_TIMELINE;
-            }
-            case AUTHORITY_DIRECT_MESSAGES: {
-                return TAB_TYPE_DIRECT_MESSAGES;
-            }
-            default: {
-                return TAB_TYPE_HOME_TIMELINE;
+            case NotificationType.HOME_TIMELINE:
+                return ReadPositionTag.HOME_TIMELINE;
+            case NotificationType.INTERACTIONS:
+                return ReadPositionTag.ACTIVITIES_ABOUT_ME;
+            case NotificationType.DIRECT_MESSAGES: {
+                return ReadPositionTag.DIRECT_MESSAGES;
             }
         }
+        return null;
     }
 }

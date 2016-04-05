@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,17 +23,27 @@
 package de.vanita5.twittnuker.util;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.support.v4.util.LongSparseArray;
+import android.text.TextUtils;
+
+import com.bluelinelabs.logansquare.JsonMapper;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns;
+import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
+import org.mariotaku.sqliteqb.library.OrderBy;
 import org.mariotaku.sqliteqb.library.RawItemArray;
 import org.mariotaku.sqliteqb.library.SQLFunctions;
 import org.mariotaku.sqliteqb.library.SQLQueryBuilder;
@@ -42,7 +52,20 @@ import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableActivity;
+import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
+import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
+import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices;
+import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserFollowState;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras;
+import de.vanita5.twittnuker.model.tab.extra.TabExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CacheFiles;
@@ -56,7 +79,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DNS;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
 import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
@@ -66,15 +88,24 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
-import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.provider.TwidereDataStore.ACTIVITIES_URIS;
+import static de.vanita5.twittnuker.provider.TwidereDataStore.CACHE_URIS;
+import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_URIS;
+import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 
 public class DataStoreUtils implements Constants {
     static final UriMatcher CONTENT_PROVIDER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
-    static LongSparseArray<Integer> sAccountColors = new LongSparseArray<>();
+    static Map<UserKey, String> sAccountScreenNames = new HashMap<>();
+    static Map<UserKey, String> sAccountNames = new HashMap<>();
 
     static {
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Accounts.CONTENT_PATH,
@@ -103,9 +134,9 @@ public class DataStoreUtils implements Constants {
                 TABLE_ID_DIRECT_MESSAGES_INBOX);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Outbox.CONTENT_PATH,
                 TABLE_ID_DIRECT_MESSAGES_OUTBOX);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Conversation.CONTENT_PATH + "/#/#",
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Conversation.CONTENT_PATH + "/*/*",
                 TABLE_ID_DIRECT_MESSAGES_CONVERSATION);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Conversation.CONTENT_PATH_SCREEN_NAME + "/#/*",
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Conversation.CONTENT_PATH_SCREEN_NAME + "/*/*",
                 TABLE_ID_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.ConversationEntries.CONTENT_PATH,
                 TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES);
@@ -123,14 +154,12 @@ public class DataStoreUtils implements Constants {
                 TABLE_ID_SAVED_SEARCHES);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, SearchHistory.CONTENT_PATH,
                 TABLE_ID_SEARCH_HISTORY);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, NetworkUsages.CONTENT_PATH,
-                TABLE_ID_NETWORK_USAGES);
 
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Notifications.CONTENT_PATH,
                 VIRTUAL_TABLE_ID_NOTIFICATIONS);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Notifications.CONTENT_PATH + "/#",
                 VIRTUAL_TABLE_ID_NOTIFICATIONS);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Notifications.CONTENT_PATH + "/#/#",
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Notifications.CONTENT_PATH + "/#/*",
                 VIRTUAL_TABLE_ID_NOTIFICATIONS);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DNS.CONTENT_PATH + "/*",
                 VIRTUAL_TABLE_ID_DNS);
@@ -152,9 +181,9 @@ public class DataStoreUtils implements Constants {
                 VIRTUAL_TABLE_ID_UNREAD_COUNTS_BY_TYPE);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, TwidereDataStore.CONTENT_PATH_DATABASE_READY,
                 VIRTUAL_TABLE_ID_DATABASE_READY);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedUsers.CONTENT_PATH_WITH_RELATIONSHIP + "/#",
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedUsers.CONTENT_PATH_WITH_RELATIONSHIP + "/*",
                 VIRTUAL_TABLE_ID_CACHED_USERS_WITH_RELATIONSHIP);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedUsers.CONTENT_PATH_WITH_SCORE + "/#",
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedUsers.CONTENT_PATH_WITH_SCORE + "/*",
                 VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Drafts.CONTENT_PATH_UNSENT,
                 VIRTUAL_TABLE_ID_DRAFTS_UNSENT);
@@ -170,250 +199,111 @@ public class DataStoreUtils implements Constants {
                 VIRTUAL_TABLE_ID_SUGGESTIONS_SEARCH);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, TwidereDataStore.CONTENT_PATH_EMPTY,
                 VIRTUAL_TABLE_ID_EMPTY);
-    }
-
-    static LongSparseArray<String> sAccountScreenNames = new LongSparseArray<>();
-    static LongSparseArray<String> sAccountNames = new LongSparseArray<>();
-
-    public static long[] getNewestMessageIdsFromDatabase(final Context context, final Uri uri) {
-        final long[] accountIds = getActivatedAccountIds(context);
-        return getNewestMessageIdsFromDatabase(context, uri, accountIds);
-    }
-
-    public static long[] getNewestMessageIdsFromDatabase(final Context context, final Uri uri, final long[] accountIds) {
-        if (context == null || uri == null || accountIds == null) return null;
-        final String[] cols = new String[]{DirectMessages.MESSAGE_ID};
-        final ContentResolver resolver = context.getContentResolver();
-        final long[] messageIds = new long[accountIds.length];
-        int idx = 0;
-        for (final long accountId : accountIds) {
-            final String where = Expression.equals(DirectMessages.ACCOUNT_ID, accountId).getSQL();
-            final Cursor cur = ContentResolverUtils.query(resolver, uri, cols, where, null,
-                    DirectMessages.DEFAULT_SORT_ORDER);
-            if (cur == null) {
-                continue;
-            }
-
-            if (cur.getCount() > 0) {
-                cur.moveToFirst();
-                messageIds[idx] = cur.getLong(cur.getColumnIndexOrThrow(DirectMessages.MESSAGE_ID));
-            }
-            cur.close();
-            idx++;
-        }
-        return messageIds;
-    }
-
-    public static long[] getNewestStatusIdsFromDatabase(final Context context, final Uri uri) {
-        final long[] account_ids = getActivatedAccountIds(context);
-        return getNewestStatusIdsFromDatabase(context, uri, account_ids);
-    }
-
-    public static long[] getNewestStatusIdsFromDatabase(final Context context, final Uri uri, final long[] accountIds) {
-        if (context == null || uri == null || accountIds == null) return null;
-        final String[] cols = new String[]{Statuses.STATUS_ID};
-        final ContentResolver resolver = context.getContentResolver();
-        final long[] status_ids = new long[accountIds.length];
-        int idx = 0;
-        for (final long accountId : accountIds) {
-            final String where = Expression.equals(Statuses.ACCOUNT_ID, accountId).getSQL();
-            final Cursor cur = ContentResolverUtils
-                    .query(resolver, uri, cols, where, null, Statuses.DEFAULT_SORT_ORDER);
-            if (cur == null) {
-                continue;
-            }
-
-            if (cur.getCount() > 0) {
-                cur.moveToFirst();
-                status_ids[idx] = cur.getLong(cur.getColumnIndexOrThrow(Statuses.STATUS_ID));
-            }
-            cur.close();
-            idx++;
-        }
-        return status_ids;
-    }
-
-    public static long[] getActivityMaxPositionsFromDatabase(final Context context, final Uri uri, final long[] accountIds) {
-        if (context == null || uri == null || accountIds == null) return null;
-        final String[] cols = new String[]{Activities.MAX_POSITION};
-        final ContentResolver resolver = context.getContentResolver();
-        final long[] maxPositions = new long[accountIds.length];
-        int idx = 0;
-        for (final long accountId : accountIds) {
-            final String where = Expression.equals(Activities.ACCOUNT_ID, accountId).getSQL();
-            final Cursor cur = ContentResolverUtils
-                    .query(resolver, uri, cols, where, null, Activities.DEFAULT_SORT_ORDER);
-            if (cur == null) {
-                continue;
-            }
-
-            if (cur.getCount() > 0) {
-                cur.moveToFirst();
-                maxPositions[idx] = cur.getLong(cur.getColumnIndexOrThrow(Activities.MAX_POSITION));
-            }
-            cur.close();
-            idx++;
-        }
-        return maxPositions;
-    }
-
-    public static long[] getNewestActivityTimestampsFromDatabase(final Context context, final Uri uri, final long[] accountIds) {
-        if (context == null || uri == null || accountIds == null) return null;
-        final String[] cols = new String[]{Activities.TIMESTAMP};
-        final ContentResolver resolver = context.getContentResolver();
-        final long[] maxPositions = new long[accountIds.length];
-        int idx = 0;
-        for (final long accountId : accountIds) {
-            final String where = Expression.equals(Activities.ACCOUNT_ID, accountId).getSQL();
-            final Cursor cur = ContentResolverUtils
-                    .query(resolver, uri, cols, where, null, Activities.DEFAULT_SORT_ORDER);
-            if (cur == null) {
-                continue;
-            }
-
-            if (cur.getCount() > 0) {
-                cur.moveToFirst();
-                maxPositions[idx] = cur.getLong(cur.getColumnIndexOrThrow(Activities.TIMESTAMP));
-            }
-            cur.close();
-            idx++;
-        }
-        return maxPositions;
-    }
-
-    public static long[] getOldestMessageIdsFromDatabase(final Context context, final Uri uri) {
-        final long[] account_ids = getActivatedAccountIds(context);
-        return getOldestMessageIdsFromDatabase(context, uri, account_ids);
-    }
-
-    public static long[] getOldestMessageIdsFromDatabase(final Context context, final Uri uri, final long[] accountIds) {
-        if (context == null || uri == null) return null;
-        final String[] cols = new String[]{DirectMessages.MESSAGE_ID};
-        final ContentResolver resolver = context.getContentResolver();
-        final long[] status_ids = new long[accountIds.length];
-        int idx = 0;
-        for (final long accountId : accountIds) {
-            final String where = Expression.equals(DirectMessages.ACCOUNT_ID, accountId).getSQL();
-            final Cursor cur = ContentResolverUtils.query(resolver, uri, cols, where, null, DirectMessages.MESSAGE_ID);
-            if (cur == null) {
-                continue;
-            }
-
-            if (cur.getCount() > 0) {
-                cur.moveToFirst();
-                status_ids[idx] = cur.getLong(cur.getColumnIndexOrThrow(DirectMessages.MESSAGE_ID));
-            }
-            cur.close();
-            idx++;
-        }
-        return status_ids;
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, TwidereDataStore.CONTENT_PATH_RAW_QUERY + "/*",
+                VIRTUAL_TABLE_ID_RAW_QUERY);
     }
 
     @NonNull
-    public static long[] getOldestStatusIds(@NonNull final Context context, @NonNull final Uri uri,
-                                            @NonNull final long[] accountIds) {
-        final String[] cols = new String[]{Statuses.STATUS_ID};
-        final ContentResolver resolver = context.getContentResolver();
-        final long[] statusIds = new long[accountIds.length];
-        Arrays.fill(statusIds, -1);
-        for (int i = 0, j = accountIds.length; i < j; i++) {
-            long accountId = accountIds[i];
-            final String where = Expression.equals(Statuses.ACCOUNT_ID, accountId).getSQL();
-            final Cursor cur = ContentResolverUtils.query(resolver, uri, cols, where, null, Statuses.STATUS_ID);
-            if (cur == null) {
-                continue;
-            }
-
-            try {
-                if (cur.moveToFirst()) {
-                    statusIds[i] = cur.getLong(cur.getColumnIndexOrThrow(Statuses.STATUS_ID));
-                }
-            } finally {
-                cur.close();
-            }
-        }
-        return statusIds;
+    public static String[] getNewestMessageIds(@NonNull final Context context, @NonNull final Uri uri,
+                                             @NonNull final UserKey[] accountKeys) {
+        return getStringFieldArray(context, uri, accountKeys, DirectMessages.ACCOUNT_KEY,
+                DirectMessages.MESSAGE_ID, new OrderBy(SQLFunctions.MAX(DirectMessages.MESSAGE_TIMESTAMP)));
     }
 
     @NonNull
-    public static long[] getOldestActivityMinPositions(@NonNull final Context context,
+    public static String[] getNewestStatusIds(@NonNull final Context context, @NonNull final Uri uri,
+                                            @NonNull final UserKey[] accountKeys) {
+        return getStringFieldArray(context, uri, accountKeys, Statuses.ACCOUNT_KEY,
+                Statuses.STATUS_ID, new OrderBy(SQLFunctions.MAX(Statuses.STATUS_TIMESTAMP)));
+    }
+
+
+    @NonNull
+    public static long[] getNewestStatusSortIds(@NonNull final Context context, @NonNull final Uri uri,
+                                                @NonNull final UserKey[] accountKeys) {
+        return getLongFieldArray(context, uri, accountKeys, Statuses.ACCOUNT_KEY,
+                Statuses.SORT_ID, new OrderBy(SQLFunctions.MAX(Statuses.STATUS_TIMESTAMP)));
+    }
+
+
+    @NonNull
+    public static String[] getOldestMessageIds(@NonNull final Context context, @NonNull final Uri uri,
+                                             @NonNull final UserKey[] accountKeys) {
+        return getStringFieldArray(context, uri, accountKeys, DirectMessages.ACCOUNT_KEY,
+                DirectMessages.MESSAGE_ID, new OrderBy(SQLFunctions.MIN(DirectMessages.MESSAGE_TIMESTAMP)));
+    }
+
+    @NonNull
+    public static String[] getOldestStatusIds(@NonNull final Context context, @NonNull final Uri uri,
+                                            @NonNull final UserKey[] accountKeys) {
+        return getStringFieldArray(context, uri, accountKeys, Statuses.ACCOUNT_KEY,
+                Statuses.STATUS_ID, new OrderBy(SQLFunctions.MIN(Statuses.STATUS_TIMESTAMP)));
+    }
+
+
+    @NonNull
+    public static long[] getOldestStatusSortIds(@NonNull final Context context, @NonNull final Uri uri,
+                                                @NonNull final UserKey[] accountKeys) {
+        return getLongFieldArray(context, uri, accountKeys, Statuses.ACCOUNT_KEY,
+                Statuses.SORT_ID, new OrderBy(SQLFunctions.MIN(Statuses.STATUS_TIMESTAMP)));
+    }
+
+    @NonNull
+    public static String[] getNewestActivityMaxPositions(final Context context, final Uri uri,
+                                                       final UserKey[] accountKeys) {
+        return getStringFieldArray(context, uri, accountKeys, Activities.ACCOUNT_KEY,
+                Activities.MAX_REQUEST_POSITION, new OrderBy(SQLFunctions.MAX(Activities.TIMESTAMP)));
+    }
+
+    @NonNull
+    public static String[] getOldestActivityMaxPositions(@NonNull final Context context,
                                                        @NonNull final Uri uri,
-                                                       @NonNull final long[] accountIds) {
-        return getOldestActivityLongField(context, uri, accountIds, Activities.MIN_POSITION);
+                                                       @NonNull final UserKey[] accountKeys) {
+        return getStringFieldArray(context, uri, accountKeys, Activities.ACCOUNT_KEY,
+                Activities.MAX_REQUEST_POSITION, new OrderBy(SQLFunctions.MIN(Activities.TIMESTAMP)));
     }
 
     @NonNull
-    public static long[] getOldestActivityMaxPositions(@NonNull final Context context,
-                                                       @NonNull final Uri uri,
-                                                       @NonNull final long[] accountIds) {
-        return getOldestActivityLongField(context, uri, accountIds, Activities.MAX_POSITION);
+    public static long[] getNewestActivityMaxSortPositions(final Context context, final Uri uri,
+                                                         final UserKey[] accountKeys) {
+        return getLongFieldArray(context, uri, accountKeys, Activities.ACCOUNT_KEY,
+                Activities.MAX_SORT_POSITION, new OrderBy(SQLFunctions.MAX(Activities.TIMESTAMP)));
     }
 
     @NonNull
-    public static long[] getOldestActivityLongField(@NonNull final Context context,
-                                                    @NonNull final Uri uri,
-                                                    @NonNull final long[] accountIds,
-                                                    @NonNull final String column) {
-        final String[] cols = new String[]{column};
+    public static long[] getOldestActivityMaxSortPositions(@NonNull final Context context,
+                                                         @NonNull final Uri uri,
+                                                         @NonNull final UserKey[] accountKeys) {
+        return getLongFieldArray(context, uri, accountKeys, Activities.ACCOUNT_KEY,
+                Activities.MAX_SORT_POSITION, new OrderBy(SQLFunctions.MIN(Activities.TIMESTAMP)));
+    }
+
+    public static int getStatusCount(final Context context, final Uri uri, final UserKey accountId) {
+        final String where = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY).getSQL();
+        final String[] whereArgs = {accountId.toString()};
+        return queryCount(context, uri, where, whereArgs);
+    }
+
+    public static int getActivitiesCount(@NonNull final Context context, @NonNull final Uri uri,
+                                         @NonNull final UserKey accountKey) {
+        final String where = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY).getSQL();
+        return queryCount(context, uri, where, new String[]{accountKey.toString()});
+    }
+
+
+    @NonNull
+    public static String[] getFilteredUserIds(Context context) {
+        if (context == null) return new String[0];
         final ContentResolver resolver = context.getContentResolver();
-        final long[] activityIds = new long[accountIds.length];
-        for (int i = 0, j = accountIds.length; i < j; i++) {
-            long accountId = accountIds[i];
-            final String where = Expression.equals(Activities.ACCOUNT_ID, accountId).getSQL();
-            final Cursor cur = ContentResolverUtils.query(resolver, uri, cols, where, null, Activities.TIMESTAMP);
-            if (cur == null) {
-                continue;
-            }
-            try {
-                if (cur.moveToFirst()) {
-                    activityIds[i] = cur.getLong(cur.getColumnIndexOrThrow(column));
-                }
-            } finally {
-                cur.close();
-            }
-        }
-        return activityIds;
-    }
-
-    public static int getStatusCountInDatabase(final Context context, final Uri uri, final long accountId) {
-        final String where = Expression.equals(Statuses.ACCOUNT_ID, accountId).getSQL();
-        return queryCount(context, uri, where, null);
-    }
-
-    public static int getActivityCountInDatabase(final Context context, final Uri uri, final long accountId) {
-        final String where = Expression.equals(Activities.ACCOUNT_ID, accountId).getSQL();
-        return queryCount(context, uri, where, null);
-    }
-
-    public static int queryCount(final Context context, final Uri uri, final String selection, final String[] selectionArgs) {
-        if (context == null) return -1;
-        final ContentResolver resolver = context.getContentResolver();
-        final String[] projection = new String[]{SQLFunctions.COUNT()};
-        final Cursor cur = ContentResolverUtils.query(resolver, uri, projection, selection, selectionArgs, null);
-        if (cur == null) return -1;
+        final String[] projection = {Filters.Users.USER_KEY};
+        final Cursor cur = resolver.query(Filters.Users.CONTENT_URI, projection, null, null, null);
+        if (cur == null) return new String[0];
         try {
-            if (cur.moveToFirst()) {
-                return cur.getInt(0);
-            }
-            return -1;
-        } finally {
-            cur.close();
-        }
-    }
-
-    @NonNull
-    public static long[] getFilteredUserIds(Context context) {
-        if (context == null) return new long[0];
-        final ContentResolver resolver = context.getContentResolver();
-        final Cursor cur = ContentResolverUtils.query(resolver, Filters.Users.CONTENT_URI,
-                new String[]{Filters.Users.USER_ID}, null, null, null);
-        if (cur == null) return new long[0];
-        try {
-            final long[] ids = new long[cur.getCount()];
+            final String[] ids = new String[cur.getCount()];
             cur.moveToFirst();
             int i = 0;
             while (!cur.isAfterLast()) {
-                ids[i] = cur.getLong(0);
+                ids[i] = cur.getString(0);
                 cur.moveToNext();
                 i++;
             }
@@ -427,48 +317,48 @@ public class DataStoreUtils implements Constants {
     @NonNull
     public static Expression buildStatusFilterWhereClause(@NonNull final String table, final Expression extraSelection) {
         final SQLSelectQuery filteredUsersQuery = SQLQueryBuilder
-                .select(new Columns.Column(new Table(Filters.Users.TABLE_NAME), Filters.Users.USER_ID))
+                .select(new Column(new Table(Filters.Users.TABLE_NAME), Filters.Users.USER_KEY))
                 .from(new Tables(Filters.Users.TABLE_NAME))
                 .build();
         final Expression filteredUsersWhere = Expression.or(
-                Expression.in(new Columns.Column(new Table(table), Statuses.USER_ID), filteredUsersQuery),
-                Expression.in(new Columns.Column(new Table(table), Statuses.RETWEETED_BY_USER_ID), filteredUsersQuery),
-                Expression.in(new Columns.Column(new Table(table), Statuses.QUOTED_USER_ID), filteredUsersQuery)
+                Expression.in(new Column(new Table(table), Statuses.USER_KEY), filteredUsersQuery),
+                Expression.in(new Column(new Table(table), Statuses.RETWEETED_BY_USER_KEY), filteredUsersQuery),
+                Expression.in(new Column(new Table(table), Statuses.QUOTED_USER_KEY), filteredUsersQuery)
         );
         final SQLSelectQuery.Builder filteredIdsQueryBuilder = SQLQueryBuilder
-                .select(new Columns.Column(new Table(table), Statuses._ID))
+                .select(new Column(new Table(table), Statuses._ID))
                 .from(new Tables(table))
                 .where(filteredUsersWhere)
                 .union()
-                .select(new Columns(new Columns.Column(new Table(table), Statuses._ID)))
+                .select(new Columns(new Column(new Table(table), Statuses._ID)))
                 .from(new Tables(table, Filters.Sources.TABLE_NAME))
                 .where(Expression.or(
-                        Expression.likeRaw(new Columns.Column(new Table(table), Statuses.SOURCE),
+                        Expression.likeRaw(new Column(new Table(table), Statuses.SOURCE),
                                 "'%>'||" + Filters.Sources.TABLE_NAME + "." + Filters.Sources.VALUE + "||'</a>%'"),
-                        Expression.likeRaw(new Columns.Column(new Table(table), Statuses.QUOTED_SOURCE),
+                        Expression.likeRaw(new Column(new Table(table), Statuses.QUOTED_SOURCE),
                                 "'%>'||" + Filters.Sources.TABLE_NAME + "." + Filters.Sources.VALUE + "||'</a>%'")
                 ))
                 .union()
-                .select(new Columns(new Columns.Column(new Table(table), Statuses._ID)))
+                .select(new Columns(new Column(new Table(table), Statuses._ID)))
                 .from(new Tables(table, Filters.Keywords.TABLE_NAME))
                 .where(Expression.or(
-                        Expression.likeRaw(new Columns.Column(new Table(table), Statuses.TEXT_PLAIN),
+                        Expression.likeRaw(new Column(new Table(table), Statuses.TEXT_PLAIN),
                                 "'%'||" + Filters.Keywords.TABLE_NAME + "." + Filters.Keywords.VALUE + "||'%'"),
-                        Expression.likeRaw(new Columns.Column(new Table(table), Statuses.QUOTED_TEXT_PLAIN),
+                        Expression.likeRaw(new Column(new Table(table), Statuses.QUOTED_TEXT_PLAIN),
                                 "'%'||" + Filters.Keywords.TABLE_NAME + "." + Filters.Keywords.VALUE + "||'%'")
                 ))
                 .union()
-                .select(new Columns(new Columns.Column(new Table(table), Statuses._ID)))
+                .select(new Columns(new Column(new Table(table), Statuses._ID)))
                 .from(new Tables(table, Filters.Links.TABLE_NAME))
                 .where(Expression.or(
-                        Expression.likeRaw(new Columns.Column(new Table(table), Statuses.TEXT_HTML),
-                                "'%>%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%</a>%'"),
-                        Expression.likeRaw(new Columns.Column(new Table(table), Statuses.QUOTED_TEXT_HTML),
-                                "'%>%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%</a>%'")
+                        Expression.likeRaw(new Column(new Table(table), Statuses.SPANS),
+                                "'%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%'"),
+                        Expression.likeRaw(new Column(new Table(table), Statuses.QUOTED_SPANS),
+                                "'%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%'")
                 ));
         final Expression filterExpression = Expression.or(
-                Expression.notIn(new Columns.Column(new Table(table), Statuses._ID), filteredIdsQueryBuilder.build()),
-                Expression.equals(new Columns.Column(new Table(table), Statuses.IS_GAP), 1)
+                Expression.notIn(new Column(new Table(table), Statuses._ID), filteredIdsQueryBuilder.build()),
+                Expression.equals(new Column(new Table(table), Statuses.IS_GAP), 1)
         );
         if (extraSelection != null) {
             return Expression.and(filterExpression, extraSelection);
@@ -476,39 +366,47 @@ public class DataStoreUtils implements Constants {
         return filterExpression;
     }
 
-    public static String[] getAccountNames(final Context context, final long[] accountIds) {
-        if (context == null) return new String[0];
-        final String[] cols = new String[]{Accounts.NAME};
-        final String where = accountIds != null ? Expression.in(new Columns.Column(Accounts.ACCOUNT_ID),
-                new RawItemArray(accountIds)).getSQL() : null;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, cols, where,
-                null, null);
-        if (cur == null) return new String[0];
+
+    public static String getAccountDisplayName(final Context context, final UserKey accountKey, final boolean nameFirst) {
+        final String name;
+        if (nameFirst) {
+            name = getAccountName(context, accountKey);
+        } else {
+            name = String.format("@%s", getAccountScreenName(context, accountKey));
+        }
+        return name;
+    }
+
+    public static String getAccountName(final Context context, final UserKey accountKey) {
+        if (context == null) return null;
+        final String cached = sAccountNames.get(accountKey);
+        if (!isEmpty(cached)) return cached;
+        final String[] projection = {Accounts.SCREEN_NAME};
+        final Cursor cur = getAccountCursor(context, projection, accountKey);
+        if (cur == null) return null;
         try {
-            cur.moveToFirst();
-            final String[] names = new String[cur.getCount()];
-            int i = 0;
-            while (!cur.isAfterLast()) {
-                names[i++] = cur.getString(0);
-                cur.moveToNext();
+            if (cur.moveToFirst()) {
+                final String name = cur.getString(0);
+                sAccountNames.put(accountKey, name);
+                return name;
             }
-            return names;
+            return null;
         } finally {
             cur.close();
         }
     }
 
-    public static String getAccountScreenName(final Context context, final long accountId) {
+    public static String getAccountScreenName(final Context context, final UserKey accountKey) {
         if (context == null) return null;
-        final String cached = sAccountScreenNames.get(accountId);
+        final String cached = sAccountScreenNames.get(accountKey);
         if (!isEmpty(cached)) return cached;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{Accounts.SCREEN_NAME}, Accounts.ACCOUNT_ID + " = " + accountId, null, null);
+        final String[] projection = {Accounts.SCREEN_NAME};
+        final Cursor cur = getAccountCursor(context, projection, accountKey);
         if (cur == null) return null;
         try {
-            if (cur.getCount() > 0 && cur.moveToFirst()) {
+            if (cur.moveToFirst()) {
                 final String name = cur.getString(0);
-                sAccountScreenNames.put(accountId, name);
+                sAccountScreenNames.put(accountKey, name);
                 return name;
             }
             return null;
@@ -518,25 +416,22 @@ public class DataStoreUtils implements Constants {
     }
 
     public static String[] getAccountScreenNames(final Context context) {
-        return getAccountScreenNames(context, false);
+        return getAccountScreenNames(context, null);
     }
 
-    public static String[] getAccountScreenNames(final Context context, final boolean includeAtChar) {
-        return getAccountScreenNames(context, null, includeAtChar);
-    }
-
-    public static String[] getAccountScreenNames(final Context context, final long[] accountIds) {
-        return getAccountScreenNames(context, accountIds, false);
-    }
-
-    public static String[] getAccountScreenNames(final Context context, final long[] accountIds,
-                                                 final boolean includeAtChar) {
+    public static String[] getAccountScreenNames(final Context context, @Nullable final UserKey[] accountKeys) {
         if (context == null) return new String[0];
         final String[] cols = new String[]{Accounts.SCREEN_NAME};
-        final String where = accountIds != null ? Expression.in(new Columns.Column(Accounts.ACCOUNT_ID),
-                new RawItemArray(accountIds)).getSQL() : null;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, cols, where,
-                null, null);
+        final String where;
+        final String[] whereArgs;
+        if (accountKeys != null) {
+            where = Expression.inArgs(new Column(Accounts.ACCOUNT_KEY), accountKeys.length).getSQL();
+            whereArgs = TwidereArrayUtils.toStringArray(accountKeys);
+        } else {
+            where = null;
+            whereArgs = null;
+        }
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, cols, where, whereArgs, null);
         if (cur == null) return new String[0];
         try {
             cur.moveToFirst();
@@ -552,17 +447,18 @@ public class DataStoreUtils implements Constants {
         }
     }
 
-    public static long[] getActivatedAccountIds(final Context context) {
-        if (context == null) return new long[0];
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{Accounts.ACCOUNT_ID}, Accounts.IS_ACTIVATED + " = 1", null, null);
-        if (cur == null) return new long[0];
+    @NonNull
+    public static UserKey[] getActivatedAccountKeys(final Context context) {
+        if (context == null) return new UserKey[0];
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI,
+                new String[]{Accounts.ACCOUNT_KEY}, Accounts.IS_ACTIVATED + " = 1", null, null);
+        if (cur == null) return new UserKey[0];
         try {
             cur.moveToFirst();
-            final long[] ids = new long[cur.getCount()];
+            final UserKey[] ids = new UserKey[cur.getCount()];
             int i = 0;
             while (!cur.isAfterLast()) {
-                ids[i++] = cur.getLong(0);
+                ids[i++] = UserKey.valueOf(cur.getString(0));
                 cur.moveToNext();
             }
             return ids;
@@ -571,54 +467,114 @@ public class DataStoreUtils implements Constants {
         }
     }
 
-    public static int getAllStatusesCount(final Context context, @NonNull final Uri uri) {
+    public static int getStatusesCount(final Context context, final Uri uri, final long compare,
+                                       String compareColumn, boolean greaterThan, UserKey... accountKeys) {
         if (context == null) return 0;
-        final ContentResolver resolver = context.getContentResolver();
-        final String table = getTableNameByUri(uri);
-        if (table == null) return 0;
-        final Cursor cur = ContentResolverUtils.query(resolver, uri, new String[]{Statuses.STATUS_ID},
-                buildStatusFilterWhereClause(table, null).getSQL(),
-                null, null);
-        if (cur == null) return 0;
-        try {
-            return cur.getCount();
-        } finally {
-            cur.close();
-        }
-    }
-
-    public static int getStatusesCount(final Context context, final Uri uri, final long sinceId, final long... accountIds) {
-        if (context == null) return 0;
-        final ContentResolver resolver = context.getContentResolver();
-        final RawItemArray idsIn;
-        if (accountIds == null || accountIds.length == 0 || (accountIds.length == 1 && accountIds[0] < 0)) {
-            idsIn = new RawItemArray(getActivatedAccountIds(context));
-        } else {
-            idsIn = new RawItemArray(accountIds);
+        if (accountKeys == null) {
+            accountKeys = getActivatedAccountKeys(context);
         }
         final Expression selection = Expression.and(
-                Expression.in(new Columns.Column(Statuses.ACCOUNT_ID), idsIn),
-                Expression.greaterThan(Statuses.STATUS_ID, sinceId),
+                Expression.inArgs(new Column(Statuses.ACCOUNT_KEY), accountKeys.length),
+                greaterThan ? Expression.greaterThanArgs(compareColumn) : Expression.lesserThanArgs(compareColumn),
                 buildStatusFilterWhereClause(getTableNameByUri(uri), null)
         );
-        return queryCount(context, uri, selection.getSQL(), null);
+        final String[] whereArgs = new String[accountKeys.length + 1];
+        for (int i = 0; i < accountKeys.length; i++) {
+            whereArgs[i] = accountKeys[i].toString();
+        }
+        whereArgs[accountKeys.length] = String.valueOf(compare);
+        return queryCount(context, uri, selection.getSQL(), whereArgs);
     }
 
-    public static int getActivitiesCount(final Context context, final Uri uri, final long sinceTimestamp,
-                                         final long... accountIds) {
+    public static int getActivitiesCount(final Context context, final Uri uri, final long compare,
+                                       String compareColumn, boolean greaterThan, UserKey... accountKeys) {
         if (context == null) return 0;
-        final RawItemArray idsIn;
-        if (accountIds == null || accountIds.length == 0 || (accountIds.length == 1 && accountIds[0] < 0)) {
-            idsIn = new RawItemArray(getActivatedAccountIds(context));
-        } else {
-            idsIn = new RawItemArray(accountIds);
+        if (accountKeys == null) {
+            accountKeys = getActivatedAccountKeys(context);
         }
         final Expression selection = Expression.and(
-                Expression.in(new Columns.Column(Activities.ACCOUNT_ID), idsIn),
-                Expression.greaterThan(Activities.TIMESTAMP, sinceTimestamp),
+                Expression.inArgs(new Column(Activities.ACCOUNT_KEY), accountKeys.length),
+                greaterThan ? Expression.greaterThanArgs(compareColumn) : Expression.lesserThanArgs(compareColumn),
                 buildActivityFilterWhereClause(getTableNameByUri(uri), null)
         );
-        return queryCount(context, uri, selection.getSQL(), null);
+        final String[] whereArgs = new String[accountKeys.length + 1];
+        for (int i = 0; i < accountKeys.length; i++) {
+            whereArgs[i] = accountKeys[i].toString();
+        }
+        whereArgs[accountKeys.length] = String.valueOf(compare);
+        return queryCount(context, uri, selection.getSQL(), whereArgs);
+    }
+
+    public static int getActivitiesCount(@NonNull final Context context, final Uri uri,
+                                         final Expression extraWhere, final String[] extraWhereArgs,
+                                         final long since, String sinceColumn, boolean followingOnly,
+                                         @Nullable UserKey[] accountKeys) {
+        if (accountKeys == null) {
+            accountKeys = getActivatedAccountKeys(context);
+        }
+        Expression[] expressions;
+        if (extraWhere != null) {
+            expressions = new Expression[4];
+            expressions[3] = extraWhere;
+        } else {
+            expressions = new Expression[3];
+        }
+        expressions[0] = Expression.inArgs(new Column(Activities.ACCOUNT_KEY), accountKeys.length);
+        expressions[1] = Expression.greaterThanArgs(sinceColumn);
+        expressions[2] = buildActivityFilterWhereClause(getTableNameByUri(uri), null);
+        final Expression selection = Expression.and(expressions);
+        String[] selectionArgs;
+        if (extraWhereArgs != null) {
+            selectionArgs = new String[accountKeys.length + 1 + extraWhereArgs.length];
+            System.arraycopy(extraWhereArgs, 0, selectionArgs, accountKeys.length + 1,
+                    extraWhereArgs.length);
+        } else {
+            selectionArgs = new String[accountKeys.length + 1];
+        }
+        for (int i = 0; i < accountKeys.length; i++) {
+            selectionArgs[i] = accountKeys[i].toString();
+        }
+        selectionArgs[accountKeys.length] = String.valueOf(since);
+        // If followingOnly option is on, we have to iterate over items
+        if (followingOnly) {
+            final ContentResolver resolver = context.getContentResolver();
+            final String[] projection = new String[]{Activities.SOURCES};
+            final Cursor cur = resolver.query(uri, projection, selection.getSQL(), selectionArgs, null);
+            if (cur == null) return -1;
+            try {
+                final JsonMapper<UserFollowState> mapper;
+                try {
+                    mapper = LoganSquareMapperFinder.mapperFor(UserFollowState.class);
+                } catch (LoganSquareMapperFinder.ClassLoaderDeadLockException e) {
+                    return -1;
+                }
+                int total = 0;
+                cur.moveToFirst();
+                while (!cur.isAfterLast()) {
+                    final String string = cur.getString(0);
+                    if (TextUtils.isEmpty(string)) continue;
+                    boolean hasFollowing = false;
+                    try {
+                        for (UserFollowState state : mapper.parseList(string)) {
+                            if (state.is_following) {
+                                hasFollowing = true;
+                                break;
+                            }
+                        }
+                    } catch (IOException e) {
+                        continue;
+                    }
+                    if (hasFollowing) {
+                        total++;
+                    }
+                    cur.moveToNext();
+                }
+                return total;
+            } finally {
+                cur.close();
+            }
+        }
+        return queryCount(context, uri, selection.getSQL(), selectionArgs);
     }
 
     public static int getTableId(final Uri uri) {
@@ -672,8 +628,6 @@ public class DataStoreUtils implements Constants {
                 return SavedSearches.TABLE_NAME;
             case TwittnukerConstants.TABLE_ID_SEARCH_HISTORY:
                 return SearchHistory.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_NETWORK_USAGES:
-                return NetworkUsages.TABLE_NAME;
             default:
                 return null;
         }
@@ -687,48 +641,48 @@ public class DataStoreUtils implements Constants {
     @NonNull
     public static Expression buildActivityFilterWhereClause(@NonNull final String table, final Expression extraSelection) {
         final SQLSelectQuery filteredUsersQuery = SQLQueryBuilder
-                .select(new Columns.Column(new Table(Filters.Users.TABLE_NAME), Filters.Users.USER_ID))
+                .select(new Column(new Table(Filters.Users.TABLE_NAME), Filters.Users.USER_KEY))
                 .from(new Tables(Filters.Users.TABLE_NAME))
                 .build();
         final Expression filteredUsersWhere = Expression.or(
-                Expression.in(new Columns.Column(new Table(table), Activities.STATUS_USER_ID), filteredUsersQuery),
-                Expression.in(new Columns.Column(new Table(table), Activities.STATUS_RETWEETED_BY_USER_ID), filteredUsersQuery),
-                Expression.in(new Columns.Column(new Table(table), Activities.STATUS_QUOTED_USER_ID), filteredUsersQuery)
+                Expression.in(new Column(new Table(table), Activities.STATUS_USER_KEY), filteredUsersQuery),
+                Expression.in(new Column(new Table(table), Activities.STATUS_RETWEETED_BY_USER_KEY), filteredUsersQuery),
+                Expression.in(new Column(new Table(table), Activities.STATUS_QUOTED_USER_KEY), filteredUsersQuery)
         );
         final SQLSelectQuery.Builder filteredIdsQueryBuilder = SQLQueryBuilder
-                .select(new Columns.Column(new Table(table), Activities._ID))
+                .select(new Column(new Table(table), Activities._ID))
                 .from(new Tables(table))
                 .where(filteredUsersWhere)
                 .union()
-                .select(new Columns(new Columns.Column(new Table(table), Activities._ID)))
+                .select(new Columns(new Column(new Table(table), Activities._ID)))
                 .from(new Tables(table, Filters.Sources.TABLE_NAME))
                 .where(Expression.or(
-                        Expression.likeRaw(new Columns.Column(new Table(table), Activities.STATUS_SOURCE),
+                        Expression.likeRaw(new Column(new Table(table), Activities.STATUS_SOURCE),
                                 "'%>'||" + Filters.Sources.TABLE_NAME + "." + Filters.Sources.VALUE + "||'</a>%'"),
-                        Expression.likeRaw(new Columns.Column(new Table(table), Activities.STATUS_QUOTE_SOURCE),
+                        Expression.likeRaw(new Column(new Table(table), Activities.STATUS_QUOTE_SOURCE),
                                 "'%>'||" + Filters.Sources.TABLE_NAME + "." + Filters.Sources.VALUE + "||'</a>%'")
                 ))
                 .union()
-                .select(new Columns(new Columns.Column(new Table(table), Activities._ID)))
+                .select(new Columns(new Column(new Table(table), Activities._ID)))
                 .from(new Tables(table, Filters.Keywords.TABLE_NAME))
                 .where(Expression.or(
-                        Expression.likeRaw(new Columns.Column(new Table(table), Activities.STATUS_TEXT_PLAIN),
+                        Expression.likeRaw(new Column(new Table(table), Activities.STATUS_TEXT_PLAIN),
                                 "'%'||" + Filters.Keywords.TABLE_NAME + "." + Filters.Keywords.VALUE + "||'%'"),
-                        Expression.likeRaw(new Columns.Column(new Table(table), Activities.STATUS_QUOTE_TEXT_PLAIN),
+                        Expression.likeRaw(new Column(new Table(table), Activities.STATUS_QUOTE_TEXT_PLAIN),
                                 "'%'||" + Filters.Keywords.TABLE_NAME + "." + Filters.Keywords.VALUE + "||'%'")
                 ))
                 .union()
-                .select(new Columns(new Columns.Column(new Table(table), Activities._ID)))
+                .select(new Columns(new Column(new Table(table), Activities._ID)))
                 .from(new Tables(table, Filters.Links.TABLE_NAME))
                 .where(Expression.or(
-                        Expression.likeRaw(new Columns.Column(new Table(table), Activities.STATUS_TEXT_HTML),
-                                "'%>%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%</a>%'"),
-                        Expression.likeRaw(new Columns.Column(new Table(table), Activities.STATUS_QUOTE_TEXT_HTML),
-                                "'%>%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%</a>%'")
+                        Expression.likeRaw(new Column(new Table(table), Activities.STATUS_SPANS),
+                                "'%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%'"),
+                        Expression.likeRaw(new Column(new Table(table), Activities.STATUS_QUOTE_SPANS),
+                                "'%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%'")
                 ));
         final Expression filterExpression = Expression.or(
-                Expression.notIn(new Columns.Column(new Table(table), Activities._ID), filteredIdsQueryBuilder.build()),
-                Expression.equals(new Columns.Column(new Table(table), Activities.IS_GAP), 1)
+                Expression.notIn(new Column(new Table(table), Activities._ID), filteredIdsQueryBuilder.build()),
+                Expression.equals(new Column(new Table(table), Activities.IS_GAP), 1)
         );
         if (extraSelection != null) {
             return Expression.and(filterExpression, extraSelection);
@@ -736,32 +690,11 @@ public class DataStoreUtils implements Constants {
         return filterExpression;
     }
 
-    public static int getAccountColor(final Context context, final long accountId) {
-        if (context == null) return Color.TRANSPARENT;
-        final Integer cached = sAccountColors.get(accountId);
-        if (cached != null) return cached;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{Accounts.COLOR}, Expression.equals(Accounts.ACCOUNT_ID, accountId).getSQL(),
-                null, null);
-        if (cur == null) return Color.TRANSPARENT;
-        try {
-            if (cur.getCount() > 0 && cur.moveToFirst()) {
-                final int color = cur.getInt(0);
-                sAccountColors.put(accountId, color);
-                return color;
-            }
-            return Color.TRANSPARENT;
-        } finally {
-            cur.close();
-        }
-    }
-
     public static int[] getAccountColors(final Context context, final long[] accountIds) {
         if (context == null || accountIds == null) return new int[0];
-        final String[] cols = new String[]{Accounts.ACCOUNT_ID, Accounts.COLOR};
-        final String where = Expression.in(new Columns.Column(Accounts.ACCOUNT_ID), new RawItemArray(accountIds)).getSQL();
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI, cols, where,
-                null, null);
+        final String[] cols = new String[]{Accounts.ACCOUNT_KEY, Accounts.COLOR};
+        final String where = Expression.in(new Column(Accounts.ACCOUNT_KEY), new RawItemArray(accountIds)).getSQL();
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, cols, where, null, null);
         if (cur == null) return new int[0];
         try {
             final int[] colors = new int[cur.getCount()];
@@ -775,42 +708,50 @@ public class DataStoreUtils implements Constants {
         }
     }
 
-    public static String getAccountDisplayName(final Context context, final long accountId, final boolean nameFirst) {
-        final String name;
-        if (nameFirst) {
-            name = getAccountName(context, accountId);
-        } else {
-            name = String.format("@%s", getAccountScreenName(context, accountId));
+    public static UserKey findAccountKeyByScreenName(@NonNull final Context context, @NonNull final String screenName) {
+        final String[] projection = {Accounts.ACCOUNT_KEY};
+        final String where = Expression.equalsArgs(Accounts.SCREEN_NAME).getSQL();
+        final String[] whereArgs = {screenName};
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, projection,
+                where, whereArgs, null);
+        if (cur == null) return null;
+        try {
+            if (cur.moveToFirst()) {
+                return UserKey.valueOf(cur.getString(0));
+            }
+            return null;
+        } finally {
+            cur.close();
         }
-        return name;
     }
 
-    public static long getAccountId(final Context context, final String screenName) {
-        if (context == null || isEmpty(screenName)) return -1;
-        final Cursor cur = ContentResolverUtils
-                .query(context.getContentResolver(), Accounts.CONTENT_URI, new String[]{Accounts.ACCOUNT_ID},
-                        Expression.equalsArgs(Accounts.SCREEN_NAME).getSQL(), new String[]{screenName}, null);
-        if (cur == null) return -1;
+    public static UserKey findAccountKey(@NonNull final Context context, final String accountId) {
+        final String[] projection = {Accounts.ACCOUNT_KEY};
+        final Cursor cur = findAccountCursorsById(context, projection, accountId);
+        if (cur == null) return null;
         try {
-            if (cur.getCount() > 0 && cur.moveToFirst()) return cur.getLong(0);
-            return -1;
+            if (cur.moveToFirst()) {
+                return UserKey.valueOf(cur.getString(0));
+            }
+            return null;
         } finally {
             cur.close();
         }
     }
 
     @NonNull
-    public static long[] getAccountIds(final Context context) {
-        if (context == null) return new long[0];
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{Accounts.ACCOUNT_ID}, null, null, null);
-        if (cur == null) return new long[0];
+    public static UserKey[] getAccountKeys(final Context context) {
+        if (context == null) return new UserKey[0];
+        final String[] projection = {Accounts.ACCOUNT_KEY};
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, projection,
+                null, null, null);
+        if (cur == null) return new UserKey[0];
         try {
             cur.moveToFirst();
-            final long[] ids = new long[cur.getCount()];
+            final UserKey[] ids = new UserKey[cur.getCount()];
             int i = 0;
             while (!cur.isAfterLast()) {
-                ids[i++] = cur.getLong(0);
+                ids[i++] = UserKey.valueOf(cur.getString(0));
                 cur.moveToNext();
             }
             return ids;
@@ -821,8 +762,8 @@ public class DataStoreUtils implements Constants {
 
     public static boolean hasAccount(final Context context) {
         if (context == null) return false;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{SQLFunctions.COUNT()}, null, null, null);
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, new String[]{SQLFunctions.COUNT()}, null, null, null);
+        if (cur == null) return false;
         try {
             cur.moveToFirst();
             return cur.getInt(0) > 0;
@@ -831,26 +772,465 @@ public class DataStoreUtils implements Constants {
         }
     }
 
-    public static String getAccountName(final Context context, final long accountId) {
-        if (context == null) return null;
-        final String cached = sAccountNames.get(accountId);
-        if (!isEmpty(cached)) return cached;
-        final Cursor cur = ContentResolverUtils.query(context.getContentResolver(), Accounts.CONTENT_URI,
-                new String[]{Accounts.NAME}, Accounts.ACCOUNT_ID + " = " + accountId, null, null);
-        if (cur == null) return null;
-        try {
-            if (cur.getCount() > 0 && cur.moveToFirst()) {
-                final String name = cur.getString(0);
-                sAccountNames.put(accountId, name);
-                return name;
+    public static synchronized void cleanDatabasesByItemLimit(final Context context) {
+        if (context == null) return;
+        final ContentResolver resolver = context.getContentResolver();
+        final int itemLimit = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).getInt(
+                KEY_DATABASE_ITEM_LIMIT, DEFAULT_DATABASE_ITEM_LIMIT);
+
+        for (final UserKey accountKey : getAccountKeys(context)) {
+            // Clean statuses.
+            for (final Uri uri : STATUSES_URIS) {
+                if (CachedStatuses.CONTENT_URI.equals(uri)) {
+                    continue;
+                }
+                final String table = getTableNameByUri(uri);
+                final Expression accountWhere = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY);
+                final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
+                qb.select(new Column(Statuses._ID))
+                        .from(new Tables(table))
+                        .where(accountWhere)
+                        .orderBy(new OrderBy(Statuses.STATUS_ID, false))
+                        .limit(itemLimit);
+                final Expression where = Expression.and(Expression.lesserThan(new Column(Statuses._ID),
+                                SQLQueryBuilder.select(SQLFunctions.MIN(new Column(Statuses._ID))).from(qb.build()).build()),
+                        accountWhere);
+                final String[] whereArgs = {String.valueOf(accountKey), String.valueOf(accountKey)};
+                resolver.delete(uri, where.getSQL(), whereArgs);
             }
-            return null;
+            for (final Uri uri : ACTIVITIES_URIS) {
+                final String table = getTableNameByUri(uri);
+                final Expression accountWhere = Expression.equalsArgs(Accounts.ACCOUNT_KEY);
+                final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
+                qb.select(new Column(Activities._ID))
+                        .from(new Tables(table))
+                        .where(accountWhere)
+                        .orderBy(new OrderBy(Activities.TIMESTAMP, false))
+                        .limit(itemLimit);
+                final Expression where = Expression.and(Expression.lesserThan(new Column(Activities._ID),
+                        SQLQueryBuilder.select(SQLFunctions.MIN(new Column(Activities._ID)))
+                                .from(qb.build()).build()), accountWhere);
+                final String[] whereArgs = {String.valueOf(accountKey), String.valueOf(accountKey)};
+                resolver.delete(uri, where.getSQL(), whereArgs);
+            }
+            for (final Uri uri : DIRECT_MESSAGES_URIS) {
+                final String table = getTableNameByUri(uri);
+                final Expression accountWhere = Expression.equalsArgs(Accounts.ACCOUNT_KEY);
+                final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
+                qb.select(new Column(DirectMessages._ID))
+                        .from(new Tables(table))
+                        .where(accountWhere)
+                        .orderBy(new OrderBy(DirectMessages.MESSAGE_ID, false))
+                        .limit(itemLimit * 10);
+                final Expression where = Expression.and(Expression.lesserThan(new Column(DirectMessages._ID),
+                        SQLQueryBuilder.select(SQLFunctions.MIN(new Column(DirectMessages._ID)))
+                                .from(qb.build()).build()), accountWhere);
+                final String[] whereArgs = {String.valueOf(accountKey), String.valueOf(accountKey)};
+                resolver.delete(uri, where.getSQL(), whereArgs);
+            }
+        }
+        // Clean cached values.
+        for (final Uri uri : CACHE_URIS) {
+            final String table = getTableNameByUri(uri);
+            if (table == null) continue;
+            final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
+            qb.select(new Column(BaseColumns._ID))
+                    .from(new Tables(table))
+                    .orderBy(new OrderBy(BaseColumns._ID, false))
+                    .limit(itemLimit * 20);
+            final Expression where = Expression.lesserThan(new Column(BaseColumns._ID),
+                    SQLQueryBuilder.select(SQLFunctions.MIN(new Column(BaseColumns._ID))).from(qb.build()).build());
+            resolver.delete(uri, where.getSQL(), null);
+        }
+    }
+
+    public static void clearAccountName() {
+        sAccountScreenNames.clear();
+    }
+
+    public static boolean isFilteringUser(Context context, UserKey userKey) {
+        return isFilteringUser(context, userKey.toString());
+    }
+
+    public static boolean isFilteringUser(Context context, String userKey) {
+        final ContentResolver cr = context.getContentResolver();
+        final Expression where = Expression.equalsArgs(Filters.Users.USER_KEY);
+        final Cursor c = cr.query(Filters.Users.CONTENT_URI, new String[]{SQLFunctions.COUNT()},
+                where.getSQL(), new String[]{userKey}, null);
+        if (c == null) return false;
+        try {
+            if (c.moveToFirst()) {
+                return c.getLong(0) > 0;
+            }
+        } finally {
+            c.close();
+        }
+        return false;
+    }
+
+    @NonNull
+    static String[] getStringFieldArray(@NonNull Context context, @NonNull Uri uri,
+                                    @NonNull UserKey[] keys, @NonNull String keyField,
+                                    @NonNull String valueField, @Nullable OrderBy sortExpression) {
+        return getFieldArray(context, uri, keys, keyField, valueField, sortExpression, new FieldArrayCreator<String[]>() {
+            @Override
+            public String[] newArray(int size) {
+                return new String[size];
+            }
+
+            @Override
+            public void assign(String[] array, int arrayIdx, Cursor cur, int colIdx) {
+                array[arrayIdx] = cur.getString(colIdx);
+            }
+        });
+    }
+
+    @NonNull
+    static long[] getLongFieldArray(@NonNull Context context, @NonNull Uri uri,
+                                    @NonNull UserKey[] keys, @NonNull String keyField,
+                                    @NonNull String valueField, @Nullable OrderBy sortExpression) {
+        return getFieldArray(context, uri, keys, keyField, valueField, sortExpression, new FieldArrayCreator<long[]>() {
+            @Override
+            public long[] newArray(int size) {
+                return new long[size];
+            }
+
+            @Override
+            public void assign(long[] array, int arrayIdx, Cursor cur, int colIdx) {
+                array[arrayIdx] = cur.getLong(colIdx);
+            }
+        });
+    }
+
+    @NonNull
+    static <T> T getFieldArray(@NonNull Context context, @NonNull Uri uri,
+                               @NonNull UserKey[] keys, @NonNull String keyField,
+                               @NonNull String valueField, @Nullable OrderBy sortExpression,
+                               @NonNull FieldArrayCreator<T> creator) {
+        final ContentResolver resolver = context.getContentResolver();
+        final T messageIds = creator.newArray(keys.length);
+        final String[] selectionArgs = TwidereArrayUtils.toStringArray(keys);
+        final SQLSelectQuery.Builder builder = SQLQueryBuilder.select(new Columns(keyField, valueField))
+                .from(new Table(getTableNameByUri(uri)))
+                .groupBy(new Column(keyField))
+                .having(Expression.in(new Column(keyField), new ArgsArray(keys.length)));
+        if (sortExpression != null) {
+            builder.orderBy(sortExpression);
+        }
+        final Cursor cur = resolver.query(Uri.withAppendedPath(TwidereDataStore.CONTENT_URI_RAW_QUERY,
+                builder.buildSQL()), null, null, selectionArgs, null);
+        if (cur == null) return messageIds;
+        try {
+            while (cur.moveToNext()) {
+                final UserKey accountKey = UserKey.valueOf(cur.getString(0));
+                int idx = ArrayUtils.indexOf(keys, accountKey);
+                if (idx < 0) continue;
+                creator.assign(messageIds, idx, cur, 1);
+            }
+            return messageIds;
         } finally {
             cur.close();
         }
     }
 
-    public static String[] getAccountNames(final Context context) {
-        return getAccountScreenNames(context, null);
+    public static void deleteStatus(@NonNull ContentResolver cr, @NonNull UserKey accountKey,
+                                    @NonNull String statusId, @Nullable ParcelableStatus status) {
+
+        final String host = accountKey.getHost();
+        final String deleteWhere, updateWhere;
+        final String[] deleteWhereArgs, updateWhereArgs;
+        if (host != null) {
+            deleteWhere = Expression.and(
+                    Expression.likeRaw(new Column(Statuses.ACCOUNT_KEY), "'%@'||?"),
+                    Expression.or(
+                            Expression.equalsArgs(Statuses.STATUS_ID),
+                            Expression.equalsArgs(Statuses.RETWEET_ID)
+                    )).getSQL();
+            deleteWhereArgs = new String[]{host, statusId, statusId};
+            updateWhere = Expression.and(
+                    Expression.likeRaw(new Column(Statuses.ACCOUNT_KEY), "'%@'||?"),
+                    Expression.equalsArgs(Statuses.MY_RETWEET_ID)
+            ).getSQL();
+            updateWhereArgs = new String[]{host, statusId};
+        } else {
+            deleteWhere = Expression.or(
+                    Expression.equalsArgs(Statuses.STATUS_ID),
+                    Expression.equalsArgs(Statuses.RETWEET_ID)
+            ).getSQL();
+            deleteWhereArgs = new String[]{statusId, statusId};
+            updateWhere = Expression.equalsArgs(Statuses.MY_RETWEET_ID).getSQL();
+            updateWhereArgs = new String[]{statusId};
+        }
+        for (final Uri uri : STATUSES_URIS) {
+            cr.delete(uri, deleteWhere, deleteWhereArgs);
+            if (status != null) {
+                final ContentValues values = new ContentValues();
+                values.putNull(Statuses.MY_RETWEET_ID);
+                values.put(Statuses.RETWEET_COUNT, status.retweet_count - 1);
+                cr.update(uri, values, updateWhere, updateWhereArgs);
+            }
+        }
+    }
+
+    public static void deleteActivityStatus(@NonNull ContentResolver cr, @NonNull UserKey accountKey,
+                                            @NonNull final String statusId, @Nullable final ParcelableStatus result) {
+
+        final String host = accountKey.getHost();
+        final String deleteWhere, updateWhere;
+        final String[] deleteWhereArgs, updateWhereArgs;
+        if (host != null) {
+            deleteWhere = Expression.and(
+                    Expression.likeRaw(new Column(Activities.ACCOUNT_KEY), "'%@'||?"),
+                    Expression.or(
+                            Expression.equalsArgs(Activities.STATUS_ID),
+                            Expression.equalsArgs(Activities.STATUS_RETWEET_ID)
+                    )).getSQL();
+            deleteWhereArgs = new String[]{host, statusId, statusId};
+            updateWhere = Expression.and(
+                    Expression.likeRaw(new Column(Activities.ACCOUNT_KEY), "'%@'||?"),
+                    Expression.equalsArgs(Activities.STATUS_MY_RETWEET_ID)
+            ).getSQL();
+            updateWhereArgs = new String[]{host, statusId};
+        } else {
+            deleteWhere = Expression.or(
+                    Expression.equalsArgs(Activities.STATUS_ID),
+                    Expression.equalsArgs(Activities.STATUS_RETWEET_ID)
+            ).getSQL();
+            deleteWhereArgs = new String[]{statusId, statusId};
+            updateWhere = Expression.equalsArgs(Activities.STATUS_MY_RETWEET_ID).getSQL();
+            updateWhereArgs = new String[]{statusId};
+        }
+        for (final Uri uri : ACTIVITIES_URIS) {
+            cr.delete(uri, deleteWhere, deleteWhereArgs);
+            updateActivity(cr, uri, updateWhere, updateWhereArgs, new UpdateActivityAction() {
+
+                @Override
+                public void process(ParcelableActivity activity) {
+                    activity.status_my_retweet_id = null;
+                    ParcelableStatus[][] statusesMatrix = {activity.target_statuses,
+                            activity.target_object_statuses};
+                    for (ParcelableStatus[] statusesArray : statusesMatrix) {
+                        if (statusesArray == null) continue;
+                        for (ParcelableStatus status : statusesArray) {
+                            if (statusId.equals(status.id) || statusId.equals(status.retweet_id)
+                                    || statusId.equals(status.my_retweet_id)) {
+                                status.my_retweet_id = null;
+                                if (result != null) {
+                                    status.reply_count = result.reply_count;
+                                    status.retweet_count = result.retweet_count - 1;
+                                    status.favorite_count = result.favorite_count;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    @WorkerThread
+    public static void updateActivity(ContentResolver cr, Uri uri, String where, String[] whereArgs,
+                                      UpdateActivityAction action) {
+        final Cursor c = cr.query(uri, Activities.COLUMNS, where, whereArgs, null);
+        if (c == null) return;
+        LongSparseArray<ContentValues> values = new LongSparseArray<>();
+        try {
+            ParcelableActivityCursorIndices ci = new ParcelableActivityCursorIndices(c);
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                final ParcelableActivity activity = ci.newObject(c);
+                action.process(activity);
+                values.put(activity._id, ParcelableActivityValuesCreator.create(activity));
+                c.moveToNext();
+            }
+        } finally {
+            c.close();
+        }
+        String updateWhere = Expression.equalsArgs(Activities._ID).getSQL();
+        String[] updateWhereArgs = new String[1];
+        for (int i = 0, j = values.size(); i < j; i++) {
+            updateWhereArgs[0] = String.valueOf(values.keyAt(i));
+            cr.update(uri, values.valueAt(i), updateWhere, updateWhereArgs);
+        }
+    }
+
+    static void updateActivityStatus(ContentResolver resolver, UserKey accountKey, String statusId, UpdateActivityAction action) {
+        final String activityWhere = Expression.and(
+                Expression.equalsArgs(Activities.ACCOUNT_KEY),
+                Expression.or(
+                        Expression.equalsArgs(Activities.STATUS_ID),
+                        Expression.equalsArgs(Activities.STATUS_RETWEET_ID)
+                )
+        ).getSQL();
+        final String[] activityWhereArgs = {accountKey.toString(), statusId, statusId};
+        for (final Uri uri : ACTIVITIES_URIS) {
+            updateActivity(resolver, uri, activityWhere, activityWhereArgs, action);
+        }
+    }
+
+    interface FieldArrayCreator<T> {
+        T newArray(int size);
+
+        void assign(T array, int arrayIdx, Cursor cur, int colIdx);
+    }
+
+    static int queryCount(@NonNull final Context context, @NonNull final Uri uri,
+                          @Nullable final String selection, @Nullable final String[] selectionArgs) {
+        final ContentResolver resolver = context.getContentResolver();
+        final String[] projection = new String[]{SQLFunctions.COUNT()};
+        final Cursor cur = resolver.query(uri, projection, selection, selectionArgs, null);
+        if (cur == null) return -1;
+        try {
+            if (cur.moveToFirst()) {
+                return cur.getInt(0);
+            }
+            return -1;
+        } finally {
+            cur.close();
+        }
+    }
+
+    public static List<ParcelableAccount> getAccountsList(final Context context, final boolean activatedOnly) {
+        return getAccountsList(context, activatedOnly, false);
+    }
+
+    public static List<ParcelableAccount> getAccountsList(final Context context, final boolean activatedOnly,
+                                                          final boolean officialKeyOnly) {
+        if (context == null) return Collections.emptyList();
+        final ArrayList<ParcelableAccount> accounts = new ArrayList<>();
+        final String selection = activatedOnly ? Accounts.IS_ACTIVATED + " = 1" : null;
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, Accounts.COLUMNS, selection, null, Accounts.SORT_POSITION);
+        if (cur == null) return accounts;
+        final ParcelableCredentialsCursorIndices indices = new ParcelableCredentialsCursorIndices(cur);
+        cur.moveToFirst();
+        while (!cur.isAfterLast()) {
+            if (!officialKeyOnly) {
+                accounts.add(indices.newObject(cur));
+            } else {
+                final String consumerKey = cur.getString(indices.consumer_key);
+                final String consumerSecret = cur.getString(indices.consumer_secret);
+                if (TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret)) {
+                    accounts.add(indices.newObject(cur));
+                }
+            }
+            cur.moveToNext();
+        }
+        cur.close();
+        return accounts;
+    }
+
+    @Nullable
+    public static Cursor getAccountCursor(@NonNull final Context context, final String[] columns,
+                                          @NonNull final UserKey accountKey) {
+        final ContentResolver cr = context.getContentResolver();
+        final String accountId = accountKey.getId();
+        final String accountHost = accountKey.getHost();
+        final String where;
+        final String[] whereArgs;
+        if (TextUtils.isEmpty(accountHost)) {
+            where = Expression.or(Expression.equalsArgs(Accounts.ACCOUNT_KEY),
+                    Expression.likeRaw(new Column(Accounts.ACCOUNT_KEY), "?||\'@%\'")).getSQL();
+            whereArgs = new String[]{accountId, accountId};
+        } else {
+            where = Expression.or(Expression.equalsArgs(Accounts.ACCOUNT_KEY),
+                    Expression.equalsArgs(Accounts.ACCOUNT_KEY)).getSQL();
+            whereArgs = new String[]{String.valueOf(accountKey.toString()),
+                    accountId};
+        }
+        return cr.query(Accounts.CONTENT_URI, columns, where, whereArgs, null);
+    }
+
+    @Nullable
+    public static Cursor findAccountCursorsById(@NonNull final Context context, final String[] columns,
+                                                final String... ids) {
+        if (ids == null) return null;
+        final ContentResolver cr = context.getContentResolver();
+        Expression[] expressions = new Expression[ids.length + 1];
+        for (int i = 0, j = ids.length; i < j; i++) {
+            expressions[i] = Expression.likeRaw(new Column(Accounts.ACCOUNT_KEY), "?||\'@%\'");
+        }
+        expressions[ids.length] = Expression.inArgs(new Column(Accounts.ACCOUNT_KEY), ids.length);
+        final String where = Expression.or(expressions).getSQL();
+        final String[] whereArgs = new String[ids.length * 2];
+        System.arraycopy(TwidereArrayUtils.toStringArray(ids), 0, whereArgs, 0, ids.length);
+        System.arraycopy(whereArgs, 0, whereArgs, ids.length, ids.length);
+        return cr.query(Accounts.CONTENT_URI, columns, where, whereArgs, null);
+    }
+
+    public static String getAccountType(@NonNull final Context context, @NonNull final UserKey accountKey) {
+        final String[] projection = {Accounts.ACCOUNT_TYPE};
+        final Cursor cur = getAccountCursor(context, projection, accountKey);
+        if (cur == null) return null;
+        try {
+            if (cur.moveToFirst()) {
+                return cur.getString(0);
+            }
+        } finally {
+            cur.close();
+        }
+        return null;
+    }
+
+    public static List<ParcelableCredentials> getCredentialsList(final Context context, final boolean activatedOnly) {
+        return getCredentialsList(context, activatedOnly, false);
+    }
+
+    public static ParcelableCredentials[] getCredentialsArray(final Context context, final boolean activatedOnly,
+                                                              final boolean officialKeyOnly) {
+        final List<ParcelableCredentials> credentialsList = getCredentialsList(context, activatedOnly, officialKeyOnly);
+        return credentialsList.toArray(new ParcelableCredentials[credentialsList.size()]);
+    }
+
+    public static List<ParcelableCredentials> getCredentialsList(final Context context, final boolean activatedOnly,
+                                                                 final boolean officialKeyOnly) {
+        if (context == null) return Collections.emptyList();
+        final ArrayList<ParcelableCredentials> accounts = new ArrayList<>();
+        final String selection = activatedOnly ? Accounts.IS_ACTIVATED + " = 1" : null;
+        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, Accounts.COLUMNS, selection, null, Accounts.SORT_POSITION);
+        if (cur == null) return accounts;
+        ParcelableCredentialsCursorIndices indices = new ParcelableCredentialsCursorIndices(cur);
+        cur.moveToFirst();
+        while (!cur.isAfterLast()) {
+            if (officialKeyOnly) {
+                final String consumerKey = cur.getString(indices.consumer_key);
+                final String consumerSecret = cur.getString(indices.consumer_secret);
+                if (TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret)) {
+                    accounts.add(indices.newObject(cur));
+                }
+            } else {
+                accounts.add(indices.newObject(cur));
+            }
+            cur.moveToNext();
+        }
+        cur.close();
+        return accounts;
+    }
+
+    public static int getInteractionsCount(@NonNull final Context context, @Nullable final Bundle extraArgs,
+                                           final UserKey[] accountIds, final long since,final String sinceColumn) {
+        Expression extraWhere = null;
+        String[] extraWhereArgs = null;
+        boolean followingOnly = false;
+        if (extraArgs != null) {
+            final TabExtras extras = extraArgs.getParcelable(EXTRA_EXTRAS);
+            if (extras instanceof InteractionsTabExtras) {
+                InteractionsTabExtras ite = ((InteractionsTabExtras) extras);
+                if (ite.isMentionsOnly()) {
+                    extraWhere = Expression.inArgs(Activities.ACTION, 3);
+                    extraWhereArgs = new String[]{Activity.Action.MENTION,
+                            Activity.Action.REPLY, Activity.Action.QUOTE};
+                }
+                if (ite.isMyFollowingOnly()) {
+                    followingOnly = true;
+                }
+            }
+        }
+        return getActivitiesCount(context, Activities.AboutMe.CONTENT_URI, extraWhere, extraWhereArgs,
+                since, sinceColumn, followingOnly, accountIds);
+    }
+
+    public interface UpdateActivityAction {
+
+        void process(ParcelableActivity activity);
     }
 }

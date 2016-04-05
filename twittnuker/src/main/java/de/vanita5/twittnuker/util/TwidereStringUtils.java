@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,12 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.support.annotation.NonNull;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.style.ReplacementSpan;
 
 public class TwidereStringUtils {
     public static boolean regionMatchesIgnoreCase(@NonNull final String string, final int thisStart,
@@ -40,5 +45,30 @@ public class TwidereStringUtils {
                                                int start) {
         if (prefix.length() > string.length()) return false;
         return regionMatchesIgnoreCase(string, start, prefix, 0, prefix.length());
+    }
+
+    /**
+     * Fix to https://github.com/TwidereProject/Twidere-Android/issues/449
+     * @param string
+     */
+    public static void fixSHY(Spannable string) {
+        for (int i = 0, j = string.length(); i < j; i++) {
+            if (string.charAt(i) == '\u00ad') {
+                string.setSpan(new ZeroWidthSpan(), i, i + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+    }
+
+    private static class ZeroWidthSpan extends ReplacementSpan {
+
+        @Override
+        public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
+            return 0;
+        }
+
+        @Override
+        public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
+
+        }
     }
 }

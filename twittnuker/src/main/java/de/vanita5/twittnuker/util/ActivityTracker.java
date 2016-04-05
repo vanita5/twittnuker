@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,12 @@ import android.os.Bundle;
 import org.apache.commons.collections.primitives.ArrayIntList;
 import org.apache.commons.collections.primitives.IntList;
 
+import de.vanita5.twittnuker.activity.HomeActivity;
+
 public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
 
     private final IntList mInternalStack = new ArrayIntList();
+    private boolean mHomeActivityStarted;
 
     private boolean isSwitchingInSameTask(int hashCode) {
         return mInternalStack.lastIndexOf(hashCode) < mInternalStack.size() - 1;
@@ -54,6 +57,9 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityStarted(final Activity activity) {
         mInternalStack.add(System.identityHashCode(activity));
+        if (activity instanceof HomeActivity) {
+            mHomeActivityStarted = true;
+        }
     }
 
     @Override
@@ -69,6 +75,9 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityStopped(Activity activity) {
         final int hashCode = System.identityHashCode(activity);
+        if (activity instanceof HomeActivity) {
+            mHomeActivityStarted = false;
+        }
 
         mInternalStack.removeElement(hashCode);
     }
@@ -81,5 +90,9 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityDestroyed(Activity activity) {
 
+    }
+
+    public boolean isHomeActivityStarted() {
+        return mHomeActivityStarted;
     }
 }

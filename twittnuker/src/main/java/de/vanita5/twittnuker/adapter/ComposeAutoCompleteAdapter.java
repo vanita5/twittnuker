@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,12 +30,14 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FilterQueryProvider;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -61,7 +63,7 @@ public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements C
     private final boolean mDisplayProfileImage;
 
     private int mTypeIdx, mIconIdx, mTitleIdx, mSummaryIdx, mExtraIdIdx, mValueIdx;
-    private long mAccountId;
+    private UserKey mAccountKey;
     private char mToken;
 
     public ComposeAutoCompleteAdapter(final Context context) {
@@ -74,14 +76,15 @@ public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements C
     public void bindView(final View view, final Context context, final Cursor cursor) {
         final TextView text1 = (TextView) view.findViewById(android.R.id.text1);
         final TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-        final ProfileImageView icon = (ProfileImageView) view.findViewById(android.R.id.icon);
+        final ImageView icon = (ImageView) view.findViewById(android.R.id.icon);
 
         // Clear images in order to prevent images in recycled view shown.
         icon.setImageDrawable(null);
 
         if (Suggestions.AutoComplete.TYPE_USERS.equals(cursor.getString(mTypeIdx))) {
-            text1.setText(cursor.getString(mTitleIdx));
-            text2.setText('@' + cursor.getString(mSummaryIdx));
+            text1.setText(
+                    cursor.getString(mTitleIdx));
+            text2.setText(String.format("@%s", cursor.getString(mSummaryIdx)));
             if (mDisplayProfileImage) {
                 final String profileImageUrl = cursor.getString(mIconIdx);
                 mProfileImageLoader.displayProfileImage(icon, profileImageUrl);
@@ -91,7 +94,7 @@ public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements C
 
             icon.clearColorFilter();
         } else {
-            text1.setText('#' + cursor.getString(mTitleIdx));
+            text1.setText(String.format("#%s", cursor.getString(mTitleIdx)));
             text2.setText(R.string.hashtag);
 
             icon.setImageResource(R.drawable.ic_action_hashtag);
@@ -146,14 +149,14 @@ public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements C
                 return null;
             }
         }
-        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(mAccountId));
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, String.valueOf(mAccountKey));
         return mContext.getContentResolver().query(builder.build(), Suggestions.AutoComplete.COLUMNS,
                 null, null, null);
     }
 
 
-    public void setAccountId(long accountId) {
-        mAccountId = accountId;
+    public void setAccountKey(UserKey accountKey) {
+        mAccountKey = accountKey;
     }
 
     @Override

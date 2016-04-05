@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,36 +30,38 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter;
 public abstract class LoadMoreSupportAdapter<VH extends ViewHolder> extends BaseRecyclerViewAdapter<VH>
         implements ILoadMoreSupportAdapter {
 
-    private boolean mLoadMoreSupported;
-    private boolean mLoadMoreIndicatorVisible;
+    @IndicatorPosition
+    private int mLoadMoreSupportedPosition;
+    @IndicatorPosition
+    private int mLoadMoreIndicatorPosition;
 
     public LoadMoreSupportAdapter(Context context) {
         super(context);
     }
 
     @Override
-    public final boolean isLoadMoreIndicatorVisible() {
-        return mLoadMoreIndicatorVisible;
+    @IndicatorPosition
+    public final int getLoadMoreIndicatorPosition() {
+        return mLoadMoreIndicatorPosition;
     }
 
     @Override
-    public final void setLoadMoreIndicatorVisible(boolean enabled) {
-        if (mLoadMoreIndicatorVisible == enabled) return;
-        mLoadMoreIndicatorVisible = enabled && mLoadMoreSupported;
+    public final void setLoadMoreIndicatorPosition(@IndicatorPosition int position) {
+        if (mLoadMoreIndicatorPosition == position) return;
+        mLoadMoreIndicatorPosition = IndicatorPositionUtils.apply(position, mLoadMoreSupportedPosition);
         notifyDataSetChanged();
     }
 
     @Override
-    public final boolean isLoadMoreSupported() {
-        return mLoadMoreSupported;
+    @IndicatorPosition
+    public final int getLoadMoreSupportedPosition() {
+        return mLoadMoreSupportedPosition;
     }
 
     @Override
-    public final void setLoadMoreSupported(boolean supported) {
-        mLoadMoreSupported = supported;
-        if (!supported) {
-            mLoadMoreIndicatorVisible = false;
-        }
+    public final void setLoadMoreSupportedPosition(@IndicatorPosition int supportedPosition) {
+        mLoadMoreSupportedPosition = supportedPosition;
+        mLoadMoreIndicatorPosition = IndicatorPositionUtils.apply(mLoadMoreIndicatorPosition, supportedPosition);
         notifyDataSetChanged();
     }
 

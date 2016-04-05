@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,8 @@ import android.view.KeyEvent;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.support.ComposeActivity;
-import de.vanita5.twittnuker.activity.support.QuickSearchBarActivity;
-import de.vanita5.twittnuker.app.TwittnukerApplication;
+import de.vanita5.twittnuker.activity.ComposeActivity;
+import de.vanita5.twittnuker.activity.QuickSearchBarActivity;
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants;
 
 import java.util.HashMap;
@@ -86,8 +85,9 @@ public class KeyboardShortcutsHandler implements Constants, KeyboardShortcutCons
 
     private final SharedPreferencesWrapper mPreferences;
 
-    public KeyboardShortcutsHandler(final TwittnukerApplication context) {
-        mPreferences = SharedPreferencesWrapper.getInstance(context, KEYBOARD_SHORTCUTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
+    public KeyboardShortcutsHandler(final Context context) {
+        mPreferences = SharedPreferencesWrapper.getInstance(context,
+                KEYBOARD_SHORTCUTS_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
     public String findAction(@NonNull KeyboardShortcutSpec spec) {
@@ -192,7 +192,7 @@ public class KeyboardShortcutsHandler implements Constants, KeyboardShortcutCons
                 return true;
             }
             case ACTION_MESSAGE: {
-                Utils.openMessageConversation(context, -1, -1);
+                IntentUtils.openMessageConversation(context, null, null);
                 return true;
             }
         }

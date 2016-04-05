@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
+import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils;
 
 public final class TwitterCardFragmentFactoryImpl extends TwitterCardFragmentFactory {
 
@@ -49,8 +50,8 @@ public final class TwitterCardFragmentFactoryImpl extends TwitterCardFragmentFac
     @Override
     public Fragment createPlayerFragment(ParcelableCardEntity card) {
         if (Boolean.parseBoolean("true")) return null;
-        final String appUrlResolved = card.getString("app_url_resolved");
-        final String domain = card.getString("domain");
+        final String appUrlResolved = ParcelableCardEntityUtils.getString(card, "app_url_resolved");
+        final String domain = ParcelableCardEntityUtils.getString(card, "domain");
         if (domain != null && appUrlResolved != null) {
             final Uri uri = Uri.parse(appUrlResolved);
             final String paramV = uri.getQueryParameter("v");

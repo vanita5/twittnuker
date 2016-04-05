@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,34 +22,16 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.restfu.http.RestHttpResponse;
-import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
+import de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate;
 
-import java.util.ArrayList;
+/**
+ * Response list supports cursor pagination
+ */
+@NoObfuscate
+public class PageableResponseList<T> extends ResponseList<T> implements TwitterResponse, CursorSupport {
 
-public class PageableResponseList<T> extends ArrayList<T> implements TwitterResponse, CursorSupport {
-
-    int accessLevel;
-    RateLimitStatus rateLimitStatus;
     long previousCursor;
     long nextCursor;
-
-
-    @Override
-    public final void processResponseHeader(RestHttpResponse resp) {
-        rateLimitStatus = RateLimitStatus.createFromResponseHeader(resp);
-        accessLevel = InternalParseUtil.toAccessLevel(resp);
-    }
-
-    @Override
-    public final int getAccessLevel() {
-        return accessLevel;
-    }
-
-    @Override
-    public final RateLimitStatus getRateLimitStatus() {
-        return rateLimitStatus;
-    }
 
     @Override
     public long getNextCursor() {

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,25 +23,80 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.view.holder.UserViewHolder.UserClickListener;
+import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
-public interface IUsersAdapter<Data> extends IContentCardAdapter, UserClickListener {
+public interface IUsersAdapter<Data> extends IContentCardAdapter {
 
-	ParcelableUser getUser(int position);
+    ParcelableUser getUser(int position);
 
-	long getUserId(int position);
+    @Nullable
+    String getUserId(int position);
 
-	int getUsersCount();
+    int getUserCount();
 
-	void setData(Data data);
+    boolean setData(Data data);
 
-	boolean shouldShowAccountsColor();
+    @Nullable
+    UserClickListener getUserClickListener();
+
+    RequestClickListener getRequestClickListener();
+
+    FollowClickListener getFollowClickListener();
+
+    boolean shouldShowAccountsColor();
 
     @NonNull
     @Override
-	MediaLoaderWrapper getMediaLoader();
+    MediaLoaderWrapper getMediaLoader();
 
+    interface UserClickListener {
+
+        void onUserClick(UserViewHolder holder, int position);
+
+        boolean onUserLongClick(UserViewHolder holder, int position);
+
+    }
+
+    interface RequestClickListener {
+
+        void onAcceptClicked(UserViewHolder holder, int position);
+
+        void onDenyClicked(UserViewHolder holder, int position);
+    }
+
+    interface FollowClickListener {
+        void onFollowClicked(UserViewHolder holder, int position);
+    }
+
+    abstract class SimpleUserClickListener implements UserClickListener, RequestClickListener, FollowClickListener {
+
+        @Override
+        public void onFollowClicked(UserViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public void onAcceptClicked(UserViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public void onDenyClicked(UserViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public void onUserClick(UserViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public boolean onUserLongClick(UserViewHolder holder, int position) {
+            return false;
+        }
+    }
 }

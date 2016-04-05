@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -25,17 +25,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/element_size_normal"
+    android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
     android:gravity="center_vertical"
     android:minHeight="?android:listPreferredItemHeightSmall"
     android:orientation="horizontal"
-    android:padding="@dimen/element_spacing_small">
+    android:paddingBottom="@dimen/element_spacing_xsmall"
+    android:paddingLeft="@dimen/element_spacing_small"
+    android:paddingRight="@dimen/element_spacing_small"
+    android:paddingTop="@dimen/element_spacing_xsmall">
 
-    <de.vanita5.twittnuker.view.SquareActionIconButton
+    <de.vanita5.twittnuker.view.IconActionButton
         android:id="@android:id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/element_size_quick_search_bar_item_icon"
+        android:layout_height="@dimen/element_size_quick_search_bar_item_icon"
         android:layout_weight="0"
         android:background="@null"
         android:clickable="false"
@@ -43,7 +46,8 @@
         android:contentDescription="@string/icon"
         android:focusable="false"
         android:scaleType="centerInside"
-        tools:src="@drawable/ic_action_search"/>
+        tools:src="@drawable/ic_action_search"
+        tools:tint="?android:textColorSecondary"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -62,14 +66,15 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="?android:textColorPrimary"
             tools:text="Mariotaku"/>
 
     </LinearLayout>
 
-    <de.vanita5.twittnuker.view.SquareActionIconButton
+    <de.vanita5.twittnuker.view.IconActionButton
         android:id="@+id/edit_query"
         android:layout_width="@dimen/element_size_normal"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/element_size_normal"
         android:layout_weight="0"
         android:background="?actionBarItemBackground"
         android:clickable="true"

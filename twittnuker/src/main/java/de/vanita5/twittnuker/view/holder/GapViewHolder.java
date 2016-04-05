@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,16 +30,18 @@ import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter;
 
 public class GapViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
 
-	private final IGapSupportedAdapter adapter;
+    private final IGapSupportedAdapter adapter;
 
-	public GapViewHolder(IGapSupportedAdapter adapter, View itemView) {
-		super(itemView);
-		this.adapter = adapter;
-		itemView.setOnClickListener(this);
-	}
+    public GapViewHolder(IGapSupportedAdapter adapter, View itemView) {
+        super(itemView);
+        this.adapter = adapter;
+        itemView.setOnClickListener(this);
+    }
 
-	@Override
-	public void onClick(View v) {
-        adapter.onGapClick(this, getLayoutPosition());
-	}
+    @Override
+    public void onClick(View v) {
+        final IGapSupportedAdapter.GapClickListener listener = adapter.getGapClickListener();
+        if (listener == null) return;
+        listener.onGapClick(this, getLayoutPosition());
+    }
 }

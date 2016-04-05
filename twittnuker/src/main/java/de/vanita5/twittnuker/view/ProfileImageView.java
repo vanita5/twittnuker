@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,8 @@ package de.vanita5.twittnuker.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 
-import com.makeramen.roundedimageview.RoundedImageView;
-
-public class ProfileImageView extends RoundedImageView {
+public class ProfileImageView extends ShapedImageView {
     public ProfileImageView(final Context context) {
         super(context);
     }
@@ -40,26 +37,4 @@ public class ProfileImageView extends RoundedImageView {
     public ProfileImageView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
     }
-
-    @Override
-    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        final int width = MeasureSpec.getSize(widthMeasureSpec), height = MeasureSpec.getSize(heightMeasureSpec);
-        final ViewGroup.LayoutParams lp = getLayoutParams();
-        if (lp.height == ViewGroup.LayoutParams.MATCH_PARENT && lp.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
-            super.onMeasure(heightMeasureSpec, heightMeasureSpec);
-            setMeasuredDimension(height, height);
-        } else if (lp.width == ViewGroup.LayoutParams.MATCH_PARENT && lp.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
-            super.onMeasure(widthMeasureSpec, widthMeasureSpec);
-            setMeasuredDimension(width, width);
-        } else {
-            if (width > height) {
-                super.onMeasure(heightMeasureSpec, heightMeasureSpec);
-                setMeasuredDimension(height, height);
-            } else {
-                super.onMeasure(widthMeasureSpec, widthMeasureSpec);
-                setMeasuredDimension(width, width);
-            }
-        }
-    }
-
 }

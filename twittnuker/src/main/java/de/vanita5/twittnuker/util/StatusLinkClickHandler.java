@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,28 +23,33 @@
 package de.vanita5.twittnuker.util;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 
 public class StatusLinkClickHandler extends OnLinkClickHandler {
 
     private ParcelableStatus mStatus;
 
     @Override
-    protected void openMedia(long accountId, long extraId, boolean sensitive, String link, int start, int end) {
+    protected void openMedia(final UserKey accountId, final long extraId, final boolean sensitive,
+                             final String link, final int start, final int end) {
         final ParcelableStatus status = mStatus;
         final ParcelableMedia current = findByLink(status.media, link);
-        //TODO open media animation
-        Bundle options = null;
-        Utils.openMedia(context, status, current, options);
+        if (current.open_browser) {
+            openLink(link);
+        } else {
+            IntentUtils.openMedia(context, status, current, null,
+                    preferences.getBoolean(KEY_NEW_DOCUMENT_API));
+        }
     }
 
     public static ParcelableMedia findByLink(ParcelableMedia[] media, String link) {
         if (link == null || media == null) return null;
         for (ParcelableMedia mediaItem : media) {
-            if (link.equals(mediaItem.media_url) || link.equals(mediaItem.url))
+            if (link.equals(mediaItem.media_url) || link.equals(mediaItem.url) ||
+                    link.equals(mediaItem.page_url) || link.equals(mediaItem.preview_url))
                 return mediaItem;
         }
         return null;
@@ -54,7 +59,7 @@ public class StatusLinkClickHandler extends OnLinkClickHandler {
         mStatus = status;
     }
 
-    public StatusLinkClickHandler(Context context, MultiSelectManager manager) {
-        super(context, manager);
+    public StatusLinkClickHandler(Context context, MultiSelectManager manager, SharedPreferencesWrapper preferences) {
+        super(context, manager, preferences);
     }
 }

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,25 +23,25 @@
 package de.vanita5.twittnuker.fragment;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceManager;
+import android.support.v7.preference.PreferenceScreen;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.util.Utils;
 
-public class SettingsDetailsFragment extends BasePreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsDetailsFragment extends BasePreferenceFragment implements Constants,
+        OnSharedPreferenceChangeListener {
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
+
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         final PreferenceManager preferenceManager = getPreferenceManager();
+        preferenceManager.setSharedPreferencesName(SHARED_PREFERENCES_NAME);
         final PreferenceScreen defaultScreen = getPreferenceScreen();
         final PreferenceScreen preferenceScreen;
         if (defaultScreen != null) {
@@ -49,35 +49,23 @@ public class SettingsDetailsFragment extends BasePreferenceFragment implements S
             preferenceScreen = defaultScreen;
         } else {
             preferenceScreen = preferenceManager.createPreferenceScreen(getActivity());
-		}
+        }
         setPreferenceScreen(preferenceScreen);
-		final Bundle args = getArguments();
-		final Object rawResId = args.get(EXTRA_RESID);
-		final int resId;
-		if (rawResId instanceof Integer) {
-			resId = (Integer) rawResId;
-		} else if (rawResId instanceof String) {
-			resId = Utils.getResId(getActivity(), (String) rawResId);
-		} else {
-			resId = 0;
-		}
-		if (resId != 0) {
-			addPreferencesFromResource(resId);
-		}
-        final Context context = preferenceScreen.getContext();
-        if (args.containsKey(EXTRA_SETTINGS_INTENT_ACTION)) {
-            final Intent hiddenEntryIntent = new Intent(args.getString(EXTRA_SETTINGS_INTENT_ACTION));
-			final PackageManager pm = context.getPackageManager();
-			for (ResolveInfo info : pm.queryIntentActivities(hiddenEntryIntent, PackageManager.MATCH_DEFAULT_ONLY)) {
-				final Preference preference = new Preference(context);
-                final Intent intent = new Intent(hiddenEntryIntent);
-				intent.setPackage(info.resolvePackageName);
-				intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
-				preference.setIntent(intent);
-				preference.setTitle(info.loadLabel(pm));
-				preferenceScreen.addPreference(preference);
-			}
-		}
+
+        final Bundle args = getArguments();
+        final Object rawResId = args.get(EXTRA_RESID);
+        final int resId;
+        if (rawResId instanceof Integer) {
+            resId = (Integer) rawResId;
+        } else if (rawResId instanceof String) {
+            resId = Utils.getResId(getActivity(), (String) rawResId);
+        } else {
+            resId = 0;
+        }
+        if (resId != 0) {
+            addPreferencesFromResource(resId);
+        }
+
     }
 
     @Override
@@ -105,8 +93,10 @@ public class SettingsDetailsFragment extends BasePreferenceFragment implements S
                 SettingsActivity.setShouldNotifyChange(activity);
             }
             if (extras.containsKey(EXTRA_RESTART_ACTIVITY)) {
-                Utils.restartActivity(activity);
+                activity.recreate();
             }
         }
     }
+
+
 }

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,15 +25,15 @@ package de.vanita5.twittnuker.api.twitter;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.mariotaku.restfu.http.RestHttpRequest;
-import org.mariotaku.restfu.http.RestHttpResponse;
-
+import org.mariotaku.restfu.http.HttpRequest;
+import org.mariotaku.restfu.http.HttpResponse;
 import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
 import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -56,14 +56,16 @@ public class TwitterException extends Exception implements TwitterResponse, Http
     boolean nested = false;
     private int statusCode = -1;
     private RateLimitStatus rateLimitStatus;
-    private RestHttpRequest httpRequest;
-    private RestHttpResponse httpResponse;
+    private HttpRequest httpRequest;
+    private HttpResponse httpResponse;
+    private boolean causedByNetworkIssue;
 
     public TwitterException() {
+        super();
     }
 
-    public TwitterException(RestHttpResponse httpResponse) {
-        setHttpResponse(httpResponse);
+    public TwitterException(String detailMessage) {
+        super(detailMessage);
     }
 
     public TwitterException(final Throwable cause) {
@@ -73,59 +75,20 @@ public class TwitterException extends Exception implements TwitterResponse, Http
         }
     }
 
-    public TwitterException(final String message) {
-        this(message, (Throwable) null);
+    public TwitterException(String detailMessage, Throwable cause) {
+        super(detailMessage, cause);
+        if (cause instanceof TwitterException) {
+            ((TwitterException) cause).setNested();
+        }
+        setCausedByNetworkIssue(cause instanceof IOException);
     }
 
-    public TwitterException(final String message, final Throwable cause, final int statusCode) {
-        this(message, cause);
-        setStatusCode(statusCode);
-    }
-
-    public TwitterException(final String message, final RestHttpRequest req, final RestHttpResponse res) {
-        this(message);
-        setHttpResponse(res);
-        setHttpRequest(req);
-    }
-
-    public TwitterException(final String message, final Throwable cause, final RestHttpRequest req, final RestHttpResponse res) {
-        this(message, cause);
-        setHttpResponse(res);
-        setHttpRequest(req);
-    }
-
-    public TwitterException(final String message, final RestHttpResponse res) {
-        this(message, null, null, res);
-    }
-
-    public TwitterException(final String message, final Throwable cause, final RestHttpResponse res) {
-        this(message, cause, null, res);
-    }
-
-    public TwitterException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    private void setHttpRequest(RestHttpRequest httpRequest) {
-        this.httpRequest = httpRequest;
-    }
 
     public ErrorInfo[] getErrors() {
         if (errors != null && errorMessage != null && requestPath != null) {
             return new ErrorInfo[]{new SingleErrorInfo(errorMessage, requestPath)};
         }
         return errors;
-    }
-
-    public void setHttpResponse(RestHttpResponse res) {
-        httpResponse = res;
-        if (res != null) {
-            rateLimitStatus = RateLimitStatus.createFromResponseHeader(res);
-            statusCode = res.getStatus();
-        } else {
-            rateLimitStatus = null;
-            statusCode = -1;
-        }
     }
 
     /**
@@ -143,13 +106,14 @@ public class TwitterException extends Exception implements TwitterResponse, Http
     }
 
     @Override
-    public void processResponseHeader(RestHttpResponse resp) {
+    public void processResponseHeader(HttpResponse resp) {
 
     }
 
     /**
      * {@inheritDoc}
      */
+    @AccessLevel
     @Override
     public int getAccessLevel() {
         return InternalParseUtil.toAccessLevel(httpResponse);
@@ -160,12 +124,27 @@ public class TwitterException extends Exception implements TwitterResponse, Http
         return errors[0].getCode();
     }
 
-    public RestHttpRequest getHttpRequest() {
+    public HttpRequest getHttpRequest() {
         return httpRequest;
     }
 
-    public RestHttpResponse getHttpResponse() {
+    public void setHttpRequest(HttpRequest httpRequest) {
+        this.httpRequest = httpRequest;
+    }
+
+    public HttpResponse getHttpResponse() {
         return httpResponse;
+    }
+
+    public void setHttpResponse(HttpResponse res) {
+        httpResponse = res;
+        if (res != null) {
+            rateLimitStatus = RateLimitStatus.createFromResponseHeader(res);
+            statusCode = res.getStatus();
+        } else {
+            rateLimitStatus = null;
+            statusCode = -1;
+        }
     }
 
     /**
@@ -173,12 +152,13 @@ public class TwitterException extends Exception implements TwitterResponse, Http
      */
     @Override
     public String getMessage() {
-        if (errors != null && errors.length > 0)
+        if (errors != null && errors.length > 0) {
             return String.format(Locale.US, "Error %d: %s", errors[0].getCode(), errors[0].getMessage());
-        else if (statusCode != -1)
+        } else if (statusCode != -1) {
             return String.format(Locale.US, "Error %d", statusCode);
-        else
+        } else {
             return super.getMessage();
+        }
     }
 
     /**
@@ -249,7 +229,11 @@ public class TwitterException extends Exception implements TwitterResponse, Http
      * @since Twitter4J 2.1.2
      */
     public boolean isCausedByNetworkIssue() {
-        return getCause() instanceof java.io.IOException;
+        return causedByNetworkIssue;
+    }
+
+    public void setCausedByNetworkIssue(boolean causedByNetworkIssue) {
+        this.causedByNetworkIssue = causedByNetworkIssue;
     }
 
     /**
@@ -277,6 +261,9 @@ public class TwitterException extends Exception implements TwitterResponse, Http
         return getMessage();
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
     void setNested() {
         nested = true;

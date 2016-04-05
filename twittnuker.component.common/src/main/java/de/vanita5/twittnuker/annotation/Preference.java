@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,34 +31,22 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Preference {
 
-	boolean defaultBoolean() default false;
+    boolean defaultBoolean() default false;
 
-	float defaultFloat() default 0;
+    float defaultFloat() default 0;
 
-	int defaultInt() default 0;
+    int defaultInt() default 0;
 
-	long defaultLong() default 0;
+    long defaultLong() default 0;
 
     int defaultResource() default 0;
 
-	String defaultString() default "";
+    String defaultString() default "";
 
-	boolean exportable() default true;
+    boolean exportable() default true;
 
-	boolean hasDefault() default false;
+    boolean hasDefault() default false;
 
-	Type type() default Type.NULL;
+    @PreferenceType int type() default PreferenceType.NULL;
 
-	public static enum Type {
-		BOOLEAN(1), INT(2), LONG(3), FLOAT(4), STRING(5), NULL(0), INVALID(-1);
-		private int type;
-
-		Type(final int type) {
-			this.type = type;
-		}
-
-		public int getType() {
-			return type;
-		}
-	}
 }

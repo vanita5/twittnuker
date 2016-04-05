@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.IInterface;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import de.vanita5.twittnuker.Constants;
@@ -40,6 +42,8 @@ public abstract class AbsServiceInterface<I extends IInterface> implements Const
 
     private final Context mContext;
     private final String mShortenerName;
+    @Nullable
+    private final Bundle mMetaData;
     private I mIInterface;
 
     private ServiceToken mToken;
@@ -59,9 +63,10 @@ public abstract class AbsServiceInterface<I extends IInterface> implements Const
 
     protected abstract I onServiceConnected(ComponentName service, IBinder obj);
 
-    protected AbsServiceInterface(final Context context, final String shortenerName) {
+    protected AbsServiceInterface(final Context context, final String componentName, @Nullable final Bundle metaData) {
         mContext = context;
-        mShortenerName = shortenerName;
+        mShortenerName = componentName;
+        mMetaData = metaData;
     }
 
     public final I getInterface() {
@@ -92,4 +97,15 @@ public abstract class AbsServiceInterface<I extends IInterface> implements Const
         }
     }
 
+    public final void checkService(CheckServiceAction action) throws CheckServiceException {
+        action.check(mMetaData);
+    }
+
+    public interface CheckServiceAction {
+        void check(@Nullable Bundle metaData) throws CheckServiceException;
+    }
+
+    public static class CheckServiceException extends Exception {
+
+    }
 }

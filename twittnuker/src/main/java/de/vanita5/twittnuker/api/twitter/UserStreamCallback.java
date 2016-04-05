@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,23 +22,26 @@
 
 package de.vanita5.twittnuker.api.twitter;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.fasterxml.jackson.core.TreeNode;
-import com.fasterxml.jackson.jr.tree.JacksonJrSimpleTreeCodec;
 
 import org.mariotaku.restfu.callback.RawCallback;
-import org.mariotaku.restfu.http.RestHttpResponse;
+import org.mariotaku.restfu.http.HttpResponse;
+
+import de.vanita5.twittnuker.api.twitter.model.DeletionEvent;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.StatusDeletionNotice;
+import de.vanita5.twittnuker.api.twitter.model.StatusFavoriteEvent;
+import de.vanita5.twittnuker.api.twitter.model.TwitterStreamObject;
+import de.vanita5.twittnuker.api.twitter.model.TwitterStreamObject.Type;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.Warning;
 import de.vanita5.twittnuker.api.twitter.util.CRLFLineReader;
-import de.vanita5.twittnuker.api.twitter.util.JSONObjectType;
-import de.vanita5.twittnuker.util.BugReporter;
+import de.vanita5.twittnuker.util.LoganSquareMapperFinder;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -50,14 +53,13 @@ public abstract class UserStreamCallback implements RawCallback {
     private boolean disconnected;
 
     @Override
-    public final void result(final RestHttpResponse response) throws IOException {
+    public final void result(final HttpResponse response) throws IOException {
         if (!response.isSuccessful()) {
             final TwitterException cause = new TwitterException();
             cause.setHttpResponse(response);
             onException(cause);
             return;
         }
-        final JacksonJrSimpleTreeCodec mapper = new JacksonJrSimpleTreeCodec();
         final CRLFLineReader reader = new CRLFLineReader(new InputStreamReader(response.getBody().stream(), "UTF-8"));
         try {
             for (String line; (line = reader.readLine()) != null && !disconnected; ) {
@@ -65,78 +67,78 @@ public abstract class UserStreamCallback implements RawCallback {
                     onConnected();
                     connected = true;
                 }
-                if (line.isEmpty()) continue;
-                TreeNode rootNode = mapper.readTree(LoganSquare.JSON_FACTORY.createParser(line));
-                switch (JSONObjectType.determine(rootNode)) {
-                    case SENDER: {
+                if (TextUtils.isEmpty(line)) continue;
+                final TwitterStreamObject object = LoganSquare.parse(line, TwitterStreamObject.class);
+                switch (object.determine()) {
+                    case Type.SENDER: {
                         break;
                     }
-                    case STATUS: {
-                        try {
-                            onStatus(LoganSquare.mapperFor(Status.class).parse(rootNode.traverse()));
-                        } catch (NullPointerException e) {
-                            BugReporter.error("Streaming NPE -- " + e.getMessage(), e);
+                    case Type.STATUS: {
+                        onStatus(LoganSquareMapperFinder.mapperFor(Status.class).parse(line));
+                        break;
+                    }
+                    case Type.DIRECT_MESSAGE: {
+                        onDirectMessage(object.getDirectMessage());
+                        break;
+                    }
+                    case Type.DELETE: {
+                        final TwitterStreamObject.Delete delete = object.getDelete();
+                        if (delete.getStatus() != null) {
+                            onStatusDeleted(delete.getStatus());
+                        } else if (delete.getDirectMessage() != null) {
+                            onDirectMessageDeleted(delete.getDirectMessage());
                         }
                         break;
                     }
-                    case DIRECT_MESSAGE: {
-                        onDirectMessage(LoganSquare.mapperFor(DirectMessage.class).parse(rootNode.traverse()));
+                    case Type.LIMIT:
+                        break;
+                    case Type.STALL_WARNING:
+                        break;
+                    case Type.SCRUB_GEO:
+                        break;
+                    case Type.FRIENDS:
+                        break;
+                    case Type.FAVORITE: {
+                        StatusFavoriteEvent event = LoganSquareMapperFinder.mapperFor(StatusFavoriteEvent.class).parse(line);
+                        onFavorite(event.getSource(), event.getTarget(), event.getTargetObject());
                         break;
                     }
-                    case DELETE: {
+                    case Type.UNFAVORITE: {
+                        StatusFavoriteEvent event = LoganSquareMapperFinder.mapperFor(StatusFavoriteEvent.class).parse(line);
+                        onUnfavorite(event.getSource(), event.getTarget(), event.getTargetObject());
                         break;
                     }
-                    case LIMIT:
+                    case Type.FOLLOW:
                         break;
-                    case STALL_WARNING:
+                    case Type.UNFOLLOW:
                         break;
-                    case SCRUB_GEO:
+                    case Type.USER_LIST_MEMBER_ADDED:
                         break;
-                    case FRIENDS:
+                    case Type.USER_LIST_MEMBER_DELETED:
                         break;
-                    case FAVORITE: {
-                        onFavorite(parse(User.class, rootNode.get("source")),
-                                parse(User.class, rootNode.get("target")),
-                                parse(Status.class, rootNode.get("target_object")));
+                    case Type.USER_LIST_SUBSCRIBED:
                         break;
-                    }
-                    case UNFAVORITE: {
-                        onUnfavorite(parse(User.class, rootNode.get("source")),
-                                parse(User.class, rootNode.get("target")),
-                                parse(Status.class, rootNode.get("target_object")));
+                    case Type.USER_LIST_UNSUBSCRIBED:
                         break;
-                    }
-                    case FOLLOW:
+                    case Type.USER_LIST_CREATED:
                         break;
-                    case UNFOLLOW:
+                    case Type.USER_LIST_UPDATED:
                         break;
-                    case USER_LIST_MEMBER_ADDED:
+                    case Type.USER_LIST_DESTROYED:
                         break;
-                    case USER_LIST_MEMBER_DELETED:
+                    case Type.USER_UPDATE:
                         break;
-                    case USER_LIST_SUBSCRIBED:
+                    case Type.USER_DELETE:
                         break;
-                    case USER_LIST_UNSUBSCRIBED:
+                    case Type.USER_SUSPEND:
                         break;
-                    case USER_LIST_CREATED:
+                    case Type.BLOCK:
                         break;
-                    case USER_LIST_UPDATED:
+                    case Type.UNBLOCK:
                         break;
-                    case USER_LIST_DESTROYED:
+                    case Type.DISCONNECTION:
                         break;
-                    case USER_UPDATE:
-                        break;
-                    case USER_DELETE:
-                        break;
-                    case USER_SUSPEND:
-                        break;
-                    case BLOCK:
-                        break;
-                    case UNBLOCK:
-                        break;
-                    case DISCONNECTION:
-                        break;
-                    case UNKNOWN:
+                    case Type.UNKNOWN:
                         break;
                 }
             }
@@ -151,7 +153,7 @@ public abstract class UserStreamCallback implements RawCallback {
 
 
     private static <T> T parse(final Class<T> cls, final TreeNode json) throws IOException {
-        return LoganSquare.mapperFor(cls).parse(json.traverse());
+        return LoganSquareMapperFinder.mapperFor(cls).parse(json.traverse());
     }
 
     @Override
@@ -165,17 +167,19 @@ public abstract class UserStreamCallback implements RawCallback {
 
     public abstract void onConnected();
 
-    public abstract void onBlock(User source, User blockedUser);
-
-    public abstract void onDeletionNotice(long directMessageId, long userId);
-
-    public abstract void onDeletionNotice(StatusDeletionNotice statusDeletionNotice);
+    public abstract void onStatus(Status status);
 
     public abstract void onDirectMessage(DirectMessage directMessage);
 
+    public abstract void onBlock(User source, User blockedUser);
+
+    public abstract void onDirectMessageDeleted(DeletionEvent event);
+
+    public abstract void onStatusDeleted(DeletionEvent event);
+
     public abstract void onException(Throwable ex);
 
-    public abstract void onFavorite(User source, User target, Status favoritedStatus);
+    public abstract void onFavorite(User source, User target, Status targetStatus);
 
     public abstract void onFollow(User source, User followedUser);
 
@@ -185,13 +189,11 @@ public abstract class UserStreamCallback implements RawCallback {
 
     public abstract void onStallWarning(Warning warn);
 
-    public abstract void onStatus(Status status);
-
     public abstract void onTrackLimitationNotice(int numberOfLimitedStatuses);
 
     public abstract void onUnblock(User source, User unblockedUser);
 
-    public abstract void onUnfavorite(User source, User target, Status unfavoritedStatus);
+    public abstract void onUnfavorite(User source, User target, Status targetStatus);
 
     public abstract void onUserListCreation(User listOwner, UserList list);
 

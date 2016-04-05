@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import org.mariotaku.sqliteqb.library.Constraint;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.NewColumn;
 import org.mariotaku.sqliteqb.library.OnConflict;
+import org.mariotaku.sqliteqb.library.RawSQLLang;
 import org.mariotaku.sqliteqb.library.SQLQuery;
 import org.mariotaku.sqliteqb.library.SQLQueryBuilder;
 import org.mariotaku.sqliteqb.library.SetValue;
@@ -53,7 +54,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import de.vanita5.twittnuker.provider.TwidereDataStore.NetworkUsages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
@@ -83,11 +83,12 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
         db.execSQL(createTable(Activities.AboutMe.TABLE_NAME, Activities.AboutMe.COLUMNS, Activities.AboutMe.TYPES, true));
         db.execSQL(createTable(Activities.ByFriends.TABLE_NAME, Activities.ByFriends.COLUMNS, Activities.ByFriends.TYPES, true));
         db.execSQL(createTable(Drafts.TABLE_NAME, Drafts.COLUMNS, Drafts.TYPES, true));
-        db.execSQL(createTable(CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true));
+        db.execSQL(createTable(CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true,
+                createConflictReplaceConstraint(CachedUsers.USER_KEY)));
         db.execSQL(createTable(CachedStatuses.TABLE_NAME, CachedStatuses.COLUMNS, CachedStatuses.TYPES, true));
         db.execSQL(createTable(CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, CachedHashtags.TYPES, true));
         db.execSQL(createTable(CachedRelationships.TABLE_NAME, CachedRelationships.COLUMNS, CachedRelationships.TYPES, true,
-                createConflictReplaceConstraint(CachedRelationships.ACCOUNT_ID, CachedRelationships.USER_ID)));
+                createConflictReplaceConstraint(CachedRelationships.ACCOUNT_KEY, CachedRelationships.USER_KEY)));
         db.execSQL(createTable(Filters.Users.TABLE_NAME, Filters.Users.COLUMNS, Filters.Users.TYPES, true));
         db.execSQL(createTable(Filters.Keywords.TABLE_NAME, Filters.Keywords.COLUMNS, Filters.Keywords.TYPES, true));
         db.execSQL(createTable(Filters.Sources.TABLE_NAME, Filters.Sources.COLUMNS, Filters.Sources.TYPES, true));
@@ -101,8 +102,6 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
         db.execSQL(createTable(Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, true));
         db.execSQL(createTable(SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true));
         db.execSQL(createTable(SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true));
-        db.execSQL(createTable(NetworkUsages.TABLE_NAME, NetworkUsages.COLUMNS, NetworkUsages.TYPES, true,
-                createConflictReplaceConstraint(NetworkUsages.TIME_IN_HOURS, NetworkUsages.REQUEST_NETWORK, NetworkUsages.REQUEST_TYPE)));
         db.execSQL(createTable(PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, true));
 
         createViews(db);
@@ -119,9 +118,9 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
 
     private void createIndices(SQLiteDatabase db) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
-        db.execSQL(createIndex("statuses_index", Statuses.TABLE_NAME, new String[]{Statuses.ACCOUNT_ID}, true));
-        db.execSQL(createIndex("messages_inbox_index", DirectMessages.Inbox.TABLE_NAME, new String[]{DirectMessages.ACCOUNT_ID}, true));
-        db.execSQL(createIndex("messages_outbox_index", DirectMessages.Outbox.TABLE_NAME, new String[]{DirectMessages.ACCOUNT_ID}, true));
+        db.execSQL(createIndex("statuses_index", Statuses.TABLE_NAME, new String[]{Statuses.ACCOUNT_KEY}, true));
+        db.execSQL(createIndex("messages_inbox_index", DirectMessages.Inbox.TABLE_NAME, new String[]{DirectMessages.ACCOUNT_KEY}, true));
+        db.execSQL(createIndex("messages_outbox_index", DirectMessages.Outbox.TABLE_NAME, new String[]{DirectMessages.ACCOUNT_KEY}, true));
     }
 
     private void createViews(SQLiteDatabase db) {
@@ -154,7 +153,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
                 .actions(SQLQueryBuilder.update(OnConflict.REPLACE, filteredUsersTable)
                         .set(new SetValue(new Column(Filters.Users.NAME), new Column(Table.NEW, CachedUsers.NAME)),
                                 new SetValue(new Column(Filters.Users.SCREEN_NAME), new Column(Table.NEW, CachedUsers.SCREEN_NAME)))
-                        .where(Expression.equals(new Column(Filters.Users.USER_ID), new Column(Table.NEW, CachedUsers.USER_ID)))
+                        .where(Expression.equals(new Column(Filters.Users.USER_KEY), new Column(Table.NEW, CachedUsers.USER_KEY)))
                         .build())
                 .buildSQL());
 
@@ -175,7 +174,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
     private SQLQuery createDeleteDuplicateStatusTrigger(String triggerName, String tableName) {
         final Table table = new Table(tableName);
         final SQLDeleteQuery deleteOld = SQLQueryBuilder.deleteFrom(table).where(Expression.and(
-                Expression.equals(new Column(Statuses.ACCOUNT_ID), new Column(Table.NEW, Statuses.ACCOUNT_ID)),
+                Expression.equals(new Column(Statuses.ACCOUNT_KEY), new Column(Table.NEW, Statuses.ACCOUNT_KEY)),
                 Expression.equals(new Column(Statuses.STATUS_ID), new Column(Table.NEW, Statuses.STATUS_ID))
         )).build();
         return SQLQueryBuilder.createTrigger(false, true, triggerName)
@@ -187,7 +186,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
     private SQLQuery createDeleteDuplicateMessageTrigger(String triggerName, String tableName) {
         final Table table = new Table(tableName);
         final SQLDeleteQuery deleteOld = SQLQueryBuilder.deleteFrom(table).where(Expression.and(
-                Expression.equals(new Column(DirectMessages.ACCOUNT_ID), new Column(Table.NEW, DirectMessages.ACCOUNT_ID)),
+                Expression.equals(new Column(DirectMessages.ACCOUNT_KEY), new Column(Table.NEW, DirectMessages.ACCOUNT_KEY)),
                 Expression.equals(new Column(DirectMessages.MESSAGE_ID), new Column(Table.NEW, DirectMessages.MESSAGE_ID))
         )).build();
         return SQLQueryBuilder.createTrigger(false, true, triggerName)
@@ -212,11 +211,11 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
         final HashMap<String, String> draftsAlias = new HashMap<>();
         accountsAlias.put(Accounts.SCREEN_NAME, "username");
         accountsAlias.put(Accounts.NAME, "username");
-        accountsAlias.put(Accounts.ACCOUNT_ID, "user_id");
+        accountsAlias.put(Accounts.ACCOUNT_KEY, "user_id");
         accountsAlias.put(Accounts.COLOR, "user_color");
         accountsAlias.put(Accounts.OAUTH_TOKEN_SECRET, "token_secret");
         accountsAlias.put(Accounts.API_URL_FORMAT, "rest_base_url");
-        draftsAlias.put(Drafts.MEDIA, "media");
+        draftsAlias.put(Drafts.MEDIA, "medias");
         safeUpgrade(db, Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, false, accountsAlias);
         safeUpgrade(db, Statuses.TABLE_NAME, Statuses.COLUMNS, Statuses.TYPES, true, null);
         safeUpgrade(db, Activities.AboutMe.TABLE_NAME, Activities.AboutMe.COLUMNS,
@@ -224,11 +223,12 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
         safeUpgrade(db, Activities.ByFriends.TABLE_NAME, Activities.ByFriends.COLUMNS,
                 Activities.ByFriends.TYPES, true, null);
         safeUpgrade(db, Drafts.TABLE_NAME, Drafts.COLUMNS, Drafts.TYPES, false, draftsAlias);
-        safeUpgrade(db, CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true, null);
+        safeUpgrade(db, CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true, null,
+                createConflictReplaceConstraint(CachedUsers.USER_KEY));
         safeUpgrade(db, CachedStatuses.TABLE_NAME, CachedStatuses.COLUMNS, CachedStatuses.TYPES, true, null);
         safeUpgrade(db, CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, CachedHashtags.TYPES, true, null);
         safeUpgrade(db, CachedRelationships.TABLE_NAME, CachedRelationships.COLUMNS, CachedRelationships.TYPES, true, null,
-                createConflictReplaceConstraint(CachedRelationships.ACCOUNT_ID, CachedRelationships.USER_ID));
+                createConflictReplaceConstraint(CachedRelationships.ACCOUNT_KEY, CachedRelationships.USER_KEY));
         safeUpgrade(db, Filters.Users.TABLE_NAME, Filters.Users.COLUMNS, Filters.Users.TYPES,
                 oldVersion < 49, null);
         safeUpgrade(db, Filters.Keywords.TABLE_NAME, Filters.Keywords.COLUMNS, Filters.Keywords.TYPES,
@@ -246,16 +246,29 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
         safeUpgrade(db, Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, false, null);
         safeUpgrade(db, SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true, null);
         safeUpgrade(db, SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true, null);
-        safeUpgrade(db, NetworkUsages.TABLE_NAME, NetworkUsages.COLUMNS, NetworkUsages.TYPES, true, null,
-                createConflictReplaceConstraint(NetworkUsages.TIME_IN_HOURS, NetworkUsages.REQUEST_NETWORK, NetworkUsages.REQUEST_TYPE));
         safeUpgrade(db, PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES,
                 false, null);
+
+        if (oldVersion < 131) {
+            migrateFilteredUsers(db);
+        }
+
         db.beginTransaction();
+        db.execSQL(SQLQueryBuilder.dropTable(true, "network_usages").getSQL());
+        db.execSQL(SQLQueryBuilder.dropTable(true, "mentions").getSQL());
         createViews(db);
         createTriggers(db);
         createIndices(db);
         db.setTransactionSuccessful();
         db.endTransaction();
+    }
+
+    private void migrateFilteredUsers(SQLiteDatabase db) {
+        db.execSQL(SQLQueryBuilder.update(OnConflict.REPLACE, Filters.Users.TABLE_NAME)
+                        .set(new SetValue(Filters.Users.USER_KEY, new RawSQLLang(Filters.Users.USER_KEY + "||?")))
+                        .where(Expression.notLikeArgs(new Column(Filters.Users.USER_KEY)))
+                        .buildSQL(),
+                new Object[]{"@twitter.com", "%@%"});
     }
 
     private static String createTable(final String tableName, final String[] columns, final String[] types,

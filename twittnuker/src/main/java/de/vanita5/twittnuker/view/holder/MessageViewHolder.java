@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,8 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.text.Spanned;
+import android.text.Spannable;
 import android.view.View;
 import android.widget.TextView;
 
@@ -37,6 +36,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.HtmlSpanBuilder;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -45,9 +45,8 @@ import de.vanita5.twittnuker.util.TwidereColorUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.CardMediaContainer;
-import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener;
 
-public class MessageViewHolder extends ViewHolder implements OnMediaClickListener {
+public class MessageViewHolder extends ViewHolder {
 
     public final CardMediaContainer mediaContainer;
     public final TextView textView, time;
@@ -62,13 +61,11 @@ public class MessageViewHolder extends ViewHolder implements OnMediaClickListene
         super(itemView);
         this.adapter = adapter;
         final Context context = itemView.getContext();
-        final TypedArray a = context.obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary,
-                android.R.attr.textColorPrimaryInverse, android.R.attr.textColorSecondary,
-                android.R.attr.textColorSecondaryInverse});
-        textColorPrimary = a.getColor(0, 0);
-        textColorPrimaryInverse = a.getColor(1, 0);
-        textColorSecondary = a.getColor(2, 0);
-        textColorSecondaryInverse = a.getColor(3, 0);
+        final TypedArray a = context.obtainStyledAttributes(R.styleable.MessageViewHolder);
+        textColorPrimary = a.getColor(R.styleable.MessageViewHolder_android_textColorPrimary, 0);
+        textColorPrimaryInverse = a.getColor(R.styleable.MessageViewHolder_android_textColorPrimaryInverse, 0);
+        textColorSecondary = a.getColor(R.styleable.MessageViewHolder_android_textColorSecondary, 0);
+        textColorSecondaryInverse = a.getColor(R.styleable.MessageViewHolder_android_textColorSecondaryInverse, 0);
         a.recycle();
         messageContent = (MessageBubbleView) itemView.findViewById(R.id.message_content);
         textView = (TextView) itemView.findViewById(R.id.text);
@@ -82,21 +79,18 @@ public class MessageViewHolder extends ViewHolder implements OnMediaClickListene
         final TwidereLinkify linkify = adapter.getLinkify();
         final MediaLoaderWrapper loader = adapter.getMediaLoader();
 
-        final long accountId = cursor.getLong(indices.account_id);
+        final UserKey accountKey = UserKey.valueOf(cursor.getString(indices.account_key));
         final long timestamp = cursor.getLong(indices.timestamp);
         final ParcelableMedia[] media = JsonSerializer.parseArray(cursor.getString(indices.media),
                 ParcelableMedia.class);
-        final Spanned text = HtmlSpanBuilder.fromHtml(cursor.getString(indices.text_html));
-        textView.setText(linkify.applyAllLinks(text, accountId, false));
+        final Spannable text = HtmlSpanBuilder.fromHtml(cursor.getString(indices.text_html));
+        // Detect entity support
+        linkify.applyAllLinks(text, accountKey, false, true);
+        textView.setText(text);
         time.setText(Utils.formatToLongTimeString(context, timestamp));
         mediaContainer.setVisibility(media != null && media.length > 0 ? View.VISIBLE : View.GONE);
-        mediaContainer.displayMedia(media, loader, accountId, true, this, adapter.getMediaLoadingHandler());
-    }
-
-    @Override
-    public void onMediaClick(View view, ParcelableMedia media, long accountId) {
-        final Bundle options = Utils.createMediaViewerActivityOption(view);
-        Utils.openMedia(adapter.getContext(), adapter.getDirectMessage(getAdapterPosition()), media, options);
+        mediaContainer.displayMedia(media, loader, accountKey, getLayoutPosition(), true,
+                adapter.getOnMediaClickListener(), adapter.getMediaLoadingHandler());
     }
 
     public void setMessageColor(int color) {

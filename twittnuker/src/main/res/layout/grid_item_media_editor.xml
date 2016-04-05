@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -20,16 +20,43 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<de.vanita5.twittnuker.view.SquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.SquareFrameLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    tools:layout_gravity="center"
     tools:layout_height="128dp">
 
     <de.vanita5.twittnuker.view.HighlightImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        tools:src="@drawable/nyan_stars_background_tile"/>
 
+    <com.lnikkila.extendedtouchview.ExtendedTouchView
+        android:id="@+id/remove"
+        style="?borderlessButtonStyle"
+        android:layout_width="@dimen/element_size_normal"
+        android:layout_height="@dimen/element_size_normal"
+        android:layout_gravity="end|top"
+        android:layout_marginEnd="@dimen/element_spacing_minus_mlarge"
+        android:layout_marginRight="@dimen/element_spacing_minus_mlarge"
+        android:layout_marginTop="@dimen/element_spacing_minus_mlarge"
+        android:background="?selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/remove"
+        app:touchHeight="@dimen/element_size_normal"
+        app:touchWidth="@dimen/element_size_normal">
+
+        <ImageView
+            android:layout_width="@dimen/element_size_small"
+            android:layout_height="@dimen/element_size_small"
+            android:layout_gravity="center"
+            android:contentDescription="@string/remove"
+            android:scaleType="center"
+            android:src="@drawable/ic_btn_grid_item_remove"/>
+    </com.lnikkila.extendedtouchview.ExtendedTouchView>
 </de.vanita5.twittnuker.view.SquareFrameLayout>

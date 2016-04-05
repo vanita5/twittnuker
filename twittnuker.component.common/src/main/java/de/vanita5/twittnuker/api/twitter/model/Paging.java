@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,11 @@ import org.mariotaku.restfu.http.SimpleValueMap;
 
 public class Paging extends SimpleValueMap {
 
-    public void setSinceId(long sinceId) {
+    public void setSinceId(String sinceId) {
         put("since_id", sinceId);
     }
 
-    public void setMaxId(long maxId) {
+    public void setMaxId(String maxId) {
         put("max_id", maxId);
     }
 
@@ -62,7 +62,11 @@ public class Paging extends SimpleValueMap {
         put("latest_results", latestResults);
     }
 
-    public Paging sinceId(long sinceId) {
+    public void setRpp(int rpp) {
+        put("rpp", rpp);
+    }
+
+    public Paging sinceId(String sinceId) {
         setSinceId(sinceId);
         return this;
     }
@@ -72,7 +76,7 @@ public class Paging extends SimpleValueMap {
         return this;
     }
 
-    public Paging maxId(long maxId) {
+    public Paging maxId(String maxId) {
         setMaxId(maxId);
         return this;
     }
@@ -99,6 +103,11 @@ public class Paging extends SimpleValueMap {
 
     public Paging cursor(long cursor) {
         setCursor(cursor);
+        return this;
+    }
+
+    public Paging rpp(int rpp) {
+        setRpp(rpp);
         return this;
     }
 }

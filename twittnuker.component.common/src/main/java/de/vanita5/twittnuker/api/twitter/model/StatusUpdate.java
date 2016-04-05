@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,23 +22,27 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import org.mariotaku.restfu.Utils;
+import org.mariotaku.restfu.RestFuUtils;
 import org.mariotaku.restfu.http.SimpleValueMap;
 
 public class StatusUpdate extends SimpleValueMap {
 
-	public StatusUpdate(final String status) {
+    public StatusUpdate(final String status) {
         put("status", status);
-	}
+    }
 
-	public StatusUpdate displayCoordinates(final boolean displayCoordinates) {
-		setDisplayCoordinates(displayCoordinates);
-		return this;
-	}
+    public StatusUpdate displayCoordinates(final boolean displayCoordinates) {
+        setDisplayCoordinates(displayCoordinates);
+        return this;
+    }
 
-    public void setInReplyToStatusId(final long inReplyToStatusId) {
+    public void setInReplyToStatusId(final String inReplyToStatusId) {
         put("in_reply_to_status_id", inReplyToStatusId);
-	}
+    }
+
+    public void setRepostStatusId(final String repostStatusId) {
+        put("repost_status_id", repostStatusId);
+    }
 
     public void setLocation(final GeoLocation location) {
         remove("lat");
@@ -46,22 +50,22 @@ public class StatusUpdate extends SimpleValueMap {
         if (location == null) return;
         put("lat", location.getLatitude());
         put("long", location.getLongitude());
-	}
+    }
 
-    public void setMediaIds(final long... mediaIds) {
+    public void setMediaIds(final String... mediaIds) {
         remove("media_ids");
         if (mediaIds == null) return;
-        put("media_ids", Utils.toString(mediaIds, ','));
+        put("media_ids", RestFuUtils.toString(mediaIds, ','));
     }
 
     public void setPlaceId(final String placeId) {
         put("place_id", placeId);
-	}
+    }
 
-	public StatusUpdate inReplyToStatusId(final long inReplyToStatusId) {
-		setInReplyToStatusId(inReplyToStatusId);
-		return this;
-	}
+    public StatusUpdate inReplyToStatusId(final String inReplyToStatusId) {
+        setInReplyToStatusId(inReplyToStatusId);
+        return this;
+    }
 
 
     public void setDisplayCoordinates(final boolean displayCoordinates) {
@@ -73,25 +77,25 @@ public class StatusUpdate extends SimpleValueMap {
         put("possibly_sensitive", possiblySensitive);
     }
 
-	public StatusUpdate location(final GeoLocation location) {
-		setLocation(location);
-		return this;
-	}
+    public StatusUpdate location(final GeoLocation location) {
+        setLocation(location);
+        return this;
+    }
 
-	public StatusUpdate mediaIds(final long... mediaIds) {
-		setMediaIds(mediaIds);
-		return this;
-	}
+    public StatusUpdate mediaIds(final String... mediaIds) {
+        setMediaIds(mediaIds);
+        return this;
+    }
 
-	public StatusUpdate placeId(final String placeId) {
-		setPlaceId(placeId);
-		return this;
-	}
+    public StatusUpdate placeId(final String placeId) {
+        setPlaceId(placeId);
+        return this;
+    }
 
-	public StatusUpdate possiblySensitive(final boolean possiblySensitive) {
-		setPossiblySensitive(possiblySensitive);
-		return this;
-	}
+    public StatusUpdate possiblySensitive(final boolean possiblySensitive) {
+        setPossiblySensitive(possiblySensitive);
+        return this;
+    }
 
 
 }

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,11 @@ import org.mariotaku.restfu.annotation.method.DELETE;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.method.PUT;
-import org.mariotaku.restfu.annotation.param.Body;
-import org.mariotaku.restfu.annotation.param.Form;
-import org.mariotaku.restfu.annotation.param.MethodExtra;
+import org.mariotaku.restfu.annotation.param.KeyValue;
+import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.annotation.param.Path;
+import org.mariotaku.restfu.annotation.param.Queries;
 import org.mariotaku.restfu.annotation.param.Query;
-import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
@@ -41,18 +40,19 @@ import de.vanita5.twittnuker.api.twitter.model.StatusSchedule;
 public interface PrivateScheduleResources {
 
     @POST("/schedule/status/tweet.json")
-    @Body(BodyType.FORM)
-    ScheduledStatus scheduleTweet(@Form StatusSchedule schedule) throws TwitterException;
+    ScheduledStatus scheduleTweet(@Param StatusSchedule schedule) throws TwitterException;
 
     @DELETE("/schedule/status/{id}.json")
     ScheduledStatus destroyScheduleTweet(@Path("id") long id) throws TwitterException;
 
     @PUT("/schedule/status/{id}.json")
-    @Body(BodyType.FORM)
-    ScheduledStatus updateScheduleTweet(@Path("id") long id, @Form StatusSchedule schedule) throws TwitterException;
+    ScheduledStatus updateScheduleTweet(@Path("id") long id, @Param StatusSchedule schedule) throws TwitterException;
 
     @GET("/schedule/status/list.json")
-    @MethodExtra(name = "extra_params", values = {"include_entities", "include_cards", "cards_platform"})
-    ResponseList<ScheduledStatus> getScheduledStatusesList(@Query Paging paging, @Query("state") ScheduledStatus.State[] states) throws TwitterException;
+    @Queries({@KeyValue(key = "include_entities", valueKey = "include_entities"),
+            @KeyValue(key = "include_cards", valueKey = "include_cards"),
+            @KeyValue(key = "cards_platform", valueKey = "cards_platform")})
+    ResponseList<ScheduledStatus> getScheduledStatuses(@Query Paging paging,
+                                                       @Query(value = "state", arrayDelimiter = ',') @ScheduledStatus.State String[] states) throws TwitterException;
 
 }

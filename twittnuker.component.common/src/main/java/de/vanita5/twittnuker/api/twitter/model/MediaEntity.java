@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,17 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import android.support.annotation.IntDef;
+import android.support.annotation.StringDef;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
-import de.vanita5.twittnuker.util.BugReporter;
 
 @JsonObject
 public class MediaEntity extends UrlEntity {
@@ -51,8 +53,9 @@ public class MediaEntity extends UrlEntity {
     String displayUrl;
     @JsonField(name = "expanded_url")
     String expandedUrl;
-    @JsonField(name = "type", typeConverter = Type.Converter.class)
-    Type type;
+    @JsonField(name = "type")
+    @Type
+    String type;
     @JsonField(name = "sizes")
     HashMap<String, Size> sizes;
     @JsonField(name = "source_status_id")
@@ -63,9 +66,65 @@ public class MediaEntity extends UrlEntity {
     VideoInfo videoInfo;
     @JsonField(name = "features")
     HashMap<String, Feature> features;
+    @JsonField(name = "ext_alt_text")
+    String altText;
 
     public Map<String, Feature> getFeatures() {
         return features;
+    }
+
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public VideoInfo getVideoInfo() {
+        return videoInfo;
+    }
+
+    public String getMediaUrlHttps() {
+        return mediaUrlHttps;
+    }
+
+    @Override
+    public String getExpandedUrl() {
+        return expandedUrl;
+    }
+
+    @Override
+    public String getDisplayUrl() {
+        return displayUrl;
+    }
+
+    @Override
+    public String getUrl() {
+        return url;
+    }
+
+    @Type
+    public String getType() {
+        return type;
+    }
+
+    public Map<String, Size> getSizes() {
+        return sizes;
+    }
+
+    @Override
+    public int getEnd() {
+        return indices.getEnd();
+    }
+
+    @Override
+    public int getStart() {
+        return indices.getStart();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getAltText() {
+        return altText;
     }
 
     @Override
@@ -87,83 +146,11 @@ public class MediaEntity extends UrlEntity {
                 '}';
     }
 
-    public String getMediaUrl() {
-        return mediaUrl;
-    }
+    public @interface Type {
+        String PHOTO = "photo";
+        String VIDEO = "video";
+        String ANIMATED_GIF = "animated_gif";
 
-    public VideoInfo getVideoInfo() {
-        return videoInfo;
-    }
-
-    public String getMediaUrlHttps() {
-        return mediaUrlHttps;
-    }
-
-    public String getExpandedUrl() {
-        return expandedUrl;
-    }
-
-    public String getDisplayUrl() {
-        return displayUrl;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public Map<String, Size> getSizes() {
-        return sizes;
-    }
-
-    public int getEnd() {
-        return indices.getEnd();
-    }
-
-    public int getStart() {
-        return indices.getStart();
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public enum Type {
-        PHOTO("photo"), VIDEO("video"), ANIMATED_GIF("animated_gif"), UNKNOWN(null);
-
-        private final String literal;
-
-        Type(String literal) {
-            this.literal = literal;
-        }
-
-        public static Type parse(String typeString) {
-            if ("photo".equalsIgnoreCase(typeString)) {
-                return PHOTO;
-            } else if ("video".equalsIgnoreCase(typeString)) {
-                return VIDEO;
-            } else if ("animated_gif".equalsIgnoreCase(typeString)) {
-                return ANIMATED_GIF;
-            }
-            BugReporter.error("Unknown MediaEntity.Type " + typeString);
-            return UNKNOWN;
-        }
-
-        public static class Converter extends StringBasedTypeConverter<Type> {
-
-            @Override
-            public Type getFromString(String string) {
-                return Type.parse(string);
-            }
-
-            @Override
-            public String convertToString(Type object) {
-                return object.literal;
-            }
-        }
     }
 
 
@@ -282,6 +269,16 @@ public class MediaEntity extends UrlEntity {
         }
     }
 
+    @StringDef({Size.THUMB, Size.SMALL, Size.MEDIUM, Size.LARGE})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface SizeType {
+    }
+
+    @IntDef({Size.FIT, Size.CROP})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ScaleType {
+    }
+
 
     @JsonObject
     public static class Size {
@@ -299,14 +296,6 @@ public class MediaEntity extends UrlEntity {
         @JsonField(name = "resize")
         String resize;
 
-        @Override
-        public String toString() {
-            return "Size{" +
-                    "width=" + width +
-                    ", height=" + height +
-                    ", resize='" + resize + '\'' +
-                    '}';
-        }
 
         public int getHeight() {
             return height;
@@ -318,6 +307,15 @@ public class MediaEntity extends UrlEntity {
 
         public int getWidth() {
             return width;
+        }
+
+        @Override
+        public String toString() {
+            return "Size{" +
+                    "width=" + width +
+                    ", height=" + height +
+                    ", resize='" + resize + '\'' +
+                    '}';
         }
     }
 }

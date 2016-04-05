@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,12 +27,12 @@ import android.net.Uri;
 
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.http.ContentType;
+import org.mariotaku.restfu.http.HttpRequest;
+import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.RestHttpClient;
-import org.mariotaku.restfu.http.RestHttpRequest;
-import org.mariotaku.restfu.http.RestHttpResponse;
-import org.mariotaku.restfu.http.mime.TypedData;
-import de.vanita5.twittnuker.activity.support.ThemedImagePickerActivity;
-import de.vanita5.twittnuker.model.RequestType;
+import org.mariotaku.restfu.http.mime.Body;
+import de.vanita5.twittnuker.activity.ThemedImagePickerActivity;
+import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 import java.io.IOException;
 
@@ -43,14 +43,13 @@ public class RestFuNetworkStreamDownloader extends ThemedImagePickerActivity.Net
     }
 
     public DownloadResult get(Uri uri) throws IOException {
-        final RestHttpClient client = TwitterAPIFactory.getDefaultHttpClient(getContext());
-        final RestHttpRequest.Builder builder = new RestHttpRequest.Builder();
+        final RestHttpClient client = DependencyHolder.get(getContext()).getRestHttpClient();
+        final HttpRequest.Builder builder = new HttpRequest.Builder();
         builder.method(GET.METHOD);
         builder.url(uri.toString());
-        builder.extra(RequestType.MEDIA);
-        final RestHttpResponse response = client.execute(builder.build());
+        final HttpResponse response = client.newCall(builder.build()).execute();
         if (response.isSuccessful()) {
-            final TypedData body = response.getBody();
+            final Body body = response.getBody();
             final ContentType contentType = body.contentType();
             return DownloadResult.get(body.stream(), contentType != null ? contentType.getContentType() : "image/*");
         } else {

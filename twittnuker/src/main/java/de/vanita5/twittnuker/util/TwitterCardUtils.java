@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
-import de.vanita5.twittnuker.fragment.support.card.CardPollFragment;
+import org.apache.commons.lang3.ArrayUtils;
+import de.vanita5.twittnuker.fragment.card.CardPollFragment;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils;
 
 public class TwitterCardUtils {
 
@@ -46,15 +49,15 @@ public class TwitterCardUtils {
         if (CARD_NAME_PLAYER.equals(card.name)) {
             final Fragment playerFragment = sFactory.createPlayerFragment(card);
             if (playerFragment != null) return playerFragment;
-            return TwitterCardFragmentFactory.createGenericPlayerFragment(card);
+            return TwitterCardFragmentFactory.createGenericPlayerFragment(card, null);
         } else if (CARD_NAME_AUDIO.equals(card.name)) {
             final Fragment playerFragment = sFactory.createAudioFragment(card);
             if (playerFragment != null) return playerFragment;
-            return TwitterCardFragmentFactory.createGenericPlayerFragment(card);
+            return TwitterCardFragmentFactory.createGenericPlayerFragment(card, null);
         } else if (CARD_NAME_ANIMATED_GIF.equals(card.name)) {
             final Fragment playerFragment = sFactory.createAnimatedGifFragment(card);
             if (playerFragment != null) return playerFragment;
-            return TwitterCardFragmentFactory.createGenericPlayerFragment(card);
+            return TwitterCardFragmentFactory.createGenericPlayerFragment(card, null);
         } else if (CardPollFragment.isPoll(card)) {
             return TwitterCardFragmentFactory.createCardPollFragment(status);
         }
@@ -63,8 +66,8 @@ public class TwitterCardUtils {
 
 
     public static Point getCardSize(ParcelableCardEntity card) {
-        final int playerWidth = card.getAsInteger("player_width", -1);
-        final int playerHeight = card.getAsInteger("player_height", -1);
+        final int playerWidth = ParcelableCardEntityUtils.getAsInteger(card, "player_width", -1);
+        final int playerHeight = ParcelableCardEntityUtils.getAsInteger(card, "player_height", -1);
         if (playerWidth > 0 && playerHeight > 0) {
             return new Point(playerWidth, playerHeight);
         }
@@ -75,7 +78,16 @@ public class TwitterCardUtils {
         if (status.card == null || status.card_name == null) return false;
         switch (status.card_name) {
             case CARD_NAME_PLAYER: {
-                return TextUtils.isEmpty(status.card.getString("player_stream_url"));
+                if (!ArrayUtils.isEmpty(status.media)) {
+                    String appUrlResolved = ParcelableCardEntityUtils.getString(status.card, "app_url_resolved");
+                    String cardUrl = status.card.url;
+                    for (ParcelableMedia media : status.media) {
+                        if (media.url.equals(appUrlResolved) || media.url.equals(cardUrl)) {
+                            return false;
+                        }
+                    }
+                }
+                return TextUtils.isEmpty(ParcelableCardEntityUtils.getString(status.card, "player_stream_url"));
             }
             case CARD_NAME_AUDIO: {
                 return true;

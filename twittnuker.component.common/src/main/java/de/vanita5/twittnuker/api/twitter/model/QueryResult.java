@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.api.twitter.model;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import org.mariotaku.restfu.http.RestHttpResponse;
+import org.mariotaku.restfu.http.HttpResponse;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
 import java.util.AbstractList;
@@ -48,15 +48,17 @@ public class QueryResult extends AbstractList<Status> implements TwitterResponse
     @JsonField(name = "statuses")
     ArrayList<Status> statuses;
 
+    @AccessLevel
     private int accessLevel;
     private RateLimitStatus rateLimitStatus;
 
     @Override
-    public final void processResponseHeader(RestHttpResponse resp) {
+    public final void processResponseHeader(HttpResponse resp) {
         rateLimitStatus = RateLimitStatus.createFromResponseHeader(resp);
         accessLevel = InternalParseUtil.toAccessLevel(resp);
     }
 
+    @AccessLevel
     @Override
     public final int getAccessLevel() {
         return accessLevel;

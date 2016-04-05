@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,13 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
  */
 @JsonObject
 public class ErrorInfo {
+
+    public static final int PAGE_NOT_FOUND = 34;
+    public static final int RATE_LIMIT_EXCEEDED = 88;
+    public static final int NO_DIRECT_MESSAGE_PERMISSION = 93;
+    public static final int NOT_AUTHORIZED = 179;
+    public static final int STATUS_IS_DUPLICATE = 187;
+    public static final int STATUS_NOT_FOUND = 144;
 
     @JsonField(name = "code")
     int code;

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,10 +30,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
-public class ListParcelableStatusesAdapter extends AbsParcelableStatusesAdapter {
+public class ListParcelableStatusesAdapter extends ParcelableStatusesAdapter {
 
     public ListParcelableStatusesAdapter(Context context, boolean compact) {
         super(context, compact);
@@ -47,19 +48,24 @@ public class ListParcelableStatusesAdapter extends AbsParcelableStatusesAdapter 
     @NonNull
     @Override
     protected IStatusViewHolder onCreateStatusViewHolder(ViewGroup parent, boolean compact) {
+        return createStatusViewHolder(this, getInflater(), parent, compact,
+                getCardBackgroundColor());
+    }
+
+    public static StatusViewHolder createStatusViewHolder(IStatusesAdapter<?> adapter,
+                                                          LayoutInflater inflater, ViewGroup parent,
+                                                          boolean compact, int cardBackgroundColor) {
         final View view;
-        final int backgroundColor = getCardBackgroundColor();
-        final LayoutInflater inflater = getInflater();
         if (compact) {
             view = inflater.inflate(R.layout.card_item_status_compact, parent, false);
             final View itemContent = view.findViewById(R.id.item_content);
-            itemContent.setBackgroundColor(backgroundColor);
+            itemContent.setBackgroundColor(cardBackgroundColor);
         } else {
             view = inflater.inflate(R.layout.card_item_status, parent, false);
             final CardView cardView = (CardView) view.findViewById(R.id.card);
-            cardView.setCardBackgroundColor(backgroundColor);
+            cardView.setCardBackgroundColor(cardBackgroundColor);
         }
-        final StatusViewHolder holder = new StatusViewHolder(this, view);
+        final StatusViewHolder holder = new StatusViewHolder(adapter, view);
         holder.setOnClickListeners();
         holder.setupViewOptions();
         return holder;

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,12 @@ package de.vanita5.twittnuker.preference;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
@@ -39,14 +40,14 @@ import static de.vanita5.twittnuker.provider.TwidereDataStore.CACHE_URIS;
 import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_URIS;
 import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 
-public class ClearDatabasesPreference extends AsyncTaskPreference implements Constants, OnPreferenceClickListener {
+public class ClearDatabasesPreference extends AsyncTaskPreference implements Constants {
 
     public ClearDatabasesPreference(final Context context) {
         this(context, null);
     }
 
     public ClearDatabasesPreference(final Context context, final AttributeSet attrs) {
-        this(context, attrs, android.R.attr.preferenceStyle);
+        this(context, attrs, R.attr.preferenceStyle);
     }
 
     public ClearDatabasesPreference(final Context context, final AttributeSet attrs, final int defStyle) {
@@ -75,6 +76,11 @@ public class ClearDatabasesPreference extends AsyncTaskPreference implements Con
         resolver.delete(Notifications.CONTENT_URI, null, null);
         resolver.delete(UnreadCounts.CONTENT_URI, null, null);
         resolver.delete(SavedSearches.CONTENT_URI, null, null);
+
+        final SharedPreferences prefs = context.getSharedPreferences(TIMELINE_POSITIONS_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
     }
 
 }

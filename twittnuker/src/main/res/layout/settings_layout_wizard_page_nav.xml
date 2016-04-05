@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -24,20 +24,21 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:padding="@dimen/element_spacing_large">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:padding="@dimen/element_spacing_large">
 
-	<TextView
-		android:id="@android:id/title"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
+    <de.vanita5.twittnuker.view.WizardHighlightTextView
+        android:id="@android:id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="end"
-		android:fontFamily="sans-serif-condensed"
-		android:singleLine="true"
-		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:textColor="?android:colorActivatedHighlight"
-		android:textSize="@dimen/text_size_wizard_nav_item"
+        android:fontFamily="sans-serif-condensed"
+        android:singleLine="true"
+        android:tag="text_color|accent_color"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/text_size_wizard_nav_item"
         android:textStyle="bold"
         tools:ignore="UnusedAttribute"/>
 

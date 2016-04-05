@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.api.twitter.api;
 
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Body;
-import org.mariotaku.restfu.annotation.param.Form;
-import org.mariotaku.restfu.annotation.param.MethodExtra;
+import org.mariotaku.restfu.annotation.param.KeyValue;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Queries;
 import org.mariotaku.restfu.annotation.param.Query;
 import org.mariotaku.restfu.http.BodyType;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -35,12 +35,15 @@ import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 
 @SuppressWarnings("RedundantThrows")
-@MethodExtra(name = "extra_params", values = {"full_text", "include_entities", "include_cards", "cards_platform"})
+@Queries({@KeyValue(key = "full_text", valueKey = "full_text"),
+        @KeyValue(key = "include_entities", valueKey = "include_entities"),
+        @KeyValue(key = "include_cards", valueKey = "include_cards"),
+        @KeyValue(key = "cards_platform", valueKey = "cards_platform")})
 public interface DirectMessagesResources {
 
     @POST("/direct_messages/destroy.json")
-    @Body(BodyType.FORM)
-    DirectMessage destroyDirectMessage(@Form("id") long id) throws TwitterException;
+    @BodyType(BodyType.FORM)
+    DirectMessage destroyDirectMessage(@Param("id") String id) throws TwitterException;
 
     @GET("/direct_messages.json")
     ResponseList<DirectMessage> getDirectMessages(@Query Paging paging) throws TwitterException;
@@ -49,25 +52,21 @@ public interface DirectMessagesResources {
     ResponseList<DirectMessage> getSentDirectMessages(@Query Paging paging) throws TwitterException;
 
     @POST("/direct_messages/new.json")
-    @Body(BodyType.FORM)
-    DirectMessage sendDirectMessage(@Form("user_id") long userId, @Form("text") String text)
+    DirectMessage sendDirectMessage(@Param("user_id") String userId, @Param("text") String text)
             throws TwitterException;
 
     @POST("/direct_messages/new.json")
-    @Body(BodyType.FORM)
-    DirectMessage sendDirectMessage(@Form("user_id") long userId, @Form("text") String text,
-                                    @Form("media_id") long mediaId) throws TwitterException;
+    DirectMessage sendDirectMessage(@Param("user_id") String userId, @Param("text") String text,
+                                    @Param("media_id") String mediaId) throws TwitterException;
 
     @POST("/direct_messages/new.json")
-    @Body(BodyType.FORM)
-    DirectMessage sendDirectMessage(@Form("screen_name") String screenName, @Form("text") String text)
+    DirectMessage sendDirectMessageToScreenName(@Param("screen_name") String screenName, @Param("text") String text)
             throws TwitterException;
 
     @POST("/direct_messages/new.json")
-    @Body(BodyType.FORM)
-    DirectMessage sendDirectMessage(@Form("screen_name") String screenName, @Form("text") String text,
-                                    @Form("media_id") long mediaId) throws TwitterException;
+    DirectMessage sendDirectMessageToScreenName(@Param("screen_name") String screenName, @Param("text") String text,
+                                                @Param("media_id") String mediaId) throws TwitterException;
 
     @GET("/direct_messages/show.json")
-    DirectMessage showDirectMessage(@Query("id") long id) throws TwitterException;
+    DirectMessage showDirectMessage(@Query("id") String id) throws TwitterException;
 }

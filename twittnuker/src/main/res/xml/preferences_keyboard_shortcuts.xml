@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Twittnuker - Twitter client for Android
+  ~
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~
+  ~ This program incorporates a modified version of Twidere.
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!--suppress AndroidElementNotAllowed -->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/keyboard_shortcuts">
+    <PreferenceCategory
+        android:key="cat_general"
+        android:title="@string/general">
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="compose"
+            android:title="@string/compose"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="search"
+            android:title="@string/search"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="message"
+            android:title="@string/direct_messages"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="cat_home"
+        android:title="@string/home">
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="home.accounts_dashboard"
+            android:tag="home"
+            android:title="@string/open_accounts_dashboard"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="cat_navigation"
+        android:title="@string/navigation">
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="navigation.previous"
+            android:tag="navigation"
+            android:title="@string/previous_item"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="navigation.next"
+            android:tag="navigation"
+            android:title="@string/next_item"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="navigation.page_down"
+            android:tag="navigation"
+            android:title="@string/page_down"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="navigation.page_up"
+            android:tag="navigation"
+            android:title="@string/page_up"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="navigation.previous_tab"
+            android:tag="navigation"
+            android:title="@string/previous_tab"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="navigation.next_tab"
+            android:tag="navigation"
+            android:title="@string/next_tab"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="navigation.refresh"
+            android:tag="navigation"
+            android:title="@string/refresh"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="navigation.back"
+            android:tag="navigation"
+            android:title="@string/keyboard_shortcut_back"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="navigation.top"
+            android:tag="navigation"
+            android:title="@string/jump_to_top"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="cat_statuses"
+        android:title="@string/statuses">
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="status.reply"
+            android:tag="status"
+            android:title="@string/reply"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="status.retweet"
+            android:tag="status"
+            android:title="@string/retweet"/>
+        <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+            android:action="status.favorite"
+            android:tag="status"
+            android:title="@string/favorite"/>
+    </PreferenceCategory>
+</PreferenceScreen>

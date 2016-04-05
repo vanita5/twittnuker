@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -73,14 +73,15 @@
                     <requestFocus/>
                 </EditText>
 
-                <de.vanita5.twittnuker.view.ActionIconButton
+                <de.vanita5.twittnuker.view.IconActionButton
                     android:id="@+id/search_submit"
                     android:layout_width="@dimen/element_size_normal"
                     android:layout_height="match_parent"
                     android:layout_weight="0"
                     android:background="?actionBarItemBackground"
                     android:color="?menuIconColor"
-                    android:src="@drawable/ic_action_search"/>
+                    android:src="@drawable/ic_action_search"
+                    tools:tint="?menuIconColor"/>
 
             </LinearLayout>
 
@@ -95,7 +96,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:listSelector="?selectableItemBackground"
-                tools:listitem="@layout/list_item_user"/>
+                tools:listitem="@layout/list_item_suggestion_search"/>
         </LinearLayout>
 
     </android.support.v7.widget.CardView>

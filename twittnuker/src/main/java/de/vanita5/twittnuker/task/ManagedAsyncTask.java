@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,11 @@ import com.squareup.otto.Bus;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.util.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 
 import javax.inject.Inject;
 
@@ -41,6 +44,12 @@ public abstract class ManagedAsyncTask<Params, Progress, Result> extends AsyncTa
     protected AsyncTaskManager manager;
     @Inject
     protected Bus bus;
+    @Inject
+    protected UserColorNameManager mUserColorNameManager;
+    @Inject
+    protected SharedPreferencesWrapper mPreferences;
+    @Inject
+    protected AsyncTwitterWrapper mAsyncTwitterWrapper;
     private final Context context;
     private final String tag;
 

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
+import android.support.v7.preference.PreferenceManager;
+import android.support.v7.preference.PreferenceScreen;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,10 +49,14 @@ public abstract class BaseAccountPreferenceFragment extends BasePreferenceFragme
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreatePreferences(Bundle bundle, String s) {
         final PreferenceManager pm = getPreferenceManager();
         final ParcelableAccount account = getArguments().getParcelable(EXTRA_ACCOUNT);
         final String preferenceName = ACCOUNT_PREFERENCES_NAME_PREFIX
-                + (account != null ? account.account_id : "unknown");
+                + (account != null ? account.account_key : "unknown");
         pm.setSharedPreferencesName(preferenceName);
         addPreferencesFromResource(getPreferencesResource());
         final SharedPreferences prefs = pm.getSharedPreferences();
@@ -61,11 +65,19 @@ public abstract class BaseAccountPreferenceFragment extends BasePreferenceFragme
         final Intent intent = activity.getIntent();
         if (account != null && intent.hasExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT)) {
             final boolean nameFirst = prefs.getBoolean(KEY_NAME_FIRST, true);
-            final String name = mUserColorNameManager.getDisplayName(account.account_id, account.name,
-                    account.screen_name, nameFirst, false);
+            final String name = mUserColorNameManager.getDisplayName(account.account_key,
+                    account.name, account.screen_name, nameFirst);
             activity.setTitle(name);
         }
         updatePreferenceScreen();
+    }
+
+    @Override
+    public void onDestroy() {
+        final PreferenceManager pm = getPreferenceManager();
+        final SharedPreferences prefs = pm.getSharedPreferences();
+        prefs.unregisterOnSharedPreferenceChangeListener(this);
+        super.onDestroy();
     }
 
     @Override

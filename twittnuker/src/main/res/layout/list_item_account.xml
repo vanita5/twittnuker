@@ -4,9 +4,9 @@
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-  
+
           http://www.apache.org/licenses/LICENSE-2.0
-  
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,16 +14,17 @@
      limitations under the License.
 -->
 
-<de.vanita5.twittnuker.view.ColorLabelRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorLabelRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clipChildren="false"
     android:descendantFocusability="blocksDescendants"
-    android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:padding="@dimen/element_spacing_normal"
     app:ignorePadding="true">
-
 
     <View
         android:id="@+id/drag_handle"
@@ -32,19 +33,36 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/element_spacing_normal"
+        android:layout_marginRight="@dimen/element_spacing_normal"
         android:layout_weight="0"
-        android:background="@drawable/list_drag_handle" />
+        android:background="@drawable/list_drag_handle"
+        android:visibility="visible"
+        tools:layout_height="?android:attr/listPreferredItemHeight"/>
 
-    <de.vanita5.twittnuker.view.ShapedImageView
+    <de.vanita5.twittnuker.view.ProfileImageView
         android:id="@android:id/icon"
         style="?profileImageStyle"
-        android:layout_width="@dimen/icon_size_list_item"
-        android:layout_height="@dimen/icon_size_list_item"
+        android:layout_width="@dimen/element_size_normal"
+        android:layout_height="@dimen/element_size_normal"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/drag_handle"
         android:layout_toRightOf="@+id/drag_handle"
         android:contentDescription="@string/your_profile_image"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        tools:src="@mipmap/ic_launcher"/>
+
+    <ImageView
+        android:id="@+id/account_type"
+        android:layout_width="@dimen/element_size_small"
+        android:layout_height="@dimen/element_size_small"
+        android:layout_alignBottom="@android:id/icon"
+        android:layout_alignEnd="@android:id/icon"
+        android:layout_alignRight="@android:id/icon"
+        android:layout_marginBottom="@dimen/element_spacing_minus_normal"
+        android:scaleType="centerInside"
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/ic_account_logo_twitter"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -60,11 +78,12 @@
 
         <TextView
             android:id="@android:id/text1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="?android:textColorPrimary" />
+            android:textColor="?android:textColorPrimary"
+            tools:text="Name"/>
 
         <TextView
             android:id="@android:id/text2"
@@ -72,7 +91,8 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="?android:textColorSecondary" />
+            android:textColor="?android:textColorSecondary"
+            tools:text="\@screenname"/>
     </LinearLayout>
 
     <com.lnikkila.extendedtouchview.ExtendedTouchView
@@ -82,6 +102,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:clipChildren="false"
         app:touchHeight="48dp"
         app:touchWidth="48dp">
 

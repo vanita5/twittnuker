@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,36 +22,41 @@
 
 package de.vanita5.twittnuker.preference;
 
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.DialogPreference;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.preference.DialogPreference;
+import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 
 import me.uucky.colorpicker.ColorPickerDialog;
 
-public class ColorPickerPreference extends DialogPreference implements DialogInterface.OnClickListener, Constants {
+public class ColorPickerPreference extends DialogPreference implements Constants,
+        IDialogPreference {
 
     private int mDefaultValue = Color.WHITE;
     private boolean mAlphaSliderEnabled = false;
 
-    private ColorPickerDialog.Controller mController;
-
     public ColorPickerPreference(final Context context, final AttributeSet attrs) {
-        this(context, attrs, android.R.attr.preferenceStyle);
+        this(context, attrs, R.attr.dialogPreferenceStyle);
     }
 
     public ColorPickerPreference(final Context context, final AttributeSet attrs, final int defStyle) {
@@ -62,13 +67,6 @@ public class ColorPickerPreference extends DialogPreference implements DialogInt
         mAlphaSliderEnabled = a.getBoolean(R.styleable.ColorPickerPreferences_alphaSlider, false);
         setDefaultValue(a.getColor(R.styleable.ColorPickerPreferences_defaultColor, 0));
         a.recycle();
-    }
-
-    @Override
-    protected void onBindView(@NonNull final View view) {
-        super.onBindView(view);
-        final ImageView imageView = (ImageView) view.findViewById(R.id.color);
-        imageView.setImageBitmap(TwidereColorUtils.getColorPreviewBitmap(getContext(), getValue(), false));
     }
 
     @Override
@@ -84,45 +82,6 @@ public class ColorPickerPreference extends DialogPreference implements DialogInt
         }
     }
 
-    @Override
-    protected void onPrepareDialogBuilder(Builder builder) {
-        mController = ColorPickerDialog.Controller.applyToDialogBuilder(builder);
-        mController.setAlphaEnabled(mAlphaSliderEnabled);
-        final Resources res = builder.getContext().getResources();
-        for (int presetColor : PRESET_COLORS) {
-            mController.addColor(res.getColor(presetColor));
-        }
-        mController.setInitialColor(getValue());
-        builder.setPositiveButton(res.getString(android.R.string.ok), this);
-        builder.setNegativeButton(res.getString(android.R.string.cancel), this);
-    }
-
-    @Override
-    protected void showDialog(Bundle state) {
-        super.showDialog(state);
-        final Dialog dialog = getDialog();
-        if (dialog != null && mController != null) {
-            dialog.setOnShowListener(mController);
-        }
-    }
-
-    @Override
-    public void onClick(final DialogInterface dialog, final int which) {
-        switch (which) {
-            case DialogInterface.BUTTON_POSITIVE:
-                if (mController == null) return;
-                final int color = mController.getColor();
-                if (isPersistent()) {
-                    persistInt(color);
-                }
-                final OnPreferenceChangeListener listener = getOnPreferenceChangeListener();
-                if (listener != null) {
-                    listener.onPreferenceChange(this, color);
-                }
-                break;
-        }
-    }
-
     private int getValue() {
         try {
             if (isPersistent()) return getPersistedInt(mDefaultValue);
@@ -130,6 +89,98 @@ public class ColorPickerPreference extends DialogPreference implements DialogInt
             Log.w(LOGTAG, e);
         }
         return mDefaultValue;
+    }
+
+    @Override
+    public void displayDialog(PreferenceFragmentCompat fragment) {
+        ColorPickerPreferenceDialogFragment df = ColorPickerPreferenceDialogFragment.newInstance(getKey());
+        df.setTargetFragment(fragment, 0);
+        df.show(fragment.getFragmentManager(), getKey());
+    }
+
+    @Override
+    public void onBindViewHolder(PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        final ImageView imageView = (ImageView) holder.findViewById(R.id.color);
+        imageView.setImageBitmap(TwidereColorUtils.getColorPreviewBitmap(getContext(), getValue(), false));
+    }
+
+    public boolean isAlphaSliderEnabled() {
+        return mAlphaSliderEnabled;
+    }
+
+    public static final class ColorPickerPreferenceDialogFragment extends PreferenceDialogFragmentCompat
+            implements DialogInterface.OnShowListener, MaterialDialog.SingleButtonCallback {
+
+        private ColorPickerDialog.Controller mController;
+
+
+        public static ColorPickerPreferenceDialogFragment newInstance(String key) {
+            final ColorPickerPreferenceDialogFragment df = new ColorPickerPreferenceDialogFragment();
+            final Bundle args = new Bundle();
+            args.putString(ARG_KEY, key);
+            df.setArguments(args);
+            return df;
+        }
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final ColorPickerPreference preference = (ColorPickerPreference) getPreference();
+            final Context context = getContext();
+            final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+            builder.title(preference.getDialogTitle());
+            builder.customView(R.layout.cp__dialog_color_picker, false);
+
+            builder.positiveText(android.R.string.ok);
+            builder.negativeText(android.R.string.cancel);
+            builder.onPositive(this);
+            builder.onNegative(this);
+            Dialog dialog = builder.build();
+            dialog.setOnShowListener(this);
+            return dialog;
+        }
+
+        @Override
+        public void onDialogClosed(boolean positive) {
+            final ColorPickerPreference preference = (ColorPickerPreference) getPreference();
+            if (mController == null) return;
+            final int color = mController.getColor();
+            if (preference.isPersistent()) {
+                preference.persistInt(color);
+            }
+            preference.callChangeListener(color);
+            preference.notifyChanged();
+        }
+
+        @Override
+        public void onShow(DialogInterface dialog) {
+            final ColorPickerPreference preference = (ColorPickerPreference) getPreference();
+            final Dialog alertDialog = (Dialog) dialog;
+            final View windowView = alertDialog.getWindow().getDecorView();
+            if (windowView == null) return;
+            mController = new ColorPickerDialog.Controller(getContext(), windowView);
+            mController.setAlphaEnabled(preference.isAlphaSliderEnabled());
+            for (int presetColor : PRESET_COLORS) {
+                mController.addColor(ContextCompat.getColor(getContext(), presetColor));
+            }
+            mController.setInitialColor(preference.getValue());
+        }
+
+        @Override
+        public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+            switch (dialogAction) {
+                case POSITIVE:
+                    onClick(materialDialog, DialogInterface.BUTTON_POSITIVE);
+                    break;
+                case NEUTRAL:
+                    onClick(materialDialog, DialogInterface.BUTTON_NEUTRAL);
+                    break;
+                case NEGATIVE:
+                    onClick(materialDialog, DialogInterface.BUTTON_NEGATIVE);
+                    break;
+            }
+        }
     }
 
 }

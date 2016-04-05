@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,11 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import android.support.v4.util.ArrayMap;
-
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -69,7 +68,7 @@ public class CardEntity {
     @OnJsonParseComplete
     void onParseComplete() {
         if (rawBindingValues != null) {
-            bindingValues = new ArrayMap<>();
+            bindingValues = new HashMap<>();
             for (Map.Entry<String, RawBindingValue> entry : rawBindingValues.entrySet()) {
                 bindingValues.put(entry.getKey(), entry.getValue().getBindingValue());
             }

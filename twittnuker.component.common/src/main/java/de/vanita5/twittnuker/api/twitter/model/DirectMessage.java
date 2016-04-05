@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,11 @@ package de.vanita5.twittnuker.api.twitter.model;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
 
 import de.vanita5.twittnuker.api.twitter.util.TwitterDateConverter;
 
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -51,9 +53,9 @@ public class DirectMessage extends TwitterResponseObject implements TwitterRespo
     String text;
 
     @JsonField(name = "id")
-    long id;
+    String id;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
@@ -93,7 +95,7 @@ public class DirectMessage extends TwitterResponseObject implements TwitterRespo
         return sender;
     }
 
-    public long getSenderId() {
+    public String getSenderId() {
         return sender.id;
     }
 
@@ -105,11 +107,16 @@ public class DirectMessage extends TwitterResponseObject implements TwitterRespo
         return recipient;
     }
 
-    public long getRecipientId() {
+    public String getRecipientId() {
         return recipient.id;
     }
 
     public String getRecipientScreenName() {
         return recipient.screenName;
+    }
+
+    @OnJsonParseComplete
+    void onJsonParseComplete() throws IOException {
+        if (id == null || recipient == null || sender == null) throw new IOException("Malformed DirectMessage object");
     }
 }

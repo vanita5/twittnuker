@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,33 +22,24 @@
 
 package de.vanita5.twittnuker.api.twitter;
 
+import de.vanita5.twittnuker.api.fanfou.Fanfou;
+import de.vanita5.twittnuker.api.statusnet.StatusNet;
 import de.vanita5.twittnuker.api.twitter.api.DirectMessagesResources;
 import de.vanita5.twittnuker.api.twitter.api.FavoritesResources;
 import de.vanita5.twittnuker.api.twitter.api.FriendsFollowersResources;
 import de.vanita5.twittnuker.api.twitter.api.HelpResources;
-import de.vanita5.twittnuker.api.twitter.api.ListsResources;
+import de.vanita5.twittnuker.api.twitter.api.ListResources;
 import de.vanita5.twittnuker.api.twitter.api.PlacesGeoResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateActivityResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateDirectMessagesResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateFriendsFollowersResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateScheduleResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateTimelinesResources;
-import de.vanita5.twittnuker.api.twitter.api.PrivateTweetResources;
 import de.vanita5.twittnuker.api.twitter.api.SavedSearchesResources;
 import de.vanita5.twittnuker.api.twitter.api.SearchResource;
 import de.vanita5.twittnuker.api.twitter.api.SpamReportingResources;
-import de.vanita5.twittnuker.api.twitter.api.TimelinesResources;
+import de.vanita5.twittnuker.api.twitter.api.TimelineResources;
 import de.vanita5.twittnuker.api.twitter.api.TrendsResources;
 import de.vanita5.twittnuker.api.twitter.api.TweetResources;
 import de.vanita5.twittnuker.api.twitter.api.UsersResources;
 
-/**
- * @author Yusuke Yamamoto - yusuke at mac.com
- * @since Twitter4J 2.2.0
- */
-public interface Twitter extends SearchResource, TimelinesResources,
-		TweetResources, UsersResources, ListsResources, DirectMessagesResources, FriendsFollowersResources,
-		FavoritesResources, SpamReportingResources, SavedSearchesResources, TrendsResources, PlacesGeoResources,
-        HelpResources, PrivateActivityResources, PrivateTweetResources, PrivateTimelinesResources,
-        PrivateFriendsFollowersResources, PrivateDirectMessagesResources, PrivateScheduleResources {
+public interface Twitter extends SearchResource, TimelineResources, TweetResources, UsersResources,
+        ListResources, DirectMessagesResources, FriendsFollowersResources, FavoritesResources,
+        SpamReportingResources, SavedSearchesResources, TrendsResources, PlacesGeoResources,
+        HelpResources, TwitterPrivate, StatusNet, Fanfou {
 }

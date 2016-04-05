@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,35 +30,31 @@ import de.vanita5.twittnuker.R;
 
 public class HomeRefreshContentPreference extends MultiSelectListPreference implements Constants {
 
-	public static final boolean DEFAULT_ENABLE_MENTIONS = true;
-	public static final boolean DEFAULT_ENABLE_DIRECT_MESSAGES = true;
-	public static final boolean DEFAULT_ENABLE_TRENDS = false;
+    public HomeRefreshContentPreference(final Context context) {
+        this(context, null);
+    }
 
-	public HomeRefreshContentPreference(final Context context) {
-		this(context, null);
-	}
+    public HomeRefreshContentPreference(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.preferenceStyle);
+    }
 
-	public HomeRefreshContentPreference(final Context context, final AttributeSet attrs) {
-		this(context, attrs, android.R.attr.preferenceStyle);
-	}
+    public HomeRefreshContentPreference(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-	public HomeRefreshContentPreference(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    @Override
+    protected boolean[] getDefaults() {
+        return new boolean[]{true, true, true};
+    }
 
-	@Override
-	protected boolean[] getDefaults() {
-		return new boolean[] { DEFAULT_ENABLE_MENTIONS, DEFAULT_ENABLE_DIRECT_MESSAGES, DEFAULT_ENABLE_TRENDS };
-	}
+    @Override
+    protected String[] getKeys() {
+        return new String[]{KEY_HOME_REFRESH_MENTIONS, KEY_HOME_REFRESH_DIRECT_MESSAGES, KEY_HOME_REFRESH_TRENDS};
+    }
 
-	@Override
-	protected String[] getKeys() {
-		return new String[] { KEY_HOME_REFRESH_MENTIONS, KEY_HOME_REFRESH_DIRECT_MESSAGES, KEY_HOME_REFRESH_TRENDS };
-	}
-
-	@Override
-	protected String[] getNames() {
-		return getContext().getResources().getStringArray(R.array.entries_home_refresh_content);
-	}
+    @Override
+    protected String[] getNames() {
+        return getContext().getResources().getStringArray(R.array.entries_home_refresh_content);
+    }
 
 }

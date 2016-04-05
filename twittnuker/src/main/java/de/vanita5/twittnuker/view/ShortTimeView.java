@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,28 +23,25 @@
 package de.vanita5.twittnuker.view;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.view.themed.ThemedTextView;
 
 import java.lang.ref.WeakReference;
 
 import static android.text.format.DateUtils.getRelativeTimeSpanString;
 import static de.vanita5.twittnuker.util.Utils.formatSameDayTime;
 
-public class ShortTimeView extends ThemedTextView implements Constants, OnSharedPreferenceChangeListener {
+public class ShortTimeView extends AppCompatTextView implements Constants {
 
     private static final long TICKER_DURATION = 5000L;
 
     private final Runnable mTicker;
-    private final SharedPreferences mPreferences;
     private boolean mShowAbsoluteTime;
     private long mTime;
 
@@ -59,23 +56,11 @@ public class ShortTimeView extends ThemedTextView implements Constants, OnShared
     public ShortTimeView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         mTicker = new TickerRunnable(this);
-        if (!isInEditMode()) {
-            mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        } else {
-            mPreferences = null;
-        }
-        if (mPreferences != null) {
-            mPreferences.registerOnSharedPreferenceChangeListener(this);
-        }
-        updateTimeDisplayOption();
     }
 
-    @Override
-    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
-        if (KEY_SHOW_ABSOLUTE_TIME.equals(key)) {
-            updateTimeDisplayOption();
-            invalidateTime();
-        }
+    public void setShowAbsoluteTime(boolean showAbsoluteTime) {
+        mShowAbsoluteTime = showAbsoluteTime;
+        invalidateTime();
     }
 
     public void setTime(final long time) {
@@ -107,11 +92,6 @@ public class ShortTimeView extends ThemedTextView implements Constants, OnShared
                 setText(R.string.just_now);
             }
         }
-    }
-
-    private void updateTimeDisplayOption() {
-        if (mPreferences == null) return;
-        mShowAbsoluteTime = mPreferences.getBoolean(KEY_SHOW_ABSOLUTE_TIME, false);
     }
 
     private static class TickerRunnable implements Runnable {

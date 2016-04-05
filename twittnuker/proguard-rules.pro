@@ -1,15 +1,6 @@
--dontobfuscate
+#-dontobfuscate
 
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
-
--keepclassmembers class android.support.v7.internal.app.WindowDecorActionBar {
-    private android.support.v7.internal.widget.ActionBarContextView mContextView;
-    private android.support.v7.internal.widget.DecorToolbar mDecorToolbar;
-}
-
--keepclassmembers class android.support.v7.internal.widget.ActionBarOverlayLayout {
-    private android.graphics.drawable.Drawable mWindowContentOverlay;
-}
 
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
@@ -69,6 +60,11 @@
     @com.squareup.otto.Produce public *;
 }
 
+-keep class * extends android.support.v4.view.ActionProvider
+-keepclassmembers class * extends android.support.v4.view.ActionProvider {
+    <init>(android.content.Context);
+}
+
 # Retrofit
 -keep class com.squareup.okhttp.** { *; }
 -keep interface com.squareup.okhttp.** { *; }
@@ -81,11 +77,32 @@
 -keepclasseswithmembers class * {
     @retrofit.http.* <methods>;
 }
--dontwarn java.nio.file.**
+-dontwarn com.squareup.haha.**
+-dontwarn com.google.android.gms.**
+-dontwarn com.makeramen.roundedimageview.**
+-dontwarn jnamed**
+-dontwarn org.xbill.DNS.**
+-dontwarn com.bluelinelabs.logansquare.**
+-dontwarn okio.**
+-dontwarn android.support.**
+-dontwarn com.afollestad.**
+-dontwarn com.facebook.stetho.**
+-dontwarn com.google.android.**
+-dontwarn okhttp3.**
 -dontwarn sun.net.spi.**
--dontwarn org.codehaus.mojo.**
+-dontwarn sun.misc.**
+-dontwarn sun.nio.**
+-dontwarn java.nio.file.**
+
 -dontwarn com.twitter.Autolink
 -dontwarn com.google.appengine.api.urlfetch.*
+
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
+-keepattributes SourceFile
+-keepattributes LineNumberTable
+-keepattributes Signature
+-keepattributes InnetClasses
 
 
 # dnsjava
@@ -109,9 +126,16 @@
 -keep class pl.droidsonroids.gif.GifInfoHandle{<init>(long,int,int,int);}
 
 # https://github.com/bluelinelabs/LoganSquare
--keep class com.bluelinelabs.logansquare.** { *; }
+-keep class com.bluelinelabs.logansquare.annotation.JsonObject
+-keep class * extends com.bluelinelabs.logansquare.JsonMapper
 -keep @com.bluelinelabs.logansquare.annotation.JsonObject class *
--keep class **$$JsonObjectMapper { *; }
+
+-keep class de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate
+-keep @de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate class *
+
+# https://github.com/mariotaku/RestFu
+-keep class org.mariotaku.restfu.annotation.** { *; }
+
 
 #jackson fasterxml
 -keepnames class org.codehaus.jackson.** { *; }
@@ -139,7 +163,6 @@
 -dontwarn java.beans.**
 
 -keep public class com.google.android.gms.* { public *; }
--dontwarn com.google.android.gms.**
 -dontwarn com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 
 # retrofit
@@ -157,4 +180,21 @@
 # leakcanary
 -keep class org.eclipse.mat.** { *; }
 -keep class com.squareup.leakcanary.** { *; }
--dontwarn com.squareup.leakcanary.DisplayLeakService
+-keep class com.squareup.haha.** { *; }
+-dontwarn com.squareup.leakcanary.**
+
+# Marshmallow removed Notification.setLatestEventInfo()
+-dontwarn android.app.Notification
+
+-dontwarn de.vanita5.twittnuker.api.twitter.model.TwitterResponse$AccessLevel
+
+# app-theme-engine
+-dontwarn com.afollestad.appthemeengine.**
+
+-keepclassmembers class * {
+    private <fields>;
+}
+
+-keepclassmembers class de.vanita5.twittnuker.activity.BrowserSignInActivity$InjectorJavaScriptInterface {
+    public *;
+}

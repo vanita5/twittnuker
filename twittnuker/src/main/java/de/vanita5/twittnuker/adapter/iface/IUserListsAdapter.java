@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,27 +23,38 @@
 package de.vanita5.twittnuker.adapter.iface;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.view.holder.UserListViewHolder.UserListClickListener;
+import de.vanita5.twittnuker.view.holder.UserListViewHolder;
 
-public interface IUserListsAdapter<Data> extends IContentCardAdapter, UserListClickListener {
+public interface IUserListsAdapter<Data> extends IContentCardAdapter {
 
-	ParcelableUserList getUserList(int position);
+    ParcelableUserList getUserList(int position);
 
-	long getUserListId(int position);
+    String getUserListId(int position);
 
-	int getUserListsCount();
+    int getUserListsCount();
 
-	void setData(Data data);
+    boolean setData(Data data);
 
-	boolean shouldShowAccountsColor();
+    boolean shouldShowAccountsColor();
 
-	boolean isNameFirst();
+    boolean isNameFirst();
 
     @NonNull
-	@Override
-	MediaLoaderWrapper getMediaLoader();
+    @Override
+    MediaLoaderWrapper getMediaLoader();
 
+    @Nullable
+    UserListClickListener getUserListClickListener();
+
+    interface UserListClickListener {
+
+        void onUserListClick(UserListViewHolder holder, int position);
+
+        boolean onUserListLongClick(UserListViewHolder holder, int position);
+
+    }
 }

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Twittnuker - Twitter client for Android
+  ~
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~
+  ~ This program incorporates a modified version of Twidere.
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<!--suppress AndroidElementNotAllowed -->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                  android:key="settings_content"
+                  android:title="@string/content_and_storage">
+
+    <PreferenceCategory
+        android:key="category_multimedia_contents"
+        android:title="@string/media">
+        <de.vanita5.twittnuker.preference.MediaUploaderPreference
+            android:defaultValue=""
+            android:key="media_uploader"
+            android:summary="%s"
+            android:title="@string/media_uploader"/>
+
+        <!--<de.vanita5.twittnuker.preference.TimelineSyncPreference-->
+        <!--android:defaultValue=""-->
+        <!--android:enabled="false"-->
+        <!--android:key="timeline_sync_service"-->
+        <!--android:summary="%s"-->
+        <!--android:title="@string/timeline_sync_service"/>-->
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:enabled="@bool/support_new_document_intent"
+            android:key="new_document_api"
+            android:summary="@string/new_document_api_summary"
+            android:title="@string/new_document_api"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="category_content"
+        android:title="@string/content">
+
+        <de.vanita5.twittnuker.preference.SeekBarDialogPreference
+            android:defaultValue="100"
+            android:key="load_item_limit"
+            android:summary="@string/load_item_limit_summary"
+            android:title="@string/load_item_limit"
+            app:max="200"
+            app:min="10"
+            app:step="5"/>
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="remember_position"
+            android:summary="@string/remember_position_summary"
+            android:title="@string/remember_position"/>
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="read_from_bottom"
+            android:summary="@string/load_more_from_top_summary"
+            android:title="@string/read_from_bottom"/>
+
+        <de.vanita5.twittnuker.preference.TrendsLocationPreference
+            android:key="local_trends_woeid"
+            android:summary="@string/trends_location_summary"
+            android:title="@string/trends_location"/>
+
+        <de.vanita5.twittnuker.preference.TranslationDestinationPreference
+            android:key="translation_destination"
+            android:title="@string/translation_destination"/>
+
+
+        <de.vanita5.twittnuker.preference.ComponentStatePreference
+            android:name="de.vanita5.twittnuker.activity.WebLinkHandlerActivity"
+            android:key="twitter_link_handler"
+            android:title="@string/open_twitter_links"/>
+
+        <Preference
+            android:fragment="de.vanita5.twittnuker.fragment.KeyboardShortcutsFragment"
+            android:title="@string/keyboard_shortcuts"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="category_safety"
+        android:title="@string/safety">
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="phishing_link_warning"
+            android:summary="@string/phishing_link_warning_summary"
+            android:title="@string/phishing_link_warning"/>
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="display_sensitive_contents"
+            android:summary="@string/display_sensitive_contents_summary"
+            android:title="@string/display_sensitive_contents"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

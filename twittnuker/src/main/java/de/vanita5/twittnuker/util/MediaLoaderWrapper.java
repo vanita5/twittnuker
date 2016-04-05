@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,21 +24,28 @@ package de.vanita5.twittnuker.util;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.DisplayImageOptions.Builder;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.util.imageloader.AccountExtra;
+import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.util.imageloader.OvalBitmapDisplayer;
+import de.vanita5.twittnuker.util.media.MediaExtra;
 
 import javax.inject.Singleton;
 
-import static de.vanita5.twittnuker.util.Utils.getBestBannerUrl;
+import static de.vanita5.twittnuker.util.InternalTwitterContentUtils.getBestBannerUrl;
 
 @Singleton
 public class MediaLoaderWrapper implements Constants {
@@ -73,7 +80,6 @@ public class MediaLoaderWrapper implements Constants {
         bannerOptsBuilder.cacheInMemory(true);
         bannerOptsBuilder.cacheOnDisk(true);
         bannerOptsBuilder.bitmapConfig(Bitmap.Config.RGB_565);
-        bannerOptsBuilder.displayer(new FadeInBitmapDisplayer(200, true, true, true));
         final DisplayImageOptions.Builder dashboardProfileOptsBuilder = new DisplayImageOptions.Builder();
         dashboardProfileOptsBuilder.cacheInMemory(true);
         dashboardProfileOptsBuilder.cacheOnDisk(true);
@@ -106,21 +112,30 @@ public class MediaLoaderWrapper implements Constants {
         mImageLoader.displayImage(url, view, mImageDisplayOptions, loadingHandler, loadingHandler);
     }
 
-    public void displayPreviewImageWithCredentials(final ImageView view, final String url, final long accountId,
+    public void displayPreviewImageWithCredentials(final ImageView view, final String url,
+                                                   final UserKey accountKey,
                                                    final MediaLoadingHandler loadingHandler) {
-        if (accountId <= 0) {
+        if (accountKey == null) {
             displayPreviewImage(view, url, loadingHandler);
             return;
         }
         final DisplayImageOptions.Builder b = new DisplayImageOptions.Builder();
         b.cloneFrom(mImageDisplayOptions);
-        b.extraForDownloader(new AccountExtra(accountId));
+        MediaExtra extra = new MediaExtra();
+        extra.setAccountKey(accountKey);
+        b.extraForDownloader(extra);
         mImageLoader.displayImage(url, view, b.build(), loadingHandler, loadingHandler);
     }
 
     public void displayProfileBanner(final ImageView view, final String url,
                                      final ImageLoadingListener listener) {
         mImageLoader.displayImage(url, view, mBannerDisplayOptions, listener);
+    }
+
+    public void displayProfileBanner(final ImageView view, final String url, final int width,
+                                     final ImageLoadingListener listener) {
+        mImageLoader.displayImage(getBestBannerUrl(url, width), view, mBannerDisplayOptions,
+                listener);
     }
 
     public void displayProfileBanner(final ImageView view, final String url) {
@@ -131,11 +146,73 @@ public class MediaLoaderWrapper implements Constants {
         displayProfileBanner(view, getBestBannerUrl(baseUrl, width));
     }
 
+
+    public void displayProfileBanner(final ImageView view, final ParcelableAccount account, final int width) {
+        displayProfileBanner(view, getBestBannerUrl(getBannerUrl(account), width));
+    }
+
+    private String getBannerUrl(ParcelableAccount account) {
+        String bannerUrl = account.profile_banner_url;
+        if (bannerUrl == null && ParcelableAccount.Type.FANFOU.equals(account.account_type)) {
+            if (account.account_user != null) {
+                bannerUrl = ParcelableUserUtils.getProfileBannerUrl(account.account_user);
+            }
+        }
+        return bannerUrl;
+    }
+
+    public void displayOriginalProfileImage(final ImageView view, final ParcelableUser user) {
+        if (user.extras != null && !TextUtils.isEmpty(user.extras.profile_image_url_original)) {
+            displayProfileImage(view, user.extras.profile_image_url_original);
+        } else if (user.extras != null && !TextUtils.isEmpty(user.extras.profile_image_url_profile_size)) {
+            displayProfileImage(view, user.extras.profile_image_url_profile_size);
+        } else {
+            displayProfileImage(view, Utils.getOriginalTwitterProfileImage(user.profile_image_url));
+        }
+    }
+
+    public void displayProfileImage(final ImageView view, final ParcelableUser user) {
+        if (user.extras != null && !TextUtils.isEmpty(user.extras.profile_image_url_profile_size)) {
+            displayProfileImage(view, user.extras.profile_image_url_profile_size);
+        } else {
+            displayProfileImage(view, user.profile_image_url);
+        }
+    }
+
+    public void displayProfileImage(final ImageView view, final ParcelableAccount account) {
+        if (account.account_user != null && account.account_user.extras != null
+                && !TextUtils.isEmpty(account.account_user.extras.profile_image_url_profile_size)) {
+            displayProfileImage(view, account.account_user.extras.profile_image_url_profile_size);
+        } else {
+            displayProfileImage(view, account.profile_image_url);
+        }
+    }
+
+    public void displayProfileImage(final ImageView view, final ParcelableStatus status) {
+        if (status.extras != null && !TextUtils.isEmpty(status.extras.user_profile_image_url_profile_size)) {
+            displayProfileImage(view, status.extras.user_profile_image_url_profile_size);
+        } else {
+            displayProfileImage(view, status.user_profile_image_url);
+        }
+    }
+
     public void displayProfileImage(final ImageView view, final String url) {
         mImageLoader.displayImage(url, view, mProfileImageDisplayOptions);
     }
 
-    public void displayDashboardProfileImage(final ImageView view, final String url, Drawable drawableOnLoading) {
+    public void displayDashboardProfileImage(@NonNull final ImageView view,
+                                             @NonNull final ParcelableAccount account,
+                                             @Nullable final Drawable drawableOnLoading) {
+        if (account.account_user != null && account.account_user.extras != null
+                && !TextUtils.isEmpty(account.account_user.extras.profile_image_url_profile_size)) {
+            displayDashboardProfileImage(view, account.account_user.extras.profile_image_url_profile_size,
+                    drawableOnLoading);
+        } else {
+            displayDashboardProfileImage(view, account.profile_image_url, drawableOnLoading);
+        }
+    }
+
+    void displayDashboardProfileImage(final ImageView view, final String url, Drawable drawableOnLoading) {
         if (drawableOnLoading != null) {
             final Builder builder = new Builder();
             builder.cloneFrom(mDashboardProfileImageDisplayOptions);
@@ -148,16 +225,21 @@ public class MediaLoaderWrapper implements Constants {
     }
 
 
-    public void displayImage(final ImageView view, final String url, DisplayImageOptions options) {
-        mImageLoader.displayImage(url, view, options);
-    }
-
-    public DisplayImageOptions getProfileImageDisplayOptions() {
-        return mProfileImageDisplayOptions;
+    public void displayImage(final ImageView view, final String url) {
+        mImageLoader.displayImage(url, view);
     }
 
     public void displayProfileImage(final ImageView view, final String url, final ImageLoadingListener listener) {
         mImageLoader.displayImage(url, view, mProfileImageDisplayOptions, listener);
+    }
+
+    public void loadProfileImage(final ParcelableAccount account, final ImageLoadingListener listener) {
+        if (account.account_user != null && account.account_user.extras != null
+                && !TextUtils.isEmpty(account.account_user.extras.profile_image_url_profile_size)) {
+            loadProfileImage(account.account_user.extras.profile_image_url_profile_size, listener);
+        } else {
+            loadProfileImage(account.profile_image_url, listener);
+        }
     }
 
     public void loadProfileImage(final String url, final ImageLoadingListener listener) {

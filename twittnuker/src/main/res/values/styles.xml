@@ -16,34 +16,32 @@
     </style>
 
     <style name="Widget.CardActionButton" parent="Widget.Base.ImageButton">
-        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
         <item name="android:color">?android:textColorSecondary</item>
+        <item name="iabColor">?android:textColorTertiary</item>
     </style>
 
     <style name="Widget.Light.CardActionButton" parent="Widget.Base.Light.ImageButton">
-        <item name="android:background">?selectableItemBackground</item>
-        <item name="android:color">?android:textColorSecondary</item>
+        <item name="android:background">?selectableItemBackgroundBorderless</item>
+        <item name="iabColor">?android:textColorTertiary</item>
     </style>
-
 
     <style name="Widget.ProfileImage" parent="Widget.Base">
         <item name="android:scaleType">centerCrop</item>
+        <item name="android:adjustViewBounds">false</item>
         <item name="sivBorderWidth">1dp</item>
         <item name="sivCornerRadiusRatio">10%p</item>
         <item name="sivBackgroundColor">?android:colorBackground</item>
         <item name="sivShape">circle</item>
-        <item name="riv_oval">true</item>
-        <item name="riv_corner_radius">2dp</item>
     </style>
 
     <style name="Widget.Light.ProfileImage" parent="Widget.Base">
         <item name="android:scaleType">centerCrop</item>
+        <item name="android:adjustViewBounds">false</item>
         <item name="sivBorderWidth">1dp</item>
         <item name="sivCornerRadiusRatio">10%p</item>
         <item name="sivBackgroundColor">?android:colorBackground</item>
         <item name="sivShape">circle</item>
-        <item name="riv_oval">true</item>
-        <item name="riv_corner_radius">2dp</item>
     </style>
 
     <style name="Widget.ProfileImage.Large">
@@ -55,7 +53,6 @@
         <item name="sivBorderWidth">2dp</item>
         <item name="sivBackgroundColor">?android:colorBackground</item>
         <item name="sivShape">circle</item>
-        <item name="riv_corner_radius">4dp</item>
     </style>
 
     <style name="Widget.Light.ProfileImage.Large">
@@ -67,7 +64,6 @@
         <item name="sivBorderWidth">2dp</item>
         <item name="sivBackgroundColor">?android:colorBackground</item>
         <item name="sivShape">circle</item>
-        <item name="riv_corner_radius">4dp</item>
     </style>
 
     <style name="Widget.ProfileType" parent="Widget.Base">
@@ -103,4 +99,8 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="Widget.TextView.WindowTitle.NoDisplay" parent="android:Widget.TextView">
+        <item name="android:textColor">#00000000</item>
+        <item name="android:visibility">gone</item>
+    </style>
 </resources>

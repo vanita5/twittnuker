@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ package de.vanita5.twittnuker;
 public interface Constants extends TwittnukerConstants {
 
     String DATABASES_NAME = "twittnuker.sqlite";
-    int DATABASES_VERSION = 117;
+    int DATABASES_VERSION = 141;
 
     int MENU_GROUP_STATUS_SHARE = 20;
 
@@ -50,15 +50,18 @@ public interface Constants extends TwittnukerConstants {
     int LINK_ID_USER_LIST_MEMBERS = 13;
     int LINK_ID_USER_LIST_SUBSCRIBERS = 14;
     int LINK_ID_USER_LIST_MEMBERSHIPS = 15;
+    int LINK_ID_GROUP = 16;
+    int LINK_ID_USER_GROUPS = 17;
     int LINK_ID_SAVED_SEARCHES = 19;
+    int LINK_ID_ITEMS = 20;
     int LINK_ID_USER_MENTIONS = 21;
     int LINK_ID_INCOMING_FRIENDSHIPS = 22;
-    int LINK_ID_USERS = 23;
-    int LINK_ID_STATUSES = 24;
     int LINK_ID_STATUS_RETWEETERS = 25;
-    int LINK_ID_STATUS_REPLIES = 26;
     int LINK_ID_STATUS_FAVORITERS = 27;
     int LINK_ID_SEARCH = 28;
+    int LINK_ID_DIRECT_MESSAGES = 29;
+    int LINK_ID_INTERACTIONS = 30;
+    int LINK_ID_PUBLIC_TIMELINE = 31;
     int LINK_ID_MUTES_USERS = 41;
     int LINK_ID_MAP = 51;
     int LINK_ID_SCHEDULED_STATUSES = 61;
@@ -67,15 +70,12 @@ public interface Constants extends TwittnukerConstants {
     int LINK_ID_FILTERS = 103;
     int LINK_ID_PROFILE_EDITOR = 104;
 
-    String DIR_NAME_IMAGE_CACHE = "image_cache";
-    String DIR_NAME_FULL_IMAGE_CACHE = "full_image_cache";
-
-    String FRAGMENT_TAG_API_UPGRADE_NOTICE = "api_upgrade_notice";
-
-    String TWIDERE_PREVIEW_NAME = "Twittnuker Project";
-    String TWIDERE_PREVIEW_SCREEN_NAME = "twittnuker";
-    String TWIDERE_PREVIEW_TEXT_HTML = "Twittnuker is an open source twitter client for Android, see <a href='https://github.com/vanita5/twittnuker'>https://github.com/vanita5/twittnuker<a/>";
-    String TWIDERE_PREVIEW_SOURCE = "Twittnuker";
+    String TWITTNUKER_PREVIEW_NAME = "Twittnuker Project";
+    String TWITTNUKER_PREVIEW_SCREEN_NAME = "twittnuker";
+    String TWITTNUKER_PREVIEW_TEXT_HTML = "Twittnuker is an open source twitter client for Android, see <a href='https://github.com/vanita5/twittnuker'>https://github.com/vanita5/twittnuker<a/>";
+    String TWITTNUKER_PREVIEW_TEXT_UNESCAPED = "Twittnuker is an open source twitter client for Android, see github.com/vanita5/&#8230;";
+    String TWITTNUKER_PREVIEW_SOURCE = "Twittnuker";
+    String TWITTNUKER_PREVIEW_LOCATION = "Freiburg, Germany";
 
     int MATERIAL_DARK = 0xff212121;
     int MATERIAL_LIGHT = 0xffbdbdbd;
@@ -86,7 +86,5 @@ public interface Constants extends TwittnukerConstants {
             R.color.material_teal, R.color.material_green, R.color.material_light_green,
             R.color.material_lime, R.color.material_yellow, R.color.material_amber,
             R.color.material_orange, R.color.material_deep_orange};
-
-    String READ_POSITION_TAG_ACTIVITIES_ABOUT_ME = "activities_about_me";
 
 }

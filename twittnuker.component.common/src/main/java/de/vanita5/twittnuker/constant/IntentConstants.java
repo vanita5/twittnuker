@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,23 +74,12 @@ public interface IntentConstants {
     String INTENT_ACTION_SEND_DIRECT_MESSAGE = INTENT_PACKAGE_PREFIX + "SEND_DIRECT_MESSAGE";
     String INTENT_ACTION_DISCARD_DRAFT = INTENT_PACKAGE_PREFIX + "DISCARD_DRAFT";
     String INTENT_ACTION_SEND_DRAFT = INTENT_PACKAGE_PREFIX + "SEND_DRAFT";
-    String INTENT_ACTION_PICK_ACTIVITY = INTENT_PACKAGE_PREFIX + "PICK_ACTIVITY";
 
     String INTENT_ACTION_PEBBLE_NOTIFICATION = "com.getpebble.action.SEND_NOTIFICATION";
 
     String BROADCAST_NOTIFICATION_DELETED = INTENT_PACKAGE_PREFIX + "NOTIFICATION_DELETED";
-    String BROADCAST_USER_LIST_DETAILS_UPDATED = INTENT_PACKAGE_PREFIX
-            + "USER_LIST_DETAILS_UPDATED";
-    String BROADCAST_FRIENDSHIP_ACCEPTED = INTENT_PACKAGE_PREFIX + "FRIENDSHIP_ACCEPTED";
-    String BROADCAST_FRIENDSHIP_DENIED = INTENT_PACKAGE_PREFIX + "FRIENDSHIP_DENIED";
 
     String BROADCAST_USER_LIST_MEMBERS_DELETED = INTENT_PACKAGE_PREFIX + "USER_LIST_MEMBER_DELETED";
-    String BROADCAST_USER_LIST_MEMBERS_ADDED = INTENT_PACKAGE_PREFIX + "USER_LIST_MEMBER_ADDED";
-    String BROADCAST_USER_LIST_SUBSCRIBED = INTENT_PACKAGE_PREFIX + "USER_LIST_SUBSRCIBED";
-    String BROADCAST_USER_LIST_UNSUBSCRIBED = INTENT_PACKAGE_PREFIX + "USER_LIST_UNSUBSCRIBED";
-    String BROADCAST_USER_LIST_CREATED = INTENT_PACKAGE_PREFIX + "USER_LIST_CREATED";
-    String BROADCAST_USER_LIST_DELETED = INTENT_PACKAGE_PREFIX + "USER_LIST_DELETED";
-    String BROADCAST_FILTERS_UPDATED = INTENT_PACKAGE_PREFIX + "FILTERS_UPDATED";
     String BROADCAST_REFRESH_HOME_TIMELINE = INTENT_PACKAGE_PREFIX + "REFRESH_HOME_TIMELINE";
     String BROADCAST_REFRESH_NOTIFICATIONS = INTENT_PACKAGE_PREFIX + "REFRESH_NOTIFICATIONS";
     String BROADCAST_REFRESH_DIRECT_MESSAGES = INTENT_PACKAGE_PREFIX + "REFRESH_DIRECT_MESSAGES";
@@ -103,17 +92,6 @@ public interface IntentConstants {
             + "RESCHEDULE_DIRECT_MESSAGES_REFRESHING";
     String BROADCAST_RESCHEDULE_TRENDS_REFRESHING = INTENT_PACKAGE_PREFIX
             + "RESCHEDULE_TRENDS_REFRESHING";
-    String BROADCAST_MULTI_BLOCKSTATE_CHANGED = INTENT_PACKAGE_PREFIX + "MULTI_BLOCKSTATE_CHANGED";
-    String BROADCAST_MULTI_MUTESTATE_CHANGED = INTENT_PACKAGE_PREFIX + "MULTI_MUTESTATE_CHANGED";
-    String BROADCAST_HOME_ACTIVITY_ONCREATE = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONCREATE";
-    String BROADCAST_HOME_ACTIVITY_ONSTART = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONSTART";
-    String BROADCAST_HOME_ACTIVITY_ONRESUME = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONRESUME";
-    String BROADCAST_HOME_ACTIVITY_ONPAUSE = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONPAUSE";
-    String BROADCAST_HOME_ACTIVITY_ONSTOP = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONSTOP";
-    String BROADCAST_HOME_ACTIVITY_ONDESTROY = INTENT_PACKAGE_PREFIX + "HOME_ACTIVITY_ONDESTROY";
-    String BROADCAST_DATABASE_READY = INTENT_PACKAGE_PREFIX + "DATABASE_READY";
-    String BROADCAST_HOTOTIN_EXPANDED = INTENT_PACKAGE_PREFIX + "HOTOTIN_EXPANDED";
-    String BROADCAST_TWITLONGER_EXPANDED = INTENT_PACKAGE_PREFIX + "TWITLONGER_EXPANDED";
     String BROADCAST_REFRESH_STREAMING_SERVICE = INTENT_PACKAGE_PREFIX + "REFRESH_STREAMING_SERVICE";
 
     String EXTRA_LATITUDE = "latitude";
@@ -121,27 +99,31 @@ public interface IntentConstants {
     String EXTRA_URI = "uri";
     String EXTRA_URI_ORIG = "uri_orig";
     String EXTRA_MENTIONS = "mentions";
-    String EXTRA_ACCOUNT_ID = "account_id";
-    String EXTRA_ACCOUNT_IDS = "account_ids";
+    String EXTRA_ACCOUNT_KEY = "account_key";
+    String EXTRA_ACCOUNT_HOST = "account_host";
+    String EXTRA_ACCOUNT_KEYS = "account_keys";
     String EXTRA_PAGE = "page";
     String EXTRA_DATA = "data";
     String EXTRA_QUERY = "query";
-    String EXTRA_QUERY_TYPE = "query_type";
-    String EXTRA_USER_ID = "user_id";
+    String EXTRA_USER_KEY = "user_key";
     String EXTRA_USER_IDS = "user_ids";
     String EXTRA_LIST_ID = "list_id";
+    String EXTRA_GROUP_ID = "group_id";
     String EXTRA_MAX_ID = "max_id";
-    String EXTRA_MAX_IDS = "max_ids";
     String EXTRA_SINCE_ID = "since_id";
-    String EXTRA_SINCE_IDS = "since_ids";
+    String EXTRA_MAX_SORT_ID = "max_sort_id";
+    String EXTRA_SINCE_SORT_ID = "since_sort_id";
     String EXTRA_STATUS_ID = "status_id";
     String EXTRA_SCREEN_NAME = "screen_name";
     String EXTRA_SCREEN_NAMES = "screen_names";
     String EXTRA_LIST_NAME = "list_name";
+    String EXTRA_GROUP_NAME = "group_name";
+    String EXTRA_GROUP = "group";
     String EXTRA_DESCRIPTION = "description";
     String EXTRA_IN_REPLY_TO_ID = "in_reply_to_id";
     String EXTRA_IN_REPLY_TO_NAME = "in_reply_to_name";
     String EXTRA_IN_REPLY_TO_SCREEN_NAME = "in_reply_to_screen_name";
+    String EXTRA_IN_REPLY_TO_STATUS = "in_reply_to_status";
     String EXTRA_TEXT = "text";
     String EXTRA_TITLE = "title";
     String EXTRA_TYPE = "type";
@@ -167,11 +149,10 @@ public interface IntentConstants {
     String EXTRA_IS_PUBLIC = "is_public";
     String EXTRA_USER = "user";
     String EXTRA_USERS = "users";
+    String EXTRA_ITEMS = "items";
     String EXTRA_USER_LIST = "user_list";
     String EXTRA_APPEND_TEXT = "append_text";
     String EXTRA_NAME = "name";
-    String EXTRA_TEXT1 = "text1";
-    String EXTRA_TEXT2 = "text2";
     String EXTRA_POSITION = "position";
     String EXTRA_ARGUMENTS = "arguments";
     String EXTRA_ICON = "icon";
@@ -179,10 +160,8 @@ public interface IntentConstants {
     String EXTRA_RESID = "resid";
     String EXTRA_SETTINGS_INTENT_ACTION = "settings_intent_action";
     String EXTRA_IMAGE_URI = "image_uri";
-    String EXTRA_ATTACHED_IMAGE_TYPE = "attached_image_type";
     String EXTRA_ACTIVATED_ONLY = "activated_only";
     String EXTRA_TAB_POSITION = "tab_position";
-    String EXTRA_HAS_RUNNING_TASK = "has_running_task";
     String EXTRA_OAUTH_VERIFIER = "oauth_verifier";
     String EXTRA_REQUEST_TOKEN = "request_token";
     String EXTRA_REQUEST_TOKEN_SECRET = "request_token_secret";
@@ -194,6 +173,8 @@ public interface IntentConstants {
     String EXTRA_OAUTH_ONLY = "oauth_only";
     String EXTRA_LOCATION = "location";
     String EXTRA_URL = "url";
+    String EXTRA_PROFILE_URL = "profile_url";
+    String EXTRA_NEXT_PAGE = "next_page";
     String EXTRA_NEXT_CURSOR = "next_cursor";
     String EXTRA_PREV_CURSOR = "prev_cursor";
     String EXTRA_EXTRA_INTENT = "extra_intent";
@@ -217,20 +198,25 @@ public interface IntentConstants {
     String EXTRA_CURRENT_MEDIA = "current_media";
     String EXTRA_EXTRAS = "extras";
     String EXTRA_MY_FOLLOWING_ONLY = "my_following_only";
+    String EXTRA_MENTIONS_ONLY = "mentions_only";
     String EXTRA_CHANGED = "changed";
     String EXTRA_NOTIFY_CHANGE = "notify_change";
     String EXTRA_RESTART_ACTIVITY = "restart_activity";
     String EXTRA_FROM_USER = "from_user";
     String EXTRA_SHOW_MEDIA_PREVIEW = "show_media_preview";
     String EXTRA_SHOW_EXTRA_TYPE = "show_extra_type";
-    String EXTRA_BITMAP = "bitmap";
     String EXTRA_SOURCE = "source";
     String EXTRA_DESTINATION = "destination";
     String EXTRA_ACTIVITY_OPTIONS = "activity_options";
+    String EXTRA_NEW_DOCUMENT = "new_document";
     String EXTRA_MAKE_GAP = "make_gap";
     String EXTRA_QUOTE_ORIGINAL_STATUS = "quote_original_status";
-    String EXTRA_KEY = "key";
     String EXTRA_CARD = "card";
+    String EXTRA_IS_POSSIBLY_SENSITIVE = "is_possibly_sensitive";
+    String EXTRA_REFERRAL = "referral";
+    String EXTRA_LOADING_MORE = "loading_more";
+    String EXTRA_START_INTENT = "start_intent";
+    String EXTRA_SELECT_ONLY_ITEM = "select_only_item";
 
     /* Twittnuker */
     String EXTRA_HOTOTIN_EXPANDED_TEXT = "hototin_expanded_text";

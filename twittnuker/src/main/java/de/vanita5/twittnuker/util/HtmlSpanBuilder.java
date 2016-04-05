@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util;
 
 import android.graphics.Typeface;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
@@ -45,15 +46,23 @@ public class HtmlSpanBuilder {
 
     private static final IAttoParser PARSER = new MarkupAttoParser();
 
-    public static Spanned fromHtml(String html) {
+    public static Spannable fromHtml(String html) throws ParseException {
         final HtmlParsingConfiguration conf = new HtmlParsingConfiguration();
         final HtmlSpanHandler handler = new HtmlSpanHandler(conf);
         try {
             PARSER.parse(html, handler);
         } catch (AttoParseException e) {
-            throw new RuntimeException(e);
+            throw new ParseException(e);
         }
         return handler.getText();
+    }
+
+    public static CharSequence fromHtml(String html, CharSequence fallback) {
+        try {
+            return fromHtml(html);
+        } catch (ParseException e) {
+            return fallback;
+        }
     }
 
     private static void applyTag(SpannableStringBuilder sb, int start, int end, TagInfo info) {
@@ -90,7 +99,25 @@ public class HtmlSpanBuilder {
         return -1;
     }
 
-    private static class TagInfo {
+    public static class ParseException extends RuntimeException {
+        public ParseException() {
+            super();
+        }
+
+        public ParseException(String detailMessage) {
+            super(detailMessage);
+        }
+
+        public ParseException(String detailMessage, Throwable throwable) {
+            super(detailMessage, throwable);
+        }
+
+        public ParseException(Throwable throwable) {
+            super(throwable);
+        }
+    }
+
+    static class TagInfo {
         final int start;
         final String name;
         final Map<String, String> attributes;
@@ -106,7 +133,7 @@ public class HtmlSpanBuilder {
         }
     }
 
-    private static class HtmlSpanHandler extends AbstractStandardNonValidatingHtmlAttoHandler {
+    static class HtmlSpanHandler extends AbstractStandardNonValidatingHtmlAttoHandler {
         private final SpannableStringBuilder sb;
         List<TagInfo> tagInfo;
 
@@ -136,7 +163,7 @@ public class HtmlSpanBuilder {
             tagInfo.add(new TagInfo(sb.length(), elementName, attributes));
         }
 
-        public Spanned getText() {
+        public Spannable getText() {
             return sb;
         }
     }

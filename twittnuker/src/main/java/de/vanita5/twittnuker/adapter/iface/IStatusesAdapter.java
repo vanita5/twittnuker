@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,13 +24,13 @@ package de.vanita5.twittnuker.adapter.iface;
 import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.model.ParcelableStatus;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
-public interface IStatusesAdapter<Data> extends IContentCardAdapter, IStatusViewHolder.StatusClickListener,
-        IGapSupportedAdapter, ContentCardClickListener {
+public interface IStatusesAdapter<Data> extends IContentCardAdapter, IGapSupportedAdapter {
 
     int getLinkHighlightingStyle();
 
@@ -39,18 +39,28 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter, IStatusView
 
     ParcelableStatus getStatus(int position);
 
-    long getStatusId(int position);
+    @Nullable
+    String getStatusId(int position);
 
-    long getAccountId(int position);
+    long getStatusTimestamp(int adapterPosition);
+
+    long getStatusPositionKey(int adapterPosition);
 
     @Nullable
-    ParcelableStatus findStatusById(long accountId, long statusId);
+    UserKey getAccountKey(int position);
 
-    int getStatusesCount();
+    @Nullable
+    ParcelableStatus findStatusById(UserKey accountKey, String statusId);
+
+    int getStatusCount();
+
+    int getRawStatusCount();
 
     TwidereLinkify getTwidereLinkify();
 
-    boolean isCardActionsHidden();
+    boolean isCardActionsShown(int position);
+
+    void showCardActions(int position);
 
     boolean isMediaPreviewEnabled();
 
@@ -58,12 +68,15 @@ public interface IStatusesAdapter<Data> extends IContentCardAdapter, IStatusView
 
     boolean isSensitiveContentEnabled();
 
-    void setData(Data data);
+    boolean setData(Data data);
 
     boolean shouldShowAccountsColor();
 
     boolean shouldUseStarsForLikes();
 
     MediaLoadingHandler getMediaLoadingHandler();
+
+    @Nullable
+    IStatusViewHolder.StatusClickListener getStatusClickListener();
 
 }

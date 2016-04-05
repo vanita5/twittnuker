@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,11 @@ import android.util.AttributeSet;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.support.TextViewSupport;
+import de.vanita5.twittnuker.view.iface.IIconActionButton;
 
-public class ActionIconThemedTextView extends AppCompatTextView {
+public class ActionIconThemedTextView extends AppCompatTextView implements IIconActionButton {
 
-    private final int mIconWidth, mIconHeight;
+    private int mIconWidth, mIconHeight;
     @ColorInt
     private int mColor;
     @ColorInt
@@ -45,26 +46,46 @@ public class ActionIconThemedTextView extends AppCompatTextView {
     private int mActivatedColor;
 
     public ActionIconThemedTextView(Context context) {
-        this(context, null);
+        super(context);
     }
 
     public ActionIconThemedTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        this(context, attrs, android.R.attr.textViewStyle);
     }
 
     public ActionIconThemedTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IconActionButton);
+        init(context, attrs);
+    }
+
+    public void init(Context context, AttributeSet attrs) {
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IconActionButton,
+                R.attr.cardActionButtonStyle, R.style.Widget_CardActionButton);
         mColor = a.getColor(R.styleable.IconActionButton_iabColor, 0);
         mDisabledColor = a.getColor(R.styleable.IconActionButton_iabDisabledColor, 0);
         mActivatedColor = a.getColor(R.styleable.IconActionButton_iabActivatedColor, 0);
         mIconWidth = a.getDimensionPixelSize(R.styleable.IconActionButton_iabIconWidth, 0);
         mIconHeight = a.getDimensionPixelSize(R.styleable.IconActionButton_iabIconHeight, 0);
         a.recycle();
-        updateCompoundDrawables();
     }
 
     @ColorInt
+    @Override
+    public int getDefaultColor() {
+        if (mColor != 0) return mColor;
+        final ColorStateList colors = getTextColors();
+        if (colors != null) return colors.getDefaultColor();
+        return getCurrentTextColor();
+    }
+
+    @Override
+    public void setDefaultColor(@ColorInt int color) {
+        this.mColor = color;
+        refreshDrawableState();
+    }
+
+    @ColorInt
+    @Override
     public int getActivatedColor() {
         if (mActivatedColor != 0) return mActivatedColor;
         final ColorStateList colors = getLinkTextColors();
@@ -72,47 +93,14 @@ public class ActionIconThemedTextView extends AppCompatTextView {
         return getCurrentTextColor();
     }
 
+    @Override
     public void setActivatedColor(@ColorInt int color) {
         this.mActivatedColor = color;
-    }
-
-    @Override
-    public void setCompoundDrawablesWithIntrinsicBounds(Drawable left, Drawable top, Drawable right, Drawable bottom) {
-        super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom);
-        updateCompoundDrawables();
-    }
-
-    @Override
-    public void setCompoundDrawablesWithIntrinsicBounds(int left, int top, int right, int bottom) {
-        super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom);
-        updateCompoundDrawables();
-    }
-
-    @Override
-    public void setCompoundDrawablesRelativeWithIntrinsicBounds(Drawable start, Drawable top, Drawable end, Drawable bottom) {
-        super.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom);
-        updateCompoundDrawables();
-    }
-
-    @Override
-    public void setCompoundDrawablesRelativeWithIntrinsicBounds(int start, int top, int end, int bottom) {
-        super.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom);
-        updateCompoundDrawables();
+        refreshDrawableState();
     }
 
     @ColorInt
-    public int getColor() {
-        if (mColor != 0) return mColor;
-        final ColorStateList colors = getTextColors();
-        if (colors != null) return colors.getDefaultColor();
-        return getCurrentTextColor();
-    }
-
-    public void setColor(@ColorInt int color) {
-        this.mColor = color;
-    }
-
-    @ColorInt
+    @Override
     public int getDisabledColor() {
         if (mDisabledColor != 0) return mDisabledColor;
         final ColorStateList colors = getTextColors();
@@ -120,36 +108,27 @@ public class ActionIconThemedTextView extends AppCompatTextView {
         return getCurrentTextColor();
     }
 
+    @Override
     public void setDisabledColor(@ColorInt int color) {
         this.mDisabledColor = color;
+        refreshDrawableState();
     }
 
     @Override
-    public void setActivated(boolean activated) {
-        super.setActivated(activated);
-    }
-
-    @Override
-    protected void drawableStateChanged() {
-        super.drawableStateChanged();
+    public void refreshDrawableState() {
         updateCompoundDrawables();
+        super.refreshDrawableState();
     }
 
     private void updateCompoundDrawables() {
-        updateCompoundDrawables(getCompoundDrawables());
-        updateCompoundDrawables(TextViewSupport.getCompoundDrawablesRelative(this));
-    }
-
-    private void updateCompoundDrawables(Drawable[] drawables) {
-        if (drawables == null) return;
-        for (Drawable d : drawables) {
+        for (Drawable d : TextViewSupport.getCompoundDrawablesRelative(this)) {
             if (d == null) continue;
             d.mutate();
             final int color;
             if (isActivated()) {
                 color = getActivatedColor();
             } else if (isEnabled()) {
-                color = getColor();
+                color = getDefaultColor();
             } else {
                 color = getDisabledColor();
             }

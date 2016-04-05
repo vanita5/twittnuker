@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2015 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    android:id="@+id/main_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:orientation="vertical">
 
     <ScrollView
@@ -63,7 +63,8 @@
                         android:layout_height="@dimen/element_size_mlarge"
                         android:layout_gravity="center"
                         android:foreground="?selectableItemBackground"
-                        android:scaleType="centerCrop"/>
+                        android:scaleType="centerCrop"
+                        tools:src="@drawable/ic_launcher_web"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -85,7 +86,9 @@
                     android:background="?selectableItemBackground"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="@dimen/element_spacing_normal">
+                    android:padding="@dimen/element_spacing_normal"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <de.vanita5.twittnuker.view.ForegroundImageView
                         android:id="@+id/profile_banner"
@@ -93,7 +96,8 @@
                         android:layout_height="@dimen/element_size_mlarge"
                         android:layout_gravity="center"
                         android:foreground="?selectableItemBackground"
-                        android:scaleType="centerCrop"/>
+                        android:scaleType="centerCrop"
+                        tools:src="@drawable/nyan_stars_background_tile"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -101,6 +105,37 @@
                         android:layout_marginLeft="@dimen/element_spacing_normal"
                         android:layout_marginStart="@dimen/element_spacing_normal"
                         android:text="@string/profile_banner"
+                        android:textAllCaps="true"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        android:textColor="?android:textColorPrimary"
+                        android:textStyle="bold"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/edit_profile_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/element_spacing_normal">
+
+                    <de.vanita5.twittnuker.view.ForegroundImageView
+                        android:id="@+id/profile_background"
+                        android:layout_width="@dimen/element_size_mlarge"
+                        android:layout_height="@dimen/element_size_mlarge"
+                        android:layout_gravity="center"
+                        android:foreground="?selectableItemBackground"
+                        android:scaleType="centerCrop"
+                        tools:src="@drawable/nyan_stars_background_tile"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/element_spacing_normal"
+                        android:layout_marginStart="@dimen/element_spacing_normal"
+                        android:text="@string/profile_background"
                         android:textAllCaps="true"
                         android:textAppearance="?android:textAppearanceSmall"
                         android:textColor="?android:textColorPrimary"
@@ -120,7 +155,7 @@
                 android:orientation="vertical"
                 android:padding="@dimen/element_spacing_normal">
 
-                <de.vanita5.twittnuker.view.themed.BackgroundTintMaterialEditText
+                <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -129,9 +164,11 @@
                     app:met_baseColor="?android:textColorPrimary"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelText="@string/name"
-                    app:met_maxCharacters="20"/>
+                    app:met_maxCharacters="20"
+                    app:met_primaryColor="?colorAccent"
+                    tools:text="TwittnukerProject"/>
 
-                <de.vanita5.twittnuker.view.themed.BackgroundTintMaterialEditText
+                <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -141,9 +178,11 @@
                     app:met_baseColor="?android:textColorPrimary"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelText="@string/description"
-                    app:met_maxCharacters="160"/>
+                    app:met_maxCharacters="160"
+                    app:met_primaryColor="?colorAccent"
+                    tools:text="@string/sample_status_text"/>
 
-                <de.vanita5.twittnuker.view.themed.BackgroundTintMaterialEditText
+                <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -152,9 +191,11 @@
                     app:met_baseColor="?android:textColorPrimary"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelText="@string/location"
-                    app:met_maxCharacters="30"/>
+                    app:met_maxCharacters="30"
+                    app:met_primaryColor="?colorAccent"
+                    tools:text="Earth"/>
 
-                <de.vanita5.twittnuker.view.themed.BackgroundTintMaterialEditText
+                <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/url"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -163,7 +204,9 @@
                     app:met_baseColor="?android:textColorPrimary"
                     app:met_floatingLabel="normal"
                     app:met_floatingLabelText="@string/url"
-                    app:met_maxCharacters="100"/>
+                    app:met_maxCharacters="100"
+                    app:met_primaryColor="?colorAccent"
+                    tools:text="https://github.com/vanita5/"/>
             </LinearLayout>
 
             <Space
@@ -189,7 +232,8 @@
                         android:id="@+id/link_color"
                         android:layout_width="@dimen/element_size_normal"
                         android:layout_height="@dimen/element_size_normal"
-                        android:layout_weight="0"/>
+                        android:layout_weight="0"
+                        tools:color="@color/branding_color"/>
 
                     <TextView
                         android:layout_width="match_parent"
@@ -218,7 +262,8 @@
                         android:id="@+id/background_color"
                         android:layout_width="@dimen/element_size_normal"
                         android:layout_height="@dimen/element_size_normal"
-                        android:layout_weight="0"/>
+                        android:layout_weight="0"
+                        tools:color="@color/branding_color"/>
 
                     <TextView
                         android:layout_width="match_parent"
@@ -247,14 +292,12 @@
         android:visibility="visible"
         tools:visibility="gone">
 
-        <de.vanita5.twittnuker.view.themed.AccentProgressWheel
+        <ProgressBar
             android:id="@+id/load_progress"
             android:layout_width="@dimen/element_size_normal"
             android:layout_height="@dimen/element_size_normal"
             android:layout_gravity="center"
-            android:padding="@dimen/element_spacing_xsmall"
-            app:matProg_barColor="?colorAccent"
-            app:matProg_progressIndeterminate="true"/>
+            android:padding="@dimen/element_spacing_xsmall"/>
     </FrameLayout>
 
 </FrameLayout>

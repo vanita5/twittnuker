@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2015 vanita5 <mail@vanita5.de>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2015 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.util;
 
 import android.app.Application;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -32,26 +32,15 @@ import de.vanita5.twittnuker.Constants;
 public class TwidereBugReporter extends BugReporter implements Constants {
 
     @Override
-    protected void logImpl(@Nullable String message, @Nullable Throwable throwable) {
+    protected void logImpl(int priority, String tag, String msg) {
         if (BuildConfig.DEBUG) {
-            Log.d(LOGTAG, message, throwable);
+            Log.d(tag, msg);
         }
     }
 
     @Override
-    protected void errorImpl(@Nullable String message, @Nullable Throwable throwable) {
-        if (throwable == null && message == null) {
-            throw new NullPointerException("Message and Throwable can't be both null");
-        }
-        if (message != null) {
-            if (BuildConfig.DEBUG) {
-                Log.w(LOGTAG, message, throwable);
-            }
-            return;
-        }
-        if (BuildConfig.DEBUG) {
-            Log.w(LOGTAG, throwable);
-        }
+    protected void logExceptionImpl(@NonNull final Throwable throwable) {
+        Log.e(null, null, throwable);
     }
 
     @Override
