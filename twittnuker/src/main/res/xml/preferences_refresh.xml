@@ -35,7 +35,8 @@
 
     <PreferenceCategory
         android:key="cat_streaming"
-        android:title="@string/streaming">
+        android:title="@string/streaming"
+        android:enabled="false">
 
         <SwitchPreferenceCompat
             android:defaultValue="true"

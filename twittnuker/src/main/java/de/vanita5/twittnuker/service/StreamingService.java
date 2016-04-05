@@ -208,7 +208,8 @@ public class StreamingService extends Service implements Constants {
     @SuppressWarnings("deprecation")
     private void initStreaming() {
         //FIXME temporary fix for fc
-        Toast.makeText(this, "Streaming is broken.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Streaming is broken. Disabling...", Toast.LENGTH_SHORT).show();
+        mPreferences.edit().putBoolean(KEY_STREAMING_ENABLED, false).apply();
 //        if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
 //
 ////        if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
