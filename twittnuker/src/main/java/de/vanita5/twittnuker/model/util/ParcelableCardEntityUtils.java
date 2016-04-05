@@ -30,14 +30,26 @@ import android.support.v4.util.ArrayMap;
 import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.CardEntity;
+import de.vanita5.twittnuker.api.twitter.util.ThreadLocalSimpleDateFormat;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.util.InternalParseUtils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class ParcelableCardEntityUtils implements TwittnukerConstants {
+
+    static final DateFormat sISOFormat = new ThreadLocalSimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'",
+            Locale.ENGLISH);
+
+    static {
+        sISOFormat.setLenient(true);
+        sISOFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     @Nullable
     public static ParcelableCardEntity fromCardEntity(@Nullable CardEntity card, @Nullable UserKey accountKey) {
@@ -93,8 +105,11 @@ public class ParcelableCardEntityUtils implements TwittnukerConstants {
     public static Date getAsDate(@NonNull ParcelableCardEntity obj, @NonNull String key, Date def) {
         final ParcelableCardEntity.ParcelableBindingValue value = obj.getValue(key);
         if (value == null) return def;
-        final String str = value.value;
-        return InternalParseUtils.parseISODateTime(str, def);
+        try {
+            return sISOFormat.parse(value.value);
+        } catch (ParseException e) {
+            return def;
+        }
     }
 
 }

@@ -48,6 +48,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.mariotaku.abstask.library.AbstractTask;
+import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.api.twitter.TwitterCaps;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
@@ -58,12 +60,11 @@ import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils;
-import org.mariotaku.abstask.library.AbstractTask;
-import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
 import de.vanita5.twittnuker.util.support.ViewSupport;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -190,6 +191,7 @@ public class CardPollFragment extends BaseSupportFragment implements
                                 return null;
                             }
                         };
+                        task.setResultHandler(CardPollFragment.this);
                         task.setParams(cardData);
                         TaskStarter.execute(task);
                     }
@@ -212,7 +214,7 @@ public class CardPollFragment extends BaseSupportFragment implements
             if (label == null) throw new NullPointerException();
             final float choicePercent = votesSum == 0 ? 0 : value / (float) votesSum;
             choiceLabelView.setText(label);
-            choicePercentView.setText(String.format("%d%%", Math.round(choicePercent * 100)));
+            choicePercentView.setText(String.format(Locale.US, "%d%%", Math.round(choicePercent * 100)));
 
             pollItem.setOnClickListener(clickListener);
 
