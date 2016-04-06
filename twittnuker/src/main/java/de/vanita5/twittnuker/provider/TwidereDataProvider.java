@@ -1147,6 +1147,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
     private void showTimelineNotification(AccountPreferences pref, long position) {
+        if (mPreferences.getBoolean(KEY_ENABLE_PUSH_NOTIFICATIONS, false)
+                && mPreferences.getBoolean(GCM_TOKEN_SENT, false)) return;
         final UserKey accountKey = pref.getAccountKey();
         final Context context = getContext();
         if (context == null) return;
@@ -1220,6 +1222,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
     private void showInteractionsNotification(AccountPreferences pref, long position, boolean combined) {
+        if (mPreferences.getBoolean(KEY_ENABLE_PUSH_NOTIFICATIONS, false)
+                && mPreferences.getBoolean(GCM_TOKEN_SENT, false)) return;
         final Context context = getContext();
         if (context == null) return;
         final UserKey accountKey = pref.getAccountKey();
@@ -1348,6 +1352,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
     private void showMessagesNotification(AccountPreferences pref, StringLongPair[] pairs, ContentValues[] valuesArray) {
+        if (mPreferences.getBoolean(KEY_ENABLE_PUSH_NOTIFICATIONS, false)
+                && mPreferences.getBoolean(GCM_TOKEN_SENT, false)) return;
         final Context context = getContext();
         assert context != null;
         final UserKey accountKey = pref.getAccountKey();
