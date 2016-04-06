@@ -28,6 +28,9 @@ import android.support.v7.preference.Preference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
+import org.mariotaku.abstask.library.AbstractTask;
+import org.mariotaku.abstask.library.TaskStarter;
+
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
@@ -63,15 +66,31 @@ public class PushNotificationStatusPreference extends Preference implements Twit
 
     @Override
     protected void onClick() {
+        setSummary(R.string.push_status_disconnecting);
         super.onClick();
 
-        final String currentToken = mPreferences.getString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null);
-        if (!TextUtils.isEmpty(currentToken)) {
-            PushBackendServer backend = new PushBackendServer(mContext);
-            backend.remove(currentToken);
-            mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
-            mPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply();
-            setSummary(R.string.push_status_disconnected);
-        }
+        AbstractTask<Void, Void, PushNotificationStatusPreference> task
+                = new AbstractTask<Void, Void, PushNotificationStatusPreference>() {
+
+            @Override
+            protected void afterExecute(PushNotificationStatusPreference pushNotificationStatusPreference, Void aVoid) {
+                pushNotificationStatusPreference.setSummary(R.string.push_status_disconnected);
+            }
+
+            @Override
+            protected Void doLongOperation(Void aVoid) {
+                final String currentToken = mPreferences.getString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null);
+
+                if (!TextUtils.isEmpty(currentToken)) {
+                    PushBackendServer backend = new PushBackendServer(mContext);
+                    backend.remove(currentToken);
+                    mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, false).apply();
+                    mPreferences.edit().putString(SharedPreferenceConstants.GCM_CURRENT_TOKEN, null).apply();
+                }
+                return null;
+            }
+        };
+        task.setResultHandler(PushNotificationStatusPreference.this);
+        TaskStarter.execute(task);
     }
 }
