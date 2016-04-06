@@ -43,7 +43,7 @@ public class PushNotificationStatusPreference extends Preference implements Twit
     }
 
     public PushNotificationStatusPreference(final Context context, final AttributeSet attrs) {
-        this(context, attrs, android.R.attr.preferenceStyle);
+        this(context, attrs, R.attr.preferenceStyle);
     }
 
     public PushNotificationStatusPreference(final Context context, final AttributeSet attrs, final int defStyle) {
