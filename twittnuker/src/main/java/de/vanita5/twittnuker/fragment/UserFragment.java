@@ -1347,10 +1347,6 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 }
                 break;
             }
-            case TwidereLinkify.LINK_TYPE_STATUS: {
-                IntentUtils.openStatus(getActivity(), accountKey, link);
-                break;
-            }
         }
     }
 
