@@ -28,7 +28,7 @@
                   android:title="@string/theme">
 
     <de.vanita5.twittnuker.preference.EntrySummaryListPreference
-        android:defaultValue="light"
+        android:defaultValue="auto"
         android:entries="@array/entries_theme"
         android:entryValues="@array/values_theme"
         android:key="theme"
