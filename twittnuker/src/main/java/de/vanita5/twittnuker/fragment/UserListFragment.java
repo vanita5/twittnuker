@@ -232,9 +232,6 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
                 followItem.setIcon(R.drawable.ic_action_add);
                 followItem.setTitle(R.string.subscribe);
             }
-            final Intent extensionsIntent = new Intent(INTENT_ACTION_EXTENSION_OPEN_USER_LIST);
-            extensionsIntent.setExtrasClassLoader(getActivity().getClassLoader());
-            extensionsIntent.putExtra(EXTRA_USER_LIST, userList);
         } else {
             MenuUtils.setMenuItemAvailability(menu, R.id.edit, false);
             MenuUtils.setMenuItemAvailability(menu, R.id.follow, false);

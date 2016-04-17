@@ -44,6 +44,7 @@
         android:title="@string/set_color"/>
     <item
         android:id="@id/add_to_filter"
+        android:checkable="true"
         android:icon="@drawable/ic_action_speaker_muted"
         android:title="@string/add_to_filter"/>
     <item
@@ -92,7 +93,6 @@
         android:id="@id/open_with_account"
         android:icon="@drawable/ic_action_accounts"
         android:title="@string/open_with_account"/>
-
     <item
         android:id="@id/open_in_browser"
         android:icon="@drawable/ic_action_web"
