@@ -22,17 +22,17 @@
 
 package de.vanita5.twittnuker.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
-import de.vanita5.twittnuker.fragment.CursorSupportUsersListFragment;
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader;
 import de.vanita5.twittnuker.loader.IncomingFriendshipsLoader;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
@@ -74,6 +74,7 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
         mTwitterWrapper.denyFriendshipAsync(user.account_key, user.key);
     }
 
+    @SuppressLint("SwitchIntDef")
     @Override
     protected boolean shouldRemoveUser(int position, FriendshipTaskEvent event) {
         if (!event.isSucceeded()) return false;
