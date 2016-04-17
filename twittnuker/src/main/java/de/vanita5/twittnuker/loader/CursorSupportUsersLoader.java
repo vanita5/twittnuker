@@ -26,8 +26,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
 import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
@@ -38,6 +36,8 @@ import de.vanita5.twittnuker.loader.iface.ICursorSupportLoader;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
+
+import java.util.List;
 
 public abstract class CursorSupportUsersLoader extends TwitterAPIUsersLoader
         implements ICursorSupportLoader {
@@ -139,7 +139,7 @@ public abstract class CursorSupportUsersLoader extends TwitterAPIUsersLoader
         } else {
             users = getCursoredUsers(twitter, credentials, paging);
             if (users instanceof CursorSupport) {
-                setCursors(((CursorSupport) users));
+                setCursors((CursorSupport) users);
             }
         }
         incrementPage(users);
