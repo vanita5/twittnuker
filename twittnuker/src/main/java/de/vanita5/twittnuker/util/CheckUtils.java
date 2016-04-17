@@ -29,6 +29,9 @@ import android.text.TextUtils;
  * Common tool to check strings, objects etc.
  */
 public class CheckUtils {
+    private CheckUtils() {
+    }
+
     public static boolean checkRange(@Nullable final CharSequence text, int start, int end) {
         if (text == null) return false;
 

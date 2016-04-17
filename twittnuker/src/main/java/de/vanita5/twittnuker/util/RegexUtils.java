@@ -25,6 +25,9 @@ package de.vanita5.twittnuker.util;
 import java.util.regex.Matcher;
 
 public class RegexUtils {
+    private RegexUtils() {
+    }
+
     public static int matcherEnd(final Matcher matcher, final int group) {
         try {
             return matcher.end(group);

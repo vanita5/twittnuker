@@ -28,6 +28,9 @@ import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.UserKey;
 
 public class ParcelableUserMentionUtils {
+    private ParcelableUserMentionUtils() {
+    }
+
     public static ParcelableUserMention fromMentionEntity(final User user,
                                                           final UserMentionEntity entity) {
         ParcelableUserMention obj = new ParcelableUserMention();

@@ -29,6 +29,8 @@ import de.vanita5.twittnuker.Constants;
 import java.util.List;
 
 public class UriExtraUtils implements Constants {
+    private UriExtraUtils() {
+    }
 
     public static void addExtra(Uri.Builder builder, String key, Object value) {
         builder.appendQueryParameter(QUERY_PARAM_EXTRA, key + "=" + String.valueOf(value));

@@ -36,7 +36,13 @@ import de.vanita5.twittnuker.model.UserKey;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Processing ParcelableActivity
+ */
 public class ParcelableActivityUtils {
+
+    private ParcelableActivityUtils() {
+    }
 
     /**
      * @param activity        Activity for processing

@@ -32,9 +32,9 @@ import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
@@ -42,6 +42,9 @@ import de.vanita5.twittnuker.util.TwidereArrayUtils;
 import java.util.List;
 
 public class ParcelableAccountUtils {
+
+    private ParcelableAccountUtils() {
+    }
 
     public static UserKey[] getAccountKeys(@NonNull ParcelableAccount[] accounts) {
         UserKey[] ids = new UserKey[accounts.length];

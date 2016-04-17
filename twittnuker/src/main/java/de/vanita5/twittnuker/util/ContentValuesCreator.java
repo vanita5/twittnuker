@@ -67,6 +67,8 @@ import java.util.List;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
 public final class ContentValuesCreator implements TwittnukerConstants {
+    private ContentValuesCreator() {
+    }
 
     public static ContentValues createCachedRelationship(final Relationship relationship,
                                                          final UserKey accountKey,

@@ -26,17 +26,20 @@ import java.util.Collection;
 
 public class CollectionUtils {
 
-	public static <T> String toString(final Collection<T> collection, final char token, final boolean includeSpace) {
-		final StringBuilder builder = new StringBuilder();
-		int i = 0;
-		for (T item : collection) {
-			final String itemString = String.valueOf(item);
-			if (i > 0) {
-				builder.append(includeSpace ? token + " " : token);
-			}
-			builder.append(itemString);
-			i++;
-		}
-		return builder.toString();
-	}
+    private CollectionUtils() {
+    }
+
+    public static <T> String toString(final Collection<T> collection, final char token, final boolean includeSpace) {
+        final StringBuilder builder = new StringBuilder();
+        int i = 0;
+        for (T item : collection) {
+            final String itemString = String.valueOf(item);
+            if (i > 0) {
+                builder.append(includeSpace ? token + " " : token);
+            }
+            builder.append(itemString);
+            i++;
+        }
+        return builder.toString();
+    }
 }

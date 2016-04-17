@@ -39,6 +39,9 @@ import de.vanita5.twittnuker.view.iface.IForegroundView;
 
 public final class ViewSupport {
 
+    private ViewSupport() {
+    }
+
     public static boolean isInLayout(View view) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return false;
@@ -131,6 +134,9 @@ public final class ViewSupport {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     static class ViewAccessorJB {
+        private ViewAccessorJB() {
+        }
+
         static void setBackground(final View view, final Drawable background) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
             view.setBackground(background);
@@ -139,6 +145,9 @@ public final class ViewSupport {
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     static class ViewAccessorICS {
+        private ViewAccessorICS() {
+        }
+
         static void setForeground(final View view, final Drawable foreground) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) return;
             if (view instanceof FrameLayout) {
@@ -153,6 +162,9 @@ public final class ViewSupport {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     static class ViewAccessorJBMR2 {
+        private ViewAccessorJBMR2() {
+        }
+
         static boolean isInLayout(final View view) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) return false;
             return view.isInLayout();
@@ -161,6 +173,9 @@ public final class ViewSupport {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     static class ViewAccessorL {
+        private ViewAccessorL() {
+        }
+
         public static void setClipToOutline(View view, boolean clipToOutline) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
             view.setClipToOutline(clipToOutline);

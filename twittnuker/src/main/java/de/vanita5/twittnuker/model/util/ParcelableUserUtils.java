@@ -41,6 +41,8 @@ import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 
 public class ParcelableUserUtils implements TwittnukerConstants{
+    private ParcelableUserUtils() {
+    }
 
     public static ParcelableUser fromUser(@NonNull User user, @Nullable UserKey accountKey) {
         return fromUser(user, accountKey, 0);

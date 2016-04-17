@@ -29,34 +29,37 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.util.Log;
 
+import java.util.HashMap;
+
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-
-import java.util.HashMap;
 
 public final class ServiceUtils implements Constants {
 
     private static HashMap<Context, ServiceUtils.ServiceBinder> sConnectionMap = new HashMap<>();
 
-	public static ServiceToken bindToService(final Context context, final Intent intent) {
-		return bindToService(context, intent, null);
-	}
+    private ServiceUtils() {
+    }
 
-	public static ServiceToken bindToService(final Context context, final Intent intent,
-			final ServiceConnection callback) {
+    public static ServiceToken bindToService(final Context context, final Intent intent) {
+        return bindToService(context, intent, null);
+    }
 
-		final ContextWrapper cw = new ContextWrapper(context);
-		final ComponentName cn = cw.startService(intent);
-		if (cn != null) {
-			final ServiceUtils.ServiceBinder sb = new ServiceBinder(callback);
-			if (cw.bindService(intent, sb, 0)) {
-				sConnectionMap.put(cw, sb);
-				return new ServiceToken(cw);
-			}
-		}
-		if (BuildConfig.DEBUG) Log.e(LOGTAG, "Failed to bind to service");
-		return null;
-	}
+    public static ServiceToken bindToService(final Context context, final Intent intent,
+                                             final ServiceConnection callback) {
+
+        final ContextWrapper cw = new ContextWrapper(context);
+        final ComponentName cn = cw.startService(intent);
+        if (cn != null) {
+            final ServiceUtils.ServiceBinder sb = new ServiceBinder(callback);
+            if (cw.bindService(intent, sb, 0)) {
+                sConnectionMap.put(cw, sb);
+                return new ServiceToken(cw);
+            }
+        }
+        if (BuildConfig.DEBUG) Log.e(LOGTAG, "Failed to bind to service");
+        return null;
+    }
 
     public static void unbindFromService(final ServiceToken token) {
         final ServiceBinder serviceBinder = sConnectionMap.get(token.wrappedContext);
@@ -64,35 +67,35 @@ public final class ServiceUtils implements Constants {
         token.wrappedContext.unbindService(serviceBinder);
     }
 
-	public static class ServiceToken {
+    public static class ServiceToken {
 
         private final ContextWrapper wrappedContext;
 
-		ServiceToken(final ContextWrapper context) {
+        ServiceToken(final ContextWrapper context) {
             wrappedContext = context;
-		}
-	}
+        }
+    }
 
-	static class ServiceBinder implements ServiceConnection {
+    static class ServiceBinder implements ServiceConnection {
 
-		private final ServiceConnection mCallback;
+        private final ServiceConnection mCallback;
 
-		public ServiceBinder(final ServiceConnection callback) {
-			mCallback = callback;
-		}
+        public ServiceBinder(final ServiceConnection callback) {
+            mCallback = callback;
+        }
 
-		@Override
-		public void onServiceConnected(final ComponentName className, final android.os.IBinder service) {
-			if (mCallback != null) {
-				mCallback.onServiceConnected(className, service);
-			}
-		}
+        @Override
+        public void onServiceConnected(final ComponentName className, final android.os.IBinder service) {
+            if (mCallback != null) {
+                mCallback.onServiceConnected(className, service);
+            }
+        }
 
-		@Override
-		public void onServiceDisconnected(final ComponentName className) {
-			if (mCallback != null) {
-				mCallback.onServiceDisconnected(className);
-			}
-		}
-	}
+        @Override
+        public void onServiceDisconnected(final ComponentName className) {
+            if (mCallback != null) {
+                mCallback.onServiceDisconnected(className);
+            }
+        }
+    }
 }

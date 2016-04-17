@@ -65,6 +65,9 @@ import de.vanita5.twittnuker.util.menu.TwidereMenuInfo;
 import java.util.List;
 
 public class MenuUtils implements Constants {
+    private MenuUtils() {
+    }
+
     public static void setMenuItemAvailability(final Menu menu, final int id, final boolean available) {
         if (menu == null) return;
         final MenuItem item = menu.findItem(id);

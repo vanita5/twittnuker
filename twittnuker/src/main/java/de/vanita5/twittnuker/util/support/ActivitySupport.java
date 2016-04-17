@@ -37,6 +37,9 @@ import android.os.Parcelable;
  */
 public class ActivitySupport {
 
+    private ActivitySupport() {
+    }
+
     public static void setTaskDescription(Activity activity, TaskDescriptionCompat taskDescription) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
         ActivityAccessorL.setTaskDescription(activity, taskDescription);
@@ -44,6 +47,9 @@ public class ActivitySupport {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     static class ActivityAccessorL {
+        private ActivityAccessorL() {
+        }
+
         public static void setTaskDescription(Activity activity, TaskDescriptionCompat taskDescription) {
             activity.setTaskDescription(toNativeTaskDescription(taskDescription));
         }

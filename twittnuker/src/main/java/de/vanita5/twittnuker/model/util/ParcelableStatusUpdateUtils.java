@@ -30,6 +30,8 @@ import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
 
 public class ParcelableStatusUpdateUtils implements Constants {
+    private ParcelableStatusUpdateUtils() {
+    }
 
     public static ParcelableStatusUpdate fromDraftItem(final Context context, final Draft draft) {
         ParcelableStatusUpdate statusUpdate = new ParcelableStatusUpdate();

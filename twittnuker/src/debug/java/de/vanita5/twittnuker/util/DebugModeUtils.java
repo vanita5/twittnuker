@@ -42,6 +42,9 @@ public class DebugModeUtils {
 
     private static RefWatcher sRefWatcher;
 
+    private DebugModeUtils() {
+    }
+
     public static void initForOkHttpClient(final OkHttpClient.Builder builder) {
     }
 

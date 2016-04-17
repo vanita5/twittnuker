@@ -48,6 +48,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParcelableMediaUtils {
+    private ParcelableMediaUtils() {
+    }
+
     @NonNull
     public static ParcelableMedia[] fromEntities(@Nullable final EntitySupport entities) {
         if (entities == null) return new ParcelableMedia[0];

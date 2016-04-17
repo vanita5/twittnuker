@@ -30,15 +30,18 @@ import java.util.concurrent.Executors;
 
 public class AsyncTaskUtils {
 
-	public static final Executor DEFAULT_EXECUTOR = Executors.newFixedThreadPool(2);
+    public static final Executor DEFAULT_EXECUTOR = Executors.newFixedThreadPool(2);
 
-	@SafeVarargs
-	public static <T extends AsyncTask<Parameter, ?, ?>, Parameter> T executeTask(T task, Parameter... params) {
-		task.executeOnExecutor(DEFAULT_EXECUTOR, params);
-		return task;
-	}
+    private AsyncTaskUtils() {
+    }
 
-	public static boolean isTaskRunning(@Nullable AsyncTask task) {
-		return task != null && task.getStatus() == AsyncTask.Status.RUNNING;
-	}
+    @SafeVarargs
+    public static <T extends AsyncTask<Parameter, ?, ?>, Parameter> T executeTask(T task, Parameter... params) {
+        task.executeOnExecutor(DEFAULT_EXECUTOR, params);
+        return task;
+    }
+
+    public static boolean isTaskRunning(@Nullable AsyncTask task) {
+        return task != null && task.getStatus() == AsyncTask.Status.RUNNING;
+    }
 }

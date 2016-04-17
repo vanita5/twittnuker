@@ -107,6 +107,9 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         sConstantPoll.put("include_ext_alt_text", "true");
     }
 
+    private TwitterAPIFactory() {
+    }
+
     @WorkerThread
     public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities) {
         if (context == null) return null;

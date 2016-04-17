@@ -34,6 +34,9 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 
 public class ParcelableCredentialsUtils {
+    private ParcelableCredentialsUtils() {
+    }
+
     public static boolean isOAuth(int authType) {
         switch (authType) {
             case ParcelableCredentials.AuthType.OAUTH:

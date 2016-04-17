@@ -30,6 +30,9 @@ import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.util.InternalParseUtils;
 
 public class ParcelableLocationUtils {
+    private ParcelableLocationUtils() {
+    }
+
     public static String getHumanReadableString(ParcelableLocation obj, int decimalDigits) {
         return String.format("%s,%s", InternalParseUtils.parsePrettyDecimal(obj.latitude, decimalDigits),
                 InternalParseUtils.parsePrettyDecimal(obj.longitude, decimalDigits));

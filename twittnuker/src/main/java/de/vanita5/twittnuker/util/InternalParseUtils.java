@@ -35,6 +35,9 @@ import java.util.Locale;
 import java.util.Set;
 
 public class InternalParseUtils {
+    private InternalParseUtils() {
+    }
+
     public static String bundleToJSON(final Bundle args) {
         final Set<String> keys = args.keySet();
         final StringWriter sw = new StringWriter();

@@ -27,14 +27,17 @@ import android.widget.ListView;
 
 public class ListViewUtils {
 
-	public static int getFirstFullyVisiblePosition(final ListView listView) {
-		final int firstVisiblePosition = listView.getFirstVisiblePosition();
-		final View firstVisibleChild = listView.getChildAt(0);
-		if (firstVisibleChild != null && firstVisibleChild.getTop() < 0
-				&& firstVisiblePosition + 1 < listView.getCount()) {
-			return firstVisiblePosition + 1;
-		}
-		return firstVisiblePosition;
-	}
+    private ListViewUtils() {
+    }
+
+    public static int getFirstFullyVisiblePosition(final ListView listView) {
+        final int firstVisiblePosition = listView.getFirstVisiblePosition();
+        final View firstVisibleChild = listView.getChildAt(0);
+        if (firstVisibleChild != null && firstVisibleChild.getTop() < 0
+                && firstVisiblePosition + 1 < listView.getCount()) {
+            return firstVisiblePosition + 1;
+        }
+        return firstVisiblePosition;
+    }
 
 }

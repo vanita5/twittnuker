@@ -50,6 +50,8 @@ import okhttp3.Route;
 import static android.text.TextUtils.isEmpty;
 
 public class HttpClientFactory implements Constants {
+    private HttpClientFactory() {
+    }
 
     public static RestHttpClient createRestHttpClient(final Context context,
                                                       final SharedPreferencesWrapper prefs, final Dns dns,

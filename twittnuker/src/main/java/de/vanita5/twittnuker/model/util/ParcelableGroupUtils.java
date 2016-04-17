@@ -29,6 +29,9 @@ import de.vanita5.twittnuker.model.UserKey;
 import java.util.Date;
 
 public class ParcelableGroupUtils {
+    private ParcelableGroupUtils() {
+    }
+
     public static ParcelableGroup from(Group group, UserKey accountKey, int position, boolean member) {
         ParcelableGroup obj = new ParcelableGroup();
         obj.account_key = accountKey;

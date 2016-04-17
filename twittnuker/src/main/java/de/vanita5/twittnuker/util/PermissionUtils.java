@@ -29,6 +29,9 @@ import android.support.v4.content.ContextCompat;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class PermissionUtils {
+    private PermissionUtils() {
+    }
+
     public static int getPermission(String[] permissions, int[] grantResults, String permission) {
         final int idx = ArrayUtils.indexOf(permissions, permission);
         if (idx != -1) return grantResults[idx];

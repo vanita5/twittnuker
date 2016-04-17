@@ -31,6 +31,9 @@ public class UnitConvertUtils {
 
     public static final String[] countUnits = {null, "K", "M", "B"};
 
+    private UnitConvertUtils() {
+    }
+
     public static String calculateProperSize(double bytes) {
         double value = bytes;
         int index;

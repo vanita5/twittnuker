@@ -31,6 +31,9 @@ import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 
 public class ParcelableUserListUtils {
+    private ParcelableUserListUtils() {
+    }
+
     public static ParcelableUserList from(UserList list, UserKey accountKey) {
         return from(list, accountKey, 0, false);
     }

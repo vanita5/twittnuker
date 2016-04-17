@@ -29,6 +29,9 @@ import com.fasterxml.jackson.core.TreeNode;
  * @since Twitter4J 2.1.9
  */
 public final class JSONObjectType {
+    private JSONObjectType() {
+    }
+
     public enum Type {
         SENDER,
         STATUS,

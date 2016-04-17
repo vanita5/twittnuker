@@ -51,6 +51,9 @@ public class TwidereQueryBuilder {
 
     public static final class CachedUsersQueryBuilder {
 
+        private CachedUsersQueryBuilder() {
+        }
+
         public static Pair<SQLSelectQuery, String[]> withRelationship(final String[] projection,
                                                                       final String selection,
                                                                       final String[] selectionArgs,
@@ -156,6 +159,9 @@ public class TwidereQueryBuilder {
 
     public static final class ConversationQueryBuilder {
 
+        private ConversationQueryBuilder() {
+        }
+
         public static Pair<SQLSelectQuery, String[]> buildByConversationId(final String[] projection,
                                                                            final UserKey accountKey,
                                                                            final String conversationId,
@@ -202,6 +208,9 @@ public class TwidereQueryBuilder {
     }
 
     public static class ConversationsEntryQueryBuilder {
+
+        private ConversationsEntryQueryBuilder() {
+        }
 
         public static SQLSelectQuery build() {
             return build(null);
@@ -280,6 +289,9 @@ public class TwidereQueryBuilder {
     }
 
     public static final class DirectMessagesQueryBuilder {
+
+        private DirectMessagesQueryBuilder() {
+        }
 
         public static SQLSelectQuery build() {
             return build(null, null, null);

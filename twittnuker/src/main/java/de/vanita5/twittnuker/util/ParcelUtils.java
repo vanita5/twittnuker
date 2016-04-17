@@ -25,11 +25,13 @@ package de.vanita5.twittnuker.util;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.lang.reflect.Field;
 
 public class ParcelUtils {
+
+    private ParcelUtils() {
+    }
 
     public static <T extends Parcelable> T clone(@NonNull T object) {
         final Parcel parcel = Parcel.obtain();

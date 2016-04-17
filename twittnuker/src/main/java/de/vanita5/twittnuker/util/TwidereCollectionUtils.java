@@ -25,6 +25,9 @@ package de.vanita5.twittnuker.util;
 import java.util.Collection;
 
 public class TwidereCollectionUtils {
+    private TwidereCollectionUtils() {
+    }
+
     public static String[] toStringArray(final Collection<?> list) {
         if (list == null) return null;
         final int length = list.size();

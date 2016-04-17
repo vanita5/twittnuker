@@ -32,6 +32,9 @@ import static android.text.TextUtils.isEmpty;
 
 public final class ParseUtils implements TwittnukerConstants {
 
+    private ParseUtils() {
+    }
+
     public static String parseString(final String object) {
         return object;
     }

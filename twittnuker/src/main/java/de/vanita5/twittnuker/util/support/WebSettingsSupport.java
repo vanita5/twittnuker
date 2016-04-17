@@ -28,17 +28,20 @@ import android.webkit.WebSettings;
 
 public class WebSettingsSupport {
 
-	public static void setAllowUniversalAccessFromFileURLs(final WebSettings settings, final boolean flag) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
-		WebSettingsAccessorSDK16.setAllowUniversalAccessFromFileURLs(settings, flag);
-	}
+    private WebSettingsSupport() {
+    }
 
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	private static class WebSettingsAccessorSDK16 {
-		private static void setAllowUniversalAccessFromFileURLs(final WebSettings settings, final boolean flag) {
-			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
-			settings.setAllowUniversalAccessFromFileURLs(flag);
-		}
-	}
+    public static void setAllowUniversalAccessFromFileURLs(final WebSettings settings, final boolean flag) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
+        WebSettingsAccessorSDK16.setAllowUniversalAccessFromFileURLs(settings, flag);
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private static class WebSettingsAccessorSDK16 {
+        private static void setAllowUniversalAccessFromFileURLs(final WebSettings settings, final boolean flag) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return;
+            settings.setAllowUniversalAccessFromFileURLs(flag);
+        }
+    }
 
 }

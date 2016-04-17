@@ -24,8 +24,8 @@ package de.vanita5.twittnuker.model.util;
 
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 
@@ -34,6 +34,9 @@ import java.util.Date;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
 public class ParcelableDirectMessageUtils {
+
+    private ParcelableDirectMessageUtils() {
+    }
 
     public static ParcelableDirectMessage fromDirectMessage(DirectMessage message, UserKey accountKey, boolean isOutgoing) {
         ParcelableDirectMessage result = new ParcelableDirectMessage();

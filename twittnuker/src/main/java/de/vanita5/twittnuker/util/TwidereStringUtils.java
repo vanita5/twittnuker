@@ -30,6 +30,9 @@ import android.text.Spanned;
 import android.text.style.ReplacementSpan;
 
 public class TwidereStringUtils {
+    private TwidereStringUtils() {
+    }
+
     public static boolean regionMatchesIgnoreCase(@NonNull final String string, final int thisStart,
                                                   @NonNull final String match, final int start,
                                                   final int length) {

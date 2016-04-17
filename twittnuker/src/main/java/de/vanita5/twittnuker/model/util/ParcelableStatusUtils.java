@@ -51,6 +51,8 @@ import java.util.Date;
 import java.util.List;
 
 public class ParcelableStatusUtils implements Constants {
+    private ParcelableStatusUtils() {
+    }
 
     public static void makeOriginalStatus(@NonNull ParcelableStatus status) {
         if (!status.is_retweet) return;

@@ -26,6 +26,9 @@ import android.support.annotation.UiThread;
 import android.view.View;
 
 public class TwidereViewUtils {
+    private TwidereViewUtils() {
+    }
+
     @UiThread
     public static boolean hitView(float x, float y, View view) {
         int[] location = new int[2];
