@@ -30,6 +30,7 @@ import de.vanita5.twittnuker.task.ManagedAsyncTask;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -97,7 +98,7 @@ public final class AsyncTaskManager {
         return mHandler;
     }
 
-    public ArrayList<ManagedAsyncTask<?, ?, ?>> getTaskSpecList() {
+    public List<ManagedAsyncTask<?, ?, ?>> getTaskSpecList() {
         return new ArrayList<>(mTasks);
     }
 
