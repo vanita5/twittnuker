@@ -68,7 +68,6 @@ import de.vanita5.twittnuker.activity.SignInActivity;
 import de.vanita5.twittnuker.adapter.AccountsAdapter;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox;
@@ -158,7 +157,7 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
             case R.id.delete: {
                 final AccountDeletionDialogFragment f = new AccountDeletionDialogFragment();
                 final Bundle args = new Bundle();
-                args.putParcelable(EXTRA_ACCOUNT_KEY, account.account_key);
+                args.putLong(EXTRA_ID, account.id);
                 f.setArguments(args);
                 f.show(getChildFragmentManager(), FRAGMENT_TAG_ACCOUNT_DELETION);
                 break;
@@ -330,14 +329,13 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
         @Override
         public void onClick(final DialogInterface dialog, final int which) {
             final Bundle args = getArguments();
-            final UserKey accountId = args.getParcelable(EXTRA_ACCOUNT_KEY);
-            if (accountId == null) return;
+            final long id = args.getLong(EXTRA_ID);
             final ContentResolver resolver = getContentResolver();
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE: {
-                    final String where = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY)
+                    final String where = Expression.equalsArgs(Accounts._ID)
                             .getSQL();
-                    final String[] whereArgs = {accountId.toString()};
+                    final String[] whereArgs = {String.valueOf(id)};
                     resolver.delete(Accounts.CONTENT_URI, where, whereArgs);
                     // Also delete tweets related to the account we previously
                     // deleted.

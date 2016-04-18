@@ -648,7 +648,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
                 int color = analyseUserProfileColor(user);
                 final Pair<String, String> accountType = detectAccountType(twitter, user);
                 final ParcelableAccount account = ParcelableAccountUtils.getAccount(context,
-                        new UserKey(user.getId(), accountType.first));
+                        new UserKey(user.getId(), UserKeyUtils.getUserHost(user)));
                 if (account != null) {
                     color = account.color;
                 }
@@ -770,7 +770,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
             int color = analyseUserProfileColor(user);
             final Pair<String, String> accountType = detectAccountType(twitter, user);
             final ParcelableAccount account = ParcelableAccountUtils.getAccount(activity,
-                    new UserKey(userId, accountType.first));
+                    new UserKey(userId, UserKeyUtils.getUserHost(user)));
             if (account != null) {
                 color = account.color;
             }
@@ -794,7 +794,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
             int color = analyseUserProfileColor(user);
             final Pair<String, String> accountType = detectAccountType(twitter, user);
             final ParcelableAccount account = ParcelableAccountUtils.getAccount(activity,
-                    new UserKey(userId, accountType.first));
+                    new UserKey(userId, UserKeyUtils.getUserHost(user)));
             if (account != null) {
                 color = account.color;
             }
@@ -816,7 +816,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
             int color = analyseUserProfileColor(user);
             final Pair<String, String> accountType = detectAccountType(twitter, user);
             final ParcelableAccount account = ParcelableAccountUtils.getAccount(activity,
-                    new UserKey(userId, accountType.first));
+                    new UserKey(userId, UserKeyUtils.getUserHost(user)));
             if (account != null) {
                 color = account.color;
             }
