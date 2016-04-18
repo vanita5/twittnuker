@@ -52,6 +52,7 @@ import org.mariotaku.restfu.http.HttpRequest;
 import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.RestHttpClient;
 
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
@@ -298,7 +299,9 @@ public class APIEditorActivity extends BaseActivity implements OnCheckedChangeLi
             mAdapter = new CustomAPIConfigArrayAdapter(context, configs);
             final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(context);
             builder.setAdapter(mAdapter, this);
-            getLoaderManager().initLoader(0, null, this);
+            if (!BuildConfig.DEBUG) {
+                getLoaderManager().initLoader(0, null, this);
+            }
             return builder.create();
         }
 

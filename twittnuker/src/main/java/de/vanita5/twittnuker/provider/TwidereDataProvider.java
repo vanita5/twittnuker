@@ -122,6 +122,7 @@ import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ImagePreloader;
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -1226,6 +1227,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 && mPreferences.getBoolean(GCM_TOKEN_SENT, false)) return;
         final Context context = getContext();
         if (context == null) return;
+        final SQLiteDatabase db = mDatabaseWrapper.getSQLiteDatabase();
         final UserKey accountKey = pref.getAccountKey();
         final String where = Expression.and(
                 Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY),
@@ -1263,6 +1265,14 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 final ParcelableActivity activity = ci.newObject(c);
                 if (pref.isNotificationMentionsOnly() && !ArrayUtils.contains(Activity.Action.MENTION_ACTIONS,
                         activity.action)) {
+                    continue;
+                }
+                if (activity.status_id != null && InternalTwitterContentUtils.isFiltered(db,
+                        activity.status_user_key, activity.status_text_plain,
+                        activity.status_quote_text_plain, activity.status_spans,
+                        activity.status_quote_spans, activity.status_source,
+                        activity.status_quote_source, activity.status_retweeted_by_user_key,
+                        activity.status_quoted_user_key)) {
                     continue;
                 }
                 final String[] filteredUserIds = DataStoreUtils.getFilteredUserIds(context);

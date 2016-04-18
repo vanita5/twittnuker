@@ -794,6 +794,7 @@
     <string name="location_countrywide">Landesweit</string>
     <string name="error_title_device_incompatible">Inkompatibles Gerät</string>
     <string name="error_message_device_incompatible">Dein Gerät ist nicht kompatibel mit Twittnuker. Ein Update auf ein aktuelles Android OS wird empfohlen.\nDu kannst uns die Informationen unten zukommen lassen, damit wir das dem Gerätehersteller melden können.</string>
+    <string name="password_sign_in_twitter_only">Password Login (Nur für Twitter)</string>
 
 
     <!-- Twittnuker -->

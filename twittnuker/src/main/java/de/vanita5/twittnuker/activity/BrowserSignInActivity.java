@@ -219,6 +219,7 @@ public class BrowserSignInActivity extends BaseActivity {
         private final String mConsumerKey, mConsumerSecret;
         private final BrowserSignInActivity mActivity;
         private final String mAPIUrlFormat;
+        private final boolean mSameOAuthSigningUrl;
 
         public GetRequestTokenTask(final BrowserSignInActivity activity) {
             mActivity = activity;
@@ -226,6 +227,7 @@ public class BrowserSignInActivity extends BaseActivity {
             mConsumerKey = intent.getStringExtra(Accounts.CONSUMER_KEY);
             mConsumerSecret = intent.getStringExtra(Accounts.CONSUMER_SECRET);
             mAPIUrlFormat = intent.getStringExtra(Accounts.API_URL_FORMAT);
+            mSameOAuthSigningUrl = intent.getBooleanExtra(Accounts.SAME_OAUTH_SIGNING_URL, true);
         }
 
         @Override
@@ -234,11 +236,12 @@ public class BrowserSignInActivity extends BaseActivity {
                 return SingleResponse.getInstance();
             }
             try {
-                final Endpoint endpoint = TwitterAPIFactory.getOAuthSignInEndpoint(mAPIUrlFormat, true);
+                final Endpoint endpoint = TwitterAPIFactory.getOAuthSignInEndpoint(mAPIUrlFormat,
+                        mSameOAuthSigningUrl);
                 final Authorization auth = new OAuthAuthorization(mConsumerKey, mConsumerSecret);
-                final TwitterOAuth twitter = TwitterAPIFactory.getInstance(mActivity, endpoint,
+                final TwitterOAuth oauth = TwitterAPIFactory.getInstance(mActivity, endpoint,
                         auth, TwitterOAuth.class);
-                return SingleResponse.getInstance(twitter.getRequestToken(OAUTH_CALLBACK_OOB));
+                return SingleResponse.getInstance(oauth.getRequestToken(OAUTH_CALLBACK_OOB));
             } catch (final TwitterException e) {
                 return SingleResponse.getInstance(e);
             }
