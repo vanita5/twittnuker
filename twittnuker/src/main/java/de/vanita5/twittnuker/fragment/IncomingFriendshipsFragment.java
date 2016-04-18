@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.loader.IncomingFriendshipsLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
 public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment implements
@@ -54,7 +55,14 @@ public class IncomingFriendshipsFragment extends CursorSupportUsersListFragment 
     @Override
     protected ParcelableUsersAdapter onCreateAdapter(Context context, boolean compact) {
         final ParcelableUsersAdapter adapter = super.onCreateAdapter(context, compact);
-        adapter.setRequestClickListener(this);
+        final Bundle args = getArguments();
+        final UserKey accountKey = args.getParcelable(EXTRA_ACCOUNT_KEY);
+        if (accountKey != null && USER_TYPE_FANFOU_COM.equals(accountKey.getHost()) &&
+                Utils.isOfficialCredentials(context, accountKey)) {
+            adapter.setRequestClickListener(this);
+        } else {
+            adapter.setRequestClickListener(null);
+        }
         return adapter;
     }
 

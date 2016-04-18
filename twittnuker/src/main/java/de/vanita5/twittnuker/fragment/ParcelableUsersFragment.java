@@ -50,7 +50,6 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.ParcelUtils;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
 import java.util.List;
@@ -106,11 +105,7 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
     @Override
     protected ParcelableUsersAdapter onCreateAdapter(Context context, boolean compact) {
         final ParcelableUsersAdapter adapter = new ParcelableUsersAdapter(context);
-        if (Utils.isOfficialCredentials(context, Utils.getAccountKey(context, getArguments()))) {
-            adapter.setFollowClickListener(this);
-        } else {
-            adapter.setFollowClickListener(null);
-        }
+        adapter.setFollowClickListener(this);
         return adapter;
     }
 

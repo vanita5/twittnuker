@@ -100,6 +100,7 @@ import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticationException;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticityTokenException;
+import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.LoginVerificationCallback;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.LoginVerificationException;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.WrongUserPassException;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -832,7 +833,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
 
         }
 
-        class InputLoginVerificationCallback implements OAuthPasswordAuthenticator.LoginVerificationCallback {
+        class InputLoginVerificationCallback implements LoginVerificationCallback {
 
             boolean isChallengeFinished;
             String challengeResponse;
