@@ -30,6 +30,7 @@ import android.text.TextUtils;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.DataStoreUtils;
@@ -37,7 +38,7 @@ import de.vanita5.twittnuker.util.UriUtils;
 
 import java.util.ArrayList;
 
-public class UserKeyUtils {
+public class UserKeyUtils implements TwittnukerConstants {
 
     private UserKeyUtils() {
     }
@@ -78,24 +79,28 @@ public class UserKeyUtils {
     }
 
     public static String getUserHost(User user) {
-        if (isFanfouUser(user)) return TwittnukerConstants.USER_TYPE_FANFOU_COM;
-        return getUserHost(user.getOstatusUri(), TwittnukerConstants.USER_TYPE_TWITTER_COM);
+        if (isFanfouUser(user)) return USER_TYPE_FANFOU_COM;
+        return getUserHost(user.getStatusnetProfileUrl(), USER_TYPE_TWITTER_COM);
+    }
+
+    public static String getUserHost(ParcelableUser user) {
+        if (isFanfouUser(user)) return USER_TYPE_FANFOU_COM;
+        if (user.extras == null) return USER_TYPE_TWITTER_COM;
+
+        return getUserHost(user.extras.statusnet_profile_url, USER_TYPE_TWITTER_COM);
     }
 
     public static boolean isFanfouUser(User user) {
-        String url = user.getProfileImageUrlLarge();
-        if (url != null && isFanfouHost(getUserHost(url, "twitter.com"))) {
-            return true;
-        }
-        url = user.getProfileImageUrl();
-        if (url != null && isFanfouHost(getUserHost(url, "twitter.com"))) {
-            return true;
-        }
-        url = user.getProfileBackgroundImageUrl();
-        if (url != null && isFanfouHost(getUserHost(url, "twitter.com"))) {
-            return true;
-        }
-        return false;
+        return isFanfouUrl(user.getProfileImageUrlLarge()) || isFanfouUrl(user.getProfileImageUrl())
+                || isFanfouUrl(user.getProfileBackgroundImageUrl());
+    }
+
+    public static boolean isFanfouUser(ParcelableUser user) {
+        return isFanfouUrl(user.profile_image_url) || isFanfouUrl(user.profile_background_url);
+    }
+
+    static boolean isFanfouUrl(String url) {
+        return url != null && isFanfouHost(getUserHost(url, "twitter.com"));
     }
 
     private static boolean isFanfouHost(@NonNull String host) {
@@ -105,7 +110,7 @@ public class UserKeyUtils {
     @NonNull
     public static String getUserHost(@Nullable String uri, @Nullable String def) {
         if (def == null) {
-            def = TwittnukerConstants.USER_TYPE_TWITTER_COM;
+            def = USER_TYPE_TWITTER_COM;
         }
         if (uri == null) return def;
         final String authority = UriUtils.getAuthority(uri);

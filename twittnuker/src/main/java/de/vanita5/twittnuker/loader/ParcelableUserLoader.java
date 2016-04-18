@@ -33,6 +33,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import org.mariotaku.abstask.library.TaskStarter;
+import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.api.twitter.Twitter;
@@ -48,6 +49,7 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
+import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.task.UpdateAccountInfoTask;
 import de.vanita5.twittnuker.util.TwitterAPIFactory;
@@ -118,8 +120,17 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
                 where = Expression.equalsArgs(CachedUsers.USER_KEY);
                 whereArgs = new String[]{mUserKey.toString()};
             } else if (mScreenName != null) {
-                where = Expression.equalsArgs(CachedUsers.SCREEN_NAME);
-                whereArgs = new String[]{mScreenName};
+                final String host = mAccountKey.getHost();
+                if (host != null) {
+                    where = Expression.and(
+                            Expression.likeRaw(new Columns.Column(CachedUsers.USER_KEY), "'%@'||?"),
+                            Expression.equalsArgs(CachedUsers.SCREEN_NAME)
+                    );
+                    whereArgs = new String[]{host, mScreenName};
+                } else {
+                    where = Expression.equalsArgs(CachedUsers.SCREEN_NAME);
+                    whereArgs = new String[]{mScreenName};
+                }
             } else {
                 return SingleResponse.getInstance();
             }
@@ -127,12 +138,16 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
                     where.getSQL(), whereArgs, null);
             if (cur != null) {
                 try {
-                    if (cur.moveToFirst()) {
-                        final ParcelableUserCursorIndices indices = new ParcelableUserCursorIndices(cur);
+                    cur.moveToFirst();
+                    final ParcelableUserCursorIndices indices = new ParcelableUserCursorIndices(cur);
+                    while (!cur.isAfterLast()) {
                         final ParcelableUser user = indices.newObject(cur);
-                        user.account_key = accountKey;
-                        user.account_color = credentials.color;
-                        return SingleResponse.getInstance(user);
+                        if (TextUtils.equals(UserKeyUtils.getUserHost(user), user.key.getHost())) {
+                            user.account_key = accountKey;
+                            user.account_color = credentials.color;
+                            return SingleResponse.getInstance(user);
+                        }
+                        cur.moveToNext();
                     }
                 } finally {
                     cur.close();
