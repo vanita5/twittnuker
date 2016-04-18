@@ -28,10 +28,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -103,6 +105,12 @@ public class BrowserSignInActivity extends BaseActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browser_sign_in);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            //noinspection deprecation
+            CookieManager.getInstance().removeAllCookie();
+        } else {
+            CookieManager.getInstance().removeAllCookies(null);
+        }
         mWebView.setWebViewClient(new AuthorizationWebViewClient(this));
         mWebView.setVerticalScrollBarEnabled(false);
         mWebView.addJavascriptInterface(new InjectorJavaScriptInterface(this), "injector");
