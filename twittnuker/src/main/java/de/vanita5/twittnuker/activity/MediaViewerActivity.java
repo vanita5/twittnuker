@@ -868,6 +868,7 @@ public final class MediaViewerActivity extends BaseActivity implements Constants
         @Override
         protected void displayMedia(CacheDownloadLoader.Result result) {
             mVideoView.setVideoURI(result.cacheUri);
+            mVideoControl.setVisibility(View.GONE);
             setMediaViewVisible(true);
             final FragmentActivity activity = getActivity();
             if (activity != null) {
@@ -902,6 +903,7 @@ public final class MediaViewerActivity extends BaseActivity implements Constants
             mMediaPlayer = null;
             mVideoViewProgress.removeCallbacks(mVideoProgressRunnable);
             mVideoViewProgress.setVisibility(View.GONE);
+            mVideoControl.setVisibility(View.GONE);
             mMediaPlayerError = what;
             return true;
         }
@@ -923,12 +925,12 @@ public final class MediaViewerActivity extends BaseActivity implements Constants
         }
 
         private void updateVolume() {
+            final MediaPlayer mp = mMediaPlayer;
+            if (mp == null || mp.isPlaying()) return;
             final ImageButton b = mVolumeButton;
             if (b != null) {
                 b.setImageResource(mPlayAudio ? R.drawable.ic_action_speaker_max : R.drawable.ic_action_speaker_muted);
             }
-            final MediaPlayer mp = mMediaPlayer;
-            if (mp == null) return;
             if (mPlayAudio) {
                 mp.setVolume(1, 1);
             } else {
@@ -983,6 +985,7 @@ public final class MediaViewerActivity extends BaseActivity implements Constants
 
             mPlayPauseButton.setOnClickListener(this);
             mVolumeButton.setOnClickListener(this);
+            mVideoControl.setVisibility(View.GONE);
             startLoading(false);
             setMediaViewVisible(false);
             updateVolume();

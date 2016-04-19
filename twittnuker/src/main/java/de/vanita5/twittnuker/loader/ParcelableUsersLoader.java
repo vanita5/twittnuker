@@ -26,13 +26,13 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.text.TextUtils;
 
-import java.util.Collections;
-import java.util.List;
-
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
+
+import java.util.Collections;
+import java.util.List;
 
 public abstract class ParcelableUsersLoader extends AsyncTaskLoader<List<ParcelableUser>>
         implements IExtendedLoader, Constants {
@@ -69,8 +69,8 @@ public abstract class ParcelableUsersLoader extends AsyncTaskLoader<List<Parcela
     }
 
     protected boolean hasId(final String id) {
-        for (final ParcelableUser user : mData) {
-            if (TextUtils.equals(user.key.getId(), id)) return true;
+        for (int i = 0; i < mData.size(); i++) {
+            if (TextUtils.equals(mData.get(i).key.getId(), id)) return true;
         }
         return false;
     }
