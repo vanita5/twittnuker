@@ -50,8 +50,6 @@ import java.util.List;
 
 public class UserListMembersFragment extends CursorSupportUsersListFragment {
 
-    private ParcelableUserList mUserList;
-
     @Override
     public CursorSupportUsersLoader onCreateUsersLoader(final Context context,
                                                         @NonNull final Bundle args, boolean fromUser) {
@@ -157,6 +155,7 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment {
                 final ParcelableUsersAdapter adapter = getAdapter();
                 final List<ParcelableUser> newUsers = Arrays.asList(event.getUsers());
                 final List<ParcelableUser> users = adapter.getData();
+                if (users == null) return;
                 users.removeAll(newUsers);
                 users.addAll(0, newUsers);
                 for (int i = 0, j = users.size(); i < j; i++) {
@@ -169,6 +168,7 @@ public class UserListMembersFragment extends CursorSupportUsersListFragment {
                 final ParcelableUsersAdapter adapter = getAdapter();
                 final List<ParcelableUser> removedUsers = Arrays.asList(event.getUsers());
                 final List<ParcelableUser> users = adapter.getData();
+                if (users == null) return;
                 users.removeAll(removedUsers);
                 for (int i = 0, j = users.size(); i < j; i++) {
                     users.get(i).position = i;

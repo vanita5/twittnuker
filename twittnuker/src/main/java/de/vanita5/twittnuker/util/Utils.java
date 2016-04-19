@@ -53,6 +53,7 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.os.AsyncTask;
+import android.os.BadParcelableException;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -412,7 +413,12 @@ public final class Utils implements Constants {
         if (uri == null) return null;
         final Bundle args = new Bundle();
         if (extras != null) {
-            args.putAll(extras);
+            try {
+                args.putAll(extras);
+            } catch (BadParcelableException e) {
+                // When called by external app with wrong params
+                return null;
+            }
         }
         boolean isAccountIdRequired = true;
         switch (linkId) {
