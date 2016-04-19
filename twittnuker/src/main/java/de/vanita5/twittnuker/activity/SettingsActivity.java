@@ -110,6 +110,8 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
         mEntriesListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         mEntriesListView.setOnItemClickListener(this);
 
+        mSlidingPaneLayout.openPane();
+
         if (savedInstanceState == null) {
             String initialTag = getIntent().getStringExtra(EXTRA_INITIAL_TAG);
             int initialItem = -1, firstEntry = -1;
@@ -274,7 +276,8 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
         }
         ft.setBreadCrumbTitle(pe.title);
         ft.commit();
-        mSlidingPaneLayout.closePane();
+        //disable closing pane
+        //mSlidingPaneLayout.closePane();
     }
 
     static class EntriesAdapter extends BaseAdapter {
