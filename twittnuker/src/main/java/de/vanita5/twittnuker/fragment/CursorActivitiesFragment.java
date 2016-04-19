@@ -209,7 +209,9 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment {
             @Nullable
             @Override
             public long[] getMaxSortIds() {
-                return DataStoreUtils.getOldestActivityMaxSortPositions(getContext(),
+                final Context context = getContext();
+                if (context == null) return null;
+                return DataStoreUtils.getOldestActivityMaxSortPositions(context,
                         getContentUri(), getAccountKeys());
             }
 
@@ -244,7 +246,9 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment {
             @Nullable
             @Override
             public long[] getSinceSortIds() {
-                return DataStoreUtils.getNewestActivityMaxSortPositions(getContext(),
+                final Context context = getContext();
+                if (context == null) return null;
+                return DataStoreUtils.getNewestActivityMaxSortPositions(context,
                         getContentUri(), getAccountKeys());
             }
 
@@ -267,7 +271,9 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment {
     }
 
     protected String[] getNewestActivityIds(UserKey[] accountKeys) {
-        return DataStoreUtils.getNewestActivityMaxPositions(getActivity(), getContentUri(), accountKeys);
+        final Context context = getContext();
+        if (context == null) return null;
+        return DataStoreUtils.getNewestActivityMaxPositions(context, getContentUri(), accountKeys);
     }
 
     protected abstract int getNotificationType();
@@ -283,7 +289,9 @@ public abstract class CursorActivitiesFragment extends AbsActivitiesFragment {
     }
 
     protected String[] getOldestActivityIds(UserKey[] accountKeys) {
-        return DataStoreUtils.getOldestActivityMaxPositions(getActivity(), getContentUri(), accountKeys);
+        final Context context = getContext();
+        if (context == null) return null;
+        return DataStoreUtils.getOldestActivityMaxPositions(context, getContentUri(), accountKeys);
     }
 
     protected abstract boolean isFilterEnabled();
