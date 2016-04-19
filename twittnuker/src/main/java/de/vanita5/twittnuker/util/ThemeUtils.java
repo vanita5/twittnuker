@@ -554,7 +554,7 @@ public class ThemeUtils implements Constants {
     }
 
     public static int getLocalNightMode(SharedPreferences preferences) {
-        switch (Utils.getNonEmptyString(preferences, KEY_THEME, VALUE_THEME_NAME_LIGHT)) {
+        switch (Utils.getNonEmptyString(preferences, KEY_THEME, VALUE_THEME_NAME_AUTO)) {
             case VALUE_THEME_NAME_DARK: {
                 return AppCompatDelegate.MODE_NIGHT_YES;
             }
