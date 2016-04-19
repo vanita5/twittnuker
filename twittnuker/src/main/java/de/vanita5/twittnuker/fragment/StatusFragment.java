@@ -411,7 +411,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     @Override
     public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int statusPosition) {
         final ParcelableStatus status = mStatusAdapter.getStatus(statusPosition);
-        if (status == null) return;
+        if (status == null || media == null) return;
         IntentUtils.openMedia(getActivity(), status, media, null,
                 mPreferences.getBoolean(KEY_NEW_DOCUMENT_API));
 
@@ -454,7 +454,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     @Override
     public void onMediaClick(View view, ParcelableMedia media, UserKey accountKey, long extraId) {
         final ParcelableStatus status = mStatusAdapter.getStatus();
-        if (status == null) return;
+        if (status == null || media == null) return;
         IntentUtils.openMediaDirectly(getActivity(), accountKey, status, media, null,
                 mPreferences.getBoolean(KEY_NEW_DOCUMENT_API));
     }
