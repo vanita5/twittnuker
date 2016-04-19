@@ -481,6 +481,8 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         mReadStateManager.registerOnSharedPreferenceChangeListener(mReadStateChangeListener);
         updateUnreadCount();
 
+        registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
+
         if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
             startStreamingService();
         } else {
@@ -506,19 +508,11 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         invalidateOptionsMenu();
         updateActionsButton();
 
-        registerReceiver(mGCMRegistrationReceiver, new IntentFilter(GCM_REGISTRATION_COMPLETE));
-
         if (mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) {
             startStreamingService();
         } else {
             stopStreamingService();
         }
-    }
-
-    @Override
-    protected void onPause() {
-        unregisterReceiver(mGCMRegistrationReceiver);
-        super.onPause();
     }
 
     @Override
@@ -529,6 +523,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
         final ContentResolver resolver = getContentResolver();
         resolver.unregisterContentObserver(mAccountChangeObserver);
         mPreferences.edit().putInt(KEY_SAVED_TAB_POSITION, mViewPager.getCurrentItem()).apply();
+        unregisterReceiver(mGCMRegistrationReceiver);
 
         super.onStop();
     }
