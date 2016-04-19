@@ -84,6 +84,8 @@ public class TwidereDns implements Constants, Dns {
         } catch (IOException e) {
             if (e instanceof UnknownHostException) throw (UnknownHostException) e;
             throw new UnknownHostException("Unable to resolve address " + e.getMessage());
+        } catch (SecurityException e) {
+            throw new UnknownHostException("Security exception" + e.getMessage());
         }
     }
 
@@ -93,6 +95,8 @@ public class TwidereDns implements Constants, Dns {
         } catch (IOException e) {
             if (e instanceof UnknownHostException) throw (UnknownHostException) e;
             throw new UnknownHostException("Unable to resolve address " + e.getMessage());
+        } catch (SecurityException e) {
+            throw new UnknownHostException("Security exception" + e.getMessage());
         }
     }
 
@@ -103,7 +107,7 @@ public class TwidereDns implements Constants, Dns {
 
     @NonNull
     private List<InetAddress> resolveInternal(final String originalHost, final String host, final int depth,
-                                          final boolean useResolver) throws IOException {
+                                              final boolean useResolver) throws IOException, SecurityException {
         final TimingLogger logger = new TimingLogger(RESOLVER_LOGTAG, "resolve");
         // Return if host is an address
         final List<InetAddress> fromAddressString = fromAddressString(originalHost, host);
