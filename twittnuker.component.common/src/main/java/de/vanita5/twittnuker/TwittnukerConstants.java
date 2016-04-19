@@ -143,6 +143,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String QUERY_PARAM_TIMESTAMP = "timestamp";
     String QUERY_PARAM_FROM_NOTIFICATION = "from_notification";
     String QUERY_PARAM_NOTIFICATION_TYPE = "notification_type";
+    String QUERY_PARAM_PREVIEW = "preview";
 
     String DEFAULT_PROTOCOL = PROTOCOL_HTTPS;
 
