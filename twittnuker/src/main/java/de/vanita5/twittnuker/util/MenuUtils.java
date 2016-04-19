@@ -30,6 +30,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -55,8 +56,8 @@ import de.vanita5.twittnuker.fragment.AddStatusFilterDialogFragment;
 import de.vanita5.twittnuker.fragment.DestroyStatusDialogFragment;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
 import de.vanita5.twittnuker.graphic.PaddingDrawable;
-import de.vanita5.twittnuker.menu.SupportStatusShareProvider;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
+import de.vanita5.twittnuker.menu.SupportStatusShareProvider;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
@@ -320,9 +321,10 @@ public class MenuUtils implements Constants {
                 break;
             }
             case R.id.open_in_browser: {
-                final Intent intent = new Intent(Intent.ACTION_VIEW, LinkCreator.getStatusWebLink(status));
+                final Uri uri = LinkCreator.getStatusWebLink(status);
+                final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                intent.setPackage(IntentUtils.getDefaultBrowserPackage(context));
+                intent.setPackage(IntentUtils.getDefaultBrowserPackage(context, uri));
 //                IntentSupport.setSelector(intent, new Intent(Intent.ACTION_VIEW).addCategory(IntentSupport.CATEGORY_APP_BROWSER));
                 context.startActivity(intent);
                 break;
