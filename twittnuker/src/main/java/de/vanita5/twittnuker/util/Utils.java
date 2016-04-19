@@ -2175,7 +2175,8 @@ public final class Utils implements Constants {
     public static boolean isMediaPreviewEnabled(Context context, SharedPreferencesWrapper preferences) {
         if (!preferences.getBoolean(KEY_MEDIA_PREVIEW)) return false;
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return !preferences.getBoolean(KEY_BANDWIDTH_SAVING_MODE) || !ConnectivityManagerCompat.isActiveNetworkMetered(cm);
+        final NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+        return !(networkInfo.getType() == ConnectivityManager.TYPE_MOBILE && preferences.getBoolean(KEY_BANDWIDTH_SAVING_MODE));
     }
 
     static class UtilsL {
