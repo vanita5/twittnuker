@@ -36,6 +36,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.BugReporter;
 import de.vanita5.twittnuker.util.IntentUtils;
@@ -84,6 +85,7 @@ public class WebLinkHandlerActivity extends Activity implements Constants {
         super.onCreate(savedInstanceState);
         final PackageManager packageManager = getPackageManager();
         final Intent intent = getIntent();
+        intent.setExtrasClassLoader(TwittnukerApplication.class.getClassLoader());
         final Uri uri = intent.getData();
         if (uri == null || uri.getHost() == null) {
             finish();

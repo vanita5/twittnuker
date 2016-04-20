@@ -502,8 +502,8 @@
         <provider
             android:name=".provider.ShareProvider"
             android:authorities="twittnuker.share"
-            android:exported="false"
-            android:grantUriPermissions="true"/>
+            android:exported="true"
+            tools:ignore="ExportedContentProvider"/>
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

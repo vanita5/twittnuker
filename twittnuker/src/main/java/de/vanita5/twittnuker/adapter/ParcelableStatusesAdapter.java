@@ -116,7 +116,8 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
         // Don't show gap if it's last item
         if (dataPosition == statusCount - 1) return false;
         if (mData instanceof ObjectCursor) {
-            final Cursor cursor = ((ObjectCursor) mData).getCursor(dataPosition);
+            final Cursor cursor = ((ObjectCursor) mData).getCursor();
+            if (!cursor.moveToPosition(dataPosition)) return false;
             final ParcelableStatusCursorIndices indices = (ParcelableStatusCursorIndices) ((ObjectCursor) mData).getIndices();
             return cursor.getShort(indices.is_gap) == 1;
         }
@@ -148,7 +149,8 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
         int dataPosition = adapterPosition - getStatusStartIndex();
         if (dataPosition < 0 || dataPosition >= getStatusCount()) return adapterPosition;
         if (mData instanceof ObjectCursor) {
-            final Cursor cursor = ((ObjectCursor) mData).getCursor(dataPosition);
+            final Cursor cursor = ((ObjectCursor) mData).getCursor();
+            if (!cursor.moveToPosition(dataPosition)) return -1;
             final ParcelableStatusCursorIndices indices = (ParcelableStatusCursorIndices) ((ObjectCursor) mData).getIndices();
             final UserKey accountKey = UserKey.valueOf(cursor.getString(indices.account_key));
             final String id = cursor.getString(indices.id);
@@ -163,7 +165,8 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
         int dataPosition = adapterPosition - getStatusStartIndex();
         if (dataPosition < 0 || dataPosition >= getRawStatusCount()) return null;
         if (mData instanceof ObjectCursor) {
-            final Cursor cursor = ((ObjectCursor) mData).getCursor(dataPosition);
+            final Cursor cursor = ((ObjectCursor) mData).getCursor();
+            if (!cursor.moveToPosition(dataPosition)) return null;
             final ParcelableStatusCursorIndices indices = (ParcelableStatusCursorIndices) ((ObjectCursor) mData).getIndices();
             return cursor.getString(indices.id);
         }
@@ -175,7 +178,8 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
         int dataPosition = adapterPosition - getStatusStartIndex();
         if (dataPosition < 0 || dataPosition >= getRawStatusCount()) return -1;
         if (mData instanceof ObjectCursor) {
-            final Cursor cursor = ((ObjectCursor) mData).getCursor(dataPosition);
+            final Cursor cursor = ((ObjectCursor) mData).getCursor();
+            if (!cursor.moveToPosition(dataPosition)) return -1;
             final ParcelableStatusCursorIndices indices = (ParcelableStatusCursorIndices) ((ObjectCursor) mData).getIndices();
             return cursor.getLong(indices.timestamp);
         }
@@ -187,7 +191,8 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
         int dataPosition = adapterPosition - getStatusStartIndex();
         if (dataPosition < 0 || dataPosition >= getRawStatusCount()) return -1;
         if (mData instanceof ObjectCursor) {
-            final Cursor cursor = ((ObjectCursor) mData).getCursor(dataPosition);
+            final Cursor cursor = ((ObjectCursor) mData).getCursor();
+            if (!cursor.moveToPosition(dataPosition)) return -1;
             final ParcelableStatusCursorIndices indices = (ParcelableStatusCursorIndices) ((ObjectCursor) mData).getIndices();
             final long positionKey = cursor.getLong(indices.position_key);
             if (positionKey > 0) return positionKey;
@@ -204,7 +209,8 @@ public abstract class ParcelableStatusesAdapter extends LoadMoreSupportAdapter<R
         int dataPosition = adapterPosition - getStatusStartIndex();
         if (dataPosition < 0 || dataPosition >= getRawStatusCount()) return null;
         if (mData instanceof ObjectCursor) {
-            final Cursor cursor = ((ObjectCursor) mData).getCursor(dataPosition);
+            final Cursor cursor = ((ObjectCursor) mData).getCursor();
+            if (!cursor.moveToPosition(dataPosition)) return null;
             final ParcelableStatusCursorIndices indices = (ParcelableStatusCursorIndices) ((ObjectCursor) mData).getIndices();
             return UserKey.valueOf(cursor.getString(indices.account_key));
         }

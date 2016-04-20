@@ -32,6 +32,7 @@ import android.support.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.WebLinkHandlerActivity;
+import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.UserKey;
@@ -181,6 +182,7 @@ public class OnLinkClickHandler implements OnLinkClickListener, Constants {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, WebLinkHandlerActivity.class);
         intent.putExtra(EXTRA_ACCOUNT_KEY, accountKey);
+        intent.setExtrasClassLoader(TwittnukerApplication.class.getClassLoader());
         try {
             context.startActivity(intent);
         } catch (final ActivityNotFoundException e) {
