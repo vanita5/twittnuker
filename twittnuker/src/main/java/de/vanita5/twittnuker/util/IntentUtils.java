@@ -254,7 +254,7 @@ public class IntentUtils implements Constants {
         intent.setData(testBuilder.build());
 
         final ComponentName componentName = intent.resolveActivity(context.getPackageManager());
-        if (componentName == null) return null;
+        if (componentName == null || componentName.getClassName() == null) return null;
         return componentName.getPackageName();
     }
 
