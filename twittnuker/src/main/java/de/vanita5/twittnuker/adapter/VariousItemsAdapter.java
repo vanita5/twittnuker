@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.view.holder.StatusViewHolder;
@@ -58,7 +59,10 @@ public class VariousItemsAdapter extends LoadMoreSupportAdapter<RecyclerView.Vie
         mCardBackgroundColor = ThemeUtils.getCardBackgroundColor(context,
                 ThemeUtils.getThemeBackgroundOption(context),
                 ThemeUtils.getUserThemeBackgroundAlpha(context));
-        mDummyAdapter = new DummyItemAdapter(context, new TwidereLinkify(null), this);
+        final StatusAdapterLinkClickHandler<Object> handler = new StatusAdapterLinkClickHandler<>(context,
+                mPreferences);
+        mDummyAdapter = new DummyItemAdapter(context, new TwidereLinkify(handler), this);
+        handler.setAdapter(mDummyAdapter);
         mDummyAdapter.updateOptions();
         setLoadMoreIndicatorPosition(IndicatorPosition.NONE);
     }

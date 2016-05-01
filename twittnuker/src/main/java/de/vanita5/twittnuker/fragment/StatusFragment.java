@@ -1724,8 +1724,10 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
             } else {
                 mCardLayoutResource = R.layout.card_item_status;
             }
-            mTwidereLinkify = new TwidereLinkify(new StatusAdapterLinkClickHandler<>(this,
-                    mPreferences));
+            final StatusAdapterLinkClickHandler<List<ParcelableStatus>> listener = new StatusAdapterLinkClickHandler<>(context,
+                    mPreferences);
+            listener.setAdapter(this);
+            mTwidereLinkify = new TwidereLinkify(listener);
         }
 
         public int findPositionById(long itemId) {
