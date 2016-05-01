@@ -28,11 +28,14 @@ import android.os.Parcelable;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
+import com.hannesdorfmann.parcelableplease.annotation.Bagger;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import de.vanita5.twittnuker.api.twitter.model.util.ParcelMapBagger;
 
 /**
  * Created by mariotaku on 15/5/7.
@@ -48,8 +51,9 @@ public class CardEntity implements Parcelable {
     String url;
 
     @JsonField(name = "binding_values")
-    HashMap<String, RawBindingValue> rawBindingValues;
     @ParcelableNoThanks
+    Map<String, RawBindingValue> rawBindingValues;
+    @Bagger(BindingValueMapBagger.class)
     Map<String, BindingValue> bindingValues;
 
     public String getName() {
@@ -91,7 +95,7 @@ public class CardEntity implements Parcelable {
                 '}';
     }
 
-    public interface BindingValue {
+    public interface BindingValue extends Parcelable {
 
         String TYPE_STRING = "STRING";
         String TYPE_IMAGE = "IMAGE";
@@ -390,4 +394,10 @@ public class CardEntity implements Parcelable {
             return new CardEntity[size];
         }
     };
+
+    public static class BindingValueMapBagger extends ParcelMapBagger<BindingValue> {
+        public BindingValueMapBagger() {
+            super(BindingValue.class);
+        }
+    }
 }
