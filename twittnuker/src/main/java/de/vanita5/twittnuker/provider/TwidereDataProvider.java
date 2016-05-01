@@ -1275,7 +1275,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                         activity.status_quoted_user_key)) {
                     continue;
                 }
-                final String[] filteredUserIds = DataStoreUtils.getFilteredUserIds(context);
+                final UserKey[] filteredUserIds = DataStoreUtils.getFilteredUserIds(context);
                 if (timestamp == -1) {
                     timestamp = activity.timestamp;
                 }

@@ -50,7 +50,7 @@ public class ParcelableActivityUtils {
      * @param followingOnly   Limit following users in sources
      * @return true if source ids changed, false otherwise
      */
-    public static boolean initAfterFilteredSourceIds(ParcelableActivity activity, String[] filteredUserIds,
+    public static boolean initAfterFilteredSourceIds(ParcelableActivity activity, UserKey[] filteredUserIds,
                                                      boolean followingOnly) {
         if (activity.sources == null) return false;
         if (activity.after_filtered_source_ids != null) return false;
@@ -60,7 +60,8 @@ public class ParcelableActivityUtils {
                 if (followingOnly && !user.is_following) {
                     continue;
                 }
-                if (!ArrayUtils.contains(filteredUserIds, user.key.getId())) {
+
+                if (!ArrayUtils.contains(filteredUserIds, user.key)) {
                     list.add(user.key);
                 }
             }
