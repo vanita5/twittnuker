@@ -22,9 +22,14 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +37,9 @@ import java.util.Map;
 /**
  * Created by mariotaku on 15/5/7.
  */
+@ParcelablePlease
 @JsonObject
-public class CardEntity {
+public class CardEntity implements Parcelable {
 
     @JsonField(name = "name")
     String name;
@@ -42,7 +48,8 @@ public class CardEntity {
     String url;
 
     @JsonField(name = "binding_values")
-    Map<String, RawBindingValue> rawBindingValues;
+    HashMap<String, RawBindingValue> rawBindingValues;
+    @ParcelableNoThanks
     Map<String, BindingValue> bindingValues;
 
     public String getName() {
@@ -93,8 +100,9 @@ public class CardEntity {
 
     }
 
+    @ParcelablePlease
     @JsonObject
-    public static class ImageValue implements BindingValue {
+    public static class ImageValue implements BindingValue, Parcelable {
         @JsonField(name = "width")
         int width;
         @JsonField(name = "height")
@@ -122,15 +130,44 @@ public class CardEntity {
                     ", url='" + url + '\'' +
                     '}';
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            CardEntity$ImageValueParcelablePlease.writeToParcel(this, dest, flags);
+        }
+
+        public static final Creator<ImageValue> CREATOR = new Creator<ImageValue>() {
+            @Override
+            public ImageValue createFromParcel(Parcel source) {
+                ImageValue target = new ImageValue();
+                CardEntity$ImageValueParcelablePlease.readFromParcel(target, source);
+                return target;
+            }
+
+            @Override
+            public ImageValue[] newArray(int size) {
+                return new ImageValue[size];
+            }
+        };
     }
 
-    public static class BooleanValue implements BindingValue {
+    @ParcelablePlease
+    public static class BooleanValue implements BindingValue, Parcelable {
 
         public BooleanValue(boolean value) {
             this.value = value;
         }
 
-        private boolean value;
+        boolean value;
+
+        BooleanValue() {
+
+        }
 
         public boolean getValue() {
             return value;
@@ -142,13 +179,42 @@ public class CardEntity {
                     "value=" + value +
                     '}';
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            CardEntity$BooleanValueParcelablePlease.writeToParcel(this, dest, flags);
+        }
+
+        public static final Creator<BooleanValue> CREATOR = new Creator<BooleanValue>() {
+            @Override
+            public BooleanValue createFromParcel(Parcel source) {
+                BooleanValue target = new BooleanValue();
+                CardEntity$BooleanValueParcelablePlease.readFromParcel(target, source);
+                return target;
+            }
+
+            @Override
+            public BooleanValue[] newArray(int size) {
+                return new BooleanValue[size];
+            }
+        };
     }
 
-    public static class StringValue implements BindingValue {
-        private final String value;
+    @ParcelablePlease
+    public static class StringValue implements BindingValue, Parcelable {
+        String value;
 
         public StringValue(String value) {
             this.value = value;
+        }
+
+        StringValue() {
+
         }
 
         public String getValue() {
@@ -161,10 +227,35 @@ public class CardEntity {
                     "value='" + value + '\'' +
                     '}';
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            CardEntity$StringValueParcelablePlease.writeToParcel(this, dest, flags);
+        }
+
+        public static final Creator<StringValue> CREATOR = new Creator<StringValue>() {
+            @Override
+            public StringValue createFromParcel(Parcel source) {
+                StringValue target = new StringValue();
+                CardEntity$StringValueParcelablePlease.readFromParcel(target, source);
+                return target;
+            }
+
+            @Override
+            public StringValue[] newArray(int size) {
+                return new StringValue[size];
+            }
+        };
     }
 
+    @ParcelablePlease
     @JsonObject
-    public static class UserValue implements BindingValue {
+    public static class UserValue implements BindingValue, Parcelable {
 
         @JsonField(name = "id")
         long userId;
@@ -179,10 +270,35 @@ public class CardEntity {
                     "userId=" + userId +
                     '}';
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            CardEntity$UserValueParcelablePlease.writeToParcel(this, dest, flags);
+        }
+
+        public static final Creator<UserValue> CREATOR = new Creator<UserValue>() {
+            @Override
+            public UserValue createFromParcel(Parcel source) {
+                UserValue target = new UserValue();
+                CardEntity$UserValueParcelablePlease.readFromParcel(target, source);
+                return target;
+            }
+
+            @Override
+            public UserValue[] newArray(int size) {
+                return new UserValue[size];
+            }
+        };
     }
 
+    @ParcelablePlease
     @JsonObject
-    public static class RawBindingValue {
+    public static class RawBindingValue implements Parcelable {
 
         @JsonField(name = "type")
         String type;
@@ -225,5 +341,53 @@ public class CardEntity {
                     ", userValue=" + userValue +
                     '}';
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            CardEntity$RawBindingValueParcelablePlease.writeToParcel(this, dest, flags);
+        }
+
+        public static final Creator<RawBindingValue> CREATOR = new Creator<RawBindingValue>() {
+            @Override
+            public RawBindingValue createFromParcel(Parcel source) {
+                RawBindingValue target = new RawBindingValue();
+                CardEntity$RawBindingValueParcelablePlease.readFromParcel(target, source);
+                return target;
+            }
+
+            @Override
+            public RawBindingValue[] newArray(int size) {
+                return new RawBindingValue[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        CardEntityParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static final Creator<CardEntity> CREATOR = new Creator<CardEntity>() {
+        @Override
+        public CardEntity createFromParcel(Parcel source) {
+            CardEntity target = new CardEntity();
+            CardEntityParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        @Override
+        public CardEntity[] newArray(int size) {
+            return new CardEntity[size];
+        }
+    };
 }

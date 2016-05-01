@@ -30,7 +30,6 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
-import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
 
 @JsonObject
@@ -89,12 +88,14 @@ public class ParcelableUserMention implements Parcelable {
     }
 
     public static final Creator<ParcelableUserMention> CREATOR = new Creator<ParcelableUserMention>() {
+        @Override
         public ParcelableUserMention createFromParcel(Parcel source) {
             ParcelableUserMention target = new ParcelableUserMention();
             ParcelableUserMentionParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
+        @Override
         public ParcelableUserMention[] newArray(int size) {
             return new ParcelableUserMention[size];
         }

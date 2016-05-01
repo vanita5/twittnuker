@@ -26,8 +26,6 @@ import android.graphics.Color;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
 
-import java.util.Locale;
-
 import static android.text.TextUtils.isEmpty;
 
 public final class ParseUtils implements TwittnukerConstants {

@@ -280,14 +280,17 @@ public class TwitterException extends Exception implements TwitterResponse, Http
             this.code = -1;
         }
 
+        @Override
         public int getCode() {
             return code;
         }
 
+        @Override
         public String getRequest() {
             return request;
         }
 
+        @Override
         public String getMessage() {
             return message;
         }
