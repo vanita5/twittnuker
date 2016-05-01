@@ -577,11 +577,7 @@ public final class Utils implements Constants {
                 break;
             }
             case LINK_ID_DIRECT_MESSAGES: {
-                if (BuildConfig.DEBUG) {
-                    fragment = new MessagesEntriesFragment();
-                } else {
-                    fragment = new DirectMessagesFragment();
-                }
+                fragment = new DirectMessagesFragment();
                 break;
             }
             case LINK_ID_INTERACTIONS: {

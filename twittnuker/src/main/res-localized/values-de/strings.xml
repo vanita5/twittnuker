@@ -701,6 +701,7 @@
     <string name="invalid_list_name">Muss mit einem Buchstaben beginnen und darf nur aus Buchstaben, Ziffern, \"-\", oder \"_\" bestehen.</string>
     <string name="delete_conversation">Unterhaltung löschen</string>
     <string name="delete_conversation_confirm_message">Alle Nachrichten dieser Unterhaltung löschen?</string>
+    <string name="delete_message_confirm_message">Nachricht löschen?</string>
     <string name="name_first_summary_on">Name zuerst anzeigen</string>
     <string name="name_first_summary_off">\@Screenname zuerst anzeigen</string>
     <string name="comment_hint">Kommentar&#8230;</string>
