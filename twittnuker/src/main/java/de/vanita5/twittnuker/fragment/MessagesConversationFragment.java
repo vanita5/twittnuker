@@ -116,6 +116,7 @@ import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.view.ComposeEditText;
+import de.vanita5.twittnuker.view.ExtendedRecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,7 +125,6 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import de.vanita5.twittnuker.view.ExtendedRecyclerView;
 import me.uucky.colorpicker.internal.EffectViewHelper;
 
 import static de.vanita5.twittnuker.util.Utils.buildDirectMessageConversationUri;
@@ -495,6 +495,7 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         if (account != null) {
             mAccount = account;
             updateRecipientInfo();
+            updateAccount();
         }
     }
 
@@ -638,7 +639,17 @@ public class MessagesConversationFragment extends BaseSupportFragment implements
         AsyncTaskUtils.executeTask(new SetReadStateTask(getActivity(), account, recipient));
         updateActionBar();
         updateRecipientInfo();
+        updateAccount();
         mEditText.requestFocus();
+    }
+
+    private void updateAccount() {
+        if (mAccount == null) return;
+        if (Utils.isOfficialCredentials(getContext(), mAccount)) {
+            mAddImageButton.setVisibility(View.VISIBLE);
+        } else {
+            mAddImageButton.setVisibility(View.GONE);
+        }
     }
 
     public boolean isShowingConversation() {

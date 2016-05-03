@@ -80,7 +80,8 @@
                 android:color="?android:textColorSecondary"
                 android:contentDescription="@string/add_image"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_action_gallery"/>
+                android:src="@drawable/ic_action_gallery"
+                android:visibility="gone"/>
 
             <de.vanita5.twittnuker.view.IconActionView
                 android:id="@+id/send"
@@ -99,6 +100,7 @@
                 android:id="@+id/edit_text_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignWithParentIfMissing="true"
                 android:layout_gravity="end"
                 android:layout_toEndOf="@+id/add_image"
                 android:layout_toLeftOf="@+id/send"

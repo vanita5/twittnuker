@@ -34,6 +34,7 @@ public class ListViewScrollHandler extends ContentScrollHandler implements AbsLi
     @Nullable
     private AbsListView.OnScrollListener mOnScrollListener;
     private int mDy;
+    private int mOldState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
 
     public ListViewScrollHandler(@NonNull ContentListSupport contentListSupport, @Nullable ViewCallback viewCallback) {
         super(contentListSupport, viewCallback);
@@ -53,7 +54,8 @@ public class ListViewScrollHandler extends ContentScrollHandler implements AbsLi
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         mCalculator.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-        handleScroll(mDy, getScrollState(), SCROLL_STATE_IDLE);
+        final int scrollState = getScrollState();
+        handleScroll(mDy, scrollState, mOldState, SCROLL_STATE_IDLE);
         if (mOnScrollListener != null) {
             mOnScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
         }
@@ -75,7 +77,9 @@ public class ListViewScrollHandler extends ContentScrollHandler implements AbsLi
     @Override
     public void onScrollDistanceChanged(int delta, int total) {
         mDy = -delta;
-        handleScroll(mDy, getScrollState(), SCROLL_STATE_IDLE);
+        final int scrollState = getScrollState();
+        handleScroll(mDy, scrollState, mOldState, SCROLL_STATE_IDLE);
+        mOldState = scrollState;
     }
 
     public static class ListViewCallback implements ViewCallback {

@@ -34,4 +34,8 @@ public interface DirectMessagesResources {
                                           @Param("in_reply_to_id") String inReplyToId)
             throws TwitterException;
 
+    @POST("/direct_messages/new.json")
+    DirectMessage sendFanfouDirectMessage(@Param("user") String user, @Param("text") String text)
+            throws TwitterException;
+
 }
