@@ -36,6 +36,8 @@ import android.view.KeyEvent;
 
 import com.squareup.otto.Subscribe;
 
+import org.mariotaku.commons.parcel.ParcelUtils;
+
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;

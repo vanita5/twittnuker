@@ -42,6 +42,7 @@ import de.vanita5.twittnuker.adapter.DummyItemAdapter;
 import de.vanita5.twittnuker.adapter.VariousItemsAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
+import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.IntentUtils;
