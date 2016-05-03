@@ -48,7 +48,6 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
-import de.vanita5.twittnuker.util.ParcelUtils;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
 import de.vanita5.twittnuker.view.holder.UserViewHolder;
 
@@ -230,7 +229,7 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
             final ParcelableUsersAdapter adapter = getAdapter();
             final int position = findPosition(adapter, event.getAccountKey(), event.getUserKey());
             final List<ParcelableUser> data = adapter.getData();
-            if (position < 0 || position >= data.size()) return;
+            if (data == null || position < 0 || position >= data.size()) return;
             if (shouldRemoveUser(position, event)) {
                 data.remove(position);
                 adapter.notifyItemRemoved(position);
