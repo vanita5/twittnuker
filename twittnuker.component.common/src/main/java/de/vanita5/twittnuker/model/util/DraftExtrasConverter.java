@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.model.draft.ActionExtra;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
-import de.vanita5.twittnuker.util.LoganSquareMapperFinder;
+import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;

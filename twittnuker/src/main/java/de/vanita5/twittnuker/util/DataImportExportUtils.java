@@ -38,6 +38,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 
+import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 import org.mariotaku.library.objectcursor.ObjectCursor;
 
 import de.vanita5.twittnuker.Constants;

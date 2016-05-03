@@ -30,11 +30,11 @@ import android.support.annotation.StringDef;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
+import org.mariotaku.commons.objectcursor.LoganSquareCursorFieldConverter;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
 import de.vanita5.twittnuker.model.draft.ActionExtra;
 import de.vanita5.twittnuker.model.util.DraftExtrasConverter;
-import de.vanita5.twittnuker.model.util.LoganSquareCursorFieldConverter;
 import de.vanita5.twittnuker.model.util.UserKeysCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 

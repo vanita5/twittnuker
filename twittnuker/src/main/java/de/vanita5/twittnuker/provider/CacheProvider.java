@@ -42,7 +42,7 @@ import org.mariotaku.restfu.RestFuUtils;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.CacheMetadata;
 import de.vanita5.twittnuker.task.SaveFileTask;
-import de.vanita5.twittnuker.util.LoganSquareMapperFinder;
+import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 

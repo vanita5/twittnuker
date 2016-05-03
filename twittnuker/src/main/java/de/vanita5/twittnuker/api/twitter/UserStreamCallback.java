@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.Warning;
 import de.vanita5.twittnuker.api.twitter.util.CRLFLineReader;
-import de.vanita5.twittnuker.util.LoganSquareMapperFinder;
+import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

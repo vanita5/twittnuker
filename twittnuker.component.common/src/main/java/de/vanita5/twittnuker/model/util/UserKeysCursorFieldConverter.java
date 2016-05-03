@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.model.util;
 
+import org.mariotaku.commons.objectcursor.AbsArrayCursorFieldConverter;
 import de.vanita5.twittnuker.model.UserKey;
 
 public class UserKeysCursorFieldConverter extends AbsArrayCursorFieldConverter<UserKey> {

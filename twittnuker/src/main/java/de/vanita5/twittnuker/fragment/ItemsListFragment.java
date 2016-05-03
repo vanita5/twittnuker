@@ -96,6 +96,14 @@ public class ItemsListFragment extends AbsContentListRecyclerViewFragment<Variou
                 if (view == null) return;
                 getRecyclerView().showContextMenuForChild(view);
             }
+
+            @Override
+            public void onMediaClick(IStatusViewHolder holder, View view, ParcelableMedia media, int statusPosition) {
+                final ParcelableStatus status = dummyItemAdapter.getStatus(statusPosition);
+                if (status == null || media == null) return;
+                IntentUtils.openMedia(getActivity(), status, media, null,
+                        mPreferences.getBoolean(KEY_NEW_DOCUMENT_API));
+            }
         });
         dummyItemAdapter.setUserClickListener(new IUsersAdapter.SimpleUserClickListener() {
             @Override

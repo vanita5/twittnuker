@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.api.twitter.model.ResponseCode;
 import de.vanita5.twittnuker.api.twitter.model.TwitterResponse;
-import de.vanita5.twittnuker.util.LoganSquareMapperFinder;
+import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
