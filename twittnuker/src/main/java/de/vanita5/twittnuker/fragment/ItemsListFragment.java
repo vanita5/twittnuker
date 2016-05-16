@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -104,6 +105,16 @@ public class ItemsListFragment extends AbsContentListRecyclerViewFragment<Variou
                 if (status == null || media == null) return;
                 IntentUtils.openMedia(getActivity(), status, media, null,
                         mPreferences.getBoolean(KEY_NEW_DOCUMENT_API));
+            }
+
+            @Override
+            public void onUserProfileClick(IStatusViewHolder holder, int position) {
+                final FragmentActivity activity = getActivity();
+                final ParcelableStatus status = dummyItemAdapter.getStatus(position);
+                if (status == null) return;
+                IntentUtils.openUserProfile(activity, status.account_key, status.user_key,
+                        status.user_screen_name, null, mPreferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                        UserFragment.Referral.TIMELINE_STATUS);
             }
         });
         dummyItemAdapter.setUserClickListener(new IUsersAdapter.SimpleUserClickListener() {

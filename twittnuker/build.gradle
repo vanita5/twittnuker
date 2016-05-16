@@ -3,10 +3,13 @@ import fr.avianey.androidsvgdrawable.gradle.SvgDrawableTask
 import java.text.SimpleDateFormat
 
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
-apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'androidsvgdrawable'
+
+// START Non-free services
+apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'
+// END Non-free services
 
 buildscript {
     repositories {
