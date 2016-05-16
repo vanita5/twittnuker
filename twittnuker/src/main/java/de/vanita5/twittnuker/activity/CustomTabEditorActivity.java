@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
-import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.ExtraConfiguration;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -437,7 +437,7 @@ public class CustomTabEditorActivity extends BaseActivity implements OnClickList
         return INTENT_ACTION_EDIT_TAB.equals(getIntent().getAction());
     }
 
-    public static class SecondaryFieldEditTextDialogFragment extends BaseSupportDialogFragment implements
+    public static class SecondaryFieldEditTextDialogFragment extends BaseDialogFragment implements
             DialogInterface.OnClickListener {
         private static final String FRAGMENT_TAG_EDIT_SECONDARY_FIELD = "edit_secondary_field";
         private EditText mEditText;

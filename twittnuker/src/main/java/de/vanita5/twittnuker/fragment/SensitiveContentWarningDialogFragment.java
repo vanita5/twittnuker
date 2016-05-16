@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.Utils;
 
-public class SensitiveContentWarningDialogFragment extends BaseSupportDialogFragment implements
+public class SensitiveContentWarningDialogFragment extends BaseDialogFragment implements
         DialogInterface.OnClickListener {
 
     @Override

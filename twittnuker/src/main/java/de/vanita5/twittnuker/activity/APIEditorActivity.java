@@ -55,7 +55,7 @@ import org.mariotaku.restfu.http.RestHttpClient;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
-import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.model.CustomAPIConfig;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -287,7 +287,7 @@ public class APIEditorActivity extends BaseActivity implements OnCheckedChangeLi
         mEditConsumerSecret.setText(apiConfig.getConsumerSecret());
     }
 
-    public static class LoadDefaultsChooserDialogFragment extends BaseSupportDialogFragment
+    public static class LoadDefaultsChooserDialogFragment extends BaseDialogFragment
             implements DialogInterface.OnClickListener, LoaderManager.LoaderCallbacks<List<CustomAPIConfig>> {
         private ArrayAdapter<CustomAPIConfig> mAdapter;
 

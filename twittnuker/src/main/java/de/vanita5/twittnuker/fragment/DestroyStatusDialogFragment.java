@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
-public class DestroyStatusDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
+public class DestroyStatusDialogFragment extends BaseDialogFragment implements DialogInterface.OnClickListener {
 
     public static final String FRAGMENT_TAG = "destroy_status";
 

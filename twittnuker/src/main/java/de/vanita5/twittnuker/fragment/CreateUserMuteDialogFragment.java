@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
-public class CreateUserMuteDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
+public class CreateUserMuteDialogFragment extends BaseDialogFragment implements DialogInterface.OnClickListener {
 
     public static final String FRAGMENT_TAG = "create_user_mute";
 

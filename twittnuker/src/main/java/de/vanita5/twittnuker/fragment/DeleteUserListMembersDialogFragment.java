@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
-public class DeleteUserListMembersDialogFragment extends BaseSupportDialogFragment implements
+public class DeleteUserListMembersDialogFragment extends BaseDialogFragment implements
         DialogInterface.OnClickListener {
 
     public static final String FRAGMENT_TAG = "destroy_user_list_member";

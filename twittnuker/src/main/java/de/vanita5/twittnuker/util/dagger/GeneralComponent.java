@@ -36,10 +36,10 @@ import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.adapter.DummyItemAdapter;
 import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
+import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.BaseListFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
-import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseSupportFragment;
 import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
 import de.vanita5.twittnuker.loader.MicroBlogAPIStatusesLoader;
@@ -78,7 +78,7 @@ public interface GeneralComponent {
 
     void inject(MultiSelectEventHandler object);
 
-    void inject(BaseSupportDialogFragment object);
+    void inject(BaseDialogFragment object);
 
     void inject(RefreshService object);
 

@@ -82,8 +82,8 @@ import de.vanita5.twittnuker.library.twitter.auth.OAuthAuthorization;
 import de.vanita5.twittnuker.library.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.User;
-import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseDialogFragment;
+import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials.AuthType;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -524,7 +524,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
                 if (isFinishing()) return;
                 final FragmentManager fm = getSupportFragmentManager();
                 final FragmentTransaction ft = fm.beginTransaction();
-                final SupportProgressDialogFragment fragment = new SupportProgressDialogFragment();
+                final ProgressDialogFragment fragment = new ProgressDialogFragment();
                 fragment.setCancelable(false);
                 fragment.show(ft, FRAGMENT_TAG_SIGN_IN_PROGRESS);
             }
@@ -904,7 +904,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
 
     }
 
-    public static class InputLoginVerificationDialogFragment extends BaseSupportDialogFragment
+    public static class InputLoginVerificationDialogFragment extends BaseDialogFragment
             implements DialogInterface.OnClickListener, DialogInterface.OnShowListener {
 
         private SignInTask.InputLoginVerificationCallback callback;
@@ -1104,7 +1104,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
         }
     }
 
-    public static class SetConsumerKeySecretDialogFragment extends BaseSupportDialogFragment {
+    public static class SetConsumerKeySecretDialogFragment extends BaseDialogFragment {
 
         @NonNull
         @Override
@@ -1142,7 +1142,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
         }
     }
 
-    public static class PasswordSignInDialogFragment extends BaseSupportDialogFragment {
+    public static class PasswordSignInDialogFragment extends BaseDialogFragment {
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {

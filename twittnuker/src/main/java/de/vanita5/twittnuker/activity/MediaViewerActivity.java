@@ -76,7 +76,7 @@ import org.mariotaku.mediaviewer.library.subsampleimageview.SubsampleImageViewer
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
-import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
@@ -479,7 +479,7 @@ public final class MediaViewerActivity extends BaseActivity implements Constants
                 activity.executeAfterFragmentResumed(new IExtendedActivity.Action() {
                     @Override
                     public void execute(IExtendedActivity activity) {
-                        final DialogFragment fragment = new SupportProgressDialogFragment();
+                        final DialogFragment fragment = new ProgressDialogFragment();
                         fragment.setCancelable(false);
                         fragment.show(((FragmentActivity) activity).getSupportFragmentManager(), PROGRESS_FRAGMENT_TAG);
                     }

@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.text.validator.UserListNameValidator;
 import de.vanita5.twittnuker.util.ParseUtils;
 
-public class CreateUserListDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
+public class CreateUserListDialogFragment extends BaseDialogFragment implements DialogInterface.OnClickListener {
 
     @Override
     public void onClick(final DialogInterface dialog, final int which) {

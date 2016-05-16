@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.adapter.ArrayAdapter;
 import de.vanita5.twittnuker.fragment.iface.ISupportDialogFragmentCallback;
 import de.vanita5.twittnuker.util.DataImportExportUtils;
 
-public final class DataExportImportTypeSelectorDialogFragment extends BaseSupportDialogFragment implements
+public final class DataExportImportTypeSelectorDialogFragment extends BaseDialogFragment implements
         OnMultiChoiceClickListener, OnClickListener, OnShowListener, OnItemClickListener {
 
     private TypeAdapter mAdapter;

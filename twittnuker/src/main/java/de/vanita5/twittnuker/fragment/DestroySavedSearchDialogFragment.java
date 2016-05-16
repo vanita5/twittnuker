@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
-public class DestroySavedSearchDialogFragment extends BaseSupportDialogFragment implements
+public class DestroySavedSearchDialogFragment extends BaseDialogFragment implements
         DialogInterface.OnClickListener {
 
     public static final String FRAGMENT_TAG = "destroy_saved_search";

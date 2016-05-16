@@ -804,7 +804,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 UserFragment.Referral.TIMELINE_STATUS);
     }
 
-    public static final class LoadSensitiveImageConfirmDialogFragment extends BaseSupportDialogFragment implements
+    public static final class LoadSensitiveImageConfirmDialogFragment extends BaseDialogFragment implements
             DialogInterface.OnClickListener {
 
         @Override

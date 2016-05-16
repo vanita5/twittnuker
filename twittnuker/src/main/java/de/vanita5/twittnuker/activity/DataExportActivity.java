@@ -31,7 +31,7 @@ import android.util.Log;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.DataExportImportTypeSelectorDialogFragment;
-import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.util.DataImportExportUtils;
 
 import java.io.File;
@@ -170,7 +170,7 @@ public class DataExportActivity extends BaseActivity implements
 
         @Override
         protected void onPreExecute() {
-            SupportProgressDialogFragment.show(mActivity, FRAGMENT_TAG).setCancelable(false);
+            ProgressDialogFragment.show(mActivity, FRAGMENT_TAG).setCancelable(false);
         }
 
     }

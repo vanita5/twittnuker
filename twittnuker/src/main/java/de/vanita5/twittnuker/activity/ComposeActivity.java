@@ -113,8 +113,8 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
 import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
-import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
-import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseDialogFragment;
+import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.DraftValuesCreator;
@@ -1501,7 +1501,7 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
             if (!visible && f instanceof DialogFragment) {
                 ((DialogFragment) f).dismiss();
             } else if (visible) {
-                SupportProgressDialogFragment df = new SupportProgressDialogFragment();
+                ProgressDialogFragment df = new ProgressDialogFragment();
                 df.show(fm, DISCARD_STATUS_DIALOG_FRAGMENT_TAG);
                 df.setCancelable(false);
             }
@@ -2007,7 +2007,7 @@ public class ComposeActivity extends BaseActivity implements OnMenuItemClickList
         }
     }
 
-    public static class RetweetProtectedStatusWarnFragment extends BaseSupportDialogFragment implements
+    public static class RetweetProtectedStatusWarnFragment extends BaseDialogFragment implements
             DialogInterface.OnClickListener {
 
         @Override

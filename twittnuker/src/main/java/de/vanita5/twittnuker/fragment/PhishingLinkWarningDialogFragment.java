@@ -32,9 +32,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
 
-public class PhishingLinkWarningDialogFragment extends BaseSupportDialogFragment implements OnClickListener {
+public class PhishingLinkWarningDialogFragment extends BaseDialogFragment implements OnClickListener {
 
     @Override
     public void onClick(final DialogInterface dialog, final int which) {

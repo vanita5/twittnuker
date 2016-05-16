@@ -55,14 +55,14 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
-import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseSupportFragment;
 import de.vanita5.twittnuker.fragment.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.HomeTimelineFragment;
 import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.MessagesEntriesFragment;
-import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.SupportTabSpec;
 import de.vanita5.twittnuker.preference.WizardPageHeaderPreference;
@@ -446,7 +446,7 @@ public class SettingsWizardActivity extends BaseActivity implements Constants {
             return R.xml.settings_wizard_page_tab;
         }
 
-        public static class TabsUnchangedDialogFragment extends BaseSupportDialogFragment implements
+        public static class TabsUnchangedDialogFragment extends BaseDialogFragment implements
                 DialogInterface.OnClickListener {
 
             @Override
@@ -622,7 +622,7 @@ public class SettingsWizardActivity extends BaseActivity implements Constants {
 
         @Override
         protected void onPreExecute() {
-            SupportProgressDialogFragment.show(mActivity, FRAGMENT_TAG).setCancelable(false);
+            ProgressDialogFragment.show(mActivity, FRAGMENT_TAG).setCancelable(false);
         }
 
         private boolean wasConfigured(final List<SupportTabSpec> tabs) {

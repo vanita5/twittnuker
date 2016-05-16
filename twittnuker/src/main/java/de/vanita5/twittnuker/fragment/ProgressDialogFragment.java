@@ -30,21 +30,21 @@ import android.support.v4.app.FragmentActivity;
 
 import de.vanita5.twittnuker.R;
 
-public class SupportProgressDialogFragment extends BaseSupportDialogFragment {
+public class ProgressDialogFragment extends BaseDialogFragment {
 
-	@NonNull
-	@Override
-	public Dialog onCreateDialog(final Bundle savedInstanceState) {
-		final ProgressDialog dialog = new ProgressDialog(getActivity());
-		dialog.setMessage(getString(R.string.please_wait));
-		return dialog;
-	}
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        final ProgressDialog dialog = new ProgressDialog(getActivity());
+        dialog.setMessage(getString(R.string.please_wait));
+        return dialog;
+    }
 
-	public static SupportProgressDialogFragment show(final FragmentActivity activity, final String tag) {
-		if (activity == null) return null;
-		final SupportProgressDialogFragment f = new SupportProgressDialogFragment();
-		f.show(activity.getSupportFragmentManager(), tag);
-		return f;
-	}
+    public static ProgressDialogFragment show(final FragmentActivity activity, final String tag) {
+        if (activity == null) return null;
+        final ProgressDialogFragment f = new ProgressDialogFragment();
+        f.show(activity.getSupportFragmentManager(), tag);
+        return f;
+    }
 
 }

@@ -29,7 +29,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
-import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 
 import java.io.File;
 
@@ -47,7 +47,7 @@ public abstract class ProgressSaveFileTask extends SaveFileTask {
         ((IExtendedActivity) context).executeAfterFragmentResumed(new IExtendedActivity.Action() {
             @Override
             public void execute(IExtendedActivity activity) {
-                final DialogFragment fragment = new SupportProgressDialogFragment();
+                final DialogFragment fragment = new ProgressDialogFragment();
                 fragment.setCancelable(false);
                 fragment.show(((FragmentActivity) activity).getSupportFragmentManager(), PROGRESS_FRAGMENT_TAG);
             }

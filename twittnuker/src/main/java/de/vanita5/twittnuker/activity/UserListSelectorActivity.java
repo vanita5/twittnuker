@@ -51,7 +51,7 @@ import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.fragment.CreateUserListDialogFragment;
-import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
+import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -342,7 +342,7 @@ public class UserListSelectorActivity extends BaseActivity implements OnClickLis
 
         @Override
         protected void onPreExecute() {
-            final SupportProgressDialogFragment df = new SupportProgressDialogFragment();
+            final ProgressDialogFragment df = new ProgressDialogFragment();
             df.setCancelable(false);
             mActivity.showDialogFragment(df, FRAGMENT_TAG_GET_USER_LISTS);
         }
@@ -392,7 +392,7 @@ public class UserListSelectorActivity extends BaseActivity implements OnClickLis
 
         @Override
         protected void onPreExecute() {
-            final SupportProgressDialogFragment df = new SupportProgressDialogFragment();
+            final ProgressDialogFragment df = new ProgressDialogFragment();
             df.setCancelable(false);
             mActivity.showDialogFragment(df, FRAGMENT_TAG_SEARCH_USERS);
         }

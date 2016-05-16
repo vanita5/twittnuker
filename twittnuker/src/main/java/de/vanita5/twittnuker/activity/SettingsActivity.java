@@ -54,7 +54,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
+import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
 import de.vanita5.twittnuker.fragment.SettingsDetailsFragment;
 import de.vanita5.twittnuker.fragment.SupportBrowserFragment;
@@ -425,7 +425,7 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
         }
     }
 
-    public static class RestartConfirmDialogFragment extends BaseSupportDialogFragment implements DialogInterface.OnClickListener {
+    public static class RestartConfirmDialogFragment extends BaseDialogFragment implements DialogInterface.OnClickListener {
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
