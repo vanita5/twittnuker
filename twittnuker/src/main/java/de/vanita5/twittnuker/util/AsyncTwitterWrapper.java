@@ -42,9 +42,6 @@ import org.apache.commons.collections.primitives.IntList;
 import org.apache.commons.collections.primitives.LongList;
 import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.abstask.library.TaskStarter;
-import org.mariotaku.sqliteqb.library.Expression;
-import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.http.HttpResponseCode;
@@ -58,6 +55,9 @@ import de.vanita5.twittnuker.library.twitter.model.SavedSearch;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.library.twitter.model.UserListUpdate;
+import org.mariotaku.sqliteqb.library.Expression;
+import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableActivity;
@@ -403,35 +403,41 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                         getAccountKeys());
             }
         });
-        getActivitiesAboutMeAsync(new SimpleRefreshTaskParam() {
-            @NonNull
-            @Override
-            public UserKey[] getAccountKeysWorker() {
-                return closure.getAccountKeys();
-            }
-
-            @Nullable
-            @Override
-            public String[] getSinceIds() {
-                return DataStoreUtils.getNewestActivityMaxPositions(mContext,
-                        Activities.AboutMe.CONTENT_URI, getAccountKeys());
+        if (mPreferences.getBoolean(KEY_HOME_REFRESH_MENTIONS)) {
+            getActivitiesAboutMeAsync(new SimpleRefreshTaskParam() {
+                @NonNull
+                @Override
+                public UserKey[] getAccountKeysWorker() {
+                    return closure.getAccountKeys();
                 }
-        });
-        getReceivedDirectMessagesAsync(new SimpleRefreshTaskParam() {
-            @NonNull
-            @Override
-            public UserKey[] getAccountKeysWorker() {
-                return closure.getAccountKeys();
-            }
-        });
-        getSentDirectMessagesAsync(new SimpleRefreshTaskParam() {
-            @NonNull
-            @Override
-            public UserKey[] getAccountKeysWorker() {
-                return closure.getAccountKeys();
-            }
-        });
-        getSavedSearchesAsync(closure.getAccountKeys());
+
+                @Nullable
+                @Override
+                public String[] getSinceIds() {
+                    return DataStoreUtils.getNewestActivityMaxPositions(mContext,
+                            Activities.AboutMe.CONTENT_URI, getAccountKeys());
+                    }
+            });
+        }
+        if (mPreferences.getBoolean(KEY_HOME_REFRESH_DIRECT_MESSAGES)) {
+            getReceivedDirectMessagesAsync(new SimpleRefreshTaskParam() {
+                @NonNull
+                @Override
+                public UserKey[] getAccountKeysWorker() {
+                    return closure.getAccountKeys();
+                }
+            });
+            getSentDirectMessagesAsync(new SimpleRefreshTaskParam() {
+                @NonNull
+                @Override
+                public UserKey[] getAccountKeysWorker() {
+                    return closure.getAccountKeys();
+                }
+            });
+        }
+        if (mPreferences.getBoolean(KEY_HOME_REFRESH_SAVED_SEARCHES)) {
+            getSavedSearchesAsync(closure.getAccountKeys());
+        }
         return true;
     }
 

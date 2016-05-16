@@ -211,6 +211,8 @@ public interface SharedPreferenceConstants {
     String KEY_HOME_REFRESH_DIRECT_MESSAGES = "home_refresh_direct_messages";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_HOME_REFRESH_TRENDS = "home_refresh_trends";
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
+    String KEY_HOME_REFRESH_SAVED_SEARCHES = "home_refresh_saved_searches";
     @Preference(type = STRING, hasDefault = true, defaultString = "none")
     String KEY_STATUS_SHORTENER = "tweet_shortener";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
