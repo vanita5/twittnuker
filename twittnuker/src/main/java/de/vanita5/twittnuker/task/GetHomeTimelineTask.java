@@ -26,7 +26,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
@@ -43,7 +43,7 @@ public class GetHomeTimelineTask extends GetStatusesTask {
 
     @NonNull
     @Override
-    public ResponseList<Status> getStatuses(final Twitter twitter, final Paging paging)
+    public ResponseList<Status> getStatuses(final MicroBlog twitter, final Paging paging)
             throws TwitterException {
         return twitter.getHomeTimeline(paging);
     }

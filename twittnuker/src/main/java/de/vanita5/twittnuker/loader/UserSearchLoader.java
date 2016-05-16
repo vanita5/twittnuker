@@ -25,15 +25,14 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.loader.TwitterAPIUsersLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 
 import java.util.List;
@@ -60,7 +59,7 @@ public class UserSearchLoader extends TwitterAPIUsersLoader {
 
     @NonNull
     @Override
-    public List<User> getUsers(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials) throws TwitterException {
+    public List<User> getUsers(@NonNull final MicroBlog twitter, @NonNull ParcelableCredentials credentials) throws TwitterException {
         final Paging paging = new Paging();
         paging.page(mPage);
         switch (ParcelableAccountUtils.getAccountType(credentials)) {

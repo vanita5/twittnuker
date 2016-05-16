@@ -27,7 +27,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 
 import java.util.List;
 
-public class GroupTimelineLoader extends TwitterAPIStatusesLoader {
+public class GroupTimelineLoader extends MicroBlogAPIStatusesLoader {
 
     private final String mGroupId;
     private final String mGroupName;
@@ -55,13 +55,13 @@ public class GroupTimelineLoader extends TwitterAPIStatusesLoader {
 
     @NonNull
     @Override
-    protected ResponseList<Status> getStatuses(@NonNull final Twitter twitter,
+    protected ResponseList<Status> getStatuses(@NonNull final MicroBlog microBlog,
                                                @NonNull final ParcelableCredentials credentials,
                                                @NonNull final Paging paging) throws TwitterException {
         if (mGroupId != null)
-            return twitter.getGroupStatuses(mGroupId, paging);
+            return microBlog.getGroupStatuses(mGroupId, paging);
         else if (mGroupName != null)
-            return twitter.getGroupStatusesByName(mGroupName, paging);
+            return microBlog.getGroupStatusesByName(mGroupName, paging);
         throw new TwitterException("No group name or id given");
     }
 

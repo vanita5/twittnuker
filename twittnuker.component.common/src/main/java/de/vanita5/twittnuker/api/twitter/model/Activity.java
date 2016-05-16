@@ -30,7 +30,7 @@ import android.text.TextUtils;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
-import de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate;
+import de.vanita5.twittnuker.api.annotation.NoObfuscate;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

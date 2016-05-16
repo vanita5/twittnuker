@@ -42,9 +42,9 @@ import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
 import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseSupportFragment;
 import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
+import de.vanita5.twittnuker.loader.MicroBlogAPIStatusesLoader;
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader;
 import de.vanita5.twittnuker.loader.ParcelableUserLoader;
-import de.vanita5.twittnuker.loader.TwitterAPIStatusesLoader;
 import de.vanita5.twittnuker.preference.AccountsListPreference;
 import de.vanita5.twittnuker.preference.KeyboardShortcutPreference;
 import de.vanita5.twittnuker.provider.CacheProvider;
@@ -124,7 +124,7 @@ public interface GeneralComponent {
 
     void inject(CacheProvider provider);
 
-    void inject(TwitterAPIStatusesLoader loader);
+    void inject(MicroBlogAPIStatusesLoader loader);
 
     void inject(MediaViewerActivity activity);
 

@@ -37,7 +37,7 @@ import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
@@ -55,7 +55,7 @@ import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.ReadStateManager;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.UriUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
@@ -103,7 +103,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
             final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context,
                     accountKey);
             if (credentials == null) continue;
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, credentials, true,
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(context, credentials, true,
                     true);
             if (twitter == null) continue;
             final Paging paging = new Paging();
@@ -235,9 +235,9 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
     }
 
     protected abstract void saveReadPosition(@NonNull final UserKey accountId,
-                                             ParcelableCredentials credentials, @NonNull final Twitter twitter);
+                                             ParcelableCredentials credentials, @NonNull final MicroBlog twitter);
 
-    protected abstract ResponseList<Activity> getActivities(@NonNull final Twitter twitter,
+    protected abstract ResponseList<Activity> getActivities(@NonNull final MicroBlog twitter,
                                                             @NonNull final ParcelableCredentials credentials,
                                                             @NonNull final Paging paging)
             throws TwitterException;

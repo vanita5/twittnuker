@@ -20,11 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.api.twitter.annotation;
+package de.vanita5.twittnuker.api;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import de.vanita5.twittnuker.api.fanfou.Fanfou;
+import de.vanita5.twittnuker.api.statusnet.StatusNet;
+import de.vanita5.twittnuker.api.twitter.Twitter;
 
-@Retention(RetentionPolicy.CLASS)
-public @interface NoObfuscate {
+public interface MicroBlog extends Twitter, StatusNet, Fanfou {
 }

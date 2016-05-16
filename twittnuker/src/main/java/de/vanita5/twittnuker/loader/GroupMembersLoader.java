@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
@@ -50,7 +50,7 @@ public class GroupMembersLoader extends CursorSupportUsersLoader {
 
     @NonNull
     @Override
-    public ResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging)
+    public ResponseList<User> getCursoredUsers(@NonNull final MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging)
             throws TwitterException {
         if (mGroupId != null)
             return twitter.getGroupMembers(mGroupId, paging);

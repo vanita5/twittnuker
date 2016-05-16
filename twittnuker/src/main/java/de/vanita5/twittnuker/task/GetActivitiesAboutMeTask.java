@@ -27,7 +27,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Activity;
 import de.vanita5.twittnuker.api.twitter.model.CursorTimestampResponse;
@@ -56,7 +56,7 @@ public class GetActivitiesAboutMeTask extends GetActivitiesTask {
     }
 
     @Override
-    protected void saveReadPosition(@NonNull UserKey accountId, ParcelableCredentials credentials, @NonNull Twitter twitter) {
+    protected void saveReadPosition(@NonNull UserKey accountId, ParcelableCredentials credentials, @NonNull MicroBlog twitter) {
         if (ParcelableAccount.Type.TWITTER.equals(ParcelableAccountUtils.getAccountType(credentials))) {
             if (Utils.isOfficialCredentials(context, credentials)) {
                 try {
@@ -72,7 +72,7 @@ public class GetActivitiesAboutMeTask extends GetActivitiesTask {
     }
 
     @Override
-    protected ResponseList<Activity> getActivities(@NonNull final Twitter twitter,
+    protected ResponseList<Activity> getActivities(@NonNull final MicroBlog twitter,
                                                    @NonNull final ParcelableCredentials credentials,
                                                    @NonNull final Paging paging) throws TwitterException {
         if (Utils.isOfficialCredentials(context, credentials)) {

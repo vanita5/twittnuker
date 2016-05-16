@@ -55,7 +55,7 @@ import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.ThemedImagePickerActivity;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
 import de.vanita5.twittnuker.api.twitter.model.User;
@@ -75,7 +75,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.TwitterValidatorMETLengthChecker;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
@@ -484,7 +484,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         protected SingleResponse<ParcelableUser> doLongOperation(final Object params) {
             final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(mActivity, mAccountKey);
             if (credentials == null) return SingleResponse.getInstance();
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mActivity, credentials,
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mActivity, credentials,
                     true, true);
             if (twitter == null) return SingleResponse.getInstance();
             try {

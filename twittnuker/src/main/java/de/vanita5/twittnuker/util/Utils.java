@@ -70,7 +70,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.net.ConnectivityManagerCompat;
 import android.support.v4.util.Pair;
 import android.support.v4.view.ActionProvider;
 import android.support.v4.view.GravityCompat;
@@ -125,7 +124,7 @@ import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
 import de.vanita5.twittnuker.api.twitter.model.RateLimitStatus;
@@ -143,7 +142,6 @@ import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment;
 import de.vanita5.twittnuker.fragment.ItemsListFragment;
 import de.vanita5.twittnuker.fragment.ListsFragment;
 import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
-import de.vanita5.twittnuker.fragment.MessagesEntriesFragment;
 import de.vanita5.twittnuker.fragment.MutesUsersListFragment;
 import de.vanita5.twittnuker.fragment.PublicTimelineFragment;
 import de.vanita5.twittnuker.fragment.SavedSearchesListFragment;
@@ -890,7 +888,7 @@ public final class Utils implements Constants {
             throws TwitterException {
         final ParcelableStatus cached = findStatusInDatabases(context, accountKey, statusId);
         if (cached != null) return cached;
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountKey, true);
+        final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(context, accountKey, true);
         if (twitter == null) throw new TwitterException("Account does not exist");
         final Status status = twitter.showStatus(statusId);
         final String where = Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_KEY),

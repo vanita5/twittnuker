@@ -25,15 +25,15 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.IDs;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
+
+import java.util.List;
 
 public class StatusFavoritersLoader extends CursorSupportUsersLoader {
 
@@ -48,7 +48,7 @@ public class StatusFavoritersLoader extends CursorSupportUsersLoader {
 
     @NonNull
     @Override
-    protected IDs getIDs(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
+    protected IDs getIDs(@NonNull final MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
         return twitter.getStatusActivitySummary(mStatusId).getFavoriters();
     }
 

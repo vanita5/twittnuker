@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.api.twitter.model;
 
 import org.mariotaku.restfu.http.HttpResponse;
 
-import de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate;
+import de.vanita5.twittnuker.api.annotation.NoObfuscate;
 import de.vanita5.twittnuker.api.twitter.util.InternalParseUtil;
 
 import java.util.AbstractList;

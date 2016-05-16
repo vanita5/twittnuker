@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
@@ -54,7 +54,7 @@ public class UserListSubscribersLoader extends CursorSupportUsersLoader {
 
     @NonNull
     @Override
-    public PageableResponseList<User> getCursoredUsers(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging)
+    public PageableResponseList<User> getCursoredUsers(@NonNull final MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging)
             throws TwitterException {
         if (mListId != null)
             return twitter.getUserListSubscribers(mListId, paging);

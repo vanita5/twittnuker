@@ -30,7 +30,7 @@ import com.squareup.otto.Bus;
 
 import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -42,7 +42,7 @@ import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -103,7 +103,7 @@ public abstract class AbsFriendshipOperationTask extends AbstractTask<AbsFriends
         final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context,
                 args.accountKey);
         if (credentials == null) return SingleResponse.getInstance();
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, credentials, false, false);
+        final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(context, credentials, false, false);
         if (twitter == null) return SingleResponse.getInstance();
         try {
             final User user = perform(twitter, credentials, args);
@@ -116,11 +116,11 @@ public abstract class AbsFriendshipOperationTask extends AbstractTask<AbsFriends
     }
 
     @NonNull
-    protected abstract User perform(@NonNull Twitter twitter,
+    protected abstract User perform(@NonNull MicroBlog twitter,
                                     @NonNull ParcelableCredentials credentials,
                                     @NonNull Arguments args) throws TwitterException;
 
-    protected abstract void succeededWorker(@NonNull Twitter twitter,
+    protected abstract void succeededWorker(@NonNull MicroBlog twitter,
                                             @NonNull ParcelableCredentials credentials,
                                             @NonNull Arguments args,
                                             @NonNull ParcelableUser user);

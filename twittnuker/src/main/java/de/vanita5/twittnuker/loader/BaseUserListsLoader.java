@@ -26,11 +26,8 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
-import java.util.Collections;
-import java.util.List;
-
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
 import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
@@ -40,7 +37,10 @@ import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils;
 import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
+
+import java.util.Collections;
+import java.util.List;
 
 
 public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<ParcelableUserList>>
@@ -77,11 +77,11 @@ public abstract class BaseUserListsLoader extends AsyncTaskLoader<List<Parcelabl
         return mPrevCursor;
     }
 
-    public abstract List<UserList> getUserLists(final Twitter twitter) throws TwitterException;
+    public abstract List<UserList> getUserLists(final MicroBlog twitter) throws TwitterException;
 
     @Override
     public List<ParcelableUserList> loadInBackground() {
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId, true);
+        final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(getContext(), mAccountId, true);
         List<UserList> listLoaded = null;
         try {
             listLoaded = getUserLists(twitter);

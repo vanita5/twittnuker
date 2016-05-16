@@ -45,7 +45,7 @@ import org.mariotaku.abstask.library.TaskStarter;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
@@ -494,7 +494,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         TaskStarter.execute(new AbstractTask<Object, SingleResponse<Relationship>, Bus>() {
             @Override
             public SingleResponse<Relationship> doLongOperation(Object param) {
-                final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, accountKey, true);
+                final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, accountKey, true);
                 try {
                     return SingleResponse.getInstance(twitter.updateFriendship(userId, update));
                 } catch (TwitterException e) {
@@ -527,7 +527,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             @Override
             public Object doLongOperation(Object o) {
                 for (UserKey accountId : accountKeys) {
-                    Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, accountId, false);
+                    MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, accountId, false);
                     if (!Utils.isOfficialCredentials(mContext, accountId)) continue;
                     try {
                         twitter.setActivitiesAboutMeUnread(cursor);
@@ -579,7 +579,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected SingleResponse<ParcelableUser> doLongOperation(final Object  params) {
             try {
-                final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey, true);
+                final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey, true);
                 TwitterWrapper.updateProfileImage(mContext, twitter, mImageUri, mDeleteImage);
                 // Wait for 5 seconds, see
                 // https://dev.twitter.com/rest/reference/post/account/update_profile_image
@@ -626,7 +626,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
             if (twitter == null) return SingleResponse.getInstance();
             try {
                 final UserKey[] userIds = new UserKey[mUsers.length];
@@ -713,7 +713,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected SingleResponse<ParcelableStatus> doInBackground(final Object... params) {
             final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(mContext, mAccountKey);
             if (credentials == null) return SingleResponse.getInstance();
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, credentials, true, true);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, credentials, true, true);
             if (twitter == null) return SingleResponse.getInstance();
             try {
                 final ParcelableStatus result;
@@ -837,7 +837,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected ListResponse<String> doInBackground(final Object... params) {
             final List<String> blockedUsers = new ArrayList<>();
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
             if (twitter != null) {
                 for (final String userId : mUserIds) {
                     try {
@@ -880,7 +880,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<SavedSearch> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
             if (twitter == null) return null;
             try {
                 return SingleResponse.getInstance(twitter.createSavedSearch(mQuery));
@@ -922,7 +922,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
             if (twitter == null) return SingleResponse.getInstance();
             try {
                 final UserList userList = twitter.createUserListSubscription(mListId);
@@ -966,7 +966,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountKey,
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(getContext(), mAccountKey,
                     false);
             if (twitter == null || mListName == null) return SingleResponse.getInstance();
             try {
@@ -1012,7 +1012,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
             if (twitter == null) return SingleResponse.getInstance();
             try {
                 final UserKey[] userIds = new UserKey[users.length];
@@ -1084,7 +1084,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<DirectMessage> doInBackground(final Object... args) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
             if (twitter == null) return SingleResponse.getInstance();
             try {
                 final DirectMessage message = twitter.destroyDirectMessage(mMessageId);
@@ -1146,7 +1146,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<Void> doInBackground(final Object... args) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
             if (twitter == null) return SingleResponse.getInstance();
             try {
                 twitter.destroyDirectMessagesConversation(mAccountKey.getId(), mUserId);
@@ -1192,7 +1192,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected SingleResponse<ParcelableStatus> doInBackground(final Object... params) {
             final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(mContext, mAccountKey);
             if (credentials == null) return SingleResponse.getInstance();
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, credentials, true, true);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, credentials, true, true);
             if (twitter == null) return SingleResponse.getInstance();
             try {
                 final ParcelableStatus result;
@@ -1289,7 +1289,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<SavedSearch> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
             if (twitter == null) return SingleResponse.getInstance();
             try {
                 return SingleResponse.getInstance(twitter.destroySavedSearch(mSearchId));
@@ -1328,7 +1328,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(mContext,
                     mAccountKey);
             if (credentials == null) return SingleResponse.getInstance();
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, credentials, true,
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, credentials, true,
                     true);
             if (twitter == null) return SingleResponse.getInstance();
             ParcelableStatus status = null;
@@ -1391,7 +1391,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
 
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
             if (twitter == null) return SingleResponse.getInstance();
                 try {
                 final UserList userList = twitter.destroyUserListSubscription(mListId);
@@ -1431,7 +1431,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountKey,
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(getContext(), mAccountKey,
                     false);
             if (twitter == null) return SingleResponse.getInstance();
             try {
@@ -1466,7 +1466,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         }
 
         @Override
-        public ResponseList<DirectMessage> getDirectMessages(final Twitter twitter, final Paging paging)
+        public ResponseList<DirectMessage> getDirectMessages(final MicroBlog twitter, final Paging paging)
                 throws TwitterException {
             return twitter.getDirectMessages(paging);
         }
@@ -1497,7 +1497,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         }
 
         @Override
-        public ResponseList<DirectMessage> getDirectMessages(final Twitter twitter, final Paging paging)
+        public ResponseList<DirectMessage> getDirectMessages(final MicroBlog twitter, final Paging paging)
                 throws TwitterException {
             return twitter.getSentDirectMessages(paging);
         }
@@ -1550,7 +1550,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(mContext,
                     mAccountKey);
             if (credentials == null) return SingleResponse.getInstance();
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, credentials, true, true);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, credentials, true, true);
             if (twitter == null) {
                 return SingleResponse.getInstance();
             }
@@ -1643,7 +1643,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
 
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey, false);
             if (twitter != null) {
                 try {
                     final UserList list = twitter.updateUserList(listId, update);

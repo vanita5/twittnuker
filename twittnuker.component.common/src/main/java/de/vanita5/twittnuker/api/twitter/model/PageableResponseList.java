@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.api.twitter.model;
 
-import de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate;
+import de.vanita5.twittnuker.api.annotation.NoObfuscate;
 
 /**
  * Response list supports cursor pagination

@@ -27,7 +27,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.model.UserKey;
 
 import java.util.List;
 
-public class UserFavoritesLoader extends TwitterAPIStatusesLoader {
+public class UserFavoritesLoader extends MicroBlogAPIStatusesLoader {
 
     private final UserKey mUserKey;
     private final String mUserScreenName;
@@ -55,11 +55,11 @@ public class UserFavoritesLoader extends TwitterAPIStatusesLoader {
 
     @NonNull
     @Override
-    public ResponseList<Status> getStatuses(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
+    public ResponseList<Status> getStatuses(@NonNull final MicroBlog microBlog, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
         if (mUserKey != null) {
-            return twitter.getFavorites(mUserKey.getId(), paging);
+            return microBlog.getFavorites(mUserKey.getId(), paging);
         } else if (mUserScreenName != null) {
-            return twitter.getFavoritesByScreenName(mUserScreenName, paging);
+            return microBlog.getFavoritesByScreenName(mUserScreenName, paging);
         }
         throw new TwitterException("Null user");
     }

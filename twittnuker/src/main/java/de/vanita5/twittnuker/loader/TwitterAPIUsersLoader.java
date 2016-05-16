@@ -27,10 +27,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.util.Collections;
-import java.util.List;
-
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ListResponse;
@@ -39,7 +36,10 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
+
+import java.util.Collections;
+import java.util.List;
 
 public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
 
@@ -62,7 +62,7 @@ public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
         if (credentials == null) {
             return ListResponse.getListInstance(new TwitterException("No Account"));
         }
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), credentials, true,
+        final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(getContext(), credentials, true,
                 true);
         if (twitter == null)
             return ListResponse.getListInstance(new TwitterException("No Account"));
@@ -92,6 +92,6 @@ public abstract class TwitterAPIUsersLoader extends ParcelableUsersLoader {
     }
 
     @NonNull
-    protected abstract List<User> getUsers(@NonNull Twitter twitter,
+    protected abstract List<User> getUsers(@NonNull MicroBlog twitter,
                                            @NonNull ParcelableCredentials credentials) throws TwitterException;
 }

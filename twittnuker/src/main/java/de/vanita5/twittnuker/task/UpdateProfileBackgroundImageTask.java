@@ -31,7 +31,7 @@ import com.squareup.otto.Bus;
 import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
@@ -88,7 +88,7 @@ public class UpdateProfileBackgroundImageTask<ResultHandler> extends AbstractTas
     @Override
     protected SingleResponse<ParcelableUser> doLongOperation(final Object params) {
         try {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountKey,
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountKey,
                     true);
             TwitterWrapper.updateProfileBackgroundImage(mContext, twitter, mImageUri, mTile,
                     mDeleteImage);

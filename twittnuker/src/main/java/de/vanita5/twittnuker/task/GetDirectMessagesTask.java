@@ -34,7 +34,7 @@ import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
@@ -47,7 +47,7 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.UriUtils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
@@ -74,7 +74,7 @@ public abstract class GetDirectMessagesTask extends AbstractTask<RefreshTaskPara
         GeneralComponentHelper.build(context).inject(this);
     }
 
-    public abstract ResponseList<DirectMessage> getDirectMessages(Twitter twitter, Paging paging)
+    public abstract ResponseList<DirectMessage> getDirectMessages(MicroBlog twitter, Paging paging)
             throws TwitterException;
 
     protected abstract Uri getDatabaseUri();
@@ -89,7 +89,7 @@ public abstract class GetDirectMessagesTask extends AbstractTask<RefreshTaskPara
         int idx = 0;
         final int loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT);
         for (final UserKey accountKey : accountKeys) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, accountKey, true);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(context, accountKey, true);
             if (twitter == null) continue;
             try {
                 final Paging paging = new Paging();

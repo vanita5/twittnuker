@@ -26,12 +26,12 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 
 import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
 
@@ -46,7 +46,7 @@ public class SavedSearchesLoader extends AsyncTaskLoader<ResponseList<SavedSearc
 
     @Override
     public ResponseList<SavedSearch> loadInBackground() {
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountId,
+        final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(getContext(), mAccountId,
                 false);
         if (twitter == null) return null;
         try {

@@ -24,8 +24,8 @@ package de.vanita5.twittnuker.loader;
 
 import android.content.Context;
 
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.statusnet.model.Group;
-import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.model.ParcelableGroup;
@@ -46,7 +46,7 @@ public class UserGroupsLoader extends BaseGroupsLoader {
     }
 
     @Override
-    public ResponseList<Group> getGroups(final Twitter twitter) throws TwitterException {
+    public ResponseList<Group> getGroups(final MicroBlog twitter) throws TwitterException {
         if (twitter == null) return null;
         if (mUserKey != null) {
             return twitter.getGroups(mUserKey.getId());

@@ -36,7 +36,7 @@ import org.mariotaku.abstask.library.TaskStarter;
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.fragment.UserFragment;
@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.task.UpdateAccountInfoTask;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
@@ -111,7 +111,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
                 return SingleResponse.getInstance(user);
             }
         }
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, credentials, true, true);
+        final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(context, credentials, true, true);
         if (twitter == null) return SingleResponse.getInstance();
         if (mLoadFromCache) {
             final Expression where;
@@ -163,7 +163,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
                 if (mExtras != null) {
                     profileUrl = mExtras.getString(EXTRA_PROFILE_URL);
                 }
-                if (TwitterAPIFactory.isStatusNetCredentials(credentials) && mUserKey != null &&
+                if (MicroBlogAPIFactory.isStatusNetCredentials(credentials) && mUserKey != null &&
                         profileUrl != null && !TextUtils.equals(credentials.account_key.getHost(),
                         mUserKey.getHost())) {
                     twitterUser = twitter.showExternalProfile(profileUrl);

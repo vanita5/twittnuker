@@ -39,7 +39,7 @@ import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
@@ -60,7 +60,7 @@ import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.UriUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
@@ -92,7 +92,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
     }
 
     @NonNull
-    public abstract ResponseList<Status> getStatuses(Twitter twitter, Paging paging)
+    public abstract ResponseList<Status> getStatuses(MicroBlog twitter, Paging paging)
             throws TwitterException;
 
     @NonNull
@@ -125,7 +125,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
             final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context,
                     accountKey);
             if (credentials == null) continue;
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, credentials,
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(context, credentials,
                     true, true);
             if (twitter == null) continue;
             try {

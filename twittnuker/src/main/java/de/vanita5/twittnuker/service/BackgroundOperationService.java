@@ -54,8 +54,8 @@ import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.fanfou.model.PhotoStatusUpdate;
-import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterUpload;
 import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
@@ -102,7 +102,7 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.StatusShortenerInterface;
 import de.vanita5.twittnuker.util.TwidereListUtils;
 import de.vanita5.twittnuker.util.TwidereValidator;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
@@ -449,8 +449,8 @@ public class BackgroundOperationService extends IntentService implements Constan
         final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(this,
                 accountKey);
         if (credentials == null) return SingleResponse.getInstance();
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(this, credentials, true, true);
-        final TwitterUpload twitterUpload = TwitterAPIFactory.getTwitterInstance(this, credentials,
+        final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(this, credentials, true, true);
+        final TwitterUpload twitterUpload = MicroBlogAPIFactory.getTwitterInstance(this, credentials,
                 true, true, TwitterUpload.class);
         if (twitter == null || twitterUpload == null) return SingleResponse.getInstance();
         try {
@@ -612,7 +612,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                     final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(this,
                             account.account_key);
                     // Get Twitter instance corresponding to account
-                    final Twitter twitter = TwitterAPIFactory.getTwitterInstance(this,
+                    final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(this,
                             account.account_key, true, true);
 
                     // Shouldn't happen
@@ -728,7 +728,7 @@ public class BackgroundOperationService extends IntentService implements Constan
     private boolean uploadOnSocialPlatform(ContentResolver resolver, Builder builder,
                                            StatusShortenerInterface shortener,
                                            MediaUploaderInterface uploader,
-                                           ParcelableCredentials credentials, Twitter twitter,
+                                           ParcelableCredentials credentials, MicroBlog twitter,
                                            ParcelableStatusUpdate statusUpdate,
                                            StatusUpdate status, String statusText,
                                            boolean shouldShorten, StatusShortenResult shortenedResult,
@@ -762,7 +762,7 @@ public class BackgroundOperationService extends IntentService implements Constan
                 }
                 return true;
             } else {
-                final TwitterUpload upload = TwitterAPIFactory.getTwitterInstance(this, credentials,
+                final TwitterUpload upload = MicroBlogAPIFactory.getTwitterInstance(this, credentials,
                         true, true, TwitterUpload.class);
                 if (upload == null) {
                     throw new UpdateStatusException("Twitter instance is null");

@@ -28,9 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
-import java.util.List;
-
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
@@ -41,9 +39,11 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 
-public class TweetSearchLoader extends TwitterAPIStatusesLoader {
+import java.util.List;
+
+public class TweetSearchLoader extends MicroBlogAPIStatusesLoader {
 
     @Nullable
     private final String mQuery;
@@ -63,7 +63,7 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 
     @NonNull
     @Override
-    public List<? extends Status> getStatuses(@NonNull final Twitter twitter,
+    public List<? extends Status> getStatuses(@NonNull final MicroBlog microBlog,
                                               @NonNull final ParcelableCredentials credentials,
                                               @NonNull final Paging paging) throws TwitterException {
         if (mQuery == null) throw new TwitterException("Empty query");
@@ -72,13 +72,13 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
             case ParcelableAccount.Type.TWITTER: {
                 final SearchQuery query = new SearchQuery(processedQuery);
                 query.paging(paging);
-                return twitter.search(query);
+                return microBlog.search(query);
             }
             case ParcelableAccount.Type.STATUSNET: {
-                return twitter.searchStatuses(processedQuery, paging);
+                return microBlog.searchStatuses(processedQuery, paging);
             }
             case ParcelableAccount.Type.FANFOU: {
-                return twitter.searchPublicTimeline(processedQuery, paging);
+                return microBlog.searchPublicTimeline(processedQuery, paging);
             }
         }
         throw new TwitterException("Not implemented");
@@ -86,7 +86,7 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 
     @NonNull
     protected String processQuery(ParcelableCredentials credentials, @NonNull final String query) {
-        if (TwitterAPIFactory.isTwitterCredentials(credentials)) {
+        if (MicroBlogAPIFactory.isTwitterCredentials(credentials)) {
             return String.format("%s exclude:retweets", query);
         }
         return query;
@@ -100,7 +100,7 @@ public class TweetSearchLoader extends TwitterAPIStatusesLoader {
 
     @Override
     protected void processPaging(@NonNull ParcelableCredentials credentials, int loadItemLimit, @NonNull Paging paging) {
-        if (TwitterAPIFactory.isStatusNetCredentials(credentials)) {
+        if (MicroBlogAPIFactory.isStatusNetCredentials(credentials)) {
             paging.setRpp(loadItemLimit);
             if (mPage > 0) {
                 paging.setPage(mPage);

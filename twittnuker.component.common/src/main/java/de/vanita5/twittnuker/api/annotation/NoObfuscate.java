@@ -20,22 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.view;
+package de.vanita5.twittnuker.api.annotation;
 
-import android.support.annotation.NonNull;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import com.rengwuxian.materialedittext.validation.METValidator;
-
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
-
-public class ConsumerKeySecretValidator extends METValidator {
-    public ConsumerKeySecretValidator(String errorMessage) {
-        super(errorMessage);
-    }
-
-    @Override
-    public boolean isValid(@NonNull CharSequence text, boolean isEmpty) {
-        return MicroBlogAPIFactory.isValidConsumerKeySecret(text);
-    }
-
+@Retention(RetentionPolicy.CLASS)
+public @interface NoObfuscate {
 }

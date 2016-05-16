@@ -26,7 +26,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.model.UserKey;
@@ -44,7 +44,7 @@ public class GetLocalTrendsTask extends GetTrendsTask {
     }
 
     @Override
-    public List<Trends> getTrends(@NonNull final Twitter twitter) throws TwitterException {
+    public List<Trends> getTrends(@NonNull final MicroBlog twitter) throws TwitterException {
         return twitter.getLocationTrends(woeid);
     }
 

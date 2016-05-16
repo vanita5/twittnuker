@@ -27,9 +27,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import java.util.List;
-
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
@@ -39,7 +37,9 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 
-public class PublicTimelineLoader extends TwitterAPIStatusesLoader {
+import java.util.List;
+
+public class PublicTimelineLoader extends MicroBlogAPIStatusesLoader {
 
     public PublicTimelineLoader(final Context context, final UserKey accountId,
                                 final String sinceId, final String maxId,
@@ -50,10 +50,10 @@ public class PublicTimelineLoader extends TwitterAPIStatusesLoader {
 
     @NonNull
     @Override
-    protected ResponseList<Status> getStatuses(@NonNull final Twitter twitter,
+    protected ResponseList<Status> getStatuses(@NonNull final MicroBlog microBlog,
                                                @NonNull final ParcelableCredentials credentials,
                                                @NonNull final Paging paging) throws TwitterException {
-        return twitter.getPublicTimeline(paging);
+        return microBlog.getPublicTimeline(paging);
     }
 
     @WorkerThread

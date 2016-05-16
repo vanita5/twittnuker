@@ -28,7 +28,7 @@ import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 
-import de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate;
+import de.vanita5.twittnuker.api.annotation.NoObfuscate;
 
 import java.io.IOException;
 

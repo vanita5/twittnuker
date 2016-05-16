@@ -31,14 +31,15 @@ import android.support.annotation.NonNull;
 import com.squareup.otto.Bus;
 
 import org.mariotaku.abstask.library.AbstractTask;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Trends;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.TrendsRefreshedEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -61,11 +62,11 @@ public abstract class GetTrendsTask extends AbstractTask<Object, Object, Object>
         this.mAccountId = accountKey;
     }
 
-    public abstract List<Trends> getTrends(@NonNull Twitter twitter) throws TwitterException;
+    public abstract List<Trends> getTrends(@NonNull MicroBlog twitter) throws TwitterException;
 
     @Override
     public Object doLongOperation(final Object param) {
-        final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, mAccountId, false);
+        final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, mAccountId, false);
         if (twitter == null) return null;
         try {
             final List<Trends> trends = getTrends(twitter);

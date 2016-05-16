@@ -28,7 +28,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -46,7 +46,7 @@ public class CreateFriendshipTask extends AbsFriendshipOperationTask {
 
     @NonNull
     @Override
-    protected User perform(@NonNull Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull Arguments args) throws TwitterException {
+    protected User perform(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull Arguments args) throws TwitterException {
         switch (ParcelableAccountUtils.getAccountType(credentials)) {
             case ParcelableAccount.Type.FANFOU: {
                 return twitter.createFanfouFriendship(args.userKey.getId());
@@ -56,7 +56,7 @@ public class CreateFriendshipTask extends AbsFriendshipOperationTask {
     }
 
     @Override
-    protected void succeededWorker(@NonNull Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull Arguments args, @NonNull ParcelableUser user) {
+    protected void succeededWorker(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull Arguments args, @NonNull ParcelableUser user) {
         user.is_following = true;
         Utils.setLastSeen(context, user.key, System.currentTimeMillis());
     }

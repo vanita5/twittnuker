@@ -48,7 +48,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 import de.vanita5.twittnuker.util.net.NoIntercept;
@@ -114,7 +114,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
             UserKey accountKey = ((MediaExtra) extra).getAccountKey();
             if (accountKey != null) {
                 account = ParcelableCredentialsUtils.getCredentials(mContext, accountKey);
-            auth = TwitterAPIFactory.getAuthorization(account);
+            auth = MicroBlogAPIFactory.getAuthorization(account);
             }
         }
         final Uri modifiedUri = getReplacedUri(uri, account != null ? account.api_url_format : null);
@@ -195,7 +195,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
             final String host = uri.getHost();
             final String domain = host.substring(0, host.lastIndexOf(".twitter.com"));
             final String path = uri.getPath();
-            sb.append(TwitterAPIFactory.getApiUrl(apiUrlFormat, domain, path));
+            sb.append(MicroBlogAPIFactory.getApiUrl(apiUrlFormat, domain, path));
             final String query = uri.getQuery();
             if (!TextUtils.isEmpty(query)) {
                 sb.append("?");

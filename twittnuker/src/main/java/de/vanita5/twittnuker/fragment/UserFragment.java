@@ -99,7 +99,7 @@ import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.LinkHandlerActivity;
 import de.vanita5.twittnuker.activity.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.FriendshipUpdate;
 import de.vanita5.twittnuker.api.twitter.model.Relationship;
@@ -146,7 +146,7 @@ import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.UserColorNameManager.UserColorChangedListener;
 import de.vanita5.twittnuker.util.Utils;
@@ -885,7 +885,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         MenuUtils.setMenuItemAvailability(menu, R.id.incoming_friendships, isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.saved_searches, isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.scheduled_statuses, isMyself
-                && TwitterAPIFactory.getOfficialKeyType(getActivity(), user.account_key) == ConsumerKeyType.TWEETDECK);
+                && MicroBlogAPIFactory.getOfficialKeyType(getActivity(), user.account_key) == ConsumerKeyType.TWEETDECK);
         MenuUtils.setMenuItemAvailability(menu, R.id.muted_users, isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.blocked_users, isMyself);
 
@@ -1733,12 +1733,12 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             if (credentials == null) {
                 return SingleResponse.getInstance(new TwitterException("No Account"));
             }
-            if (TwitterAPIFactory.isStatusNetCredentials(credentials)) {
+            if (MicroBlogAPIFactory.isStatusNetCredentials(credentials)) {
                 if (!UserKeyUtils.isSameHost(mAccountKey, mUser.key)) {
                     return SingleResponse.getInstance(new UserRelationship(mUser, isFiltering));
                 }
             }
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(context, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(context, mAccountKey, false);
             if (twitter == null) {
                 return SingleResponse.getInstance(new TwitterException("No Account"));
             }

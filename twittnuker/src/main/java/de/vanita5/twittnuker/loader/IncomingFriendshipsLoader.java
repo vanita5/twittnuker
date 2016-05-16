@@ -25,9 +25,7 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.IDs;
 import de.vanita5.twittnuker.api.twitter.model.Paging;
@@ -39,6 +37,8 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 
+import java.util.List;
+
 public class IncomingFriendshipsLoader extends CursorSupportUsersLoader {
 
     public IncomingFriendshipsLoader(final Context context, final UserKey accountKey,
@@ -48,13 +48,13 @@ public class IncomingFriendshipsLoader extends CursorSupportUsersLoader {
 
     @NonNull
     @Override
-    protected IDs getIDs(@NonNull final Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
+    protected IDs getIDs(@NonNull final MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
         return twitter.getIncomingFriendships(paging);
     }
 
     @NonNull
     @Override
-    protected ResponseList<User> getCursoredUsers(@NonNull Twitter twitter, @NonNull ParcelableCredentials credentials, @NonNull Paging paging) throws TwitterException {
+    protected ResponseList<User> getCursoredUsers(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull Paging paging) throws TwitterException {
         return twitter.getFriendshipsRequests(paging);
     }
 

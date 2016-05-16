@@ -31,7 +31,7 @@ import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.ResponseList;
 import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
 public class GetSavedSearchesTask extends AbstractTask<UserKey[], SingleResponse<Object>, Object>
@@ -55,7 +55,7 @@ public class GetSavedSearchesTask extends AbstractTask<UserKey[], SingleResponse
     public SingleResponse<Object> doLongOperation(UserKey[] params) {
         final ContentResolver cr = mContext.getContentResolver();
         for (UserKey accountKey : params) {
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(mContext, accountKey, true);
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(mContext, accountKey, true);
             if (twitter == null) continue;
             try {
                 final ResponseList<SavedSearch> searches = twitter.getSavedSearches();

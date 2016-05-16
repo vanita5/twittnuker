@@ -36,14 +36,14 @@ import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.statusnet.model.Group;
-import de.vanita5.twittnuker.api.twitter.Twitter;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.model.ParcelableGroup;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableGroupUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 
 public class GroupFragment extends AbsToolbarTabPagesFragment implements
@@ -155,7 +155,7 @@ public class GroupFragment extends AbsToolbarTabPagesFragment implements
                 final ParcelableGroup cache = mExtras.getParcelable(EXTRA_GROUP);
                 if (cache != null) return SingleResponse.getInstance(cache);
             }
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountKey,
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(getContext(), mAccountKey,
                     true);
             if (twitter == null) return SingleResponse.getInstance();
             try {

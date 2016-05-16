@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.task;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -38,7 +38,7 @@ public class ReportSpamAndBlockTask extends CreateUserBlockTask {
 
     @NonNull
     @Override
-    protected User perform(@NonNull Twitter twitter, @NonNull ParcelableCredentials credentials,
+    protected User perform(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials,
                            @NonNull Arguments args) throws TwitterException {
         return twitter.reportSpam(args.userKey.getId());
     }

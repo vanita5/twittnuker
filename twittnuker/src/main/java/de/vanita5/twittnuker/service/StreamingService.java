@@ -85,7 +85,7 @@ import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.NotificationHelper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
@@ -239,9 +239,9 @@ public class StreamingService extends Service implements Constants {
                 return false;
             }
 
-            final Endpoint endpoint = TwitterAPIFactory.getEndpoint(account, TwitterUserStream.class);
-            final Authorization authorization = TwitterAPIFactory.getAuthorization(account);
-            final TwitterUserStream twitter = TwitterAPIFactory.getInstance(this, endpoint, authorization, TwitterUserStream.class);
+            final Endpoint endpoint = MicroBlogAPIFactory.getEndpoint(account, TwitterUserStream.class);
+            final Authorization authorization = MicroBlogAPIFactory.getAuthorization(account);
+            final TwitterUserStream twitter = MicroBlogAPIFactory.getInstance(this, endpoint, authorization, TwitterUserStream.class);
             final TwidereUserStreamCallback callback = new TwidereUserStreamCallback(this, account, mPreferences);
             refreshBefore(new UserKey[]{account.account_key});
             mCallbacks.put(account.account_key, callback);

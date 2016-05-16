@@ -61,7 +61,7 @@ import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -145,7 +145,7 @@ public class APIEditorActivity extends BaseActivity implements OnCheckedChangeLi
     }
 
     private boolean checkApiUrl() {
-        return TwitterAPIFactory.verifyApiFormat(String.valueOf(mEditAPIUrlFormat.getText()));
+        return MicroBlogAPIFactory.verifyApiFormat(String.valueOf(mEditAPIUrlFormat.getText()));
     }
 
     @Override

@@ -56,7 +56,7 @@ import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterCaps;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
@@ -85,7 +85,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TwitterAPIFactory implements TwittnukerConstants {
+public class MicroBlogAPIFactory implements TwittnukerConstants {
 
     public static final String CARDS_PLATFORM_ANDROID_12 = "Android-12";
 
@@ -106,17 +106,17 @@ public class TwitterAPIFactory implements TwittnukerConstants {
         sConstantPoll.put("include_ext_alt_text", "true");
     }
 
-    private TwitterAPIFactory() {
+    private MicroBlogAPIFactory() {
     }
 
     @WorkerThread
-    public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities) {
+    public static MicroBlog getDefaultTwitterInstance(final Context context, final boolean includeEntities) {
         if (context == null) return null;
         return getDefaultTwitterInstance(context, includeEntities, true);
     }
 
     @WorkerThread
-    public static Twitter getDefaultTwitterInstance(final Context context, final boolean includeEntities,
+    public static MicroBlog getDefaultTwitterInstance(final Context context, final boolean includeEntities,
                                                     final boolean includeRetweets) {
         if (context == null) return null;
         final UserKey accountKey = Utils.getDefaultAccountKey(context);
@@ -125,7 +125,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
     }
 
     @WorkerThread
-    public static Twitter getTwitterInstance(@NonNull final Context context,
+    public static MicroBlog getTwitterInstance(@NonNull final Context context,
                                              @NonNull final UserKey accountKey,
                                              final boolean includeEntities) {
         return getTwitterInstance(context, accountKey, includeEntities, true);
@@ -133,18 +133,18 @@ public class TwitterAPIFactory implements TwittnukerConstants {
 
     @Nullable
     @WorkerThread
-    public static Twitter getTwitterInstance(@NonNull final Context context,
+    public static MicroBlog getTwitterInstance(@NonNull final Context context,
                                              @NonNull final UserKey accountKey,
                                              final boolean includeEntities,
                                              final boolean includeRetweets) {
-        return getTwitterInstance(context, accountKey, includeEntities, includeRetweets, Twitter.class);
+        return getTwitterInstance(context, accountKey, includeEntities, includeRetweets, MicroBlog.class);
     }
 
     @Nullable
-    public static Twitter getTwitterInstance(@NonNull final Context context,
+    public static MicroBlog getTwitterInstance(@NonNull final Context context,
                                              @NonNull final ParcelableCredentials credentials,
                                              final boolean includeEntities, final boolean includeRetweets) {
-        return getTwitterInstance(context, credentials, includeEntities, includeRetweets, Twitter.class);
+        return getTwitterInstance(context, credentials, includeEntities, includeRetweets, MicroBlog.class);
     }
 
 
@@ -264,7 +264,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
     static <T> T getInstance(final Context context, final ParcelableCredentials credentials,
                              final Map<String, String> extraRequestParams, final Class<T> cls) {
         if (credentials == null) return null;
-        return TwitterAPIFactory.getInstance(context, getEndpoint(credentials, cls), credentials,
+        return MicroBlogAPIFactory.getInstance(context, getEndpoint(credentials, cls), credentials,
                 extraRequestParams, cls);
     }
 
@@ -278,7 +278,7 @@ public class TwitterAPIFactory implements TwittnukerConstants {
             apiUrlFormat = DEFAULT_TWITTER_API_URL_FORMAT;
         }
         final String domain, versionSuffix;
-        if (Twitter.class.isAssignableFrom(cls)) {
+        if (MicroBlog.class.isAssignableFrom(cls)) {
             domain = "api";
             versionSuffix = noVersionSuffix ? null : "/1.1/";
         } else if (TwitterUpload.class.isAssignableFrom(cls)) {

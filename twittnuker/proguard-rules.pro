@@ -130,8 +130,8 @@
 -keep class * extends com.bluelinelabs.logansquare.JsonMapper
 -keep @com.bluelinelabs.logansquare.annotation.JsonObject class *
 
--keep class de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate
--keep @de.vanita5.twittnuker.api.twitter.annotation.NoObfuscate class *
+-keep class de.vanita5.twittnuker.api.annotation.NoObfuscate
+-keep @de.vanita5.twittnuker.api.annotation.NoObfuscate class *
 
 # https://github.com/mariotaku/RestFu
 -keep class org.mariotaku.restfu.annotation.** { *; }

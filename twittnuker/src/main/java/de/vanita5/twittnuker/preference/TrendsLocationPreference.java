@@ -45,10 +45,10 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.Location;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -272,7 +272,7 @@ public class TrendsLocationPreference extends Preference implements Constants {
 
         @Override
         protected SimpleArrayMap<Location, List<Location>> doInBackground(final Object... args) {
-            final Twitter twitter = TwitterAPIFactory.getDefaultTwitterInstance(getContext(), false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getDefaultTwitterInstance(getContext(), false);
             if (twitter == null) return null;
             try {
                 LocationsMap map = new LocationsMap(Locale.getDefault());

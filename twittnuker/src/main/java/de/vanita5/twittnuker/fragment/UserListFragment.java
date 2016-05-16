@@ -58,7 +58,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
-import de.vanita5.twittnuker.api.twitter.Twitter;
+import de.vanita5.twittnuker.api.MicroBlog;
 import de.vanita5.twittnuker.api.twitter.TwitterException;
 import de.vanita5.twittnuker.api.twitter.model.UserList;
 import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
@@ -77,7 +77,7 @@ import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MenuUtils;
 import de.vanita5.twittnuker.util.ParseUtils;
-import de.vanita5.twittnuker.util.TwitterAPIFactory;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.Utils;
 
 public class UserListFragment extends AbsToolbarTabPagesFragment implements OnClickListener,
@@ -476,7 +476,7 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
                 final ParcelableUserList cache = mExtras.getParcelable(EXTRA_USER_LIST);
                 if (cache != null) return SingleResponse.getInstance(cache);
             }
-            final Twitter twitter = TwitterAPIFactory.getTwitterInstance(getContext(), mAccountKey,
+            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(getContext(), mAccountKey,
                     true);
             if (twitter == null) return SingleResponse.getInstance();
             try {
