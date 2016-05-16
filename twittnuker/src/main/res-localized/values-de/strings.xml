@@ -797,7 +797,7 @@
     <string name="error_message_device_incompatible">Dein Gerät ist nicht kompatibel mit Twittnuker. Ein Update auf ein aktuelles Android OS wird empfohlen.\nDu kannst uns die Informationen unten zukommen lassen, damit wir das dem Gerätehersteller melden können.</string>
     <string name="password_sign_in_twitter_only">Password Login (Nur für Twitter)</string>
     <string name="edit_description">Beschreibung hinzufügen</string>
-
+    <string name="edit_media">Medien bearbeiten</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

@@ -801,6 +801,7 @@
     <string name="password_sign_in_twitter_only">Password sign in (Twitter only)</string>
     <string name="direct_messages_next">DM next</string>
     <string name="edit_description">Add description</string>
+    <string name="edit_media">Edit media</string>
 
 
     <!-- Twittnuker -->
