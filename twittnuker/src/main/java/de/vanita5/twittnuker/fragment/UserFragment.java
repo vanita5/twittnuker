@@ -91,6 +91,10 @@ import com.squareup.otto.Subscribe;
 import org.apache.commons.lang3.ObjectUtils;
 import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.abstask.library.TaskStarter;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate;
+import de.vanita5.twittnuker.library.twitter.model.Relationship;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.AccountSelectorActivity;
@@ -99,10 +103,6 @@ import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.LinkHandlerActivity;
 import de.vanita5.twittnuker.activity.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
-import de.vanita5.twittnuker.library.MicroBlog;
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate;
-import de.vanita5.twittnuker.library.twitter.model.Relationship;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -113,6 +113,7 @@ import de.vanita5.twittnuker.loader.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.CachedRelationship;
 import de.vanita5.twittnuker.model.CachedRelationshipValuesCreator;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -125,6 +126,7 @@ import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 import de.vanita5.twittnuker.model.message.FriendshipUpdatedEvent;
 import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent;
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
@@ -142,11 +144,11 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MenuUtils;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.UserColorNameManager.UserColorChangedListener;
 import de.vanita5.twittnuker.util.Utils;
@@ -222,6 +224,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
     // Data fields
     private ParcelableUser mUser;
+    private ParcelableAccount mAccount;
     private UserRelationship mRelationship;
     private Locale mLocale;
     private boolean mGetUserInfoLoaderInitialized, mGetFriendShipLoaderInitialized;
@@ -305,7 +308,8 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 mCardContent.setVisibility(View.VISIBLE);
                 mHeaderErrorContainer.setVisibility(View.GONE);
                 mProgressContainer.setVisibility(View.GONE);
-                displayUser(user);
+                ParcelableAccount account = data.getExtras().getParcelable(EXTRA_ACCOUNT);
+                displayUser(user, account);
                 if (user.is_cache) {
                     final Bundle args = new Bundle();
                     args.putParcelable(EXTRA_ACCOUNT_KEY, user.account_key);
@@ -319,7 +323,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 mCardContent.setVisibility(View.VISIBLE);
                 mHeaderErrorContainer.setVisibility(View.GONE);
                 mProgressContainer.setVisibility(View.GONE);
-                displayUser(mUser);
+                displayUser(mUser, mAccount);
                 updateOptionsMenuVisibility();
             } else {
                 if (data.hasException()) {
@@ -329,7 +333,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 mCardContent.setVisibility(View.GONE);
                 mHeaderErrorContainer.setVisibility(View.VISIBLE);
                 mProgressContainer.setVisibility(View.GONE);
-                displayUser(null);
+                displayUser(null, null);
                 updateOptionsMenuVisibility();
             }
         }
@@ -514,10 +518,11 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     }
 
     @UiThread
-    public void displayUser(final ParcelableUser user) {
+    public void displayUser(final ParcelableUser user, ParcelableAccount account) {
         final FragmentActivity activity = getActivity();
         if (activity == null) return;
         mUser = user;
+        mAccount = account;
         if (user == null || user.key == null) {
             mProfileImageView.setVisibility(View.GONE);
             mProfileTypeView.setVisibility(View.GONE);
@@ -674,8 +679,9 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     @Subscribe
     public void notifyProfileUpdated(ProfileUpdatedEvent event) {
         final ParcelableUser user = getUser();
+        // TODO check account status
         if (user == null || !user.equals(event.user)) return;
-        displayUser(event.user);
+        displayUser(event.user, mAccount);
     }
 
     @Subscribe
@@ -893,6 +899,12 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         MenuUtils.setMenuItemAvailability(menu, R.id.mute_user, !isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.report_spam, !isMyself);
         MenuUtils.setMenuItemAvailability(menu, R.id.enable_retweets, !isMyself);
+        if (mAccount != null) {
+            MenuUtils.setMenuItemAvailability(menu, R.id.add_to_list, TextUtils.equals(ParcelableAccount.Type.TWITTER,
+                    ParcelableAccountUtils.getAccountType(mAccount)));
+        } else {
+            MenuUtils.setMenuItemAvailability(menu, R.id.add_to_list, false);
+        }
 
         final UserRelationship userRelationship = mRelationship;
         if (userRelationship != null) {
@@ -1324,7 +1336,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     @Override
     public boolean onLinkClick(final String link, final String orig, final UserKey accountKey,
                                final long extraId, final int type, final boolean sensitive,
-                            int start, int end) {
+                               int start, int end) {
         final ParcelableUser user = getUser();
         if (user == null) return false;
         switch (type) {
@@ -1364,7 +1376,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
     @Override
     public void onUserColorChanged(@NonNull UserKey userId, int color) {
         if (mUser == null || !mUser.key.equals(userId)) return;
-        displayUser(mUser);
+        displayUser(mUser, mAccount);
     }
 
     @Override
