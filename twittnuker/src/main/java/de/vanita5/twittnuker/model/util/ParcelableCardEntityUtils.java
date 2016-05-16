@@ -29,8 +29,8 @@ import android.support.v4.util.ArrayMap;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.api.twitter.model.CardEntity;
-import de.vanita5.twittnuker.api.twitter.util.ThreadLocalSimpleDateFormat;
+import de.vanita5.twittnuker.library.twitter.model.CardEntity;
+import de.vanita5.twittnuker.library.twitter.util.ThreadLocalSimpleDateFormat;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.UserKey;
 

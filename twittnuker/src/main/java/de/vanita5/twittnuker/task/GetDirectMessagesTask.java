@@ -34,12 +34,12 @@ import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.library.twitter.model.ErrorInfo;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
@@ -75,7 +75,7 @@ public abstract class GetDirectMessagesTask extends AbstractTask<RefreshTaskPara
     }
 
     public abstract ResponseList<DirectMessage> getDirectMessages(MicroBlog twitter, Paging paging)
-            throws TwitterException;
+            throws MicroBlogException;
 
     protected abstract Uri getDatabaseUri();
 
@@ -116,7 +116,7 @@ public abstract class GetDirectMessagesTask extends AbstractTask<RefreshTaskPara
                 result.add(new TwitterWrapper.MessageListResponse(accountKey, maxId, sinceId, messages));
                 storeMessages(accountKey, messages, isOutgoing(), true);
                 errorInfoStore.remove(ErrorInfoStore.KEY_DIRECT_MESSAGES, accountKey);
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 if (e.getErrorCode() == ErrorInfo.NO_DIRECT_MESSAGE_PERMISSION) {
                     errorInfoStore.put(ErrorInfoStore.KEY_DIRECT_MESSAGES, accountKey,
                             ErrorInfoStore.CODE_NO_DM_PERMISSION);

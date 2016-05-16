@@ -27,13 +27,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
-import de.vanita5.twittnuker.api.twitter.model.CursorTimestampResponse;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Activity;
+import de.vanita5.twittnuker.library.twitter.model.CursorTimestampResponse;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
@@ -64,7 +64,7 @@ public class GetActivitiesAboutMeTask extends GetActivitiesTask {
                     final String tag = Utils.getReadPositionTagWithAccounts(ReadPositionTag.ACTIVITIES_ABOUT_ME,
                             accountId);
                     readStateManager.setPosition(tag, response.getCursor(), false);
-                } catch (TwitterException e) {
+                } catch (MicroBlogException e) {
                     // Ignore
                 }
             }
@@ -74,7 +74,7 @@ public class GetActivitiesAboutMeTask extends GetActivitiesTask {
     @Override
     protected ResponseList<Activity> getActivities(@NonNull final MicroBlog twitter,
                                                    @NonNull final ParcelableCredentials credentials,
-                                                   @NonNull final Paging paging) throws TwitterException {
+                                                   @NonNull final Paging paging) throws MicroBlogException {
         if (Utils.isOfficialCredentials(context, credentials)) {
             return twitter.getActivitiesAboutMe(paging);
         }

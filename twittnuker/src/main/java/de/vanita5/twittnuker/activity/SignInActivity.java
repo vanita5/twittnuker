@@ -72,16 +72,16 @@ import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
-import de.vanita5.twittnuker.api.statusnet.model.StatusNetConfig;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
-import de.vanita5.twittnuker.api.twitter.auth.BasicAuthorization;
-import de.vanita5.twittnuker.api.twitter.auth.EmptyAuthorization;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthAuthorization;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.statusnet.model.StatusNetConfig;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.TwitterOAuth;
+import de.vanita5.twittnuker.library.twitter.auth.BasicAuthorization;
+import de.vanita5.twittnuker.library.twitter.auth.EmptyAuthorization;
+import de.vanita5.twittnuker.library.twitter.auth.OAuthAuthorization;
+import de.vanita5.twittnuker.library.twitter.auth.OAuthToken;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.fragment.BaseSupportDialogFragment;
 import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -543,7 +543,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
             }
             return Pair.create(ParcelableAccount.Type.STATUSNET,
                     JsonSerializer.serialize(extra, StatusNetAccountExtra.class));
-        } catch (TwitterException e) {
+        } catch (MicroBlogException e) {
             // Ignore
         }
         try {
@@ -555,7 +555,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
             extra.setIsOfficialCredentials(true);
             return Pair.create(ParcelableAccount.Type.TWITTER,
                     JsonSerializer.serialize(extra, TwitterAccountExtra.class));
-        } catch (TwitterException e) {
+        } catch (MicroBlogException e) {
             // Ignore
         }
         if (UserKeyUtils.isFanfouUser(user)) {
@@ -595,8 +595,8 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
             }
         }
 
-        int analyseUserProfileColor(final User user) throws TwitterException {
-            if (user == null) throw new TwitterException("Unable to get user info");
+        int analyseUserProfileColor(final User user) throws MicroBlogException {
+            if (user == null) throw new MicroBlogException("Unable to get user info");
             return ParseUtils.parseColor("#" + user.getProfileLinkColor(), Color.TRANSPARENT);
         }
 
@@ -660,7 +660,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
                 }
                 return new SignInResponse(account != null, auth, user, AuthType.OAUTH, color,
                         apiUrlFormat, sameOauthSigningUrl, noVersionSuffix, accountType);
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 return new SignInResponse(false, false, e);
             }
         }
@@ -708,7 +708,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
                         return authTwipOMode();
                 }
                 return authOAuth();
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 Log.w(LOGTAG, e);
                 return new SignInResponse(false, false, e);
             } catch (final AuthenticationException e) {
@@ -717,7 +717,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
             }
         }
 
-        private SignInResponse authOAuth() throws AuthenticationException, TwitterException {
+        private SignInResponse authOAuth() throws AuthenticationException, MicroBlogException {
             final SignInActivity activity = activityRef.get();
             if (activity == null) return new SignInResponse(false, false, null);
             Endpoint endpoint = MicroBlogAPIFactory.getOAuthSignInEndpoint(apiUrlFormat,
@@ -735,7 +735,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
                     AuthType.OAUTH);
         }
 
-        private SignInResponse authxAuth() throws TwitterException {
+        private SignInResponse authxAuth() throws MicroBlogException {
             final SignInActivity activity = activityRef.get();
             if (activity == null) return new SignInResponse(false, false, null);
             Endpoint endpoint = MicroBlogAPIFactory.getOAuthSignInEndpoint(apiUrlFormat,
@@ -751,7 +751,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
                     AuthType.XAUTH);
         }
 
-        private SignInResponse authBasic() throws TwitterException, AuthenticationException {
+        private SignInResponse authBasic() throws MicroBlogException, AuthenticationException {
             final SignInActivity activity = activityRef.get();
             if (activity == null) return new SignInResponse(false, false, null);
             final String versionSuffix = noVersionSuffix ? null : "1.1";
@@ -763,7 +763,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
             User user;
             try {
                 user = twitter.verifyCredentials();
-            } catch (TwitterException e) {
+            } catch (MicroBlogException e) {
                 if (e.getStatusCode() == 401) {
                     throw new WrongBasicCredentialException();
                 } else if (e.getStatusCode() == 404) {
@@ -785,7 +785,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
         }
 
 
-        private SignInResponse authTwipOMode() throws TwitterException {
+        private SignInResponse authTwipOMode() throws MicroBlogException {
             final SignInActivity activity = activityRef.get();
             if (activity == null) return new SignInResponse(false, false, null);
             final String versionSuffix = noVersionSuffix ? null : "1.1";
@@ -811,7 +811,7 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
         private SignInResponse getOAuthSignInResponse(final SignInActivity activity,
                                                       final OAuthToken accessToken,
                                                       final String userId, int authType)
-                throws TwitterException {
+                throws MicroBlogException {
             final OAuthAuthorization auth = new OAuthAuthorization(consumerKey.getOauthToken(),
                     consumerKey.getOauthTokenSecret(), accessToken);
             final Endpoint endpoint = MicroBlogAPIFactory.getOAuthRestEndpoint(apiUrlFormat,

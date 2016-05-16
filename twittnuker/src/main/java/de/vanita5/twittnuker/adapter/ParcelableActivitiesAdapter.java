@@ -39,7 +39,7 @@ import org.mariotaku.library.objectcursor.ObjectCursor;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IActivitiesAdapter;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.library.twitter.model.Activity;
 import de.vanita5.twittnuker.fragment.CursorActivitiesFragment;
 import de.vanita5.twittnuker.fragment.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableActivity;

@@ -26,10 +26,10 @@ import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.twitter.model.SavedSearch;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 
@@ -51,7 +51,7 @@ public class SavedSearchesLoader extends AsyncTaskLoader<ResponseList<SavedSearc
         if (twitter == null) return null;
         try {
             return twitter.getSavedSearches();
-        } catch (final TwitterException e) {
+        } catch (final MicroBlogException e) {
             Log.w(LOGTAG, e);
         }
         return null;

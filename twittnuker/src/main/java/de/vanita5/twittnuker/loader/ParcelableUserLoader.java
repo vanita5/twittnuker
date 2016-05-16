@@ -36,9 +36,9 @@ import org.mariotaku.abstask.library.TaskStarter;
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.fragment.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -180,7 +180,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
             final SingleResponse<ParcelableUser> response = SingleResponse.getInstance(user);
             response.getExtras().putParcelable(EXTRA_ACCOUNT, credentials);
             return response;
-        } catch (final TwitterException e) {
+        } catch (final MicroBlogException e) {
             Log.w(LOGTAG, e);
             return SingleResponse.getInstance(e);
         }

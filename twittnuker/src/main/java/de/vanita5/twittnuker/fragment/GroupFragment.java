@@ -36,9 +36,9 @@ import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.statusnet.model.Group;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.statusnet.model.Group;
+import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.model.ParcelableGroup;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
@@ -169,7 +169,7 @@ public class GroupFragment extends AbsToolbarTabPagesFragment implements
                 }
                 return SingleResponse.getInstance(ParcelableGroupUtils.from(group, mAccountKey, 0,
                         group.isMember()));
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 return SingleResponse.getInstance(e);
             }
         }

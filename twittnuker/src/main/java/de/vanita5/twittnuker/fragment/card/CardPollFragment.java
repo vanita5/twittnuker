@@ -51,10 +51,10 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.twitter.TwitterCaps;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.CardDataMap;
-import de.vanita5.twittnuker.api.twitter.model.CardEntity;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.TwitterCaps;
+import de.vanita5.twittnuker.library.twitter.model.CardDataMap;
+import de.vanita5.twittnuker.library.twitter.model.CardEntity;
 import de.vanita5.twittnuker.fragment.BaseSupportFragment;
 import de.vanita5.twittnuker.model.ParcelableCardEntity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -186,7 +186,7 @@ public class CardPollFragment extends BaseSupportFragment implements
                                     final CardEntity cardEntity = caps.sendPassThrough(cardDataMap).getCard();
                                     return ParcelableCardEntityUtils.fromCardEntity(cardEntity,
                                             card.account_key);
-                                } catch (TwitterException e) {
+                                } catch (MicroBlogException e) {
                                     Log.w(LOGTAG, e);
                                 }
                                 return null;
@@ -360,7 +360,7 @@ public class CardPollFragment extends BaseSupportFragment implements
                     return null;
                 }
                 return ParcelableCardEntityUtils.fromCardEntity(card, mAccountKey);
-            } catch (TwitterException e) {
+            } catch (MicroBlogException e) {
                 return null;
             }
         }

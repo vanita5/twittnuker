@@ -28,8 +28,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
 
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -90,7 +90,7 @@ public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<Parce
             final Bundle extras = response.getExtras();
             extras.putParcelable(EXTRA_ACCOUNT, credentials);
             return response;
-        } catch (final TwitterException e) {
+        } catch (final MicroBlogException e) {
             if (e.getErrorCode() == ErrorInfo.STATUS_NOT_FOUND) {
                 // Delete all deleted status
                 final ContentResolver cr = getContext().getContentResolver();

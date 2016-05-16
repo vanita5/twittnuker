@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.model.util;
 import android.location.Location;
 import android.support.annotation.Nullable;
 
-import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
+import de.vanita5.twittnuker.library.twitter.model.GeoLocation;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.util.InternalParseUtils;
 

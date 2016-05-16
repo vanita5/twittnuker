@@ -30,9 +30,9 @@ import com.squareup.otto.Bus;
 
 import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -110,7 +110,7 @@ public abstract class AbsFriendshipOperationTask extends AbstractTask<AbsFriends
             final ParcelableUser parcelableUser = ParcelableUserUtils.fromUser(user, args.accountKey);
             succeededWorker(twitter, credentials, args, parcelableUser);
             return SingleResponse.getInstance(parcelableUser, null);
-        } catch (final TwitterException e) {
+        } catch (final MicroBlogException e) {
             return SingleResponse.getInstance(null, e);
         }
     }
@@ -118,7 +118,7 @@ public abstract class AbsFriendshipOperationTask extends AbstractTask<AbsFriends
     @NonNull
     protected abstract User perform(@NonNull MicroBlog twitter,
                                     @NonNull ParcelableCredentials credentials,
-                                    @NonNull Arguments args) throws TwitterException;
+                                    @NonNull Arguments args) throws MicroBlogException;
 
     protected abstract void succeededWorker(@NonNull MicroBlog twitter,
                                             @NonNull ParcelableCredentials credentials,

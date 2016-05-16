@@ -55,10 +55,10 @@ import org.mariotaku.abstask.library.TaskStarter;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.ThemedImagePickerActivity;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.ProfileUpdate;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.ProfileUpdate;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.loader.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -507,7 +507,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
                         ParcelableUserUtils.fromUser(user, mAccountKey));
                 response.getExtras().putParcelable(EXTRA_ACCOUNT, credentials);
                 return response;
-            } catch (TwitterException e) {
+            } catch (MicroBlogException e) {
                 return SingleResponse.getInstance(e);
             }
         }

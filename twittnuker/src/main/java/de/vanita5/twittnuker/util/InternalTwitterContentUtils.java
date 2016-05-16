@@ -34,15 +34,15 @@ import org.apache.commons.lang3.text.translate.EntityArrays;
 import org.apache.commons.lang3.text.translate.LookupTranslator;
 import org.mariotaku.restfu.http.MultiValueMap;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.api.twitter.model.EntitySupport;
-import de.vanita5.twittnuker.api.twitter.model.ExtendedEntitySupport;
-import de.vanita5.twittnuker.api.twitter.model.MediaEntity;
-import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.UrlEntity;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.library.twitter.model.EntitySupport;
+import de.vanita5.twittnuker.library.twitter.model.ExtendedEntitySupport;
+import de.vanita5.twittnuker.library.twitter.model.MediaEntity;
+import de.vanita5.twittnuker.library.twitter.model.Status;
+import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SpanItem;
 import de.vanita5.twittnuker.model.UserKey;
@@ -64,7 +64,7 @@ public class InternalTwitterContentUtils {
     private InternalTwitterContentUtils() {
     }
 
-    public static <T extends List<? extends Status>> T getStatusesWithQuoteData(MicroBlog twitter, @NonNull T list) throws TwitterException {
+    public static <T extends List<? extends Status>> T getStatusesWithQuoteData(MicroBlog twitter, @NonNull T list) throws MicroBlogException {
         MultiValueMap<Status> quotes = new MultiValueMap<>();
         // Phase 1: collect all statuses contains a status link, and put it in the map
         for (Status status : list) {

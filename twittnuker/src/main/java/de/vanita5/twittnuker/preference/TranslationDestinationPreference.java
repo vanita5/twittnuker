@@ -41,10 +41,10 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Language;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Language;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 
 import java.text.Collator;
@@ -169,7 +169,7 @@ public class TranslationDestinationPreference extends Preference implements Cons
             try {
                 mSelectedLanguageCode = twitter.getAccountSettings().getLanguage();
                 return twitter.getLanguages();
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 Log.w(LOGTAG, e);
             }
             return null;

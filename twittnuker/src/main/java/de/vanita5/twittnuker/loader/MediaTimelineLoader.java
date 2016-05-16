@@ -31,13 +31,13 @@ import android.text.TextUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
-import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.twitter.model.SearchQuery;
+import de.vanita5.twittnuker.library.twitter.model.Status;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -75,7 +75,7 @@ public class MediaTimelineLoader extends MicroBlogAPIStatusesLoader {
     @Override
     protected ResponseList<Status> getStatuses(@NonNull final MicroBlog microBlog,
                                                @NonNull final ParcelableCredentials credentials,
-                                               @NonNull final Paging paging) throws TwitterException {
+                                               @NonNull final Paging paging) throws MicroBlogException {
         final Context context = getContext();
         switch (ParcelableAccountUtils.getAccountType(credentials)) {
             case ParcelableAccount.Type.TWITTER: {
@@ -97,7 +97,7 @@ public class MediaTimelineLoader extends MicroBlogAPIStatusesLoader {
                         }
                         screenName = mUser.getScreenName();
                     } else {
-                        throw new TwitterException("Invalid parameters");
+                        throw new MicroBlogException("Invalid parameters");
                     }
                     final SearchQuery query;
                     if (MicroBlogAPIFactory.isTwitterCredentials(credentials)) {
@@ -116,7 +116,7 @@ public class MediaTimelineLoader extends MicroBlogAPIStatusesLoader {
                     }
                     return result;
                 }
-                throw new TwitterException("Wrong user");
+                throw new MicroBlogException("Wrong user");
             }
             case ParcelableAccount.Type.FANFOU: {
                 if (mUserKey != null) {
@@ -125,10 +125,10 @@ public class MediaTimelineLoader extends MicroBlogAPIStatusesLoader {
                 if (mUserScreenName != null) {
                     return microBlog.getPhotosUserTimeline(mUserScreenName, paging);
                 }
-                throw new TwitterException("Wrong user");
+                throw new MicroBlogException("Wrong user");
             }
         }
-        throw new TwitterException("Not implemented");
+        throw new MicroBlogException("Not implemented");
     }
 
     @WorkerThread

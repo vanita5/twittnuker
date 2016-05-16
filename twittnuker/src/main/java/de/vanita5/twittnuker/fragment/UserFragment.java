@@ -99,10 +99,10 @@ import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.activity.LinkHandlerActivity;
 import de.vanita5.twittnuker.activity.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.FriendshipUpdate;
-import de.vanita5.twittnuker.api.twitter.model.Relationship;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate;
+import de.vanita5.twittnuker.library.twitter.model.Relationship;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
@@ -1720,7 +1720,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         @Override
         public SingleResponse<UserRelationship> loadInBackground() {
             if (mAccountKey == null || mUser == null) {
-                return SingleResponse.getInstance(new TwitterException("Null parameters"));
+                return SingleResponse.getInstance(new MicroBlogException("Null parameters"));
             }
             final UserKey userKey = mUser.key;
             final boolean isFiltering = DataStoreUtils.isFilteringUser(context, userKey);
@@ -1731,7 +1731,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context,
                     mAccountKey);
             if (credentials == null) {
-                return SingleResponse.getInstance(new TwitterException("No Account"));
+                return SingleResponse.getInstance(new MicroBlogException("No Account"));
             }
             if (MicroBlogAPIFactory.isStatusNetCredentials(credentials)) {
                 if (!UserKeyUtils.isSameHost(mAccountKey, mUser.key)) {
@@ -1740,7 +1740,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
             }
             final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(context, mAccountKey, false);
             if (twitter == null) {
-                return SingleResponse.getInstance(new TwitterException("No Account"));
+                return SingleResponse.getInstance(new MicroBlogException("No Account"));
             }
             try {
                 final Relationship relationship = twitter.showFriendship(mUser.key.getId());
@@ -1752,7 +1752,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
                 Utils.updateRelationship(context, mAccountKey, userKey, relationship);
                 return SingleResponse.getInstance(new UserRelationship(mAccountKey, userKey,
                         relationship, isFiltering));
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 return SingleResponse.getInstance(e);
             }
         }

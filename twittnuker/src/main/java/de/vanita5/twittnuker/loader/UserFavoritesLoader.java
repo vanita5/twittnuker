@@ -27,11 +27,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
@@ -55,13 +55,13 @@ public class UserFavoritesLoader extends MicroBlogAPIStatusesLoader {
 
     @NonNull
     @Override
-    public ResponseList<Status> getStatuses(@NonNull final MicroBlog microBlog, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
+    public ResponseList<Status> getStatuses(@NonNull final MicroBlog microBlog, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws MicroBlogException {
         if (mUserKey != null) {
             return microBlog.getFavorites(mUserKey.getId(), paging);
         } else if (mUserScreenName != null) {
             return microBlog.getFavoritesByScreenName(mUserScreenName, paging);
         }
-        throw new TwitterException("Null user");
+        throw new MicroBlogException("Null user");
     }
 
     @WorkerThread

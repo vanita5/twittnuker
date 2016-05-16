@@ -26,12 +26,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.CursorSupport;
-import de.vanita5.twittnuker.api.twitter.model.IDs;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.CursorSupport;
+import de.vanita5.twittnuker.library.twitter.model.IDs;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.loader.iface.ICursorSupportLoader;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -111,19 +111,19 @@ public abstract class CursorSupportUsersLoader extends TwitterAPIUsersLoader
     protected List<User> getCursoredUsers(@NonNull final MicroBlog twitter,
                                           @NonNull final ParcelableCredentials credentials,
                                           @NonNull final Paging paging)
-            throws TwitterException {
+            throws MicroBlogException {
         throw new UnsupportedOperationException();
     }
 
     @NonNull
     protected IDs getIDs(@NonNull final MicroBlog twitter, @NonNull final ParcelableCredentials credentials,
-                         @NonNull final Paging paging) throws TwitterException {
+                         @NonNull final Paging paging) throws MicroBlogException {
         throw new UnsupportedOperationException();
     }
 
     @NonNull
     @Override
-    protected final List<User> getUsers(@NonNull final MicroBlog twitter, @NonNull ParcelableCredentials credentials) throws TwitterException {
+    protected final List<User> getUsers(@NonNull final MicroBlog twitter, @NonNull ParcelableCredentials credentials) throws MicroBlogException {
         final Paging paging = new Paging();
         paging.count(getCount());
         if (getCursor() > 0) {

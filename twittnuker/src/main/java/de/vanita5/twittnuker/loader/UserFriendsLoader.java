@@ -25,11 +25,11 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -54,7 +54,7 @@ public class UserFriendsLoader extends CursorSupportUsersLoader {
     @NonNull
     @Override
     protected ResponseList<User> getCursoredUsers(@NonNull final MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging)
-            throws TwitterException {
+            throws MicroBlogException {
         switch (ParcelableAccountUtils.getAccountType(credentials)) {
             case ParcelableAccount.Type.STATUSNET: {
                 if (mUserKey != null) {
@@ -78,6 +78,6 @@ public class UserFriendsLoader extends CursorSupportUsersLoader {
                 }
             }
         }
-        throw new TwitterException("user_id or screen_name required");
+        throw new MicroBlogException("user_id or screen_name required");
     }
 }

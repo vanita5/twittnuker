@@ -26,7 +26,7 @@ import android.content.Context;
 import android.util.SparseIntArray;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.twitter.model.ErrorInfo;
+import de.vanita5.twittnuker.library.twitter.model.ErrorInfo;
 
 public class StatusCodeMessageUtils {
 

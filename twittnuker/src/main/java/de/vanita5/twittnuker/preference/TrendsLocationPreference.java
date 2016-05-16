@@ -45,9 +45,9 @@ import android.widget.TextView;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Location;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Location;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 
 import java.text.Collator;
@@ -280,7 +280,7 @@ public class TrendsLocationPreference extends Preference implements Constants {
                     map.put(location);
                 }
                 return map.pack();
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 if (BuildConfig.DEBUG) {
                     Log.w(LOGTAG, e);
                 }

@@ -43,13 +43,13 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUserListsAdapter;
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
 import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.http.HttpResponseCode;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.http.HttpResponseCode;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.fragment.CreateUserListDialogFragment;
 import de.vanita5.twittnuker.fragment.SupportProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -321,7 +321,7 @@ public class UserListSelectorActivity extends BaseActivity implements OnClickLis
                 final SingleResponse<List<ParcelableUserList>> result = SingleResponse.getInstance(data);
                 result.getExtras().putBoolean(EXTRA_IS_MY_ACCOUNT, isMyAccount);
                 return result;
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 Log.w(LOGTAG, e);
                 return SingleResponse.getInstance(e);
             }
@@ -332,8 +332,8 @@ public class UserListSelectorActivity extends BaseActivity implements OnClickLis
             mActivity.dismissDialogFragment(FRAGMENT_TAG_GET_USER_LISTS);
             if (result.getData() != null) {
                 mActivity.setUserListsData(result.getData(), result.getExtras().getBoolean(EXTRA_IS_MY_ACCOUNT));
-            } else if (result.getException() instanceof TwitterException) {
-                final TwitterException te = (TwitterException) result.getException();
+            } else if (result.getException() instanceof MicroBlogException) {
+                final MicroBlogException te = (MicroBlogException) result.getException();
                 if (te.getStatusCode() == HttpResponseCode.NOT_FOUND) {
                     mActivity.searchUser(mScreenName);
                 }
@@ -376,7 +376,7 @@ public class UserListSelectorActivity extends BaseActivity implements OnClickLis
                     data.add(ParcelableUserUtils.fromUser(item, mAccountKey));
                 }
                 return SingleResponse.getInstance(data);
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 Log.w(LOGTAG, e);
                 return SingleResponse.getInstance(e);
             }

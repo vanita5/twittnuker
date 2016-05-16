@@ -35,7 +35,7 @@ import android.support.annotation.WorkerThread;
 import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
@@ -43,9 +43,6 @@ import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-
-import java.util.Map;
-import java.util.Set;
 
 import static android.text.TextUtils.isEmpty;
 

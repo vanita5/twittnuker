@@ -31,9 +31,9 @@ import com.squareup.otto.Bus;
 import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
@@ -101,7 +101,7 @@ public class UpdateProfileBackgroundImageTask<ResultHandler> extends AbstractTas
             }
             final User user = twitter.verifyCredentials();
             return SingleResponse.getInstance(ParcelableUserUtils.fromUser(user, mAccountKey));
-        } catch (TwitterException | IOException e) {
+        } catch (MicroBlogException | IOException e) {
             return SingleResponse.getInstance(e);
         }
     }

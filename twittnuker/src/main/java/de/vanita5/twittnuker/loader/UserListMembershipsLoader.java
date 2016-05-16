@@ -24,11 +24,11 @@ package de.vanita5.twittnuker.loader;
 
 import android.content.Context;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.PageableResponseList;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.UserKey;
 
@@ -48,7 +48,7 @@ public class UserListMembershipsLoader extends BaseUserListsLoader {
     }
 
     @Override
-    public PageableResponseList<UserList> getUserLists(final MicroBlog twitter) throws TwitterException {
+    public PageableResponseList<UserList> getUserLists(final MicroBlog twitter) throws MicroBlogException {
         if (twitter == null) return null;
         final Paging paging = new Paging();
         paging.cursor(getCursor());

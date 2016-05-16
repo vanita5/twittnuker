@@ -25,10 +25,10 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ScheduledStatus;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ScheduledStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 
@@ -65,7 +65,7 @@ public class ScheduledStatusesLoader extends AsyncTaskLoader<List<ScheduledStatu
         }
         try {
             return twitter.getScheduledStatuses(paging, mStates);
-        } catch (TwitterException e) {
+        } catch (MicroBlogException e) {
             return null;
         }
     }

@@ -35,7 +35,7 @@ import android.text.Spanned;
 import android.text.style.StyleSpan;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.library.twitter.model.Activity;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import org.oshkimaadziig.george.androidutils.SpanFormatter;

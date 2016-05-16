@@ -53,9 +53,9 @@ import org.mariotaku.restfu.http.RestHttpClient;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
@@ -253,13 +253,13 @@ public class NetworkDiagnosticsFragment extends BaseSupportFragment {
                 publishProgress(LogText.LINEBREAK);
                 testTwitter("verify_credentials", twitter, new TwitterTest() {
                     @Override
-                    public void execute(MicroBlog twitter) throws TwitterException {
+                    public void execute(MicroBlog twitter) throws MicroBlogException {
                         twitter.verifyCredentials();
                     }
                 });
                 testTwitter("get_home_timeline", twitter, new TwitterTest() {
                     @Override
-                    public void execute(MicroBlog twitter) throws TwitterException {
+                    public void execute(MicroBlog twitter) throws MicroBlogException {
                         twitter.getHomeTimeline(new Paging().count(1));
                     }
                 });
@@ -332,14 +332,14 @@ public class NetworkDiagnosticsFragment extends BaseSupportFragment {
                 test.execute(twitter);
                 publishProgress(new LogText(String.format(Locale.US, "OK (%d ms)",
                         SystemClock.uptimeMillis() - start), LogText.State.OK));
-            } catch (TwitterException e) {
+            } catch (MicroBlogException e) {
                 publishProgress(new LogText("ERROR: " + e.getMessage(), LogText.State.ERROR));
             }
             publishProgress(LogText.LINEBREAK);
         }
 
         interface TwitterTest {
-            void execute(MicroBlog twitter) throws TwitterException;
+            void execute(MicroBlog twitter) throws MicroBlogException;
         }
 
 

@@ -46,9 +46,9 @@ import org.mariotaku.restfu.http.mime.SimpleBody;
 import org.mariotaku.restfu.okhttp3.OkHttpRestClient;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.TwitterOAuth;
-import de.vanita5.twittnuker.api.twitter.auth.OAuthToken;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.TwitterOAuth;
+import de.vanita5.twittnuker.library.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.util.net.SimpleCookieJar;
 
 import java.io.IOException;
@@ -91,7 +91,7 @@ public class OAuthPasswordAuthenticator implements Constants {
         final OAuthToken requestToken;
         try {
             requestToken = oauth.getRequestToken(OAUTH_CALLBACK_OOB);
-        } catch (final TwitterException e) {
+        } catch (final MicroBlogException e) {
             if (e.isCausedByNetworkIssue()) throw new AuthenticationException(e);
             throw new AuthenticityTokenException(e);
         }
@@ -117,7 +117,7 @@ public class OAuthPasswordAuthenticator implements Constants {
                 throw new LoginVerificationException();
             }
             return oauth.getAccessToken(requestToken, authorizeResponseData.oauthPin);
-        } catch (final IOException | NullPointerException | TwitterException e) {
+        } catch (final IOException | NullPointerException | MicroBlogException e) {
             throw new AuthenticationException(e);
         }
     }

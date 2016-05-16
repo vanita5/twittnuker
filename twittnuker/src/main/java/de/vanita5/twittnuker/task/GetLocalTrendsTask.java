@@ -26,9 +26,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Trends;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Trends;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
 
@@ -44,7 +44,7 @@ public class GetLocalTrendsTask extends GetTrendsTask {
     }
 
     @Override
-    public List<Trends> getTrends(@NonNull final MicroBlog twitter) throws TwitterException {
+    public List<Trends> getTrends(@NonNull final MicroBlog twitter) throws MicroBlogException {
         return twitter.getLocationTrends(woeid);
     }
 

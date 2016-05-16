@@ -58,10 +58,10 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.AccountSelectorActivity;
 import de.vanita5.twittnuker.activity.UserListSelectorActivity;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.UserList;
-import de.vanita5.twittnuker.api.twitter.model.UserListUpdate;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.UserList;
+import de.vanita5.twittnuker.library.twitter.model.UserListUpdate;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -490,7 +490,7 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
                 } else
                     return SingleResponse.getInstance();
                 return SingleResponse.getInstance(ParcelableUserListUtils.from(list, mAccountKey));
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 return SingleResponse.getInstance(e);
             }
         }

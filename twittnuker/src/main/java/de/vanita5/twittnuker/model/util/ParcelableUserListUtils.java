@@ -24,8 +24,8 @@ package de.vanita5.twittnuker.model.util;
 
 import android.text.TextUtils;
 
-import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.TwitterContentUtils;

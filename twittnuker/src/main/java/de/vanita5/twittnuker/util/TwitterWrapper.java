@@ -34,13 +34,13 @@ import android.webkit.MimeTypeMap;
 import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.mime.FileBody;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.twitter.model.Status;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -79,7 +79,7 @@ public class TwitterWrapper implements Constants {
         try {
             twitter.removeProfileBannerImage();
             return new SingleResponse<>(true, null);
-        } catch (final TwitterException e) {
+        } catch (final MicroBlogException e) {
             return new SingleResponse<>(false, e);
         }
     }
@@ -115,7 +115,7 @@ public class TwitterWrapper implements Constants {
 
     @NonNull
     public static User showUser(final MicroBlog twitter, final String id, final String screenName,
-                                final String accountType) throws TwitterException {
+                                final String accountType) throws MicroBlogException {
         if (id != null) {
             if (ParcelableAccount.Type.FANFOU.equals(accountType)) {
                 return twitter.showFanfouUser(id);
@@ -127,13 +127,13 @@ public class TwitterWrapper implements Constants {
             }
             return twitter.showUserByScreenName(screenName);
         }
-        throw new TwitterException("Invalid user id or screen name");
+        throw new MicroBlogException("Invalid user id or screen name");
     }
 
     @NonNull
     public static User showUserAlternative(final MicroBlog twitter, final String id,
                                            final String screenName)
-            throws TwitterException {
+            throws MicroBlogException {
         final String searchScreenName;
         if (screenName != null) {
             searchScreenName = screenName;
@@ -161,16 +161,16 @@ public class TwitterWrapper implements Constants {
                 return user;
             }
         }
-        throw new TwitterException("can't find user");
+        throw new MicroBlogException("can't find user");
     }
 
     @NonNull
     public static User tryShowUser(final MicroBlog twitter, final String id, final String screenName,
                                    String accountType)
-            throws TwitterException {
+            throws MicroBlogException {
         try {
             return showUser(twitter, id, screenName, accountType);
-        } catch (final TwitterException e) {
+        } catch (final MicroBlogException e) {
             // Twitter specific error for private API calling through proxy
             if (e.getStatusCode() == 200) {
                 return showUserAlternative(twitter, id, screenName);
@@ -181,7 +181,7 @@ public class TwitterWrapper implements Constants {
 
     public static void updateProfileBannerImage(final Context context, final MicroBlog twitter,
                                                 final Uri imageUri, final boolean deleteImage)
-            throws IOException, TwitterException {
+            throws IOException, MicroBlogException {
         FileBody fileBody = null;
         try {
             fileBody = getFileBody(context, imageUri);
@@ -202,7 +202,7 @@ public class TwitterWrapper implements Constants {
                                                     @NonNull final Uri imageUri,
                                                     final boolean tile,
                                                     final boolean deleteImage)
-            throws IOException, TwitterException {
+            throws IOException, MicroBlogException {
         FileBody fileBody = null;
         try {
             fileBody = getFileBody(context, imageUri);
@@ -220,7 +220,7 @@ public class TwitterWrapper implements Constants {
 
     public static User updateProfileImage(final Context context, final MicroBlog twitter,
                                           final Uri imageUri, final boolean deleteImage)
-            throws IOException, TwitterException {
+            throws IOException, MicroBlogException {
         FileBody fileBody = null;
         try {
             fileBody = getFileBody(context, imageUri);

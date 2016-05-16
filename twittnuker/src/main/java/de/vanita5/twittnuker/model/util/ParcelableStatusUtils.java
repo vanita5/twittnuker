@@ -31,12 +31,12 @@ import android.text.TextUtils;
 import android.text.style.URLSpan;
 
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.statusnet.model.Attention;
-import de.vanita5.twittnuker.api.twitter.model.GeoLocation;
-import de.vanita5.twittnuker.api.twitter.model.Place;
-import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.api.twitter.model.UserMentionEntity;
+import de.vanita5.twittnuker.library.statusnet.model.Attention;
+import de.vanita5.twittnuker.library.twitter.model.GeoLocation;
+import de.vanita5.twittnuker.library.twitter.model.Place;
+import de.vanita5.twittnuker.library.twitter.model.Status;
+import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.twittnuker.library.twitter.model.UserMentionEntity;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableLocation;
 import de.vanita5.twittnuker.model.ParcelableStatus;

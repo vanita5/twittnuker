@@ -39,11 +39,11 @@ import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
@@ -93,7 +93,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
 
     @NonNull
     public abstract ResponseList<Status> getStatuses(MicroBlog twitter, Paging paging)
-            throws TwitterException;
+            throws MicroBlogException;
 
     @NonNull
     protected abstract Uri getContentUri();
@@ -170,7 +170,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
                 cacheTask.setParams(new TwitterWrapper.StatusListResponse(accountKey, statuses));
                 TaskStarter.execute(cacheTask);
                 errorInfoStore.remove(getErrorInfoKey(), accountKey.getId());
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 if (BuildConfig.DEBUG) {
                     Log.w(LOGTAG, e);
                 }

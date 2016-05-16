@@ -35,7 +35,7 @@ import com.hannesdorfmann.parcelableplease.annotation.Bagger;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
-import de.vanita5.twittnuker.api.twitter.model.CardEntity;
+import de.vanita5.twittnuker.library.twitter.model.CardEntity;
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
 
 import java.util.Arrays;

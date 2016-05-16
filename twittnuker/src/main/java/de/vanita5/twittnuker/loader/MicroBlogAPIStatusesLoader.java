@@ -35,10 +35,10 @@ import com.nostra13.universalimageloader.utils.IoUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -109,12 +109,12 @@ public abstract class MicroBlogAPIStatusesLoader extends ParcelableStatusesLoade
     public final ListResponse<ParcelableStatus> loadInBackground() {
         final Context context = getContext();
         if (mAccountKey == null) {
-            return ListResponse.getListInstance(new TwitterException("No Account"));
+            return ListResponse.getListInstance(new MicroBlogException("No Account"));
         }
         final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context,
                 mAccountKey);
         if (credentials == null) {
-            return ListResponse.getListInstance(new TwitterException("No Account"));
+            return ListResponse.getListInstance(new MicroBlogException("No Account"));
         }
 
         List<ParcelableStatus> data = getData();
@@ -137,7 +137,7 @@ public abstract class MicroBlogAPIStatusesLoader extends ParcelableStatusesLoade
         final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(context, credentials, true,
                 true);
         if (twitter == null) {
-            return ListResponse.getListInstance(new TwitterException("No Account"));
+            return ListResponse.getListInstance(new MicroBlogException("No Account"));
         }
         final List<? extends Status> statuses;
         final boolean noItemsBefore = data.isEmpty();
@@ -150,7 +150,7 @@ public abstract class MicroBlogAPIStatusesLoader extends ParcelableStatusesLoade
                     !Utils.isOfficialCredentials(context, credentials)) {
                 InternalTwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
             }
-        } catch (final TwitterException e) {
+        } catch (final MicroBlogException e) {
             // mHandler.post(new ShowErrorRunnable(e));
             if (BuildConfig.DEBUG) {
                 Log.w(LOGTAG, e);
@@ -227,7 +227,7 @@ public abstract class MicroBlogAPIStatusesLoader extends ParcelableStatusesLoade
     @NonNull
     protected abstract List<? extends Status> getStatuses(@NonNull MicroBlog microBlog,
                                                           @NonNull ParcelableCredentials credentials,
-                                                          @NonNull Paging paging) throws TwitterException;
+                                                          @NonNull Paging paging) throws MicroBlogException;
 
     @WorkerThread
     protected abstract boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status);

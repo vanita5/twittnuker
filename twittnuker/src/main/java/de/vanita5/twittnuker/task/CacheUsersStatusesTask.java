@@ -30,7 +30,7 @@ import com.twitter.Extractor;
 
 import org.mariotaku.abstask.library.AbstractTask;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;

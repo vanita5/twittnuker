@@ -97,11 +97,11 @@ import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.TranslationResult;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.Status;
+import de.vanita5.twittnuker.library.twitter.model.TranslationResult;
 import de.vanita5.twittnuker.loader.ConversationLoader;
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
@@ -866,7 +866,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                 }
                 final String statusId = status.is_retweet ? status.retweet_id : status.id;
                 return SingleResponse.getInstance(twitter.showTranslation(statusId, dest));
-            } catch (final TwitterException e) {
+            } catch (final MicroBlogException e) {
                 return SingleResponse.getInstance(e);
             }
         }
@@ -2524,7 +2524,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                     activityCursor.close();
                 }
                 return activitySummary;
-            } catch (TwitterException e) {
+            } catch (MicroBlogException e) {
                 return null;
             }
         }

@@ -27,11 +27,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
@@ -58,16 +58,16 @@ public class UserListTimelineLoader extends MicroBlogAPIStatusesLoader {
 
     @NonNull
     @Override
-    protected ResponseList<Status> getStatuses(@NonNull final MicroBlog microBlog, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws TwitterException {
+    protected ResponseList<Status> getStatuses(@NonNull final MicroBlog microBlog, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging) throws MicroBlogException {
         if (mListId != null)
             return microBlog.getUserListStatuses(mListId, paging);
         else if (mListName == null)
-            throw new TwitterException("No list name or id given");
+            throw new MicroBlogException("No list name or id given");
         else if (mUserKey != null)
             return microBlog.getUserListStatuses(mListName.replace(' ', '-'), mUserKey.getId(), paging);
         else if (mScreenName != null)
             return microBlog.getUserListStatuses(mListName.replace(' ', '-'), mScreenName, paging);
-        throw new TwitterException("User id or screen name is required for list name");
+        throw new MicroBlogException("User id or screen name is required for list name");
     }
 
     @WorkerThread

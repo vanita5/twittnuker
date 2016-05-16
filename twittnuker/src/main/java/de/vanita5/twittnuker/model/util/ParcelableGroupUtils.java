@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.model.util;
 
-import de.vanita5.twittnuker.api.statusnet.model.Group;
+import de.vanita5.twittnuker.library.statusnet.model.Group;
 import de.vanita5.twittnuker.model.ParcelableGroup;
 import de.vanita5.twittnuker.model.UserKey;
 

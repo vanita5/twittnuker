@@ -28,11 +28,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
-import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.SearchQuery;
+import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -65,8 +65,8 @@ public class TweetSearchLoader extends MicroBlogAPIStatusesLoader {
     @Override
     public List<? extends Status> getStatuses(@NonNull final MicroBlog microBlog,
                                               @NonNull final ParcelableCredentials credentials,
-                                              @NonNull final Paging paging) throws TwitterException {
-        if (mQuery == null) throw new TwitterException("Empty query");
+                                              @NonNull final Paging paging) throws MicroBlogException {
+        if (mQuery == null) throw new MicroBlogException("Empty query");
         final String processedQuery = processQuery(credentials, mQuery);
         switch (ParcelableAccountUtils.getAccountType(credentials)) {
             case ParcelableAccount.Type.TWITTER: {
@@ -81,7 +81,7 @@ public class TweetSearchLoader extends MicroBlogAPIStatusesLoader {
                 return microBlog.searchPublicTimeline(processedQuery, paging);
             }
         }
-        throw new TwitterException("Not implemented");
+        throw new MicroBlogException("Not implemented");
     }
 
     @NonNull

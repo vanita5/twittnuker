@@ -80,7 +80,7 @@ import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.NotificationType;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.library.twitter.model.Activity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.AccountPreferences;

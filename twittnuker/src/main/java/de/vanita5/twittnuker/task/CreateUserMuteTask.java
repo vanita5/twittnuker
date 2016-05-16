@@ -31,9 +31,9 @@ import android.support.annotation.Nullable;
 
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
@@ -51,7 +51,7 @@ public class CreateUserMuteTask extends AbsFriendshipOperationTask {
     @NonNull
     @Override
     protected User perform(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials,
-                           @NonNull Arguments args) throws TwitterException {
+                           @NonNull Arguments args) throws MicroBlogException {
         return twitter.createMute(args.userKey.getId());
     }
 

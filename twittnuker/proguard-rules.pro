@@ -130,8 +130,8 @@
 -keep class * extends com.bluelinelabs.logansquare.JsonMapper
 -keep @com.bluelinelabs.logansquare.annotation.JsonObject class *
 
--keep class de.vanita5.twittnuker.api.annotation.NoObfuscate
--keep @de.vanita5.twittnuker.api.annotation.NoObfuscate class *
+-keep class de.vanita5.twittnuker.library.annotation.NoObfuscate
+-keep @de.vanita5.twittnuker.library.annotation.NoObfuscate class *
 
 # https://github.com/mariotaku/RestFu
 -keep class org.mariotaku.restfu.annotation.** { *; }
@@ -186,7 +186,7 @@
 # Marshmallow removed Notification.setLatestEventInfo()
 -dontwarn android.app.Notification
 
--dontwarn de.vanita5.twittnuker.api.twitter.model.TwitterResponse$AccessLevel
+-dontwarn de.vanita5.twittnuker.library.twitter.model.TwitterResponse$AccessLevel
 
 # app-theme-engine
 -dontwarn com.afollestad.appthemeengine.**

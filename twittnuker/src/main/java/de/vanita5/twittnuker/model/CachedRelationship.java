@@ -27,7 +27,7 @@ import android.support.annotation.Nullable;
 
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
-import de.vanita5.twittnuker.api.twitter.model.Relationship;
+import de.vanita5.twittnuker.library.twitter.model.Relationship;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;

@@ -27,7 +27,7 @@ import android.support.annotation.Nullable;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import de.vanita5.twittnuker.api.twitter.model.Activity;
+import de.vanita5.twittnuker.library.twitter.model.Activity;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;

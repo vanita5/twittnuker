@@ -24,10 +24,10 @@ package de.vanita5.twittnuker.loader;
 
 import android.content.Context;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.UserKey;
 
@@ -48,7 +48,7 @@ public class UserListsLoader extends BaseUserListsLoader {
     }
 
     @Override
-    public ResponseList<UserList> getUserLists(final MicroBlog twitter) throws TwitterException {
+    public ResponseList<UserList> getUserLists(final MicroBlog twitter) throws MicroBlogException {
         if (twitter == null) return null;
         if (mUserKey != null) {
             return twitter.getUserLists(mUserKey.getId(), mReverse);

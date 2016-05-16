@@ -37,11 +37,11 @@ import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Activity;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
@@ -139,7 +139,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
                     saveReadPosition(accountKey,credentials, twitter);
                 }
                 errorInfoStore.remove(getErrorInfoKey(), accountKey);
-            } catch (TwitterException e) {
+            } catch (MicroBlogException e) {
                 if (BuildConfig.DEBUG) {
                     Log.w(LOGTAG, e);
                 }
@@ -240,7 +240,7 @@ public abstract class GetActivitiesTask extends AbstractTask<RefreshTaskParam, O
     protected abstract ResponseList<Activity> getActivities(@NonNull final MicroBlog twitter,
                                                             @NonNull final ParcelableCredentials credentials,
                                                             @NonNull final Paging paging)
-            throws TwitterException;
+            throws MicroBlogException;
 
     @Override
     public void afterExecute(Object result) {

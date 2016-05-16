@@ -30,11 +30,11 @@ import android.text.TextUtils;
 
 import org.mariotaku.commons.parcel.ParcelUtils;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.SearchQuery;
-import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.SearchQuery;
+import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -71,7 +71,7 @@ public class ConversationLoader extends MicroBlogAPIStatusesLoader {
     @Override
     public List<Status> getStatuses(@NonNull final MicroBlog microBlog,
                                     @NonNull final ParcelableCredentials credentials,
-                                    @NonNull final Paging paging) throws TwitterException {
+                                    @NonNull final Paging paging) throws MicroBlogException {
         mCanLoadAllReplies = false;
         final ParcelableStatus status = mStatus;
         switch (ParcelableAccountUtils.getAccountType(credentials)) {
@@ -105,7 +105,7 @@ public class ConversationLoader extends MicroBlogAPIStatusesLoader {
     protected List<Status> showConversationCompat(@NonNull final MicroBlog twitter,
                                                   @NonNull final ParcelableCredentials credentials,
                                                   @NonNull final ParcelableStatus status,
-                                                  final boolean loadReplies) throws TwitterException {
+                                                  final boolean loadReplies) throws MicroBlogException {
         final List<Status> statuses = new ArrayList<>();
         final String maxId = getMaxId(), sinceId = getSinceId();
         final long maxSortId = getMaxSortId(), sinceSortId = getSinceSortId();
@@ -137,7 +137,7 @@ public class ConversationLoader extends MicroBlogAPIStatusesLoader {
                             statuses.add(item);
                         }
                     }
-                } catch (TwitterException e) {
+                } catch (MicroBlogException e) {
                     // Ignore for now
                 }
             }

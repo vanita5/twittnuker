@@ -53,16 +53,16 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.HomeActivity;
-import de.vanita5.twittnuker.api.twitter.model.Activity;
-import de.vanita5.twittnuker.api.twitter.model.DeletionEvent;
-import de.vanita5.twittnuker.api.twitter.model.Warning;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.TwitterUserStream;
-import de.vanita5.twittnuker.api.twitter.UserStreamCallback;
-import de.vanita5.twittnuker.api.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.api.twitter.model.Status;
-import de.vanita5.twittnuker.api.twitter.model.User;
-import de.vanita5.twittnuker.api.twitter.model.UserList;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Activity;
+import de.vanita5.twittnuker.library.twitter.model.DeletionEvent;
+import de.vanita5.twittnuker.library.twitter.model.Warning;
+import de.vanita5.twittnuker.library.twitter.TwitterUserStream;
+import de.vanita5.twittnuker.library.twitter.UserStreamCallback;
+import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.library.twitter.model.Status;
+import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
@@ -407,9 +407,9 @@ public class StreamingService extends Service implements Constants {
 
         @Override
         public void onException(final Throwable ex) {
-            if (ex instanceof TwitterException) {
-                Log.w(LOGTAG, String.format("Error %d", ((TwitterException) ex).getStatusCode()), ex);
-                final HttpResponse response = ((TwitterException) ex).getHttpResponse();
+            if (ex instanceof MicroBlogException) {
+                Log.w(LOGTAG, String.format("Error %d", ((MicroBlogException) ex).getStatusCode()), ex);
+                final HttpResponse response = ((MicroBlogException) ex).getHttpResponse();
                 if (response != null) {
                     try {
                         final Body body = response.getBody();

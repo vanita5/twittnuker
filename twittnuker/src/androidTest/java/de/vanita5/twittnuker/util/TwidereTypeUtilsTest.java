@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.util;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.junit.Test;
-import de.vanita5.twittnuker.api.twitter.model.CursorTimestampResponse;
-import de.vanita5.twittnuker.api.twitter.model.ResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Status;
+import de.vanita5.twittnuker.library.twitter.model.CursorTimestampResponse;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.library.twitter.model.Status;
 
 import java.util.List;
 

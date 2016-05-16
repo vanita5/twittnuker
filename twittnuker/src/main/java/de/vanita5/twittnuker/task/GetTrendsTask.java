@@ -32,9 +32,9 @@ import com.squareup.otto.Bus;
 
 import org.mariotaku.abstask.library.AbstractTask;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.Trends;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Trends;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.TrendsRefreshedEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
@@ -62,7 +62,7 @@ public abstract class GetTrendsTask extends AbstractTask<Object, Object, Object>
         this.mAccountId = accountKey;
     }
 
-    public abstract List<Trends> getTrends(@NonNull MicroBlog twitter) throws TwitterException;
+    public abstract List<Trends> getTrends(@NonNull MicroBlog twitter) throws MicroBlogException;
 
     @Override
     public Object doLongOperation(final Object param) {
@@ -72,7 +72,7 @@ public abstract class GetTrendsTask extends AbstractTask<Object, Object, Object>
             final List<Trends> trends = getTrends(twitter);
             storeTrends(mContext.getContentResolver(), getContentUri(), trends);
             return null;
-        } catch (final TwitterException e) {
+        } catch (final MicroBlogException e) {
             return null;
         }
     }

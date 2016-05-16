@@ -25,11 +25,11 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.api.MicroBlog;
-import de.vanita5.twittnuker.api.twitter.TwitterException;
-import de.vanita5.twittnuker.api.twitter.model.PageableResponseList;
-import de.vanita5.twittnuker.api.twitter.model.Paging;
-import de.vanita5.twittnuker.api.twitter.model.User;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.PageableResponseList;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
@@ -55,14 +55,14 @@ public class UserListSubscribersLoader extends CursorSupportUsersLoader {
     @NonNull
     @Override
     public PageableResponseList<User> getCursoredUsers(@NonNull final MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull final Paging paging)
-            throws TwitterException {
+            throws MicroBlogException {
         if (mListId != null)
             return twitter.getUserListSubscribers(mListId, paging);
         else if (mUserKey != null)
             return twitter.getUserListSubscribers(mListName.replace(' ', '-'), mUserKey.getId(), paging);
         else if (mScreenName != null)
             return twitter.getUserListSubscribersByScreenName(mListName.replace(' ', '-'), mScreenName, paging);
-        throw new TwitterException("list_id or list_name and user_id (or screen_name) required");
+        throw new MicroBlogException("list_id or list_name and user_id (or screen_name) required");
     }
 
 }
