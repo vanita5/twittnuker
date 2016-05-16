@@ -145,7 +145,6 @@ import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
 import de.vanita5.twittnuker.fragment.MutesUsersListFragment;
 import de.vanita5.twittnuker.fragment.PublicTimelineFragment;
 import de.vanita5.twittnuker.fragment.SavedSearchesListFragment;
-import de.vanita5.twittnuker.fragment.ScheduledStatusesFragment;
 import de.vanita5.twittnuker.fragment.SearchFragment;
 import de.vanita5.twittnuker.fragment.StatusFavoritersListFragment;
 import de.vanita5.twittnuker.fragment.StatusFragment;
@@ -556,10 +555,6 @@ public final class Utils implements Constants {
             }
             case LINK_ID_MUTES_USERS: {
                 fragment = new MutesUsersListFragment();
-                break;
-            }
-            case LINK_ID_SCHEDULED_STATUSES: {
-                fragment = new ScheduledStatusesFragment();
                 break;
             }
             case LINK_ID_DIRECT_MESSAGES_CONVERSATION: {

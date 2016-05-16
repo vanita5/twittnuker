@@ -22,11 +22,15 @@
 
 package de.vanita5.twittnuker.library.twitter.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bluelinelabs.logansquare.JsonMapper;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.typeconverters.TypeConverter;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 import de.vanita5.twittnuker.library.annotation.NoObfuscate;
 
@@ -35,8 +39,9 @@ import java.io.IOException;
 /**
  * Created by mariotaku on 15/5/10.
  */
+@ParcelablePlease
 @NoObfuscate
-public class IDs extends TwitterResponseObject implements TwitterResponse, CursorSupport {
+public class IDs extends TwitterResponseObject implements TwitterResponse, CursorSupport, Parcelable {
 
     long previousCursor;
     long nextCursor;
@@ -83,4 +88,26 @@ public class IDs extends TwitterResponseObject implements TwitterResponse, Curso
             IDS_JSON_MAPPER.serialize(object, jsonGenerator, true);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        IDsParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static final Creator<IDs> CREATOR = new Creator<IDs>() {
+        public IDs createFromParcel(Parcel source) {
+            IDs target = new IDs();
+            IDsParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        public IDs[] newArray(int size) {
+            return new IDs[size];
+        }
+    };
 }

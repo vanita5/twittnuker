@@ -22,11 +22,16 @@
 
 package de.vanita5.twittnuker.library.twitter.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
+@ParcelablePlease
 @JsonObject
-public class NewMediaMetadata {
+public class NewMediaMetadata implements Parcelable {
     @JsonField(name = "media_id")
     String mediaId;
     @JsonField(name = "alt_text")
@@ -49,8 +54,9 @@ public class NewMediaMetadata {
                 '}';
     }
 
+    @ParcelablePlease
     @JsonObject
-    public static class AltText {
+    public static class AltText implements Parcelable {
         @JsonField(name = "text")
         String text;
 
@@ -68,5 +74,49 @@ public class NewMediaMetadata {
                     "text='" + text + '\'' +
                     '}';
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            NewMediaMetadata$AltTextParcelablePlease.writeToParcel(this, dest, flags);
+        }
+
+        public static final Creator<AltText> CREATOR = new Creator<AltText>() {
+            public AltText createFromParcel(Parcel source) {
+                AltText target = new AltText();
+                NewMediaMetadata$AltTextParcelablePlease.readFromParcel(target, source);
+                return target;
+            }
+
+            public AltText[] newArray(int size) {
+                return new AltText[size];
+            }
+        };
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        NewMediaMetadataParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static final Creator<NewMediaMetadata> CREATOR = new Creator<NewMediaMetadata>() {
+        public NewMediaMetadata createFromParcel(Parcel source) {
+            NewMediaMetadata target = new NewMediaMetadata();
+            NewMediaMetadataParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        public NewMediaMetadata[] newArray(int size) {
+            return new NewMediaMetadata[size];
+        }
+    };
 }

@@ -22,15 +22,42 @@
 
 package de.vanita5.twittnuker.library.twitter.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
+@ParcelablePlease
 @JsonObject
-public class CardResponse {
+public class CardResponse implements Parcelable {
     @JsonField(name = "card")
     CardEntity card;
 
     public CardEntity getCard() {
         return card;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        CardResponseParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static final Creator<CardResponse> CREATOR = new Creator<CardResponse>() {
+        public CardResponse createFromParcel(Parcel source) {
+            CardResponse target = new CardResponse();
+            CardResponseParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        public CardResponse[] newArray(int size) {
+            return new CardResponse[size];
+        }
+    };
 }

@@ -22,14 +22,19 @@
 
 package de.vanita5.twittnuker.library.twitter.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 /**
  * Created by mariotaku on 15/5/10.
  */
+@ParcelablePlease
 @JsonObject
-public class Location {
+public class Location implements Parcelable {
 
     @JsonField(name = "woeid")
     int woeid;
@@ -90,8 +95,33 @@ public class Location {
         return woeid;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        LocationParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static final Creator<Location> CREATOR = new Creator<Location>() {
+        @Override
+        public Location createFromParcel(Parcel source) {
+            Location target = new Location();
+            LocationParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        @Override
+        public Location[] newArray(int size) {
+            return new Location[size];
+        }
+    };
+
+    @ParcelablePlease
     @JsonObject
-    public static class PlaceType {
+    public static class PlaceType implements Parcelable {
         @JsonField(name = "name")
         String name;
 
@@ -113,5 +143,29 @@ public class Location {
                     ", code=" + code +
                     '}';
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            Location$PlaceTypeParcelablePlease.writeToParcel(this, dest, flags);
+        }
+
+        public static final Creator<PlaceType> CREATOR = new Creator<PlaceType>() {
+            @Override
+            public PlaceType createFromParcel(Parcel source) {
+                PlaceType target = new PlaceType();
+                Location$PlaceTypeParcelablePlease.readFromParcel(target, source);
+                return target;
+            }
+
+            @Override
+            public PlaceType[] newArray(int size) {
+                return new PlaceType[size];
+            }
+        };
     }
 }

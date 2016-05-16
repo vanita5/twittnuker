@@ -22,15 +22,42 @@
 
 package de.vanita5.twittnuker.library.twitter.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
+@ParcelablePlease
 @JsonObject
-public class TimestampResponse {
+public class TimestampResponse implements Parcelable {
     @JsonField(name = "timestamp")
     long timestamp;
 
     public long getTimestamp() {
         return timestamp;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        TimestampResponseParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static final Creator<TimestampResponse> CREATOR = new Creator<TimestampResponse>() {
+        public TimestampResponse createFromParcel(Parcel source) {
+            TimestampResponse target = new TimestampResponse();
+            TimestampResponseParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        public TimestampResponse[] newArray(int size) {
+            return new TimestampResponse[size];
+        }
+    };
 }
