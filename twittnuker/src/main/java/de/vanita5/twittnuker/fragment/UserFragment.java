@@ -85,7 +85,6 @@ import android.widget.TextView;
 
 import com.afollestad.appthemeengine.ATEActivity;
 import com.afollestad.appthemeengine.Config;
-import com.afollestad.appthemeengine.util.ATEUtil;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -1444,7 +1443,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
         final BaseActivity activity = (BaseActivity) getActivity();
         if (Config.coloredActionBar(activity, activity.getATEKey())) {
             mPrimaryColor = color;
-            mPrimaryColorDark = ATEUtil.darkenColor(color);
+            mPrimaryColorDark = ThemeUtils.computeDarkColor(color);
         } else {
             mPrimaryColor = Config.primaryColor(activity, activity.getATEKey());
             mPrimaryColorDark = Color.BLACK;
@@ -1536,7 +1535,7 @@ public class UserFragment extends BaseSupportFragment implements OnClickListener
 
 
         final int statusBarColor = (int) sArgbEvaluator.evaluate(factor, 0xA0000000,
-                ATEUtil.darkenColor(mPrimaryColorDark));
+                ThemeUtils.computeDarkColor(mPrimaryColorDark));
         final Window window = activity.getWindow();
         mTintedStatusFrameLayout.setStatusBarColor(statusBarColor);
         ThemeUtils.setLightStatusBar(window, ThemeUtils.isLightColor(statusBarColor));
