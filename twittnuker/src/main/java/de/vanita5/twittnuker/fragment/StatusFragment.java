@@ -88,8 +88,12 @@ import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.squareup.otto.Subscribe;
 
 import org.apache.commons.lang3.ArrayUtils;
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.Status;
+import de.vanita5.twittnuker.library.twitter.model.TranslationResult;
 import org.mariotaku.sqliteqb.library.Expression;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter;
@@ -97,11 +101,6 @@ import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter;
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
-import de.vanita5.twittnuker.library.MicroBlog;
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.model.Paging;
-import de.vanita5.twittnuker.library.twitter.model.Status;
-import de.vanita5.twittnuker.library.twitter.model.TranslationResult;
 import de.vanita5.twittnuker.loader.ConversationLoader;
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
@@ -144,6 +143,7 @@ import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.MediaLoadingHandler;
 import de.vanita5.twittnuker.util.MenuUtils;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.MultiSelectManager;
 import de.vanita5.twittnuker.util.Nullables;
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper;
@@ -156,7 +156,6 @@ import de.vanita5.twittnuker.util.StatusLinkClickHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify;
 import de.vanita5.twittnuker.util.TwidereMathUtils;
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.TwitterCardUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
@@ -271,7 +270,7 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
                         public void onClick(View widget) {
                             final FragmentActivity activity = getActivity();
                             if (activity == null || activity.isFinishing()) return;
-                            SupportMessageDialogFragment.show(activity,
+                            MessageDialogFragment.show(activity,
                                     getString(R.string.cant_load_all_replies_explanation),
                                     "cant_load_all_replies_explanation");
                         }
@@ -533,6 +532,8 @@ public class StatusFragment extends BaseSupportFragment implements LoaderCallbac
     @Override
     public void onLoadFinished(final Loader<SingleResponse<ParcelableStatus>> loader,
                                final SingleResponse<ParcelableStatus> data) {
+        final FragmentActivity activity = getActivity();
+        if (activity == null) return;
         if (data.hasData()) {
             final ReadPosition readPosition = saveReadPosition();
             final ParcelableStatus status = data.getData();
