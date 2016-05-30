@@ -32,6 +32,8 @@ import org.attoparser.markup.MarkupAttoParser;
 import org.attoparser.markup.html.AbstractStandardNonValidatingHtmlAttoHandler;
 import org.attoparser.markup.html.HtmlParsingConfiguration;
 import org.attoparser.markup.html.elements.IHtmlElement;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.TwitterOAuth;
 import org.mariotaku.restfu.RestAPIFactory;
 import org.mariotaku.restfu.RestClient;
 import org.mariotaku.restfu.annotation.method.GET;
@@ -43,12 +45,9 @@ import org.mariotaku.restfu.http.MultiValueMap;
 import org.mariotaku.restfu.http.RestHttpClient;
 import org.mariotaku.restfu.http.mime.FormBody;
 import org.mariotaku.restfu.http.mime.SimpleBody;
+import org.mariotaku.restfu.oauth.OAuthToken;
 import org.mariotaku.restfu.okhttp3.OkHttpRestClient;
-
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.TwitterOAuth;
-import de.vanita5.twittnuker.library.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.util.net.SimpleCookieJar;
 
 import java.io.IOException;

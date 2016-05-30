@@ -67,6 +67,8 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.mariotaku.restfu.http.Authorization;
 import org.mariotaku.restfu.http.Endpoint;
+import org.mariotaku.restfu.oauth.OAuthAuthorization;
+import org.mariotaku.restfu.oauth.OAuthToken;
 import org.mariotaku.sqliteqb.library.Expression;
 
 import de.vanita5.twittnuker.BuildConfig;
@@ -78,8 +80,6 @@ import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.library.twitter.auth.BasicAuthorization;
 import de.vanita5.twittnuker.library.twitter.auth.EmptyAuthorization;
-import de.vanita5.twittnuker.library.twitter.auth.OAuthAuthorization;
-import de.vanita5.twittnuker.library.twitter.auth.OAuthToken;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;

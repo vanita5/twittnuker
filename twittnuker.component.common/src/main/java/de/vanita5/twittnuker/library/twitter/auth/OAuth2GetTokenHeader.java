@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.library.twitter.auth;
 import android.util.Base64;
 
 import org.mariotaku.restfu.http.HeaderValue;
+import org.mariotaku.restfu.oauth.OAuthToken;
 
 public class OAuth2GetTokenHeader implements HeaderValue {
 

@@ -23,13 +23,12 @@
 package de.vanita5.twittnuker.library.twitter;
 
 
+import de.vanita5.twittnuker.library.MicroBlogException;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Extra;
 import org.mariotaku.restfu.annotation.param.KeyValue;
 import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.annotation.param.Params;
-
-import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.auth.OAuthToken;
 
 /**

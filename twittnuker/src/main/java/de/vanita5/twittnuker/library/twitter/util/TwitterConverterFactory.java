@@ -28,18 +28,17 @@ import android.support.v4.util.SimpleArrayMap;
 import com.bluelinelabs.logansquare.JsonMapper;
 import com.fasterxml.jackson.core.JsonParseException;
 
+import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.ResponseCode;
+import de.vanita5.twittnuker.library.twitter.model.TwitterResponse;
 import org.mariotaku.restfu.RestConverter;
 import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.restfu.http.mime.SimpleBody;
 import org.mariotaku.restfu.http.mime.StringBody;
-
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.auth.OAuthToken;
-import de.vanita5.twittnuker.library.twitter.model.ResponseCode;
-import de.vanita5.twittnuker.library.twitter.model.TwitterResponse;
-import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
+import org.mariotaku.restfu.oauth.OAuthToken;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -52,7 +51,7 @@ public class TwitterConverterFactory extends RestConverter.SimpleFactory<MicroBl
 
     static {
         sResponseConverters.put(ResponseCode.class, new ResponseCode.ResponseConverter());
-        sResponseConverters.put(OAuthToken.class, new OAuthToken.ResponseConverter());
+        sResponseConverters.put(OAuthToken.class, new OAuthTokenResponseConverter());
 
     }
 
