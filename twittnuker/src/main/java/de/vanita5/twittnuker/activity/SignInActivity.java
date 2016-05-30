@@ -65,23 +65,22 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.internal.MDButton;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import org.mariotaku.restfu.http.Authorization;
-import org.mariotaku.restfu.http.Endpoint;
-import org.mariotaku.restfu.oauth.OAuthAuthorization;
-import org.mariotaku.restfu.oauth.OAuthToken;
-import org.mariotaku.sqliteqb.library.Expression;
-
-import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
-import de.vanita5.twittnuker.library.statusnet.model.StatusNetConfig;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.statusnet.model.StatusNetConfig;
 import de.vanita5.twittnuker.library.twitter.TwitterOAuth;
 import de.vanita5.twittnuker.library.twitter.auth.BasicAuthorization;
 import de.vanita5.twittnuker.library.twitter.auth.EmptyAuthorization;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import org.mariotaku.restfu.http.Authorization;
+import org.mariotaku.restfu.http.Endpoint;
+import org.mariotaku.restfu.oauth.OAuthAuthorization;
+import org.mariotaku.restfu.oauth.OAuthToken;
+import org.mariotaku.sqliteqb.library.Expression;
+import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.iface.IExtendedActivity;
 import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -97,6 +96,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticationException;
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.AuthenticityTokenException;
@@ -105,7 +105,6 @@ import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.LoginVerificationEx
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.WrongUserPassException;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserAgentUtils;
 import de.vanita5.twittnuker.util.Utils;
@@ -745,7 +744,17 @@ public class SignInActivity extends BaseActivity implements OnClickListener, Tex
             final TwitterOAuth oauth = MicroBlogAPIFactory.getInstance(activity, endpoint, auth,
                     TwitterOAuth.class);
             final OAuthToken accessToken = oauth.getAccessToken(username, password);
-            final String userId = accessToken.getUserId();
+            String userId = accessToken.getUserId();
+            if (userId == null) {
+                // Trying to fix up userId if accessToken doesn't contain one.
+                auth = new OAuthAuthorization(consumerKey.getOauthToken(),
+                        consumerKey.getOauthTokenSecret(), accessToken);
+                endpoint = MicroBlogAPIFactory.getOAuthRestEndpoint(apiUrlFormat, sameOAuthSigningUrl,
+                        noVersionSuffix);
+                MicroBlog microBlog = MicroBlogAPIFactory.getInstance(activity, endpoint, auth,
+                        MicroBlog.class);
+                userId = microBlog.verifyCredentials().getId();
+            }
             if (userId == null) return new SignInResponse(false, false, null);
             return getOAuthSignInResponse(activity, accessToken, userId,
                     AuthType.XAUTH);

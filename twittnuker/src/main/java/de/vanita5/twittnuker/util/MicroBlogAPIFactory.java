@@ -36,6 +36,17 @@ import android.webkit.URLUtil;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.Twitter;
+import de.vanita5.twittnuker.library.twitter.TwitterCaps;
+import de.vanita5.twittnuker.library.twitter.TwitterOAuth;
+import de.vanita5.twittnuker.library.twitter.TwitterOAuth2;
+import de.vanita5.twittnuker.library.twitter.TwitterUpload;
+import de.vanita5.twittnuker.library.twitter.TwitterUserStream;
+import de.vanita5.twittnuker.library.twitter.auth.BasicAuthorization;
+import de.vanita5.twittnuker.library.twitter.auth.EmptyAuthorization;
+import de.vanita5.twittnuker.library.twitter.util.TwitterConverterFactory;
 import org.mariotaku.restfu.ExceptionFactory;
 import org.mariotaku.restfu.RestAPIFactory;
 import org.mariotaku.restfu.RestConverter;
@@ -59,16 +70,6 @@ import org.mariotaku.restfu.oauth.OAuthToken;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.library.MicroBlog;
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.TwitterCaps;
-import de.vanita5.twittnuker.library.twitter.TwitterOAuth;
-import de.vanita5.twittnuker.library.twitter.TwitterOAuth2;
-import de.vanita5.twittnuker.library.twitter.TwitterUpload;
-import de.vanita5.twittnuker.library.twitter.TwitterUserStream;
-import de.vanita5.twittnuker.library.twitter.auth.BasicAuthorization;
-import de.vanita5.twittnuker.library.twitter.auth.EmptyAuthorization;
-import de.vanita5.twittnuker.library.twitter.util.TwitterConverterFactory;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -279,6 +280,9 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
         }
         final String domain, versionSuffix;
         if (MicroBlog.class.isAssignableFrom(cls)) {
+            domain = "api";
+            versionSuffix = noVersionSuffix ? null : "/1.1/";
+        } else if (Twitter.class.isAssignableFrom(cls)) {
             domain = "api";
             versionSuffix = noVersionSuffix ? null : "/1.1/";
         } else if (TwitterUpload.class.isAssignableFrom(cls)) {

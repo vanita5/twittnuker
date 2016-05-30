@@ -29,6 +29,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -91,7 +93,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatusUpdate>,
-        UpdateStatusTask.UpdateStatusResult, Object> implements Constants {
+        UpdateStatusTask.UpdateStatusResult, Context> implements Constants {
 
     private static final int BULK_SIZE = 256 * 1024;// 256 Kib
 
@@ -122,6 +124,16 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
         } finally {
             mTwitterWrapper.removeSendingDraftId(draftId);
         }
+    }
+
+    @Override
+    protected void beforeExecute() {
+        stateCallback.beforeExecute();
+    }
+
+    @Override
+    protected void afterExecute(Context handler, UpdateStatusResult result) {
+        stateCallback.afterExecute(handler, result);
     }
 
     @NonNull
@@ -732,12 +744,22 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
     }
 
     public interface StateCallback {
+        @WorkerThread
         void onStartUploadingMedia();
 
+        @WorkerThread
         void onUploadingProgressChanged(int index, long current, long total);
 
+        @WorkerThread
         void onShorteningStatus();
 
+        @WorkerThread
         void onUpdatingStatus();
+
+        @UiThread
+        void afterExecute(Context handler, UpdateStatusResult result);
+
+        @UiThread
+        void beforeExecute();
     }
 }
