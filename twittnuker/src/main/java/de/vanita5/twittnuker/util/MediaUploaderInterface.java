@@ -39,6 +39,7 @@ import de.vanita5.twittnuker.model.MediaUploadResult;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.UploaderMediaItem;
+import de.vanita5.twittnuker.model.UserKey;
 
 import java.util.List;
 
@@ -47,14 +48,16 @@ public final class MediaUploaderInterface extends AbsServiceInterface<IMediaUplo
         super(context, uploaderName, metaData);
     }
 
-    public MediaUploadResult upload(final ParcelableStatusUpdate status, final UploaderMediaItem[] media)
-            throws RemoteException {
+    public MediaUploadResult upload(final ParcelableStatusUpdate status,
+                                    final UserKey currentAccountKey,
+                                    final UploaderMediaItem[] media) {
         final IMediaUploader iface = getInterface();
         if (iface == null) return null;
         try {
             final String statusJson = JsonSerializer.serialize(status, ParcelableStatusUpdate.class);
             final String mediaJson = JsonSerializer.serialize(media, UploaderMediaItem.class);
-            return JsonSerializer.parse(iface.upload(statusJson, mediaJson), MediaUploadResult.class);
+            return JsonSerializer.parse(iface.upload(statusJson, currentAccountKey.toString(),
+                    mediaJson), MediaUploadResult.class);
         } catch (final RemoteException e) {
             if (BuildConfig.DEBUG) {
                 Log.w(LOGTAG, e);

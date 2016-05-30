@@ -36,10 +36,10 @@ import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.adapter.DummyItemAdapter;
 import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
-import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseFiltersFragment;
 import de.vanita5.twittnuker.fragment.BaseListFragment;
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment;
+import de.vanita5.twittnuker.fragment.BaseDialogFragment;
 import de.vanita5.twittnuker.fragment.BaseSupportFragment;
 import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
 import de.vanita5.twittnuker.loader.MicroBlogAPIStatusesLoader;
@@ -59,6 +59,7 @@ import de.vanita5.twittnuker.task.UpdateProfileBackgroundImageTask;
 import de.vanita5.twittnuker.task.UpdateProfileBannerImageTask;
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
 import de.vanita5.twittnuker.task.twitter.GetStatusesTask;
+import de.vanita5.twittnuker.task.twitter.UpdateStatusTask;
 import de.vanita5.twittnuker.text.util.EmojiEditableFactory;
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
@@ -72,7 +73,7 @@ import dagger.Component;
 @Singleton
 @Component(modules = ApplicationModule.class)
 public interface GeneralComponent {
-    void inject(DummyItemAdapter object);
+    void inject(DummyItemAdapter adapter);
 
     void inject(BaseSupportFragment object);
 
@@ -153,4 +154,6 @@ public interface GeneralComponent {
     void inject(AsyncTwitterWrapper.UpdateProfileImageTask<Object> task);
 
     void inject(APIEditorActivity.LoadDefaultsChooserDialogFragment.DefaultAPIConfigLoader loader);
+
+    void inject(UpdateStatusTask task);
 }

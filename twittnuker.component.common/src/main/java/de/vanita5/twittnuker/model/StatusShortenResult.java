@@ -50,6 +50,10 @@ public class StatusShortenResult implements Parcelable {
     @ParcelableThisPlease
     public String error_message;
 
+    @ParcelableThisPlease
+    @JsonField(name = "shared_owners")
+    public UserKey[] shared_owners;
+
     public StatusShortenResult() {
     }
 

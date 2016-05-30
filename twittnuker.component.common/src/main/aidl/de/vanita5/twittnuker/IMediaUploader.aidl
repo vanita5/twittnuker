@@ -23,7 +23,7 @@ package de.vanita5.twittnuker;
 
 interface IMediaUploader {
 
-    String upload(String statusJson, String mediaJson);
+	String upload(String statusJson, String currentAccountKey, String mediaJson);
 
     boolean callback(String resultJson, String statusJson);
 

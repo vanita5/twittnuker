@@ -22,6 +22,11 @@
 
 package de.vanita5.twittnuker.library.twitter;
 
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse;
+import de.vanita5.twittnuker.library.twitter.model.NewMediaMetadata;
+import de.vanita5.twittnuker.library.twitter.model.ResponseCode;
+import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.KeyValue;
 import org.mariotaku.restfu.annotation.param.Param;
@@ -30,38 +35,35 @@ import org.mariotaku.restfu.annotation.param.Raw;
 import org.mariotaku.restfu.http.BodyType;
 import org.mariotaku.restfu.http.mime.Body;
 
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse;
-import de.vanita5.twittnuker.library.twitter.model.NewMediaMetadata;
-import de.vanita5.twittnuker.library.twitter.model.ResponseCode;
-
-import java.io.File;
-
 public interface TwitterUpload {
 
     @POST("/media/upload.json")
     @BodyType(BodyType.MULTIPART)
-    MediaUploadResponse uploadMedia(@Param("media") File file) throws MicroBlogException;
-
-    @POST("/media/upload.json")
-    @BodyType(BodyType.MULTIPART)
-    MediaUploadResponse uploadMedia(@Param("media") Body data) throws MicroBlogException;
+    MediaUploadResponse uploadMedia(@Param("media") Body data,
+                                    @Param(value = "additional_owners", arrayDelimiter = ',')
+                                    String[] additionalOwners) throws MicroBlogException;
 
 
     @POST("/media/upload.json")
     @Params(@KeyValue(key = "command", value = "INIT"))
     MediaUploadResponse initUploadMedia(@Param("media_type") String mediaType,
-                                        @Param("total_bytes") long totalBytes) throws MicroBlogException;
+                                        @Param("total_bytes") long totalBytes,
+                                        @Param(value = "additional_owners", arrayDelimiter = ',')
+                                        String[] additionalOwners) throws MicroBlogException;
 
     @POST("/media/upload.json")
     @Params(@KeyValue(key = "command", value = "APPEND"))
-    ResponseCode initUploadMedia(@Param("media_id") long mediaId,
+    ResponseCode appendUploadMedia(@Param("media_id") String mediaId,
                                  @Param("segment_index") int segmentIndex,
                                  @Param("media") Body media) throws MicroBlogException;
 
     @POST("/media/upload.json")
     @Params(@KeyValue(key = "command", value = "FINALIZE"))
-    MediaUploadResponse initUploadMedia(@Param("media_id") long mediaId) throws MicroBlogException;
+    MediaUploadResponse finalizeUploadMedia(@Param("media_id") String mediaId) throws MicroBlogException;
+
+    @GET("/media/upload.json")
+    @Params(@KeyValue(key = "command", value = "STATUS"))
+    MediaUploadResponse getUploadMediaStatus(@Param("media_id") String mediaId) throws MicroBlogException;
 
     @POST("/media/metadata/create.json")
     ResponseCode createMetadata(@Raw NewMediaMetadata metadata) throws MicroBlogException;

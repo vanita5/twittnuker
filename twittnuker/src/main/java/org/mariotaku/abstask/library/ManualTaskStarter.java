@@ -20,29 +20,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package org.mariotaku.abstask.library;
 
-import android.support.annotation.CheckResult;
+import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 
-import java.util.Collection;
-
-public class CollectionUtils {
-
-    private CollectionUtils() {
+public class ManualTaskStarter {
+    @UiThread
+    public static void invokeBeforeExecute(AbstractTask<?, ?, ?> task) {
+        task.invokeBeforeExecute();
     }
 
-    @CheckResult
-    public static <T> String toString(final Collection<T> collection, final char token, final boolean includeSpace) {
-        final StringBuilder builder = new StringBuilder();
-        int i = 0;
-        for (T item : collection) {
-            final String itemString = String.valueOf(item);
-            if (i > 0) {
-                builder.append(includeSpace ? token + " " : token);
-            }
-            builder.append(itemString);
-            i++;
-        }
-        return builder.toString();
+    @UiThread
+    public static <Result> void invokeAfterExecute(AbstractTask<?, Result, ?> task, Result result) {
+        task.invokeAfterExecute(result);
     }
+
+    @WorkerThread
+    public static <Result> Result invokeExecute(AbstractTask<?, Result, ?> task) {
+        return task.invokeExecute();
+    }
+
 }

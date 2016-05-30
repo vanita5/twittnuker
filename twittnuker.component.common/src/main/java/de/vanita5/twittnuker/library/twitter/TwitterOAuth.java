@@ -29,7 +29,7 @@ import org.mariotaku.restfu.annotation.param.Extra;
 import org.mariotaku.restfu.annotation.param.KeyValue;
 import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.annotation.param.Params;
-import de.vanita5.twittnuker.library.twitter.auth.OAuthToken;
+import org.mariotaku.restfu.oauth.OAuthToken;
 
 /**
  * Created by mariotaku on 15/2/4.

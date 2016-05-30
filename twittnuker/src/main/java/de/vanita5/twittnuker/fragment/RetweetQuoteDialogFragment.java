@@ -71,6 +71,7 @@ import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 public class RetweetQuoteDialogFragment extends BaseDialogFragment implements Constants {
 
     public static final String FRAGMENT_TAG = "retweet_quote";
+    private static final boolean SHOW_PROTECTED_CONFIRM = Boolean.parseBoolean("false");
     private PopupMenu mPopupMenu;
 
     @NonNull
@@ -144,7 +145,7 @@ public class RetweetQuoteDialogFragment extends BaseDialogFragment implements Co
                     public boolean onHitEnter() {
                         final ParcelableStatus status = getStatus();
                         if (status == null) return false;
-                        if (retweetOrQuote(credentials, status, true)) {
+                        if (retweetOrQuote(credentials, status, SHOW_PROTECTED_CONFIRM)) {
                             dismiss();
                             return true;
                         }
@@ -197,12 +198,12 @@ public class RetweetQuoteDialogFragment extends BaseDialogFragment implements Co
                     public void onClick(View v) {
                         boolean dismissDialog = false;
                         if (editComment.length() > 0) {
-                            dismissDialog = retweetOrQuote(credentials, status, true);
+                            dismissDialog = retweetOrQuote(credentials, status, SHOW_PROTECTED_CONFIRM);
                         } else if (isMyRetweet(status)) {
                             mTwitterWrapper.cancelRetweetAsync(status.account_key, status.id, status.my_retweet_id);
                             dismissDialog = true;
                         } else if (useQuote(!status.user_is_protected, credentials)) {
-                            dismissDialog = retweetOrQuote(credentials, status, true);
+                            dismissDialog = retweetOrQuote(credentials, status, SHOW_PROTECTED_CONFIRM);
                         } else {
                             TwidereBugReporter.logException(new IllegalStateException(status.toString()));
                         }

@@ -36,8 +36,8 @@ import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
-import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.statusnet.model.Group;
+import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.model.ParcelableGroup;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -155,7 +155,7 @@ public class GroupFragment extends AbsToolbarTabPagesFragment implements
                 final ParcelableGroup cache = mExtras.getParcelable(EXTRA_GROUP);
                 if (cache != null) return SingleResponse.getInstance(cache);
             }
-            final MicroBlog twitter = MicroBlogAPIFactory.getTwitterInstance(getContext(), mAccountKey,
+            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(getContext(), mAccountKey,
                     true);
             if (twitter == null) return SingleResponse.getInstance();
             try {
