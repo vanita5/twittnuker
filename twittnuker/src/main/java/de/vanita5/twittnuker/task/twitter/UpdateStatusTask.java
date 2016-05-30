@@ -93,13 +93,14 @@ import javax.inject.Inject;
 public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatusUpdate>,
         UpdateStatusTask.UpdateStatusResult, Object> implements Constants {
 
-    private static final int BULK_SIZE = 128 * 1024;// 128 Kib
+    private static final int BULK_SIZE = 256 * 1024;// 256 Kib
 
     final Context context;
     final StateCallback stateCallback;
 
     @Inject
     AsyncTwitterWrapper mTwitterWrapper;
+    @Inject
     SharedPreferencesWrapper mPreferences;
 
     public UpdateStatusTask(Context context, StateCallback stateCallback) {
@@ -110,18 +111,17 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
 
     @Override
     protected UpdateStatusResult doLongOperation(Pair<String, ParcelableStatusUpdate> params) {
+        final long draftId = saveDraft(params.first, params.second);
+        mTwitterWrapper.addSendingDraftId(draftId);
         try {
-            final long draftId = saveDraft(params.first, params.second);
-            mTwitterWrapper.addSendingDraftId(draftId);
             final UpdateStatusResult result = doUpdateStatus(params.second);
             deleteOrUpdateDraft(params.second, result, draftId);
-            mTwitterWrapper.removeSendingDraftId(draftId);
             return result;
         } catch (UpdateStatusException e) {
-            e.printStackTrace();
+            return new UpdateStatusResult(e);
+        } finally {
+            mTwitterWrapper.removeSendingDraftId(draftId);
         }
-        //TODO
-        return null;
     }
 
     @NonNull
@@ -136,7 +136,7 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
         uploadMedia(uploader, update, pendingUpdate);
         shortenStatus(shortener, update, pendingUpdate);
 
-        UpdateStatusResult result = requestUpdateStatus(update, pendingUpdate);
+        final UpdateStatusResult result = requestUpdateStatus(update, pendingUpdate);
 
 
         mediaUploadCallback(uploader, pendingUpdate, result);
@@ -241,6 +241,7 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
         }
     }
 
+    @NonNull
     private UpdateStatusResult requestUpdateStatus(ParcelableStatusUpdate statusUpdate, PendingStatusUpdate pendingUpdate) {
 
         stateCallback.onUpdatingStatus();
@@ -619,18 +620,27 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
 
     public static class UpdateStatusResult {
         @NonNull
-        ParcelableStatus[] statuses;
+        public final ParcelableStatus[] statuses;
         @NonNull
-        Exception[] exceptions;
+        public final Exception[] exceptions;
+
+        public final UpdateStatusException exception;
 
         public UpdateStatusResult(@NonNull ParcelableStatus[] statuses, @NonNull Exception[] exceptions) {
             this.statuses = statuses;
             this.exceptions = exceptions;
+            this.exception = null;
+        }
+
+        public UpdateStatusResult(UpdateStatusException exception) {
+            this.exception = exception;
+            this.statuses = new ParcelableStatus[0];
+            this.exceptions = new Exception[0];
         }
     }
 
 
-    static class UpdateStatusException extends Exception {
+    public static class UpdateStatusException extends Exception {
         public UpdateStatusException() {
             super();
         }
@@ -648,7 +658,7 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
         }
     }
 
-    static class UploaderNotFoundException extends UpdateStatusException {
+    public static class UploaderNotFoundException extends UpdateStatusException {
 
         public UploaderNotFoundException() {
             super();
@@ -667,7 +677,7 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
         }
     }
 
-    static class UploadException extends UpdateStatusException {
+    public static class UploadException extends UpdateStatusException {
 
         public UploadException() {
             super();
@@ -686,14 +696,14 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
         }
     }
 
-    static class ExtensionVersionMismatchException extends AbsServiceInterface.CheckServiceException {
+    public static class ExtensionVersionMismatchException extends AbsServiceInterface.CheckServiceException {
 
     }
 
-    static class ShortenerNotFoundException extends UpdateStatusException {
+    public static class ShortenerNotFoundException extends UpdateStatusException {
     }
 
-    static class ShortenException extends UpdateStatusException {
+    public static class ShortenException extends UpdateStatusException {
 
         public ShortenException() {
             super();
