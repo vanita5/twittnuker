@@ -29,7 +29,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -79,7 +78,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
-import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
@@ -87,11 +85,9 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereValidator;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.util.io.ContentLengthInputStream;
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
@@ -334,7 +330,7 @@ public class BackgroundOperationService extends IntentService implements Constan
         startForeground(NOTIFICATION_ID_UPDATE_STATUS, updateUpdateStatusNotification(context,
                 builder, 0, null));
         for (final ParcelableStatusUpdate item : statuses) {
-            UpdateStatusTask task = new UpdateStatusTask(context, new UpdateStatusTask.StateCallback() {
+            final UpdateStatusTask task = new UpdateStatusTask(context, new UpdateStatusTask.StateCallback() {
 
                 @Override
                 public void onStartUploadingMedia() {
@@ -362,7 +358,21 @@ public class BackgroundOperationService extends IntentService implements Constan
                 }
             });
             task.setParams(Pair.create(actionType, item));
-            UpdateStatusTask.UpdateStatusResult result = ManualTaskStarter.invokeExecute(task);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    ManualTaskStarter.invokeBeforeExecute(task);
+                }
+            });
+
+            final UpdateStatusTask.UpdateStatusResult result = ManualTaskStarter.invokeExecute(task);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    ManualTaskStarter.invokeAfterExecute(task, result);
+                }
+            });
+
             if (result.exception != null) {
                 Log.w(LOGTAG, result.exception);
             }
@@ -405,32 +415,26 @@ public class BackgroundOperationService extends IntentService implements Constan
                 }
                 default: {
                     if (imageUri != null) {
-                        final String path = getImagePathFromUri(this, Uri.parse(imageUri));
-                        if (path == null) throw new FileNotFoundException();
-                        final BitmapFactory.Options o = new BitmapFactory.Options();
-                        o.inJustDecodeBounds = true;
-                        BitmapFactory.decodeFile(path, o);
-                        final File file = new File(path);
-                        BitmapUtils.downscaleImageIfNeeded(file, 100);
-                        ContentLengthInputStream is = null;
+                        final Uri mediaUri = Uri.parse(imageUri);
                         FileBody body = null;
                         try {
-                            is = new ContentLengthInputStream(file);
-                            is.setReadListener(new MessageMediaUploadListener(this, mNotificationManager,
-                                    builder, text));
-                            body = new FileBody(is, file.getName(), file.length(),
-                                    ContentType.parse(o.outMimeType));
+                            body = UpdateStatusTask.getBodyFromMedia(getContentResolver(), mediaUri,
+                                    new MessageMediaUploadListener(this, mNotificationManager,
+                                            builder, text));
                             final MediaUploadResponse uploadResp = uploadMedia(twitterUpload, body);
                             final DirectMessage response = twitter.sendDirectMessage(recipientId,
                                     text, uploadResp.getId());
                             directMessage = ParcelableDirectMessageUtils.fromDirectMessage(response,
                                     accountKey, true);
                         } finally {
-                            Utils.closeSilently(is);
                             Utils.closeSilently(body);
                         }
-                        if (!file.delete()) {
-                            Log.d(LOGTAG, String.format("unable to delete %s", path));
+                        final String path = getImagePathFromUri(this, mediaUri);
+                        if (path != null) {
+                            final File file = new File(path);
+                            if (!file.delete()) {
+                                Log.d(LOGTAG, String.format("unable to delete %s", path));
+                            }
                         }
                     } else {
                         final DirectMessage response = twitter.sendDirectMessage(recipientId, text);

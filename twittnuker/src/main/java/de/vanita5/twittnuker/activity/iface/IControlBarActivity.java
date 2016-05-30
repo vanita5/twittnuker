@@ -55,7 +55,7 @@ public interface IControlBarActivity {
 
     final class ControlBarShowHideHelper {
 
-        private static final long DURATION = 200l;
+        private static final long DURATION = 200L;
 
         private final IControlBarActivity mActivity;
         private int mControlAnimationDirection;
