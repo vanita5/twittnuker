@@ -64,6 +64,12 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
     @JsonField(name = "text")
     String text;
 
+    /**
+     * https://dev.twitter.com/overview/api/upcoming-changes-to-tweets
+     */
+    @JsonField(name = "full_text")
+    String fullText;
+
     @JsonField(name = "statusnet_html")
     String statusnetHtml;
 
@@ -178,6 +184,9 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
     @JsonField(name = "location")
     String location;
 
+    @JsonField(name = "display_text_range")
+    int[] displayTextRange;
+
     @ParcelableNoThanks
     private transient long sortId = -1;
 
@@ -207,13 +216,22 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
         return truncated;
     }
 
-
     public String getText() {
+        return text;
+    }
+
+    public String getFullText() {
+        return fullText;
+    }
+
+    public String getExtendedText() {
+        if (fullText != null) return fullText;
         return text;
     }
 
     public String getHtmlText() {
         if (statusnetHtml != null) return statusnetHtml;
+        if (fullText != null) return fullText;
         return text;
     }
 
@@ -417,6 +435,10 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
         return location;
     }
 
+    public int[] getDisplayTextRange() {
+        return displayTextRange;
+    }
+
     @Override
     public int compareTo(@NonNull final Status that) {
         final long diff = getSortId() - that.getSortId();
@@ -482,7 +504,12 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
 
     @OnJsonParseComplete
     void afterStatusParsed() throws IOException {
-        if (id == null || text == null) throw new IOException("Malformed Status object");
+        if (id == null) {
+            throw new IOException("Malformed Status object (no id)");
+        }
+        if (text == null && fullText == null) {
+            throw new IOException("Malformed Status object (no text)");
+        }
         fixStatus();
     }
 

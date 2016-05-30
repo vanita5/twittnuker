@@ -20,20 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.library.twitter.api;
+package de.vanita5.twittnuker.library.twitter.template;
 
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.model.QueryResult;
-import de.vanita5.twittnuker.library.twitter.model.SearchQuery;
-import de.vanita5.twittnuker.library.twitter.template.StatusAnnotationTemplate;
-
-import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.param.KeyValue;
 import org.mariotaku.restfu.annotation.param.Queries;
-import org.mariotaku.restfu.annotation.param.Query;
 
-@SuppressWarnings("RedundantThrows")
-@Queries(template = StatusAnnotationTemplate.class)
-public interface SearchResource {
-    @GET("/search/tweets.json")
-    QueryResult search(@Query SearchQuery query) throws MicroBlogException;
+@Queries({@KeyValue(key = "include_my_retweet", valueKey = "include_my_retweet"),
+        @KeyValue(key = "include_rts", valueKey = "include_entities"),
+        @KeyValue(key = "include_entities", valueKey = "include_entities"),
+        @KeyValue(key = "include_cards", valueKey = "include_cards"),
+        @KeyValue(key = "cards_platform", valueKey = "cards_platform"),
+        @KeyValue(key = "include_reply_count", valueKey = "include_reply_count"),
+        @KeyValue(key = "include_descendent_reply_count", valueKey = "include_descendent_reply_count"),
+        @KeyValue(key = "include_ext_alt_text", valueKey = "include_ext_alt_text"),
+        @KeyValue(key = "tweet_mode", valueKey = "tweet_mode")
+})
+public class StatusAnnotationTemplate {
 }

@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.library.twitter.api;
 
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.KeyValue;
 import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.annotation.param.Queries;
 import org.mariotaku.restfu.annotation.param.Query;
@@ -37,6 +36,7 @@ import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.library.twitter.model.UserListUpdate;
+import de.vanita5.twittnuker.library.twitter.template.StatusAnnotationTemplate;
 
 public interface ListResources {
     @POST("/lists/members/create.json")
@@ -82,11 +82,11 @@ public interface ListResources {
     PageableResponseList<User> getUserListMembers(@Query("slug") String slug,
                                                   @Query("owner_id") String ownerId,
                                                   @Query Paging paging)
-			throws MicroBlogException;
+            throws MicroBlogException;
 
     @GET("/lists/members.json")
     PageableResponseList<User> getUserListMembersByScreenName(@Query("slug") String slug, @Query("owner_screen_name") String ownerScreenName, @Query Paging paging)
-			throws MicroBlogException;
+            throws MicroBlogException;
 
     @GET("/lists/memberships.json")
     PageableResponseList<UserList> getUserListMemberships(@Query("user_id") String listMemberId, @Query Paging paging) throws MicroBlogException;
@@ -97,11 +97,11 @@ public interface ListResources {
 
     @GET("/lists/memberships.json")
     PageableResponseList<UserList> getUserListMembershipsByScreenName(@Query("screen_name") String listMemberScreenName, @Query Paging paging)
-			throws MicroBlogException;
+            throws MicroBlogException;
 
     @GET("/lists/ownerships.json")
     PageableResponseList<UserList> getUserListMembershipsByScreenName(@Query("screen_name") String listMemberScreenName, @Query Paging paging,
-			boolean filterToOwnedLists) throws MicroBlogException;
+                                                                      boolean filterToOwnedLists) throws MicroBlogException;
 
     @GET("/lists/ownerships.json")
     PageableResponseList<UserList> getUserListOwnerships(@Query Paging paging) throws MicroBlogException;
@@ -120,57 +120,33 @@ public interface ListResources {
     ResponseList<UserList> getUserListsByScreenName(@Query("screen_name") String screenName, @Query("reverse") boolean reverse) throws MicroBlogException;
 
     @GET("/lists/statuses.json")
-    @Queries({@KeyValue(key = "include_my_retweet", valueKey = "include_my_retweet"),
-            @KeyValue(key = "include_rts", valueKey = "include_entities"),
-            @KeyValue(key = "include_entities", valueKey = "include_entities"),
-            @KeyValue(key = "include_cards", valueKey = "include_cards"),
-            @KeyValue(key = "cards_platform", valueKey = "cards_platform"),
-            @KeyValue(key = "include_reply_count", valueKey = "include_reply_count"),
-            @KeyValue(key = "include_descendent_reply_count", valueKey = "include_descendent_reply_count"),
-            @KeyValue(key = "include_ext_alt_text", valueKey = "include_ext_alt_text")
-    })
+    @Queries(template = StatusAnnotationTemplate.class)
     ResponseList<Status> getUserListStatuses(@Query("list_id") String listId, @Query Paging paging) throws MicroBlogException;
 
     @GET("/lists/statuses.json")
-    @Queries({@KeyValue(key = "include_my_retweet", valueKey = "include_my_retweet"),
-            @KeyValue(key = "include_rts", valueKey = "include_entities"),
-            @KeyValue(key = "include_entities", valueKey = "include_entities"),
-            @KeyValue(key = "include_cards", valueKey = "include_cards"),
-            @KeyValue(key = "cards_platform", valueKey = "cards_platform"),
-            @KeyValue(key = "include_reply_count", valueKey = "include_reply_count"),
-            @KeyValue(key = "include_descendent_reply_count", valueKey = "include_descendent_reply_count"),
-            @KeyValue(key = "include_ext_alt_text", valueKey = "include_ext_alt_text")
-    })
+    @Queries(template = StatusAnnotationTemplate.class)
     ResponseList<Status> getUserListStatuses(@Query("slug") String slug, @Query("owner_id") long ownerId, @Query Paging paging) throws MicroBlogException;
 
     @GET("/lists/statuses.json")
-    @Queries({@KeyValue(key = "include_my_retweet", valueKey = "include_my_retweet"),
-            @KeyValue(key = "include_rts", valueKey = "include_entities"),
-            @KeyValue(key = "include_entities", valueKey = "include_entities"),
-            @KeyValue(key = "include_cards", valueKey = "include_cards"),
-            @KeyValue(key = "cards_platform", valueKey = "cards_platform"),
-            @KeyValue(key = "include_reply_count", valueKey = "include_reply_count"),
-            @KeyValue(key = "include_descendent_reply_count", valueKey = "include_descendent_reply_count"),
-            @KeyValue(key = "include_ext_alt_text", valueKey = "include_ext_alt_text")
-    })
+    @Queries(template = StatusAnnotationTemplate.class)
     ResponseList<Status> getUserListStatuses(@Query("slug") String slug, @Query("owner_screen_name") String ownerScreenName, @Query Paging paging)
-			throws MicroBlogException;
+            throws MicroBlogException;
 
     @GET("/lists/subscribers.json")
     PageableResponseList<User> getUserListSubscribers(@Query("list_id") String listId, @Query Paging paging) throws MicroBlogException;
 
     @GET("/lists/subscribers.json")
     PageableResponseList<User> getUserListSubscribers(@Query("list_id") String slug, @Query("owner_id") String ownerId, @Query Paging paging)
-			throws MicroBlogException;
+            throws MicroBlogException;
 
     @GET("/lists/subscribers.json")
     PageableResponseList<User> getUserListSubscribersByScreenName(@Query("list_id") String slug, @Query("owner_screen_name") String ownerScreenName, @Query Paging paging)
-			throws MicroBlogException;
+            throws MicroBlogException;
 
 
     @GET("/lists/subscriptions.json")
     PageableResponseList<UserList> getUserListSubscriptionsByScreenName(@Query("screen_name") String listOwnerScreenName, long cursor)
-			throws MicroBlogException;
+            throws MicroBlogException;
 
     @GET("/lists/subscriptions.json")
     PageableResponseList<UserList> getUserListSubscriptions(@Query("user_id") String userId, long cursor)
