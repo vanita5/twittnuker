@@ -42,14 +42,16 @@ import android.widget.ImageView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 
 import me.uucky.colorpicker.ColorPickerDialog;
 
-public class ColorPickerPreference extends DialogPreference implements Constants,
+import static de.vanita5.twittnuker.Constants.PRESET_COLORS;
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
+
+public class ColorPickerPreference extends DialogPreference implements
         IDialogPreference {
 
     private int mDefaultValue = Color.WHITE;

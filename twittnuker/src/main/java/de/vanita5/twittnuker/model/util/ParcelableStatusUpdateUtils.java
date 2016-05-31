@@ -24,12 +24,11 @@ package de.vanita5.twittnuker.model.util;
 
 import android.content.Context;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
 
-public class ParcelableStatusUpdateUtils implements Constants {
+public class ParcelableStatusUpdateUtils {
     private ParcelableStatusUpdateUtils() {
     }
 

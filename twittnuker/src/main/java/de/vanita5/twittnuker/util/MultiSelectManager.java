@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
@@ -30,7 +29,7 @@ import de.vanita5.twittnuker.model.UserKey;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultiSelectManager implements Constants {
+public class MultiSelectManager {
 
     private final NoDuplicatesArrayList<String> mSelectedStatusIds = new NoDuplicatesArrayList<>();
     private final NoDuplicatesArrayList<UserKey> mSelectedUserIds = new NoDuplicatesArrayList<>();

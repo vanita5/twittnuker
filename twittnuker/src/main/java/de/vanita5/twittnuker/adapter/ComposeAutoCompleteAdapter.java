@@ -43,10 +43,8 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.view.ProfileImageView;
 
 import javax.inject.Inject;
-
 
 public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements Constants {
 

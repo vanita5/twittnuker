@@ -30,7 +30,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
+import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -56,8 +57,8 @@ public class AccountsSpinnerAdapter extends ArrayAdapter<ParcelableCredentials> 
         super(context, itemViewResource);
         GeneralComponentHelper.build(context).inject(this);
         mContext = context;
-        mDisplayProfileImage = context.getSharedPreferences(MessagesConversationFragment.SHARED_PREFERENCES_NAME,
-                Context.MODE_PRIVATE).getBoolean(MessagesConversationFragment.KEY_DISPLAY_PROFILE_IMAGE, true);
+        mDisplayProfileImage = context.getSharedPreferences(TwittnukerConstants.SHARED_PREFERENCES_NAME,
+                Context.MODE_PRIVATE).getBoolean(SharedPreferenceConstants.KEY_DISPLAY_PROFILE_IMAGE, true);
     }
 
     public AccountsSpinnerAdapter(final Context context, final Collection<ParcelableCredentials> accounts) {

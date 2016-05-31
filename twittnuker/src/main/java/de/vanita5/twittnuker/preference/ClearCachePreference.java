@@ -30,6 +30,8 @@ import de.vanita5.twittnuker.R;
 
 import java.io.File;
 
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
+
 public class ClearCachePreference extends AsyncTaskPreference {
 
     public ClearCachePreference(final Context context) {

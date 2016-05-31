@@ -71,6 +71,7 @@ import de.vanita5.twittnuker.model.CustomTabConfiguration;
 import de.vanita5.twittnuker.model.CustomTabConfiguration.CustomTabConfigurationComparator;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
+import de.vanita5.twittnuker.util.CustomTabUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder;
@@ -80,13 +81,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-
-import static de.vanita5.twittnuker.util.CustomTabUtils.getConfigurationMap;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconObject;
-import static de.vanita5.twittnuker.util.CustomTabUtils.getTabTypeName;
-import static de.vanita5.twittnuker.util.CustomTabUtils.isTabAdded;
-import static de.vanita5.twittnuker.util.CustomTabUtils.isTabTypeValid;
 
 public class CustomTabsFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>,
         MultiChoiceModeListener, OnItemClickListener {
@@ -231,7 +225,7 @@ public class CustomTabsFragment extends BaseSupportFragment implements LoaderCal
         if (itemAdd != null && itemAdd.hasSubMenu()) {
             final SubMenu subMenu = itemAdd.getSubMenu();
             subMenu.clear();
-            final HashMap<String, CustomTabConfiguration> map = getConfigurationMap();
+            final HashMap<String, CustomTabConfiguration> map = CustomTabUtils.getConfigurationMap();
             final List<Entry<String, CustomTabConfiguration>> tabs = new ArrayList<>(
                     map.entrySet());
             Collections.sort(tabs, CustomTabConfigurationComparator.SINGLETON);
@@ -247,7 +241,7 @@ public class CustomTabsFragment extends BaseSupportFragment implements LoaderCal
 
                 final MenuItem subItem = subMenu.add(conf.getDefaultTitle());
                 final boolean disabledByNoAccount = accountIdRequired && accountIds.length == 0;
-                final boolean disabledByDuplicateTab = conf.isSingleTab() && isTabAdded(activity, type);
+                final boolean disabledByDuplicateTab = conf.isSingleTab() && CustomTabUtils.isTabAdded(activity, type);
                 final boolean shouldDisable = disabledByDuplicateTab || disabledByNoAccount;
                 subItem.setVisible(!shouldDisable);
                 subItem.setEnabled(!shouldDisable);
@@ -353,8 +347,8 @@ public class CustomTabsFragment extends BaseSupportFragment implements LoaderCal
             final String type = cursor.getString(mIndices.type);
             final String name = cursor.getString(mIndices.name);
             final String iconKey = cursor.getString(mIndices.icon);
-            if (isTabTypeValid(type)) {
-                final String typeName = getTabTypeName(context, type);
+            if (CustomTabUtils.isTabTypeValid(type)) {
+                final String typeName = CustomTabUtils.getTabTypeName(context, type);
                 holder.text1.setText(TextUtils.isEmpty(name) ? typeName : name);
                 holder.text1.setPaintFlags(holder.text1.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
                 holder.text2.setVisibility(View.VISIBLE);
@@ -364,7 +358,7 @@ public class CustomTabsFragment extends BaseSupportFragment implements LoaderCal
                 holder.text1.setPaintFlags(holder.text1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 holder.text2.setText(R.string.invalid_tab);
             }
-            final Drawable icon = getTabIconDrawable(context, getTabIconObject(iconKey));
+            final Drawable icon = CustomTabUtils.getTabIconDrawable(context, CustomTabUtils.getTabIconObject(iconKey));
             holder.icon.setVisibility(View.VISIBLE);
             if (icon != null) {
                 holder.icon.setImageDrawable(icon);

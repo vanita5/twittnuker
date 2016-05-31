@@ -30,12 +30,11 @@ import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 
-import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
-
-public class SavedSearchesLoader extends AsyncTaskLoader<ResponseList<SavedSearch>> {
+public class SavedSearchesLoader extends AsyncTaskLoader<ResponseList<SavedSearch>> implements Constants {
 
     private final UserKey mAccountId;
 

@@ -27,18 +27,16 @@ import android.os.AsyncTask;
 
 import com.squareup.otto.Bus;
 
-import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 import de.vanita5.twittnuker.util.AsyncTaskManager;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.model.message.TaskStateChangedEvent;
 
 import javax.inject.Inject;
 
-public abstract class ManagedAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> implements
-        Constants {
+public abstract class ManagedAsyncTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
 
     @Inject
     protected AsyncTaskManager manager;

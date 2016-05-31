@@ -83,7 +83,7 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
     }
 
     @Override
-    protected void setupRecyclerView(Context context, boolean compact) {
+    protected void setupRecyclerView(Context context) {
 
     }
 
@@ -108,8 +108,8 @@ public class UserMediaTimelineFragment extends AbsContentRecyclerViewFragment<St
 
     @NonNull
     @Override
-    protected StaggeredGridParcelableStatusesAdapter onCreateAdapter(Context context, boolean compact) {
-        return new StaggeredGridParcelableStatusesAdapter(context, compact);
+    protected StaggeredGridParcelableStatusesAdapter onCreateAdapter(Context context) {
+        return new StaggeredGridParcelableStatusesAdapter(context);
     }
 
     @Override

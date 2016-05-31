@@ -31,10 +31,9 @@ import android.util.Log;
 
 import java.util.HashMap;
 
-import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.Constants;
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
 
-public final class ServiceUtils implements Constants {
+public final class ServiceUtils {
 
     private static HashMap<Context, ServiceUtils.ServiceBinder> sConnectionMap = new HashMap<>();
 
@@ -57,7 +56,7 @@ public final class ServiceUtils implements Constants {
                 return new ServiceToken(cw);
             }
         }
-        if (BuildConfig.DEBUG) Log.e(LOGTAG, "Failed to bind to service");
+        Log.e(LOGTAG, "Failed to bind to service");
         return null;
     }
 

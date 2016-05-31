@@ -28,7 +28,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.annotation.Preference;
 
 import java.lang.reflect.Field;
@@ -36,7 +35,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class SharedPreferencesWrapper implements Constants, SharedPreferences {
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
+
+public class SharedPreferencesWrapper implements SharedPreferences {
 
     private final Context mContext;
     private final SharedPreferences mPreferences;

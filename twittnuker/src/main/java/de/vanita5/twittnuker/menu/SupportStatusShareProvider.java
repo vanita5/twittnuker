@@ -29,13 +29,13 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.util.MenuUtils;
 
+import static de.vanita5.twittnuker.Constants.MENU_GROUP_STATUS_SHARE;
 import static de.vanita5.twittnuker.util.Utils.createStatusShareIntent;
 
-public class SupportStatusShareProvider extends ActionProvider implements Constants {
+public class SupportStatusShareProvider extends ActionProvider {
 
     private final Context mContext;
     private ParcelableStatus mStatus;

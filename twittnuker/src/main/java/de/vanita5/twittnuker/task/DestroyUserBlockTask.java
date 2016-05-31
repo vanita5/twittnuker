@@ -40,6 +40,8 @@ import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.util.Utils;
 
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST;
+
 public class DestroyUserBlockTask extends AbsFriendshipOperationTask {
     public DestroyUserBlockTask(Context context) {
         super(context, FriendshipTaskEvent.Action.UNBLOCK);

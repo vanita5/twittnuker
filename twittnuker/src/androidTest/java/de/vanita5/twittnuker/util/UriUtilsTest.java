@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.util;
 
 
 import org.junit.Test;
-import de.vanita5.twittnuker.util.UriUtils;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;

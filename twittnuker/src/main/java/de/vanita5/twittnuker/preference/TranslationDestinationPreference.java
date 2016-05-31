@@ -39,19 +39,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Language;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 
 import java.text.Collator;
 import java.util.Comparator;
 import java.util.List;
 
-public class TranslationDestinationPreference extends Preference implements Constants, OnClickListener {
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
+
+public class TranslationDestinationPreference extends Preference implements OnClickListener {
 
     private String mSelectedLanguageCode = "en";
 

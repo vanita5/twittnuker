@@ -32,14 +32,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.LruCache;
 
-import de.vanita5.twittnuker.Constants;
-
 import java.util.Locale;
 
 import javax.inject.Singleton;
 
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_EMOJI_SUPPORT;
+
 @Singleton
-public class ExternalThemeManager implements Constants {
+public class ExternalThemeManager {
     private final Application application;
     private final SharedPreferencesWrapper preferences;
 

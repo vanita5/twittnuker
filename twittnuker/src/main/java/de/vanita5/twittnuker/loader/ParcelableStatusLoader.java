@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.constant.IntentConstants;
@@ -43,10 +44,10 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
 
-import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT;
 import static de.vanita5.twittnuker.util.Utils.findStatus;
 
-public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<ParcelableStatus>> {
+public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<ParcelableStatus>>
+        implements Constants {
 
     private final boolean mOmitIntentExtra;
     private final Bundle mExtras;

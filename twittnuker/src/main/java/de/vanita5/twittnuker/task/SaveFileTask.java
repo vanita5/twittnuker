@@ -30,7 +30,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.io.File;
@@ -43,8 +42,9 @@ import okio.Okio;
 import okio.Source;
 
 import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
 
-public abstract class SaveFileTask extends AsyncTask<Object, Object, SaveFileTask.SaveFileResult> implements Constants {
+public abstract class SaveFileTask extends AsyncTask<Object, Object, SaveFileTask.SaveFileResult> {
 
     private final WeakReference<Context> contextRef;
 

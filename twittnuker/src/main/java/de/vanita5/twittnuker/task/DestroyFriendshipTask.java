@@ -27,11 +27,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.mariotaku.sqliteqb.library.Expression;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import org.mariotaku.sqliteqb.library.Expression;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -39,6 +39,8 @@ import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.util.Utils;
+
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST;
 
 public class DestroyFriendshipTask extends AbsFriendshipOperationTask {
 

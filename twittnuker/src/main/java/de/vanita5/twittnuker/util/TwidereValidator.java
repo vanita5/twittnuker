@@ -28,12 +28,11 @@ import android.text.TextUtils;
 
 import com.twitter.Validator;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.StatusNetAccountExtra;
 
-public class TwidereValidator implements Constants {
+public class TwidereValidator {
 
     private final Validator mValidator;
 

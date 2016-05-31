@@ -32,9 +32,9 @@ import android.widget.TextView;
 import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.viewprocessors.ViewProcessor;
 
-import de.vanita5.twittnuker.Constants;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_THEME_NAME_DARK;
 
-public class TextViewViewProcessor implements ViewProcessor<TextView, Void>, Constants {
+public class TextViewViewProcessor implements ViewProcessor<TextView, Void> {
     @Override
     public void process(@NonNull final Context context, @Nullable final String key,
                         @Nullable final TextView target, @Nullable Void extra) {

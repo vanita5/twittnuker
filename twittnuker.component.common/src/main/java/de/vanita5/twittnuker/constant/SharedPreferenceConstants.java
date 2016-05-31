@@ -275,8 +275,6 @@ public interface SharedPreferenceConstants {
     String KEY_NOTIFICATION_MENTIONS_ONLY = "notification_mentions_only";
 
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
-    String KEY_COMPACT_CARDS = "compact_cards";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_STREAMING_ENABLED = "stream_enabled";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_STREAMING_NOTIFICATION = "stream_notification";

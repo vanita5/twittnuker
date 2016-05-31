@@ -41,8 +41,12 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 
+import static de.vanita5.twittnuker.TwittnukerConstants.DEFAULT_TWITTER_API_URL_FORMAT;
+import static de.vanita5.twittnuker.TwittnukerConstants.TWITTER_CONSUMER_KEY;
+import static de.vanita5.twittnuker.TwittnukerConstants.TWITTER_CONSUMER_SECRET;
+
 @JsonObject
-public final class CustomAPIConfig implements Constants {
+public final class CustomAPIConfig {
 
     @JsonField(name = "name")
     String name;

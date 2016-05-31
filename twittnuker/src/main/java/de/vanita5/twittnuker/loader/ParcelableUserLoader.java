@@ -33,12 +33,12 @@ import android.util.Log;
 import android.util.Pair;
 
 import org.mariotaku.abstask.library.TaskStarter;
-import org.mariotaku.sqliteqb.library.Columns;
-import org.mariotaku.sqliteqb.library.Expression;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import org.mariotaku.sqliteqb.library.Columns;
+import org.mariotaku.sqliteqb.library.Expression;
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.fragment.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -61,7 +61,8 @@ import javax.inject.Inject;
 
 import static de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser;
 
-public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<ParcelableUser>> implements Constants {
+public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<ParcelableUser>>
+        implements Constants {
 
     private final boolean mOmitIntentExtra, mLoadFromCache;
     private final Bundle mExtras;

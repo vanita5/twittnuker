@@ -25,23 +25,24 @@ package de.vanita5.twittnuker.text;
 import android.text.TextPaint;
 import android.text.style.CharacterStyle;
 
-import de.vanita5.twittnuker.Constants;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE;
 
-public class TwidereHighLightStyle extends CharacterStyle implements Constants {
+public class TwidereHighLightStyle extends CharacterStyle {
 
-	private final int option;
+    private final int option;
 
-	public TwidereHighLightStyle(final int option) {
-		this.option = option;
-	}
+    public TwidereHighLightStyle(final int option) {
+        this.option = option;
+    }
 
-	@Override
-	public void updateDrawState(final TextPaint ds) {
-		if ((option & VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE) != 0) {
-			ds.setUnderlineText(true);
-		}
-		if ((option & VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT) != 0) {
-			ds.setColor(ds.linkColor);
-		}
-	}
+    @Override
+    public void updateDrawState(final TextPaint ds) {
+        if ((option & VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE) != 0) {
+            ds.setUnderlineText(true);
+        }
+        if ((option & VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT) != 0) {
+            ds.setColor(ds.linkColor);
+        }
+    }
 }

@@ -42,17 +42,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.mariotaku.restfu.http.Authorization;
-import org.mariotaku.restfu.http.ContentType;
-import org.mariotaku.restfu.http.Endpoint;
-import org.mariotaku.restfu.http.HttpResponse;
-import org.mariotaku.restfu.http.mime.Body;
-import org.mariotaku.sqliteqb.library.Expression;
-
-import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Activity;
 import de.vanita5.twittnuker.library.twitter.model.DeletionEvent;
@@ -63,6 +52,16 @@ import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.library.twitter.model.UserList;
+import org.mariotaku.restfu.http.Authorization;
+import org.mariotaku.restfu.http.ContentType;
+import org.mariotaku.restfu.http.Endpoint;
+import org.mariotaku.restfu.http.HttpResponse;
+import org.mariotaku.restfu.http.mime.Body;
+import org.mariotaku.sqliteqb.library.Expression;
+import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.NotificationContent;
@@ -456,7 +455,7 @@ public class StreamingService extends Service implements Constants {
 
             if (TextUtils.equals(favoritedStatus.getUser().getId(), account.account_key.getId())) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
-                        Utils.parseURLEntities(favoritedStatus.getText(), favoritedStatus.getUrlEntities()),
+                        Utils.parseURLEntities(favoritedStatus.getExtendedText(), favoritedStatus.getUrlEntities()),
                         ParcelableStatusUtils.fromStatus(favoritedStatus,
                                 account.account_key, false),
                         source);
@@ -505,8 +504,8 @@ public class StreamingService extends Service implements Constants {
             resolver.delete(Activities.AboutMe.CONTENT_URI, where, whereArgs);
             resolver.insert(Statuses.CONTENT_URI, values);
             final Status rt = status.getRetweetedStatus();
-            if (rt != null && rt.getText().contains("@" + account.screen_name) || rt == null
-                    && status.getText().contains("@" + account.screen_name)) {
+            if (rt != null && rt.getExtendedText().contains("@" + account.screen_name) || rt == null
+                    && status.getExtendedText().contains("@" + account.screen_name)) {
 
                 Activity activity = Activity.fromMention(account.account_key.getId(), status);
                 final ParcelableActivity parcelableActivity = ParcelableActivityUtils.fromActivity(activity,
@@ -520,7 +519,7 @@ public class StreamingService extends Service implements Constants {
             if (rt != null && TextUtils.equals(rt.getUser().getId(), account.account_key.getId())) {
                 createNotification(status.getUser().getScreenName(),
                         NotificationContent.NOTIFICATION_TYPE_RETWEET,
-                        Utils.parseURLEntities(rt.getText(), rt.getUrlEntities()),
+                        Utils.parseURLEntities(rt.getExtendedText(), rt.getUrlEntities()),
                         ParcelableStatusUtils.fromStatus(status,
                                 account.account_key, false), status.getUser());
                 //TODO insert retweet activity
@@ -542,7 +541,7 @@ public class StreamingService extends Service implements Constants {
         @Override
         public void onUnfavorite(final User source, final User target, final Status targetStatus) {
             final String message = String.format("%s unfavorited %s's tweet: %s", source.getScreenName(),
-                    target.getScreenName(), targetStatus.getText());
+                    target.getScreenName(), targetStatus.getExtendedText());
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
 

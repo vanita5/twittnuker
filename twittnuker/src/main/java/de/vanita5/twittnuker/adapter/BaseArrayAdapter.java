@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
@@ -41,7 +42,8 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
-public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements IBaseAdapter, OnSharedPreferenceChangeListener {
+public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements Constants, IBaseAdapter,
+        OnSharedPreferenceChangeListener {
 
     private final TwidereLinkify mLinkify;
     @Inject

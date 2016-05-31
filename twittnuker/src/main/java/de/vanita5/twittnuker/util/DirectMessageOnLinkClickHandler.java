@@ -32,6 +32,10 @@ import android.support.v4.app.FragmentManager;
 
 import de.vanita5.twittnuker.fragment.PhishingLinkWarningDialogFragment;
 
+import static de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_URI;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_PHISHING_LINK_WARNING;
+
 public class DirectMessageOnLinkClickHandler extends OnLinkClickHandler {
 
     private static final String[] SHORT_LINK_SERVICES = new String[]{"bit.ly", "ow.ly", "tinyurl.com", "goo.gl",

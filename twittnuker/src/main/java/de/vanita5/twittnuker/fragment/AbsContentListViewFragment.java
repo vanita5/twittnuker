@@ -50,7 +50,6 @@ import de.vanita5.twittnuker.util.ContentScrollHandler.ContentListSupport;
 import de.vanita5.twittnuker.util.ListViewScrollHandler;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
-import de.vanita5.twittnuker.util.Utils;
 
 public abstract class AbsContentListViewFragment<A extends ListAdapter> extends BaseSupportFragment
         implements OnRefreshListener, RefreshScrollTopInterface, ControlBarOffsetListener,
@@ -155,13 +154,12 @@ public abstract class AbsContentListViewFragment<A extends ListAdapter> extends 
         final View view = getView();
         assert view != null;
         final Context context = view.getContext();
-        final boolean compact = Utils.isCompactCards(context);
         final int backgroundColor = ThemeUtils.getThemeBackgroundColor(context);
         final int colorRes = TwidereColorUtils.getContrastYIQ(backgroundColor,
                 R.color.bg_refresh_progress_color_light, R.color.bg_refresh_progress_color_dark);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setProgressBackgroundColorSchemeResource(colorRes);
-        mAdapter = onCreateAdapter(context, compact);
+        mAdapter = onCreateAdapter(context);
         mListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -221,7 +219,7 @@ public abstract class AbsContentListViewFragment<A extends ListAdapter> extends 
     }
 
     @NonNull
-    protected abstract A onCreateAdapter(Context context, boolean compact);
+    protected abstract A onCreateAdapter(Context context);
 
     protected final void showContent() {
         mErrorContainer.setVisibility(View.GONE);

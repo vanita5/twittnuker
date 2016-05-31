@@ -64,8 +64,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
-
 public final class ContentValuesCreator implements TwittnukerConstants {
     private ContentValuesCreator() {
     }
@@ -106,7 +104,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         final String text_html = InternalTwitterContentUtils.formatDirectMessageText(message);
         values.put(DirectMessages.TEXT_HTML, text_html);
         values.put(DirectMessages.TEXT_PLAIN, message.getText());
-        values.put(DirectMessages.TEXT_UNESCAPED, toPlainText(text_html));
+        values.put(DirectMessages.TEXT_UNESCAPED, HtmlEscapeHelper.toPlainText(text_html));
         values.put(DirectMessages.IS_OUTGOING, isOutgoing);
         values.put(DirectMessages.SENDER_NAME, sender.getName());
         values.put(DirectMessages.SENDER_SCREEN_NAME, sender.getScreenName());

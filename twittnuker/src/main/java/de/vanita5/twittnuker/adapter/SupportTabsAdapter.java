@@ -31,8 +31,6 @@ import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.ViewGroup;
 
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.adapter.SupportFixedFragmentStatePagerAdapter;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.model.SupportTabSpec;
@@ -47,8 +45,7 @@ import java.util.List;
 import static de.vanita5.twittnuker.util.CustomTabUtils.getTabIconDrawable;
 import static de.vanita5.twittnuker.util.Utils.announceForAccessibilityCompat;
 
-public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter implements TabProvider, TabListener,
-        Constants {
+public class SupportTabsAdapter extends SupportFixedFragmentStatePagerAdapter implements TabProvider, TabListener {
 
     private static final String EXTRA_ADAPTER_POSITION = "adapter_position";
 

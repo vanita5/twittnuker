@@ -31,11 +31,15 @@ import android.text.TextUtils;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import de.vanita5.twittnuker.Constants;
-
 import java.io.File;
 
-public class ImagePreloader implements Constants {
+import static de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_PRELOAD_WIFI_ONLY;
+
+/**
+ * @author mariotaku
+ */
+public class ImagePreloader {
 
     public static final String LOGTAG = "ImagePreloader";
 

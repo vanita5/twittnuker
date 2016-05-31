@@ -31,25 +31,24 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.util.support.WebSettingsSupport;
 import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient;
 
 @SuppressLint("SetJavaScriptEnabled")
-public class BaseSupportWebViewFragment extends BaseSupportFragment implements Constants {
+public class BaseSupportWebViewFragment extends BaseSupportFragment {
 
     private WebView mWebView;
     private boolean mIsWebViewAvailable;
 
-	@Override
-	public void onActivityCreated(final Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		final WebView view = getWebView();
+    @Override
+    public void onActivityCreated(final Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        final WebView view = getWebView();
         view.setWebViewClient(createWebViewClient());
-		final WebSettings settings = view.getSettings();
-		settings.setBuiltInZoomControls(true);
-		settings.setJavaScriptEnabled(true);
-		WebSettingsSupport.setAllowUniversalAccessFromFileURLs(settings, true);
+        final WebSettings settings = view.getSettings();
+        settings.setBuiltInZoomControls(true);
+        settings.setJavaScriptEnabled(true);
+        WebSettingsSupport.setAllowUniversalAccessFromFileURLs(settings, true);
     }
 
 
@@ -65,7 +64,7 @@ public class BaseSupportWebViewFragment extends BaseSupportFragment implements C
                              Bundle savedInstanceState) {
         if (mWebView != null) {
             mWebView.destroy();
-		}
+        }
         mWebView = new WebView(getActivity());
         mIsWebViewAvailable = true;
         return mWebView;

@@ -28,13 +28,12 @@ import android.content.Context;
 import android.util.Log;
 
 import org.mariotaku.abstask.library.AbstractTask;
-import org.mariotaku.sqliteqb.library.Expression;
-import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.SavedSearch;
+import org.mariotaku.sqliteqb.library.Expression;
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
@@ -42,8 +41,9 @@ import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
-public class GetSavedSearchesTask extends AbstractTask<UserKey[], SingleResponse<Object>, Object>
-        implements Constants {
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
+
+public class GetSavedSearchesTask extends AbstractTask<UserKey[], SingleResponse<Object>, Object> {
 
     private final Context mContext;
 

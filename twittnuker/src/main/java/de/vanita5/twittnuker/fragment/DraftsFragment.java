@@ -63,7 +63,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.RawItemArray;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DraftsAdapter;
 import de.vanita5.twittnuker.model.Draft;
@@ -84,7 +83,7 @@ import java.util.List;
 
 import static de.vanita5.twittnuker.util.Utils.getDefaultTextSize;
 
-public class DraftsFragment extends BaseSupportFragment implements Constants, LoaderCallbacks<Cursor>,
+public class DraftsFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>,
         OnItemClickListener, MultiChoiceModeListener {
 
     private ContentResolver mResolver;

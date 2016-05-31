@@ -105,6 +105,7 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
         sConstantPoll.put("model_version", "7");
         sConstantPoll.put("skip_aggregation", "false");
         sConstantPoll.put("include_ext_alt_text", "true");
+        sConstantPoll.put("tweet_mode", "extended");
     }
 
     private MicroBlogAPIFactory() {

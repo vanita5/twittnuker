@@ -23,19 +23,19 @@
 package de.vanita5.twittnuker.fragment;
 
 
-        import android.os.Bundle;
-        import android.support.annotation.Nullable;
-        import android.support.v4.app.Fragment;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.TextView;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-        import de.vanita5.twittnuker.Constants;
-        import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.R;
 
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_TAB_POSITION;
 
-public class StubFragment extends Fragment implements Constants {
+public class StubFragment extends Fragment {
     private TextView mTextView;
 
     @Override

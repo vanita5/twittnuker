@@ -25,10 +25,11 @@ package de.vanita5.twittnuker.preference;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
-public class TimelineSyncPreference extends ServicePickerPreference implements Constants {
+import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_EXTENSION_SYNC_TIMELINE;
+
+public class TimelineSyncPreference extends ServicePickerPreference {
 
     public TimelineSyncPreference(final Context context) {
         this(context, null);
@@ -40,7 +41,7 @@ public class TimelineSyncPreference extends ServicePickerPreference implements C
 
     @Override
     protected String getIntentAction() {
-        return INTENT_ACTION_SYNC_TIMELINE;
+		return INTENT_ACTION_EXTENSION_SYNC_TIMELINE;
     }
 
     @Override

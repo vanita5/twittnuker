@@ -29,11 +29,11 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.mariotaku.sqliteqb.library.Expression;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import org.mariotaku.sqliteqb.library.Expression;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
@@ -42,6 +42,8 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.Utils;
+
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST;
 
 public class CreateUserMuteTask extends AbsFriendshipOperationTask {
     public CreateUserMuteTask(Context context) {

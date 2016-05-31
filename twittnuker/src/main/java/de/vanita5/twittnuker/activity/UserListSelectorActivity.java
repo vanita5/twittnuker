@@ -39,10 +39,6 @@ import android.widget.ListView;
 
 import com.squareup.otto.Subscribe;
 
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.SimpleParcelableUserListsAdapter;
-import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
-import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.http.HttpResponseCode;
@@ -50,6 +46,10 @@ import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.library.twitter.model.UserList;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.adapter.SimpleParcelableUserListsAdapter;
+import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter;
+import de.vanita5.twittnuker.adapter.UserAutoCompleteAdapter;
 import de.vanita5.twittnuker.fragment.CreateUserListDialogFragment;
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -60,8 +60,8 @@ import de.vanita5.twittnuker.model.message.UserListCreatedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.util.AsyncTaskUtils;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
+import de.vanita5.twittnuker.util.ParseUtils;
 
 import java.util.ArrayList;
 import java.util.List;

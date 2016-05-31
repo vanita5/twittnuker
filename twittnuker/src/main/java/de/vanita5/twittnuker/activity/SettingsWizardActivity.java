@@ -51,7 +51,6 @@ import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.util.ATEUtil;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
@@ -82,7 +81,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SettingsWizardActivity extends BaseActivity implements Constants {
+public class SettingsWizardActivity extends BaseActivity {
 
     public static final String WIZARD_PREFERENCE_KEY_NEXT_PAGE = "next_page";
     public static final String WIZARD_PREFERENCE_KEY_USE_DEFAULTS = "use_defaults";

@@ -25,11 +25,13 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.os.Bundle;
 
+import de.vanita5.twittnuker.model.ListResponse;
+import de.vanita5.twittnuker.model.ParcelableStatus;
+
 import java.util.Collections;
 import java.util.List;
 
-import de.vanita5.twittnuker.model.ListResponse;
-import de.vanita5.twittnuker.model.ParcelableStatus;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUSES;
 
 public class IntentExtrasStatusesLoader extends ParcelableStatusesLoader {
 

@@ -20,11 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.iface;
+package de.vanita5.twittnuker.util;
 
-public interface TintedStatusLayout extends IExtendedView {
-    void setStatusBarColor(int color);
+import de.vanita5.twittnuker.library.MicroBlogException;
+import org.mariotaku.restfu.RestAPIFactory;
 
-    void setSetPaddingEnabled(boolean enabled);
+public class MicroBlogBuilder {
+
+    final RestAPIFactory<MicroBlogException> factory;
+
+    public MicroBlogBuilder() {
+        factory = new RestAPIFactory<>();
+    }
+
+
+    public <T> T build(Class<T> cls) {
+        return factory.build(cls);
+    }
 
 }

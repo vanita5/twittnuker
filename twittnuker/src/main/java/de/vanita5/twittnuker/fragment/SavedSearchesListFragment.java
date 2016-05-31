@@ -33,9 +33,9 @@ import android.widget.ListView;
 
 import com.squareup.otto.Subscribe;
 
-import de.vanita5.twittnuker.adapter.SavedSearchesAdapter;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.SavedSearch;
+import de.vanita5.twittnuker.adapter.SavedSearchesAdapter;
 import de.vanita5.twittnuker.loader.SavedSearchesLoader;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.SavedSearchDestroyedEvent;
@@ -81,7 +81,7 @@ public class SavedSearchesListFragment extends AbsContentListViewFragment<SavedS
 
     @NonNull
     @Override
-    protected SavedSearchesAdapter onCreateAdapter(Context context, boolean compact) {
+    protected SavedSearchesAdapter onCreateAdapter(Context context) {
         return new SavedSearchesAdapter(getActivity());
     }
 

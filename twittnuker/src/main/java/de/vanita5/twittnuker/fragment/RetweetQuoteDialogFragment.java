@@ -44,7 +44,6 @@ import android.widget.EditText;
 
 import com.twitter.Validator;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DummyItemAdapter;
 import de.vanita5.twittnuker.model.Draft;
@@ -68,7 +67,7 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder;
 
 import static de.vanita5.twittnuker.util.Utils.isMyRetweet;
 
-public class RetweetQuoteDialogFragment extends BaseDialogFragment implements Constants {
+public class RetweetQuoteDialogFragment extends BaseDialogFragment {
 
     public static final String FRAGMENT_TAG = "retweet_quote";
     private static final boolean SHOW_PROTECTED_CONFIRM = Boolean.parseBoolean("false");

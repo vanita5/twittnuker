@@ -26,10 +26,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -37,7 +38,7 @@ import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.util.Utils;
 
-public class AcceptFriendshipTask extends AbsFriendshipOperationTask {
+public class AcceptFriendshipTask extends AbsFriendshipOperationTask implements Constants {
 
     public AcceptFriendshipTask(final Context context) {
         super(context, FriendshipTaskEvent.Action.ACCEPT);

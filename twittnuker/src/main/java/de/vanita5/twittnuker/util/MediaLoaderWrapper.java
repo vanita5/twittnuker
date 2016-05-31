@@ -34,7 +34,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions.Builder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -48,7 +47,7 @@ import javax.inject.Singleton;
 import static de.vanita5.twittnuker.util.InternalTwitterContentUtils.getBestBannerUrl;
 
 @Singleton
-public class MediaLoaderWrapper implements Constants {
+public class MediaLoaderWrapper {
 
     private final ImageLoader mImageLoader;
     private final DisplayImageOptions mProfileImageDisplayOptions;

@@ -24,11 +24,11 @@ package de.vanita5.twittnuker.util;
 
 import android.net.Uri;
 
-import de.vanita5.twittnuker.Constants;
-
 import java.util.List;
 
-public class UriExtraUtils implements Constants {
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_EXTRA;
+
+public class UriExtraUtils {
     private UriExtraUtils() {
     }
 

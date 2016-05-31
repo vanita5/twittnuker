@@ -29,7 +29,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.NotificationType;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
@@ -38,7 +37,9 @@ import de.vanita5.twittnuker.util.collection.CompactHashSet;
 
 import java.util.Set;
 
-public class ReadStateManager implements Constants {
+import static de.vanita5.twittnuker.TwittnukerConstants.TIMELINE_POSITIONS_PREFERENCES_NAME;
+
+public class ReadStateManager {
 
     private final SharedPreferencesWrapper mPreferences;
 

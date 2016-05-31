@@ -24,11 +24,12 @@ package de.vanita5.twittnuker.util;
 
 import android.content.Context;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 
-public class StatusLinkClickHandler extends OnLinkClickHandler {
+public class StatusLinkClickHandler extends OnLinkClickHandler implements Constants {
 
     private ParcelableStatus mStatus;
 

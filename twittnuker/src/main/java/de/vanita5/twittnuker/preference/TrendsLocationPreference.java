@@ -42,12 +42,11 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Location;
+import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 
 import java.text.Collator;
@@ -57,7 +56,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-public class TrendsLocationPreference extends Preference implements Constants {
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
+
+public class TrendsLocationPreference extends Preference {
 
     private static final long EMPTY = 0;
     private static final long WORLDWIDE = 1;

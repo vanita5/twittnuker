@@ -27,11 +27,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 
-public class UnreadCountUtils implements Constants {
+public class UnreadCountUtils {
     private UnreadCountUtils() {
     }
 

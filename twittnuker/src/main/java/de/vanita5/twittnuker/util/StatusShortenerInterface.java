@@ -34,6 +34,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.IStatusShortener;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -42,7 +43,8 @@ import de.vanita5.twittnuker.model.StatusShortenResult;
 
 import java.util.List;
 
-public final class StatusShortenerInterface extends AbsServiceInterface<IStatusShortener> {
+public final class StatusShortenerInterface extends AbsServiceInterface<IStatusShortener>
+        implements Constants {
 
     protected StatusShortenerInterface(Context context, String shortenerName, Bundle metaData) {
         super(context, shortenerName, metaData);

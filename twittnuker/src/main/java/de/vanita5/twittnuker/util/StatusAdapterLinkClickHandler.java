@@ -25,13 +25,14 @@ package de.vanita5.twittnuker.util;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 
-public class StatusAdapterLinkClickHandler<D> extends OnLinkClickHandler {
+public class StatusAdapterLinkClickHandler<D> extends OnLinkClickHandler implements Constants {
 
     private IStatusesAdapter<D> adapter;
 

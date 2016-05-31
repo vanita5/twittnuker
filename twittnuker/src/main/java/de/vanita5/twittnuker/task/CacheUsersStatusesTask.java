@@ -29,7 +29,6 @@ import android.content.Context;
 import com.twitter.Extractor;
 
 import org.mariotaku.abstask.library.AbstractTask;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
@@ -44,7 +43,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CacheUsersStatusesTask extends AbstractTask<TwitterListResponse<Status>, Object, Object> implements Constants {
+public class CacheUsersStatusesTask extends AbstractTask<TwitterListResponse<Status>, Object, Object> {
 
     private final Context context;
 
@@ -71,7 +70,7 @@ public class CacheUsersStatusesTask extends AbstractTask<TwitterListResponse<Sta
 
                 final UserKey accountKey = params.accountKey;
                 statusesValues.add(ContentValuesCreator.createStatus(status, accountKey));
-                final String text = InternalTwitterContentUtils.unescapeTwitterStatusText(status.getText());
+                final String text = InternalTwitterContentUtils.unescapeTwitterStatusText(status.getExtendedText());
                 for (final String hashtag : extractor.extractHashtags(text)) {
                     final ContentValues values = new ContentValues();
                     values.put(CachedHashtags.NAME, hashtag);

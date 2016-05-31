@@ -38,6 +38,8 @@ import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.util.Utils;
 
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST;
+
 public class DestroyUserMuteTask extends AbsFriendshipOperationTask {
     public DestroyUserMuteTask(Context context) {
         super(context, FriendshipTaskEvent.Action.UNMUTE);

@@ -30,13 +30,12 @@ import android.widget.CompoundButton;
 
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
-import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
+import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.JsonSerializer;
@@ -46,7 +45,7 @@ import de.vanita5.twittnuker.view.holder.AccountViewHolder;
 
 import javax.inject.Inject;
 
-public class AccountsAdapter extends SimpleDragSortCursorAdapter implements Constants, IBaseAdapter {
+public class AccountsAdapter extends SimpleDragSortCursorAdapter implements IBaseAdapter {
 
     @Inject
     MediaLoaderWrapper mImageLoader;

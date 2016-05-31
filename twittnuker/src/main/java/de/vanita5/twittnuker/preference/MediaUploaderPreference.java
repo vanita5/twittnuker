@@ -25,10 +25,11 @@ package de.vanita5.twittnuker.preference;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
-public class MediaUploaderPreference extends ServicePickerPreference implements Constants {
+import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_EXTENSION_UPLOAD_MEDIA;
+
+public class MediaUploaderPreference extends ServicePickerPreference {
 
     public MediaUploaderPreference(final Context context) {
         super(context);

@@ -47,17 +47,12 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import java.util.Arrays;
 
 import javax.inject.Inject;
-
-import static de.vanita5.twittnuker.util.Utils.getDefaultAccountKey;
-import static de.vanita5.twittnuker.util.Utils.hasAutoRefreshAccounts;
-import static de.vanita5.twittnuker.util.Utils.isBatteryOkay;
-import static de.vanita5.twittnuker.util.Utils.isNetworkAvailable;
-import static de.vanita5.twittnuker.util.Utils.shouldStopAutoRefreshOnBatteryLow;
 
 public class RefreshService extends Service implements Constants {
 
@@ -227,7 +222,7 @@ public class RefreshService extends Service implements Constants {
         registerReceiver(mPowerStateReceiver, batteryFilter);
         PowerStateReceiver.setServiceReceiverStarted(true);
         */
-        if (hasAutoRefreshAccounts(this)) {
+        if (Utils.hasAutoRefreshAccounts(this)) {
             startAutoRefresh();
         } else {
             stopSelf();
@@ -239,7 +234,7 @@ public class RefreshService extends Service implements Constants {
         //PowerStateReceiver.setServiceReceiverStarted(false);
         //unregisterReceiver(mPowerStateReceiver);
         unregisterReceiver(mStateReceiver);
-        if (hasAutoRefreshAccounts(this)) {
+        if (Utils.hasAutoRefreshAccounts(this)) {
             // Auto refresh enabled, so I will try to start service after it was
             // stopped.
             startService(new Intent(this, getClass()));
@@ -248,11 +243,11 @@ public class RefreshService extends Service implements Constants {
     }
 
     protected boolean isAutoRefreshAllowed() {
-        return isNetworkAvailable(this) && (isBatteryOkay(this) || !shouldStopAutoRefreshOnBatteryLow(this));
+        return Utils.isNetworkAvailable(this) && (Utils.isBatteryOkay(this) || !Utils.shouldStopAutoRefreshOnBatteryLow(this));
     }
 
     private void getLocalTrends(final UserKey[] accountIds) {
-        final UserKey account_id = getDefaultAccountKey(this);
+        final UserKey account_id = Utils.getDefaultAccountKey(this);
         final int woeid = mPreferences.getInt(KEY_LOCAL_TRENDS_WOEID, 1);
         mTwitterWrapper.getLocalTrendsAsync(account_id, woeid);
     }

@@ -30,7 +30,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.URLSpan;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.library.statusnet.model.Attention;
 import de.vanita5.twittnuker.library.twitter.model.GeoLocation;
 import de.vanita5.twittnuker.library.twitter.model.Place;
@@ -50,7 +49,9 @@ import de.vanita5.twittnuker.util.UserColorNameManager;
 import java.util.Date;
 import java.util.List;
 
-public class ParcelableStatusUtils implements Constants {
+import static de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM;
+
+public class ParcelableStatusUtils {
     private ParcelableStatusUtils() {
     }
 
@@ -104,7 +105,7 @@ public class ParcelableStatusUtils implements Constants {
             // Twitter will escape <> to &lt;&gt;, so if a status contains those symbols unescaped
             // We should treat this as an html
             if (isHtml(quotedText)) {
-                final CharSequence html = HtmlSpanBuilder.fromHtml(quotedText, quoted.getText());
+                final CharSequence html = HtmlSpanBuilder.fromHtml(quotedText, quoted.getExtendedText());
                 result.quoted_text_unescaped = html.toString();
                 result.quoted_text_plain = result.quoted_text_unescaped;
                 result.quoted_spans = getSpanItems(html);
@@ -171,14 +172,14 @@ public class ParcelableStatusUtils implements Constants {
         // Twitter will escape <> to &lt;&gt;, so if a status contains those symbols unescaped
         // We should treat this as an html
         if (isHtml(text)) {
-            final CharSequence html = HtmlSpanBuilder.fromHtml(text, status.getText());
+            final CharSequence html = HtmlSpanBuilder.fromHtml(text, status.getExtendedText());
             result.text_unescaped = html.toString();
             result.text_plain = result.text_unescaped;
             result.spans = getSpanItems(html);
         } else {
             final Pair<String, List<SpanItem>> textWithIndices = InternalTwitterContentUtils.formatStatusTextWithIndices(status);
-            result.text_plain = InternalTwitterContentUtils.unescapeTwitterStatusText(text);
             result.text_unescaped = textWithIndices.first;
+            result.text_plain = InternalTwitterContentUtils.unescapeTwitterStatusText(text);
             result.spans = textWithIndices.second.toArray(new SpanItem[textWithIndices.second.size()]);
         }
         result.media = ParcelableMediaUtils.fromStatus(status);

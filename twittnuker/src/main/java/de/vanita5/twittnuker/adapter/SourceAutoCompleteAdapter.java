@@ -29,12 +29,11 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.TextView;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 
-public class SourceAutoCompleteAdapter extends SimpleCursorAdapter implements Constants {
+public class SourceAutoCompleteAdapter extends SimpleCursorAdapter {
 
     private static final String[] COLUMNS = new String[]{CachedStatuses._ID, CachedStatuses.SOURCE};
     private static final String[] FROM = new String[0];

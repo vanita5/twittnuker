@@ -30,7 +30,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.activity.WebLinkHandlerActivity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.fragment.UserFragment;
@@ -40,7 +39,10 @@ import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 
-public class OnLinkClickHandler implements OnLinkClickListener, Constants {
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API;
+
+public class OnLinkClickHandler implements OnLinkClickListener {
 
     @NonNull
     protected final Context context;

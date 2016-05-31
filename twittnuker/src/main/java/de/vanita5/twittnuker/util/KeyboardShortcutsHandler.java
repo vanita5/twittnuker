@@ -32,7 +32,6 @@ import android.support.v4.util.SparseArrayCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.ComposeActivity;
 import de.vanita5.twittnuker.activity.QuickSearchBarActivity;
@@ -44,8 +43,12 @@ import java.util.Map.Entry;
 
 import javax.inject.Singleton;
 
+import static de.vanita5.twittnuker.TwittnukerConstants.KEYBOARD_SHORTCUTS_PREFERENCES_NAME;
+import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_COMPOSE;
+import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_QUICK_SEARCH;
+
 @Singleton
-public class KeyboardShortcutsHandler implements Constants, KeyboardShortcutConstants {
+public class KeyboardShortcutsHandler implements KeyboardShortcutConstants {
 
     public static final int MODIFIER_FLAG_CTRL = 0x00000001;
     public static final int MODIFIER_FLAG_SHIFT = 0x00000002;

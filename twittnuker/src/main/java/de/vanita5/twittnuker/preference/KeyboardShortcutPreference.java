@@ -39,7 +39,6 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.ThemedPreferenceDialogFragmentCompat;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
@@ -48,6 +47,8 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutSpec;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import javax.inject.Inject;
+
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
 
 public class KeyboardShortcutPreference extends DialogPreference implements IDialogPreference {
 
@@ -135,7 +136,7 @@ public class KeyboardShortcutPreference extends DialogPreference implements IDia
     }
 
     public static class KeyboardShortcutDialogFragment extends ThemedPreferenceDialogFragmentCompat
-            implements Constants, DialogInterface.OnKeyListener {
+            implements DialogInterface.OnKeyListener {
 
         private TextView mKeysLabel;
         private TextView mConflictLabel;

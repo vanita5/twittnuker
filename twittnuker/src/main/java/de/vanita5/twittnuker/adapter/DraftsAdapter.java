@@ -30,7 +30,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.DraftCursorIndices;
@@ -49,7 +48,9 @@ import de.vanita5.twittnuker.view.holder.DraftViewHolder;
 
 import javax.inject.Inject;
 
-public class DraftsAdapter extends SimpleCursorAdapter implements Constants {
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_MEDIA_PREVIEW_STYLE;
+
+public class DraftsAdapter extends SimpleCursorAdapter {
 
     @Inject
     MediaLoaderWrapper mImageLoader;

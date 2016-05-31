@@ -31,13 +31,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutSpec;
 
 public class KeyboardShortcutPreferenceCompatActivity extends BaseActivity implements
-        Constants, OnClickListener {
+        OnClickListener {
 
     public static final String EXTRA_CONTEXT_TAG = "context_tag";
     public static final String EXTRA_KEY_ACTION = "key_action";

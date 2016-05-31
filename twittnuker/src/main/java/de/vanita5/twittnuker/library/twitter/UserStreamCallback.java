@@ -28,9 +28,7 @@ import android.util.Log;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.fasterxml.jackson.core.TreeNode;
 
-import org.mariotaku.restfu.callback.RawCallback;
-import org.mariotaku.restfu.http.HttpResponse;
-
+import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.DeletionEvent;
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
@@ -42,7 +40,8 @@ import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.library.twitter.model.Warning;
 import de.vanita5.twittnuker.library.twitter.util.CRLFLineReader;
-import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
+import org.mariotaku.restfu.callback.RawCallback;
+import org.mariotaku.restfu.http.HttpResponse;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

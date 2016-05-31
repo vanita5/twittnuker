@@ -27,11 +27,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.SettingsDetailsFragment;
 
-public class HiddenSettingsActivity extends BaseActivity implements Constants {
+public class HiddenSettingsActivity extends BaseActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {

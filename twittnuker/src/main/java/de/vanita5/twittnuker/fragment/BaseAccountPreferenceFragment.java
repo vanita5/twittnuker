@@ -38,11 +38,10 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 
-public abstract class BaseAccountPreferenceFragment extends BasePreferenceFragment implements Constants,
+public abstract class BaseAccountPreferenceFragment extends BasePreferenceFragment implements
         OnCheckedChangeListener, OnSharedPreferenceChangeListener {
 
     @Override

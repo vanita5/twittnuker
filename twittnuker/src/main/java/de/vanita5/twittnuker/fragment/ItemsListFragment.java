@@ -41,7 +41,6 @@ import android.view.View;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.DummyItemAdapter;
 import de.vanita5.twittnuker.adapter.VariousItemsAdapter;
-import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -70,8 +69,8 @@ public class ItemsListFragment extends AbsContentListRecyclerViewFragment<Variou
 
     @NonNull
     @Override
-    protected VariousItemsAdapter onCreateAdapter(Context context, boolean compact) {
-        final VariousItemsAdapter adapter = new VariousItemsAdapter(context, compact);
+    protected VariousItemsAdapter onCreateAdapter(Context context) {
+        final VariousItemsAdapter adapter = new VariousItemsAdapter(context);
         final DummyItemAdapter dummyItemAdapter = adapter.getDummyAdapter();
         dummyItemAdapter.setStatusClickListener(new IStatusViewHolder.SimpleStatusClickListener() {
             @Override
@@ -143,45 +142,6 @@ public class ItemsListFragment extends AbsContentListRecyclerViewFragment<Variou
     @Override
     public void onLoaderReset(Loader<List<?>> loader) {
         getAdapter().setData(null);
-    }
-
-    @Override
-    protected void setupRecyclerView(Context context, boolean compact) {
-        if (compact) {
-            super.setupRecyclerView(context, true);
-            return;
-        }
-        final RecyclerView recyclerView = getRecyclerView();
-        final VariousItemsAdapter adapter = getAdapter();
-        // Dividers are drawn on bottom of view
-        recyclerView.addItemDecoration(new DividerItemDecoration(context, getLayoutManager().getOrientation()) {
-
-            @Override
-            protected boolean isDividerEnabled(int childPos) {
-                // Don't draw for last item
-                if (childPos == RecyclerView.NO_POSITION || childPos == adapter.getItemCount() - 1) {
-                    return false;
-                }
-                final int itemViewType = adapter.getItemViewType(childPos);
-                // Draw only if current item and next item is TITLE_SUMMARY
-                if (shouldUseDividerFor(itemViewType)) {
-                    if (shouldUseDividerFor(adapter.getItemViewType(childPos + 1))) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            private boolean shouldUseDividerFor(int itemViewType) {
-                switch (itemViewType) {
-                    case VariousItemsAdapter.VIEW_TYPE_USER:
-                    case VariousItemsAdapter.VIEW_TYPE_USER_LIST:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        });
     }
 
     @Override

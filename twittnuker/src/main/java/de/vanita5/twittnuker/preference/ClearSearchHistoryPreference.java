@@ -27,12 +27,11 @@ import android.content.Context;
 import android.provider.SearchRecentSuggestions;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.provider.RecentSearchProvider;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 
-public class ClearSearchHistoryPreference extends AsyncTaskPreference implements Constants {
+public class ClearSearchHistoryPreference extends AsyncTaskPreference {
 
     public ClearSearchHistoryPreference(final Context context) {
         this(context, null);

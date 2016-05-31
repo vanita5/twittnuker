@@ -29,10 +29,9 @@ import android.os.AsyncTask.Status;
 import android.support.v7.preference.Preference;
 import android.util.AttributeSet;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
-public abstract class AsyncTaskPreference extends Preference implements Constants {
+public abstract class AsyncTaskPreference extends Preference {
 
     private Task mTask;
 

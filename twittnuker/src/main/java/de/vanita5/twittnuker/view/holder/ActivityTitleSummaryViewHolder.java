@@ -40,8 +40,8 @@ import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
-import de.vanita5.twittnuker.view.IconActionView;
 import de.vanita5.twittnuker.view.BadgeView;
+import de.vanita5.twittnuker.view.IconActionView;
 import de.vanita5.twittnuker.view.ShortTimeView;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
@@ -61,7 +61,7 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
 
     private IActivitiesAdapter.ActivityEventListener mActivityEventListener;
 
-    public ActivityTitleSummaryViewHolder(ParcelableActivitiesAdapter adapter, View itemView, boolean isCompact) {
+    public ActivityTitleSummaryViewHolder(ParcelableActivitiesAdapter adapter, View itemView) {
         super(itemView);
         this.adapter = adapter;
 
@@ -81,13 +81,11 @@ public class ActivityTitleSummaryViewHolder extends ViewHolder implements View.O
         profileImageViews[4] = (ImageView) itemView.findViewById(R.id.activity_profile_image_4);
         profileImageMoreNumber = (BadgeView) itemView.findViewById(R.id.activity_profile_image_more_number);
 
-        if (isCompact) {
-            final Resources resources = adapter.getContext().getResources();
-            final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) titleView.getLayoutParams();
-            final int spacing = resources.getDimensionPixelSize(R.dimen.element_spacing_small);
-            lp.leftMargin = spacing;
-            MarginLayoutParamsCompat.setMarginStart(lp, spacing);
-        }
+        final Resources resources = adapter.getContext().getResources();
+        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) titleView.getLayoutParams();
+        final int spacing = resources.getDimensionPixelSize(R.dimen.element_spacing_small);
+        lp.leftMargin = spacing;
+        MarginLayoutParamsCompat.setMarginStart(lp, spacing);
         timeView.setShowAbsoluteTime(adapter.isShowAbsoluteTime());
     }
 

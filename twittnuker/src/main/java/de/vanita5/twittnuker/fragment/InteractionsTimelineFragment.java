@@ -29,10 +29,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.apache.commons.lang3.ArrayUtils;
+import de.vanita5.twittnuker.library.twitter.model.Activity;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
-import de.vanita5.twittnuker.library.twitter.model.Activity;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
@@ -88,8 +88,8 @@ public class InteractionsTimelineFragment extends CursorActivitiesFragment {
 
     @NonNull
     @Override
-    protected ParcelableActivitiesAdapter onCreateAdapter(Context context, boolean compact) {
-        final ParcelableActivitiesAdapter adapter = new ParcelableActivitiesAdapter(context, compact, false);
+    protected ParcelableActivitiesAdapter onCreateAdapter(Context context) {
+        final ParcelableActivitiesAdapter adapter = new ParcelableActivitiesAdapter(context, false);
         final Bundle arguments = getArguments();
         if (arguments != null) {
             final InteractionsTabExtras extras = arguments.getParcelable(EXTRA_EXTRAS);

@@ -104,7 +104,7 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
 
     @NonNull
     @Override
-    protected ParcelableUsersAdapter onCreateAdapter(Context context, boolean compact) {
+    protected ParcelableUsersAdapter onCreateAdapter(Context context) {
         final ParcelableUsersAdapter adapter = new ParcelableUsersAdapter(context);
         adapter.setFollowClickListener(this);
         return adapter;
@@ -199,8 +199,8 @@ public abstract class ParcelableUsersFragment extends AbsContentListRecyclerView
                                                                         final boolean fromUser);
 
     @Override
-    protected void setupRecyclerView(Context context, boolean compact) {
-        super.setupRecyclerView(context, true);
+    protected void setupRecyclerView(Context context) {
+        super.setupRecyclerView(context);
     }
 
     private int findPosition(ParcelableUsersAdapter adapter, UserKey accountKey, UserKey userKey) {

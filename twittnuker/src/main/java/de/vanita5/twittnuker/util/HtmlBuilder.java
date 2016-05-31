@@ -38,22 +38,25 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.unescape;
 
 public class HtmlBuilder {
 
-    private final String source;
-    private final CodePointArray codePoints;
-    private final int codePointsLength;
+    private final CodePointArray source;
+    private final int sourceLength;
     private final boolean throwExceptions, sourceIsEscaped, shouldReEscape;
 
     private final ArrayList<LinkSpec> links = new ArrayList<>();
 
     public HtmlBuilder(final String source, final boolean strict, final boolean sourceIsEscaped,
                        final boolean shouldReEscape) {
+        this(new CodePointArray(source), strict, sourceIsEscaped, shouldReEscape);
+    }
+
+    public HtmlBuilder(final CodePointArray source, final boolean strict, final boolean sourceIsEscaped,
+                       final boolean shouldReEscape) {
         if (source == null) throw new NullPointerException();
         this.source = source;
-        this.codePoints = new CodePointArray(source);
+        this.sourceLength = source.length();
         this.throwExceptions = strict;
         this.sourceIsEscaped = sourceIsEscaped;
         this.shouldReEscape = shouldReEscape;
-        this.codePointsLength = codePoints.length();
     }
 
     public boolean addLink(final String link, final String display, final int start, final int end) {
@@ -62,9 +65,9 @@ public class HtmlBuilder {
 
     public boolean addLink(final String link, final String display, final int start, final int end,
                            final boolean display_is_html) {
-        if (start < 0 || end < 0 || start > end || end > codePointsLength) {
+        if (start < 0 || end < 0 || start > end || end > sourceLength) {
             final String message = String.format(Locale.US, "text:%s, length:%d, start:%d, end:%d", source,
-                    codePointsLength, start, end);
+                    sourceLength, start, end);
             if (throwExceptions) throw new StringIndexOutOfBoundsException(message);
             return false;
         }
@@ -79,7 +82,7 @@ public class HtmlBuilder {
     }
 
     public String build() {
-        if (links.isEmpty()) return escapeSource(source);
+        if (links.isEmpty()) return escapeSource();
         Collections.sort(links);
         final StringBuilder sb = new StringBuilder();
         final int linksSize = links.size();
@@ -90,19 +93,19 @@ public class HtmlBuilder {
             }
             final int start = spec.start, end = spec.end;
             if (i == 0) {
-                if (start >= 0 && start <= codePointsLength) {
+                if (start >= 0 && start <= sourceLength) {
                     appendSource(sb, 0, start, shouldReEscape, sourceIsEscaped);
                 }
             } else if (i > 0) {
                 final int lastEnd = links.get(i - 1).end;
-                if (lastEnd >= 0 && lastEnd <= start && start <= codePointsLength) {
+                if (lastEnd >= 0 && lastEnd <= start && start <= sourceLength) {
                     appendSource(sb, lastEnd, start, shouldReEscape, sourceIsEscaped);
                 }
             }
             sb.append("<a href=\"");
             sb.append(spec.link);
             sb.append("\">");
-            if (start >= 0 && start <= end && end <= codePointsLength) {
+            if (start >= 0 && start <= end && end <= sourceLength) {
                 if (isEmpty(spec.display)) {
                     append(sb, spec.link, shouldReEscape, false);
                 } else {
@@ -110,8 +113,8 @@ public class HtmlBuilder {
                 }
             }
             sb.append("</a>");
-            if (i == linksSize - 1 && end >= 0 && end <= codePointsLength) {
-                appendSource(sb, end, codePointsLength, shouldReEscape, sourceIsEscaped);
+            if (i == linksSize - 1 && end >= 0 && end <= sourceLength) {
+                appendSource(sb, end, sourceLength, shouldReEscape, sourceIsEscaped);
             }
         }
         return sb.toString();
@@ -119,7 +122,7 @@ public class HtmlBuilder {
 
     public Pair<String, List<SpanItem>> buildWithIndices() {
         List<SpanItem> items = new ArrayList<>();
-        if (links.isEmpty()) return Pair.create(escapeSource(source), items);
+        if (links.isEmpty()) return Pair.create(escapeSource(), items);
         Collections.sort(links);
         final StringBuilder sb = new StringBuilder();
         final int linksSize = links.size();
@@ -130,17 +133,17 @@ public class HtmlBuilder {
             }
             final int start = spec.start, end = spec.end;
             if (i == 0) {
-                if (start >= 0 && start <= codePointsLength) {
+                if (start >= 0 && start <= sourceLength) {
                     appendSource(sb, 0, start, false, sourceIsEscaped);
                 }
             } else if (i > 0) {
                 final int lastEnd = links.get(i - 1).end;
-                if (lastEnd >= 0 && lastEnd <= start && start <= codePointsLength) {
+                if (lastEnd >= 0 && lastEnd <= start && start <= sourceLength) {
                     appendSource(sb, lastEnd, start, false, sourceIsEscaped);
                 }
             }
             int spanStart = sb.length();
-            if (start >= 0 && start <= end && end <= codePointsLength) {
+            if (start >= 0 && start <= end && end <= sourceLength) {
                 if (isEmpty(spec.display)) {
                     append(sb, spec.link, false, false);
                 } else {
@@ -152,8 +155,8 @@ public class HtmlBuilder {
             item.end = sb.length();
             item.link = spec.link;
             items.add(item);
-            if (i == linksSize - 1 && end >= 0 && end <= codePointsLength) {
-                appendSource(sb, end, codePointsLength, false, sourceIsEscaped);
+            if (i == linksSize - 1 && end >= 0 && end <= sourceLength) {
+                appendSource(sb, end, sourceLength, false, sourceIsEscaped);
             }
         }
         return Pair.create(sb.toString(), items);
@@ -170,9 +173,8 @@ public class HtmlBuilder {
     @Override
     public String toString() {
         return "HtmlBuilder{" +
-                "source='" + source + '\'' +
-                ", codePoints=" + codePoints +
-                ", codePointsLength=" + codePointsLength +
+                ", codePoints=" + source +
+                ", codePointsLength=" + sourceLength +
                 ", throwExceptions=" + throwExceptions +
                 ", sourceIsEscaped=" + sourceIsEscaped +
                 ", shouldReEscape=" + shouldReEscape +
@@ -182,11 +184,11 @@ public class HtmlBuilder {
 
     private void appendSource(final StringBuilder builder, final int start, final int end, boolean escapeSource, boolean sourceEscaped) {
         if (sourceEscaped == escapeSource) {
-            append(builder, codePoints.substring(start, end), escapeSource, sourceEscaped);
+            append(builder, source.substring(start, end), escapeSource, sourceEscaped);
         } else if (escapeSource) {
-            append(builder, escape(codePoints.substring(start, end)), true, sourceEscaped);
+            append(builder, escape(source.substring(start, end)), true, sourceEscaped);
         } else {
-            append(builder, unescape(codePoints.substring(start, end)), false, sourceEscaped);
+            append(builder, unescape(source.substring(start, end)), false, sourceEscaped);
         }
     }
 
@@ -200,7 +202,8 @@ public class HtmlBuilder {
         }
     }
 
-    private String escapeSource(final String source) {
+    private String escapeSource() {
+        final String source = this.source.substring(0, this.source.length());
         if (sourceIsEscaped == shouldReEscape) return source;
         return shouldReEscape ? escape(source) : unescape(source);
     }

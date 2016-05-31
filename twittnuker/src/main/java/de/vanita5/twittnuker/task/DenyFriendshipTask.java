@@ -37,6 +37,8 @@ import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.util.Utils;
 
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST;
+
 public class DenyFriendshipTask extends AbsFriendshipOperationTask {
 
     public DenyFriendshipTask(final Context context) {

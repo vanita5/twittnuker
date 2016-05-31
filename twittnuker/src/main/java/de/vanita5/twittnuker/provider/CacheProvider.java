@@ -37,12 +37,11 @@ import android.webkit.MimeTypeMap;
 import com.bluelinelabs.logansquare.JsonMapper;
 import com.nostra13.universalimageloader.cache.disc.DiskCache;
 
+import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 import org.mariotaku.restfu.RestFuUtils;
-
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.CacheMetadata;
 import de.vanita5.twittnuker.task.SaveFileTask;
-import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
