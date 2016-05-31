@@ -52,13 +52,13 @@ import com.twitter.Validator;
 
 import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.abstask.library.TaskStarter;
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
-import de.vanita5.twittnuker.activity.ThemedImagePickerActivity;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.ProfileUpdate;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.ColorPickerDialogActivity;
+import de.vanita5.twittnuker.activity.ThemedImagePickerActivity;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment;
 import de.vanita5.twittnuker.loader.ParcelableUserLoader;
 import de.vanita5.twittnuker.model.ParcelableAccount;
@@ -74,8 +74,8 @@ import de.vanita5.twittnuker.task.UpdateProfileBannerImageTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask;
 import de.vanita5.twittnuker.util.HtmlEscapeHelper;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
+import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.TwitterValidatorMETLengthChecker;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.Utils;
@@ -261,7 +261,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             displayUser(user);
             mEditName.setText(savedInstanceState.getString(EXTRA_NAME, user.name));
             mEditLocation.setText(savedInstanceState.getString(EXTRA_LOCATION, user.location));
-            mEditDescription.setText(savedInstanceState.getString(EXTRA_DESCRIPTION, user.description_expanded));
+            mEditDescription.setText(savedInstanceState.getString(EXTRA_DESCRIPTION, ParcelableUserUtils.getExpandedDescription(user)));
             mEditUrl.setText(savedInstanceState.getString(EXTRA_URL, user.url_expanded));
         } else {
             getUserInfo();
@@ -362,7 +362,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             mProgressContainer.setVisibility(View.GONE);
             mEditProfileContent.setVisibility(View.VISIBLE);
             mEditName.setText(user.name);
-            mEditDescription.setText(user.description_expanded);
+            mEditDescription.setText(ParcelableUserUtils.getExpandedDescription(user));
             mEditLocation.setText(user.location);
             mEditUrl.setText(isEmpty(user.url_expanded) ? user.url : user.url_expanded);
             mMediaLoader.displayProfileImage(mProfileImageView, user);
@@ -518,7 +518,7 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             if (mLinkColor != orig.link_color) return true;
             if (mBackgroundColor != orig.background_color) return true;
             if (!stringEquals(mName, orig.name)) return true;
-            if (!stringEquals(mDescription, isEmpty(orig.description_expanded) ? orig.description_plain : orig.description_expanded))
+            if (!stringEquals(mDescription, ParcelableUserUtils.getExpandedDescription(orig)))
                 return true;
             if (!stringEquals(mLocation, orig.location)) return true;
             if (!stringEquals(mUrl, isEmpty(orig.url_expanded) ? orig.url : orig.url_expanded))

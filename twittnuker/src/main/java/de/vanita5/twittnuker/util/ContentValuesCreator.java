@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.util;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
-import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.library.twitter.model.Relationship;
 import de.vanita5.twittnuker.library.twitter.model.SavedSearch;
@@ -33,6 +32,7 @@ import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.library.twitter.model.Trend;
 import de.vanita5.twittnuker.library.twitter.model.Trends;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.CachedRelationship;
 import de.vanita5.twittnuker.model.CachedRelationshipValuesCreator;
 import de.vanita5.twittnuker.model.Draft;
@@ -41,7 +41,6 @@ import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageValuesCreator;
-import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
@@ -51,11 +50,10 @@ import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
-import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
+import de.vanita5.twittnuker.model.util.ParcelableDirectMessageUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends;
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
@@ -85,37 +83,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     public static ContentValues createDirectMessage(final DirectMessage message,
                                                     final UserKey accountKey,
                                                     final boolean isOutgoing) {
-        if (message == null) return null;
-        final ContentValues values = new ContentValues();
-        final User sender = message.getSender(), recipient = message.getRecipient();
-        if (sender == null || recipient == null) return null;
-        final String sender_profile_image_url = TwitterContentUtils.getProfileImageUrl(sender);
-        final String recipient_profile_image_url = TwitterContentUtils.getProfileImageUrl(recipient);
-        values.put(DirectMessages.ACCOUNT_KEY, accountKey.toString());
-        values.put(DirectMessages.MESSAGE_ID, message.getId());
-        values.put(DirectMessages.MESSAGE_TIMESTAMP, message.getCreatedAt().getTime());
-        values.put(DirectMessages.SENDER_ID, sender.getId());
-        values.put(DirectMessages.RECIPIENT_ID, recipient.getId());
-        if (isOutgoing) {
-            values.put(DirectMessages.CONVERSATION_ID, recipient.getId());
-        } else {
-            values.put(DirectMessages.CONVERSATION_ID, sender.getId());
-        }
-        final String text_html = InternalTwitterContentUtils.formatDirectMessageText(message);
-        values.put(DirectMessages.TEXT_HTML, text_html);
-        values.put(DirectMessages.TEXT_PLAIN, message.getText());
-        values.put(DirectMessages.TEXT_UNESCAPED, HtmlEscapeHelper.toPlainText(text_html));
-        values.put(DirectMessages.IS_OUTGOING, isOutgoing);
-        values.put(DirectMessages.SENDER_NAME, sender.getName());
-        values.put(DirectMessages.SENDER_SCREEN_NAME, sender.getScreenName());
-        values.put(DirectMessages.RECIPIENT_NAME, recipient.getName());
-        values.put(DirectMessages.RECIPIENT_SCREEN_NAME, recipient.getScreenName());
-        values.put(DirectMessages.SENDER_PROFILE_IMAGE_URL, sender_profile_image_url);
-        values.put(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL, recipient_profile_image_url);
-        final ParcelableMedia[] mediaArray = ParcelableMediaUtils.fromEntities(message);
-        values.put(DirectMessages.MEDIA_JSON, JsonSerializer.serialize(Arrays.asList(mediaArray),
-                ParcelableMedia.class));
-        return values;
+        return ParcelableDirectMessageValuesCreator.create(ParcelableDirectMessageUtils.fromDirectMessage(message,
+                accountKey, isOutgoing));
     }
 
     public static ContentValues createDirectMessage(final ParcelableDirectMessage message) {

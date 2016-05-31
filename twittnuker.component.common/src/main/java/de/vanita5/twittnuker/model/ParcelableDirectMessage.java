@@ -37,15 +37,19 @@ import org.mariotaku.library.objectcursor.annotation.CursorObject;
 
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
+import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 
 import java.util.Arrays;
 
 @ParcelablePlease(allFields = false)
 @JsonObject
-@CursorObject(valuesCreator = true)
+@CursorObject(valuesCreator = true, tableInfo = true)
 public class ParcelableDirectMessage implements Parcelable, Comparable<ParcelableDirectMessage> {
 
+    @ParcelableThisPlease
+    @CursorField(value = DirectMessages._ID, type = TwidereDataStore.TYPE_PRIMARY_KEY, excludeWrite = true)
+    public long _id;
     @ParcelableThisPlease
     @JsonField(name = "account_id", typeConverter = UserKeyConverter.class)
     @CursorField(value = DirectMessages.ACCOUNT_KEY, converter = UserKeyCursorFieldConverter.class)
@@ -74,17 +78,18 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
     public boolean is_outgoing;
 
     @ParcelableThisPlease
-    @JsonField(name = "text_html")
-    @CursorField(DirectMessages.TEXT_HTML)
-    public String text_html;
+    @JsonField(name = "text_unescaped")
+    @CursorField(DirectMessages.TEXT_UNESCAPED)
+    public String text_unescaped;
     @ParcelableThisPlease
     @JsonField(name = "text_plain")
     @CursorField(DirectMessages.TEXT_PLAIN)
     public String text_plain;
+
     @ParcelableThisPlease
-    @JsonField(name = "text_unescaped")
-    @CursorField(DirectMessages.TEXT_UNESCAPED)
-    public String text_unescaped;
+    @JsonField(name = "spans")
+    @CursorField(value = DirectMessages.SPANS, converter = LoganSquareCursorFieldConverter.class)
+    public SpanItem[] spans;
 
     @ParcelableThisPlease
     @JsonField(name = "sender_name")
@@ -111,6 +116,11 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
     @JsonField(name = "recipient_profile_image_url")
     @CursorField(DirectMessages.RECIPIENT_PROFILE_IMAGE_URL)
     public String recipient_profile_image_url;
+
+    @ParcelableThisPlease
+    @JsonField(name = "conversation_id")
+    @CursorField(DirectMessages.CONVERSATION_ID)
+    public String conversation_id;
 
     @ParcelableThisPlease
     @JsonField(name = "media")
@@ -151,14 +161,14 @@ public class ParcelableDirectMessage implements Parcelable, Comparable<Parcelabl
     public String toString() {
         return "ParcelableDirectMessage{" +
                 "account_key=" + account_key +
-                ", id=" + id +
+                ", id='" + id + '\'' +
                 ", timestamp=" + timestamp +
-                ", sender_id=" + sender_id +
-                ", recipient_id=" + recipient_id +
+                ", sender_id='" + sender_id + '\'' +
+                ", recipient_id='" + recipient_id + '\'' +
                 ", is_outgoing=" + is_outgoing +
-                ", text_html='" + text_html + '\'' +
-                ", text_plain='" + text_plain + '\'' +
                 ", text_unescaped='" + text_unescaped + '\'' +
+                ", text_plain='" + text_plain + '\'' +
+                ", spans=" + Arrays.toString(spans) +
                 ", sender_name='" + sender_name + '\'' +
                 ", recipient_name='" + recipient_name + '\'' +
                 ", sender_screen_name='" + sender_screen_name + '\'' +

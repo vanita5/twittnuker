@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.model.util;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
-import android.text.SpannableStringBuilder;
+import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.URLSpan;
@@ -47,7 +47,6 @@ import de.vanita5.twittnuker.util.TwitterContentUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 
 import java.util.Date;
-import java.util.List;
 
 import static de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM;
 
@@ -110,10 +109,10 @@ public class ParcelableStatusUtils {
                 result.quoted_text_plain = result.quoted_text_unescaped;
                 result.quoted_spans = getSpanItems(html);
             } else {
-                final Pair<String, List<SpanItem>> textWithIndices = InternalTwitterContentUtils.formatStatusTextWithIndices(quoted);
+                final Pair<String, SpanItem[]> textWithIndices = InternalTwitterContentUtils.formatStatusTextWithIndices(quoted);
                 result.quoted_text_plain = InternalTwitterContentUtils.unescapeTwitterStatusText(quotedText);
                 result.quoted_text_unescaped = textWithIndices.first;
-                result.quoted_spans = textWithIndices.second.toArray(new SpanItem[textWithIndices.second.size()]);
+                result.quoted_spans = textWithIndices.second;
             }
 
             result.quoted_timestamp = quoted.getCreatedAt().getTime();
@@ -177,10 +176,10 @@ public class ParcelableStatusUtils {
             result.text_plain = result.text_unescaped;
             result.spans = getSpanItems(html);
         } else {
-            final Pair<String, List<SpanItem>> textWithIndices = InternalTwitterContentUtils.formatStatusTextWithIndices(status);
+            final Pair<String, SpanItem[]> textWithIndices = InternalTwitterContentUtils.formatStatusTextWithIndices(status);
             result.text_unescaped = textWithIndices.first;
             result.text_plain = InternalTwitterContentUtils.unescapeTwitterStatusText(text);
-            result.spans = textWithIndices.second.toArray(new SpanItem[textWithIndices.second.size()]);
+            result.spans = textWithIndices.second;
         }
         result.media = ParcelableMediaUtils.fromStatus(status);
         result.source = status.getSource();
@@ -303,7 +302,7 @@ public class ParcelableStatusUtils {
         return status.getInReplyToScreenName();
     }
 
-    public static void applySpans(@NonNull SpannableStringBuilder text, @Nullable SpanItem[] spans) {
+    public static void applySpans(@NonNull Spannable text, @Nullable SpanItem[] spans) {
         if (spans == null) return;
         for (SpanItem span : spans) {
             text.setSpan(new URLSpan(span.link), span.start, span.end,

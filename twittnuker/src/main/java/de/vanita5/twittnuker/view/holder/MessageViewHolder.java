@@ -27,7 +27,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.TextView;
 
@@ -36,8 +36,9 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableMedia;
+import de.vanita5.twittnuker.model.SpanItem;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.util.HtmlSpanBuilder;
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.ThemeUtils;
@@ -96,7 +97,10 @@ public class MessageViewHolder extends ViewHolder {
         final long timestamp = cursor.getLong(indices.timestamp);
         final ParcelableMedia[] media = JsonSerializer.parseArray(cursor.getString(indices.media),
                 ParcelableMedia.class);
-        final Spannable text = HtmlSpanBuilder.fromHtml(cursor.getString(indices.text_html));
+        final SpanItem[] spans = JsonSerializer.parseArray(cursor.getString(indices.spans),
+                SpanItem.class);
+        final SpannableStringBuilder text = SpannableStringBuilder.valueOf(cursor.getString(indices.text_unescaped));
+        ParcelableStatusUtils.applySpans(text, spans);
         // Detect entity support
         linkify.applyAllLinks(text, accountKey, false, true);
         textView.setText(text);
