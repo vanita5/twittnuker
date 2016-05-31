@@ -68,8 +68,8 @@ public abstract class ParcelableGroupsFragment extends AbsContentListRecyclerVie
     }
 
     @Override
-    protected void setupRecyclerView(Context context) {
-        super.setupRecyclerView(context);
+    protected void setupRecyclerView(Context context, RecyclerView recyclerView) {
+        super.setupRecyclerView(context, recyclerView);
     }
 
     @Nullable
