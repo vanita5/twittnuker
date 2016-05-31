@@ -798,6 +798,8 @@
     <string name="password_sign_in_twitter_only">Password Login (Nur für Twitter)</string>
     <string name="edit_description">Beschreibung hinzufügen</string>
     <string name="edit_media">Medien bearbeiten</string>
+    <string name="no_status_content_text">Kein Inhalt</string>
+    <string name="status_not_available_text">Tweet existiert nicht</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

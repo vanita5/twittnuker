@@ -802,6 +802,8 @@
     <string name="direct_messages_next">DM next</string>
     <string name="edit_description">Add description</string>
     <string name="edit_media">Edit media</string>
+    <string name="no_status_content_text">No content</string>
+    <string name="status_not_available_text">Tweet not available</string>
 
 
     <!-- Twittnuker -->
