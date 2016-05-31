@@ -31,46 +31,46 @@ public class SettingsUpdate extends SimpleValueMap {
 
     public void put(String key, boolean value) {
         super.put(key, String.valueOf(value));
-	}
+    }
 
     public void put(String key, int value) {
         super.put(key, String.valueOf(value));
-	}
+    }
 
     public void put(String key, String value) {
         super.put(key, value);
-	}
+    }
 
-	public void setTrendLocationWoeid(int woeid) {
+    public void setTrendLocationWoeid(int woeid) {
         put("trend_location_woeid", woeid);
-	}
+    }
 
-	public void setSleepTimeEnabled(boolean enabled) {
+    public void setSleepTimeEnabled(boolean enabled) {
         put("sleep_time_enabled", enabled);
-	}
+    }
 
-	public void setStartSleepTime(int startSleepTime) {
+    public void setStartSleepTime(int startSleepTime) {
         put("start_sleep_time", startSleepTime);
-	}
+    }
 
-	public void setEndSleepTime(int endSleepTime) {
+    public void setEndSleepTime(int endSleepTime) {
         put("end_sleep_time", endSleepTime);
-	}
+    }
 
-	public void setTimezone(String timezone) {
+    public void setTimezone(String timezone) {
         put("time_zone", timezone);
-	}
+    }
 
-	public void setProtected(boolean userProtected) {
+    public void setProtected(boolean userProtected) {
         put("protected", userProtected);
-	}
+    }
 
-	public void setLang(String lang) {
+    public void setLang(String lang) {
         put("lang", lang);
-	}
+    }
 
-	public void setScreenName(String screenName) {
+    public void setScreenName(String screenName) {
         put("screen_name", screenName);
-	}
+    }
 
 }

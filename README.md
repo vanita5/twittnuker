@@ -8,7 +8,7 @@ Twidere updates will almost always be merged, so you can expect the latest featu
 
 <a href="https://play.google.com/store/apps/details?id=de.vanita5.twittnuker">
   <img alt="Get it on Google Play"
-       src="http://www.android.com/images/brand/get_it_on_play_logo_large.png" />
+       src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" />
 </a>
 
 ### Features ###

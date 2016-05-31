@@ -35,15 +35,15 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.abstask.library.TaskStarter;
-import org.mariotaku.sqliteqb.library.Columns;
-import org.mariotaku.sqliteqb.library.Expression;
-import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.Status;
+import org.mariotaku.sqliteqb.library.Columns;
+import org.mariotaku.sqliteqb.library.Expression;
+import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
@@ -58,9 +58,8 @@ import de.vanita5.twittnuker.task.CacheUsersStatusesTask;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.UriUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
@@ -162,7 +161,6 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
                     sinceId = null;
                 }
                 final List<Status> statuses = getStatuses(twitter, paging);
-                InternalTwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
                 storeStatus(accountKey, credentials, statuses, sinceId, maxId, sinceSortId,
                         maxSortId, loadItemLimit, false);
                 // TODO cache related data and preload

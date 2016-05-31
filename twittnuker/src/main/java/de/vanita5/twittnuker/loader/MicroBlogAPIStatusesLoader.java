@@ -33,12 +33,12 @@ import com.nostra13.universalimageloader.cache.disc.DiskCache;
 import com.nostra13.universalimageloader.utils.IoUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
-
-import de.vanita5.twittnuker.BuildConfig;
+import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.Status;
+import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -46,14 +46,11 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
-import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
-import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.UserColorNameManager;
-import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import java.io.File;
@@ -146,10 +143,6 @@ public abstract class MicroBlogAPIStatusesLoader extends ParcelableStatusesLoade
             final Paging paging = new Paging();
             processPaging(credentials, loadItemLimit, paging);
             statuses = getStatuses(twitter, credentials, paging);
-            if (MicroBlogAPIFactory.isTwitterCredentials(credentials) &&
-                    !Utils.isOfficialCredentials(context, credentials)) {
-                InternalTwitterContentUtils.getStatusesWithQuoteData(twitter, statuses);
-            }
         } catch (final MicroBlogException e) {
             // mHandler.post(new ShowErrorRunnable(e));
             if (BuildConfig.DEBUG) {

@@ -236,10 +236,9 @@ public class RetweetQuoteDialogFragment extends BaseDialogFragment {
             positiveButton.setText(R.string.retweet);
             positiveButton.setEnabled(!status.user_is_protected);
         }
-        final String statusLink = LinkCreator.getStatusWebLink(status).toString();
         final StatusTextCountView textCountView = (StatusTextCountView) alertDialog.findViewById(R.id.comment_text_count);
         assert textCountView != null;
-        textCountView.setTextCount(mValidator.getTweetLength(s + " " + statusLink));
+        textCountView.setTextCount(mValidator.getTweetLength(s.toString()));
     }
 
     private ParcelableStatus getStatus() {
@@ -295,7 +294,8 @@ public class RetweetQuoteDialogFragment extends BaseDialogFragment {
                     } else {
                         statusLink = LinkCreator.getQuotedStatusWebLink(status);
                     }
-                    commentText = editingComment + " " + statusLink;
+                    update.attachment_url = statusLink.toString();
+                    commentText = editingComment;
                     break;
                 }
             }
