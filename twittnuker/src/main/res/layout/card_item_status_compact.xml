@@ -176,7 +176,7 @@
                 tools:text="@string/sample_status_text"
                 tools:visibility="visible"/>
 
-            <de.vanita5.twittnuker.view.ActionIconThemedTextView
+            <LinearLayout
                 android:id="@+id/media_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -186,12 +186,27 @@
                 android:layout_alignStart="@+id/text"
                 android:layout_below="@+id/text"
                 android:layout_marginTop="@dimen/element_spacing_xsmall"
-                android:drawableLeft="@drawable/ic_action_gallery"
-                android:drawableStart="@drawable/ic_action_gallery"
                 android:gravity="center_vertical"
-                android:text="@string/media"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textStyle="bold"/>
+                android:orientation="horizontal">
+
+                <de.vanita5.twittnuker.view.IconActionView
+                    android:layout_width="@dimen/element_size_small"
+                    android:layout_height="@dimen/element_size_small"
+                    android:layout_weight="0"
+                    android:color="?android:textColorSecondary"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_action_gallery"
+                    tools:tint="?android:textColorSecondary"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/media"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
 
             <de.vanita5.twittnuker.view.CardMediaContainer
                 android:id="@+id/media_preview"
@@ -257,7 +272,7 @@
                 tools:text="@string/sample_status_text"
                 tools:visibility="visible" />
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/quoted_media_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -265,12 +280,27 @@
                 android:layout_marginTop="@dimen/element_spacing_xsmall"
                 android:layout_toEndOf="@+id/quote_indicator"
                 android:layout_toRightOf="@+id/quote_indicator"
-                android:drawableLeft="@drawable/ic_action_gallery"
-                android:drawableStart="@drawable/ic_action_gallery"
                 android:gravity="center_vertical"
-                android:text="@string/media"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textStyle="bold"/>
+                android:orientation="horizontal">
+
+                <de.vanita5.twittnuker.view.IconActionView
+                    android:layout_width="@dimen/element_size_small"
+                    android:layout_height="@dimen/element_size_small"
+                    android:layout_weight="0"
+                    android:color="?android:textColorSecondary"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_action_gallery"
+                    tools:tint="?android:textColorSecondary"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/media"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
 
             <de.vanita5.twittnuker.view.CardMediaContainer
                 android:id="@+id/quoted_media_preview"
