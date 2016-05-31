@@ -241,6 +241,9 @@ public class User extends TwitterResponseObject implements Comparable<User>, Par
     @JsonField(name = "statusnet_blocking")
     boolean statusnetBlocking;
 
+    @JsonField(name = "pinned_tweet_ids")
+    String[] pinnedTweetIds;
+
     public boolean canMediaTag() {
         return canMediaTag;
     }
@@ -529,6 +532,10 @@ public class User extends TwitterResponseObject implements Comparable<User>, Par
 
     public boolean isFollowsYou() {
         return followsYou;
+    }
+
+    public String[] getPinnedTweetIds() {
+        return pinnedTweetIds;
     }
 
     @Override
