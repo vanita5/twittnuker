@@ -36,21 +36,22 @@ import org.mariotaku.library.objectcursor.annotation.CursorObject;
 import de.vanita5.twittnuker.model.draft.ActionExtra;
 import de.vanita5.twittnuker.model.util.DraftExtrasConverter;
 import de.vanita5.twittnuker.model.util.UserKeysCursorFieldConverter;
+import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @ParcelablePlease
-@CursorObject(valuesCreator = true)
+@CursorObject(valuesCreator = true, tableInfo = true)
 public class Draft implements Parcelable {
 
     @ParcelableThisPlease
+    @CursorField(value = Drafts._ID, type = TwidereDataStore.TYPE_PRIMARY_KEY, excludeWrite = true)
+    public long _id;
+    @ParcelableThisPlease
     @CursorField(value = Drafts.ACCOUNT_KEYS, converter = UserKeysCursorFieldConverter.class)
     public UserKey[] account_keys;
-    @ParcelableThisPlease
-    @CursorField(value = Drafts._ID, excludeWrite = true)
-    public long _id;
     @ParcelableThisPlease
     @CursorField(Drafts.TIMESTAMP)
     public long timestamp;
