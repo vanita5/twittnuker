@@ -1087,25 +1087,6 @@ public final class Utils implements Constants {
         return Color.TRANSPARENT;
     }
 
-    public static String getCardHighlightOption(final Context context) {
-        if (context == null) return null;
-        final String defaultOption = context.getString(R.string.default_tab_display_option);
-        final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        return prefs.getString(KEY_TAB_DISPLAY_OPTION, defaultOption);
-    }
-
-    public static int getCardHighlightOptionInt(final Context context) {
-        return getCardHighlightOptionInt(getCardHighlightOption(context));
-    }
-
-    public static int getCardHighlightOptionInt(final String option) {
-        if (VALUE_CARD_HIGHLIGHT_OPTION_NONE.equals(option))
-            return VALUE_CARD_HIGHLIGHT_OPTION_CODE_NONE;
-        else if (VALUE_CARD_HIGHLIGHT_OPTION_LINE.equals(option))
-            return VALUE_CARD_HIGHLIGHT_OPTION_CODE_LINE;
-        return VALUE_CARD_HIGHLIGHT_OPTION_CODE_BACKGROUND;
-    }
-
     public static Selectable getColumnsFromProjection(final String... projection) {
         if (projection == null) return new AllColumns();
         final int length = projection.length;

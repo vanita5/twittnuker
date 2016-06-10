@@ -94,14 +94,6 @@ public interface SharedPreferenceConstants {
     String VALUE_COMPOSE_NOW_ACTION_TAKE_PHOTO = "take_photo";
     String VALUE_COMPOSE_NOW_ACTION_PICK_IMAGE = "pick_image";
 
-    String VALUE_CARD_HIGHLIGHT_OPTION_NONE = VALUE_NONE;
-    String VALUE_CARD_HIGHLIGHT_OPTION_BACKGROUND = "background";
-    String VALUE_CARD_HIGHLIGHT_OPTION_LINE = "line";
-
-    int VALUE_CARD_HIGHLIGHT_OPTION_CODE_NONE = 0x0;
-    int VALUE_CARD_HIGHLIGHT_OPTION_CODE_BACKGROUND = 0x1;
-    int VALUE_CARD_HIGHLIGHT_OPTION_CODE_LINE = 0x2;
-
     String DEFAULT_THEME = VALUE_THEME_NAME_AUTO;
     String DEFAULT_THEME_BACKGROUND = VALUE_THEME_BACKGROUND_DEFAULT;
     String DEFAULT_THEME_FONT_FAMILY = VALUE_THEME_FONT_FAMILY_LIGHT;
@@ -130,7 +122,6 @@ public interface SharedPreferenceConstants {
 
     int DEFAULT_DATABASE_ITEM_LIMIT = 100;
     int DEFAULT_LOAD_ITEM_LIMIT = 100;
-    String DEFAULT_CARD_HIGHLIGHT_OPTION = VALUE_CARD_HIGHLIGHT_OPTION_BACKGROUND;
 
     @Preference(type = INT, hasDefault = true, defaultInt = DEFAULT_DATABASE_ITEM_LIMIT)
     String KEY_DATABASE_ITEM_LIMIT = "database_item_limit";
@@ -152,8 +143,6 @@ public interface SharedPreferenceConstants {
     String KEY_THEME_FONT_FAMILY = "theme_font_family";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_DISPLAY_PROFILE_IMAGE = "display_profile_image";
-    @Preference(type = BOOLEAN)
-    String KEY_LEFTSIDE_COMPOSE_BUTTON = "leftside_compose_button";
     @Preference(type = BOOLEAN, exportable = false, hasDefault = true, defaultBoolean = false)
     String KEY_ATTACH_LOCATION = "attach_location";
     @Preference(type = BOOLEAN, exportable = false, hasDefault = true, defaultBoolean = true)
@@ -236,17 +225,12 @@ public interface SharedPreferenceConstants {
     String KEY_DISPLAY_SENSITIVE_CONTENTS = "display_sensitive_contents";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_PHISHING_LINK_WARNING = "phishing_link_warning";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
-    String KEY_FAST_SCROLL_THUMB = "fast_scroll_thumb";
+    @Preference(type = STRING, hasDefault = true, defaultString = VALUE_LINK_HIGHLIGHT_OPTION_NONE)
     String KEY_LINK_HIGHLIGHT_OPTION = "link_highlight_option";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
-    String KEY_INDICATE_MY_STATUS = "indicate_my_status";
     String KEY_PRELOAD_PROFILE_IMAGES = "preload_profile_images";
     String KEY_PRELOAD_PREVIEW_IMAGES = "preload_preview_images";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_PRELOAD_WIFI_ONLY = "preload_wifi_only";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
-    String KEY_LINK_TO_QUOTED_TWEET = "link_to_quoted_tweet";
     @Preference(type = BOOLEAN)
     String KEY_NO_CLOSE_AFTER_TWEET_SENT = "no_close_after_tweet_sent";
     @Preference(type = STRING, hasDefault = false)
@@ -263,8 +247,6 @@ public interface SharedPreferenceConstants {
     String KEY_CONSUMER_SECRET = "consumer_secret";
     String KEY_SETTINGS_WIZARD_COMPLETED = "settings_wizard_completed";
     String KEY_CONSUMER_KEY_SECRET_SET = "consumer_key_secret_set";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
-    String KEY_CARD_ANIMATION = "card_animation";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_UNREAD_COUNT = "unread_count";
     String KEY_NOTIFICATION = "notification";
@@ -307,8 +289,6 @@ public interface SharedPreferenceConstants {
     String KEY_TRANSLATION_DESTINATION = "translation_destination";
     @Preference(type = STRING)
     String KEY_TAB_DISPLAY_OPTION = "tab_display_option";
-    @Preference(type = STRING)
-    String KEY_CARD_HIGHLIGHT_OPTION = "card_highlight_option";
     @Preference(type = LONG, exportable = false)
     String KEY_API_LAST_CHANGE = "api_last_change";
     @Preference(type = STRING, exportable = false)
@@ -324,8 +304,6 @@ public interface SharedPreferenceConstants {
     String KEY_BUG_REPORTS = "bug_reports";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_COMBINED_NOTIFICATIONS = "combined_notifications";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
-    String KEY_TWITTER_OPTIMIZED_SEARCHES = "twitter_optimized_searches";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_I_WANT_MY_STARS_BACK = "i_want_my_stars_back";
     @Preference(type = STRING, hasDefault = false)
