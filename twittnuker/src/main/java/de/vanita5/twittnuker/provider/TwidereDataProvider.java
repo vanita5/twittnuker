@@ -1294,11 +1294,14 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     if (TextUtils.isEmpty(summary)) {
                         style.addLine(message.getTitle());
                         pebbleNotificationStringBuilder.append(message.getTitle());
+                        pebbleNotificationStringBuilder.append("\n");
                     } else {
                         style.addLine(SpanFormatter.format(resources.getString(R.string.title_summary_line_format),
                                 message.getTitle(), summary));
-                        pebbleNotificationStringBuilder.append(SpanFormatter.format(resources.getString(R.string.title_summary_line_format),
-                                message.getTitle(), summary));
+                        pebbleNotificationStringBuilder.append(message.getTitle());
+                        pebbleNotificationStringBuilder.append(": ");
+                        pebbleNotificationStringBuilder.append(message.getSummary());
+                        pebbleNotificationStringBuilder.append("\n");
                     }
                     messageLines++;
                 }
@@ -1323,7 +1326,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 accountKey);
         mNotificationManager.notify("interactions", notificationId, builder.build());
 
-        Utils.sendPebbleNotification(context, pebbleNotificationStringBuilder.toString());
+        Utils.sendPebbleNotification(context, context.getResources().getString(R.string.interactions), pebbleNotificationStringBuilder.toString());
 
     }
 
@@ -1521,7 +1524,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 nm.notify("messages_" + accountKey, NOTIFICATION_ID_DIRECT_MESSAGES, builder.build());
 
                 //TODO: Pebble notification - Only notify about recently added DMs, not previous ones?
-                Utils.sendPebbleNotification(context, pebbleNotificationBuilder.toString());
+                Utils.sendPebbleNotification(context, "DM", pebbleNotificationBuilder.toString());
             } catch (SecurityException e) {
                 // Silently ignore
             }
