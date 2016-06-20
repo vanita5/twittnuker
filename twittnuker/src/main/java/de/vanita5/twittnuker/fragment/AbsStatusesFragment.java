@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -46,6 +47,7 @@ import com.squareup.otto.Subscribe;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
+import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.constant.IntentConstants;
@@ -304,6 +306,22 @@ public abstract class AbsStatusesFragment extends AbsContentListRecyclerViewFrag
         if (status == null) return;
         handleStatusActionClick(context, getFragmentManager(), mTwitterWrapper,
                 (StatusViewHolder) holder, status, id);
+    }
+
+
+    @Nullable
+    @Override
+    protected RecyclerView.ItemDecoration createItemDecoration(Context context, RecyclerView recyclerView, LinearLayoutManager layoutManager) {
+        final DividerItemDecoration itemDecoration = new DividerItemDecoration(context,
+                ((LinearLayoutManager) recyclerView.getLayoutManager()).getOrientation());
+        final Resources res = context.getResources();
+        if (getAdapter().isProfileImageEnabled()) {
+            final int decorPaddingLeft = res.getDimensionPixelSize(R.dimen.element_spacing_normal) * 2
+                    + res.getDimensionPixelSize(R.dimen.icon_size_status_profile_image);
+            itemDecoration.setPadding(decorPaddingLeft, 0, 0, 0);
+        }
+        itemDecoration.setDecorationEndOffset(1);
+        return itemDecoration;
     }
 
     public static void handleStatusActionClick(Context context, FragmentManager fm,
