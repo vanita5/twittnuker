@@ -84,6 +84,8 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
     protected ErrorInfoStore errorInfoStore;
     @Inject
     protected UserColorNameManager manager;
+    @Inject
+    protected AsyncTwitterWrapper wrapper;
 
     public GetStatusesTask(Context context) {
         this.context = context;
@@ -99,7 +101,7 @@ public abstract class GetStatusesTask extends AbstractTask<RefreshTaskParam,
 
 
     @Override
-    public void afterExecute(List<TwitterWrapper.StatusListResponse> result) {
+    public void afterExecute(Object handler, List<TwitterWrapper.StatusListResponse> result) {
         context.getContentResolver().notifyChange(getContentUri(), null);
         bus.post(new GetStatusesTaskEvent(getContentUri(), false, AsyncTwitterWrapper.getException(result)));
     }

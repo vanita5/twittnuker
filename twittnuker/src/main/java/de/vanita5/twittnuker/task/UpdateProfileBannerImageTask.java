@@ -29,11 +29,11 @@ import android.util.Log;
 import com.squareup.otto.Bus;
 
 import org.mariotaku.abstask.library.AbstractTask;
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
@@ -70,8 +70,8 @@ public class UpdateProfileBannerImageTask<ResultHandler> extends AbstractTask<Ob
     }
 
     @Override
-    protected void afterExecute(final SingleResponse<ParcelableUser> result) {
-        super.afterExecute(result);
+    protected void afterExecute(ResultHandler callback, final SingleResponse<ParcelableUser> result) {
+        super.afterExecute(callback, result);
         if (result.hasData()) {
             Utils.showOkMessage(mContext, R.string.profile_banner_image_updated, false);
             mBus.post(new ProfileUpdatedEvent(result.getData()));

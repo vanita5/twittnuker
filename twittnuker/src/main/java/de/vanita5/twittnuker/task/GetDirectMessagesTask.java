@@ -31,23 +31,23 @@ import com.squareup.otto.Bus;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mariotaku.abstask.library.AbstractTask;
-import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.library.twitter.model.ErrorInfo;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.ContentValuesCreator;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwitterWrapper;
 import de.vanita5.twittnuker.util.UriUtils;
 import de.vanita5.twittnuker.util.content.ContentResolverUtils;
@@ -164,7 +164,7 @@ public abstract class GetDirectMessagesTask extends AbstractTask<RefreshTaskPara
     }
 
     @Override
-    protected void afterExecute(List<TwitterWrapper.MessageListResponse> result) {
+    protected void afterExecute(Object callback, List<TwitterWrapper.MessageListResponse> result) {
         bus.post(new GetMessagesTaskEvent(getDatabaseUri(), false, AsyncTwitterWrapper.getException(result)));
     }
 }

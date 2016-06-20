@@ -450,7 +450,6 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
             UserProfileEditorFragment> {
 
         private static final String DIALOG_FRAGMENT_TAG = "updating_user_profile";
-        private final UserProfileEditorFragment mFragment;
         private final FragmentActivity mActivity;
 
         // Data fields
@@ -468,7 +467,6 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
                                          final String name, final String url, final String location,
                                          final String description, final int linkColor,
                                          final int backgroundColor) {
-            mFragment = fragment;
             mActivity = fragment.getActivity();
             mAccountKey = accountKey;
             mOriginal = original;
@@ -527,8 +525,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected void afterExecute(SingleResponse<ParcelableUser> result) {
-            super.afterExecute(result);
+        protected void afterExecute(UserProfileEditorFragment callback, SingleResponse<ParcelableUser> result) {
+            super.afterExecute(callback, result);
             if (result.hasData()) {
                 final ParcelableAccount account = result.getExtras().getParcelable(EXTRA_ACCOUNT);
                 if (account != null) {
@@ -537,14 +535,14 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
                     TaskStarter.execute(task);
                 }
             }
-            mFragment.executeAfterFragmentResumed(new Action() {
+            callback.executeAfterFragmentResumed(new Action() {
                 @Override
                 public void execute(IBaseFragment fragment) {
-                    final Fragment f = mFragment.getFragmentManager().findFragmentByTag(DIALOG_FRAGMENT_TAG);
+                    final Fragment f = ((UserProfileEditorFragment) fragment).getFragmentManager().findFragmentByTag(DIALOG_FRAGMENT_TAG);
                     if (f instanceof DialogFragment) {
                         ((DialogFragment) f).dismissAllowingStateLoss();
                     }
-                    mFragment.getActivity().finish();
+                    f.getActivity().finish();
                 }
             });
         }
@@ -552,13 +550,16 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         @Override
         protected void beforeExecute() {
             super.beforeExecute();
-            mFragment.executeAfterFragmentResumed(new Action() {
-                @Override
-                public void execute(IBaseFragment fragment) {
-                    final DialogFragment df = ProgressDialogFragment.show(mFragment.getActivity(), DIALOG_FRAGMENT_TAG);
-                    df.setCancelable(false);
-                }
-            });
+            final UserProfileEditorFragment callback = getCallback();
+            if (callback != null) {
+                callback.executeAfterFragmentResumed(new Action() {
+                    @Override
+                    public void execute(IBaseFragment fragment) {
+                        final DialogFragment df = ProgressDialogFragment.show(((UserProfileEditorFragment) fragment).getActivity(), DIALOG_FRAGMENT_TAG);
+                        df.setCancelable(false);
+                    }
+                });
+            }
         }
 
     }
@@ -577,8 +578,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected void afterExecute(final SingleResponse<Boolean> result) {
-            super.afterExecute(result);
+        protected void afterExecute(UserProfileEditorFragment callback, final SingleResponse<Boolean> result) {
+            super.afterExecute(callback, result);
             if (result.getData() != null && result.getData()) {
                 getUserInfo();
                 Toast.makeText(getActivity(), R.string.profile_banner_image_updated, Toast.LENGTH_SHORT).show();
@@ -605,8 +606,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected void afterExecute(final SingleResponse<ParcelableUser> result) {
-            super.afterExecute(result);
+        protected void afterExecute(UserProfileEditorFragment callback, final SingleResponse<ParcelableUser> result) {
+            super.afterExecute(callback, result);
             setUpdateState(false);
             getUserInfo();
         }
@@ -628,8 +629,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected void afterExecute(final SingleResponse<ParcelableUser> result) {
-            super.afterExecute(result);
+        protected void afterExecute(UserProfileEditorFragment callback, final SingleResponse<ParcelableUser> result) {
+            super.afterExecute(callback, result);
             setUpdateState(false);
             getUserInfo();
         }
@@ -650,8 +651,8 @@ public class UserProfileEditorFragment extends BaseSupportFragment implements On
         }
 
         @Override
-        protected void afterExecute(SingleResponse<ParcelableUser> result) {
-            super.afterExecute(result);
+        protected void afterExecute(UserProfileEditorFragment callback, SingleResponse<ParcelableUser> result) {
+            super.afterExecute(callback, result);
             if (result != null && result.getData() != null) {
                 displayUser(result.getData());
             }

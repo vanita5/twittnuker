@@ -27,7 +27,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 
@@ -82,15 +81,15 @@ public class SupportTabSpec implements Comparable<SupportTabSpec>, TwittnukerCon
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-                .append("name", name)
-                .append("icon", icon)
-                .append("type", type)
-                .append("cls", cls)
-                .append("args", args)
-                .append("position", position)
-                .append("tag", tag)
-                .toString();
+        return "SupportTabSpec{" +
+                "name=" + name +
+                ", icon=" + icon +
+                ", type='" + type + '\'' +
+                ", cls=" + cls +
+                ", args=" + args +
+                ", position=" + position +
+                ", tag='" + tag + '\'' +
+                '}';
     }
 
 }
