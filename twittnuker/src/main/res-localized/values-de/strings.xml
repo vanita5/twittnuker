@@ -800,6 +800,7 @@
     <string name="edit_media">Medien bearbeiten</string>
     <string name="no_status_content_text">Kein Inhalt</string>
     <string name="status_not_available_text">Tweet existiert nicht</string>
+    <string name="share_link">Link teilen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
