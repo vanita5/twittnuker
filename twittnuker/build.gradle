@@ -29,7 +29,7 @@ android {
     defaultConfig {
         applicationId "de.vanita5.twittnuker"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 27
         versionName "0.8.3"
         multiDexEnabled true

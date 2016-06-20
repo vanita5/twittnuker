@@ -47,7 +47,6 @@ public class TweetSearchLoader extends MicroBlogAPIStatusesLoader {
 
     @Nullable
     private final String mQuery;
-    private final int mPage;
     private final boolean mGapEnabled;
 
     public TweetSearchLoader(final Context context, final UserKey accountKey, @Nullable final String query,
@@ -55,8 +54,8 @@ public class TweetSearchLoader extends MicroBlogAPIStatusesLoader {
                              final List<ParcelableStatus> data, final String[] savedStatusesArgs,
                              final int tabPosition, final boolean fromUser, final boolean makeGap,
                              boolean loadingMore) {
-        super(context, accountKey, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser, loadingMore);
-        mPage = page;
+        super(context, accountKey, sinceId, maxId, page, data, savedStatusesArgs, tabPosition,
+                fromUser, loadingMore);
         mQuery = query;
         mGapEnabled = makeGap;
     }
@@ -102,8 +101,9 @@ public class TweetSearchLoader extends MicroBlogAPIStatusesLoader {
     protected void processPaging(@NonNull ParcelableCredentials credentials, int loadItemLimit, @NonNull Paging paging) {
         if (MicroBlogAPIFactory.isStatusNetCredentials(credentials)) {
             paging.setRpp(loadItemLimit);
-            if (mPage > 0) {
-                paging.setPage(mPage);
+            final int page = getPage();
+            if (page > 0) {
+                paging.setPage(page);
             }
         } else {
             super.processPaging(credentials, loadItemLimit, paging);

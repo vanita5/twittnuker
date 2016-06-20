@@ -41,8 +41,8 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
-import de.vanita5.twittnuker.util.Nullables;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
+import de.vanita5.twittnuker.util.Nullables;
 import de.vanita5.twittnuker.util.Utils;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class ConversationLoader extends MicroBlogAPIStatusesLoader {
                               final long sinceSortId, final long maxSortId,
                               final List<ParcelableStatus> data, final boolean fromUser,
                               final boolean loadingMore) {
-        super(context, status.account_key, sinceId, maxId, data, null, -1, fromUser, loadingMore);
+        super(context, status.account_key, sinceId, maxId, -1, data, null, -1, fromUser, loadingMore);
         mStatus = Nullables.assertNonNull(ParcelUtils.clone(status));
         mSinceSortId = sinceSortId;
         mMaxSortId = maxSortId;

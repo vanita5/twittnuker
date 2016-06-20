@@ -32,9 +32,12 @@ import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.Status;
+import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
+import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 
 import java.util.List;
 
@@ -45,9 +48,10 @@ public class UserFavoritesLoader extends MicroBlogAPIStatusesLoader {
 
     public UserFavoritesLoader(final Context context, final UserKey accountKey, final UserKey userKey,
                                final String screenName, final String sinceId, final String maxId,
+                               final int page,
                                final List<ParcelableStatus> data, final String[] savedStatusesArgs,
                                final int tabPosition, boolean fromUser, boolean loadingMore) {
-        super(context, accountKey, sinceId, maxId, data, savedStatusesArgs, tabPosition, fromUser,
+        super(context, accountKey, sinceId, maxId, page, data, savedStatusesArgs, tabPosition, fromUser,
                 loadingMore);
         mUserKey = userKey;
         mUserScreenName = screenName;
@@ -67,6 +71,25 @@ public class UserFavoritesLoader extends MicroBlogAPIStatusesLoader {
     @WorkerThread
     @Override
     protected boolean shouldFilterStatus(final SQLiteDatabase database, final ParcelableStatus status) {
-        return false;
+        return InternalTwitterContentUtils.isFiltered(database, status, false);
+    }
+
+
+    @Override
+    protected void processPaging(@NonNull ParcelableCredentials credentials, int loadItemLimit, @NonNull Paging paging) {
+        switch (ParcelableAccountUtils.getAccountType(credentials)) {
+            case ParcelableAccount.Type.FANFOU: {
+                paging.setCount(loadItemLimit);
+                final int page = getPage();
+                if (page > 0) {
+                    paging.setPage(page);
+                }
+                break;
+            }
+            default: {
+                super.processPaging(credentials, loadItemLimit, paging);
+                break;
+            }
+        }
     }
 }

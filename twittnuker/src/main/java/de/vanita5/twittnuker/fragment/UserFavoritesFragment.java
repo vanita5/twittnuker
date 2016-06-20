@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.Loader;
 
 import de.vanita5.twittnuker.loader.UserFavoritesLoader;
@@ -44,12 +45,14 @@ public class UserFavoritesFragment extends ParcelableStatusesFragment {
         final UserKey accountKey = Utils.getAccountKey(context, args);
         final String maxId = args.getString(EXTRA_MAX_ID);
         final String sinceId = args.getString(EXTRA_SINCE_ID);
+        final int page = args.getInt(EXTRA_PAGE, -1);
         final UserKey userKey = args.getParcelable(EXTRA_USER_KEY);
         final String screenName = args.getString(EXTRA_SCREEN_NAME);
         final int tabPosition = args.getInt(EXTRA_TAB_POSITION, -1);
         final boolean loadingMore = args.getBoolean(EXTRA_LOADING_MORE, false);
         return new UserFavoritesLoader(context, accountKey, userKey, screenName, sinceId, maxId,
-                getAdapterData(), getSavedStatusesFileArgs(), tabPosition, fromUser, loadingMore);
+                page,getAdapterData(), getSavedStatusesFileArgs(), tabPosition, fromUser,
+                loadingMore);
     }
 
     @Override
