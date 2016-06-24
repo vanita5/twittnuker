@@ -1,23 +1,17 @@
 /*
- * Twittnuker - Twitter client for Android
+ * Copyright (C) 2014 The Android Open Source Project
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package de.vanita5.twittnuker.adapter.decorator;
@@ -44,14 +38,14 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     public static final int VERTICAL_LIST = LinearLayoutManager.VERTICAL;
 
-    private Drawable mDivider;
+    private final Rect mPaddingRect = new Rect();
+    private final Drawable mDivider;
 
     private int mOrientation;
-    private Rect mPadding;
+    private Padding mPadding;
     private int mDecorationStart = -1, mDecorationEnd = -1, mDecorationEndOffset;
 
     public DividerItemDecoration(Context context, int orientation) {
-        mPadding = new Rect();
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
         a.recycle();
@@ -89,8 +83,18 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    public void setPadding(int left, int top, int right, int bottom) {
-        mPadding.set(left, top, right, bottom);
+    public void setPadding(final int left, final int top, final int right, final int bottom) {
+        mPadding = new Padding() {
+            @Override
+            public boolean get(int position, Rect rect) {
+                rect.set(left, top, right, bottom);
+                return true;
+            }
+        };
+    }
+
+    public void setPadding(Padding padding) {
+        mPadding = padding;
     }
 
     public void drawVertical(Canvas c, RecyclerView parent) {
@@ -110,8 +114,12 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             final int top = child.getBottom() + params.bottomMargin +
                     Math.round(ViewCompat.getTranslationY(child));
             final int bottom = top + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left + mPadding.left, top + mPadding.top, right - mPadding.right,
-                    bottom - mPadding.bottom);
+            if (mPadding != null && mPadding.get(childPos, mPaddingRect)) {
+                mDivider.setBounds(left + mPaddingRect.left, top + mPaddingRect.top, right - mPaddingRect.right,
+                        bottom - mPaddingRect.bottom);
+            } else {
+                mDivider.setBounds(left, top, right, bottom);
+            }
             mDivider.draw(c);
         }
     }
@@ -137,8 +145,9 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
             final int left = child.getRight() + params.rightMargin +
                     Math.round(ViewCompat.getTranslationX(child));
             final int right = left + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left + mPadding.left, top + mPadding.top, right - mPadding.right,
-                    bottom - mPadding.bottom);
+
+            mDivider.setBounds(left + mPaddingRect.left, top + mPaddingRect.top, right - mPaddingRect.right,
+                    bottom - mPaddingRect.bottom);
             mDivider.draw(c);
         }
     }
@@ -171,5 +180,9 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     private int getDecorationStart() {
         return mDecorationStart;
+    }
+
+    public interface Padding {
+        boolean get(int position, Rect rect);
     }
 }
