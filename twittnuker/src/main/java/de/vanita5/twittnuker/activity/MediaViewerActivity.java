@@ -583,8 +583,9 @@ public final class MediaViewerActivity extends BaseActivity implements IExtended
         @Override
         public void setUserVisibleHint(boolean isVisibleToUser) {
             super.setUserVisibleHint(isVisibleToUser);
-            if (isVisibleToUser) {
-                getActivity().supportInvalidateOptionsMenu();
+            final FragmentActivity activity = getActivity();
+            if (isVisibleToUser && activity != null) {
+                activity.supportInvalidateOptionsMenu();
             }
         }
 
@@ -961,7 +962,10 @@ public final class MediaViewerActivity extends BaseActivity implements IExtended
         public void setUserVisibleHint(boolean isVisibleToUser) {
             super.setUserVisibleHint(isVisibleToUser);
             if (isVisibleToUser) {
-                getActivity().supportInvalidateOptionsMenu();
+                final FragmentActivity activity = getActivity();
+                if (activity != null) {
+                    activity.supportInvalidateOptionsMenu();
+                }
             } else if (mVideoView != null && mVideoView.isPlaying()) {
                 mVideoView.pause();
                 updatePlayerState();
@@ -1184,7 +1188,10 @@ public final class MediaViewerActivity extends BaseActivity implements IExtended
         public void setUserVisibleHint(boolean isVisibleToUser) {
             super.setUserVisibleHint(isVisibleToUser);
             if (isVisibleToUser) {
-                getActivity().supportInvalidateOptionsMenu();
+                final FragmentActivity activity = getActivity();
+                if (activity != null) {
+                    activity.supportInvalidateOptionsMenu();
+                }
             }
         }
     }
