@@ -77,13 +77,13 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
+import de.vanita5.twittnuker.fragment.AccountsDashboardFragment;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment;
+import de.vanita5.twittnuker.fragment.DirectMessagesFragment;
 import de.vanita5.twittnuker.fragment.MessagesEntriesFragment;
+import de.vanita5.twittnuker.fragment.TrendsSuggestionsFragment;
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
-import de.vanita5.twittnuker.fragment.AccountsDashboardFragment;
-import de.vanita5.twittnuker.fragment.DirectMessagesFragment;
-import de.vanita5.twittnuker.fragment.TrendsSuggestionsFragment;
 import de.vanita5.twittnuker.graphic.EmptyDrawable;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
@@ -1029,7 +1029,7 @@ public class HomeActivity extends BaseActivity implements OnClickListener, OnPag
                                 true, ReadPositionTag.HOME_TIMELINE, accountKeys);
                         final long position = mReadStateManager.getPosition(tagWithAccounts);
                         final int count = DataStoreUtils.getStatusesCount(mContext, Statuses.CONTENT_URI,
-                                position, Statuses.STATUS_TIMESTAMP, true, accountKeys);
+                                spec.args, position, Statuses.STATUS_TIMESTAMP, true, accountKeys);
                         result.put(i, count);
                         publishProgress(new TabBadge(i, count));
                         break;

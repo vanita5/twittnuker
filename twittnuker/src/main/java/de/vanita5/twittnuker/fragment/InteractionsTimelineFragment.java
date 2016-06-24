@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.library.twitter.model.Activity;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
+import de.vanita5.twittnuker.model.ParameterizedExpression;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
@@ -73,13 +74,13 @@ public class InteractionsTimelineFragment extends CursorActivitiesFragment {
 
     @Override
     @NonNull
-    protected Where processWhere(@NonNull Expression where, @NonNull String[] whereArgs) {
+    protected ParameterizedExpression processWhere(@NonNull Expression where, @NonNull String[] whereArgs) {
         final Bundle arguments = getArguments();
         if (arguments != null) {
             final InteractionsTabExtras extras = arguments.getParcelable(EXTRA_EXTRAS);
             if (extras != null && extras.isMentionsOnly()) {
                 final Expression expression = Expression.and(where, Expression.inArgs(Activities.ACTION, 3));
-                return new Where(expression, ArrayUtils.addAll(whereArgs, Activity.Action.MENTION,
+                return new ParameterizedExpression(expression, ArrayUtils.addAll(whereArgs, Activity.Action.MENTION,
                         Activity.Action.REPLY, Activity.Action.QUOTE));
             }
         }

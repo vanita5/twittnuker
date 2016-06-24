@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.model.tab.argument.TabArguments;
 import de.vanita5.twittnuker.model.tab.argument.TextQueryArguments;
 import de.vanita5.twittnuker.model.tab.argument.UserArguments;
 import de.vanita5.twittnuker.model.tab.argument.UserListArguments;
+import de.vanita5.twittnuker.model.tab.extra.HomeTabExtras;
 import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras;
 import de.vanita5.twittnuker.model.tab.extra.TabExtras;
 import de.vanita5.twittnuker.model.util.TabArgumentsFieldConverter;
@@ -211,12 +212,17 @@ public class Tab {
         TabExtras base;
         @JsonField(name = "interactions")
         InteractionsTabExtras interactions;
+        @JsonField(name = "home")
+        HomeTabExtras home;
 
         public static InternalExtras from(TabExtras extras) {
             if (extras == null) return null;
             InternalExtras result = new InternalExtras();
             if (extras instanceof InteractionsTabExtras) {
                 result.interactions = (InteractionsTabExtras) extras;
+            }
+            if (extras instanceof HomeTabExtras) {
+                result.home = (HomeTabExtras) extras;
             } else {
                 result.base = extras;
             }
@@ -226,6 +232,8 @@ public class Tab {
         public TabExtras getExtras() {
             if (interactions != null) {
                 return interactions;
+            } else if (home != null) {
+                return home;
             } else {
                 return base;
             }

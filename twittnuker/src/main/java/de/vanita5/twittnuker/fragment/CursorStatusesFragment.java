@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter;
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition;
 import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader;
+import de.vanita5.twittnuker.model.ParameterizedExpression;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 import de.vanita5.twittnuker.model.SimpleRefreshTaskParam;
@@ -97,14 +98,15 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
         } else {
             where = accountWhere;
         }
-        final String selection = processWhere(where).getSQL();
         final ParcelableStatusesAdapter adapter = getAdapter();
         adapter.setShowAccountsColor(accountKeys.length > 1);
         final String[] projection = Statuses.COLUMNS;
         final String[] selectionArgs = TwidereArrayUtils.toStringArray(accountKeys, 0,
                 accountKeys.length);
+        final ParameterizedExpression expression = processWhere(where, selectionArgs);
         return new ExtendedObjectCursorLoader<>(context, ParcelableStatusCursorIndices.class, uri,
-                projection, selection, selectionArgs, sortOrder, fromUser);
+                projection, expression.getSQL(), expression.getParameters(),
+                sortOrder, fromUser);
     }
 
     @Override
@@ -359,8 +361,8 @@ public abstract class CursorStatusesFragment extends AbsStatusesFragment {
 
     protected abstract boolean isFilterEnabled();
 
-    protected Expression processWhere(final Expression where) {
-        return where;
+    protected ParameterizedExpression processWhere(@NonNull final Expression where, @NonNull final String[] whereArgs) {
+        return new ParameterizedExpression(where, whereArgs);
     }
 
     protected abstract void updateRefreshState();

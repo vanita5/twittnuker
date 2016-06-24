@@ -24,14 +24,24 @@ package de.vanita5.twittnuker.fragment;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
+import de.vanita5.twittnuker.model.ParameterizedExpression;
 import de.vanita5.twittnuker.model.RefreshTaskParam;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.tab.extra.HomeTabExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ErrorInfoStore;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 
 public class HomeTimelineFragment extends CursorStatusesFragment {
 
@@ -87,6 +97,24 @@ public class HomeTimelineFragment extends CursorStatusesFragment {
                 mNotificationManager.cancel(tag, NOTIFICATION_ID_HOME_TIMELINE);
             }
         }
+    }
+
+    @Override
+    protected ParameterizedExpression processWhere(@NonNull final Expression where, @NonNull final String[] whereArgs) {
+        final Bundle arguments = getArguments();
+        if (arguments != null) {
+            final HomeTabExtras extras = arguments.getParcelable(EXTRA_EXTRAS);
+            if (extras != null) {
+                List<Expression> expressions = new ArrayList<>();
+                List<String> expressionArgs = new ArrayList<>();
+                Collections.addAll(expressionArgs, whereArgs);
+                expressions.add(where);
+                DataStoreUtils.processTabExtras(expressions, expressionArgs, extras);
+                final Expression expression = Expression.and(expressions.toArray(new Expression[expressions.size()]));
+                return new ParameterizedExpression(expression, expressionArgs.toArray(new String[expressionArgs.size()]));
+            }
+        }
+        return super.processWhere(where, whereArgs);
     }
 
     @Override

@@ -29,43 +29,49 @@ import android.os.Parcelable;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
-import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import de.vanita5.twittnuker.constant.IntentConstants;
 
 @ParcelablePlease
 @JsonObject
-public class InteractionsTabExtras extends TabExtras implements Parcelable {
+public class HomeTabExtras extends TabExtras implements Parcelable {
+    @JsonField(name = "hide_retweets")
+    boolean hideRetweets;
+    @JsonField(name = "hide_quotes")
+    boolean hideQuotes;
+    @JsonField(name = "hide_replies")
+    boolean hideReplies;
 
-    @ParcelableThisPlease
-    @JsonField(name = "my_following_only")
-    boolean myFollowingOnly;
-
-    @ParcelableThisPlease
-    @JsonField(name = "mentions_only")
-    boolean mentionsOnly;
-
-    public boolean isMyFollowingOnly() {
-        return myFollowingOnly;
+    public boolean isHideRetweets() {
+        return hideRetweets;
     }
 
-    public void setMyFollowingOnly(boolean myFollowingOnly) {
-        this.myFollowingOnly = myFollowingOnly;
+    public void setHideRetweets(boolean hideRetweets) {
+        this.hideRetweets = hideRetweets;
     }
 
-    public boolean isMentionsOnly() {
-        return mentionsOnly;
+    public boolean isHideQuotes() {
+        return hideQuotes;
     }
 
-    public void setMentionsOnly(boolean mentionsOnly) {
-        this.mentionsOnly = mentionsOnly;
+    public void setHideQuotes(boolean hideQuotes) {
+        this.hideQuotes = hideQuotes;
+    }
+
+    public boolean isHideReplies() {
+        return hideReplies;
+    }
+
+    public void setHideReplies(boolean hideReplies) {
+        this.hideReplies = hideReplies;
     }
 
     @Override
     public void copyToBundle(Bundle bundle) {
         super.copyToBundle(bundle);
-        bundle.putBoolean(IntentConstants.EXTRA_MY_FOLLOWING_ONLY, myFollowingOnly);
-        bundle.putBoolean(IntentConstants.EXTRA_MENTIONS_ONLY, mentionsOnly);
+        bundle.putBoolean(IntentConstants.EXTRA_HIDE_RETWEETS, hideRetweets);
+        bundle.putBoolean(IntentConstants.EXTRA_HIDE_QUOTES, hideQuotes);
+        bundle.putBoolean(IntentConstants.EXTRA_HIDE_REPLIES, hideReplies);
     }
 
     @Override
@@ -75,28 +81,27 @@ public class InteractionsTabExtras extends TabExtras implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        InteractionsTabExtrasParcelablePlease.writeToParcel(this, dest, flags);
+        HomeTabExtrasParcelablePlease.writeToParcel(this, dest, flags);
     }
 
     @Override
     public String toString() {
-        return "InteractionsTabExtras{" +
-                "myFollowingOnly=" + myFollowingOnly +
-                ", mentionsOnly=" + mentionsOnly +
+        return "HomeTabExtras{" +
+                "hideRetweets=" + hideRetweets +
+                ", hideQuotes=" + hideQuotes +
+                ", hideReplies=" + hideReplies +
                 "} " + super.toString();
     }
 
-    public static final Creator<InteractionsTabExtras> CREATOR = new Creator<InteractionsTabExtras>() {
-        @Override
-        public InteractionsTabExtras createFromParcel(Parcel source) {
-            InteractionsTabExtras target = new InteractionsTabExtras();
-            InteractionsTabExtrasParcelablePlease.readFromParcel(target, source);
+    public static final Creator<HomeTabExtras> CREATOR = new Creator<HomeTabExtras>() {
+        public HomeTabExtras createFromParcel(Parcel source) {
+            HomeTabExtras target = new HomeTabExtras();
+            HomeTabExtrasParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
-        @Override
-        public InteractionsTabExtras[] newArray(int size) {
-            return new InteractionsTabExtras[size];
+        public HomeTabExtras[] newArray(int size) {
+            return new HomeTabExtras[size];
         }
     };
 }
