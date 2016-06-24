@@ -38,9 +38,9 @@ import android.text.TextUtils;
 
 import com.bluelinelabs.logansquare.JsonMapper;
 
-import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
-
 import org.apache.commons.lang3.ArrayUtils;
+import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
+import de.vanita5.twittnuker.library.twitter.model.Activity;
 import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Columns.Column;
@@ -54,7 +54,6 @@ import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.library.twitter.model.Activity;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices;
@@ -450,8 +449,7 @@ public class DataStoreUtils implements Constants {
     }
 
     @NonNull
-    public static UserKey[] getActivatedAccountKeys(final Context context) {
-        if (context == null) return new UserKey[0];
+    public static UserKey[] getActivatedAccountKeys(@NonNull final Context context) {
         final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI,
                 new String[]{Accounts.ACCOUNT_KEY}, Accounts.IS_ACTIVATED + " = 1", null, null);
         if (cur == null) return new UserKey[0];
