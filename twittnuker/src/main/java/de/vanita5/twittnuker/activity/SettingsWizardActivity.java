@@ -39,6 +39,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceScreen;
@@ -49,7 +50,6 @@ import android.view.ViewGroup;
 
 import com.afollestad.appthemeengine.Config;
 import com.afollestad.appthemeengine.util.ATEUtil;
-import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
@@ -461,7 +461,7 @@ public class SettingsWizardActivity extends BaseActivity {
             @NonNull
             @Override
             public Dialog onCreateDialog(final Bundle savedInstanceState) {
-                final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(R.string.wizard_page_tabs_unchanged_message);
                 builder.setPositiveButton(android.R.string.ok, this);
                 return builder.create();
