@@ -110,6 +110,7 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
         mEntriesListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         mEntriesListView.setOnItemClickListener(this);
 
+        //Twittnuker - Settings pane opened
         mSlidingPaneLayout.openPane();
 
         if (savedInstanceState == null) {
@@ -229,14 +230,17 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
         return mShouldNotifyChange;
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (notifyUnsavedChange()) {
+            return true;
+        }
+        return super.onSupportNavigateUp();
+    }
 
     @Override
     public void onBackPressed() {
-        if (isTopSettings() && shouldNotifyChange()) {
-            final RestartConfirmDialogFragment df = new RestartConfirmDialogFragment();
-            df.show(getSupportFragmentManager(), "restart_confirm");
-            return;
-        }
+        if (notifyUnsavedChange()) return;
         super.onBackPressed();
     }
 
@@ -278,6 +282,15 @@ public class SettingsActivity extends BaseActivity implements OnItemClickListene
         ft.commit();
         //disable closing pane
         //mSlidingPaneLayout.closePane();
+    }
+
+    private boolean notifyUnsavedChange() {
+        if (isTopSettings() && shouldNotifyChange()) {
+            final RestartConfirmDialogFragment df = new RestartConfirmDialogFragment();
+            df.show(getSupportFragmentManager(), "restart_confirm");
+            return true;
+        }
+        return false;
     }
 
     static class EntriesAdapter extends BaseAdapter {

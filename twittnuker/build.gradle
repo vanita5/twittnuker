@@ -33,8 +33,6 @@ android {
         versionName "0.8.3"
         multiDexEnabled true
 
-        generatedDensities = []
-
         buildConfigField 'boolean', 'LEAK_CANARY_ENABLED', 'Boolean.parseBoolean("false")'
         buildConfigField 'boolean', 'SHOW_CUSTOM_TOKEN_DIALOG', 'Boolean.parseBoolean("false")'
 
