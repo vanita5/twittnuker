@@ -26,20 +26,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.DialogPreference;
 import android.support.v7.preference.PreferenceDialogFragmentCompat;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.AttributeSet;
-
-import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.ThemedPreferenceDialogFragmentCompat;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 
-public class NotificationTypePreference extends DialogPreference implements Constants,
-        IDialogPreference {
+public class NotificationTypePreference extends DialogPreference implements
+        Constants, IDialogPreference {
 
     private final int mDefaultValue;
 
@@ -114,7 +113,7 @@ public class NotificationTypePreference extends DialogPreference implements Cons
         private boolean[] mCheckedItems;
 
         @Override
-        protected void onPrepareDialogBuilder(AlertDialogWrapper.Builder builder) {
+        protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
             NotificationTypePreference preference = (NotificationTypePreference) getPreference();
             final int value = preference.getPersistedInt(preference.getDefaultValue());
             mCheckedItems = preference.getCheckedItems(value);

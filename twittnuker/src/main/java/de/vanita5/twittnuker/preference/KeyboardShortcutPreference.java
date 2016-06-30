@@ -37,7 +37,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.ThemedPreferenceDialogFragmentCompat;
@@ -159,7 +158,7 @@ public class KeyboardShortcutPreference extends DialogPreference implements IDia
         }
 
         @Override
-        protected void onPrepareDialogBuilder(AlertDialogWrapper.Builder builder) {
+        protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
             builder.setPositiveButton(android.R.string.ok, this);
             builder.setNegativeButton(android.R.string.cancel, this);
             builder.setNeutralButton(R.string.clear, this);

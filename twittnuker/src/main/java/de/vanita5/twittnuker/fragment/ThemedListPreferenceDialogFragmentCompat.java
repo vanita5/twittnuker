@@ -18,9 +18,8 @@ package de.vanita5.twittnuker.fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.ListPreference;
-
-import com.afollestad.materialdialogs.AlertDialogWrapper;
 
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
@@ -41,7 +40,7 @@ public class ThemedListPreferenceDialogFragmentCompat extends ThemedPreferenceDi
     }
 
     @Override
-    protected void onPrepareDialogBuilder(AlertDialogWrapper.Builder builder) {
+    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
         final ListPreference preference = getListPreference();
         final String[] entries = TwidereArrayUtils.toStringArray(preference.getEntries());
