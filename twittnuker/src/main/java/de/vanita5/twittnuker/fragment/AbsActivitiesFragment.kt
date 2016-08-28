@@ -35,7 +35,6 @@ import android.support.v7.widget.RecyclerView.OnScrollListener
 import android.util.Log
 import android.view.*
 import com.squareup.otto.Subscribe
-
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.apache.commons.lang3.ArrayUtils
 import de.vanita5.twittnuker.BuildConfig
@@ -225,7 +224,7 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
             }
         }
 
-        setRefreshEnabled(true)
+        refreshEnabled = true
         if (loader !is IExtendedLoader || loader.isFromUser) {
             adapter.loadMoreSupportedPosition = if (hasMoreData(data)) ILoadMoreSupportAdapter.END else ILoadMoreSupportAdapter.NONE
             var pos = -1

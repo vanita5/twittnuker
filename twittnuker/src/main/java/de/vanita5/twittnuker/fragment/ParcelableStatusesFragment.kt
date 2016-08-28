@@ -30,7 +30,6 @@ import com.squareup.otto.Subscribe
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
-import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.loader.MicroBlogAPIStatusesLoader
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam
@@ -127,7 +126,7 @@ abstract class ParcelableStatusesFragment : AbsStatusesFragment() {
     }
 
     override fun onStatusesLoaded(loader: Loader<List<ParcelableStatus>?>, data: List<ParcelableStatus>?) {
-        setRefreshEnabled(true)
+        refreshEnabled = true
         refreshing = false
         setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.NONE)
         val adapter = adapter
@@ -198,10 +197,13 @@ abstract class ParcelableStatusesFragment : AbsStatusesFragment() {
         return true
     }
 
-    override var refreshing: Boolean = false
+    override var refreshing: Boolean
         get() {
             if (context == null || isDetached) return false
             return loaderManager.hasRunningLoaders()
+        }
+        set(value) {
+            super.refreshing = value
         }
 
     override fun onSaveInstanceState(outState: Bundle?) {

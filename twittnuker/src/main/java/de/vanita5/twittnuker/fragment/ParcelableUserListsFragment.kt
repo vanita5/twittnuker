@@ -81,7 +81,7 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
         adapter!!.setData(data)
         if (loader !is IExtendedLoader || loader.isFromUser) {
             adapter.loadMoreSupportedPosition = if (hasMoreData(data)) ILoadMoreSupportAdapter.END else ILoadMoreSupportAdapter.NONE
-            setRefreshEnabled(true)
+            refreshEnabled = true
         }
         if (loader is IExtendedLoader) {
             loader.isFromUser = false
@@ -91,7 +91,7 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
             prevCursor = loader.nextCursor
         }
         showContent()
-        setRefreshEnabled(true)
+        refreshEnabled = true
         refreshing = false
         setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.NONE)
     }

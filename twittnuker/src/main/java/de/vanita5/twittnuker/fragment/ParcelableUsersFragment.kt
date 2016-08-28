@@ -83,10 +83,13 @@ abstract class ParcelableUsersFragment protected constructor() : AbsContentListR
         super.onStop()
     }
 
-    override var refreshing: Boolean = false
+    override var refreshing: Boolean
         get() {
             if (context == null || isDetached) return false
             return loaderManager.hasRunningLoaders()
+        }
+        set(value) {
+            super.refreshing = value
         }
 
     override fun onCreateAdapter(context: Context): ParcelableUsersAdapter {
@@ -100,13 +103,13 @@ abstract class ParcelableUsersFragment protected constructor() : AbsContentListR
         adapter.setData(data)
         if (loader !is IExtendedLoader || loader.isFromUser) {
             adapter.loadMoreSupportedPosition = if (hasMoreData(data)) ILoadMoreSupportAdapter.END else ILoadMoreSupportAdapter.NONE
-            setRefreshEnabled(true)
+            refreshEnabled = true
         }
         if (loader is IExtendedLoader) {
             loader.isFromUser = false
         }
         showContent()
-        setRefreshEnabled(true)
+        refreshEnabled = true
         refreshing = false
         setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.NONE)
     }

@@ -36,7 +36,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import com.squareup.otto.Subscribe
-
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
@@ -206,7 +205,7 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
                 lastReadPositionKey = lastPositionKey
             }
         }
-        setRefreshEnabled(true)
+        refreshEnabled = true
         if (loader !is IExtendedLoader || loader.isFromUser) {
             if (hasMoreData(data)) {
                 adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.END
