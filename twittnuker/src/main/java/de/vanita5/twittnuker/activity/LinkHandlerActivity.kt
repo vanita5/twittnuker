@@ -32,7 +32,6 @@ import android.support.v4.view.WindowCompat
 import android.support.v7.widget.Toolbar
 import android.view.KeyEvent
 import android.view.MenuItem
-import android.view.View
 import android.view.Window
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
@@ -54,23 +53,9 @@ import de.vanita5.twittnuker.util.ThemeUtils
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.Utils.createFragmentForIntent
 import de.vanita5.twittnuker.util.Utils.matchLinkId
-import de.vanita5.twittnuker.util.support.ViewSupport
 
 class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IControlBarActivity, SupportFragmentCallback {
 
-    private val mLayoutChangeListener = object : View.OnLayoutChangeListener {
-
-        private val tempInsets = Rect()
-        private var compatCalled: Boolean = false
-
-        override fun onLayoutChange(v: View, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
-            if (compatCalled) return
-            if (left != oldLeft || top != oldTop || right != oldRight || bottom != oldBottom && !ViewSupport.isInLayout(v)) {
-                onFitSystemWindows(tempInsets)
-                compatCalled = true
-            }
-        }
-    }
     private val mControlBarShowHideHelper = ControlBarShowHideHelper(this)
     private var mMultiSelectHandler: MultiSelectEventHandler? = null
     private var mFinishOnly: Boolean = false

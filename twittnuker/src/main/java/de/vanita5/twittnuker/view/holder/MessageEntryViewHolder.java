@@ -46,7 +46,7 @@ import static de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText;
 
 public class MessageEntryViewHolder extends ViewHolder implements OnClickListener {
 
-    public final ImageView profileImageView;
+    public final ImageView profileImage;
     public final NameView nameView;
     public final TextView textView;
     public final ShortTimeView timeView;
@@ -57,14 +57,14 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
         super(itemView);
         this.adapter = adapter;
         content = (IColorLabelView) itemView.findViewById(R.id.content);
-        profileImageView = (ImageView) itemView.findViewById(R.id.profile_image);
+        profileImage = (ImageView) itemView.findViewById(R.id.profileImage);
         nameView = (NameView) itemView.findViewById(R.id.name);
         textView = (TextView) itemView.findViewById(R.id.text);
         timeView = (ShortTimeView) itemView.findViewById(R.id.time);
 
         setTextSize(adapter.getTextSize());
         itemView.setOnClickListener(this);
-        profileImageView.setOnClickListener(this);
+        profileImage.setOnClickListener(this);
     }
 
     @UiThread
@@ -101,7 +101,7 @@ public class MessageEntryViewHolder extends ViewHolder implements OnClickListene
         content.drawStart(manager.getUserColor(conversationId));
 
         final String profileImage = cursor.getString(ConversationEntries.IDX_PROFILE_IMAGE_URL);
-        loader.displayProfileImage(profileImageView, profileImage);
+        loader.displayProfileImage(this.profileImage, profileImage);
     }
 
     @Override

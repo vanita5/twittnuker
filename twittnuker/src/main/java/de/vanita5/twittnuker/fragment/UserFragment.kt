@@ -112,7 +112,7 @@ import de.vanita5.twittnuker.view.TabPagerIndicator
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener
 import java.util.*
 
-class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener, OnSizeChangedListener, OnTouchListener, DrawerCallback, SupportFragmentCallback, SystemWindowsInsetsCallback, RefreshScrollTopInterface, OnPageChangeListener, KeyboardShortcutCallback, UserColorChangedListener, UserNicknameChangedListener, IToolBarSupportFragment {
+class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener, OnSizeChangedListener, OnTouchListener, DrawerCallback, SupportFragmentCallback, SystemWindowsInsetsCallback, RefreshScrollTopInterface, OnPageChangeListener, KeyboardShortcutCallback, UserColorChangedListener, IToolBarSupportFragment {
     override val toolbar: Toolbar
         get() = profileContentContainer.toolbar
 
@@ -418,7 +418,7 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
         this.user = user
         profileImage.setBorderColor(if (user.color != 0) user.color else Color.WHITE)
         profileNameContainer.drawEnd(user.account_color)
-        profileNameContainer.name.text = bidiFormatter.unicodeWrap(user.name))
+        profileNameContainer.name.text = bidiFormatter.unicodeWrap(user.name)
         val typeIconRes = Utils.getUserTypeIconRes(user.is_verified, user.is_protected)
         if (typeIconRes != 0) {
             profileType.setImageResource(typeIconRes)

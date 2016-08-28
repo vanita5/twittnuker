@@ -29,6 +29,7 @@ import android.text.TextUtils
 import com.squareup.otto.Subscribe
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.loader.MicroBlogAPIStatusesLoader

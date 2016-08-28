@@ -33,6 +33,7 @@ import android.widget.AdapterView
 import android.widget.ListView
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_listview.*
+import org.mariotaku.sqliteqb.library.*
 import de.vanita5.twittnuker.adapter.TrendsAdapter
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_LOCAL_TRENDS_WOEID
 import de.vanita5.twittnuker.model.UserKey
@@ -58,10 +59,20 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
         return TrendsAdapter(activity)
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle): Loader<Cursor> {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         val uri = CachedTrends.Local.CONTENT_URI
         val table = getTableNameByUri(uri)
-        val where = if (table != null) "${CachedTrends.TIMESTAMP} = (SELECT ${CachedTrends.TIMESTAMP} FROM $table ORDER BY ${CachedTrends.TIMESTAMP} DESC LIMIT 1)" else null
+        val where: String?
+        if (table != null) {
+            val sqlSelectQuery = SQLQueryBuilder.select(Columns.Column(CachedTrends.TIMESTAMP))
+                    .from(Table(table))
+                    .orderBy(OrderBy(CachedTrends.TIMESTAMP, false))
+                    .limit(1)
+                    .build()
+            where = Expression.equals(Columns.Column(CachedTrends.TIMESTAMP), sqlSelectQuery).sql
+        } else {
+            where = null
+        }
         return CursorLoader(activity, uri, CachedTrends.COLUMNS, where, null, null)
     }
 

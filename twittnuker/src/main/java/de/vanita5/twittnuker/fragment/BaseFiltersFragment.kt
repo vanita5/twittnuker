@@ -59,7 +59,7 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.Utils.getDefaultAccountKey
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 
 import javax.inject.Inject
