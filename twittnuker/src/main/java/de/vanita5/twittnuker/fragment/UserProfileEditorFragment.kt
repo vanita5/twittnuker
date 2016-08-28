@@ -86,7 +86,7 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
         if (user == null || task != null && !task!!.isFinished)
             return
         when (view.id) {
-            R.id.profile_image -> {
+            R.id.profileImage -> {
             }
             R.id.profileBanner -> {
             }
