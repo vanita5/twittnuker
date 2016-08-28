@@ -29,7 +29,6 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
-import android.util.Pair;
 
 import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.sqliteqb.library.Expression;
@@ -49,6 +48,8 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.util.JsonSerializer;
 
+import kotlin.Pair;
+
 public class UpdateAccountInfoTask extends AbstractTask<Pair<ParcelableAccount, ParcelableUser>, Object, Object> {
     private final Context context;
 
@@ -59,8 +60,8 @@ public class UpdateAccountInfoTask extends AbstractTask<Pair<ParcelableAccount, 
     @Override
     protected Object doLongOperation(Pair<ParcelableAccount, ParcelableUser> params) {
         final ContentResolver resolver = context.getContentResolver();
-        final ParcelableAccount account = params.first;
-        final ParcelableUser user = params.second;
+        final ParcelableAccount account = params.getFirst();
+        final ParcelableUser user = params.getSecond();
         if (account == null || user == null) return null;
         if (user.is_cache) {
             return null;

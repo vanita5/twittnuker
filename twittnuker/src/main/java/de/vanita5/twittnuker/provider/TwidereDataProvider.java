@@ -159,8 +159,8 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-public final class TwidereDataProvider extends ContentProvider implements Constants, OnSharedPreferenceChangeListener,
-        LazyLoadCallback {
+public final class TwidereDataProvider extends ContentProvider implements Constants,
+        OnSharedPreferenceChangeListener, LazyLoadCallback {
 
     public static final String TAG_OLDEST_MESSAGES = "oldest_messages";
     private static final Pattern PATTERN_SCREEN_NAME = Pattern.compile("(?i)[@\uFF20]?([a-z0-9_]{1,20})");
@@ -598,8 +598,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
     @Override
     public SQLiteDatabase onCreateSQLiteDatabase() {
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(getContext());
-        final SQLiteOpenHelper helper = app.getSQLiteOpenHelper();
+        final TwittnukerApplication app = TwittnukerApplication.Companion.getInstance(getContext());
+        final SQLiteOpenHelper helper = app.getSqLiteOpenHelper();
         return helper.getWritableDatabase();
     }
 

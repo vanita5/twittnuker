@@ -53,7 +53,7 @@
             tools:text="Sample list"/>
 
         <TextView
-            android:id="@+id/created_by"
+            android:id="@+id/createdBy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/element_spacing_xsmall"
@@ -64,7 +64,7 @@
     </LinearLayout>
 
     <de.vanita5.twittnuker.view.ProfileImageView
-        android:id="@+id/profile_image"
+        android:id="@+id/profileImage"
         style="?profileImageStyle"
         android:layout_width="@dimen/icon_size_card_list_item"
         android:layout_height="@dimen/icon_size_card_list_item"

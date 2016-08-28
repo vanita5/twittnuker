@@ -78,9 +78,9 @@ open class BaseSupportFragment : Fragment(), IBaseFragment, Constants {
         GeneralComponentHelper.build(context!!).inject(this)
     }
 
-    val contentResolver: ContentResolver?
+    val contentResolver: ContentResolver
         get() {
-            return activity?.contentResolver
+            return activity!!.contentResolver!!
         }
 
     fun invalidateOptionsMenu() {

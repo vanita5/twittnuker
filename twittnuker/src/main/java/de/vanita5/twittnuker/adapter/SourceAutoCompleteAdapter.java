@@ -45,8 +45,8 @@ public class SourceAutoCompleteAdapter extends SimpleCursorAdapter {
 
     public SourceAutoCompleteAdapter(final Context context) {
         super(context, android.R.layout.simple_list_item_1, null, FROM, TO, 0);
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
-        mDatabase = app.getSQLiteDatabase();
+        final TwittnukerApplication app = TwittnukerApplication.Companion.getInstance(context);
+        mDatabase = app.getSqLiteDatabase();
     }
 
     @Override

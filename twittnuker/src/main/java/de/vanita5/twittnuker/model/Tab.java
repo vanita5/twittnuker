@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.model.util.TabArgumentsFieldConverter;
 import de.vanita5.twittnuker.model.util.TabExtrasFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 
-@CursorObject(valuesCreator = true)
+@CursorObject(valuesCreator = true, tableInfo = true)
 @JsonObject
 public class Tab {
     @CursorField(value = Tabs._ID, excludeWrite = true)

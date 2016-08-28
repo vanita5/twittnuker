@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -437,6 +438,7 @@ public class DataImportExportUtils implements Constants {
             this.supportedMap = getSupportedPreferencesMap(cls);
         }
 
+        @SuppressLint("SwitchIntDef")
         @Override
         public boolean importValue(JsonParser jsonParser, String key, SharedPreferences.Editor editor) throws IOException {
             final JsonToken token = jsonParser.nextToken();
@@ -471,6 +473,7 @@ public class DataImportExportUtils implements Constants {
             return true;
         }
 
+        @SuppressLint("SwitchIntDef")
         @Override
         public boolean exportValue(JsonGenerator jsonGenerator, String key, SharedPreferences preferences) throws IOException {
             final Preference preference = supportedMap.get(key);

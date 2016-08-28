@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
@@ -70,12 +71,13 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements Constants, I
         super(context, layoutRes, collection);
         //noinspection unchecked
         GeneralComponentHelper.build(context).inject((BaseArrayAdapter<Object>) this);
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
+        final TwittnukerApplication app = TwittnukerApplication.Companion.getInstance(context);
         mLinkify = new TwidereLinkify(new OnLinkClickHandler(context, mMultiSelectManager, mPreferences));
         mColorPrefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
         mColorPrefs.registerOnSharedPreferenceChangeListener(this);
     }
 
+    @NonNull
     @Override
     public MediaLoaderWrapper getImageLoader() {
         return mImageLoader;
@@ -129,7 +131,7 @@ public class BaseArrayAdapter<T> extends ArrayAdapter<T> implements Constants, I
     }
 
     @Override
-    public final void setLinkHighlightOption(final String option) {
+    public final void setLinkHighlightOption(@NonNull final String option) {
         final int optionInt = Utils.getLinkHighlightingStyleInt(option);
         mLinkify.setHighlightOption(optionInt);
         if (optionInt == mLinkHighlightOption) return;

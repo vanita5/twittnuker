@@ -31,7 +31,7 @@
     android:orientation="vertical">
 
     <ScrollView
-        android:id="@+id/edit_profile_content"
+        android:id="@+id/editProfileContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
@@ -49,7 +49,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/edit_profile_image"
+                    android:id="@+id/editProfileImage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?selectableItemBackground"
@@ -58,7 +58,7 @@
                     android:padding="@dimen/element_spacing_normal">
 
                     <de.vanita5.twittnuker.view.ForegroundImageView
-                        android:id="@+id/profile_image"
+                        android:id="@+id/profileImage"
                         android:layout_width="@dimen/element_size_mlarge"
                         android:layout_height="@dimen/element_size_mlarge"
                         android:layout_gravity="center"
@@ -80,7 +80,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/edit_profile_banner"
+                    android:id="@+id/editProfileBanner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?selectableItemBackground"
@@ -113,7 +113,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/edit_profile_background"
+                    android:id="@+id/editProfileBackground"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?selectableItemBackground"
@@ -122,7 +122,7 @@
                     android:padding="@dimen/element_spacing_normal">
 
                     <de.vanita5.twittnuker.view.ForegroundImageView
-                        android:id="@+id/profile_background"
+                        android:id="@+id/profileBackground"
                         android:layout_width="@dimen/element_size_mlarge"
                         android:layout_height="@dimen/element_size_mlarge"
                         android:layout_gravity="center"
@@ -156,7 +156,7 @@
                 android:padding="@dimen/element_spacing_normal">
 
                 <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/name"
+                    android:id="@+id/editName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
@@ -169,7 +169,7 @@
                     tools:text="TwittnukerProject"/>
 
                 <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/description"
+                    android:id="@+id/editDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
@@ -183,7 +183,7 @@
                     tools:text="@string/sample_status_text"/>
 
                 <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/location"
+                    android:id="@+id/editLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPostalAddress"
@@ -196,7 +196,7 @@
                     tools:text="Earth"/>
 
                 <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/url"
+                    android:id="@+id/editUrl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textUri"
@@ -220,7 +220,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/set_link_color"
+                    android:id="@+id/setLinkColor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?selectableItemBackground"
@@ -229,7 +229,7 @@
                     android:padding="@dimen/element_spacing_normal">
 
                     <de.vanita5.twittnuker.view.ForegroundColorView
-                        android:id="@+id/link_color"
+                        android:id="@+id/linkColor"
                         android:layout_width="@dimen/element_size_normal"
                         android:layout_height="@dimen/element_size_normal"
                         android:layout_weight="0"
@@ -250,7 +250,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/set_background_color"
+                    android:id="@+id/setBackgroundColor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?selectableItemBackground"
@@ -259,7 +259,7 @@
                     android:padding="@dimen/element_spacing_normal">
 
                     <de.vanita5.twittnuker.view.ForegroundColorView
-                        android:id="@+id/background_color"
+                        android:id="@+id/backgroundColor"
                         android:layout_width="@dimen/element_size_normal"
                         android:layout_height="@dimen/element_size_normal"
                         android:layout_weight="0"
@@ -286,14 +286,14 @@
     </ScrollView>
 
     <FrameLayout
-        android:id="@+id/progress_container"
+        android:id="@+id/progressContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
         tools:visibility="gone">
 
         <ProgressBar
-            android:id="@+id/load_progress"
+            android:id="@+id/loadProgress"
             android:layout_width="@dimen/element_size_normal"
             android:layout_height="@dimen/element_size_normal"
             android:layout_gravity="center"

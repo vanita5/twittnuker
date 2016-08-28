@@ -43,7 +43,7 @@ public class ConnectivityStateReceiver extends BroadcastReceiver implements Cons
             Log.d(RECEIVER_LOGTAG, String.format("Received Broadcast %s", intent));
         }
         if (!ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) return;
-        final TwittnukerApplication application = TwittnukerApplication.getInstance(context);
+        final TwittnukerApplication application = TwittnukerApplication.Companion.getInstance(context);
 //        application.reloadConnectivitySettings();
         Utils.startRefreshServiceIfNeeded(application);
         //TODO start streaming here?

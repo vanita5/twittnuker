@@ -138,7 +138,7 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
 
     @NonNull
     private UpdateStatusResult doUpdateStatus(ParcelableStatusUpdate update) throws UpdateStatusException {
-        final TwittnukerApplication app = TwittnukerApplication.getInstance(context);
+        final TwittnukerApplication app = TwittnukerApplication.Companion.getInstance(context);
         final MediaUploaderInterface uploader = getMediaUploader(app);
         final StatusShortenerInterface shortener = getStatusShortener(app);
 

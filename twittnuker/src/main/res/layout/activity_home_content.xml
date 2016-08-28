@@ -22,7 +22,7 @@
   -->
 
 <de.vanita5.twittnuker.view.ExtendedRelativeLayout
-    android:id="@+id/home_content"
+    android:id="@+id/homeContent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -30,7 +30,7 @@
     android:layout_height="match_parent">
 
     <de.vanita5.twittnuker.view.ExtendedViewPager
-        android:id="@+id/main_pager"
+        android:id="@+id/mainPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true" />
@@ -38,7 +38,7 @@
     <include layout="@layout/layout_empty_tab_hint"/>
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/action_bar"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_alignParentTop="true"
@@ -52,17 +52,17 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/drawer_toggle"
+                android:id="@+id/drawerToggleButton"
                 style="?borderlessButtonStyle"
                 android:layout_width="?actionBarSize"
                 android:layout_height="?actionBarSize"
                 android:layout_weight="0"
-                android:tag="tint|primary_color_dependent"
                 android:background="?actionBarItemBackground"
-                android:contentDescription="@string/open_accounts_dashboard"/>
+                android:contentDescription="@string/open_accounts_dashboard"
+                android:tag="tint|primary_color_dependent"/>
 
             <de.vanita5.twittnuker.view.TabPagerIndicator
-                android:id="@+id/main_tabs"
+                android:id="@+id/mainTabs"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -74,14 +74,14 @@
     </android.support.v7.widget.Toolbar>
 
     <View
-        android:id="@+id/window_overlay"
+        android:id="@+id/windowOverlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/action_bar"
+        android:layout_below="@+id/toolbar"
         android:background="?android:windowContentOverlay"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/actions_button"
+        android:id="@+id/actionsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

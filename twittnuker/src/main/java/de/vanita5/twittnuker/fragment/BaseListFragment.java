@@ -61,7 +61,7 @@ public class BaseListFragment extends ListFragment implements Constants, OnScrol
     }
 
     public final TwittnukerApplication getApplication() {
-        return TwittnukerApplication.getInstance(getActivity());
+        return TwittnukerApplication.Companion.getInstance(getActivity());
     }
 
     public final ContentResolver getContentResolver() {
