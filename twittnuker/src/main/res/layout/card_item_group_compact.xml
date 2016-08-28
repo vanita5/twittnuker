@@ -22,7 +22,7 @@
   -->
 
 <de.vanita5.twittnuker.view.ColorLabelRelativeLayout
-    android:id="@+id/item_content"
+    android:id="@+id/itemContent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
