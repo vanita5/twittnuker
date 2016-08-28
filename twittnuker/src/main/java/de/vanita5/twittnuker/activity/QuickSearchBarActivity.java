@@ -58,7 +58,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter;
-import de.vanita5.twittnuker.fragment.UserFragment;
+import de.vanita5.twittnuker.annotation.Referral;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
@@ -170,13 +170,13 @@ public class QuickSearchBarActivity extends BaseActivity implements OnClickListe
                 IntentUtils.openUserProfile(this, getSelectedAccountKey(),
                         UserKey.valueOf(item.extra_id), item.summary, null,
                         mPreferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                        UserFragment.Referral.DIRECT);
+                        Referral.DIRECT);
                 finish();
                 break;
             }
             case SuggestionsAdapter.VIEW_TYPE_USER_SCREEN_NAME: {
                 IntentUtils.openUserProfile(this, getSelectedAccountKey(), null, item.title, null,
-                        mPreferences.getBoolean(KEY_NEW_DOCUMENT_API), UserFragment.Referral.DIRECT);
+                        mPreferences.getBoolean(KEY_NEW_DOCUMENT_API), Referral.DIRECT);
                 finish();
                 break;
             }

@@ -34,8 +34,9 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
 
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.library.twitter.model.Activity;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.model.util.ParcelableActivityExtensionsKt;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import org.oshkimaadziig.george.androidutils.SpanFormatter;
@@ -219,7 +220,7 @@ public class ActivityTitleSummaryMessage {
             case Activity.Action.MENTION:
             case Activity.Action.REPLY:
             case Activity.Action.QUOTE: {
-                final ParcelableStatus status = ParcelableActivityUtils.getActivityStatus(activity);
+                final ParcelableStatus status = ParcelableActivityExtensionsKt.getActivityStatus(activity);
                 if (status == null) return null;
                 final SpannableString title = new SpannableString(manager.getDisplayName(status,
                         nameFirst));

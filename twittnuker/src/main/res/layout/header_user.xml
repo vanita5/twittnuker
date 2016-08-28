@@ -21,7 +21,7 @@
   -->
 
 <RelativeLayout
-    android:id="@+id/header_user_profile"
+    android:id="@+id/headerUserProfile"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -30,25 +30,25 @@
     tools:showIn="@layout/fragment_user">
 
     <de.vanita5.twittnuker.view.ProfileBannerSpace
-        android:id="@+id/profile_banner_space"
+        android:id="@+id/profileBannerSpace"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <View
-        android:id="@+id/profile_name_background"
+        android:id="@+id/profileNameBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/profile_name_container"
-        android:layout_alignTop="@+id/profile_name_container" />
+        android:layout_alignBottom="@+id/profileNameContainer"
+        android:layout_alignTop="@+id/profileNameContainer"/>
 
     <de.vanita5.twittnuker.view.ColorLabelRelativeLayout
-        android:id="@+id/profile_name_container"
+        android:id="@+id/profileNameContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@id/profile_banner_space"
-        android:layout_toEndOf="@id/profile_image"
-        android:layout_toRightOf="@id/profile_image"
+        android:layout_below="@+id/profileBannerSpace"
+        android:layout_toEndOf="@+id/profileImage"
+        android:layout_toRightOf="@+id/profileImage"
         android:minWidth="48dp"
         android:orientation="vertical"
         android:paddingBottom="@dimen/element_spacing_xsmall"
@@ -58,7 +58,7 @@
         app:ignorePadding="true">
 
         <FrameLayout
-            android:id="@+id/follow_container"
+            android:id="@+id/followContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -77,7 +77,7 @@
                 tools:visibility="visible"/>
 
             <ProgressBar
-                android:id="@+id/follow_progress"
+                android:id="@+id/followProgress"
                 style="?android:progressBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,8 +91,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/follow_container"
-            android:layout_toStartOf="@id/follow_container"
+            android:layout_toLeftOf="@+id/followContainer"
+            android:layout_toStartOf="@+id/followContainer"
             android:gravity="center_vertical"
             android:minHeight="@dimen/element_size_normal"
             android:orientation="vertical">
@@ -107,7 +107,7 @@
                 tools:text="Name" />
 
             <TextView
-                android:id="@+id/screen_name"
+                android:id="@+id/screenName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/name"
@@ -117,14 +117,14 @@
                 tools:text="\@screenname" />
 
             <TextView
-                android:id="@+id/following_you_indicator"
+                android:id="@+id/followingYouIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/screen_name"
+                android:layout_alignBaseline="@+id/screenName"
                 android:layout_marginLeft="@dimen/element_spacing_small"
                 android:layout_marginStart="@dimen/element_spacing_small"
-                android:layout_toEndOf="@+id/screen_name"
-                android:layout_toRightOf="@+id/screen_name"
+                android:layout_toEndOf="@+id/screenName"
+                android:layout_toRightOf="@+id/screenName"
                 android:singleLine="true"
                 android:text="@string/following_you"
                 android:textAppearance="?android:textAppearanceSmall"
@@ -137,24 +137,24 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/element_spacing_xsmall"
-        android:layout_above="@+id/profile_name_container"
+        android:layout_above="@+id/profileNameContainer"
         android:background="@drawable/shadow_top" />
 
     <FrameLayout
-        android:id="@+id/profile_details_container"
+        android:id="@+id/profileDetailsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/profile_name_container">
+        android:layout_below="@+id/profileNameContainer">
 
         <LinearLayout
-            android:id="@+id/card_content"
+            android:id="@+id/cardContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:splitMotionEvents="false">
 
             <LinearLayout
-                android:id="@+id/description_container"
+                android:id="@+id/descriptionContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?selectableItemBackground"
@@ -186,7 +186,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/location_container"
+                android:id="@+id/locationContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?selectableItemBackground"
@@ -214,7 +214,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/url_container"
+                android:id="@+id/urlContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?selectableItemBackground"
@@ -243,7 +243,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/created_at_container"
+                android:id="@+id/createdAtContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?selectableItemBackground"
@@ -259,7 +259,7 @@
                     android:src="@drawable/ic_action_time" />
 
                 <TextView
-                    android:id="@+id/created_at"
+                    android:id="@+id/createdAt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/element_spacing_small"
@@ -285,7 +285,7 @@
                 android:splitMotionEvents="false">
 
                 <LinearLayout
-                    android:id="@+id/tweets_container"
+                    android:id="@+id/tweetsContainer"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -296,7 +296,7 @@
                     android:padding="@dimen/element_spacing_small">
 
                     <TextView
-                        android:id="@+id/statuses_count"
+                        android:id="@+id/statusesCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
@@ -314,7 +314,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/followers_container"
+                    android:id="@+id/followersContainer"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -325,7 +325,7 @@
                     android:padding="@dimen/element_spacing_small">
 
                     <TextView
-                        android:id="@+id/followers_count"
+                        android:id="@+id/followersCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
@@ -343,7 +343,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/friends_container"
+                    android:id="@+id/friendsContainer"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -354,7 +354,7 @@
                     android:padding="@dimen/element_spacing_small">
 
                     <TextView
-                        android:id="@+id/friends_count"
+                        android:id="@+id/friendsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
@@ -372,7 +372,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/groups_container"
+                    android:id="@+id/groupsContainer"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -383,7 +383,7 @@
                     android:padding="@dimen/element_spacing_small">
 
                     <TextView
-                        android:id="@+id/groups_count"
+                        android:id="@+id/groupsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
@@ -407,11 +407,11 @@
     </FrameLayout>
 
     <de.vanita5.twittnuker.view.ProfileImageView
-        android:id="@+id/profile_image"
+        android:id="@+id/profileImage"
         style="?profileImageStyleLarge"
         android:layout_width="@dimen/icon_size_user_profile"
         android:layout_height="@dimen/icon_size_user_profile"
-        android:layout_alignBottom="@+id/profile_name_container"
+        android:layout_alignBottom="@+id/profileNameContainer"
         android:layout_marginLeft="@dimen/element_spacing_normal"
         android:layout_marginStart="@dimen/element_spacing_normal"
         android:contentDescription="@string/profile_image"
@@ -420,13 +420,13 @@
         tools:visibility="visible"/>
 
     <de.vanita5.twittnuker.view.BoundsImageView
-        android:id="@+id/profile_type"
+        android:id="@+id/profileType"
         style="@style/Widget.ProfileType"
         android:layout_width="@dimen/icon_size_profile_type_user_profile"
         android:layout_height="@dimen/icon_size_profile_type_user_profile"
-        android:layout_alignBottom="@id/profile_image"
-        android:layout_alignEnd="@id/profile_image"
-        android:layout_alignRight="@id/profile_image"
+        android:layout_alignBottom="@+id/profileImage"
+        android:layout_alignEnd="@+id/profileImage"
+        android:layout_alignRight="@+id/profileImage"
         android:layout_marginBottom="@dimen/element_spacing_minus_msmall"
         android:layout_marginEnd="@dimen/element_spacing_minus_msmall"
         android:layout_marginRight="@dimen/element_spacing_minus_msmall"

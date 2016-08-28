@@ -118,26 +118,4 @@ public class ParcelableActivityUtils {
     }
 
 
-    @Nullable
-    public static ParcelableStatus getActivityStatus(@NonNull ParcelableActivity activity) {
-        final ParcelableStatus status;
-        if (Activity.Action.MENTION.equals(activity.action)) {
-            if (ArrayUtils.isEmpty(activity.target_object_statuses)) return null;
-            status = activity.target_object_statuses[0];
-        } else if (Activity.Action.REPLY.equals(activity.action)) {
-            if (ArrayUtils.isEmpty(activity.target_statuses)) return null;
-            status = activity.target_statuses[0];
-        } else if (Activity.Action.QUOTE.equals(activity.action)) {
-            if (ArrayUtils.isEmpty(activity.target_statuses)) return null;
-            status = activity.target_statuses[0];
-        } else {
-            return null;
-        }
-        status.account_color = activity.account_color;
-        status.user_color = activity.status_user_color;
-        status.retweet_user_color = activity.status_retweet_user_color;
-        status.quoted_user_color = activity.status_quoted_user_color;
-
-        return status;
-    }
 }

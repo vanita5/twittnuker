@@ -54,14 +54,14 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.otto.Subscribe;
 
 import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.AccountSelectorActivity;
-import de.vanita5.twittnuker.activity.UserListSelectorActivity;
-import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.library.twitter.model.UserListUpdate;
+import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.activity.AccountSelectorActivity;
+import de.vanita5.twittnuker.activity.UserListSelectorActivity;
+import de.vanita5.twittnuker.adapter.SupportTabsAdapter;
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -76,8 +76,8 @@ import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.IntentUtils;
 import de.vanita5.twittnuker.util.LinkCreator;
 import de.vanita5.twittnuker.util.MenuUtils;
-import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
+import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 public class UserListFragment extends AbsToolbarTabPagesFragment implements OnClickListener,
@@ -117,7 +117,7 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
 
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        final AsyncTwitterWrapper twitter = mTwitterWrapper;
+        final AsyncTwitterWrapper twitter = twitterWrapper;
         switch (requestCode) {
             case REQUEST_SELECT_USER: {
                 final ParcelableUserList userList = mUserList;
@@ -192,12 +192,12 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
     @Override
     public void onStart() {
         super.onStart();
-        mBus.register(this);
+        bus.register(this);
     }
 
     @Override
     public void onStop() {
-        mBus.unregister(this);
+        bus.unregister(this);
         super.onStop();
     }
 
@@ -242,7 +242,7 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        final AsyncTwitterWrapper twitter = mTwitterWrapper;
+        final AsyncTwitterWrapper twitter = twitterWrapper;
         final ParcelableUserList userList = mUserList;
         if (twitter == null || userList == null) return false;
         switch (item.getItemId()) {
@@ -304,7 +304,7 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
     @Override
     public void onClick(final View view) {
         switch (view.getId()) {
-            case R.id.error_container: {
+            case R.id.errorContainer: {
                 getUserListInfo(true);
                 break;
             }
@@ -313,7 +313,7 @@ public class UserListFragment extends AbsToolbarTabPagesFragment implements OnCl
                 if (userList == null) return;
                 IntentUtils.openUserProfile(getActivity(), userList.account_key,
                         userList.user_key, userList.user_screen_name, null,
-                        mPreferences.getBoolean(KEY_NEW_DOCUMENT_API), null);
+                        preferences.getBoolean(KEY_NEW_DOCUMENT_API), null);
                 break;
             }
         }

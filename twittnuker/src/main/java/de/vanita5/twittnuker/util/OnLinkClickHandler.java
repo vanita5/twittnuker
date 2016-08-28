@@ -32,8 +32,8 @@ import android.support.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 import de.vanita5.twittnuker.activity.WebLinkHandlerActivity;
+import de.vanita5.twittnuker.annotation.Referral;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.fragment.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils;
@@ -69,7 +69,7 @@ public class OnLinkClickHandler implements OnLinkClickListener {
             case TwidereLinkify.LINK_TYPE_MENTION: {
                 IntentUtils.openUserProfile(context, accountKey, null, link, null,
                         preferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                        UserFragment.Referral.USER_MENTION);
+                        Referral.USER_MENTION);
                 return true;
             }
             case TwidereLinkify.LINK_TYPE_HASHTAG: {
@@ -110,7 +110,7 @@ public class OnLinkClickHandler implements OnLinkClickListener {
                                         final String screenName = orig.substring(1, length);
                                         IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(id),
                                                 screenName, null, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                                                UserFragment.Referral.USER_MENTION);
+                                                Referral.USER_MENTION);
                                         return true;
                                     }
                                 } else if (TwidereLinkify.isHashSymbol(ch) &&
@@ -149,7 +149,7 @@ public class OnLinkClickHandler implements OnLinkClickListener {
             case TwidereLinkify.LINK_TYPE_USER_ID: {
                 IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(link), null, null,
                         preferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                        UserFragment.Referral.USER_MENTION);
+                        Referral.USER_MENTION);
                 return true;
             }
         }

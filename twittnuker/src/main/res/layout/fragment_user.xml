@@ -26,27 +26,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/userFragmentView"
     android:fitsSystemWindows="true"
     app:setPadding="false">
 
     <RelativeLayout
-        android:id="@+id/profile_banner_container"
+        android:id="@+id/profileBannerContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top">
 
         <de.vanita5.twittnuker.view.ProfileBannerImageView
-        android:id="@+id/profile_banner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"/>
-
-        <FrameLayout
-            android:id="@+id/profile_birthday_banner"
+            android:id="@+id/profileBanner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/profile_banner"
-            android:layout_alignTop="@+id/profile_banner"
+            android:scaleType="centerCrop"/>
+
+        <FrameLayout
+            android:id="@+id/profileBirthdayBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/profileBanner"
+            android:layout_alignTop="@+id/profileBanner"
             android:visibility="gone">
 
             <de.vanita5.twittnuker.view.BirthdayView
@@ -56,17 +57,17 @@
     </RelativeLayout>
 
     <de.vanita5.twittnuker.view.ExtendedRelativeLayout
-        android:id="@+id/profile_content_container"
+        android:id="@+id/profileContentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <de.vanita5.twittnuker.view.ExtendedFrameLayout
-            android:id="@+id/details_container"
+            android:id="@+id/detailsContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <de.vanita5.twittnuker.view.HeaderDrawerLayout
-                android:id="@+id/user_profile_drawer"
+                android:id="@+id/userProfileDrawer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:hdl_contentLayout="@layout/fragment_content_pages"
@@ -83,7 +84,7 @@
             app:popupTheme="?actionBarPopupTheme"/>
 
         <View
-            android:id="@+id/window_overlay"
+            android:id="@+id/windowOverlay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbar"

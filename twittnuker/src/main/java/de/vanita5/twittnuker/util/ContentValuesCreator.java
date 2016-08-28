@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.ParcelableUserValuesCreator;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
-import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
+import de.vanita5.twittnuker.model.util.ParcelableActivityExtensionsKt;
 import de.vanita5.twittnuker.model.util.ParcelableDirectMessageUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
@@ -169,7 +169,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     public static ContentValues createActivity(final ParcelableActivity activity,
                                                ParcelableCredentials credentials, UserColorNameManager manager) {
         final ContentValues values = new ContentValues();
-        final ParcelableStatus status = ParcelableActivityUtils.getActivityStatus(activity);
+        final ParcelableStatus status = ParcelableActivityExtensionsKt.getActivityStatus(activity);
 
         activity.account_color = credentials.color;
 

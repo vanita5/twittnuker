@@ -51,6 +51,7 @@ public class Draft implements Parcelable {
     public long _id;
     @ParcelableThisPlease
     @CursorField(value = Drafts.ACCOUNT_KEYS, converter = UserKeysCursorFieldConverter.class)
+    @Nullable
     public UserKey[] account_keys;
     @ParcelableThisPlease
     @CursorField(Drafts.TIMESTAMP)

@@ -28,12 +28,12 @@
     android:layout_height="match_parent">
 
     <de.vanita5.twittnuker.view.ExtendedViewPager
-        android:id="@+id/view_pager"
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <de.vanita5.twittnuker.view.ExtendedLinearLayout
-        android:id="@+id/toolbar_container"
+        android:id="@+id/toolbarContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/toolbar_elevation"
@@ -47,7 +47,7 @@
             app:popupTheme="?actionBarPopupTheme"/>
 
         <de.vanita5.twittnuker.view.TabPagerIndicator
-            android:id="@+id/toolbar_tabs"
+            android:id="@+id/toolbarTabs"
             android:layout_width="match_parent"
             android:layout_height="@dimen/element_size_normal"
             app:tabDividerVerticalPadding="@dimen/element_spacing_mlarge"
@@ -59,10 +59,10 @@
     </de.vanita5.twittnuker.view.ExtendedLinearLayout>
 
     <View
-        android:id="@+id/window_overlay"
+        android:id="@+id/windowOverlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar_container"
+        android:layout_below="@+id/toolbarContainer"
         android:background="?android:windowContentOverlay"/>
 
 </RelativeLayout>

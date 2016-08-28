@@ -95,8 +95,8 @@ public class ListViewScrollHandler extends ContentScrollHandler implements AbsLi
         }
 
         @Override
-        public void post(Runnable action) {
-            listView.post(action);
+        public void post(Runnable runnable) {
+            listView.post(runnable);
         }
     }
 }

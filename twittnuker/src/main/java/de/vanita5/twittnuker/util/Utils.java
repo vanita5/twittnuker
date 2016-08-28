@@ -129,7 +129,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.CopyLinkActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
-import de.vanita5.twittnuker.adapter.iface.IBaseCardAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.fragment.AccountsManagerFragment;
@@ -385,12 +384,6 @@ public final class Utils implements Constants {
         adapter.notifyDataSetChanged();
     }
 
-    public static void configBaseCardAdapter(final Context context, final IBaseCardAdapter adapter) {
-        if (context == null) return;
-        configBaseAdapter(context, adapter);
-        adapter.notifyDataSetChanged();
-    }
-
     public static int[] getAccountColors(@Nullable final ParcelableAccount[] accounts) {
         if (accounts == null) return null;
         final int[] colors = new int[accounts.length];
@@ -599,7 +592,8 @@ public final class Utils implements Constants {
                 fragment = new GroupFragment();
                 final String paramGroupId = uri.getQueryParameter(QUERY_PARAM_GROUP_ID);
                 final String paramGroupName = uri.getQueryParameter(QUERY_PARAM_GROUP_NAME);
-                if (TextUtils.isEmpty(paramGroupId) && TextUtils.isEmpty(paramGroupName)) return null;
+                if (TextUtils.isEmpty(paramGroupId) && TextUtils.isEmpty(paramGroupName))
+                    return null;
                 args.putString(EXTRA_GROUP_ID, paramGroupId);
                 args.putString(EXTRA_GROUP_NAME, paramGroupName);
                 break;
@@ -1086,6 +1080,7 @@ public final class Utils implements Constants {
             return ContextCompat.getColor(context, R.color.highlight_like);
         return Color.TRANSPARENT;
     }
+
 
     public static Selectable getColumnsFromProjection(final String... projection) {
         if (projection == null) return new AllColumns();
@@ -2190,16 +2185,12 @@ public final class Utils implements Constants {
      * @param title String
      * @param message String
      */
-    public static void sendPebbleNotification(final Context context, final String title, final String message)
-    {
+    public static void sendPebbleNotification(final Context context, final String title, final String message) {
         String appName;
 
-        if ( title == null)
-        {
+        if (title == null) {
             appName = context.getString(R.string.app_name);
-        }
-        else
-        {
+        } else {
             appName = context.getString(R.string.app_name) + " - " + title;
         }
 
@@ -2218,6 +2209,7 @@ public final class Utils implements Constants {
 
             context.getApplicationContext().sendBroadcast(intent);
         }
+
     }
 
     @Nullable

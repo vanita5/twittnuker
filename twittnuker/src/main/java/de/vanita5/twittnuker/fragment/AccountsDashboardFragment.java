@@ -79,6 +79,7 @@ import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.activity.QuickSearchBarActivity;
 import de.vanita5.twittnuker.activity.SettingsActivity;
 import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.annotation.Referral;
 import de.vanita5.twittnuker.menu.AccountToggleProvider;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SupportTabSpec;
@@ -226,19 +227,19 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.profile_container: {
+            case R.id.profileContainer: {
                 final ParcelableAccount account = mAccountsAdapter.getSelectedAccount();
                 if (account == null) return;
                 final FragmentActivity activity = getActivity();
                 if (account.account_user != null) {
                     IntentUtils.openUserProfile(activity, account.account_user, null,
-                            mPreferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                            UserFragment.Referral.SELF_PROFILE);
+                            preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                            Referral.SELF_PROFILE);
                 } else {
                     IntentUtils.openUserProfile(activity, account.account_key,
                             account.account_key, account.screen_name, null,
-                            mPreferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                            UserFragment.Referral.SELF_PROFILE);
+                            preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                            Referral.SELF_PROFILE);
                 }
                 break;
             }
@@ -274,10 +275,10 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
                 break;
             }
         }
-        mUseStarsForLikes = mPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK);
+        mUseStarsForLikes = preferences.getBoolean(KEY_I_WANT_MY_STARS_BACK);
 
         mAccountsAdapter.setAccounts(accounts);
-        UserKey accountKey = UserKey.valueOf(mPreferences.getString(KEY_DEFAULT_ACCOUNT_KEY, null));
+        UserKey accountKey = UserKey.valueOf(preferences.getString(KEY_DEFAULT_ACCOUNT_KEY, null));
         if (accountKey == null) {
             accountKey = defaultId;
         }
@@ -386,7 +387,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         });
 
         mNavigationView.setNavigationItemSelectedListener(this);
-        mPreferences.registerOnSharedPreferenceChangeListener(this);
+        preferences.registerOnSharedPreferenceChangeListener(this);
 
         loadAccounts();
 
@@ -412,15 +413,15 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         super.onViewCreated(view, savedInstanceState);
         mNavigationView = (NavigationView) view.findViewById(R.id.navigation_view);
         mAccountSelectorView = mNavigationView.getHeaderView(0);
-        mAccountsSelector = (RecyclerView) mAccountSelectorView.findViewById(R.id.other_accounts_list);
-        mAccountProfileContainer = mAccountSelectorView.findViewById(R.id.profile_container);
-        mNoAccountContainer = mAccountSelectorView.findViewById(R.id.no_account_container);
-        mAccountProfileImageView = (ShapedImageView) mAccountSelectorView.findViewById(R.id.profile_image);
-        mAccountProfileBannerView = (ViewSwitcher) mAccountSelectorView.findViewById(R.id.account_profile_banner);
-        mFloatingProfileImageSnapshotView = (ImageView) mAccountSelectorView.findViewById(R.id.floating_profile_image_snapshot);
+        mAccountsSelector = (RecyclerView) mAccountSelectorView.findViewById(R.id.otherAccountsList);
+        mAccountProfileContainer = mAccountSelectorView.findViewById(R.id.profileContainer);
+        mNoAccountContainer = mAccountSelectorView.findViewById(R.id.noAccountContainer);
+        mAccountProfileImageView = (ShapedImageView) mAccountSelectorView.findViewById(R.id.profileImage);
+        mAccountProfileBannerView = (ViewSwitcher) mAccountSelectorView.findViewById(R.id.accountProfileBanner);
+        mFloatingProfileImageSnapshotView = (ImageView) mAccountSelectorView.findViewById(R.id.floatingProfileImageSnapshot);
         mAccountProfileNameView = (TextView) mAccountSelectorView.findViewById(R.id.name);
-        mAccountProfileScreenNameView = (TextView) mAccountSelectorView.findViewById(R.id.screen_name);
-        mAccountsToggleMenu = (ActionMenuView) mAccountSelectorView.findViewById(R.id.account_dashboard_menu);
+        mAccountProfileScreenNameView = (TextView) mAccountSelectorView.findViewById(R.id.screenName);
+        mAccountsToggleMenu = (ActionMenuView) mAccountSelectorView.findViewById(R.id.accountDashboardMenu);
     }
 
     @Override
@@ -565,7 +566,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
                 clickedColors = clickedImageView.getBorderColors();
                 final ParcelableAccount oldSelectedAccount = mAccountsAdapter.getSelectedAccount();
                 if (oldSelectedAccount == null) return;
-                mMediaLoader.displayDashboardProfileImage(clickedImageView,
+                mediaLoader.displayDashboardProfileImage(clickedImageView,
                         oldSelectedAccount, profileDrawable);
                 clickedImageView.setBorderColors(profileImageView.getBorderColors());
 
@@ -590,7 +591,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
             }
 
             private void finishAnimation() {
-                final Editor editor = mPreferences.edit();
+                final Editor editor = preferences.edit();
                 editor.putString(KEY_DEFAULT_ACCOUNT_KEY, account.account_key.toString());
                 editor.apply();
                 mAccountsAdapter.setSelectedAccount(account);
@@ -618,10 +619,10 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         final int width = bannerWidth > 0 ? bannerWidth : defWidth;
         final ImageView bannerView = (ImageView) mAccountProfileBannerView.getNextView();
         if (bannerView.getDrawable() == null || !CompareUtils.objectEquals(account, bannerView.getTag())) {
-            mMediaLoader.displayProfileBanner(bannerView, account, width);
+            mediaLoader.displayProfileBanner(bannerView, account, width);
             bannerView.setTag(account);
         } else {
-            mMediaLoader.cancelDisplayTask(bannerView);
+            mediaLoader.cancelDisplayTask(bannerView);
         }
     }
 
@@ -632,7 +633,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
         }
         mAccountProfileNameView.setText(account.name);
         mAccountProfileScreenNameView.setText(String.format("@%s", account.screen_name));
-        mMediaLoader.displayDashboardProfileImage(mAccountProfileImageView, account,
+        mediaLoader.displayDashboardProfileImage(mAccountProfileImageView, account,
                 profileImageSnapshot);
         mAccountProfileImageView.setBorderColors(account.color);
         mAccountProfileBannerView.showNext();
@@ -757,7 +758,7 @@ public class AccountsDashboardFragment extends BaseSupportFragment implements Lo
 
         AccountSelectorAdapter(LayoutInflater inflater, AccountsDashboardFragment fragment) {
             mInflater = inflater;
-            mImageLoader = fragment.mMediaLoader;
+            mImageLoader = fragment.mediaLoader;
             mFragment = fragment;
             setHasStableIds(true);
         }

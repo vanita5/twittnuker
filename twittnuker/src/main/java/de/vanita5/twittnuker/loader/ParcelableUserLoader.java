@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.library.twitter.model.User;
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.fragment.UserFragment;
+import de.vanita5.twittnuker.annotation.Referral;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -157,7 +157,7 @@ public final class ParcelableUserLoader extends AsyncTaskLoader<SingleResponse<P
         }
         try {
             final User twitterUser;
-            if (mExtras != null && UserFragment.Referral.SELF_PROFILE.equals(mExtras.getString(EXTRA_REFERRAL))) {
+            if (mExtras != null && Referral.SELF_PROFILE.equals(mExtras.getString(EXTRA_REFERRAL))) {
                 twitterUser = twitter.verifyCredentials();
             } else {
                 String profileUrl = null;
