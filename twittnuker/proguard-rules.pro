@@ -198,3 +198,9 @@
 -keepclassmembers class de.vanita5.twittnuker.activity.BrowserSignInActivity$InjectorJavaScriptInterface {
     public *;
 }
+
+# Kotlin
+-dontwarn de.vanita5.twittnuker.adapter.iface.**
+-dontwarn de.vanita5.twittnuker.fragment.AbsStatusesFragment
+-dontwarn de.vanita5.twittnuker.fragment.CursorStatusesFragment
+-dontwarn de.vanita5.twittnuker.fragment.ItemsListFragment
