@@ -40,7 +40,6 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
 import de.vanita5.twittnuker.fragment.CursorActivitiesFragment
-import de.vanita5.twittnuker.fragment.UserFragment
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices
 import de.vanita5.twittnuker.model.ParcelableMedia
@@ -56,7 +55,10 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
 import java.lang.ref.WeakReference
 
-class ParcelableActivitiesAdapter(context: Context, private val mIsByFriends: Boolean) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), IActivitiesAdapter<List<ParcelableActivity>> {
+class ParcelableActivitiesAdapter(
+        context: Context,
+        private val byFriends: Boolean
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), IActivitiesAdapter<List<ParcelableActivity>> {
 
     private val inflater: LayoutInflater
     override val mediaLoadingHandler: MediaLoadingHandler
@@ -156,7 +158,7 @@ class ParcelableActivitiesAdapter(context: Context, private val mIsByFriends: Bo
         }
 
     protected fun bindTitleSummaryViewHolder(holder: ActivityTitleSummaryViewHolder, position: Int) {
-        holder.displayActivity(getActivity(position)!!, mIsByFriends)
+        holder.displayActivity(getActivity(position)!!, byFriends)
     }
 
     fun getData(): List<ParcelableActivity>? {

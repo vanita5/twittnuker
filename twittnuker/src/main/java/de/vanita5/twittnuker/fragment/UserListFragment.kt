@@ -181,14 +181,14 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
         val userList = this.userList
-        MenuUtils.setMenuItemAvailability(menu, R.id.info, userList != null)
+        MenuUtils.setItemAvailability(menu, R.id.info, userList != null)
         if (userList != null) {
             val isMyList = userList.user_key == userList.account_key
             val isFollowing = userList.is_following
-            MenuUtils.setMenuItemAvailability(menu, R.id.edit, isMyList)
-            MenuUtils.setMenuItemAvailability(menu, R.id.follow, !isMyList)
-            MenuUtils.setMenuItemAvailability(menu, R.id.add, isMyList)
-            MenuUtils.setMenuItemAvailability(menu, R.id.delete, isMyList)
+            MenuUtils.setItemAvailability(menu, R.id.edit, isMyList)
+            MenuUtils.setItemAvailability(menu, R.id.follow, !isMyList)
+            MenuUtils.setItemAvailability(menu, R.id.add, isMyList)
+            MenuUtils.setItemAvailability(menu, R.id.delete, isMyList)
             val followItem = menu.findItem(R.id.follow)
             if (isFollowing) {
                 followItem.setIcon(R.drawable.ic_action_cancel)
@@ -198,10 +198,10 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
                 followItem.setTitle(R.string.subscribe)
             }
         } else {
-            MenuUtils.setMenuItemAvailability(menu, R.id.edit, false)
-            MenuUtils.setMenuItemAvailability(menu, R.id.follow, false)
-            MenuUtils.setMenuItemAvailability(menu, R.id.add, false)
-            MenuUtils.setMenuItemAvailability(menu, R.id.delete, false)
+            MenuUtils.setItemAvailability(menu, R.id.edit, false)
+            MenuUtils.setItemAvailability(menu, R.id.follow, false)
+            MenuUtils.setItemAvailability(menu, R.id.add, false)
+            MenuUtils.setItemAvailability(menu, R.id.delete, false)
         }
     }
 

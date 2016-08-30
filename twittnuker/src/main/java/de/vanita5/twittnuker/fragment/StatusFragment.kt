@@ -439,7 +439,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
-        MenuUtils.setMenuItemAvailability(menu, R.id.current_status, adapter!!.status != null)
+        MenuUtils.setItemAvailability(menu, R.id.current_status, adapter!!.status != null)
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -733,7 +733,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
             val twitter = adapter.twitterWrapper
             val nameFirst = adapter.nameFirst
 
-            linkClickHandler.setStatus(status)
+            linkClickHandler.status = status
 
             if (status.retweet_id != null) {
                 val retweetedBy = UserColorNameManager.decideDisplayName(
@@ -1337,11 +1337,14 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
             }
         }
 
-        private class DetailStatusLinkClickHandler(context: Context, manager: MultiSelectManager,
-                                                   private val adapter: StatusAdapter,
-                                                   preferences: SharedPreferencesWrapper) : StatusLinkClickHandler(context, manager, preferences) {
+        private class DetailStatusLinkClickHandler(
+                context: Context,
+                manager: MultiSelectManager,
+                private val adapter: StatusAdapter,
+                preferences: SharedPreferencesWrapper
+        ) : StatusLinkClickHandler(context, manager, preferences) {
 
-            override fun onLinkClick(link: String, orig: String, accountKey: UserKey,
+            override fun onLinkClick(link: String, orig: String?, accountKey: UserKey,
                                      extraId: Long, type: Int, sensitive: Boolean, start: Int, end: Int): Boolean {
                 val current = getCurrentMedia(link, extraId.toInt())
                 if (current != null && !current.open_browser) {
