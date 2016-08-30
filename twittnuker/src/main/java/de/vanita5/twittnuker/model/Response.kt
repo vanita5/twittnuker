@@ -20,20 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model;
+package de.vanita5.twittnuker.model
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.Bundle
 
-public interface Response<Data> {
-    Data getData();
+interface Response<Data> {
+    val data: Data?
 
-    Exception getException();
+    val exception: Exception?
 
-    @NonNull
-    Bundle getExtras();
+    val extras: Bundle
 
-    boolean hasData();
+    fun hasData(): Boolean
 
-    boolean hasException();
+    fun hasException(): Boolean
 }

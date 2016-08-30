@@ -101,9 +101,11 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
     final StateCallback stateCallback;
 
     @Inject
-    AsyncTwitterWrapper mTwitterWrapper;
+    @NonNull
+    AsyncTwitterWrapper twitterWrapper;
     @Inject
-    SharedPreferencesWrapper mPreferences;
+    @NonNull
+    SharedPreferencesWrapper preferences;
 
     public UpdateStatusTask(Context context, StateCallback stateCallback) {
         GeneralComponentHelper.build(context).inject(this);
@@ -114,7 +116,7 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
     @Override
     protected UpdateStatusResult doLongOperation(Pair<String, ParcelableStatusUpdate> params) {
         final long draftId = saveDraft(params.first, params.second);
-        mTwitterWrapper.addSendingDraftId(draftId);
+        twitterWrapper.addSendingDraftId(draftId);
         try {
             final UpdateStatusResult result = doUpdateStatus(params.second);
             deleteOrUpdateDraft(params.second, result, draftId);
@@ -122,7 +124,7 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
         } catch (UpdateStatusException e) {
             return new UpdateStatusResult(e);
         } finally {
-            mTwitterWrapper.removeSendingDraftId(draftId);
+            twitterWrapper.removeSendingDraftId(draftId);
         }
     }
 
@@ -419,7 +421,7 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
 
     @Nullable
     private StatusShortenerInterface getStatusShortener(TwittnukerApplication app) throws UploaderNotFoundException, UploadException, ShortenerNotFoundException, ShortenException {
-        final String shortenerComponent = mPreferences.getString(KEY_STATUS_SHORTENER, null);
+        final String shortenerComponent = preferences.getString(KEY_STATUS_SHORTENER, null);
         if (ServicePickerPreference.isNoneValue(shortenerComponent)) return null;
 
         final StatusShortenerInterface shortener = StatusShortenerInterface.getInstance(app, shortenerComponent);
@@ -447,7 +449,7 @@ public class UpdateStatusTask extends AbstractTask<Pair<String, ParcelableStatus
 
     @Nullable
     private MediaUploaderInterface getMediaUploader(TwittnukerApplication app) throws UploaderNotFoundException, UploadException {
-        final String uploaderComponent = mPreferences.getString(KEY_MEDIA_UPLOADER, null);
+        final String uploaderComponent = preferences.getString(KEY_MEDIA_UPLOADER, null);
         if (ServicePickerPreference.isNoneValue(uploaderComponent)) return null;
         final MediaUploaderInterface uploader = MediaUploaderInterface.getInstance(app, uploaderComponent);
         if (uploader == null) {

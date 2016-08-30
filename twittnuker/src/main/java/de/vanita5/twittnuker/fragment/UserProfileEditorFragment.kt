@@ -62,7 +62,9 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener
 
-class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, TextWatcher, OnClickListener, LoaderCallbacks<SingleResponse<ParcelableUser>>, KeyboardShortcutsHandler.TakeAllKeyboardShortcut {
+class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, TextWatcher,
+        OnClickListener, LoaderCallbacks<SingleResponse<ParcelableUser>>,
+        KeyboardShortcutsHandler.TakeAllKeyboardShortcut {
 
     private var task: AbstractTask<*, *, UserProfileEditorFragment>? = null
     private val accountKey: UserKey
@@ -117,11 +119,10 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
         }
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle): Loader<SingleResponse<ParcelableUser>> {
-        progressContainer!!.visibility = View.VISIBLE
-        editProfileContent!!.visibility = View.GONE
-        return ParcelableUserLoader(activity, accountKey, accountKey, null, arguments,
-                false, false)
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<SingleResponse<ParcelableUser>> {
+        progressContainer.visibility = View.VISIBLE
+        editProfileContent.visibility = View.GONE
+        return ParcelableUserLoader(activity, accountKey, accountKey, null, arguments, false, false)
     }
 
     override fun onLoadFinished(loader: Loader<SingleResponse<ParcelableUser>>,
@@ -339,17 +340,17 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
             private val description: String,
             private val linkColor: Int,
             private val backgroundColor: Int
-    ) : AbstractTask<Any, SingleResponse<ParcelableUser>, UserProfileEditorFragment>() {
+    ) : AbstractTask<Any?, SingleResponse<ParcelableUser>, UserProfileEditorFragment>() {
         private val activity: FragmentActivity
 
         init {
             activity = fragment.activity
         }
 
-        override fun doLongOperation(params: Any): SingleResponse<ParcelableUser> {
-            val credentials = ParcelableCredentialsUtils.getCredentials(activity, accountKey) ?: return SingleResponse.getInstance<ParcelableUser>()
+        override fun doLongOperation(params: Any?): SingleResponse<ParcelableUser> {
+            val credentials = ParcelableCredentialsUtils.getCredentials(activity, accountKey) ?: return SingleResponse.Companion.getInstance<ParcelableUser>()
             val twitter = MicroBlogAPIFactory.getInstance(activity, credentials,
-                    true, true) ?: return SingleResponse.getInstance<ParcelableUser>()
+                    true, true) ?: return SingleResponse.Companion.getInstance<ParcelableUser>()
             try {
                 var user: User? = null
                 if (isProfileChanged) {
@@ -364,14 +365,14 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
                 }
                 if (user == null) {
                     // User profile unchanged
-                    return SingleResponse.getInstance<ParcelableUser>()
+                    return SingleResponse.Companion.getInstance<ParcelableUser>()
                 }
-                val response = SingleResponse.getInstance(
+                val response = SingleResponse.Companion.getInstance(
                         ParcelableUserUtils.fromUser(user, accountKey))
                 response.extras.putParcelable(EXTRA_ACCOUNT, credentials)
                 return response
             } catch (e: MicroBlogException) {
-                return SingleResponse.getInstance<ParcelableUser>(e)
+                return SingleResponse.Companion.getInstance<ParcelableUser>(e)
             }
 
         }
@@ -431,9 +432,9 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
             return TwitterWrapper.deleteProfileBannerImage(activity, accountKey)
         }
 
-        override fun afterExecute(callback: UserProfileEditorFragment?, result: SingleResponse<Boolean>?) {
+        override fun afterExecute(callback: UserProfileEditorFragment?, result: SingleResponse<Boolean>) {
             super.afterExecute(callback, result)
-            if (result!!.data != null && result.data) {
+            if (result.data != null) {
                 getUserInfo()
                 Toast.makeText(activity, R.string.profile_banner_image_updated, Toast.LENGTH_SHORT).show()
             } else {

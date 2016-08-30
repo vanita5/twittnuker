@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.TextView;
@@ -79,6 +80,7 @@ public class SourceAutoCompleteAdapter extends SimpleCursorAdapter {
     }
 
     @Override
+    @Nullable
     public Cursor swapCursor(final Cursor cursor) {
         if (cursor != null) {
             mSourceIdx = cursor.getColumnIndex(CachedStatuses.SOURCE);

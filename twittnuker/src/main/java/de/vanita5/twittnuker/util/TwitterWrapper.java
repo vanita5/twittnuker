@@ -31,9 +31,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import org.mariotaku.restfu.http.ContentType;
-import org.mariotaku.restfu.http.mime.FileBody;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
@@ -41,6 +38,9 @@ import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import org.mariotaku.restfu.http.ContentType;
+import org.mariotaku.restfu.http.mime.FileBody;
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SingleResponse;
@@ -75,12 +75,12 @@ public class TwitterWrapper implements Constants {
     public static SingleResponse<Boolean> deleteProfileBannerImage(final Context context,
                                                                    final UserKey accountKey) {
         final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, accountKey, false);
-        if (twitter == null) return new SingleResponse<>(false, null);
+        if (twitter == null) return SingleResponse.Companion.getInstance(false);
         try {
             twitter.removeProfileBannerImage();
-            return new SingleResponse<>(true, null);
+            return SingleResponse.Companion.getInstance(true);
         } catch (final MicroBlogException e) {
-            return new SingleResponse<>(false, e);
+            return SingleResponse.Companion.getInstance(false, e);
         }
     }
 

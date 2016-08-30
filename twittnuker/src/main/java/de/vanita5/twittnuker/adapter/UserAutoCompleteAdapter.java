@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.view.View;
@@ -133,6 +134,7 @@ public class UserAutoCompleteAdapter extends SimpleCursorAdapter {
     }
 
     @Override
+    @Nullable
     public Cursor swapCursor(final Cursor cursor) {
         if (cursor != null) {
             mIdIdx = cursor.getColumnIndex(CachedUsers.USER_KEY);
