@@ -64,6 +64,8 @@
 
     <style name="Theme.Twidere.Dialog" parent="Theme.AppCompat.Dialog">
 
+        <item name="android:windowBackground">@drawable/abc_dialog_material_background_dark</item>
+
         <!-- Widget styles -->
         <item name="android:listSeparatorTextViewStyle">@style/Widget.Dark.TextView.ListSeparator
         </item>
