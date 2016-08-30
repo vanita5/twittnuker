@@ -95,9 +95,9 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         this.eventListener = EventListener(this)
 
         if (adapter.mediaPreviewEnabled) {
-            View.inflate(itemView.mediaPreview.context, R.layout.layout_card_media_preview,
+            View.inflate(mediaPreview.context, R.layout.layout_card_media_preview,
                     itemView.mediaPreview)
-            View.inflate(itemView.quotedMediaPreview.context, R.layout.layout_card_media_preview,
+            View.inflate(quotedMediaPreview.context, R.layout.layout_card_media_preview,
                     itemView.quotedMediaPreview)
         }
     }
