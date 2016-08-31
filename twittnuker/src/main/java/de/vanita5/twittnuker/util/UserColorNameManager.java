@@ -32,10 +32,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import org.mariotaku.sqliteqb.library.Expression;
-
-import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import org.mariotaku.sqliteqb.library.Expression;
+import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
@@ -171,10 +170,10 @@ public class UserColorNameManager implements TwittnukerConstants {
         }
 
         @Override
-        public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+        public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
             final UserKey userId = UserKey.valueOf(key);
             if (mListener != null && userId != null) {
-                mListener.onUserColorChanged(userId, sharedPreferences.getInt(key, 0));
+                mListener.onUserColorChanged(userId, preferences.getInt(key, 0));
             }
         }
 

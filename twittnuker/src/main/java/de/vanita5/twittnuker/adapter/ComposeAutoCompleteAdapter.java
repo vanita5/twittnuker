@@ -160,7 +160,7 @@ public class ComposeAutoCompleteAdapter extends SimpleCursorAdapter implements C
 
     @Override
     @Nullable
-    public Cursor swapCursor(final Cursor cursor) {
+    public Cursor swapCursor(@Nullable  final Cursor cursor) {
         if (cursor != null) {
             mTypeIdx = cursor.getColumnIndex(Suggestions.AutoComplete.TYPE);
             mTitleIdx = cursor.getColumnIndex(Suggestions.AutoComplete.TITLE);

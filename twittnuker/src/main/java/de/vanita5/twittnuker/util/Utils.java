@@ -438,7 +438,7 @@ public final class Utils implements Constants {
                     args.putDouble(EXTRA_LATITUDE, lat);
                     args.putDouble(EXTRA_LONGITUDE, lng);
                 }
-                fragment = MapFragmentFactory.SINGLETON.createMapFragment(context);
+                fragment = MapFragmentFactory.Companion.getInstance().createMapFragment(context);
                 break;
             }
             case LINK_ID_STATUS: {

@@ -82,6 +82,14 @@ import de.vanita5.twittnuker.util.collection.CompactHashSet;
 import java.util.ArrayList;
 import java.util.Set;
 
+import static de.vanita5.twittnuker.Constants.EXTRA_ALPHA_SLIDER;
+import static de.vanita5.twittnuker.Constants.EXTRA_COLOR;
+import static de.vanita5.twittnuker.Constants.EXTRA_ID;
+import static de.vanita5.twittnuker.Constants.INTENT_ACTION_TWITTER_LOGIN;
+import static de.vanita5.twittnuker.Constants.KEY_DEFAULT_ACCOUNT_KEY;
+import static de.vanita5.twittnuker.Constants.KEY_NEW_DOCUMENT_API;
+import static de.vanita5.twittnuker.Constants.REQUEST_SET_COLOR;
+
 public class AccountsManagerFragment extends BaseSupportFragment implements LoaderCallbacks<Cursor>,
         DropListener, OnSharedPreferenceChangeListener, AdapterView.OnItemClickListener, AccountsAdapter.OnAccountToggleListener {
 
@@ -314,7 +322,7 @@ public class AccountsManagerFragment extends BaseSupportFragment implements Load
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
         if (KEY_DEFAULT_ACCOUNT_KEY.equals(key)) {
             updateDefaultAccount();
         }

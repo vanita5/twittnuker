@@ -46,7 +46,7 @@ public class DestroySavedSearchDialogFragment extends BaseDialogFragment impleme
                 final UserKey accountKey = getAccountKey();
                 final long searchId = getSearchId();
                 final AsyncTwitterWrapper twitter = twitterWrapper;
-                if (searchId <= 0 || twitter == null) return;
+                if (searchId <= 0) return;
                 twitter.destroySavedSearchAsync(accountKey, searchId);
                 break;
             default:

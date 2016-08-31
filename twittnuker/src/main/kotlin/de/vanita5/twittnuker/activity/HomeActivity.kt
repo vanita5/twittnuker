@@ -38,7 +38,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceActivity
 import android.support.annotation.StringRes
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager.OnPageChangeListener
@@ -47,7 +46,6 @@ import android.support.v4.widget.DrawerLayoutAccessor
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.TintTypedArray
-import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.util.SparseIntArray
 import android.view.Gravity
@@ -57,7 +55,6 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup.MarginLayoutParams
-import android.widget.ImageButton
 import android.widget.Toast
 
 import com.squareup.otto.Subscribe
@@ -154,11 +151,12 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
             return DataStoreUtils.getActivatedAccountKeys(this)
         }
 
-    override fun getCurrentVisibleFragment(): Fragment? {
-        val currentItem = mainPager!!.currentItem
-        if (currentItem < 0 || currentItem >= pagerAdapter!!.count) return null
-        return pagerAdapter!!.instantiateItem(mainPager, currentItem) as Fragment
-    }
+    override val currentVisibleFragment: Fragment?
+        get() {
+            val currentItem = mainPager!!.currentItem
+            if (currentItem < 0 || currentItem >= pagerAdapter!!.count) return null
+            return pagerAdapter!!.instantiateItem(mainPager, currentItem) as Fragment
+        }
 
     override fun triggerRefresh(position: Int): Boolean {
         val f = pagerAdapter!!.instantiateItem(mainPager, position) as Fragment

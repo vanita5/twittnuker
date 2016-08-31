@@ -604,7 +604,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
     @Override
-    public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String key) {
+    public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
         updatePreferences();
     }
 
