@@ -651,9 +651,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 }
                 final UserList result = twitter.addUserListMembers(mListId, UserKey.getIds(userIds));
                 final ParcelableUserList list = ParcelableUserListUtils.from(result, mAccountKey);
-                return SingleResponse.Companion.getInstance(list, null);
+                return SingleResponse.Companion.getInstance(list);
             } catch (final MicroBlogException e) {
-                return SingleResponse.Companion.getInstance(null, e);
+                return SingleResponse.Companion.getInstance(e);
             }
         }
 
@@ -991,9 +991,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 userListUpdate.setMode(mIsPublic ? UserList.Mode.PUBLIC : UserList.Mode.PRIVATE);
                 userListUpdate.setDescription(mDescription);
                 final UserList list = twitter.createUserList(userListUpdate);
-                return SingleResponse.Companion.getInstance(ParcelableUserListUtils.from(list, mAccountKey), null);
+                return SingleResponse.Companion.getInstance(ParcelableUserListUtils.from(list, mAccountKey));
             } catch (final MicroBlogException e) {
-                return SingleResponse.Companion.getInstance(null, e);
+                return SingleResponse.Companion.getInstance(e);
             }
         }
 
@@ -1037,9 +1037,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 }
                 final UserList userList = twitter.deleteUserListMembers(mUserListId, UserKey.getIds(userIds));
                 final ParcelableUserList list = ParcelableUserListUtils.from(userList, mAccountKey);
-                return SingleResponse.Companion.getInstance(list, null);
+                return SingleResponse.Companion.getInstance(list);
             } catch (final MicroBlogException e) {
-                return SingleResponse.Companion.getInstance(null, e);
+                return SingleResponse.Companion.getInstance(e);
             }
         }
 
@@ -1105,12 +1105,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             try {
                 final DirectMessage message = twitter.destroyDirectMessage(mMessageId);
                 deleteMessages();
-                return SingleResponse.Companion.getInstance(message, null);
+                return SingleResponse.Companion.getInstance(message);
             } catch (final MicroBlogException e) {
                 if (isMessageNotFound(e)) {
                     deleteMessages();
                 }
-                return SingleResponse.Companion.getInstance(null, e);
+                return SingleResponse.Companion.getInstance(e);
             }
         }
 
@@ -1361,7 +1361,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 DataStoreUtils.deleteStatus(mResolver, mAccountKey, mStatusId, status);
                 DataStoreUtils.deleteActivityStatus(mResolver, mAccountKey, mStatusId, status);
             }
-            return SingleResponse.Companion.getInstance(status, exception);
+            return SingleResponse.Companion.getInstance(status);
         }
 
         @Override
@@ -1412,9 +1412,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 try {
                 final UserList userList = twitter.destroyUserListSubscription(mListId);
                 final ParcelableUserList list = ParcelableUserListUtils.from(userList, mAccountKey);
-                return SingleResponse.Companion.getInstance(list, null);
+                return SingleResponse.Companion.getInstance(list);
             } catch (final MicroBlogException e) {
-                return SingleResponse.Companion.getInstance(null, e);
+                return SingleResponse.Companion.getInstance(e);
             }
         }
 
