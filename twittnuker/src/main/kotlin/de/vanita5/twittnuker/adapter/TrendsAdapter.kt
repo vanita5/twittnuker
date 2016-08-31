@@ -20,32 +20,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity
+package de.vanita5.twittnuker.adapter
 
-import android.app.Activity
-import android.content.Intent
-import android.os.Bundle
+import android.content.Context
+import android.database.Cursor
+import android.support.v4.widget.SimpleCursorAdapter
 
-import de.vanita5.twittnuker.BuildConfig
-import de.vanita5.twittnuker.util.StrictModeUtils
-import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.provider.TwidereDataStore
 
-open class MainActivity : Activity() {
+class TrendsAdapter(context: Context) : SimpleCursorAdapter(context,
+        android.R.layout.simple_list_item_1, null, arrayOf(TwidereDataStore.CachedTrends.NAME),
+        intArrayOf(android.R.id.text1), 0) {
+    private var nameIdx: Int = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        if (BuildConfig.DEBUG) {
-            StrictModeUtils.detectAllVmPolicy()
-            StrictModeUtils.detectAllThreadPolicy()
+    override fun getItem(position: Int): String? {
+        val c = cursor
+        if (c != null && !c.isClosed && c.moveToPosition(position))
+            return c.getString(nameIdx)
+        return null
+    }
+
+    override fun swapCursor(c: Cursor?): Cursor? {
+        if (c != null) {
+            nameIdx = c.getColumnIndex(TwidereDataStore.CachedTrends.NAME)
         }
-        super.onCreate(savedInstanceState)
-        if (Utils.checkDeviceCompatible()) {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-        } else {
-            val intent = Intent(this, IncompatibleAlertActivity::class.java)
-            startActivity(intent)
-        }
-        finish()
+        return super.swapCursor(c)
     }
 
 }

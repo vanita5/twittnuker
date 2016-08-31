@@ -31,8 +31,11 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_URI
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_PHISHING_LINK_WARNING
 import de.vanita5.twittnuker.fragment.PhishingLinkWarningDialogFragment
 
-class DirectMessageOnLinkClickHandler(context: Context, manager: MultiSelectManager,
-                                      preferences: SharedPreferencesWrapper) : OnLinkClickHandler(context, manager, preferences) {
+class DirectMessageOnLinkClickHandler(
+        context: Context,
+        manager: MultiSelectManager?,
+        preferences: SharedPreferencesWrapper
+) : OnLinkClickHandler(context, manager, preferences) {
 
     override fun openLink(link: String) {
         if (manager != null && manager.isActive) return

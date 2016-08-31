@@ -41,5 +41,5 @@ interface IDirectMessagesAdapter {
     @CardMediaContainer.PreviewStyle
     val mediaPreviewStyle: Int
 
-    fun findItem(id: Long): ParcelableDirectMessage
+    fun findItem(id: Long): ParcelableDirectMessage?
 }

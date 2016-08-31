@@ -28,7 +28,7 @@ import de.vanita5.twittnuker.util.MediaLoaderWrapper
 
 interface IBaseAdapter : ListAdapter {
 
-    val imageLoader: MediaLoaderWrapper
+    val mediaLoader: MediaLoaderWrapper
 
     val linkHighlightOption: Int
 
@@ -36,13 +36,11 @@ interface IBaseAdapter : ListAdapter {
 
     var isDisplayNameFirst: Boolean
 
-    val isProfileImageDisplayed: Boolean
+    var isProfileImageDisplayed: Boolean
 
     var isShowAccountColor: Boolean
 
     fun notifyDataSetChanged()
-
-    fun setDisplayProfileImage(display: Boolean)
 
     fun setLinkHighlightOption(option: String)
 }

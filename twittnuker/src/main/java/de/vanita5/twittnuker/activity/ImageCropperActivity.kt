@@ -22,30 +22,39 @@
 
 package de.vanita5.twittnuker.activity
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.Toolbar
+import com.soundcloud.android.crop.CropImageActivity
+import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.activity.iface.IThemedActivity
+import de.vanita5.twittnuker.util.ThemeUtils
 
-import de.vanita5.twittnuker.BuildConfig
-import de.vanita5.twittnuker.util.StrictModeUtils
-import de.vanita5.twittnuker.util.Utils
+class ImageCropperActivity : CropImageActivity(), IThemedActivity {
 
-open class MainActivity : Activity() {
+    // Data fields
+    override val currentThemeBackgroundAlpha by lazy { themeBackgroundAlpha }
+    override val currentThemeBackgroundOption by lazy { themeBackgroundOption }
+
+    private var mDoneCancelBar: Toolbar? = null
+
+    override fun onContentChanged() {
+        super.onContentChanged()
+        mDoneCancelBar = findViewById(R.id.done_cancel_bar) as Toolbar
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (BuildConfig.DEBUG) {
-            StrictModeUtils.detectAllVmPolicy()
-            StrictModeUtils.detectAllThreadPolicy()
-        }
         super.onCreate(savedInstanceState)
-        if (Utils.checkDeviceCompatible()) {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-        } else {
-            val intent = Intent(this, IncompatibleAlertActivity::class.java)
-            startActivity(intent)
-        }
-        finish()
+
     }
+
+    override fun setContentView(layoutResID: Int) {
+        super.setContentView(R.layout.activity_image_cropper)
+    }
+
+    override val themeBackgroundAlpha: Int
+        get() = ThemeUtils.getUserThemeBackgroundAlpha(this)
+
+    override val themeBackgroundOption: String
+        get() = ThemeUtils.getThemeBackgroundOption(this)
 
 }
