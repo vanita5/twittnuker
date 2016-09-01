@@ -20,28 +20,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity;
+package de.vanita5.twittnuker.activity
 
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 
-import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.SettingsDetailsFragment;
+import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.constant.IntentConstants
+import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.fragment.SettingsDetailsFragment
 
-public class HiddenSettingsActivity extends BaseActivity {
+class HiddenSettingsActivity : BaseActivity() {
 
-    @Override
-    protected void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        final Bundle fragmentArgs = new Bundle();
-        fragmentArgs.putInt(EXTRA_RESID, R.xml.preferences_hidden);
-        final FragmentManager fm = getSupportFragmentManager();
-        final FragmentTransaction ft = fm.beginTransaction();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val fragmentArgs = Bundle()
+        fragmentArgs.putInt(EXTRA_RESID, R.xml.preferences_hidden)
+        val fm = supportFragmentManager
+        val ft = fm.beginTransaction()
         ft.replace(android.R.id.content, Fragment.instantiate(this,
-                SettingsDetailsFragment.class.getName(), fragmentArgs));
-        ft.commit();
+                SettingsDetailsFragment::class.java.name, fragmentArgs))
+        ft.commit()
     }
 
 }

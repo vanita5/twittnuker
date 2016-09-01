@@ -28,7 +28,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter
-import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 
@@ -56,9 +55,8 @@ open class BaseArrayAdapter<T> @JvmOverloads constructor(context: Context, layou
     override var isShowAccountColor: Boolean = false
 
     init {
-        //noinspection unchecked
+        @Suppress("UNCHECKED_CAST")
         GeneralComponentHelper.build(context).inject(this as BaseArrayAdapter<Any>)
-        val app = TwittnukerApplication.getInstance(context)
         linkify = TwidereLinkify(OnLinkClickHandler(context, multiSelectManager, preferences))
         colorPrefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
         colorPrefs.registerOnSharedPreferenceChangeListener(this)

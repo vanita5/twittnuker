@@ -1,28 +1,23 @@
 /*
- * Twittnuker - Twitter client for Android
+ * Copyright (C) 2006 The Android Open Source Project
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package de.vanita5.twittnuker.adapter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * A concrete BaseRecyclerViewAdapter that is backed by an array of arbitrary
+ * A concrete BaseAdapter that is backed by an array of arbitrary
  * objects.  By default this class expects that the provided resource id references
  * a single TextView.  If you want to use a more complex layout, use the constructors that
  * also takes a field id.  That field id should reference a TextView in the larger layout
@@ -343,7 +338,7 @@ public class ArrayAdapter<T> extends BaseAdapter implements Filterable {
      * {@inheritDoc}
      */
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, @Nullable View convertView, ViewGroup parent) {
         return createViewFromResource(position, convertView, parent, mResource);
     }
 

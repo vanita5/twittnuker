@@ -244,7 +244,7 @@
                 android:value=".activity.HomeActivity"/>
         </activity>
         <activity
-            android:name=".activity.APIEditorActivity"
+            android:name=".activity.iface.APIEditorActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/edit_api"
             android:theme="@style/Theme.Twidere.Dialog"

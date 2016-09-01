@@ -28,7 +28,7 @@
     tools:menu="menu_media_viewer_image_page">
 
     <de.vanita5.twittnuker.view.MediaViewPager
-        android:id="@+id/view_pager"
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

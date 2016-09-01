@@ -50,7 +50,6 @@ import com.squareup.otto.Bus
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
-import de.vanita5.twittnuker.activity.iface.IAppCompatActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity
 import de.vanita5.twittnuker.activity.iface.IThemedActivity
@@ -65,7 +64,10 @@ import java.util.*
 import javax.inject.Inject
 
 @SuppressLint("Registered")
-open class BaseActivity : ATEActivity(), Constants, IExtendedActivity, IThemedActivity, IAppCompatActivity, IControlBarActivity, OnFitSystemWindowsListener, SystemWindowsInsetsCallback, KeyboardShortcutCallback, OnPreferenceDisplayDialogCallback, ATEToolbarCustomizer, ATEStatusBarCustomizer {
+open class BaseActivity : ATEActivity(), Constants, IExtendedActivity, IThemedActivity,
+        IControlBarActivity, OnFitSystemWindowsListener, SystemWindowsInsetsCallback,
+        KeyboardShortcutCallback, OnPreferenceDisplayDialogCallback, ATEToolbarCustomizer,
+        ATEStatusBarCustomizer {
     @Inject
     lateinit var keyboardShortcutsHandler: KeyboardShortcutsHandler
     @Inject
@@ -245,7 +247,7 @@ open class BaseActivity : ATEActivity(), Constants, IExtendedActivity, IThemedAc
         actionHelper.dispatchOnResumeFragments()
     }
 
-    override fun executeAfterFragmentResumed(action: IExtendedActivity.Action) {
+    override fun executeAfterFragmentResumed(action: (IExtendedActivity) -> Unit) {
         actionHelper.executeAfterFragmentResumed(action)
     }
 

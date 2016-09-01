@@ -20,10 +20,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity.iface;
+package de.vanita5.twittnuker.activity.iface
 
-import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar
 
-public interface IAppCompatActivity {
-    ActionBar getSupportActionBar();
+interface IAppCompatActivity {
+    val supportActionBar: ActionBar
 }

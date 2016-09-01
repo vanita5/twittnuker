@@ -32,6 +32,7 @@ import android.content.res.Resources;
 import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -523,7 +524,7 @@ public class CustomTabEditorActivity extends BaseActivity implements OnClickList
         }
 
         @Override
-        public View getView(final int position, final View convertView, final ViewGroup parent) {
+        public View getView(final int position, @Nullable final View convertView, final ViewGroup parent) {
             final View view = super.getView(position, convertView, parent);
             bindIconView(position, getItem(position), view);
             return view;
