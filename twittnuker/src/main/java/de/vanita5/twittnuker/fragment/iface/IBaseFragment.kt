@@ -31,6 +31,8 @@ interface IBaseFragment {
 
     val tabPosition: Int
 
+    val tabId: Long
+
     fun requestFitSystemWindows()
 
     interface SystemWindowsInsetsCallback {
