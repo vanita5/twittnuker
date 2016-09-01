@@ -26,13 +26,13 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import org.mariotaku.ktextension.asTypedArray
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.IntentUtils
-import de.vanita5.twittnuker.util.Utils
 
 class SensitiveContentWarningDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
 
@@ -47,8 +47,7 @@ class SensitiveContentWarningDialogFragment : BaseDialogFragment(), DialogInterf
                 val status = args.getParcelable<ParcelableStatus>(EXTRA_STATUS)
                 val option = args.getBundle(EXTRA_ACTIVITY_OPTIONS)
                 val newDocument = args.getBoolean(EXTRA_NEW_DOCUMENT)
-                val media = Utils.newParcelableArray(args.getParcelableArray(EXTRA_MEDIA),
-                        ParcelableMedia.CREATOR)
+                val media = args.getParcelableArray(EXTRA_MEDIA).asTypedArray(ParcelableMedia.CREATOR)
                 IntentUtils.openMediaDirectly(context, accountKey, status, null, current, media,
                         option, newDocument)
             }
