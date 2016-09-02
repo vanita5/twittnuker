@@ -20,9 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment;
+package de.vanita5.twittnuker.fragment
 
-import android.support.v4.app.Fragment;
+import android.support.v4.app.Fragment
 
-public class MessagesEntriesFragment extends Fragment {
-}
+class MessagesEntriesFragment : Fragment()
