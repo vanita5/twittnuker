@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.util.Utils
 class SettingsDetailsFragment : BasePreferenceFragment(), OnSharedPreferenceChangeListener {
 
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String) {
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         val preferenceManager = preferenceManager
         preferenceManager.sharedPreferencesName = SHARED_PREFERENCES_NAME
         val defaultScreen = preferenceScreen

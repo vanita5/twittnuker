@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_MEDIA_PREVIE
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.DraftCursorIndices
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -62,11 +63,12 @@ class DraftsAdapter(context: Context) : SimpleCursorAdapter(context, R.layout.li
 
     override fun bindView(view: View, context: Context, cursor: Cursor) {
         val holder = view.tag as DraftViewHolder
-        val accountIds = TwidereArrayUtils.parseLongArray(cursor.getString(mIndices!!.account_keys), ',')
-        val text = cursor.getString(mIndices!!.text)
-        val mediaUpdates = JsonSerializer.parseArray(cursor.getString(mIndices!!.media), ParcelableMediaUpdate::class.java)
-        val timestamp = cursor.getLong(mIndices!!.timestamp)
-        val actionType: String = cursor.getString(mIndices!!.action_type) ?: Draft.Action.UPDATE_STATUS
+        val indices = mIndices!!
+        val accountKeys = UserKey.arrayOf(cursor.getString(indices.account_keys))
+        val text = cursor.getString(indices.text)
+        val mediaUpdates = JsonSerializer.parseArray(cursor.getString(indices.media), ParcelableMediaUpdate::class.java)
+        val timestamp = cursor.getLong(indices.timestamp)
+        val actionType: String = cursor.getString(indices.action_type) ?: Draft.Action.UPDATE_STATUS
         val actionName = getActionName(context, actionType)
         holder.media_preview_container.setStyle(mediaPreviewStyle)
         when (actionType) {
@@ -80,7 +82,7 @@ class DraftsAdapter(context: Context) : SimpleCursorAdapter(context, R.layout.li
                 holder.media_preview_container.visibility = View.GONE
             }
         }
-        holder.content.drawEnd(*DataStoreUtils.getAccountColors(context, accountIds))
+        holder.content.drawEnd(*DataStoreUtils.getAccountColors(context, accountKeys))
         holder.setTextSize(mTextSize)
         val emptyContent = TextUtils.isEmpty(text)
         if (emptyContent) {
