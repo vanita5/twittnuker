@@ -30,6 +30,7 @@ import android.os.Bundle
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
+import android.support.v4.widget.CursorAdapter
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -143,7 +144,7 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
         }
     }
 
-    override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         supportLoaderManager.restartLoader(0, null, this)
     }
 
