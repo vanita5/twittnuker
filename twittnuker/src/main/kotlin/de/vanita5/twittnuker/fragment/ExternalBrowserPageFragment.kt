@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.model.ParcelableMedia
 class ExternalBrowserPageFragment : MediaViewerFragment() {
 
     override fun onCreateMediaView(inflater: LayoutInflater, parent: ViewGroup,
-                                   savedInstanceState: Bundle): View {
+                                   savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.layout_media_viewer_browser_fragment, parent, false)
     }
 
