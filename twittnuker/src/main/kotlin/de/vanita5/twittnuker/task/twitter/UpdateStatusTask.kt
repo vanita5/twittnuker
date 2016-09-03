@@ -25,11 +25,14 @@ package de.vanita5.twittnuker.task.twitter
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.support.annotation.UiThread
 import android.support.annotation.WorkerThread
 import android.text.TextUtils
 import android.util.Pair
+import android.util.Size
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.mariotaku.abstask.library.AbstractTask
@@ -48,11 +51,8 @@ import org.mariotaku.restfu.http.mime.SimpleBody
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
@@ -63,9 +63,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream
-
-import java.io.FileNotFoundException
-import java.io.IOException
+import java.io.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -676,11 +674,26 @@ class UpdateStatusTask(internal val context: Context, internal val stateCallback
         @Throws(IOException::class)
         fun getBodyFromMedia(resolver: ContentResolver,
                              mediaUri: Uri,
-                             readListener: ContentLengthInputStream.ReadListener): FileBody {
+                             readListener: ContentLengthInputStream.ReadListener,
+                             sizeLimit: Size? = null): FileBody {
             val mediaType = resolver.getType(mediaUri)
-            val `is` = resolver.openInputStream(mediaUri) ?: throw FileNotFoundException(mediaUri.toString())
-            val length = `is`.available().toLong()
-            val cis = ContentLengthInputStream(`is`, length)
+            val st = resolver.openInputStream(mediaUri) ?: throw FileNotFoundException(mediaUri.toString())
+            val cis: ContentLengthInputStream
+            val length: Long
+            if (sizeLimit != null) {
+                val o = BitmapFactory.Options()
+                o.inJustDecodeBounds = true
+                BitmapFactory.decodeStream(st, null, o)
+                o.inJustDecodeBounds = false
+                val bitmap = BitmapFactory.decodeStream(st, null, o)
+                val os = DirectByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 85, os)
+                length = os.size().toLong()
+                cis = ContentLengthInputStream(os.inputStream(true), length)
+            } else {
+                length = st.available().toLong()
+                cis = ContentLengthInputStream(st, length)
+            }
             cis.setReadListener(readListener)
             val contentType: ContentType
             if (TextUtils.isEmpty(mediaType)) {
@@ -690,5 +703,28 @@ class UpdateStatusTask(internal val context: Context, internal val stateCallback
             }
             return FileBody(cis, "attachment", length, contentType)
         }
+
+        internal class DirectByteArrayOutputStream : ByteArrayOutputStream {
+            constructor() : super()
+            constructor(size: Int) : super(size)
+
+            fun inputStream(close: Boolean): InputStream {
+                return DirectInputStream(this, close)
+            }
+
+            internal class DirectInputStream(
+                    val os: DirectByteArrayOutputStream,
+                    val close: Boolean
+            ) : ByteArrayInputStream(os.buf, 0, os.count) {
+                override fun close() {
+                    if (close) {
+                        os.close()
+                    }
+                    super.close()
+                }
+            }
+        }
+
+
     }
 }

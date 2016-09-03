@@ -1084,7 +1084,7 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
 
     }
 
-    override fun onLinkClick(link: String?, orig: String, accountKey: UserKey,
+    override fun onLinkClick(link: String, orig: String?, accountKey: UserKey?,
                              extraId: Long, type: Int, sensitive: Boolean,
                              start: Int, end: Int): Boolean {
         val user = user ?: return false
@@ -1095,7 +1095,7 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
                 return true
             }
             TwidereLinkify.LINK_TYPE_HASHTAG -> {
-                IntentUtils.openTweetSearch(activity, user.account_key, "#" + link!!)
+                IntentUtils.openTweetSearch(activity, user.account_key, "#" + link)
                 return true
             }
             TwidereLinkify.LINK_TYPE_LINK_IN_TEXT, TwidereLinkify.LINK_TYPE_ENTITY_URL -> {
@@ -1110,8 +1110,8 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
                 return true
             }
             TwidereLinkify.LINK_TYPE_LIST -> {
-                val mentionList = link?.split("/".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
-                if (mentionList?.size != 2) {
+                val mentionList = link.split("/".toRegex()).dropLastWhile { it.isEmpty() }
+                if (mentionList.size != 2) {
                     return false
                 }
                 return true
