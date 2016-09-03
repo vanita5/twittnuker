@@ -370,7 +370,7 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
     }
 
     @NonNull
-    static String substituteLegacyApiBaseUrl(@NonNull String format, String domain) {
+    static String substituteLegacyApiBaseUrl(@NonNull String format, @Nullable String domain) {
         final int idxOfSlash = format.indexOf("://");
         // Not an url
         if (idxOfSlash < 0) return format;
@@ -381,8 +381,12 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
         if (!host.equalsIgnoreCase("api.twitter.com")) return format;
         final StringBuilder sb = new StringBuilder();
         sb.append(format.substring(0, startOfHost));
-        sb.append(domain);
-        sb.append(".twitter.com");
+        if (domain != null) {
+            sb.append(domain);
+            sb.append(".twitter.com");
+        } else {
+            sb.append("twitter.com");
+        }
         if (endOfHost != -1) {
             sb.append(format.substring(endOfHost));
         }
