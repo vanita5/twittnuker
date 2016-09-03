@@ -940,7 +940,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
                     field = value
                 }
 
-            override fun getLoginVerification(challengeType: String?): String? {
+            override fun getLoginVerification(challengeType: String): String? {
                 // Dismiss current progress dialog
                 publishProgress(Runnable {
                     val activity = activityRef.get() ?: return@Runnable
