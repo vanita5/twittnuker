@@ -63,6 +63,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.*
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.Referral
+import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.fragment.AccountsDashboardFragment.AccountsInfo
 import de.vanita5.twittnuker.menu.AccountToggleProvider
@@ -164,8 +165,9 @@ class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<Account
         when (requestCode) {
             REQUEST_SETTINGS -> {
                 if (data == null) return
-                val activity = activity
-                if (data.getBooleanExtra(EXTRA_CHANGED, false)) {
+                if (data.getBooleanExtra(EXTRA_SHOULD_RESTART, false)) {
+                    Utils.restartActivity(activity)
+                } else if (data.getBooleanExtra(EXTRA_SHOULD_RECREATE, false)) {
                     activity.recreate()
                 }
                 return

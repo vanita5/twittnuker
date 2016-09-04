@@ -24,8 +24,8 @@
 <!--suppress AndroidElementNotAllowed -->
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:app="http://schemas.android.com/apk/res-auto"
-                  android:title="@string/theme">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/theme">
 
     <de.vanita5.twittnuker.preference.EntrySummaryListPreference
         android:defaultValue="auto"
@@ -35,7 +35,7 @@
         android:order="21"
         android:title="@string/theme">
         <extra
-            android:name="restart_activity"
+            android:name="recreate_activity"
             android:value="true"/>
     </de.vanita5.twittnuker.preference.EntrySummaryListPreference>
 
@@ -44,10 +44,10 @@
         android:order="22"
         android:title="@string/background">
         <extra
-            android:name="notify_change"
+            android:name="should_recreate"
             android:value="true"/>
         <extra
-            android:name="restart_activity"
+            android:name="recreate_activity"
             android:value="true"/>
     </de.vanita5.twittnuker.preference.ThemeBackgroundPreference>
 
@@ -57,10 +57,10 @@
         android:title="@string/color"
         app:defaultColor="@color/branding_color">
         <extra
-            android:name="notify_change"
+            android:name="should_recreate"
             android:value="true"/>
         <extra
-            android:name="restart_activity"
+            android:name="recreate_activity"
             android:value="true"/>
     </de.vanita5.twittnuker.preference.ColorPickerPreference>
 
@@ -69,7 +69,7 @@
         android:order="25"
         android:title="@string/emoji_support">
         <extra
-            android:name="notify_change"
+            android:name="should_recreate"
             android:value="true"/>
     </de.vanita5.twittnuker.preference.EmojiSupportPreference>
 

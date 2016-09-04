@@ -59,7 +59,8 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
     private var mEntriesListView: ListView? = null
     private var mSlidingPaneLayout: SlidingPaneLayout? = null
 
-    var shouldNotifyChange: Boolean = false
+    var shouldRecreate: Boolean = false
+    var shouldRestart: Boolean = false
     private var mEntriesAdapter: EntriesAdapter? = null
     private var mDetailFragmentContainer: View? = null
 
@@ -155,8 +156,9 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == RESULT_SETTINGS_CHANGED && data != null && data.getBooleanExtra(EXTRA_CHANGED, false)) {
-            shouldNotifyChange = true
+        if (resultCode == RESULT_SETTINGS_CHANGED && data != null) {
+            shouldRecreate = data.getBooleanExtra(EXTRA_SHOULD_RECREATE, false)
+            shouldRestart = data.getBooleanExtra(EXTRA_SHOULD_RESTART, false)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -167,9 +169,10 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
 
 
     override fun finish() {
-        if (shouldNotifyChange) {
+        if (shouldRecreate || shouldRestart) {
             val data = Intent()
-            data.putExtra(EXTRA_CHANGED, true)
+            data.putExtra(EXTRA_SHOULD_RECREATE, shouldRecreate)
+            data.putExtra(EXTRA_SHOULD_RESTART, shouldRestart)
             setResult(RESULT_SETTINGS_CHANGED, data)
         }
         super.finish()
@@ -247,8 +250,12 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
     }
 
     private fun notifyUnsavedChange(): Boolean {
-        if (isTopSettings && shouldNotifyChange) {
+        if (isTopSettings && (shouldRecreate || shouldRestart)) {
             val df = RestartConfirmDialogFragment()
+            val args = Bundle()
+            args.putBoolean(EXTRA_SHOULD_RECREATE, shouldRecreate)
+            args.putBoolean(EXTRA_SHOULD_RESTART, shouldRestart)
+            df.arguments = args
             df.show(supportFragmentManager, "restart_confirm")
             return true
         }
@@ -397,9 +404,14 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
 
         private val RESULT_SETTINGS_CHANGED = 10
 
-        fun setShouldNotifyChange(activity: Activity) {
+        fun setShouldRecreate(activity: Activity) {
             if (activity !is SettingsActivity) return
-            activity.shouldNotifyChange = true
+            activity.shouldRecreate = true
+        }
+
+        fun setShouldRestart(activity: Activity) {
+            if (activity !is SettingsActivity) return
+            activity.shouldRestart = true
         }
     }
 

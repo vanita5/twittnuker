@@ -31,7 +31,7 @@
         android:summary="@string/unread_count_summary"
         android:title="@string/unread_count">
         <extra
-            android:name="notify_change"
+            android:name="should_recreate"
             android:value="true" />
     </SwitchPreferenceCompat>
 
