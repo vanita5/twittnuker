@@ -86,7 +86,9 @@ class ParcelableUserLoader(
                 val values = ParcelableUserValuesCreator.create(user)
                 resolver.insert(CachedUsers.CONTENT_URI, values)
                 ParcelableUserUtils.updateExtraInformation(user, credentials, userColorNameManager)
-                return SingleResponse.Companion.getInstance(user)
+                val response = SingleResponse(user)
+                response.extras.putParcelable(EXTRA_ACCOUNT, credentials)
+                return response
             }
         }
         val twitter = MicroBlogAPIFactory.getInstance(context, credentials, true, true) ?: return SingleResponse()
@@ -121,7 +123,9 @@ class ParcelableUserLoader(
                         if (TextUtils.equals(UserKeyUtils.getUserHost(user), user.key.host)) {
                             user.account_key = accountKey
                             user.account_color = credentials.color
-                            return SingleResponse.Companion.getInstance(user)
+                            val response = SingleResponse(user)
+                            response.extras.putParcelable(EXTRA_ACCOUNT, credentials)
+                            return response
                         }
                         cur.moveToNext()
                     }
@@ -167,7 +171,7 @@ class ParcelableUserLoader(
         if (!omitIntentExtra && extras != null) {
             val user = extras.getParcelable<ParcelableUser>(EXTRA_USER)
             if (user != null) {
-                deliverResult(SingleResponse.Companion.getInstance(user))
+//                deliverResult(SingleResponse(user))
             }
         }
         forceLoad()
