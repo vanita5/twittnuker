@@ -200,6 +200,7 @@
 }
 
 # Kotlin
+-dontwarn de.vanita5.twittnuker.**
 -dontwarn de.vanita5.twittnuker.adapter.iface.**
 -dontwarn de.vanita5.twittnuker.fragment.AbsStatusesFragment
 -dontwarn de.vanita5.twittnuker.fragment.CursorStatusesFragment

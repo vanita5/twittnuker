@@ -53,6 +53,8 @@ import org.mariotaku.restfu.http.RestHttpClient;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
@@ -167,9 +169,9 @@ public class NetworkDiagnosticsFragment extends BaseSupportFragment {
             final TwidereDns dns = holder.getDns();
             final SharedPreferencesWrapper prefs = holder.getPreferences();
             publishProgress(new LogText("Network preferences"), LogText.LINEBREAK);
-            publishProgress(new LogText("using_resolver: " + prefs.getBoolean(KEY_BUILTIN_DNS_RESOLVER)), LogText.LINEBREAK);
-            publishProgress(new LogText("tcp_dns_query: " + prefs.getBoolean(KEY_TCP_DNS_QUERY)), LogText.LINEBREAK);
-            publishProgress(new LogText("dns_server: " + prefs.getString(KEY_DNS_SERVER, null)), LogText.LINEBREAK);
+            publishProgress(new LogText("using_resolver: " + prefs.getBoolean(SharedPreferenceConstants.KEY_BUILTIN_DNS_RESOLVER)), LogText.LINEBREAK);
+            publishProgress(new LogText("tcp_dns_query: " + prefs.getBoolean(SharedPreferenceConstants.KEY_TCP_DNS_QUERY)), LogText.LINEBREAK);
+            publishProgress(new LogText("dns_server: " + prefs.getString(SharedPreferenceConstants.KEY_DNS_SERVER, null)), LogText.LINEBREAK);
             publishProgress(LogText.LINEBREAK);
             publishProgress(new LogText("System DNS servers"), LogText.LINEBREAK);
 
@@ -216,7 +218,7 @@ public class NetworkDiagnosticsFragment extends BaseSupportFragment {
                 if (credentials.api_url_format != null) {
                     baseUrl = MicroBlogAPIFactory.getApiBaseUrl(credentials.api_url_format, "api");
                 } else {
-                    baseUrl = MicroBlogAPIFactory.getApiBaseUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api");
+                    baseUrl = MicroBlogAPIFactory.getApiBaseUrl(TwittnukerConstants.DEFAULT_TWITTER_API_URL_FORMAT, "api");
                 }
                 RestHttpClient client = RestAPIFactory.getRestClient(twitter).getRestClient();
                 HttpResponse response = null;
