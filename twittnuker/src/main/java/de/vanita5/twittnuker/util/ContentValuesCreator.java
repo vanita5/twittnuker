@@ -167,7 +167,8 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 
     @NonNull
     public static ContentValues createActivity(final ParcelableActivity activity,
-                                               ParcelableCredentials credentials, UserColorNameManager manager) {
+                                               final ParcelableCredentials credentials,
+                                               final UserColorNameManager manager) {
         final ContentValues values = new ContentValues();
         final ParcelableStatus status = ParcelableActivityExtensionsKt.getActivityStatus(activity);
 
