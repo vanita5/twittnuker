@@ -26,7 +26,6 @@ import de.vanita5.twittnuker.library.twitter.model.Activity
 import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
-
 import java.util.*
 
 /**
@@ -100,7 +99,7 @@ object ParcelableActivityUtils {
             if (item.isFollowing) {
                 return@fold true
             }
-            return@fold false
+            return@fold folded
         }
         if (result.sources != null) {
             result.source_ids = arrayOfNulls<UserKey>(result.sources.size)

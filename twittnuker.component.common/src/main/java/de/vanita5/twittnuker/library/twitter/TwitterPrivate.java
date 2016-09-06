@@ -25,9 +25,11 @@ package de.vanita5.twittnuker.library.twitter;
 import de.vanita5.twittnuker.library.twitter.api.PrivateActivityResources;
 import de.vanita5.twittnuker.library.twitter.api.PrivateDirectMessagesResources;
 import de.vanita5.twittnuker.library.twitter.api.PrivateFriendsFollowersResources;
+import de.vanita5.twittnuker.library.twitter.api.PrivateSearchResources;
 import de.vanita5.twittnuker.library.twitter.api.PrivateTimelineResources;
 import de.vanita5.twittnuker.library.twitter.api.PrivateTweetResources;
 
 public interface TwitterPrivate extends PrivateActivityResources, PrivateTweetResources,
-        PrivateTimelineResources, PrivateFriendsFollowersResources, PrivateDirectMessagesResources {
+        PrivateTimelineResources, PrivateFriendsFollowersResources, PrivateDirectMessagesResources,
+        PrivateSearchResources {
 }

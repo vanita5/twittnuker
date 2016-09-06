@@ -22,5 +22,23 @@
 
 package de.vanita5.twittnuker.library.twitter.model;
 
-public class PrivateSearchResult {
+import org.mariotaku.restfu.http.SimpleValueMap;
+
+public class UniversalSearchQuery extends SimpleValueMap {
+
+    public void setCursor(String cursor) {
+        put("cursor", cursor);
+    }
+
+    public void setQuery(String query) {
+        put("q", query);
+    }
+
+    public void setCount(int count) {
+        put("count", count);
+    }
+
+    public void setModules(String[] modules) {
+        put("modules", modules);
+    }
 }

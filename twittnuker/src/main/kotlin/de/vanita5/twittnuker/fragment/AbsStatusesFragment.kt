@@ -114,7 +114,9 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
                     return true
                 }
                 KeyboardShortcutConstants.ACTION_STATUS_RETWEET -> {
-                    RetweetQuoteDialogFragment.show(fragmentManager, status)
+                    executeAfterFragmentResumed {
+                        RetweetQuoteDialogFragment.show(fragmentManager, status)
+                    }
                     return true
                 }
                 KeyboardShortcutConstants.ACTION_STATUS_FAVORITE -> {
