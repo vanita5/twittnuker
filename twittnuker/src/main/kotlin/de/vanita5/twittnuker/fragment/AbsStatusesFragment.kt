@@ -46,8 +46,8 @@ import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.annotation.Referral
-import de.vanita5.twittnuker.constant.IntentConstants
-import de.vanita5.twittnuker.constant.KeyboardShortcutConstants
+import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
@@ -62,7 +62,10 @@ import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import java.util.*
 
-abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyclerViewFragment<ParcelableStatusesAdapter>(), LoaderCallbacks<List<ParcelableStatus>?>, IStatusViewHolder.StatusClickListener, KeyboardShortcutCallback {
+abstract class AbsStatusesFragment protected constructor() :
+        AbsContentListRecyclerViewFragment<ParcelableStatusesAdapter>(),
+        LoaderCallbacks<List<ParcelableStatus>?>, IStatusViewHolder.StatusClickListener,
+        KeyboardShortcutCallback {
 
     private val statusesBusCallback: Any
     private val onScrollListener = object : OnScrollListener() {
@@ -75,16 +78,86 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
     }
     private var navigationHelper: RecyclerViewNavigationHelper? = null
     private var pauseOnScrollListener: OnScrollListener? = null
+    var loaderInitialized: Boolean = false
+        private set
+
+    protected abstract val accountKeys: Array<UserKey>
+
+    protected var adapterData: List<ParcelableStatus>?
+        get() {
+            return adapter?.getData()
+        }
+        set(data) {
+            adapter?.setData(data)
+        }
+
+    protected open val readPositionTag: String?
+        @ReadPositionTag
+        get() = null
+    protected open val readPositionTagWithArguments: String?
+        get() = readPositionTag
+    private val currentReadPositionTag: String?
+        get() = "${readPositionTag}_${tabId}_current"
+
+    override val extraContentPadding: Rect
+        get() {
+            val paddingVertical = resources.getDimensionPixelSize(R.dimen.element_spacing_small)
+            return Rect(0, paddingVertical, 0, paddingVertical)
+        }
+
+    val shouldInitLoader: Boolean
+        get() = (parentFragment as? StatusesFragmentDelegate)?.shouldInitLoader ?: true
+
 
     init {
         statusesBusCallback = createMessageBusCallback()
     }
 
+    // Fragment life cycles
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        scrollListener?.reversed = preferences.getBoolean(SharedPreferenceConstants.KEY_READ_FROM_BOTTOM)
+        val adapter = adapter!!
+        adapter.statusClickListener = this
+        registerForContextMenu(recyclerView)
+        navigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager!!, adapter, this)
+        pauseOnScrollListener = PauseRecyclerViewOnScrollListener(adapter.mediaLoader.imageLoader, false, true)
+
+        if (shouldInitLoader) {
+            initLoaderIfNeeded()
+        }
+        showProgress()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        recyclerView.addOnScrollListener(onScrollListener)
+        recyclerView.addOnScrollListener(pauseOnScrollListener)
+        bus.register(statusesBusCallback)
+    }
+
+    override fun onStop() {
+        bus.unregister(statusesBusCallback)
+        recyclerView.removeOnScrollListener(pauseOnScrollListener)
+        recyclerView.removeOnScrollListener(onScrollListener)
+        if (userVisibleHint) {
+            saveReadPosition()
+        }
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        val adapter = adapter
+        adapter!!.statusClickListener = null
+        super.onDestroy()
+    }
+
     abstract fun getStatuses(param: RefreshTaskParam): Boolean
 
     override fun handleKeyboardShortcutSingle(handler: KeyboardShortcutsHandler, keyCode: Int, event: KeyEvent, metaState: Int): Boolean {
-        var action = handler.getKeyAction(KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION, keyCode, event, metaState)
-        if (KeyboardShortcutConstants.ACTION_NAVIGATION_REFRESH == action) {
+        var action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState)
+        if (ACTION_NAVIGATION_REFRESH == action) {
             triggerRefresh()
             return true
         }
@@ -103,23 +176,23 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
                 return true
             }
             if (action == null) {
-                action = handler.getKeyAction(KeyboardShortcutConstants.CONTEXT_TAG_STATUS, keyCode, event, metaState)
+                action = handler.getKeyAction(CONTEXT_TAG_STATUS, keyCode, event, metaState)
             }
             if (action == null) return false
             when (action) {
-                KeyboardShortcutConstants.ACTION_STATUS_REPLY -> {
-                    val intent = Intent(IntentConstants.INTENT_ACTION_REPLY)
-                    intent.putExtra(IntentConstants.EXTRA_STATUS, status)
+                ACTION_STATUS_REPLY -> {
+                    val intent = Intent(INTENT_ACTION_REPLY)
+                    intent.putExtra(EXTRA_STATUS, status)
                     startActivity(intent)
                     return true
                 }
-                KeyboardShortcutConstants.ACTION_STATUS_RETWEET -> {
+                ACTION_STATUS_RETWEET -> {
                     executeAfterFragmentResumed {
                         RetweetQuoteDialogFragment.show(fragmentManager, status)
                     }
                     return true
                 }
-                KeyboardShortcutConstants.ACTION_STATUS_FAVORITE -> {
+                ACTION_STATUS_FAVORITE -> {
                     val twitter = twitterWrapper
                     if (status.is_favorite) {
                         twitter.destroyFavoriteAsync(status.account_key, status.id)
@@ -135,16 +208,16 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
     }
 
     override fun isKeyboardShortcutHandled(handler: KeyboardShortcutsHandler, keyCode: Int, event: KeyEvent, metaState: Int): Boolean {
-        var action = handler.getKeyAction(KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION, keyCode, event, metaState)
-        if (KeyboardShortcutConstants.ACTION_NAVIGATION_REFRESH == action) {
+        var action = handler.getKeyAction(CONTEXT_TAG_NAVIGATION, keyCode, event, metaState)
+        if (ACTION_NAVIGATION_REFRESH == action) {
             return true
         }
         if (action == null) {
-            action = handler.getKeyAction(KeyboardShortcutConstants.CONTEXT_TAG_STATUS, keyCode, event, metaState)
+            action = handler.getKeyAction(CONTEXT_TAG_STATUS, keyCode, event, metaState)
         }
         if (action == null) return false
         when (action) {
-            KeyboardShortcutConstants.ACTION_STATUS_REPLY, KeyboardShortcutConstants.ACTION_STATUS_RETWEET, KeyboardShortcutConstants.ACTION_STATUS_FAVORITE -> return true
+            ACTION_STATUS_REPLY, ACTION_STATUS_RETWEET, ACTION_STATUS_FAVORITE -> return true
         }
         return navigationHelper!!.isKeyboardShortcutHandled(handler, keyCode, event, metaState)
     }
@@ -155,8 +228,8 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
     }
 
     override fun onCreateLoader(id: Int, args: Bundle): Loader<List<ParcelableStatus>?> {
-        val fromUser = args.getBoolean(IntentConstants.EXTRA_FROM_USER)
-        args.remove(IntentConstants.EXTRA_FROM_USER)
+        val fromUser = args.getBoolean(EXTRA_FROM_USER)
+        args.remove(EXTRA_FROM_USER)
         return onCreateStatusesLoader(activity, args, fromUser)
     }
 
@@ -196,7 +269,7 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
             lastReadPositionKey = -1
             lastVisibleTop = 0
         }
-        adapter.setData(data)
+        adapterData = data
         val statusStartIndex = adapter.statusStartIndex
         // The last status is statusEndExclusiveIndex - 1
         val statusEndExclusiveIndex = statusStartIndex + adapter.statusCount
@@ -248,6 +321,7 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
         }
     }
 
+
     override fun onGapClick(holder: GapViewHolder, position: Int) {
         val adapter = adapter
         val status = adapter!!.getStatus(position)
@@ -275,7 +349,6 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
         handleStatusActionClick(context, fragmentManager, twitterWrapper,
                 holder as StatusViewHolder, status, id)
     }
-
 
     override fun createItemDecoration(context: Context, recyclerView: RecyclerView, layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
         val adapter = adapter
@@ -313,7 +386,6 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
     }
 
     override fun onStatusClick(holder: IStatusViewHolder, position: Int) {
-        val adapter = adapter
         IntentUtils.openStatus(activity, adapter!!.getStatus(position)!!, null)
     }
 
@@ -337,29 +409,6 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
         startActivity(intent)
     }
 
-    override fun onStart() {
-        super.onStart()
-        recyclerView.addOnScrollListener(onScrollListener)
-        recyclerView.addOnScrollListener(pauseOnScrollListener)
-        bus.register(statusesBusCallback)
-    }
-
-    override fun onStop() {
-        bus.unregister(statusesBusCallback)
-        recyclerView.removeOnScrollListener(pauseOnScrollListener)
-        recyclerView.removeOnScrollListener(onScrollListener)
-        if (userVisibleHint) {
-            saveReadPosition()
-        }
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        val adapter = adapter
-        adapter!!.statusClickListener = null
-        super.onDestroy()
-    }
-
     override fun scrollToStart(): Boolean {
         val result = super.scrollToStart()
         if (result) {
@@ -368,49 +417,18 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
         return result
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        //no reverse
-        //        scrollListener?.reversed = preferences.getBoolean(SharedPreferenceConstants.KEY_READ_FROM_BOTTOM))
-        val adapter = adapter!!
-        adapter.statusClickListener = this
-        registerForContextMenu(recyclerView)
-        navigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager!!, adapter, this)
-        pauseOnScrollListener = PauseRecyclerViewOnScrollListener(adapter.mediaLoader.imageLoader, false, true)
-
+    fun initLoaderIfNeeded() {
+        if (isDetached || host == null || loaderInitialized) return
         val loaderArgs = Bundle(arguments)
-        loaderArgs.putBoolean(IntentConstants.EXTRA_FROM_USER, true)
+        loaderArgs.putBoolean(EXTRA_FROM_USER, true)
         loaderManager.initLoader(0, loaderArgs, this)
-        showProgress()
+        loaderInitialized = true
     }
 
     protected open fun createMessageBusCallback(): Any {
         return StatusesBusCallback()
     }
 
-    protected abstract val accountKeys: Array<UserKey>
-
-    protected var adapterData: List<ParcelableStatus>?
-        get() {
-            return adapter?.getData()
-        }
-        set(data) {
-            adapter?.setData(data)
-        }
-
-    protected open val readPositionTag: String?
-        @ReadPositionTag
-        get() = null
-
-    protected open val readPositionTagWithArguments: String?
-        get() = readPositionTag
-
-    protected abstract fun hasMoreData(data: List<ParcelableStatus>?): Boolean
-
-    protected abstract fun onCreateStatusesLoader(context: Context, args: Bundle,
-                                                  fromUser: Boolean): Loader<List<ParcelableStatus>?>
-
-    protected abstract fun onStatusesLoaded(loader: Loader<List<ParcelableStatus>?>, data: List<ParcelableStatus>?)
 
     protected fun saveReadPosition(position: Int) {
         if (position == RecyclerView.NO_POSITION) return
@@ -423,11 +441,14 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
         }
     }
 
-    override val extraContentPadding: Rect
-        get() {
-            val paddingVertical = resources.getDimensionPixelSize(R.dimen.element_spacing_small)
-            return Rect(0, paddingVertical, 0, paddingVertical)
-        }
+    protected abstract fun hasMoreData(data: List<ParcelableStatus>?): Boolean
+
+    protected abstract fun onCreateStatusesLoader(context: Context, args: Bundle,
+                                                  fromUser: Boolean): Loader<List<ParcelableStatus>?>
+
+    protected abstract fun onStatusesLoaded(loader: Loader<List<ParcelableStatus>?>, data: List<ParcelableStatus>?)
+
+    // Context Menu functions
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
         if (!userVisibleHint || menuInfo == null) return
@@ -454,9 +475,6 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
                 userColorNameManager, twitterWrapper, status, item)
     }
 
-    private val currentReadPositionTag: String?
-        get() = "${readPositionTag}_${tabId}_current"
-
     class DefaultOnLikedListener(
             private val twitter: AsyncTwitterWrapper,
             private val status: ParcelableStatus
@@ -478,6 +496,10 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
 
     }
 
+    interface StatusesFragmentDelegate {
+        val shouldInitLoader: Boolean
+    }
+
     companion object {
 
         fun handleStatusActionClick(context: Context, fm: FragmentManager,
@@ -487,9 +509,9 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
             if (status == null) return
             when (id) {
                 R.id.reply -> {
-                    val intent = Intent(IntentConstants.INTENT_ACTION_REPLY)
+                    val intent = Intent(INTENT_ACTION_REPLY)
                     intent.`package` = context.packageName
-                    intent.putExtra(IntentConstants.EXTRA_STATUS, status)
+                    intent.putExtra(EXTRA_STATUS, status)
                     context.startActivity(intent)
                 }
                 R.id.retweet -> {

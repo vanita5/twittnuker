@@ -137,11 +137,6 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         extraTypeView.setImageResource(R.drawable.ic_action_gallery)
     }
 
-    override fun displayStatus(status: ParcelableStatus, displayInReplyTo: Boolean) {
-        displayStatus(status, displayInReplyTo, true)
-    }
-
-
     override fun displayStatus(status: ParcelableStatus, displayInReplyTo: Boolean,
                                shouldDisplayExtraType: Boolean) {
 
@@ -161,7 +156,14 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         val retweetCount: Long
         val favoriteCount: Long
 
-        if (TwitterCardUtils.isPoll(status)) {
+        if (status.is_pinned_status) {
+            statusInfoLabel.setText(R.string.pinned_status)
+            statusInfoIcon.setImageResource(R.drawable.ic_activity_action_pinned)
+            statusInfoLabel.visibility = View.VISIBLE
+            statusInfoIcon.visibility = View.VISIBLE
+
+            statusContentUpperSpace.visibility = View.GONE
+        } else if (TwitterCardUtils.isPoll(status)) {
             statusInfoLabel.setText(R.string.label_poll)
             statusInfoIcon.setImageResource(R.drawable.ic_activity_action_poll)
             statusInfoLabel.visibility = View.VISIBLE

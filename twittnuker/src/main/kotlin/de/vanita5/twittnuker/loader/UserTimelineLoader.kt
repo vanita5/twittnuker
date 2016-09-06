@@ -35,7 +35,9 @@ import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.model.ParcelableCredentials
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
+import java.util.concurrent.atomic.AtomicReference
 
 class UserTimelineLoader(
         context: Context,
@@ -48,13 +50,34 @@ class UserTimelineLoader(
         savedStatusesArgs: Array<String>?,
         tabPosition: Int,
         fromUser: Boolean,
-        loadingMore: Boolean
-) : MicroBlogAPIStatusesLoader(context, accountId, sinceId, maxId, -1, data, savedStatusesArgs, tabPosition, fromUser, loadingMore) {
+        loadingMore: Boolean,
+        val pinnedStatusIds: Array<String>?
+) : MicroBlogAPIStatusesLoader(context, accountId, sinceId, maxId, -1, data, savedStatusesArgs,
+        tabPosition, fromUser, loadingMore) {
+
+    private val pinnedStatusesRef = AtomicReference<List<ParcelableStatus>>()
+
+    var pinnedStatuses: List<ParcelableStatus>?
+        get() = pinnedStatusesRef.get()
+        private set(value) {
+            pinnedStatusesRef.set(value)
+        }
 
     @Throws(MicroBlogException::class)
     override fun getStatuses(microBlog: MicroBlog,
                              credentials: ParcelableCredentials,
                              paging: Paging): ResponseList<Status> {
+        if (pinnedStatusIds != null) {
+            try {
+                pinnedStatuses = microBlog.lookupStatuses(pinnedStatusIds).mapIndexed { idx, status ->
+                    val created = ParcelableStatusUtils.fromStatus(status, credentials.account_key, false)
+                    created.sort_id = idx.toLong()
+                    return@mapIndexed created
+                }
+            } catch (e: MicroBlogException) {
+                // Ignore
+            }
+        }
         if (userId != null) {
             return microBlog.getUserTimeline(userId.id, paging)
         } else if (screenName != null) {

@@ -36,10 +36,10 @@ import de.vanita5.twittnuker.view.CardMediaContainer
 import de.vanita5.twittnuker.view.holder.GapViewHolder
 
 interface IStatusViewHolder : CardMediaContainer.OnMediaClickListener {
-    fun displayStatus(status: ParcelableStatus, displayInReplyTo: Boolean)
 
     fun displayStatus(status: ParcelableStatus,
-                      displayInReplyTo: Boolean, shouldDisplayExtraType: Boolean)
+                      displayInReplyTo: Boolean = true,
+                      shouldDisplayExtraType: Boolean = true)
 
     val profileImageView: ImageView?
 

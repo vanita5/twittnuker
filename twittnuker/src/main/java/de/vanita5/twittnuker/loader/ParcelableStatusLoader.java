@@ -28,9 +28,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.AsyncTaskLoader;
 
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.ErrorInfo;
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -86,7 +86,7 @@ public class ParcelableStatusLoader extends AsyncTaskLoader<SingleResponse<Parce
             final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(getContext(), mAccountKey);
             if (credentials == null) return SingleResponse.Companion.getInstance();
             final ParcelableStatus status = findStatus(getContext(), mAccountKey, mStatusId);
-            ParcelableStatusUtils.updateExtraInformation(status, credentials, mUserColorNameManager);
+            ParcelableStatusUtils.INSTANCE.updateExtraInformation(status, credentials, mUserColorNameManager);
             final SingleResponse<ParcelableStatus> response = SingleResponse.Companion.getInstance(status);
             final Bundle extras = response.getExtras();
             extras.putParcelable(EXTRA_ACCOUNT, credentials);

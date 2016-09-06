@@ -804,6 +804,7 @@
     <string name="hide_retweets">Retweets ausblenden</string>
     <string name="hide_quotes">Zitate ausblenden</string>
     <string name="hide_replies">Mentions ausblenden</string>
+    <string name="pinned_status">Angehefteter Tweet</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

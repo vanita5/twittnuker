@@ -67,8 +67,13 @@ abstract class MicroBlogAPIStatusesLoader(
 ) : ParcelableStatusesLoader(context, adapterData, tabPosition, fromUser) {
     // Statuses sorted descending by default
     var comparator: Comparator<ParcelableStatus>? = ParcelableStatus.REVERSE_COMPARATOR
-    private val mException = AtomicReference<MicroBlogException>()
+    private val exceptionRef = AtomicReference<MicroBlogException?>()
 
+    var exception: MicroBlogException?
+        get() = exceptionRef.get()
+        private set(value) {
+            exceptionRef.set(value)
+        }
     @Inject
     lateinit var fileCache: DiskCache
     @Inject
@@ -83,9 +88,7 @@ abstract class MicroBlogAPIStatusesLoader(
     @SuppressWarnings("unchecked")
     override fun loadInBackground(): ListResponse<ParcelableStatus> {
         val context = context
-        if (accountKey == null) {
-            return ListResponse.getListInstance<ParcelableStatus>(MicroBlogException("No Account"))
-        }
+        val accountKey = accountKey ?: return ListResponse.getListInstance<ParcelableStatus>(MicroBlogException("No Account"))
         val credentials = ParcelableCredentialsUtils.getCredentials(context,
                 accountKey) ?: return ListResponse.getListInstance<ParcelableStatus>(MicroBlogException("No Account"))
 
@@ -117,7 +120,7 @@ abstract class MicroBlogAPIStatusesLoader(
             statuses = getStatuses(twitter, credentials, paging)
         } catch (e: MicroBlogException) {
             // mHandler.post(new ShowErrorRunnable(e));
-            mException.set(e)
+            exception = e
             if (BuildConfig.DEBUG) {
                 Log.w(LOGTAG, e)
             }
@@ -132,7 +135,7 @@ abstract class MicroBlogAPIStatusesLoader(
             val j = statuses.size
             while (i < j) {
                 val status = statuses[i]
-                if (minIdx == -1 || status.compareTo(statuses[minIdx]) < 0) {
+                if (minIdx == -1 || status < statuses[minIdx]) {
                     minIdx = i
                 }
                 statusIds[i] = status.id
@@ -148,17 +151,11 @@ abstract class MicroBlogAPIStatusesLoader(
         val noRowsDeleted = rowsDeleted == 0
         val insertGap = minIdx != -1 && (noRowsDeleted || deletedOldGap) && !noItemsBefore
                 && statuses.size >= loadItemLimit && !loadingMore
-        run {
-            var i = 0
-            val j = statuses.size
-            while (i < j) {
-                val status = statuses[i]
-                val item = ParcelableStatusUtils.fromStatus(status, accountKey,
-                        insertGap && isGapEnabled && minIdx == i)
-                ParcelableStatusUtils.updateExtraInformation(item, credentials, userColorNameManager)
-                data!!.add(item)
-                i++
-            }
+        for (i in 0 until statuses.size) {
+            val status = statuses[i]
+            val item = ParcelableStatusUtils.fromStatus(status, accountKey, insertGap && isGapEnabled && minIdx == i)
+            ParcelableStatusUtils.updateExtraInformation(item, credentials, userColorNameManager)
+            data.add(item)
         }
 
         val db = TwittnukerApplication.getInstance(context).sqLiteDatabase
@@ -194,11 +191,9 @@ abstract class MicroBlogAPIStatusesLoader(
     @WorkerThread
     protected abstract fun shouldFilterStatus(database: SQLiteDatabase, status: ParcelableStatus): Boolean
 
-    val exception: MicroBlogException?
-        get() = mException.get()
 
     override fun onStartLoading() {
-        mException.set(null)
+        exception = null
         super.onStartLoading()
     }
 
