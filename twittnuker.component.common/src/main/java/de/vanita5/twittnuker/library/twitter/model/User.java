@@ -206,7 +206,7 @@ public class User extends TwitterResponseObject implements Comparable<User>, Par
     boolean followedBy;
 
     @JsonField(name = "following")
-    boolean following;
+    boolean following = true;
 
     @JsonField(name = "follow_request_sent")
     boolean followRequestSent;
@@ -297,11 +297,9 @@ public class User extends TwitterResponseObject implements Comparable<User>, Par
         return followersCount;
     }
 
-
     public boolean isFollowing() {
         return following;
     }
-
 
     public long getFriendsCount() {
         return friendsCount;
