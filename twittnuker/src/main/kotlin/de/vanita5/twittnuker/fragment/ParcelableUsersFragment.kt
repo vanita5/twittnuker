@@ -51,7 +51,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 
-abstract class ParcelableUsersFragment protected constructor() : AbsContentListRecyclerViewFragment<ParcelableUsersAdapter>(), LoaderCallbacks<List<ParcelableUser>?>, UserClickListener, KeyboardShortcutCallback, IUsersAdapter.FollowClickListener {
+abstract class ParcelableUsersFragment protected constructor() : AbsContentListRecyclerViewFragment<ParcelableUsersAdapter>(), LoaderCallbacks<List<ParcelableUser>?>, UserClickListener, KeyboardShortcutCallback, IUsersAdapter.FriendshipClickListener {
 
     private val usersBusCallback: Any
 
@@ -152,6 +152,18 @@ abstract class ParcelableUsersFragment protected constructor() : AbsContentListR
         } else {
             twitterWrapper.createFriendshipAsync(user.account_key, user.key)
         }
+    }
+
+    override fun onUnblockClicked(holder: UserViewHolder, position: Int) {
+        val user = adapter?.getUser(position) ?: return
+        if (twitterWrapper.isUpdatingRelationship(user.account_key, user.key)) return
+        twitterWrapper.destroyBlockAsync(user.account_key, user.key)
+    }
+
+    override fun onUnmuteClicked(holder: UserViewHolder, position: Int) {
+        val user = adapter?.getUser(position) ?: return
+        if (twitterWrapper.isUpdatingRelationship(user.account_key, user.key)) return
+        twitterWrapper.destroyMuteAsync(user.account_key, user.key)
     }
 
     protected open val userReferral: String?
