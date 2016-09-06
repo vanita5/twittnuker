@@ -46,7 +46,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri
 import de.vanita5.twittnuker.util.ErrorInfoStore
-import de.vanita5.twittnuker.util.TwidereArrayUtils
 import de.vanita5.twittnuker.util.Utils
 
 abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
@@ -91,8 +90,10 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
         } else {
             where = accountWhere
         }
-        val accountSelectionArgs = TwidereArrayUtils.toStringArray(accountKeys, 0,
-                accountKeys.size)
+
+        val accountSelectionArgs = Array(accountKeys.size) {
+            accountKeys[it].toString()
+        }
         val expression = processWhere(where, accountSelectionArgs)
         val selection = expression.sql
         val adapter = adapter!!

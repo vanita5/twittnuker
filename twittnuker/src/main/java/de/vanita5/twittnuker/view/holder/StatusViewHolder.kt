@@ -32,7 +32,6 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.card_item_status_compact.view.*
-import org.apache.commons.lang3.ArrayUtils
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
@@ -305,8 +304,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             itemContent.drawEnd()
         }
 
-        val hasQuotedMedia = !ArrayUtils.isEmpty(status.quoted_media)
-        val hasPrimaryMedia = !hasQuotedMedia && !ArrayUtils.isEmpty(status.media)
+        val hasQuotedMedia = status.quoted_media?.isNotEmpty() ?: false
+        val hasPrimaryMedia = !hasQuotedMedia && status.media?.isNotEmpty() ?: false
 
 
         if (!hasPrimaryMedia && !hasQuotedMedia) {

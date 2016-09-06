@@ -53,7 +53,6 @@ import android.view.View.OnClickListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.header_drawer_account_selector.view.*
-import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.ktextension.setMenuItemIcon
 import org.mariotaku.ktextension.setMenuItemTitle
@@ -63,7 +62,6 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.*
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.Referral
-import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.fragment.AccountsDashboardFragment.AccountsInfo
 import de.vanita5.twittnuker.menu.AccountToggleProvider
@@ -411,7 +409,7 @@ class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<Account
     private fun hasAccountInTab(tab: SupportTabSpec, accountId: UserKey, isActivated: Boolean): Boolean {
         if (tab.args == null) return false
         val accountKeys = Utils.getAccountKeys(context, tab.args) ?: return isActivated
-        return ArrayUtils.contains(accountKeys, accountId)
+        return accountKeys.contains(accountId)
     }
 
     private fun closeAccountsDrawer() {

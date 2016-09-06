@@ -68,7 +68,6 @@ import kotlinx.android.synthetic.main.adapter_item_status_count_label.view.*
 import kotlinx.android.synthetic.main.fragment_status.*
 import kotlinx.android.synthetic.main.header_status_common.view.*
 import kotlinx.android.synthetic.main.layout_content_fragment_common.*
-import org.apache.commons.lang3.ArrayUtils
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.TranslationResult
@@ -912,7 +911,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
 
             val media = ParcelableMediaUtils.getPrimaryMedia(status)
 
-            if (ArrayUtils.isEmpty(media)) {
+            if (media?.isEmpty() ?: true) {
                 itemView.mediaPreviewContainer.visibility = View.GONE
                 itemView.mediaPreview.visibility = View.GONE
                 itemView.mediaPreviewLoad.visibility = View.GONE

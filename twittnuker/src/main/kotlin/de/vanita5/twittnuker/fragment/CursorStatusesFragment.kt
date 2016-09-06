@@ -48,7 +48,6 @@ import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.DataStoreUtils.buildStatusFilterWhereClause
 import de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri
 import de.vanita5.twittnuker.util.ErrorInfoStore
-import de.vanita5.twittnuker.util.TwidereArrayUtils
 import de.vanita5.twittnuker.util.Utils
 
 abstract class CursorStatusesFragment : AbsStatusesFragment() {
@@ -88,8 +87,9 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
         val adapter = adapter
         adapter!!.showAccountsColor = accountKeys.size > 1
         val projection = Statuses.COLUMNS
-        val selectionArgs = TwidereArrayUtils.toStringArray(accountKeys, 0,
-                accountKeys.size)
+        val selectionArgs = Array(accountKeys.size) {
+            accountKeys[it].toString()
+        }
         val expression = processWhere(where, selectionArgs)
         return ExtendedObjectCursorLoader(context, ParcelableStatusCursorIndices::class.java, uri,
                 projection, expression.sql, expression.parameters,
