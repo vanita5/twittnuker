@@ -369,7 +369,7 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         //no reverse
-        //        scrollListener?.setReversed(preferences.getBoolean(SharedPreferenceConstants.KEY_READ_FROM_BOTTOM))
+        //        scrollListener?.reversed = preferences.getBoolean(SharedPreferenceConstants.KEY_READ_FROM_BOTTOM))
         val adapter = adapter!!
         adapter.statusClickListener = this
         registerForContextMenu(recyclerView)
