@@ -23,5 +23,5 @@
 package de.vanita5.twittnuker.loader.iface
 
 interface IExtendedLoader {
-    var isFromUser: Boolean
+    var fromUser: Boolean
 }

@@ -148,7 +148,7 @@
                 app:backgroundTint="@color/material_red"
                 app:iabColor="@android:color/transparent"/>
 
-            de.vanita5.twittnuker.view.IconActionButton
+            <de.vanita5.twittnuker.view.IconActionButton
                 android:id="@+id/unblock"
                 style="?buttonStyleSmall"
                 android:layout_width="@dimen/button_size_content_card"
