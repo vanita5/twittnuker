@@ -51,13 +51,15 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 
-abstract class ParcelableUsersFragment protected constructor() : AbsContentListRecyclerViewFragment<ParcelableUsersAdapter>(), LoaderCallbacks<List<ParcelableUser>?>, UserClickListener, KeyboardShortcutCallback, IUsersAdapter.FriendshipClickListener {
+abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<ParcelableUsersAdapter>,
+        LoaderCallbacks<List<ParcelableUser>?>, UserClickListener, KeyboardShortcutCallback,
+        IUsersAdapter.FriendshipClickListener {
 
     private val usersBusCallback: Any
 
     private var navigationHelper: RecyclerViewNavigationHelper? = null
 
-    init {
+    protected constructor() {
         usersBusCallback = createMessageBusCallback()
     }
 
@@ -101,12 +103,12 @@ abstract class ParcelableUsersFragment protected constructor() : AbsContentListR
     override fun onLoadFinished(loader: Loader<List<ParcelableUser>?>, data: List<ParcelableUser>?) {
         val adapter = adapter ?: return
         adapter.setData(data)
-        if (loader !is IExtendedLoader || loader.isFromUser) {
+        if (loader !is IExtendedLoader || loader.fromUser) {
             adapter.loadMoreSupportedPosition = if (hasMoreData(data)) ILoadMoreSupportAdapter.END else ILoadMoreSupportAdapter.NONE
             refreshEnabled = true
         }
         if (loader is IExtendedLoader) {
-            loader.isFromUser = false
+            loader.fromUser = false
         }
         showContent()
         refreshEnabled = true
@@ -114,15 +116,18 @@ abstract class ParcelableUsersFragment protected constructor() : AbsContentListR
         setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.NONE)
     }
 
-    override fun handleKeyboardShortcutSingle(handler: KeyboardShortcutsHandler, keyCode: Int, event: KeyEvent, metaState: Int): Boolean {
+    override fun handleKeyboardShortcutSingle(handler: KeyboardShortcutsHandler, keyCode: Int,
+                                              event: KeyEvent, metaState: Int): Boolean {
         return navigationHelper!!.handleKeyboardShortcutSingle(handler, keyCode, event, metaState)
     }
 
-    override fun handleKeyboardShortcutRepeat(handler: KeyboardShortcutsHandler, keyCode: Int, repeatCount: Int, event: KeyEvent, metaState: Int): Boolean {
+    override fun handleKeyboardShortcutRepeat(handler: KeyboardShortcutsHandler, keyCode: Int,
+                                              repeatCount: Int, event: KeyEvent, metaState: Int): Boolean {
         return navigationHelper!!.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState)
     }
 
-    override fun isKeyboardShortcutHandled(handler: KeyboardShortcutsHandler, keyCode: Int, event: KeyEvent, metaState: Int): Boolean {
+    override fun isKeyboardShortcutHandled(handler: KeyboardShortcutsHandler, keyCode: Int,
+                                           event: KeyEvent, metaState: Int): Boolean {
         return navigationHelper!!.isKeyboardShortcutHandled(handler, keyCode, event, metaState)
     }
 
@@ -134,7 +139,7 @@ abstract class ParcelableUsersFragment protected constructor() : AbsContentListR
 
     override fun onLoaderReset(loader: Loader<List<ParcelableUser>?>) {
         if (loader is IExtendedLoader) {
-            loader.isFromUser = false
+            loader.fromUser = false
         }
     }
 
@@ -178,7 +183,8 @@ abstract class ParcelableUsersFragment protected constructor() : AbsContentListR
                                                args: Bundle,
                                                fromUser: Boolean): Loader<List<ParcelableUser>?>
 
-    override fun createItemDecoration(context: Context, recyclerView: RecyclerView, layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
+    override fun createItemDecoration(context: Context, recyclerView: RecyclerView,
+                                      layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
         val adapter = adapter ?: return null
         val itemDecoration = DividerItemDecoration(context,
                 (recyclerView.layoutManager as LinearLayoutManager).orientation)

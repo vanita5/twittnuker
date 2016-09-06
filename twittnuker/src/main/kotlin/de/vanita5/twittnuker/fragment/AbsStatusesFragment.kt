@@ -206,7 +206,7 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
             }
         }
         refreshEnabled = true
-        if (loader !is IExtendedLoader || loader.isFromUser) {
+        if (loader !is IExtendedLoader || loader.fromUser) {
             if (hasMoreData(data)) {
                 adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.END
                 onHasMoreDataChanged(true)
@@ -235,14 +235,14 @@ abstract class AbsStatusesFragment protected constructor() : AbsContentListRecyc
             onHasMoreDataChanged(false)
         }
         if (loader is IExtendedLoader) {
-            loader.isFromUser = false
+            loader.fromUser = false
         }
         onStatusesLoaded(loader, data)
     }
 
     override fun onLoaderReset(loader: Loader<List<ParcelableStatus>?>) {
         if (loader is IExtendedLoader) {
-            loader.isFromUser = false
+            loader.fromUser = false
         }
     }
 

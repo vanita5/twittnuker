@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.loader;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
@@ -38,8 +39,8 @@ import java.util.List;
 
 public class MutesUsersLoader extends CursorSupportUsersLoader {
 
-    public MutesUsersLoader(final Context context, final UserKey accountKey,
-                            final List<ParcelableUser> data, boolean fromUser) {
+    public MutesUsersLoader(final Context context, @Nullable final UserKey accountKey,
+                            @Nullable final List<ParcelableUser> data, boolean fromUser) {
         super(context, accountKey, data, fromUser);
     }
 

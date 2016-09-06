@@ -20,10 +20,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.loader.iface;
+package de.vanita5.twittnuker.loader.iface
 
-public interface IExtendedLoader {
-	boolean isFromUser();
+interface ICursorSupportLoader {
+    val cursor: Long
 
-	void setFromUser(boolean fromUser);
+    val nextCursor: Long
+
+    val prevCursor: Long
 }

@@ -20,12 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.loader.iface;
+package de.vanita5.twittnuker.loader.iface
 
-public interface ICursorSupportLoader {
-    long getCursor();
-
-    long getNextCursor();
-
-    long getPrevCursor();
+interface IExtendedLoader {
+    var isFromUser: Boolean
 }

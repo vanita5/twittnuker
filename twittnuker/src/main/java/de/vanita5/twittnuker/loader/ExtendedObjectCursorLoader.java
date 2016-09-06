@@ -25,9 +25,8 @@ package de.vanita5.twittnuker.loader;
 import android.content.Context;
 import android.net.Uri;
 
-import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
-
 import org.mariotaku.library.objectcursor.ObjectCursor;
+import de.vanita5.twittnuker.loader.iface.IExtendedLoader;
 
 public class ExtendedObjectCursorLoader<E> extends ObjectCursorLoader<E> implements IExtendedLoader {
 
@@ -39,7 +38,7 @@ public class ExtendedObjectCursorLoader<E> extends ObjectCursorLoader<E> impleme
     }
 
     @Override
-    public boolean isFromUser() {
+    public boolean getFromUser() {
         return true;
     }
 
