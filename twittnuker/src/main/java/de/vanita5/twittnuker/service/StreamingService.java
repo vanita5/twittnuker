@@ -456,7 +456,7 @@ public class StreamingService extends Service implements Constants {
             if (TextUtils.equals(favoritedStatus.getUser().getId(), account.account_key.getId())) {
                 createNotification(source.getScreenName(), NotificationContent.NOTIFICATION_TYPE_FAVORITE,
                         Utils.parseURLEntities(favoritedStatus.getExtendedText(), favoritedStatus.getUrlEntities()),
-                        ParcelableStatusUtils.fromStatus(favoritedStatus,
+                        ParcelableStatusUtils.INSTANCE.fromStatus(favoritedStatus,
                                 account.account_key, false),
                         source);
             }
@@ -508,7 +508,7 @@ public class StreamingService extends Service implements Constants {
                     && status.getExtendedText().contains("@" + account.screen_name)) {
 
                 Activity activity = Activity.fromMention(account.account_key.getId(), status);
-                final ParcelableActivity parcelableActivity = ParcelableActivityUtils.fromActivity(activity,
+                final ParcelableActivity parcelableActivity = ParcelableActivityUtils.INSTANCE.fromActivity(activity,
                         account.account_key, false);
                 parcelableActivity.timestamp = status.getCreatedAt() != null ? status.getCreatedAt().getTime(): System.currentTimeMillis();
                 final ContentValues activityValues = ParcelableActivityValuesCreator.create(parcelableActivity);
@@ -520,7 +520,7 @@ public class StreamingService extends Service implements Constants {
                 createNotification(status.getUser().getScreenName(),
                         NotificationContent.NOTIFICATION_TYPE_RETWEET,
                         Utils.parseURLEntities(rt.getExtendedText(), rt.getUrlEntities()),
-                        ParcelableStatusUtils.fromStatus(status,
+                        ParcelableStatusUtils.INSTANCE.fromStatus(status,
                                 account.account_key, false), status.getUser());
                 //TODO insert retweet activity
             }
