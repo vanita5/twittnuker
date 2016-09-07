@@ -22,12 +22,6 @@
 
 package de.vanita5.twittnuker.library.twitter.api;
 
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.Param;
-import org.mariotaku.restfu.annotation.param.Queries;
-import org.mariotaku.restfu.annotation.param.Query;
-
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
@@ -37,6 +31,12 @@ import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.library.twitter.model.UserListUpdate;
 import de.vanita5.twittnuker.library.twitter.template.StatusAnnotationTemplate;
+import de.vanita5.twittnuker.library.twitter.template.UserAnnotationTemplate;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Queries;
+import org.mariotaku.restfu.annotation.param.Query;
 
 public interface ListResources {
     @POST("/lists/members/create.json")
@@ -76,15 +76,18 @@ public interface ListResources {
     UserList destroyUserListSubscription(@Param("list_id") String listId) throws MicroBlogException;
 
     @GET("/lists/members.json")
+    @Queries(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListMembers(@Query("list_id") String listId, @Query Paging paging) throws MicroBlogException;
 
     @GET("/lists/members.json")
+    @Queries(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListMembers(@Query("slug") String slug,
                                                   @Query("owner_id") String ownerId,
                                                   @Query Paging paging)
             throws MicroBlogException;
 
     @GET("/lists/members.json")
+    @Queries(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListMembersByScreenName(@Query("slug") String slug, @Query("owner_screen_name") String ownerScreenName, @Query Paging paging)
             throws MicroBlogException;
 
@@ -133,13 +136,16 @@ public interface ListResources {
             throws MicroBlogException;
 
     @GET("/lists/subscribers.json")
+    @Queries(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListSubscribers(@Query("list_id") String listId, @Query Paging paging) throws MicroBlogException;
 
     @GET("/lists/subscribers.json")
+    @Queries(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListSubscribers(@Query("list_id") String slug, @Query("owner_id") String ownerId, @Query Paging paging)
             throws MicroBlogException;
 
     @GET("/lists/subscribers.json")
+    @Queries(template = UserAnnotationTemplate.class)
     PageableResponseList<User> getUserListSubscribersByScreenName(@Query("list_id") String slug, @Query("owner_screen_name") String ownerScreenName, @Query Paging paging)
             throws MicroBlogException;
 

@@ -22,14 +22,6 @@
 
 package de.vanita5.twittnuker.library.twitter.api;
 
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.KeyValue;
-import org.mariotaku.restfu.annotation.param.Param;
-import org.mariotaku.restfu.annotation.param.Queries;
-import org.mariotaku.restfu.annotation.param.Query;
-import org.mariotaku.restfu.http.BodyType;
-
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Friendship;
 import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate;
@@ -39,6 +31,14 @@ import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.Relationship;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.twittnuker.library.twitter.template.UserAnnotationTemplate;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.KeyValue;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Queries;
+import org.mariotaku.restfu.annotation.param.Query;
+import org.mariotaku.restfu.http.BodyType;
 
 @SuppressWarnings("RedundantThrows")
 @Queries({@KeyValue(key = "include_entities", valueKey = "include_entities")})
@@ -46,26 +46,32 @@ public interface FriendsFollowersResources {
 
     @POST("/friendships/create.json")
     @BodyType(BodyType.FORM)
+    @Queries(template = UserAnnotationTemplate.class)
     User createFriendship(@Param("user_id") String userId) throws MicroBlogException;
 
     @POST("/friendships/create.json")
     @BodyType(BodyType.FORM)
+    @Queries(template = UserAnnotationTemplate.class)
     User createFriendship(@Param("user_id") String userId, @Param("follow") boolean follow) throws MicroBlogException;
 
     @POST("/friendships/create.json")
     @BodyType(BodyType.FORM)
+    @Queries(template = UserAnnotationTemplate.class)
     User createFriendshipByScreenName(@Param("screen_name") String screenName) throws MicroBlogException;
 
     @POST("/friendships/create.json")
     @BodyType(BodyType.FORM)
+    @Queries(template = UserAnnotationTemplate.class)
     User createFriendshipByScreenName(@Param("screen_name") String screenName, @Param("follow") boolean follow) throws MicroBlogException;
 
     @POST("/friendships/destroy.json")
     @BodyType(BodyType.FORM)
+    @Queries(template = UserAnnotationTemplate.class)
     User destroyFriendship(@Param("user_id") String userId) throws MicroBlogException;
 
     @POST("/friendships/destroy.json")
     @BodyType(BodyType.FORM)
+    @Queries(template = UserAnnotationTemplate.class)
     User destroyFriendshipByScreenName(@Param("screen_name") String screenName) throws MicroBlogException;
 
     @GET("/followers/ids.json")

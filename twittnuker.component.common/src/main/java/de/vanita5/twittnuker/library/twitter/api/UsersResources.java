@@ -22,15 +22,6 @@
 
 package de.vanita5.twittnuker.library.twitter.api;
 
-import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.method.POST;
-import org.mariotaku.restfu.annotation.param.KeyValue;
-import org.mariotaku.restfu.annotation.param.Param;
-import org.mariotaku.restfu.annotation.param.Queries;
-import org.mariotaku.restfu.annotation.param.Query;
-import org.mariotaku.restfu.http.BodyType;
-import org.mariotaku.restfu.http.mime.FileBody;
-
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.AccountSettings;
 import de.vanita5.twittnuker.library.twitter.model.Category;
@@ -42,11 +33,17 @@ import de.vanita5.twittnuker.library.twitter.model.ResponseCode;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.SettingsUpdate;
 import de.vanita5.twittnuker.library.twitter.model.User;
+import de.vanita5.twittnuker.library.twitter.template.UserAnnotationTemplate;
+import org.mariotaku.restfu.annotation.method.GET;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Queries;
+import org.mariotaku.restfu.annotation.param.Query;
+import org.mariotaku.restfu.http.BodyType;
+import org.mariotaku.restfu.http.mime.FileBody;
 
 @SuppressWarnings("RedundantThrows")
-@Queries({@KeyValue(key = "include_entities", valueKey = "include_entities"),
-        @KeyValue(key = "include_cards", valueKey = "include_cards"),
-        @KeyValue(key = "cards_platform", valueKey = "cards_platform")})
+@Queries(template = UserAnnotationTemplate.class)
 public interface UsersResources {
 
     @POST("/blocks/create.json")

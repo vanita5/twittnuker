@@ -39,7 +39,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import org.attoparser.AttoParseException;
+import org.attoparser.ParseException;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.TwitterOAuth;
 import org.mariotaku.restfu.http.Authorization;
@@ -138,7 +138,7 @@ public class BrowserSignInActivity extends BaseActivity {
             OAuthPasswordAuthenticator.OAuthPinData data = new OAuthPasswordAuthenticator.OAuthPinData();
             OAuthPasswordAuthenticator.Companion.readOAuthPINFromHtml(new StringReader(html), data);
             return data.getOauthPin();
-        } catch (final AttoParseException | IOException e) {
+        } catch (final ParseException | IOException e) {
             Log.w(LOGTAG, e);
         }
         return null;
