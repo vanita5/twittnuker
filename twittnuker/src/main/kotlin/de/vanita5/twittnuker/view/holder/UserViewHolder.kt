@@ -30,7 +30,7 @@ import android.view.View.OnLongClickListener
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import kotlinx.android.synthetic.main.card_item_user_compact.view.*
+import kotlinx.android.synthetic.main.list_item_user.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.*

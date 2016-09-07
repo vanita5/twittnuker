@@ -20,17 +20,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.library.twitter;
+package de.vanita5.twittnuker.library.twitter.api;
 
-import de.vanita5.twittnuker.library.twitter.api.PrivateAccountResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateActivityResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateDirectMessagesResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateFriendsFollowersResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateSearchResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateTimelineResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateTweetResources;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.PinTweetResult;
+import org.mariotaku.restfu.annotation.method.POST;
+import org.mariotaku.restfu.annotation.param.Param;
 
-public interface TwitterPrivate extends PrivateActivityResources, PrivateTweetResources,
-        PrivateTimelineResources, PrivateFriendsFollowersResources, PrivateDirectMessagesResources,
-        PrivateSearchResources, PrivateAccountResources {
+public interface PrivateAccountResources extends PrivateResources {
+
+    @POST("/account/pin_tweet.json")
+    PinTweetResult pinTweet(@Param("id") String id) throws MicroBlogException;
+
+    @POST("/account/unpin_tweet.json")
+    PinTweetResult unpinTweet(@Param("id") String id) throws MicroBlogException;
+
 }

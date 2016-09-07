@@ -20,17 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.library.twitter;
+package org.mariotaku.ktextension
 
-import de.vanita5.twittnuker.library.twitter.api.PrivateAccountResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateActivityResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateDirectMessagesResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateFriendsFollowersResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateSearchResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateTimelineResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateTweetResources;
+import android.support.v7.widget.RecyclerView
 
-public interface TwitterPrivate extends PrivateActivityResources, PrivateTweetResources,
-        PrivateTimelineResources, PrivateFriendsFollowersResources, PrivateDirectMessagesResources,
-        PrivateSearchResources, PrivateAccountResources {
+fun RecyclerView.Adapter<*>.findPositionByItemId(itemId: Long): Int {
+    for (i in 0 until itemCount) {
+        if (getItemId(i) == itemId) return i
+    }
+    return RecyclerView.NO_POSITION
 }

@@ -20,17 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.library.twitter;
+package de.vanita5.twittnuker.library.twitter.model;
 
-import de.vanita5.twittnuker.library.twitter.api.PrivateAccountResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateActivityResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateDirectMessagesResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateFriendsFollowersResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateSearchResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateTimelineResources;
-import de.vanita5.twittnuker.library.twitter.api.PrivateTweetResources;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-public interface TwitterPrivate extends PrivateActivityResources, PrivateTweetResources,
-        PrivateTimelineResources, PrivateFriendsFollowersResources, PrivateDirectMessagesResources,
-        PrivateSearchResources, PrivateAccountResources {
+@JsonObject
+public class PinTweetResult {
+    @JsonField(name = "pinned_tweets")
+    String[] pinnedTweets;
+
+    public String[] getPinnedTweets() {
+        return pinnedTweets;
+    }
 }

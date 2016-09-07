@@ -722,9 +722,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         var initialTab = -1
         if (tabType != null) {
             val accountKey = UserKey.valueOf(uri!!.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY))
-            var i = 0
-            val j = pagerAdapter!!.count
-            while (i < j) {
+            for (i in 0 until pagerAdapter!!.count) {
                 val tab = pagerAdapter!!.getTab(i)
                 if (tabType == CustomTabUtils.getTabTypeAlias(tab.type)) {
                     val args = tab.args
@@ -734,7 +732,6 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
                         break
                     }
                 }
-                i++
             }
             if (initialTab == -1 && (extraIntent == null || !handleExtraIntent)) {
                 // Tab not found, open account specific page
@@ -758,11 +755,8 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     }
 
     private fun initUnreadCount() {
-        var i = 0
-        val j = mainTabs.count
-        while (i < j) {
+        for (i in 0 until mainTabs.count) {
             mainTabs.setBadge(i, 0)
-            i++
         }
     }
 
@@ -938,11 +932,8 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
 
         override fun onPostExecute(result: SparseIntArray) {
             indicator.clearBadge()
-            var i = 0
-            val j = result.size()
-            while (i < j) {
+            for (i in 0 until result.size()) {
                 indicator.setBadge(result.keyAt(i), result.valueAt(i))
-                i++
             }
         }
 

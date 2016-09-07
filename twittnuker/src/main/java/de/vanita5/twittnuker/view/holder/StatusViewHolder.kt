@@ -31,7 +31,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView
-import kotlinx.android.synthetic.main.card_item_status_compact.view.*
+import kotlinx.android.synthetic.main.list_item_status.view.*
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
