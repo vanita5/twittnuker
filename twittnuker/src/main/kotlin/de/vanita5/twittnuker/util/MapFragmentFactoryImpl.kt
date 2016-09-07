@@ -28,7 +28,7 @@ import android.support.v4.app.Fragment
 import de.vanita5.twittnuker.fragment.OpenStreetMapViewerFragment
 
 class MapFragmentFactoryImpl : MapFragmentFactory() {
-    override fun createMapFragment(context: Context): Fragment? {
+    override fun createMapFragment(context: Context): Fragment {
         return OpenStreetMapViewerFragment()
     }
 }

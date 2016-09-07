@@ -129,7 +129,7 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
                 reloadActivities()
             }
         }
-        cr!!.registerContentObserver(Accounts.CONTENT_URI, true, mContentObserver!!)
+        cr.registerContentObserver(Accounts.CONTENT_URI, true, mContentObserver!!)
         cr.registerContentObserver(Filters.CONTENT_URI, true, mContentObserver!!)
         updateRefreshState()
         reloadActivities()
@@ -148,7 +148,7 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
 
     override fun onStop() {
         val cr = contentResolver
-        cr!!.unregisterContentObserver(mContentObserver!!)
+        cr.unregisterContentObserver(mContentObserver!!)
         super.onStop()
     }
 

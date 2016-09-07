@@ -36,34 +36,33 @@ public class UnreadItem {
     public UnreadItem() {
     }
 
-	public UnreadItem(final long id, final long account_id) {
-		this.id = id;
-		this.account_id = account_id;
-	}
+    public UnreadItem(final long id, final long account_id) {
+        this.id = id;
+        this.account_id = account_id;
+    }
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof UnreadItem)) return false;
-		final UnreadItem other = (UnreadItem) obj;
-		if (account_id != other.account_id) return false;
-		if (id != other.id) return false;
-		return true;
-	}
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (!(obj instanceof UnreadItem)) return false;
+        final UnreadItem other = (UnreadItem) obj;
+        if (account_id != other.account_id) return false;
+        return id == other.id;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (account_id ^ account_id >>> 32);
-		result = prime * result + (int) (id ^ id >>> 32);
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (account_id ^ account_id >>> 32);
+        result = prime * result + (int) (id ^ id >>> 32);
+        return result;
+    }
 
-	@Override
-	public String toString() {
-		return "UnreadItem{id=" + id + ", account_id=" + account_id + "}";
-	}
+    @Override
+    public String toString() {
+        return "UnreadItem{id=" + id + ", account_id=" + account_id + "}";
+    }
 
 }

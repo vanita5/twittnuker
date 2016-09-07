@@ -37,14 +37,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.NinePatchDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -65,12 +59,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.annotation.WorkerThread;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.ListFragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.util.Pair;
 import android.support.v4.view.ActionProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -96,11 +85,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.webkit.MimeTypeMap;
 import android.widget.AbsListView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -115,7 +101,6 @@ import de.vanita5.twittnuker.library.twitter.model.GeoLocation;
 import de.vanita5.twittnuker.library.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.library.twitter.model.Relationship;
 import de.vanita5.twittnuker.library.twitter.model.Status;
-import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment;
 import org.mariotaku.sqliteqb.library.AllColumns;
 import org.mariotaku.sqliteqb.library.Columns;
@@ -162,12 +147,11 @@ import de.vanita5.twittnuker.fragment.UserMediaTimelineFragment;
 import de.vanita5.twittnuker.fragment.UserMentionsFragment;
 import de.vanita5.twittnuker.fragment.UserProfileEditorFragment;
 import de.vanita5.twittnuker.fragment.UserTimelineFragment;
-import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback;
+import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
-import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -200,17 +184,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.CRC32;
 
 import javax.net.ssl.SSLException;
 
@@ -218,7 +198,6 @@ import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_UR
 import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 
-@SuppressWarnings("unused")
 public final class Utils implements Constants {
 
     public static final Pattern PATTERN_XML_RESOURCE_IDENTIFIER = Pattern.compile("res/xml/([\\w_]+)\\.xml");
@@ -328,32 +307,6 @@ public final class Utils implements Constants {
         if (preferredHeight > height && preferredWidth > width) return 1;
         final int result = Math.round(Math.max(width, height) / (float) Math.max(preferredWidth, preferredHeight));
         return Math.max(1, result);
-    }
-
-    public static boolean checkActivityValidity(final Context context, final Intent intent) {
-        final PackageManager pm = context.getPackageManager();
-        return !pm.queryIntentActivities(intent, 0).isEmpty();
-    }
-
-    public static void clearListViewChoices(final AbsListView view) {
-        if (view == null) return;
-        final ListAdapter adapter = view.getAdapter();
-        if (adapter == null) return;
-        view.clearChoices();
-        for (int i = 0, j = view.getChildCount(); i < j; i++) {
-            view.setItemChecked(i, false);
-        }
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                view.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
-            }
-        });
-        // Workaround for Android bug
-        // http://stackoverflow.com/questions/9754170/listview-selection-remains-persistent-after-exiting-choice-mode
-//        final int position = view.getFirstVisiblePosition(), offset = Utils.getFirstChildOffset(view);
-//        view.setAdapter(adapter);
-//        Utils.scrollListToPosition(view, position, offset);
     }
 
     public static boolean closeSilently(final Closeable c) {
@@ -803,28 +756,6 @@ public final class Utils implements Constants {
         return tag + "_" + accountKey;
     }
 
-    public static String encodeQueryParams(final String value) throws IOException {
-        final String encoded = URLEncoder.encode(value, "UTF-8");
-        final StringBuilder buf = new StringBuilder();
-        final int length = encoded.length();
-        char focus;
-        for (int i = 0; i < length; i++) {
-            focus = encoded.charAt(i);
-            if (focus == '*') {
-                buf.append("%2A");
-            } else if (focus == '+') {
-                buf.append("%20");
-            } else if (focus == '%' && i + 1 < encoded.length() && encoded.charAt(i + 1) == '7'
-                    && encoded.charAt(i + 2) == 'E') {
-                buf.append('~');
-                i += 2;
-            } else {
-                buf.append(focus);
-            }
-        }
-        return buf.toString();
-    }
-
     public static ParcelableDirectMessage findDirectMessageInDatabases(final Context context,
                                                                        final UserKey accountKey,
                                                                        final long messageId) {
@@ -902,33 +833,6 @@ public final class Utils implements Constants {
     }
 
     @SuppressWarnings("deprecation")
-    public static String formatTimeStampString(final Context context, final long timestamp) {
-        if (context == null) return null;
-        final Time then = new Time();
-        then.set(timestamp);
-        final Time now = new Time();
-        now.setToNow();
-
-        int format_flags = DateUtils.FORMAT_NO_NOON_MIDNIGHT | DateUtils.FORMAT_ABBREV_ALL | DateUtils.FORMAT_CAP_AMPM;
-
-        if (then.year != now.year) {
-            format_flags |= DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_SHOW_DATE;
-        } else if (then.yearDay != now.yearDay) {
-            format_flags |= DateUtils.FORMAT_SHOW_DATE;
-        } else {
-            format_flags |= DateUtils.FORMAT_SHOW_TIME;
-        }
-
-        return DateUtils.formatDateTime(context, timestamp, format_flags);
-    }
-
-    @SuppressWarnings("deprecation")
-    public static String formatTimeStampString(final Context context, final String date_time) {
-        if (context == null) return null;
-        return formatTimeStampString(context, Date.parse(date_time));
-    }
-
-    @SuppressWarnings("deprecation")
     public static String formatToLongTimeString(final Context context, final long timestamp) {
         if (context == null) return null;
         final Time then = new Time();
@@ -972,16 +876,6 @@ public final class Utils implements Constants {
         return isOAuth && TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret);
     }
 
-    public static TextView newSectionView(final Context context, final int titleRes) {
-        return newSectionView(context, titleRes != 0 ? context.getString(titleRes) : null);
-    }
-
-    public static TextView newSectionView(final Context context, final CharSequence title) {
-        final TextView textView = new TextView(context, null, android.R.attr.listSeparatorTextViewStyle);
-        textView.setText(title);
-        return textView;
-    }
-
     public static boolean setLastSeen(Context context, ParcelableUserMention[] entities, long time) {
         if (entities == null) return false;
         boolean result = false;
@@ -1003,62 +897,6 @@ public final class Utils implements Constants {
         final String where = Expression.equalsArgs(CachedUsers.USER_KEY).getSQL();
         final String[] selectionArgs = {userId.toString()};
         return cr.update(CachedUsers.CONTENT_URI, values, where, selectionArgs) > 0;
-    }
-
-    public static File getBestCacheDir(final Context context, final String cacheDirName) {
-        if (context == null) throw new NullPointerException();
-        final File extCacheDir;
-        try {
-            // Workaround for https://github.com/mariotaku/twidere/issues/138
-            extCacheDir = context.getExternalCacheDir();
-        } catch (final Exception e) {
-            return new File(context.getCacheDir(), cacheDirName);
-        }
-        if (extCacheDir != null && extCacheDir.isDirectory()) {
-            final File cacheDir = new File(extCacheDir, cacheDirName);
-            if (cacheDir.isDirectory() || cacheDir.mkdirs()) return cacheDir;
-        }
-        return new File(context.getCacheDir(), cacheDirName);
-    }
-
-    public static String getBiggerTwitterProfileImage(final String url) {
-        return getTwitterProfileImageOfSize(url, "bigger");
-    }
-
-    public static Bitmap getBitmap(final Drawable drawable) {
-        if (drawable instanceof NinePatchDrawable) return null;
-        if (drawable instanceof BitmapDrawable)
-            return ((BitmapDrawable) drawable).getBitmap();
-        else if (drawable instanceof TransitionDrawable) {
-            final int layer_count = ((TransitionDrawable) drawable).getNumberOfLayers();
-            for (int i = 0; i < layer_count; i++) {
-                final Drawable layer = ((TransitionDrawable) drawable).getDrawable(i);
-                if (layer instanceof BitmapDrawable) return ((BitmapDrawable) layer).getBitmap();
-            }
-        }
-        return null;
-    }
-
-    public static Bitmap.CompressFormat getBitmapCompressFormatByMimeType(final String mimeType,
-                                                                          final Bitmap.CompressFormat def) {
-        final String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
-        if ("jpeg".equalsIgnoreCase(extension) || "jpg".equalsIgnoreCase(extension))
-            return Bitmap.CompressFormat.JPEG;
-        else if ("png".equalsIgnoreCase(extension))
-            return Bitmap.CompressFormat.PNG;
-        else if ("webp".equalsIgnoreCase(extension)) return Bitmap.CompressFormat.WEBP;
-        return def;
-    }
-
-    public static int getCardHighlightColor(final Context context, final boolean isMention,
-                                            final boolean isFavorite, final boolean isRetweet) {
-        if (isMention)
-            return ContextCompat.getColor(context, R.color.highlight_reply);
-        else if (isRetweet)
-            return ContextCompat.getColor(context, R.color.highlight_retweet);
-        else if (isFavorite)
-            return ContextCompat.getColor(context, R.color.highlight_like);
-        return Color.TRANSPARENT;
     }
 
 
@@ -1127,48 +965,6 @@ public final class Utils implements Constants {
         return t.getMessage();
     }
 
-    public static int getFirstChildOffset(final AbsListView list) {
-        if (list == null || list.getChildCount() == 0) return 0;
-        final View child = list.getChildAt(0);
-        final int[] location = new int[2];
-        child.getLocationOnScreen(location);
-        Log.d(LOGTAG, String.format("getFirstChildOffset %d vs %d", child.getTop(), location[1]));
-        return child.getTop();
-    }
-
-
-    public static String getImageMimeType(final File image) {
-        if (image == null) return null;
-        final BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(image.getPath(), o);
-        return o.outMimeType;
-    }
-
-    public static String getImageMimeType(final InputStream is) {
-        if (is == null) return null;
-        final BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(is, null, o);
-        return o.outMimeType;
-    }
-
-    @Nullable
-    public static String getImageMimeType(ContentResolver cr, final Uri uri) {
-        if (uri == null) return null;
-        final BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        InputStream is = null;
-        try {
-            is = cr.openInputStream(uri);
-            BitmapFactory.decodeStream(is, null, o);
-            return o.outMimeType;
-        } catch (IOException e) {
-            return null;
-        } finally {
-            closeSilently(is);
-        }
-    }
 
     public static String getImagePathFromUri(final Context context, final Uri uri) {
         if (context == null || uri == null) return null;
@@ -1219,17 +1015,6 @@ public final class Utils implements Constants {
         final File cacheDir = new File(externalCacheDir, cacheDirName);
         if (cacheDir.isDirectory() || cacheDir.mkdirs()) return cacheDir;
         return new File(context.getCacheDir(), cacheDirName);
-    }
-
-    public static String getLinkHighlightingStyleName(final Context context) {
-        if (context == null) return null;
-        final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        return prefs.getString(KEY_LINK_HIGHLIGHT_OPTION, VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT);
-    }
-
-    @HighlightStyle
-    public static int getLinkHighlightingStyle(final Context context) {
-        return getLinkHighlightingStyleInt(getLinkHighlightingStyleName(context));
     }
 
     @HighlightStyle
@@ -1323,10 +1108,6 @@ public final class Utils implements Constants {
         return result;
     }
 
-    public static String getReasonablySmallTwitterProfileImage(final String url) {
-        return getTwitterProfileImageOfSize(url, "reasonably_small");
-    }
-
     public static int getResId(final Context context, final String string) {
         if (context == null || string == null) return 0;
         Matcher m = PATTERN_RESOURCE_IDENTIFIER.matcher(string);
@@ -1337,13 +1118,6 @@ public final class Utils implements Constants {
         return 0;
     }
 
-
-    public static String getSenderUserName(final Context context, final ParcelableDirectMessage user) {
-        if (context == null || user == null) return null;
-        final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final boolean display_name = prefs.getBoolean(KEY_NAME_FIRST, true);
-        return display_name ? user.sender_name : "@" + user.sender_screen_name;
-    }
 
     public static String getShareStatus(final Context context, final CharSequence title, final CharSequence text) {
         if (context == null) return null;
@@ -1373,11 +1147,6 @@ public final class Utils implements Constants {
         else if (VALUE_TAB_DISPLAY_OPTION_LABEL.equals(option))
             return VALUE_TAB_DISPLAY_OPTION_CODE_LABEL;
         return VALUE_TAB_DISPLAY_OPTION_CODE_BOTH;
-    }
-
-    public static long getTimestampFromDate(final Date date) {
-        if (date == null) return -1;
-        return date.getTime();
     }
 
     public static boolean hasNavBar(@NonNull Context context) {
@@ -1460,41 +1229,9 @@ public final class Utils implements Constants {
         return 0;
     }
 
-    public static boolean hasAccountSignedWithOfficialKeys(final Context context) {
-        if (context == null) return false;
-        final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, Accounts.COLUMNS, null, null, null);
-        if (cur == null) return false;
-        final String[] keySecrets = context.getResources().getStringArray(R.array.values_official_consumer_secret_crc32);
-        final ParcelableCredentialsCursorIndices indices = new ParcelableCredentialsCursorIndices(cur);
-        cur.moveToFirst();
-        final CRC32 crc32 = new CRC32();
-        try {
-            while (!cur.isAfterLast()) {
-                final String consumerSecret = cur.getString(indices.consumer_secret);
-                if (consumerSecret != null) {
-                    final byte[] consumerSecretBytes = consumerSecret.getBytes(Charset.forName("UTF-8"));
-                    crc32.update(consumerSecretBytes, 0, consumerSecretBytes.length);
-                    final long value = crc32.getValue();
-                    crc32.reset();
-                    for (final String keySecret : keySecrets) {
-                        if (Long.parseLong(keySecret, 16) == value) return true;
-                    }
-                }
-                cur.moveToNext();
-            }
-        } finally {
-            cur.close();
-        }
-        return false;
-    }
-
     public static boolean hasAutoRefreshAccounts(final Context context) {
         final UserKey[] accountKeys = DataStoreUtils.getAccountKeys(context);
         return !ArrayUtils.isEmpty(AccountPreferences.getAutoRefreshEnabledAccountIds(context, accountKeys));
-    }
-
-    public static boolean hasStaggeredTimeline() {
-        return false;
     }
 
     public static boolean isBatteryOkay(final Context context) {
@@ -1507,18 +1244,6 @@ public final class Utils implements Constants {
         final float level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
         final float scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100);
         return plugged || level / scale > 0.15f;
-    }
-
-    public static boolean isDatabaseReady(final Context context) {
-        final Cursor c = context.getContentResolver().query(TwidereDataStore.CONTENT_URI_DATABASE_READY, null, null, null,
-                null);
-        try {
-            return c != null;
-        } finally {
-            if (c != null) {
-                c.close();
-            }
-        }
     }
 
     public static boolean isMyAccount(final Context context, @Nullable final UserKey accountKey) {
@@ -1566,16 +1291,6 @@ public final class Utils implements Constants {
         } catch (SecurityException e) {
             return true;
         }
-    }
-
-    @Deprecated
-    public static boolean isUserLoggedIn(final Context context, final String accountId) {
-        if (context == null) return false;
-        final UserKey[] ids = DataStoreUtils.getAccountKeys(context);
-        for (final UserKey id : ids) {
-            if (TextUtils.equals(id.getId(), accountId)) return true;
-        }
-        return false;
     }
 
     public static int matchLinkId(@Nullable final Uri uri) {
@@ -1641,13 +1356,6 @@ public final class Utils implements Constants {
         } else {
             return top;
         }
-        if (actionBarHeight > top) {
-            return top;
-        }
-        return top - actionBarHeight;
-    }
-
-    public static int getInsetsTopWithoutActionBarHeight(Context context, int top, int actionBarHeight) {
         if (actionBarHeight > top) {
             return top;
         }
@@ -1759,16 +1467,6 @@ public final class Utils implements Constants {
         showInfoMessage(context, context.getText(resId), long_message);
     }
 
-    public static void showMenuItemToast(final View v, final CharSequence text) {
-        final int[] screenPos = new int[2];
-        final Rect displayFrame = new Rect();
-        v.getLocationOnScreen(screenPos);
-        v.getWindowVisibleDisplayFrame(displayFrame);
-        final int height = v.getHeight();
-        final int midy = screenPos[1] + height / 2;
-        showMenuItemToast(v, text, midy >= displayFrame.height());
-    }
-
     public static void showMenuItemToast(final View v, final CharSequence text, final boolean isBottomBar) {
         final int[] screenPos = new int[2];
         final Rect displayFrame = new Rect();
@@ -1845,17 +1543,6 @@ public final class Utils implements Constants {
         showErrorMessage(context, message, long_message);
     }
 
-    public static void showWarnMessage(final Context context, final CharSequence message, final boolean longMessage) {
-        if (context == null || TextUtils.isEmpty(message)) return;
-        final Toast toast = Toast.makeText(context, message, longMessage ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
-        toast.show();
-    }
-
-    public static void showWarnMessage(final Context context, final int resId, final boolean long_message) {
-        if (context == null) return;
-        showWarnMessage(context, context.getText(resId), long_message);
-    }
-
     public static void startRefreshServiceIfNeeded(@NonNull final Context context) {
         final Context appContext = context.getApplicationContext();
         if (appContext == null) return;
@@ -1917,10 +1604,6 @@ public final class Utils implements Constants {
         resolver.insert(CachedRelationships.CONTENT_URI, values);
     }
 
-    public static boolean useShareScreenshot() {
-        return Boolean.parseBoolean("false");
-    }
-
     private static Drawable getMetadataDrawable(final PackageManager pm, final ActivityInfo info, final String key) {
         if (pm == null || info == null || info.metaData == null || key == null || !info.metaData.containsKey(key))
             return null;
@@ -1955,11 +1638,6 @@ public final class Utils implements Constants {
             }
         }
         return text;
-    }
-
-    public static String parseString(final Object object) {
-        if (object == null) return null;
-        return String.valueOf(object);
     }
 
     public static void retweet(ParcelableStatus status, AsyncTwitterWrapper twitter) {
@@ -1998,22 +1676,6 @@ public final class Utils implements Constants {
         return 0;
     }
 
-    public static void makeListFragmentFitsSystemWindows(ListFragment fragment) {
-        final FragmentActivity activity = fragment.getActivity();
-        if (!(activity instanceof SystemWindowsInsetsCallback)) return;
-        final SystemWindowsInsetsCallback callback = (SystemWindowsInsetsCallback) activity;
-        final Rect insets = new Rect();
-        if (callback.getSystemWindowsInsets(insets)) {
-            makeListFragmentFitsSystemWindows(fragment, insets);
-        }
-    }
-
-
-    public static void makeListFragmentFitsSystemWindows(ListFragment fragment, Rect insets) {
-        final ListView listView = fragment.getListView();
-        listView.setPadding(insets.left, insets.top, insets.right, insets.bottom);
-        listView.setClipToPadding(false);
-    }
 
     @Nullable
     public static ParcelableUser getUserForConversation(@NonNull final Context context,
@@ -2032,13 +1694,6 @@ public final class Utils implements Constants {
             c.close();
         }
         return null;
-    }
-
-    @SafeVarargs
-    public static Bundle makeSceneTransitionOption(final Activity activity,
-                                                   final Pair<View, String>... sharedElements) {
-        if (ThemeUtils.isTransparentBackground(activity)) return null;
-        return ActivityOptionsCompat.makeSceneTransitionAnimation(activity, sharedElements).toBundle();
     }
 
 
@@ -2077,27 +1732,6 @@ public final class Utils implements Constants {
     public static int getErrorNo(Throwable t) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return 0;
         return UtilsL.getErrorNo(t);
-    }
-
-    public static boolean isOutOfMemory(Throwable ex) {
-        if (ex == null) return false;
-        final Throwable cause = ex.getCause();
-        if (cause == null || cause == ex) return false;
-        if (cause instanceof OutOfMemoryError) return true;
-        return isOutOfMemory(cause);
-    }
-
-    public static boolean hasOfficialAPIAccess(@NonNull Context context, @NonNull ParcelableCredentials account) {
-        if (ParcelableAccount.Type.TWITTER.equals(account.account_type)) {
-            final TwitterAccountExtra extra = JsonSerializer.parse(account.account_extras,
-                    TwitterAccountExtra.class);
-            if (extra != null) {
-                return extra.isOfficialCredentials();
-            }
-        }
-        final boolean isOAuth = ParcelableCredentialsUtils.isOAuth(account.auth_type);
-        final String consumerKey = account.consumer_key, consumerSecret = account.consumer_secret;
-        return isOAuth && TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret);
     }
 
     public static int getNotificationId(int baseId, @Nullable UserKey accountId) {
@@ -2153,20 +1787,10 @@ public final class Utils implements Constants {
      * Send Notifications to Pebble smartwatches
      *
      * @param context Context
-     * @param message String
-     */
-    public static void sendPebbleNotification(final Context context, final String message) {
-        sendPebbleNotification(context, null, message);
-    }
-
-    /**
-     * Send Notifications to Pebble smartwatches
-     *
-     * @param context Context
      * @param title String
      * @param message String
      */
-    public static void sendPebbleNotification(final Context context, final String title, final String message) {
+    public static void sendPebbleNotification(@NonNull final Context context, @Nullable final String title, @NonNull final String message) {
         String appName;
 
         if (title == null) {
@@ -2175,7 +1799,7 @@ public final class Utils implements Constants {
             appName = context.getString(R.string.app_name) + " - " + title;
         }
 
-        if (context == null || TextUtils.isEmpty(message)) return;
+        if (TextUtils.isEmpty(message)) return;
         final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 
         if (prefs.getBoolean(KEY_PEBBLE_NOTIFICATIONS, false)) {

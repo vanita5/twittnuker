@@ -42,7 +42,7 @@ import org.mariotaku.restfu.RestFuUtils;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.CacheMetadata;
 import de.vanita5.twittnuker.task.SaveFileTask;
-import de.vanita5.twittnuker.util.Utils;
+import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import java.io.File;
@@ -119,7 +119,7 @@ public class CacheProvider extends ContentProvider implements TwittnukerConstant
                 case Type.IMAGE: {
                     final File file = mSimpleDiskCache.get(getCacheKey(uri));
                     if (file == null) return null;
-                    return Utils.getImageMimeType(file);
+                    return BitmapUtils.getImageMimeType(file);
                 }
                 case Type.VIDEO: {
                     return "video/mp4";

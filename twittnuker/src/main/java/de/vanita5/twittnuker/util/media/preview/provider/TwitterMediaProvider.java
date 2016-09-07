@@ -77,10 +77,7 @@ public class TwitterMediaProvider implements Provider {
         }
         final String path = UriUtils.getPath(link);
         if (path == null) return false;
-        if (path.startsWith("/media/")) {
-            return true;
-        }
-        return false;
+        return path.startsWith("/media/");
     }
 
 }
