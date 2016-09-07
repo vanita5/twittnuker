@@ -86,7 +86,7 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
         val choicesCount = getChoicesCount(card)
         val inflater = getLayoutInflater(savedInstanceState)
 
-        for (i in 0..choicesCount - 1) {
+        for (i in 0 until choicesCount) {
             inflater.inflate(R.layout.layout_poll_item, pollContainer, true)
         }
 
@@ -115,10 +115,8 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
 
             override fun onClick(v: View) {
                 if (hasChoice || clickedChoice) return
-                var i = 0
-                val j = pollContainer!!.childCount
-                while (i < j) {
-                    val pollItem = pollContainer!!.getChildAt(i)
+                for (i in 0 until pollContainer.childCount) {
+                    val pollItem = pollContainer.getChildAt(i)
                     pollItem.isClickable = false
                     clickedChoice = true
                     val choiceRadioButton = pollItem.findViewById(R.id.choice_button) as RadioButton
@@ -139,9 +137,8 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
                             }
 
                             public override fun doLongOperation(cardDataMap: CardDataMap): ParcelableCardEntity? {
-                                val context = getContext() ?: return null
-                                val caps = MicroBlogAPIFactory.getInstance(context,
-                                        card.account_key, true, true, TwitterCaps::class.java) ?: return null
+                                val caps = MicroBlogAPIFactory.getInstance(context, card.account_key,
+                                        true, true, TwitterCaps::class.java) ?: return null
                                 try {
                                     val cardEntity = caps.sendPassThrough(cardDataMap).card
                                     return ParcelableCardEntityUtils.fromCardEntity(cardEntity,
@@ -153,11 +150,10 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
                                 return null
                             }
                         }
-                        task.setCallback(this@CardPollFragment)
+                        task.callback = this@CardPollFragment
                         task.params = cardData
                         TaskStarter.execute(task)
                     }
-                    i++
                 }
             }
         }
@@ -165,7 +161,7 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
         val color = ContextCompat.getColor(context, R.color.material_light_blue_a200)
         val radius = resources.getDimension(R.dimen.element_spacing_small)
         for (i in 0..choicesCount - 1) {
-            val pollItem = pollContainer!!.getChildAt(i)
+            val pollItem = pollContainer.getChildAt(i)
 
             val choicePercentView = pollItem.findViewById(R.id.choice_percent) as TextView
             val choiceLabelView = pollItem.findViewById(R.id.choice_label) as TextView
@@ -200,9 +196,8 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
 
         val nVotes = resources.getQuantityString(R.plurals.N_votes, votesSum, votesSum)
 
-        val timeLeft = DateUtils.getRelativeTimeSpanString(context,
-                endDatetimeUtc.time, true)
-        pollSummary!!.text = getString(R.string.poll_summary_format, nVotes, timeLeft)
+        val timeLeft = DateUtils.getRelativeTimeSpanString(context, endDatetimeUtc.time, true)
+        pollSummary.text = getString(R.string.poll_summary_format, nVotes, timeLeft)
     }
 
     private fun displayAndReloadPoll(result: ParcelableCardEntity, status: ParcelableStatus) {
@@ -247,7 +242,11 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
 
     }
 
-    private class PercentDrawable internal constructor(private val mPercent: Float, private val mRadius: Float, color: Int) : Drawable() {
+    private class PercentDrawable internal constructor(
+            private val percent: Float,
+            private val radius: Float,
+            color: Int
+    ) : Drawable() {
 
         private val mPaint: Paint
         private val mBounds: RectF
@@ -259,12 +258,12 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
         }
 
         override fun draw(canvas: Canvas) {
-            canvas.drawRoundRect(mBounds, mRadius, mRadius, mPaint)
+            canvas.drawRoundRect(mBounds, radius, radius, mPaint)
         }
 
         override fun onBoundsChange(bounds: Rect) {
             mBounds.set(bounds)
-            mBounds.right = mBounds.left + mBounds.width() * mPercent
+            mBounds.right = mBounds.left + mBounds.width() * percent
             super.onBoundsChange(bounds)
         }
 
