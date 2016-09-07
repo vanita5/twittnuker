@@ -43,6 +43,8 @@ import com.afollestad.appthemeengine.ATE
 import com.afollestad.appthemeengine.Config
 import com.pnikosis.materialishprogress.ProgressWheel
 import com.rengwuxian.materialedittext.MaterialEditText
+import nl.komponents.kovenant.android.startKovenant
+import nl.komponents.kovenant.android.stopKovenant
 import org.apache.commons.lang3.ArrayUtils
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
@@ -101,6 +103,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         val preferences = sharedPreferences
         resetTheme(preferences)
         super.onCreate()
+        startKovenant()
 
         profileImageViewViewProcessor = ProfileImageViewViewProcessor()
         fontFamilyTagProcessor = FontFamilyTagProcessor()
@@ -248,6 +251,11 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
                 ATE.config(this, null).accentColor(ThemeUtils.getOptimalAccentColor(themeColor, Color.BLACK)).coloredActionBar(false).coloredStatusBar(false).commit()
             }
         }
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        stopKovenant()
     }
 
     private fun resetTheme(preferences: SharedPreferences) {
