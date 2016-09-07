@@ -69,13 +69,6 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
 
     private val statusesBusCallback: Any
 
-    private val onScrollListener = object : OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                saveReadPosition()
-            }
-        }
-    }
     private var navigationHelper: RecyclerViewNavigationHelper? = null
     private var pauseOnScrollListener: OnScrollListener? = null
 
@@ -167,14 +160,6 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
         val fromUser = args.getBoolean(IntentConstants.EXTRA_FROM_USER)
         args.remove(IntentConstants.EXTRA_FROM_USER)
         return onCreateActivitiesLoader(activity, args, fromUser)
-    }
-
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-
-        if (isVisibleToUser) {
-            saveReadPosition()
-        }
     }
 
     protected fun saveReadPosition() {
@@ -330,7 +315,6 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
 
     override fun onStart() {
         super.onStart()
-        recyclerView.addOnScrollListener(onScrollListener)
         recyclerView.addOnScrollListener(pauseOnScrollListener)
         bus.register(statusesBusCallback)
     }
@@ -338,7 +322,6 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
     override fun onStop() {
         bus.unregister(statusesBusCallback)
         recyclerView.removeOnScrollListener(pauseOnScrollListener)
-        recyclerView.removeOnScrollListener(onScrollListener)
         if (userVisibleHint) {
             saveReadPosition()
         }
@@ -417,16 +400,20 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
     protected abstract fun onLoadingFinished()
 
     protected fun saveReadPosition(position: Int) {
-        if (context == null) return
+        if (host == null) return
         if (position == RecyclerView.NO_POSITION) return
         val item = adapter!!.getActivity(position) ?: return
-
         var positionUpdated = false
-        for (accountKey in accountKeys) {
-            val tag = Utils.getReadPositionTagWithAccount(readPositionTag, accountKey)
-            if (readStateManager.setPosition(tag, item.timestamp)) {
-                positionUpdated = true
+        readPositionTag?.let {
+            for (accountKey in accountKeys) {
+                val tag = Utils.getReadPositionTagWithAccount(it, accountKey)
+                if (readStateManager.setPosition(tag, item.timestamp)) {
+                    positionUpdated = true
+                }
             }
+        }
+        currentReadPositionTag?.let {
+            readStateManager.setPosition(it, item.timestamp, true)
         }
 
         if (positionUpdated) {

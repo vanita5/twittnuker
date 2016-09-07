@@ -23,61 +23,62 @@
 package de.vanita5.twittnuker.model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
 public class StringLongPair {
-	@NonNull
-	private final String key;
-	private long value;
+    @NonNull
+    private final String key;
+    private long value;
 
-	public StringLongPair(@NonNull String key, long value) {
-		this.key = key;
-		this.value = value;
-	}
+    public StringLongPair(@NonNull String key, long value) {
+        this.key = key;
+        this.value = value;
+    }
 
-	@NonNull
-	public String getKey() {
-		return key;
-	}
+    @NonNull
+    public String getKey() {
+        return key;
+    }
 
-	public long getValue() {
-		return value;
-	}
+    public long getValue() {
+        return value;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-		StringLongPair that = (StringLongPair) o;
+        StringLongPair that = (StringLongPair) o;
 
         return key.equals(that.key);
-	}
+    }
 
-	@Override
-	public int hashCode() {
-		return key.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return key.hashCode();
+    }
 
-	public void setValue(long value) {
-		this.value = value;
-	}
+    public void setValue(long value) {
+        this.value = value;
+    }
 
-	@Override
-	public String toString() {
-		return key + ":" + value;
-	}
+    @Override
+    public String toString() {
+        return key + ":" + value;
+    }
 
-    public static StringLongPair valueOf(String s) throws NumberFormatException {
-        if (s == null) return null;
-		final String[] segs = s.split(":");
-		if (segs.length != 2) throw new NumberFormatException();
-		return new StringLongPair(segs[0], Long.parseLong(segs[1]));
-	}
+    @NonNull
+    public static StringLongPair valueOf(@NonNull String s) throws NumberFormatException {
+        final String[] segs = s.split(":");
+        if (segs.length != 2) throw new NumberFormatException();
+        return new StringLongPair(segs[0], Long.parseLong(segs[1]));
+    }
 
     public static String toString(StringLongPair[] pairs) {
-        if (pairs==null)return null;
+        if (pairs == null) return null;
         return TwidereArrayUtils.toString(pairs, ';', false);
     }
 

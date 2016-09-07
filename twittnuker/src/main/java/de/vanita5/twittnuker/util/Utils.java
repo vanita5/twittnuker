@@ -217,7 +217,6 @@ import javax.net.ssl.SSLException;
 import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_URIS;
 import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
-import static de.vanita5.twittnuker.util.TwidereLinkify.TWITTER_PROFILE_IMAGES_AVAILABLE_SIZES;
 
 @SuppressWarnings("unused")
 public final class Utils implements Constants {
@@ -797,10 +796,9 @@ public final class Utils implements Constants {
         return accountKeys[0];
     }
 
-    @Nullable
-    public static String getReadPositionTagWithAccount(@Nullable final String tag,
+    @NonNull
+    public static String getReadPositionTagWithAccount(@NonNull final String tag,
                                                        @Nullable final UserKey accountKey) {
-        if (tag == null) return null;
         if (accountKey == null) return tag;
         return tag + "_" + accountKey;
     }
