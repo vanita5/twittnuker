@@ -28,7 +28,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
@@ -38,7 +37,10 @@ import de.vanita5.twittnuker.util.UriUtils;
 
 import java.util.ArrayList;
 
-public class UserKeyUtils implements TwittnukerConstants {
+import static de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM;
+import static de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_TWITTER_COM;
+
+public class UserKeyUtils {
 
     private UserKeyUtils() {
     }
@@ -91,21 +93,13 @@ public class UserKeyUtils implements TwittnukerConstants {
     }
 
     public static boolean isFanfouUser(User user) {
-        return isFanfouUrl(user.getProfileImageUrlLarge()) || isFanfouUrl(user.getProfileImageUrl())
-                || isFanfouUrl(user.getProfileBackgroundImageUrl());
+        return user.getUniqueId() != null && user.getProfileImageUrlLarge() != null;
     }
 
     public static boolean isFanfouUser(ParcelableUser user) {
-        return isFanfouUrl(user.profile_image_url) || isFanfouUrl(user.profile_background_url);
+        return USER_TYPE_FANFOU_COM.equals(user.key.getHost());
     }
 
-    static boolean isFanfouUrl(String url) {
-        return url != null && isFanfouHost(getUserHost(url, "twitter.com"));
-    }
-
-    private static boolean isFanfouHost(@NonNull String host) {
-        return TextUtils.equals("fanfou.com", host) || host.endsWith(".fanfou.com");
-    }
 
     @NonNull
     public static String getUserHost(@Nullable String uri, @Nullable String def) {
