@@ -41,7 +41,7 @@ android:
     # if you need to run emulator(s) during your tests
     # - sys-img-armeabi-v7a-android-19
     # - sys-img-x86-android-17
-    - sys-img-armeabi-v7a-android-23
+    - sys-img-armeabi-v7a-android-24
 
 cache:
   directories:
