@@ -51,7 +51,7 @@ class HomeTimelineFragment : CursorStatusesFragment() {
 
     override fun updateRefreshState() {
         val twitter = twitterWrapper
-        refreshing = twitter.isHomeTimelineRefreshing
+        refreshing = twitter.isStatusTimelineRefreshing(contentUri)
     }
 
     override fun getStatuses(param: RefreshTaskParam): Boolean {

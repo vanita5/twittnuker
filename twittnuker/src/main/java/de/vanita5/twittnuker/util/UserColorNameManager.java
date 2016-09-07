@@ -30,7 +30,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
 
 import de.vanita5.twittnuker.library.twitter.model.User;
 import org.mariotaku.sqliteqb.library.Expression;
@@ -115,44 +114,36 @@ public class UserColorNameManager implements TwittnukerConstants {
                 new String[]{userKey});
     }
 
-    @WorkerThread
     public String getDisplayName(final ParcelableUser user, final boolean nameFirst) {
         return getDisplayName(user.key, user.name, user.screen_name, nameFirst);
     }
 
-    @WorkerThread
     public String getDisplayName(final User user, final boolean nameFirst) {
         return getDisplayName(UserKeyUtils.fromUser(user), user.getName(), user.getScreenName(), nameFirst);
     }
 
-    @WorkerThread
     public String getDisplayName(final ParcelableUserList user, final boolean nameFirst) {
         return getDisplayName(user.user_key, user.user_name, user.user_screen_name, nameFirst);
     }
 
-    @WorkerThread
     public String getDisplayName(final ParcelableStatus status, final boolean nameFirst) {
         return getDisplayName(status.user_key, status.user_name, status.user_screen_name, nameFirst);
     }
 
-    @WorkerThread
     public String getDisplayName(@NonNull final UserKey userId, final String name,
                                  final String screenName, final boolean nameFirst) {
         return getDisplayName(userId.toString(), name, screenName, nameFirst);
     }
 
-    @WorkerThread
     public String getDisplayName(@NonNull final String userId, final String name,
                                  final String screenName, final boolean nameFirst) {
         return decideDisplayName(name, screenName, nameFirst);
     }
 
-    @WorkerThread
     public int getUserColor(@NonNull final UserKey userId) {
         return getUserColor(userId.toString());
     }
 
-    @WorkerThread
     public int getUserColor(@NonNull final String userId) {
         return mColorPreferences.getInt(userId, Color.TRANSPARENT);
     }

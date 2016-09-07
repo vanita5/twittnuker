@@ -228,12 +228,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
     String ICON_SPECIAL_TYPE_CUSTOMIZE = "_customize";
 
-    String TASK_TAG_GET_HOME_TIMELINE = "get_home_tomeline";
-    String TASK_TAG_GET_MENTIONS = "get_mentions";
-    String TASK_TAG_GET_SENT_DIRECT_MESSAGES = "get_sent_direct_messages";
-    String TASK_TAG_GET_RECEIVED_DIRECT_MESSAGES = "get_received_direct_messages";
-    String TASK_TAG_GET_TRENDS = "get_trends";
-
 
     int TAB_CODE_HOME_TIMELINE = 1;
     int TAB_CODE_NOTIFICATIONS_TIMELINE = 2;
