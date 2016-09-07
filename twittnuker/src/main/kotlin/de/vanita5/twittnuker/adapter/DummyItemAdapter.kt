@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.util.getActivityStatus
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
@@ -112,6 +113,8 @@ class DummyItemAdapter @JvmOverloads constructor(
             return adapter.getStatus(position)
         } else if (adapter is VariousItemsAdapter) {
             return adapter.getItem(position) as ParcelableStatus
+        } else if (adapter is ParcelableActivitiesAdapter) {
+            return adapter.getActivity(position)?.getActivityStatus()
         }
         return null
     }
