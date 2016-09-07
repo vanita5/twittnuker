@@ -163,7 +163,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
             }
             adapter!!.loadMoreSupportedPosition = supportedPositions
             setConversation(data)
-            val canLoadAllReplies = loader.canLoadAllReplies()UFrag
+            val canLoadAllReplies = loader.canLoadAllReplies()
             if (canLoadAllReplies) {
                 adapter!!.setReplyError(null)
             } else {
