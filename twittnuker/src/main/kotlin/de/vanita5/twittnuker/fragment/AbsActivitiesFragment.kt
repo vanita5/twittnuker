@@ -242,6 +242,13 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
         }
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        if (userVisibleHint && !isVisibleToUser && host != null) {
+            saveReadPosition()
+        }
+        super.setUserVisibleHint(isVisibleToUser)
+    }
+
     override fun onGapClick(holder: GapViewHolder, position: Int) {
         val activity = adapter?.getActivity(position) ?: return
         if (BuildConfig.DEBUG) {
