@@ -31,7 +31,6 @@ import org.mariotaku.ktextension.safeMoveToPosition
 import org.mariotaku.library.objectcursor.ObjectCursor
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
-import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
@@ -51,8 +50,7 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
 abstract class ParcelableStatusesAdapter(
         context: Context
-) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), IStatusesAdapter<List<ParcelableStatus>>,
-        IItemCountsAdapter {
+) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), IStatusesAdapter<List<ParcelableStatus>> {
 
     protected val inflater: LayoutInflater
 
