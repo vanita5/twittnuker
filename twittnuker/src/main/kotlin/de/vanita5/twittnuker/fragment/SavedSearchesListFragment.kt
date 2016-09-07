@@ -100,8 +100,11 @@ class SavedSearchesListFragment : AbsContentListViewFragment<SavedSearchesAdapte
         loaderManager.restartLoader(0, null, this)
     }
 
-    override var refreshing: Boolean = false
+    override var refreshing: Boolean
         get() = loaderManager.hasRunningLoaders()
+        set(value) {
+            super.refreshing = value
+        }
 
     @Subscribe
     fun onSavedSearchDestroyed(event: SavedSearchDestroyedEvent) {
