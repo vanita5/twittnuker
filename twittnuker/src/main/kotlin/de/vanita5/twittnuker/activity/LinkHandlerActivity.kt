@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
 import de.vanita5.twittnuker.constant.CompatibilityConstants
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER_KEY
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.fragment.*
@@ -474,6 +475,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                 if (!args.containsKey(EXTRA_SCREEN_NAME)) {
                     args.putString(EXTRA_SCREEN_NAME, paramScreenName)
                 }
+                args.putParcelable(EXTRA_USER_KEY, paramUserKey)
                 if (paramUserKey != null) {
                     userHost = paramUserKey.host
                 }
