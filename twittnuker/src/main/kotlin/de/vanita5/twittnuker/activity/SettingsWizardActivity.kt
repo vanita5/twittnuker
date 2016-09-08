@@ -499,8 +499,8 @@ class SettingsWizardActivity : BaseActivity() {
             activity.executeAfterFragmentResumed {
                 val activity = it as SettingsWizardActivity
                 val fm = activity.supportFragmentManager
-                val f = fm.findFragmentByTag(FRAGMENT_TAG) as DialogFragment
-                f.dismiss()
+                val f = fm.findFragmentByTag(FRAGMENT_TAG) as? DialogFragment
+                f?.dismiss()
             }
             nextStep()
         }

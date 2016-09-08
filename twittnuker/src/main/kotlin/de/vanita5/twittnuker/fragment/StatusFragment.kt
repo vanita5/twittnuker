@@ -990,6 +990,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
             itemView.translateResult.setTextIsSelectable(true)
 
             itemView.text.movementMethod = LinkMovementMethod.getInstance()
+            itemView.quotedText.movementMethod = null
         }
 
         override fun onClick(v: View) {

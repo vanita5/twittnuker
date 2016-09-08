@@ -134,8 +134,8 @@ class DataImportActivity : BaseActivity(), DataExportImportTypeSelectorDialogFra
             activity.executeAfterFragmentResumed {
                 val activity = it as DataImportActivity
                 val fm = activity.supportFragmentManager
-                val f = fm.findFragmentByTag(FRAGMENT_TAG) as DialogFragment
-                f.dismiss()
+                val f = fm.findFragmentByTag(FRAGMENT_TAG) as? DialogFragment
+                f?.dismiss()
             }
             if (result != null && result) {
                 activity.setResult(RESULT_OK)
@@ -176,8 +176,8 @@ class DataImportActivity : BaseActivity(), DataExportImportTypeSelectorDialogFra
             activity.executeAfterFragmentResumed {
                 val activity = it as DataImportActivity
                 val fm = activity.supportFragmentManager
-                val f = fm.findFragmentByTag(FRAGMENT_TAG) as DialogFragment
-                f.dismiss()
+                val f = fm.findFragmentByTag(FRAGMENT_TAG) as? DialogFragment
+                f?.dismiss()
             }
             val df = DataExportImportTypeSelectorDialogFragment()
             val args = Bundle()
