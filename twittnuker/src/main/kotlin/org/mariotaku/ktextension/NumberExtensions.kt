@@ -29,3 +29,11 @@ fun String.toLong(def: Long): Long {
         return def
     }
 }
+
+fun String.toDoubleOrNull(): Double? {
+    try {
+        return toDouble()
+    } catch (e: NumberFormatException) {
+        return null
+    }
+}
