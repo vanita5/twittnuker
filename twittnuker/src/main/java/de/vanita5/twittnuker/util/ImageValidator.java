@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.util;
 
 import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
 import android.net.Uri;
 
 import java.io.File;
@@ -120,23 +119,4 @@ public class ImageValidator {
         }
     }
 
-    public static int getOrientation(final String file) {
-        try {
-            final ExifInterface exif = new ExifInterface(file);
-            switch (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)) {
-                case ExifInterface.ORIENTATION_ROTATE_90: {
-                    return 90;
-                }
-                case ExifInterface.ORIENTATION_ROTATE_180: {
-                    return 180;
-                }
-                case ExifInterface.ORIENTATION_ROTATE_270: {
-                    return 270;
-                }
-            }
-        } catch (IOException e) {
-            return 0;
-        }
-        return 0;
-    }
 }
