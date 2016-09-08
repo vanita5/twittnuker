@@ -199,7 +199,15 @@
     public *;
 }
 
+# junit
+-keep class org.junit.** { *; }
+-dontwarn org.junit.**
+
+-keep class junit.** { *; }
+-dontwarn junit.**
+
 # Kotlin
+-keep class de.vanita5.twittnuker.** { *; }
 -dontwarn de.vanita5.twittnuker.**
 -dontwarn de.vanita5.twittnuker.adapter.iface.**
 -dontwarn de.vanita5.twittnuker.fragment.AbsStatusesFragment
