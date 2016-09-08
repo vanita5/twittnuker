@@ -20,30 +20,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.text.util;
+package de.vanita5.twittnuker.text.util
 
-import android.text.Spannable;
-import android.widget.TextView;
+import android.text.Spannable
 
-import de.vanita5.twittnuker.util.EmojiSupportUtils;
-import de.vanita5.twittnuker.util.ExternalThemeManager;
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
+import de.vanita5.twittnuker.text.SafeSpannableString
 
-import javax.inject.Inject;
-
-public class EmojiSpannableFactory extends SafeSpannableFactory {
-
-    @Inject
-    ExternalThemeManager externalThemeManager;
-
-    public EmojiSpannableFactory(TextView textView) {
-        GeneralComponentHelper.build(textView.getContext()).inject(this);
-    }
-
-    @Override
-    public Spannable newSpannable(CharSequence source) {
-        final Spannable spannable = super.newSpannable(source);
-        EmojiSupportUtils.applyEmoji(externalThemeManager, spannable);
-        return spannable;
+open class SafeSpannableFactory : Spannable.Factory() {
+    override fun newSpannable(source: CharSequence): Spannable {
+        return SafeSpannableString(source)
     }
 }

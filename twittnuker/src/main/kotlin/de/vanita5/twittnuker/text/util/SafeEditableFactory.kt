@@ -20,15 +20,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.text.util;
+package de.vanita5.twittnuker.text.util
 
-import android.text.Editable;
+import android.text.Editable
 
-import de.vanita5.twittnuker.text.SafeSpannableStringBuilder;
+import de.vanita5.twittnuker.text.SafeSpannableStringBuilder
 
-public class SafeEditableFactory extends Editable.Factory {
-    @Override
-    public Editable newEditable(CharSequence source) {
-        return new SafeSpannableStringBuilder(source);
+open class SafeEditableFactory : Editable.Factory() {
+    override fun newEditable(source: CharSequence): Editable {
+        return SafeSpannableStringBuilder(source)
     }
 }

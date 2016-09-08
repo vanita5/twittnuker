@@ -20,26 +20,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.text;
+package de.vanita5.twittnuker.text
 
-import android.text.SpannableString;
+import android.text.SpannableString
 
-import de.vanita5.twittnuker.util.CheckUtils;
-import de.vanita5.twittnuker.util.TwidereStringUtils;
+import de.vanita5.twittnuker.util.CheckUtils
+import de.vanita5.twittnuker.util.TwidereStringUtils
 
-public class SafeSpannableString extends SpannableString {
+class SafeSpannableString(source: CharSequence) : SpannableString(source) {
 
-    public SafeSpannableString(CharSequence source) {
-        super(source);
-        TwidereStringUtils.fixSHY(this);
+    init {
+        TwidereStringUtils.fixSHY(this)
     }
 
-    @Override
-    public void setSpan(Object what, int start, int end, int flags) {
+    override fun setSpan(what: Any, start: Int, end: Int, flags: Int) {
         if (!CheckUtils.checkRange(this, start, end)) {
             // Silently ignore
-            return;
+            return
         }
-        super.setSpan(what, start, end, flags);
+        super.setSpan(what, start, end, flags)
     }
 }
