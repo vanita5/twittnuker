@@ -169,6 +169,7 @@ dependencies {
     compile 'com.github.mariotaku.CommonsLibrary:parcel:0.9.9'
     compile 'com.github.mariotaku.CommonsLibrary:io:0.9.9'
     compile 'com.github.mariotaku.CommonsLibrary:text:0.9.9'
+    compile 'com.github.mariotaku.CommonsLibrary:text-kotlin:0.9.9'
     compile 'com.github.mariotaku:KPreferences:0.9.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'nl.komponents.kovenant:kovenant:3.3.0'

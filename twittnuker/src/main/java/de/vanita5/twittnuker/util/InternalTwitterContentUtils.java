@@ -32,8 +32,7 @@ import android.text.TextUtils;
 import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.apache.commons.lang3.text.translate.EntityArrays;
 import org.apache.commons.lang3.text.translate.LookupTranslator;
-import de.vanita5.twittnuker.library.MicroBlog;
-import de.vanita5.twittnuker.library.MicroBlogException;
+import org.mariotaku.commons.text.CodePointArray;
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.library.twitter.model.EntitySupport;
 import de.vanita5.twittnuker.library.twitter.model.ExtendedEntitySupport;
@@ -41,7 +40,6 @@ import de.vanita5.twittnuker.library.twitter.model.MediaEntity;
 import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.library.twitter.model.User;
-import org.mariotaku.restfu.http.MultiValueMap;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SpanItem;
 import de.vanita5.twittnuker.model.UserKey;
@@ -49,8 +47,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InternalTwitterContentUtils {
@@ -251,6 +247,7 @@ public class InternalTwitterContentUtils {
 
         String text = status.getFullText();
         CodePointArray source;
+        // Display text range
         int[] range = null;
         if (text == null) {
             text = status.getText();

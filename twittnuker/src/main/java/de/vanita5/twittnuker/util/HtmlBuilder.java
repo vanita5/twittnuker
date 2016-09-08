@@ -25,6 +25,8 @@ package de.vanita5.twittnuker.util;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
+import org.mariotaku.commons.text.CodePointArray;
+
 import de.vanita5.twittnuker.model.SpanItem;
 
 import java.util.ArrayList;
