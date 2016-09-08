@@ -76,7 +76,6 @@ import de.vanita5.twittnuker.model.ParcelableCredentials.AuthType
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.model.util.UserKeyUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.*
@@ -381,13 +380,13 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
                 if (values != null) {
                     val where = Expression.equalsArgs(Accounts.ACCOUNT_KEY).sql
                     val whereArgs = arrayOf(values.getAsString(Accounts.ACCOUNT_KEY))
-                    contentResolver!!.update(Accounts.CONTENT_URI, values, where, whereArgs)
+                    contentResolver.update(Accounts.CONTENT_URI, values, where, whereArgs)
                 }
                 Toast.makeText(this, R.string.error_already_logged_in, Toast.LENGTH_SHORT).show()
             } else if (result.succeed) {
                 val values = result.toContentValues()
                 if (values != null) {
-                    contentResolver!!.insert(Accounts.CONTENT_URI, values)
+                    contentResolver.insert(Accounts.CONTENT_URI, values)
                 }
                 val intent = Intent(this, HomeActivity::class.java)
                 //TODO refresh timelines
@@ -436,13 +435,12 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
 
     internal fun showSignInProgressDialog() {
         executeAfterFragmentResumed {
-            if (isFinishing) return@executeAfterFragmentResumed Unit
+            if (isFinishing) return@executeAfterFragmentResumed
             val fm = supportFragmentManager
             val ft = fm.beginTransaction()
             val fragment = ProgressDialogFragment()
             fragment.isCancelable = false
             fragment.show(ft, FRAGMENT_TAG_SIGN_IN_PROGRESS)
-            Unit
         }
     }
 

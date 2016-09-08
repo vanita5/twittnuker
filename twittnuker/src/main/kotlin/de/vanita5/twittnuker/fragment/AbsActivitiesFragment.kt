@@ -70,6 +70,15 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
 
     private val statusesBusCallback: Any
 
+    private val onScrollListener = object : OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                val layoutManager = layoutManager ?: return
+                saveReadPosition(layoutManager.findFirstVisibleItemPosition())
+            }
+        }
+    }
+
     private var navigationHelper: RecyclerViewNavigationHelper? = null
     private var pauseOnScrollListener: OnScrollListener? = null
 
@@ -323,6 +332,7 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
 
     override fun onStart() {
         super.onStart()
+        recyclerView.addOnScrollListener(onScrollListener)
         recyclerView.addOnScrollListener(pauseOnScrollListener)
         bus.register(statusesBusCallback)
     }
@@ -330,6 +340,7 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
     override fun onStop() {
         bus.unregister(statusesBusCallback)
         recyclerView.removeOnScrollListener(pauseOnScrollListener)
+        recyclerView.removeOnScrollListener(onScrollListener)
         if (userVisibleHint) {
             saveReadPosition()
         }
