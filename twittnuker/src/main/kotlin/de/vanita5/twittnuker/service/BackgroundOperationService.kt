@@ -42,7 +42,7 @@ import android.util.Pair
 import android.widget.Toast
 import com.twitter.Extractor
 import org.mariotaku.abstask.library.ManualTaskStarter
-import org.mariotaku.ktextension.asTypedArray
+import org.mariotaku.ktextension.toTypedArray
 import org.mariotaku.ktextension.configure
 import org.mariotaku.ktextension.toLong
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -236,7 +236,7 @@ class BackgroundOperationService : IntentService("background_operation"), Consta
         val statusParcelables = intent.getParcelableArrayExtra(EXTRA_STATUSES)
         val statuses: Array<ParcelableStatusUpdate>
         if (statusParcelables != null) {
-            statuses = statusParcelables.asTypedArray(ParcelableStatusUpdate.CREATOR)
+            statuses = statusParcelables.toTypedArray(ParcelableStatusUpdate.CREATOR)
         } else if (status != null) {
             statuses = arrayOf(status)
         } else

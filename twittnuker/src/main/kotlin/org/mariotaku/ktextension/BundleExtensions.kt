@@ -20,29 +20,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package org.mariotaku.ktextension
 
-import android.app.Dialog
-import android.app.ProgressDialog
 import android.os.Bundle
-import android.support.v4.app.FragmentManager
-import de.vanita5.twittnuker.R
+import android.os.Parcelable
 
-class ProgressDialogFragment : BaseDialogFragment() {
+/**
+ * Created by mariotaku on 16/8/18.
+ */
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = ProgressDialog(activity)
-        dialog.setMessage(getString(R.string.please_wait))
-        return dialog
-    }
+inline fun Bundle(action: Bundle.() -> Unit): Bundle {
+    val bundle = Bundle()
+    action(bundle)
+    return bundle
+}
 
-    companion object {
+operator fun Bundle.set(key: String, value: Boolean) {
+    return putBoolean(key, value)
+}
 
-        fun show(fm: FragmentManager, tag: String): ProgressDialogFragment {
-            val f = ProgressDialogFragment()
-            f.show(fm, tag)
-            return f
-        }
-    }
+operator fun Bundle.set(key: String, value: Int) {
+    return putInt(key, value)
+}
 
+operator fun Bundle.set(key: String, value: Long) {
+    return putLong(key, value)
+}
+
+operator fun Bundle.set(key: String, value: String) {
+    return putString(key, value)
+}
+
+operator fun Bundle.set(key: String, value: Parcelable?) {
+    return putParcelable(key, value)
+}
+
+operator fun Bundle.set(key: String, value: Array<out Parcelable>?) {
+    return putParcelableArray(key, value)
 }

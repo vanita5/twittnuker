@@ -295,6 +295,7 @@
     <string name="notification_direct_message_multiple_users"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="users_count">%2$d</xliff:g> andere haben dir <xliff:g id="messages_count">%3$d</xliff:g> Direktnachrichten gesendet.</string>
     <string name="action_getting_status">Laden von Tweets</string>
     <string name="action_updating_status">Senden von Tweets</string>
+    <string name="action_getting_user_lists">Laden von Listen</string>
     <string name="action_sending_direct_message">Senden der Direktnachricht</string>
     <string name="action_refreshing_home_timeline">Aktualisieren der Timeline</string>
     <string name="action_refreshing_mentions">Aktualisieren der Erwähnungen</string>
@@ -314,6 +315,7 @@
     <string name="action_unfollowing">Entfolgen</string>
     <string name="action_creating_list">Erstellen der Liste</string>
     <string name="action_adding_member">Hinzufügen des Benutzers</string>
+    <string name="action_modifying_lists">Bearbeiten der Listen</string>
     <string name="action_signing_in">Anmelden</string>
     <string name="action_retweeting">Retweeten</string>
     <string name="action_reporting_for_spam">Melden als Spam</string>
@@ -805,6 +807,7 @@
     <string name="hide_quotes">Zitate ausblenden</string>
     <string name="hide_replies">Mentions ausblenden</string>
     <string name="pinned_status">Angehefteter Tweet</string>
+    <string name="add_or_remove_from_list">Zur Liste hinzufügen oder entfernen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

@@ -38,7 +38,7 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_account_selector.*
-import org.mariotaku.ktextension.asTypedArray
+import org.mariotaku.ktextension.toTypedArray
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
@@ -201,7 +201,7 @@ class AccountSelectorActivity : BaseActivity(), LoaderCallbacks<Cursor?>, OnClic
 
     private val intentExtraIds: Array<UserKey>?
         get() {
-            return intent.getParcelableArrayExtra(EXTRA_ACCOUNT_KEYS)?.asTypedArray(UserKey.CREATOR)
+            return intent.getParcelableArrayExtra(EXTRA_ACCOUNT_KEYS)?.toTypedArray(UserKey.CREATOR)
         }
 
     private val isOAuthOnly: Boolean

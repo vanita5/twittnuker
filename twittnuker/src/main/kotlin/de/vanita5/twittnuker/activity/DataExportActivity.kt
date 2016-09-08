@@ -124,9 +124,12 @@ class DataExportActivity : BaseActivity(), DataExportImportTypeSelectorDialogFra
         }
 
         override fun onPostExecute(result: Boolean?) {
-            val fm = activity.supportFragmentManager
-            val f = fm.findFragmentByTag(FRAGMENT_TAG) as DialogFragment
-            f.dismiss()
+            activity.executeAfterFragmentResumed {
+                val activity = it as DataExportActivity
+                val fm = activity.supportFragmentManager
+                val f = fm.findFragmentByTag(FRAGMENT_TAG) as DialogFragment
+                f.dismiss()
+            }
             if (result != null && result) {
                 activity.setResult(Activity.RESULT_OK)
             } else {
@@ -136,7 +139,10 @@ class DataExportActivity : BaseActivity(), DataExportImportTypeSelectorDialogFra
         }
 
         override fun onPreExecute() {
-            ProgressDialogFragment.show(activity, FRAGMENT_TAG).isCancelable = false
+            activity.executeAfterFragmentResumed {
+                val activity = it as DataExportActivity
+                ProgressDialogFragment.show(activity.supportFragmentManager, FRAGMENT_TAG).isCancelable = false
+            }
         }
 
         companion object {

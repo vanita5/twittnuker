@@ -52,6 +52,7 @@ import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.RawItemArray
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.activity.iface.IExtendedActivity
 import de.vanita5.twittnuker.adapter.DraftsAdapter
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.model.Draft
@@ -292,15 +293,22 @@ class DraftsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnItemCl
 
         override fun onPreExecute() {
             super.onPreExecute()
-            val f = ProgressDialogFragment.show(activity, FRAGMENT_TAG_DELETING_DRAFTS)
-            f.isCancelable = false
+            (activity as IExtendedActivity).executeAfterFragmentResumed {
+                val activity = it as FragmentActivity
+                val f = ProgressDialogFragment.show(activity.supportFragmentManager, FRAGMENT_TAG_DELETING_DRAFTS)
+                f.isCancelable = false
+            }
         }
 
         override fun onPostExecute(result: Int?) {
             super.onPostExecute(result)
-            val f = activity.supportFragmentManager.findFragmentByTag(FRAGMENT_TAG_DELETING_DRAFTS)
-            if (f is DialogFragment) {
-                f.dismiss()
+            (activity as IExtendedActivity).executeAfterFragmentResumed {
+                val activity = it as FragmentActivity
+                val fm = activity.supportFragmentManager
+                val f = fm.findFragmentByTag(FRAGMENT_TAG_DELETING_DRAFTS)
+                if (f is DialogFragment) {
+                    f.dismiss()
+                }
             }
             for (id in ids) {
                 val tag = Uri.withAppendedPath(Drafts.CONTENT_URI, id.toString()).toString()
