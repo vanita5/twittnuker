@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_VIEW_TYPE_GAP
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_VIEW_TYPE_STATUS
+import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_VIEW_TYPE_STUB
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_VIEW_TYPE_TITLE_SUMMARY
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
@@ -481,7 +482,8 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
                 (recyclerView.layoutManager as LinearLayoutManager).orientation) {
             override fun isDividerEnabled(childPos: Int): Boolean {
                 when (adapter.getItemViewType(childPos)) {
-                    ITEM_VIEW_TYPE_STATUS, ITEM_VIEW_TYPE_TITLE_SUMMARY, ITEM_VIEW_TYPE_GAP -> {
+                    ITEM_VIEW_TYPE_STATUS, ITEM_VIEW_TYPE_TITLE_SUMMARY, ITEM_VIEW_TYPE_GAP,
+                    ITEM_VIEW_TYPE_STUB -> {
                         return true
                     }
                     else -> {
