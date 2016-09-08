@@ -1,4 +1,4 @@
-#Twittnuker - Android 4.0+ Twitter Client#
+![Twittnuker Logo](http://twittnuker.org/assets/img/twittnuker_header.png)
 
 [![Build Status](https://travis-ci.org/vanita5/twittnuker.svg?branch=master)](https://travis-ci.org/vanita5/twittnuker)
 
@@ -6,9 +6,9 @@ Twittnuker is a [free](https://www.gnu.org/philosophy/free-sw.html) Twitter Clie
 
 Twidere updates will almost always be merged, so you can expect the latest features and bug fixes from Twidere in this fork, too!
 
-<a href="https://play.google.com/store/apps/details?id=de.vanita5.twittnuker">
-  <img alt="Get it on Google Play"
-       src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" />
+<a href='https://play.google.com/store/apps/details?id=de.vanita5.twittnuker&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+    <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'
+    width="200"/>
 </a>
 
 ### Features ###
