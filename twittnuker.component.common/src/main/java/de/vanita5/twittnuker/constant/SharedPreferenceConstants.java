@@ -313,6 +313,8 @@ public interface SharedPreferenceConstants {
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_DRAWER_TOGGLE = "drawer_toggle";
 
+    String KEY_MEDIA_LINK_COUNTS_IN_STATUS = "media_link_counts_in_status";
+
     //GCM
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_ENABLE_PUSH_NOTIFICATIONS = "enable_push_notifications";

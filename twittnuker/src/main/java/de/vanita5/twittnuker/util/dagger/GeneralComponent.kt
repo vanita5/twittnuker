@@ -24,11 +24,12 @@ package de.vanita5.twittnuker.util.dagger
 
 import android.support.v7.widget.RecyclerView
 import dagger.Component
-import de.vanita5.twittnuker.activity.iface.APIEditorActivity
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.activity.ComposeActivity
 import de.vanita5.twittnuker.activity.MediaViewerActivity
+import de.vanita5.twittnuker.activity.iface.APIEditorActivity
 import de.vanita5.twittnuker.adapter.*
+import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.loader.MicroBlogAPIStatusesLoader
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader
@@ -136,4 +137,6 @@ interface GeneralComponent {
     fun inject(loader: APIEditorActivity.LoadDefaultsChooserDialogFragment.DefaultAPIConfigLoader)
 
     fun inject(task: UpdateStatusTask)
+
+    fun inject(application: TwittnukerApplication)
 }

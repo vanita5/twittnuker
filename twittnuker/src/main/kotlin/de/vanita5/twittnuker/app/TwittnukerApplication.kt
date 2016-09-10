@@ -37,6 +37,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.ActionBarContextView
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import com.afollestad.appthemeengine.ATE
@@ -45,29 +46,49 @@ import com.pnikosis.materialishprogress.ProgressWheel
 import com.rengwuxian.materialedittext.MaterialEditText
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
+import nl.komponents.kovenant.task
 import org.apache.commons.lang3.ArrayUtils
+import org.mariotaku.kpreferences.KPreferences
+import org.mariotaku.ktextension.configure
+import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.AssistLauncherActivity
 import de.vanita5.twittnuker.activity.MainActivity
+import de.vanita5.twittnuker.constant.defaultFeatureLastUpdated
+import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.service.RefreshService
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
-import de.vanita5.twittnuker.util.dagger.DependencyHolder
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.net.TwidereDns
 import de.vanita5.twittnuker.util.theme.*
 import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.TabPagerIndicator
 import de.vanita5.twittnuker.view.ThemedMultiValueSwitch
 import de.vanita5.twittnuker.view.TimelineContentTextView
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChangeListener {
 
+    @Inject
+    lateinit internal var activityTracker: ActivityTracker
+    @Inject
+    lateinit internal var restHttpClient: RestHttpClient
+    @Inject
+    lateinit internal var dns: TwidereDns
+    @Inject
+    lateinit internal var defaultFeatures: DefaultFeatures
+    @Inject
+    lateinit internal var externalThemeManager: ExternalThemeManager
+    @Inject
+    lateinit internal var kPreferences: KPreferences
+
     var handler: Handler? = null
         private set
-    private var mPreferences: SharedPreferences? = null
-    private var mSQLiteOpenHelper: SQLiteOpenHelper? = null
 
     private var profileImageViewViewProcessor: ProfileImageViewViewProcessor? = null
     private var fontFamilyTagProcessor: FontFamilyTagProcessor? = null
@@ -104,9 +125,69 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         resetTheme(preferences)
         super.onCreate()
         startKovenant()
+        initAppThemeEngine(preferences)
+        initializeAsyncTask()
+        initDebugMode()
+        initBugReport()
+        handler = Handler()
 
-        profileImageViewViewProcessor = ProfileImageViewViewProcessor()
-        fontFamilyTagProcessor = FontFamilyTagProcessor()
+        Utils.startRefreshServiceIfNeeded(this)
+
+        GeneralComponentHelper.build(this).inject(this)
+
+        registerActivityLifecycleCallbacks(activityTracker)
+
+        listenExternalThemeChange()
+
+        loadDefaultFeatures()
+    }
+
+    private fun loadDefaultFeatures() {
+        val lastUpdated = kPreferences[defaultFeatureLastUpdated]
+        if (lastUpdated > 0 && TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - lastUpdated) < 12) {
+            return
+        }
+        task {
+            defaultFeatures.loadRemoteSettings(restHttpClient)
+        }.success {
+            if (BuildConfig.DEBUG) {
+                Log.d(LOGTAG, "Loaded remote features")
+            }
+        }.fail {
+            if (BuildConfig.DEBUG) {
+                Log.w(LOGTAG, "Unable to load remote features", it)
+            }
+        }.always {
+            kPreferences[defaultFeatureLastUpdated] = System.currentTimeMillis()
+        }
+    }
+
+    private fun listenExternalThemeChange() {
+        val packageFilter = IntentFilter()
+        packageFilter.addAction(Intent.ACTION_PACKAGE_CHANGED)
+        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
+        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED)
+        packageFilter.addAction(Intent.ACTION_PACKAGE_REPLACED)
+        registerReceiver(object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val uid = intent.getIntExtra(Intent.EXTRA_UID, -1)
+                val packages = packageManager.getPackagesForUid(uid)
+                val manager = externalThemeManager
+                if (ArrayUtils.contains(packages, manager.emojiPackageName)) {
+                    manager.reloadEmojiPreferences()
+                }
+            }
+        }, packageFilter)
+    }
+
+    private fun initAppThemeEngine(preferences: SharedPreferences) {
+
+        profileImageViewViewProcessor = configure(ProfileImageViewViewProcessor()) {
+            setStyle(Utils.getProfileImageStyle(preferences))
+        }
+        fontFamilyTagProcessor = configure(FontFamilyTagProcessor()) {
+            setFontFamily(ThemeUtils.getThemeFontFamily(preferences))
+        }
 
         ATE.registerViewProcessor(TabPagerIndicator::class.java, TabPagerIndicatorViewProcessor())
         ATE.registerViewProcessor(FloatingActionButton::class.java, FloatingActionButtonViewProcessor())
@@ -129,9 +210,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         ATE.registerTagProcessor(ThemedMultiValueSwitch.PREFIX_TINT, ThemedMultiValueSwitch.TintTagProcessor())
 
 
-        profileImageViewViewProcessor!!.setStyle(Utils.getProfileImageStyle(preferences))
-        fontFamilyTagProcessor!!.setFontFamily(ThemeUtils.getThemeFontFamily(preferences))
-
         val themeColor = preferences.getInt(KEY_THEME_COLOR, ContextCompat.getColor(this,
                 R.color.branding_color))
         if (!ATE.config(this, VALUE_THEME_NAME_LIGHT).isConfigured) {
@@ -144,41 +222,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         if (!ATE.config(this, null).isConfigured) {
             ATE.config(this, null).accentColor(ThemeUtils.getOptimalAccentColor(themeColor, Color.WHITE)).coloredActionBar(false).coloredStatusBar(false).commit()
         }
-        initializeAsyncTask()
-        initDebugMode()
-        initBugReport()
-        handler = Handler()
-
-        val pm = packageManager
-        val main = ComponentName(this, MainActivity::class.java)
-        pm.setComponentEnabledSetting(main, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                PackageManager.DONT_KILL_APP)
-        if (!Utils.isComposeNowSupported(this)) {
-            val assist = ComponentName(this, AssistLauncherActivity::class.java)
-            pm.setComponentEnabledSetting(assist, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                    PackageManager.DONT_KILL_APP)
-        }
-        Utils.startRefreshServiceIfNeeded(this)
-
-        val holder = DependencyHolder.get(this)
-        registerActivityLifecycleCallbacks(holder.activityTracker)
-
-        val packageFilter = IntentFilter()
-        packageFilter.addAction(Intent.ACTION_PACKAGE_CHANGED)
-        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
-        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED)
-        packageFilter.addAction(Intent.ACTION_PACKAGE_REPLACED)
-        registerReceiver(object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val uid = intent.getIntExtra(Intent.EXTRA_UID, -1)
-                val packages = packageManager.getPackagesForUid(uid)
-                val holder = DependencyHolder.get(context)
-                val manager = holder.externalThemeManager
-                if (ArrayUtils.contains(packages, manager.emojiPackageName)) {
-                    manager.reloadEmojiPreferences()
-                }
-            }
-        }, packageFilter)
     }
 
     private fun initDebugMode() {
@@ -203,7 +246,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     }
 
     override fun onLowMemory() {
-        val holder = DependencyHolder.get(this)
         super.onLowMemory()
     }
 
@@ -225,7 +267,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
                 editor.apply()
             }
             KEY_EMOJI_SUPPORT -> {
-                DependencyHolder.get(this).externalThemeManager.reloadEmojiPreferences()
+                externalThemeManager.reloadEmojiPreferences()
             }
             KEY_THEME -> {
                 resetTheme(preferences)
@@ -273,8 +315,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     }
 
     private fun reloadDnsSettings() {
-        val holder = DependencyHolder.get(this)
-        val dns = holder.dns
         dns.reloadDnsSettings()
     }
 

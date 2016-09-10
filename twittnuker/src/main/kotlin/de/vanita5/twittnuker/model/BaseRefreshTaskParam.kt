@@ -20,33 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model;
+package de.vanita5.twittnuker.model
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+class BaseRefreshTaskParam(
+        override val accountKeys: Array<UserKey>,
+        override val maxIds: Array<String?>?,
+        override val sinceIds: Array<String?>?,
+        override val maxSortIds: LongArray? = null,
+        override val sinceSortIds: LongArray? = null
+) : RefreshTaskParam {
+    override var isLoadingMore: Boolean = false
+    override var shouldAbort: Boolean = false
 
-public interface RefreshTaskParam {
-    @NonNull
-    UserKey[] getAccountKeys();
+    override val hasMaxIds: Boolean
+        get() = maxIds != null
 
-    @Nullable
-    String[] getMaxIds();
-
-    @Nullable
-    String[] getSinceIds();
-
-    @Nullable
-    long[] getMaxSortIds();
-
-    @Nullable
-    long[] getSinceSortIds();
-
-    boolean hasMaxIds();
-
-    boolean hasSinceIds();
-
-    boolean isLoadingMore();
-
-    boolean shouldAbort();
-
+    override val hasSinceIds: Boolean
+        get() = sinceIds != null
 }

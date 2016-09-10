@@ -44,6 +44,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import de.vanita5.twittnuker.library.MicroBlog;
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
 import org.mariotaku.restfu.RestAPIFactory;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.http.Endpoint;
@@ -53,17 +56,12 @@ import org.mariotaku.restfu.http.RestHttpClient;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
-import de.vanita5.twittnuker.library.MicroBlog;
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 import de.vanita5.twittnuker.util.net.TwidereDns;
@@ -78,6 +76,10 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Locale;
 
+import static de.vanita5.twittnuker.Constants.DEFAULT_TWITTER_API_URL_FORMAT;
+import static de.vanita5.twittnuker.Constants.KEY_BUILTIN_DNS_RESOLVER;
+import static de.vanita5.twittnuker.Constants.KEY_DNS_SERVER;
+import static de.vanita5.twittnuker.Constants.KEY_TCP_DNS_QUERY;
 
 /**
  * Network diagnostics
@@ -165,13 +167,13 @@ public class NetworkDiagnosticsFragment extends BaseSupportFragment {
             publishProgress(new LogText("Text below may have personal information, BE CAREFUL TO MAKE IT PUBLIC",
                     LogText.State.WARNING));
             publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
-            DependencyHolder holder = DependencyHolder.get(mContext);
+            DependencyHolder holder = DependencyHolder.Companion.get(mContext);
             final TwidereDns dns = holder.getDns();
             final SharedPreferencesWrapper prefs = holder.getPreferences();
             publishProgress(new LogText("Network preferences"), LogText.LINEBREAK);
-            publishProgress(new LogText("using_resolver: " + prefs.getBoolean(SharedPreferenceConstants.KEY_BUILTIN_DNS_RESOLVER)), LogText.LINEBREAK);
-            publishProgress(new LogText("tcp_dns_query: " + prefs.getBoolean(SharedPreferenceConstants.KEY_TCP_DNS_QUERY)), LogText.LINEBREAK);
-            publishProgress(new LogText("dns_server: " + prefs.getString(SharedPreferenceConstants.KEY_DNS_SERVER, null)), LogText.LINEBREAK);
+            publishProgress(new LogText("using_resolver: " + prefs.getBoolean(KEY_BUILTIN_DNS_RESOLVER)), LogText.LINEBREAK);
+            publishProgress(new LogText("tcp_dns_query: " + prefs.getBoolean(KEY_TCP_DNS_QUERY)), LogText.LINEBREAK);
+            publishProgress(new LogText("dns_server: " + prefs.getString(KEY_DNS_SERVER, null)), LogText.LINEBREAK);
             publishProgress(LogText.LINEBREAK);
             publishProgress(new LogText("System DNS servers"), LogText.LINEBREAK);
 
@@ -218,7 +220,7 @@ public class NetworkDiagnosticsFragment extends BaseSupportFragment {
                 if (credentials.api_url_format != null) {
                     baseUrl = MicroBlogAPIFactory.getApiBaseUrl(credentials.api_url_format, "api");
                 } else {
-                    baseUrl = MicroBlogAPIFactory.getApiBaseUrl(TwittnukerConstants.DEFAULT_TWITTER_API_URL_FORMAT, "api");
+                    baseUrl = MicroBlogAPIFactory.getApiBaseUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api");
                 }
                 RestHttpClient client = RestAPIFactory.getRestClient(twitter).getRestClient();
                 HttpResponse response = null;

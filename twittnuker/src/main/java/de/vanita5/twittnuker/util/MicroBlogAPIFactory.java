@@ -200,7 +200,7 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
         } else {
             userAgent = getTwidereUserAgent(context);
         }
-        DependencyHolder holder = DependencyHolder.get(context);
+        DependencyHolder holder = DependencyHolder.Companion.get(context);
         factory.setHttpClient(holder.getRestHttpClient());
         factory.setAuthorization(auth);
         factory.setEndpoint(endpoint);
