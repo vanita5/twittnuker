@@ -114,7 +114,7 @@ dependencies {
     compile ':YouTubeAndroidPlayerApi:1.2.2@jar'
     // END Non-FOSS component
 
-    compile 'org.osmdroid:osmdroid-android:5.4'
+    compile 'org.osmdroid:osmdroid-android:5.4:release@aar'
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
 
