@@ -94,9 +94,9 @@ object HttpClientFactory {
     private fun getProxyType(proxyType: String?): Proxy.Type {
         if (proxyType == null) return Proxy.Type.DIRECT
         when (proxyType.toLowerCase()) {
-        //            case "socks": {
-        //                return Proxy.Type.SOCKS;
-        //            }
+//            "socks" -> {
+//                return Proxy.Type.SOCKS
+//            }
             "http" -> {
                 return Proxy.Type.HTTP
             }

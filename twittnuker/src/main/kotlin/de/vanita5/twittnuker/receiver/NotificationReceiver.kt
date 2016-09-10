@@ -26,7 +26,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
-import org.apache.commons.lang3.math.NumberUtils
+import org.mariotaku.ktextension.convert
 import org.mariotaku.ktextension.toLong
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.NotificationType
@@ -49,14 +49,14 @@ class NotificationReceiver : BroadcastReceiver() {
                 val holder = DependencyHolder.get(context)
                 @NotificationType
                 val notificationType = uri.getQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE)
-                val accountKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY))
-                val itemId = NumberUtils.toLong(UriExtraUtils.getExtra(uri, "item_id"), -1)
-                val itemUserId = NumberUtils.toLong(UriExtraUtils.getExtra(uri, "item_user_id"), -1)
-                val itemUserFollowing = java.lang.Boolean.parseBoolean(UriExtraUtils.getExtra(uri, "item_user_following"))
-                val timestamp = NumberUtils.toLong(uri.getQueryParameter(QUERY_PARAM_TIMESTAMP), -1)
+                val accountKey = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY)?.convert(UserKey::valueOf)
+                val itemId = UriExtraUtils.getExtra(uri, "item_id")?.toLong(-1) ?: -1
+                val itemUserId = UriExtraUtils.getExtra(uri, "item_user_id")?.toLong(-1) ?: -1
+                val itemUserFollowing = UriExtraUtils.getExtra(uri, "item_user_following")?.toBoolean() ?: false
+                val timestamp = uri.getQueryParameter(QUERY_PARAM_TIMESTAMP)?.toLong() ?: -1
                 val manager = holder.readStateManager
-                val paramReadPosition: String = uri.getQueryParameter(QUERY_PARAM_READ_POSITION)
-                val paramReadPositions: String = uri.getQueryParameter(QUERY_PARAM_READ_POSITIONS)
+                val paramReadPosition = uri.getQueryParameter(QUERY_PARAM_READ_POSITION)
+                val paramReadPositions = uri.getQueryParameter(QUERY_PARAM_READ_POSITIONS)
                 @ReadPositionTag
                 val tag = getPositionTag(notificationType)
 
