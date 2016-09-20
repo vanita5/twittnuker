@@ -30,13 +30,13 @@ import android.util.Log;
 import java.io.IOException;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
-import retrofit.Call;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
-import retrofit.http.POST;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.POST;
 
 public class PushBackendServer implements TwittnukerConstants {
 
@@ -61,7 +61,7 @@ public class PushBackendServer implements TwittnukerConstants {
         Call<Status> call = api.register(token, userId);
         try {
             Response<Status> response = call.execute();
-            if (response.isSuccess()) {
+            if (response.isSuccessful()) {
                 Status status = response.body();
                 return status != null && STATUS_OK.equals(status.getStatus());
             }
@@ -84,7 +84,7 @@ public class PushBackendServer implements TwittnukerConstants {
         Call<Status> call = api.remove(token);
         try {
             Response<Status> response = call.execute();
-            if (response.isSuccess()) {
+            if (response.isSuccessful()) {
                 Status status = response.body();
                 return status != null && STATUS_OK.equals(status.getStatus());
             }
