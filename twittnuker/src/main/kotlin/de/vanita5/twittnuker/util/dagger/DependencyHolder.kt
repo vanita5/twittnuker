@@ -60,10 +60,10 @@ class DependencyHolder internal constructor(context: Context) {
     lateinit var defaultFeatures: DefaultFeatures
         internal set
     @Inject
-    var asyncTwitterWrapper: AsyncTwitterWrapper? = null
+    lateinit var asyncTwitterWrapper: AsyncTwitterWrapper
         internal set
     @Inject
-    var imageLoader: ImageLoader? = null
+    lateinit var imageLoader: ImageLoader
         internal set
 
     init {

@@ -169,7 +169,7 @@ public class StreamingService extends Service implements Constants {
         if (BuildConfig.DEBUG) {
             Log.d(Constants.LOGTAG, "Stream service started.");
         }
-        DependencyHolder holder = DependencyHolder.get(this);
+        DependencyHolder holder = DependencyHolder.Companion.get(this);
         mTwitterWrapper = holder.getAsyncTwitterWrapper();
 
 //        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);

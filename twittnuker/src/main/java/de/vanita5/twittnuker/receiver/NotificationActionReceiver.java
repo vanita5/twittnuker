@@ -50,7 +50,7 @@ public class NotificationActionReceiver extends BroadcastReceiver implements Con
                 break;
             }
             case INTENT_ACTION_RETWEET: {
-                DependencyHolder holder = DependencyHolder.get(context);
+                DependencyHolder holder = DependencyHolder.Companion.get(context);
                 AsyncTwitterWrapper twitter = holder.getAsyncTwitterWrapper();
 
                 final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
@@ -61,7 +61,7 @@ public class NotificationActionReceiver extends BroadcastReceiver implements Con
                 break;
             }
             case INTENT_ACTION_FAVORITE: {
-                DependencyHolder holder = DependencyHolder.get(context);
+                DependencyHolder holder = DependencyHolder.Companion.get(context);
                 AsyncTwitterWrapper twitter = holder.getAsyncTwitterWrapper();
                 final ParcelableStatus status = intent.getParcelableExtra(EXTRA_STATUS);
                 if (twitter == null || status == null) return;
