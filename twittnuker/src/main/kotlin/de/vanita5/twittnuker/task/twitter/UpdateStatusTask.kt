@@ -40,10 +40,7 @@ import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.fanfou.model.PhotoStatusUpdate
 import de.vanita5.twittnuker.library.twitter.TwitterUpload
-import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
-import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse
-import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.library.twitter.model.StatusUpdate
+import de.vanita5.twittnuker.library.twitter.model.*
 import org.mariotaku.restfu.http.ContentType
 import org.mariotaku.restfu.http.mime.Body
 import org.mariotaku.restfu.http.mime.FileBody
@@ -454,6 +451,7 @@ class UpdateStatusTask(
                 } else {
                     resp = upload.uploadMedia(body, ownerIds)
                 }
+
             } catch (e: IOException) {
                 throw UploadException(e)
             } catch (e: MicroBlogException) {
@@ -461,7 +459,14 @@ class UpdateStatusTask(
             } finally {
                 Utils.closeSilently(body)
             }
-            resp.id
+            if (media.alt_text?.isNotEmpty() ?: false) {
+                try {
+                    upload.createMetadata(NewMediaMetadata(resp.id, media.alt_text))
+                } catch (e: MicroBlogException) {
+                    // Ignore
+                }
+            }
+            return@mapIndexed resp.id
         }
         return mediaIds.toTypedArray()
     }
