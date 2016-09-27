@@ -71,11 +71,14 @@
 -dontwarn com.squareup.okhttp.**
 
 -dontwarn rx.**
-#-dontwarn retrofit.**
 #-dontwarn okio.**
--keep class retrofit.** { *; }
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+
 -keepclasseswithmembers class * {
-    @retrofit.http.* <methods>;
+    @retrofit2.http.* <methods>;
 }
 -dontwarn com.squareup.haha.**
 -dontwarn com.google.android.gms.**
