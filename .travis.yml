@@ -57,7 +57,7 @@ before_install:
 script:
   - ./gradlew assembleDebug --no-daemon --stacktrace
   # #- ./gradlew assembleDebugAndroidTest
-  - adb install twittnuker/build/outputs/apk/twittnuker-debug.apk
+  # #- adb install twittnuker/build/outputs/apk/twittnuker-debug.apk
   # #- adb install twittnuker/build/outputs/apk/twittnuker-debug-androidTest-unaligned.apk
   # #- adb shell am instrument -w de.vanita5.twittnuker.test/android.support.test.runner.AndroidJUnitRunner
 
