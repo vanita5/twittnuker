@@ -1410,7 +1410,8 @@ public final class Utils implements Constants {
         if (!preferences.getBoolean(KEY_MEDIA_PREVIEW)) return false;
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        return !(networkInfo.getType() == ConnectivityManager.TYPE_MOBILE && preferences.getBoolean(KEY_BANDWIDTH_SAVING_MODE));
+        return networkInfo != null
+                && !(networkInfo.getType() == ConnectivityManager.TYPE_MOBILE && preferences.getBoolean(KEY_BANDWIDTH_SAVING_MODE));
     }
 
     static class UtilsL {
