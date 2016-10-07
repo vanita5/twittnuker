@@ -531,9 +531,6 @@
     <string name="compose_now_action">Изменить действие Now</string>
     <string name="open_with_account">Открыть аккаунтом</string>
     <string name="timeline_sync_service">Сервис синхронизации ленты</string>
-    <string name="image_preview_scale_type">Тип превью изображений</string>
-    <string name="image_preview_scale_type_crop">Адаптировать</string>
-    <string name="image_preview_scale_type_fit_center">Растянуть по центру</string>
     <string name="quote_protected_status_warning_message">Этот твит закрыт.\n\nЗакрытые пользователи обычно не хотят, чтобы их твиты становились общедоступны.</string>
     <string name="send_anyway">Все равно послать</string>
     <string name="following_only">Только ваши чиатели</string>

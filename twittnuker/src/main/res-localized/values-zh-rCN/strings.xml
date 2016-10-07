@@ -769,8 +769,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">从 <xliff:g id="language">%s</xliff:g> 翻译</string>
     <string name="translation">翻译</string>
-    <string name="shortener_version_incompatible">不兼容的推文缩短服务</string>
-    <string name="uploader_version_incompatible">不兼容的媒体上传服务</string>
+    <!--<string name="shortener_version_incompatible">不兼容的推文缩短服务</string>-->
+    <!--<string name="uploader_version_incompatible">不兼容的媒体上传服务</string>-->
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">群组</string>
     <string name="public_timeline">公共时间线</string>

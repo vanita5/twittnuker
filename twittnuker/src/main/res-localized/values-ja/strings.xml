@@ -764,8 +764,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language"><xliff:g id="language">%s</xliff:g>から翻訳</string>
     <string name="translation">翻訳</string>
-    <string name="shortener_version_incompatible">興味が無いツイートを短縮</string>
-    <string name="uploader_version_incompatible">互換性のないメディアのアップロード先</string>
+    <!--<string name="shortener_version_incompatible">興味が無いツイートを短縮</string>-->
+    <!--<string name="uploader_version_incompatible">互換性のないメディアのアップロード先</string>-->
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">グループ</string>
     <string name="public_timeline">公開タイムライン</string>

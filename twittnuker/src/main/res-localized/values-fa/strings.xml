@@ -703,7 +703,7 @@
     <string name="wizard_hint_summary_location_requirement">هنگامی که توییتی شامل موقعیّت می‌فرستید* تویدر نیاز به اجازهٔ موقعیّت دارد.</string>
     <string name="wizard_hint_title_storage_requirement">اجازهٔ ذخیره</string>
     <string name="wizard_hint_summary_storage_requirement">توییدر هنگامی که به سندها دسترسی پیدا می‌کنید، نیاز به اجازهٔ ذخیره دارد.</string>
-    <string name="scrapyard">ظاهر</string>
+    <!--<string name="scrapyard">ظاهر</string>-->
     <string name="crop_image">بریدن تصویر</string>
     <string name="media_preload">پیش‌بارگیری رسانه</string>
     <string name="set_consumer_key_secret_message">توییدر به کران ژتون رسیده است. باید در https://apps.twitter.com/ کاره‌ای ساختع و کلید و رمز مصرف‌کننده را در زیر بچسبانید.\nاگر به استفاده از کلید پیش‌گزیده ادامه دهید، ممکن است قادر به ورود نباشید.</string>
@@ -765,8 +765,8 @@
     <string name="status_menu_title_format">‫<xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">ترجمه از <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">ترجمه</string>
-    <string name="shortener_version_incompatible">کوتاه‌کنندهٔ توییت ناسازگار</string>
-    <string name="uploader_version_incompatible">بارکنندهٔ رسانهٔ ناسازگار</string>
+    <!--<string name="shortener_version_incompatible">کوتاه‌کنندهٔ توییت ناسازگار</string>-->
+    <!--<string name="uploader_version_incompatible">بارکنندهٔ رسانهٔ ناسازگار</string>-->
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">گروه‌ها</string>
     <string name="public_timeline">خط زمانی عمومی</string>

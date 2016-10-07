@@ -83,7 +83,7 @@
     <string name="sources">Källor</string>
     <string name="content">Innehåll</string>
     <string name="customize">Anpassa</string>
-    <string name="set_nickname">Ange smeknamn</string>
+    <!--<string name="set_nickname">Ange smeknamn</string>-->
     <string name="set_color">Ange färg</string>
     <string name="clear">Rensa</string>
     <string name="pick_color">Välj färg</string>

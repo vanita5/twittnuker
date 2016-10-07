@@ -551,7 +551,7 @@
     <string name="pebble_notifications_summary">Wysyłaj powiadomienia do swojego Pebble</string>
     <!-- 'Tweet' here is a verb -->
     <string name="tweet_from_name"><xliff:g id="text">%1$s</xliff:g></string>
-    <string name="permission_label_sync_timeline">Synchronizuj strumień</string>
+    <!--<string name="permission_label_sync_timeline">Synchronizuj strumień</string>-->
     <!--<string name="thumbor_integration">Integracja z usługą Tumbor</string>-->
     <!--<string name="server_address">Adres serwera</string>-->
     <!--<string name="security_key">Klucz</string>-->

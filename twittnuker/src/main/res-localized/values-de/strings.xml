@@ -41,7 +41,6 @@
     <string name="label_streaming_service">Streaming Service</string>
     <string name="label_background_operation_service">Hintergrunddienst</string>
     <string name="open_in_browser">Im Browser öffnen</string>
-    <string name="tap_to_load_more">Weitere Tweets laden</string>
     <string name="delete">Löschen</string>
     <string name="retweet">Retweet</string>
     <string name="retweets">Retweets</string>
@@ -54,7 +53,6 @@
     <string name="reply">Antworten</string>
     <string name="share">Teilen</string>
     <string name="view_map">Karte</string>
-    <string name="view_user_profile">Benutzerprofil</string>
     <string name="statuses">Tweets</string>
     <string name="followers">Follower</string>
     <string name="following">Folgen</string>
@@ -103,8 +101,6 @@
     <string name="leftside_compose_button_summary">Platziert den Tweet Button links</string>
     <string name="load_item_limit">Limitierung zu ladender Elemente</string>
     <string name="load_item_limit_summary">Element-Limitierung pro Ladevorgang festlegen</string>
-    <string name="load_more_automatically">Lade automatisch mehr Inhalt</string>
-    <string name="load_more_automatically_summary">Weitere Inhalte (z.B. Fotos, Karten, Tweets) automatisch laden</string>
     <string name="quote">Zitat</string>
     <string name="add_rule">Regel hinzufügen</string>
     <string name="text_size">Textgröße</string>
@@ -443,7 +439,6 @@
     <string name="underline">Unterstreichen</string>
     <string name="link_highlight_option">Links hervorheben</string>
     <string name="users_statuses">Tweets des Nutzers</string>
-    <string name="card_animation">Scroll Animation</string>
     <string name="name_first">Name bevorzugen</string>
     <string name="name_first_summary">Benutzernamen statt den @Screennamen zeigen</string>
     <string name="next_step">Weiter</string>
@@ -548,7 +543,6 @@
     <string name="import_settings_type_dialog_title">Einstellungen importieren…</string>
     <!--<string name="nicknames">Spitznamen</string>-->
     <string name="user_colors">Benutzer-Farbschema</string>
-    <string name="theme_background_alpha">Theme Hintergrund Transparenz</string>
     <string name="progress">Fortschritt</string>
     <string name="hidden_settings">Versteckte Einstellungen</string>
     <string name="hidden_settings_warning_title">WARNUNG: Gefährliche Einstellungen!</string>
@@ -562,9 +556,6 @@
     <string name="compose_now_action">Aktion bei der Verknüpfung</string>
     <string name="open_with_account">Mit Account öffnen</string>
     <string name="timeline_sync_service">Timeline Sync Service</string>
-    <string name="image_preview_scale_type">Bildvorschau Skalierung</string>
-    <string name="image_preview_scale_type_crop">Zuschneiden</string>
-    <string name="image_preview_scale_type_fit_center">Mittig ausrichten</string>
     <string name="quote_protected_status_warning_message">Der Account des Benutzers ist geschützt und er möchte vielleicht nicht, dass der Tweet öffentlich geteilt wird.</string>
     <string name="send_anyway">Trotzdem senden</string>
     <string name="following_only">Nur Freunde</string>
@@ -610,7 +601,6 @@
     <string name="load_more">Mehr laden</string>
     <string name="photo">Bild</string>
     <string name="camera">Kamera</string>
-    <string name="gallery">Galerie</string>
     <string name="source_camera">Kamera</string>
     <string name="source_gallery">Galerie</string>
     <string name="source_clipboard">Zwischenablage</string>
@@ -709,7 +699,6 @@
     <string name="comment_hint">Kommentar&#8230;</string>
     <string name="comment">Kommentar</string>
     <string name="enable_retweets">Retweets erlauben</string>
-    <string name="disable_retweets">Retweets verbieten</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
     <string name="jump_to_top">Nach oben springen</string>
@@ -813,9 +802,6 @@
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
     <string name="unread_count_summary">Zeigt die Anzahl an ungelesenen Tweets oder Nachrichten im Tab an</string>
     <string name="link_to_quoted_status_summary">Fügt beim Zitieren den Link zum originalen Tweet hinzu</string>
-    <string name="dark_drawer">Dunkles Sliding Menu</string>
-
-    <string name="plain_list_style">Flache Liste</string>
 
     <string name="twidere_developed_by">Basiert auf Twidere</string>
 
@@ -865,8 +851,6 @@
     <string name="project_name">Twittnuker Projekt</string>
     <string name="stream_notifications_summary">Push-ähnliche Benachrichtigungen beim streamen </string>
     <string name="twidere_project_account">Twidere Projekt</string>
-
-    <string name="sort_timeline_by_id_summary">Kann für andere Dienste (Status.net) nützlich sein</string>
 
     <string name="push_status_connected">Verbunden</string>
     <string name="push_status_reconnect">Verbinde...</string>

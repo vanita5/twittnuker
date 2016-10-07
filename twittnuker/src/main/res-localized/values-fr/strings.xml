@@ -755,8 +755,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g> : <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Traduction depuis : <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Traduction</string>
-    <string name="shortener_version_incompatible">Fonction de raccourcissement de tweet incompatible</string>
-    <string name="uploader_version_incompatible">Fonction de téléversement de contenu incompatible</string>
+    <!--<string name="shortener_version_incompatible">Fonction de raccourcissement de tweet incompatible</string>-->
+    <!--<string name="uploader_version_incompatible">Fonction de téléversement de contenu incompatible</string>-->
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Groupes</string>
     <string name="public_timeline">Fil d\'actualités public</string>

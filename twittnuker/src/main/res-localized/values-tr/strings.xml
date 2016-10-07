@@ -530,7 +530,7 @@
     <string name="no_tab">Sekme yok</string>
     <string name="user_protected_summary">Bu kısıtlı kullanıcının tweetlerini görmek için ona takip isteği göndermen gerek</string>
     <string name="no_account">Hesap yok</string>
-    <string name="usage_statistics_notification_summary">Twittnuker\'yi geliştirmemize yardımcı ol!</string>
+    <!--<string name="usage_statistics_notification_summary">Twittnuker\'yi geliştirmemize yardımcı ol!</string>-->
     <string name="activated_accounts">Etkinleştirilmiş hesaplar</string>
     <string name="search">Ara</string>
     <string name="crop">Kırp</string>
@@ -540,10 +540,10 @@
     <string name="share_status">Tweeti paylaş</string>
     <string name="pebble_notifications">Çakıl bildirimler</string>
   <!-- 'Tweet' here is a verb -->
-    <string name="permission_label_shorten_status">Tweet kısalt</string>
-    <string name="permission_label_upload_media">Medya yükle</string>
-    <string name="permission_label_sync_timeline">Zaman akışını senk. et</string>
-    <string name="security_key">Güvenlik anahtarı</string>
+    <!--<string name="permission_label_shorten_status">Tweet kısalt</string>-->
+    <!--<string name="permission_label_upload_media">Medya yükle</string>-->
+    <!--<string name="permission_label_sync_timeline">Zaman akışını senk. et</string>-->
+    <!--<string name="security_key">Güvenlik anahtarı</string>-->
     <string name="keyboard_shortcuts">Klavye kısayolları</string>
     <string name="keyboard_shortcut_hint">Tuşlara bas</string>
     <string name="overwrite">Üzerine yaz</string>

@@ -691,7 +691,7 @@
     <string name="set_consumer_key_secret_message">Twittnuker lassan eléri a token korlátozást, létre kell majd hoznod egy alkalmazást a https://apps.twitter.com/ webhelyen és be kell illeszteni a lenti felhasználó kulcsot és jelszót.\nHa folytatod az alapértelmezett kulcs használatát, lehetséges, hogy nem tudsz majd bejelentkezni.</string>
     <string name="send_at">Küldés ekkor:</string>
     <string name="scheduled_statuses">Időzített tweet-ek</string>
-    <string name="report_usage_statistics_now">Használati statisztikák küldése most</string>
+    <!--<string name="report_usage_statistics_now">Használati statisztikák küldése most</string>-->
     <string name="cache_size_limit">Gyorsítótár méret korlát</string>
     <string name="bug_reports">Hibajelentések</string>
     <string name="bug_reports_summary">Powered by Fabric</string>

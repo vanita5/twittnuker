@@ -534,9 +534,6 @@
     <string name="compose_now_action">Compor Ação</string>
     <string name="open_with_account">Abrir com conta</string>
     <string name="timeline_sync_service">Serviço de sincronização da Timeline</string>
-    <string name="image_preview_scale_type">Tipo de escala pré-visualização da Imagem</string>
-    <string name="image_preview_scale_type_crop">Cortar</string>
-    <string name="image_preview_scale_type_fit_center">Ajustar ao centro</string>
     <string name="quote_protected_status_warning_message">Este tweet é protegido.\n\n Protegido. Usuários protegidos normalmente não querem que seus tweets sejam compartilhados publicamente.</string>
     <string name="send_anyway">Enviar assim mesmo</string>
     <string name="following_only">Apenas quem você segue</string>
@@ -695,7 +692,7 @@
     <string name="set_consumer_key_secret_message">Os tokens de autorização gerados pelo Twittnuker estão se esgotando, pode ser necessário que vocẽ crie um aplicativo em https://apps.twitter.com/ e cole seu \"consumer key\" e senha abaixo.\nSe, ao invés disso, você usar a \"key default\" do Twittnuker, você pode não conseguir entrar.</string>
     <string name="send_at">Enviado em</string>
     <string name="scheduled_statuses">Tweets agendados</string>
-    <string name="report_usage_statistics_now">Reportar estatísticas de uso agora</string>
+    <!--<string name="report_usage_statistics_now">Reportar estatísticas de uso agora</string>-->
     <string name="cache_size_limit">Limite do tamanho do cache</string>
     <string name="bug_reports">Relatórios de bugs</string>
     <string name="bug_reports_summary">Powered by Fabric</string>

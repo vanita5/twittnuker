@@ -627,7 +627,7 @@
     <string name="from_name">Käyttäjältä <xliff:g id="name">%1$s</xliff:g></string>
     <string name="from_name_and_name">Käyttäjiltä <xliff:g id="name">%1$s</xliff:g> ja <xliff:g id="name">%2$s</xliff:g></string>
     <string name="from_name_and_N_others">Käyttäjiltä <xliff:g id="name">%1$s</xliff:g> ja <xliff:g id="name">%2$d</xliff:g> muulta</string>
-    <string name="projects_we_took_part">Projektit joihin otimme osaa</string>
+    <!--<string name="projects_we_took_part">Projektit joihin otimme osaa</string>-->
     <string name="activated_accounts">Aktiiviset tilit</string>
     <string name="search">Hae</string>
     <string name="crop">Rajaa</string>
@@ -684,7 +684,7 @@
     <string name="wizard_hint_summary_location_requirement">Twittnuker tarvitsee sijainnin käyttöoikeuden, kun lähetät twiitin, jossa on sijainti.</string>
     <string name="wizard_hint_title_storage_requirement">Säilytystilan käyttöoikeus</string>
     <string name="wizard_hint_summary_storage_requirement">Twittnuker tarvitsee säilytystilan oikeudet kun käsittelet tiedostojasi.</string>
-    <string name="scrapyard">Romuvarasto</string>
+    <!--<string name="scrapyard">Romuvarasto</string>-->
     <string name="crop_image">Rajaa kuva</string>
     <string name="media_preload">Median esilataus</string>
     <string name="set_consumer_key_secret_message">Twittnuker on ylittämässä sallitun käyttäjämäärän. Sinun täytyy luoda sovellus osoitteessa https://apps.twitter.com/ ja liittää alle kuluttaja-avain ja -salaus.\nJos jatkat oletusavaimen käyttöä, et välttämättä pääse enää kirjautumaan sisälle.</string>
