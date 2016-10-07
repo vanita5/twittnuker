@@ -53,6 +53,7 @@
     <string name="reply">Antworten</string>
     <string name="share">Teilen</string>
     <string name="view_map">Karte</string>
+    <string name="view_user_profile">Benutzerprofil</string>
     <string name="statuses">Tweets</string>
     <string name="followers">Follower</string>
     <string name="following">Folgen</string>

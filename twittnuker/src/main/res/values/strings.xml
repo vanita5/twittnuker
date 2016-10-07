@@ -54,6 +54,7 @@
     <string name="reply">Reply</string>
     <string name="share">Share</string>
     <string name="view_map">Map</string>
+    <string name="view_user_profile">User</string>
     <string name="statuses">Tweets</string>
     <string name="followers">Followers</string>
     <string name="following">Following</string>
