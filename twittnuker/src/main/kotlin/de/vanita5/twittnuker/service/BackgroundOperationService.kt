@@ -356,19 +356,19 @@ class BackgroundOperationService : IntentService("background_operation"), Consta
                 else -> {
                     if (imageUri != null) {
                         val mediaUri = Uri.parse(imageUri)
-                        var body: FileBody? = null
+                        var bodyAndSize: Pair<Body, Point>? = null
                         try {
-                            body = UpdateStatusTask.getBodyFromMedia(this, mediaLoader,
+                            bodyAndSize = UpdateStatusTask.getBodyFromMedia(this, mediaLoader,
                                     mediaUri, null, ParcelableMedia.Type.IMAGE,
                                     MessageMediaUploadListener(this, notificationManager,
                                             builder, text))
-                            val uploadResp = uploadMedia(twitterUpload, body)
+                            val uploadResp = uploadMedia(twitterUpload, bodyAndSize.first)
                             val response = twitter.sendDirectMessage(recipientId,
                                     text, uploadResp.id)
                             directMessage = ParcelableDirectMessageUtils.fromDirectMessage(response,
                                     accountKey, true)
                         } finally {
-                            Utils.closeSilently(body)
+                            Utils.closeSilently(bodyAndSize?.first)
                         }
                         val path = Utils.getImagePathFromUri(this, mediaUri)
                         if (path != null) {
