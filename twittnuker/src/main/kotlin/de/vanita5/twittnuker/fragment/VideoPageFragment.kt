@@ -271,23 +271,28 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPrep
     private val accountKey: UserKey
         get() = arguments.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
 
-    private class VideoPlayProgressRunnable internal constructor(private val mHandler: Handler, private val mProgressBar: ProgressBar, private val mDurationLabel: TextView,
-                                                                 private val mPositionLabel: TextView, private val mMediaPlayerControl: MediaController.MediaPlayerControl) : Runnable {
+    private class VideoPlayProgressRunnable internal constructor(
+            private val handler: Handler,
+            private val progressBar: ProgressBar,
+            private val durationLabel: TextView,
+            private val positionLabel: TextView,
+            private val mediaPlayerControl: MediaController.MediaPlayerControl
+    ) : Runnable {
 
         init {
-            mProgressBar.max = 1000
+            progressBar.max = 1000
         }
 
         override fun run() {
-            val duration = mMediaPlayerControl.duration
-            val position = mMediaPlayerControl.currentPosition
+            val duration = mediaPlayerControl.duration
+            val position = mediaPlayerControl.currentPosition
             if (duration <= 0 || position < 0) return
-            mProgressBar.progress = Math.round(1000 * position / duration.toFloat())
+            progressBar.progress = Math.round(1000 * position / duration.toFloat())
             val durationSecs = TimeUnit.SECONDS.convert(duration.toLong(), TimeUnit.MILLISECONDS)
             val positionSecs = TimeUnit.SECONDS.convert(position.toLong(), TimeUnit.MILLISECONDS)
-            mDurationLabel.text = String.format(Locale.ROOT, "%02d:%02d", durationSecs / 60, durationSecs % 60)
-            mPositionLabel.text = String.format(Locale.ROOT, "%02d:%02d", positionSecs / 60, positionSecs % 60)
-            mHandler.postDelayed(this, 16)
+            durationLabel.text = String.format(Locale.ROOT, "%02d:%02d", durationSecs / 60, durationSecs % 60)
+            positionLabel.text = String.format(Locale.ROOT, "%02d:%02d", positionSecs / 60, positionSecs % 60)
+            handler.postDelayed(this, 16)
         }
     }
 
