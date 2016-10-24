@@ -47,7 +47,6 @@ import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.os.AsyncTask;
-import android.os.BadParcelableException;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,7 +58,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.annotation.WorkerThread;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ActionProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -93,7 +91,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.json.JSONException;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
@@ -115,38 +112,6 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.CopyLinkActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.annotation.CustomTabType;
-import de.vanita5.twittnuker.fragment.AccountsManagerFragment;
-import de.vanita5.twittnuker.fragment.DirectMessagesFragment;
-import de.vanita5.twittnuker.fragment.DraftsFragment;
-import de.vanita5.twittnuker.fragment.FiltersFragment;
-import de.vanita5.twittnuker.fragment.GroupFragment;
-import de.vanita5.twittnuker.fragment.IncomingFriendshipsFragment;
-import de.vanita5.twittnuker.fragment.InteractionsTimelineFragment;
-import de.vanita5.twittnuker.fragment.ItemsListFragment;
-import de.vanita5.twittnuker.fragment.ListsFragment;
-import de.vanita5.twittnuker.fragment.MessagesConversationFragment;
-import de.vanita5.twittnuker.fragment.MutesUsersListFragment;
-import de.vanita5.twittnuker.fragment.PublicTimelineFragment;
-import de.vanita5.twittnuker.fragment.SavedSearchesListFragment;
-import de.vanita5.twittnuker.fragment.SearchFragment;
-import de.vanita5.twittnuker.fragment.StatusFavoritersListFragment;
-import de.vanita5.twittnuker.fragment.StatusFragment;
-import de.vanita5.twittnuker.fragment.StatusRetweetersListFragment;
-import de.vanita5.twittnuker.fragment.UserBlocksListFragment;
-import de.vanita5.twittnuker.fragment.UserFavoritesFragment;
-import de.vanita5.twittnuker.fragment.UserFollowersFragment;
-import de.vanita5.twittnuker.fragment.UserFragment;
-import de.vanita5.twittnuker.fragment.UserFriendsFragment;
-import de.vanita5.twittnuker.fragment.UserGroupsFragment;
-import de.vanita5.twittnuker.fragment.UserListFragment;
-import de.vanita5.twittnuker.fragment.UserListMembersFragment;
-import de.vanita5.twittnuker.fragment.UserListMembershipsFragment;
-import de.vanita5.twittnuker.fragment.UserListSubscribersFragment;
-import de.vanita5.twittnuker.fragment.UserListTimelineFragment;
-import de.vanita5.twittnuker.fragment.UserMediaTimelineFragment;
-import de.vanita5.twittnuker.fragment.UserMentionsFragment;
-import de.vanita5.twittnuker.fragment.UserProfileEditorFragment;
-import de.vanita5.twittnuker.fragment.UserTimelineFragment;
 import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
@@ -610,12 +575,17 @@ public final class Utils implements Constants {
         if (t instanceof MicroBlogException)
             return getTwitterErrorMessage(context, action, (MicroBlogException) t);
         else if (t != null) return getErrorMessage(context, trimLineBreak(t.getMessage()));
+        TwidereBugReporter.logException(new IllegalStateException());
         return context.getString(R.string.error_unknown_error);
     }
 
-    public static String getErrorMessage(final Context context, final Throwable t) {
-        if (t == null) return null;
-        if (context != null && t instanceof MicroBlogException)
+    @Nullable
+    public static String getErrorMessage(@NonNull final Context context, final Throwable t) {
+        if (t == null) {
+            TwidereBugReporter.logException(new IllegalStateException());
+            return context.getString(R.string.error_unknown_error);
+        }
+        if (t instanceof MicroBlogException)
             return getTwitterErrorMessage(context, (MicroBlogException) t);
         return t.getMessage();
     }
@@ -846,6 +816,7 @@ public final class Utils implements Constants {
             return getErrorMessage(context, action, trimLineBreak(te.getMessage()));
     }
 
+    @Nullable
     public static String getTwitterErrorMessage(final Context context, final MicroBlogException te) {
         if (te == null) return null;
         if (StatusCodeMessageUtils.containsTwitterError(te.getErrorCode())) {

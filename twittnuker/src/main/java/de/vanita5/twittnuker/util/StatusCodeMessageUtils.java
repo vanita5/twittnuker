@@ -23,10 +23,11 @@
 package de.vanita5.twittnuker.util;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.SparseIntArray;
 
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.library.twitter.model.ErrorInfo;
+import de.vanita5.twittnuker.R;
 
 public class StatusCodeMessageUtils {
 
@@ -69,6 +70,7 @@ public class StatusCodeMessageUtils {
         return TWITTER_ERROR_CODE_MESSAGES.get(code, -1) != -1;
     }
 
+    @Nullable
     public static String getHttpStatusMessage(final Context context, final int code) {
         if (context == null) return null;
         final int res_id = HTTP_STATUS_CODE_MESSAGES.get(code, -1);
@@ -76,12 +78,14 @@ public class StatusCodeMessageUtils {
         return null;
     }
 
+    @Nullable
     public static String getMessage(final Context context, final int statusCode, final int errorCode) {
         if (containsHttpStatus(statusCode)) return getHttpStatusMessage(context, statusCode);
         if (containsTwitterError(errorCode)) return getTwitterErrorMessage(context, errorCode);
         return null;
     }
 
+    @Nullable
     public static String getTwitterErrorMessage(final Context context, final int code) {
         if (context == null) return null;
         final int resId = TWITTER_ERROR_CODE_MESSAGES.get(code, -1);
