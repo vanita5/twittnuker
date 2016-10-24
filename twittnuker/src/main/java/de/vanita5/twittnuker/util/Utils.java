@@ -455,16 +455,9 @@ public final class Utils implements Constants {
     @SuppressWarnings("deprecation")
     public static String formatToLongTimeString(final Context context, final long timestamp) {
         if (context == null) return null;
-        final Time then = new Time();
-        then.set(timestamp);
-        final Time now = new Time();
-        now.setToNow();
-
-        int format_flags = DateUtils.FORMAT_NO_NOON_MIDNIGHT | DateUtils.FORMAT_ABBREV_ALL | DateUtils.FORMAT_CAP_AMPM;
-
-        format_flags |= DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME;
-
-        return DateUtils.formatDateTime(context, timestamp, format_flags);
+        int formatFlags = DateUtils.FORMAT_NO_NOON_MIDNIGHT | DateUtils.FORMAT_ABBREV_ALL |
+                DateUtils.FORMAT_CAP_AMPM | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME;
+        return DateUtils.formatDateTime(context, timestamp, formatFlags);
     }
 
     public static int getAccountNotificationId(final int notificationType, final String accountId) {
