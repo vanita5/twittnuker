@@ -88,7 +88,6 @@
 -dontwarn com.bluelinelabs.logansquare.**
 -dontwarn okio.**
 -dontwarn android.support.**
--dontwarn com.afollestad.**
 -dontwarn com.facebook.stetho.**
 -dontwarn com.google.android.**
 -dontwarn okhttp3.**
@@ -216,3 +215,5 @@
 -dontwarn de.vanita5.twittnuker.fragment.AbsStatusesFragment
 -dontwarn de.vanita5.twittnuker.fragment.CursorStatusesFragment
 -dontwarn de.vanita5.twittnuker.fragment.ItemsListFragment
+
+-keep class com.afollestad.** { *; }
