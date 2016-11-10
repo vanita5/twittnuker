@@ -45,6 +45,7 @@ public class DonationsActivity extends FragmentActivity {
             "twittnuker.donate.2",
             "twittnuker.donate.5",
             "twittnuker.donate.10",
+            "twittnuker.donate.lovetrumpshate"
     };
 
     /**
