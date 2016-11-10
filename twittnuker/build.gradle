@@ -36,8 +36,8 @@ android {
         applicationId "de.vanita5.twittnuker"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 28
-        versionName "0.9.0"
+        versionCode 29
+        versionName "0.9.0-1"
         multiDexEnabled true
 
         buildConfigField 'boolean', 'LEAK_CANARY_ENABLED', 'Boolean.parseBoolean("false")'
