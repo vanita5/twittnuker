@@ -27,7 +27,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.BadParcelableException
-
+import android.support.customtabs.CustomTabsIntent
 import org.apache.commons.lang3.StringUtils
 import de.vanita5.twittnuker.activity.WebLinkHandlerActivity
 import de.vanita5.twittnuker.annotation.Referral
@@ -150,12 +150,10 @@ open class OnLinkClickHandler(
 
     protected open fun openLink(link: String) {
         if (manager != null && manager.isActive) return
-        val uri = Uri.parse(link)
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.`package` = IntentUtils.getDefaultBrowserPackage(context, uri, true)
+        val builder = CustomTabsIntent.Builder()
+        val intent = builder.build()
         try {
-            context.startActivity(intent)
+            intent.launchUrl(context, Uri.parse(link))
         } catch (e: ActivityNotFoundException) {
             // TODO
         }
