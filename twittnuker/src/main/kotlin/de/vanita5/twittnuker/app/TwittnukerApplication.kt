@@ -55,8 +55,6 @@ import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.activity.AssistLauncherActivity
-import de.vanita5.twittnuker.activity.MainActivity
 import de.vanita5.twittnuker.constant.defaultFeatureLastUpdated
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.service.RefreshService
@@ -150,6 +148,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         task {
             defaultFeatures.loadRemoteSettings(restHttpClient)
         }.success {
+            defaultFeatures.save(sharedPreferences)
             if (BuildConfig.DEBUG) {
                 Log.d(LOGTAG, "Loaded remote features")
             }
