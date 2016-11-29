@@ -99,12 +99,14 @@
 -dontwarn com.twitter.Autolink
 -dontwarn com.google.appengine.api.urlfetch.*
 
+-dontwarn InnerClasses
+
 -keepattributes *Annotation*
 -keepattributes EnclosingMethod
 -keepattributes SourceFile
 -keepattributes LineNumberTable
 -keepattributes Signature
--keepattributes InnetClasses
+-keepattributes InnerClasses
 
 
 # dnsjava
