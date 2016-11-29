@@ -51,7 +51,8 @@ import de.vanita5.twittnuker.util.media.MediaExtra
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, View.OnClickListener {
+class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, View.OnClickListener {
 
     private var mPlayAudio: Boolean = false
     private var mVideoProgressRunnable: VideoPlayProgressRunnable? = null
