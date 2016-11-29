@@ -68,7 +68,6 @@ import android.system.ErrnoException;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
-import android.text.format.Time;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.util.Log;
@@ -94,9 +93,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.model.GeoLocation;
 import de.vanita5.twittnuker.library.twitter.model.RateLimitStatus;
-import de.vanita5.twittnuker.library.twitter.model.Relationship;
 import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment;
 import org.mariotaku.sqliteqb.library.AllColumns;
@@ -132,7 +129,6 @@ import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
-import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -280,12 +276,6 @@ public final class Utils implements Constants {
         } catch (final IOException e) {
             return false;
         }
-        return true;
-    }
-
-    public static boolean closeSilently(final Cursor c) {
-        if (c == null) return false;
-        c.close();
         return true;
     }
 
@@ -1215,14 +1205,6 @@ public final class Utils implements Constants {
         return orig.replaceAll("\\n+", "\n");
     }
 
-    public static void updateRelationship(Context context, UserKey accountKey, UserKey userKey,
-                                          Relationship relationship) {
-        final ContentResolver resolver = context.getContentResolver();
-        final ContentValues values = ContentValuesCreator.createCachedRelationship(relationship,
-                accountKey, userKey);
-        resolver.insert(CachedRelationships.CONTENT_URI, values);
-    }
-
     private static Drawable getMetadataDrawable(final PackageManager pm, final ActivityInfo info, final String key) {
         if (pm == null || info == null || info.metaData == null || key == null || !info.metaData.containsKey(key))
             return null;
@@ -1435,13 +1417,6 @@ public final class Utils implements Constants {
             context.getApplicationContext().sendBroadcast(intent);
         }
 
-    }
-
-    @Nullable
-    public static GeoLocation getCachedGeoLocation(Context context) {
-        final Location location = getCachedLocation(context);
-        if (location == null) return null;
-        return new GeoLocation(location.getLatitude(), location.getLongitude());
     }
 
     @Nullable

@@ -87,7 +87,6 @@ import org.mariotaku.ktextension.toTypedArray
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate
 import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.Relationship
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
@@ -145,7 +144,7 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
     var user: ParcelableUser? = null
         private set
     private var account: ParcelableAccount? = null
-    private var relationship: UserRelationship? = null
+    private var relationship: ParcelableRelationship? = null
     private var locale: Locale? = null
     private var mGetUserInfoLoaderInitialized: Boolean = false
     private var mGetFriendShipLoaderInitialized: Boolean = false
@@ -160,9 +159,9 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
     private var mPreviousActionBarItemIsDark: Int = 0
     private var mHideBirthdayView: Boolean = false
 
-    private val friendshipLoaderCallbacks = object : LoaderCallbacks<SingleResponse<UserRelationship>> {
+    private val friendshipLoaderCallbacks = object : LoaderCallbacks<SingleResponse<ParcelableRelationship>> {
 
-        override fun onCreateLoader(id: Int, args: Bundle): Loader<SingleResponse<UserRelationship>> {
+        override fun onCreateLoader(id: Int, args: Bundle): Loader<SingleResponse<ParcelableRelationship>> {
             invalidateOptionsMenu()
             val accountKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
             val user = args.getParcelable<ParcelableUser>(EXTRA_USER)
@@ -178,12 +177,12 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
             return UserRelationshipLoader(activity, accountKey, user)
         }
 
-        override fun onLoaderReset(loader: Loader<SingleResponse<UserRelationship>>) {
+        override fun onLoaderReset(loader: Loader<SingleResponse<ParcelableRelationship>>) {
 
         }
 
-        override fun onLoadFinished(loader: Loader<SingleResponse<UserRelationship>>,
-                                    data: SingleResponse<UserRelationship>) {
+        override fun onLoadFinished(loader: Loader<SingleResponse<ParcelableRelationship>>,
+                                    data: SingleResponse<ParcelableRelationship>) {
             followProgress!!.visibility = View.GONE
             val relationship = data.data
             displayRelationship(user, relationship)
@@ -262,7 +261,7 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
     }
 
     private fun displayRelationship(user: ParcelableUser?,
-                                    userRelationship: UserRelationship?) {
+                                    userRelationship: ParcelableRelationship?) {
         if (user == null) {
             relationship = null
             return
@@ -310,7 +309,7 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
         task {
             val resolver = contentResolver;
             resolver.insert(CachedUsers.CONTENT_URI, ParcelableUserValuesCreator.create(user))
-            resolver.insert(CachedRelationships.CONTENT_URI, CachedRelationshipValuesCreator.create(userRelationship))
+            resolver.insert(CachedRelationships.CONTENT_URI, ParcelableRelationshipValuesCreator.create(userRelationship))
         }
         followContainer.follow.visibility = View.VISIBLE
     }
@@ -1493,26 +1492,26 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
             context: Context,
             private val accountKey: UserKey?,
             private val user: ParcelableUser?
-    ) : AsyncTaskLoader<SingleResponse<UserRelationship>>(context) {
+    ) : AsyncTaskLoader<SingleResponse<ParcelableRelationship>>(context) {
 
-        override fun loadInBackground(): SingleResponse<UserRelationship> {
+        override fun loadInBackground(): SingleResponse<ParcelableRelationship> {
             if (accountKey == null || user == null) {
-                return SingleResponse.Companion.getInstance<UserRelationship>(MicroBlogException("Null parameters"))
+                return SingleResponse.Companion.getInstance<ParcelableRelationship>(MicroBlogException("Null parameters"))
             }
             val userKey = user.key
             val isFiltering = DataStoreUtils.isFilteringUser(context, userKey)
             if (accountKey == user.key) {
-                return SingleResponse.Companion.getInstance(UserRelationship(accountKey, userKey,
+                return SingleResponse.getInstance(ParcelableRelationshipUtils.create(accountKey, userKey,
                         null, isFiltering))
             }
             val credentials = ParcelableCredentialsUtils.getCredentials(context,
-                    accountKey) ?: return SingleResponse.Companion.getInstance<UserRelationship>(MicroBlogException("No Account"))
+                    accountKey) ?: return SingleResponse.getInstance<ParcelableRelationship>(MicroBlogException("No Account"))
             if (MicroBlogAPIFactory.isStatusNetCredentials(credentials)) {
                 if (!UserKeyUtils.isSameHost(accountKey, user.key)) {
-                    return SingleResponse.Companion.getInstance(UserRelationship(user, isFiltering))
+                    return SingleResponse.getInstance(ParcelableRelationshipUtils.create(user, isFiltering))
                 }
             }
-            val twitter = MicroBlogAPIFactory.getInstance(context, accountKey, false) ?: return SingleResponse.Companion.getInstance<UserRelationship>(MicroBlogException("No Account"))
+            val twitter = MicroBlogAPIFactory.getInstance(context, accountKey, false) ?: return SingleResponse.Companion.getInstance<ParcelableRelationship>(MicroBlogException("No Account"))
             try {
                 val relationship = twitter.showFriendship(user.key.id)
                 if (relationship.isSourceBlockingTarget || relationship.isSourceBlockedByTarget) {
@@ -1520,11 +1519,14 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
                 } else {
                     Utils.setLastSeen(context, userKey, System.currentTimeMillis())
                 }
-                Utils.updateRelationship(context, accountKey, userKey, relationship)
-                return SingleResponse.Companion.getInstance(UserRelationship(accountKey, userKey,
-                        relationship, isFiltering))
+                val data = ParcelableRelationshipUtils.create(accountKey, userKey, relationship,
+                        isFiltering)
+                val resolver = context.contentResolver
+                val values = ParcelableRelationshipValuesCreator.create(data)
+                resolver.insert(CachedRelationships.CONTENT_URI, values)
+                return SingleResponse.getInstance(data)
             } catch (e: MicroBlogException) {
-                return SingleResponse.Companion.getInstance<UserRelationship>(e)
+                return SingleResponse.Companion.getInstance<ParcelableRelationship>(e)
             }
 
         }
@@ -1534,39 +1536,14 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
         }
     }
 
-    internal class UserRelationship : CachedRelationship {
-        var filtering: Boolean = false
-        var can_dm: Boolean = false
 
-        constructor(accountKey: UserKey, userKey: UserKey,
-                    relationship: Relationship?, filtering: Boolean) : super(relationship, accountKey, userKey) {
-            this.filtering = filtering
-            if (relationship != null) {
-                this.can_dm = relationship.canSourceDMTarget()
-            }
+    private fun ParcelableRelationship.check(user: ParcelableUser): Boolean {
+        if (account_key != user.account_key) {
+            return false
         }
-
-        constructor(user: ParcelableUser, filtering: Boolean) {
-            this.account_key = user.account_key
-            this.user_key = user.key
-            this.filtering = filtering
-            if (user.extras != null) {
-                this.following = user.is_following
-                this.followed_by = user.extras.followed_by
-                this.blocking = user.extras.blocking
-                this.blocked_by = user.extras.blocked_by
-                this.can_dm = user.extras.followed_by
-            }
-        }
-
-        fun check(user: ParcelableUser): Boolean {
-            if (account_key != user.account_key) {
-                return false
-            }
-            return user.extras != null && TextUtils.equals(user_key.id, user.extras.unique_id) || TextUtils.equals(user_key.id, user.key.id)
-        }
-
+        return user.extras != null && TextUtils.equals(user_key.id, user.extras.unique_id) || TextUtils.equals(user_key.id, user.key.id)
     }
+
 
     class AddRemoveUserListDialogFragment : BaseDialogFragment() {
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -26,15 +26,12 @@ import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
-import de.vanita5.twittnuker.library.twitter.model.Relationship;
 import de.vanita5.twittnuker.library.twitter.model.SavedSearch;
 import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.library.twitter.model.Trend;
 import de.vanita5.twittnuker.library.twitter.model.Trends;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.model.CachedRelationship;
-import de.vanita5.twittnuker.model.CachedRelationshipValuesCreator;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
@@ -64,13 +61,6 @@ import java.util.List;
 
 public final class ContentValuesCreator implements TwittnukerConstants {
     private ContentValuesCreator() {
-    }
-
-    public static ContentValues createCachedRelationship(final Relationship relationship,
-                                                         final UserKey accountKey,
-                                                         final UserKey userKey) {
-        CachedRelationship cached = new CachedRelationship(relationship, accountKey, userKey);
-        return CachedRelationshipValuesCreator.create(cached);
     }
 
     public static ContentValues createCachedUser(final User user) {

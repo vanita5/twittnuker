@@ -22,18 +22,19 @@
 
 package de.vanita5.twittnuker.model;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
-import de.vanita5.twittnuker.library.twitter.model.Relationship;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 
 @CursorObject(valuesCreator = true, tableInfo = true)
-public class CachedRelationship {
+public class ParcelableRelationship implements Parcelable {
 
     @CursorField(value = CachedRelationships.ACCOUNT_KEY, converter = UserKeyCursorFieldConverter.class)
     public UserKey account_key;
@@ -62,20 +63,29 @@ public class CachedRelationship {
     @CursorField(value = CachedRelationships._ID, excludeWrite = true, type = TwidereDataStore.TYPE_PRIMARY_KEY)
     public long _id;
 
-    public CachedRelationship() {
+    public boolean can_dm;
 
+    public boolean filtering;
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public CachedRelationship(@Nullable Relationship relationship, @NonNull UserKey accountKey, @NonNull UserKey userKey) {
-        account_key = accountKey;
-        user_key = userKey;
-        if (relationship != null) {
-            following = relationship.isSourceFollowingTarget();
-            followed_by = relationship.isSourceFollowedByTarget();
-            blocking = relationship.isSourceBlockingTarget();
-            blocked_by = relationship.isSourceBlockedByTarget();
-            muting = relationship.isSourceMutingTarget();
-            retweet_enabled = relationship.isSourceWantRetweetsFromTarget();
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        ParcelableRelationshipParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static final Creator<ParcelableRelationship> CREATOR = new Creator<ParcelableRelationship>() {
+        public ParcelableRelationship createFromParcel(Parcel source) {
+            ParcelableRelationship target = new ParcelableRelationship();
+            ParcelableRelationshipParcelablePlease.readFromParcel(target, source);
+            return target;
         }
-    }
+
+        public ParcelableRelationship[] newArray(int size) {
+            return new ParcelableRelationship[size];
+        }
+    };
 }
