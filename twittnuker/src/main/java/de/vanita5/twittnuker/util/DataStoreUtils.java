@@ -38,9 +38,9 @@ import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
 
 import com.bluelinelabs.logansquare.JsonMapper;
+import com.bluelinelabs.logansquare.LoganSquare;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 import de.vanita5.twittnuker.library.twitter.model.Activity;
 import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns;
@@ -559,12 +559,7 @@ public class DataStoreUtils implements Constants {
             final Cursor cur = resolver.query(uri, projection, selection.getSQL(), selectionArgs, null);
             if (cur == null) return -1;
             try {
-                final JsonMapper<UserFollowState> mapper;
-                try {
-                    mapper = LoganSquareMapperFinder.mapperFor(UserFollowState.class);
-                } catch (LoganSquareMapperFinder.ClassLoaderDeadLockException e) {
-                    return -1;
-                }
+                final JsonMapper<UserFollowState> mapper = LoganSquare.mapperFor(UserFollowState.class);
                 int total = 0;
                 cur.moveToFirst();
                 while (!cur.isAfterLast()) {

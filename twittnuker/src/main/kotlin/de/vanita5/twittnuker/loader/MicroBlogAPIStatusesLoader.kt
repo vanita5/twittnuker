@@ -26,8 +26,8 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import android.util.Log
+import com.bluelinelabs.logansquare.LoganSquare
 import com.nostra13.universalimageloader.cache.disc.DiskCache
-import org.mariotaku.commons.logansquare.LoganSquareMapperFinder
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
@@ -230,7 +230,7 @@ abstract class MicroBlogAPIStatusesLoader(
             val pos = PipedOutputStream()
             val pis = PipedInputStream(pos)
             val future = pool.submit(Callable<kotlin.Any> {
-                LoganSquareMapperFinder.mapperFor(ParcelableStatus::class.java).serialize(statuses, pos)
+                LoganSquare.serialize(statuses, pos)
                 null
             })
             val saved = fileCache.save(key, pis) { current, total -> !future.isDone }
