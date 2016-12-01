@@ -48,6 +48,8 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.util.JsonSerializer;
 
+import java.io.IOException;
+
 import kotlin.Pair;
 
 public class UpdateAccountInfoTask extends AbstractTask<Pair<ParcelableAccount, ParcelableUser>, Object, Object> {
@@ -127,6 +129,8 @@ public class UpdateAccountInfoTask extends AbstractTask<Pair<ParcelableAccount, 
                 final String[] whereArgs = {String.valueOf(values.keyAt(i))};
                 resolver.update(Tabs.CONTENT_URI, values.valueAt(i), where, whereArgs);
             }
+        } catch (IOException e) {
+            // Ignore
         } finally {
             tabsCursor.close();
         }

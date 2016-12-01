@@ -31,11 +31,11 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.Bagger;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
+import de.vanita5.twittnuker.library.twitter.model.util.ParcelMapBagger;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Map;
-
-import de.vanita5.twittnuker.library.twitter.model.util.ParcelMapBagger;
 
 @ParcelablePlease
 @JsonObject
@@ -329,6 +329,7 @@ public class DMResponse implements Parcelable {
         }
 
         @StringDef({Type.ONE_TO_ONE, Type.GROUP_DM})
+        @Retention(RetentionPolicy.SOURCE)
         public @interface Type {
             String ONE_TO_ONE = "one_to_one", GROUP_DM = "group_dm";
         }

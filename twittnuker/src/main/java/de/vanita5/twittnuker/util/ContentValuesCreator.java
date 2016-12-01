@@ -55,6 +55,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +64,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     private ContentValuesCreator() {
     }
 
-    public static ContentValues createCachedUser(final User user) {
+    public static ContentValues createCachedUser(final User user) throws IOException {
         if (user == null) return null;
         final ContentValues values = new ContentValues();
         ParcelableUserValuesCreator.writeTo(ParcelableUserUtils.fromUser(user, null), values);
@@ -72,12 +73,12 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 
     public static ContentValues createDirectMessage(final DirectMessage message,
                                                     final UserKey accountKey,
-                                                    final boolean isOutgoing) {
+                                                    final boolean isOutgoing) throws IOException {
         return ParcelableDirectMessageValuesCreator.create(ParcelableDirectMessageUtils.fromDirectMessage(message,
                 accountKey, isOutgoing));
     }
 
-    public static ContentValues createDirectMessage(final ParcelableDirectMessage message) {
+    public static ContentValues createDirectMessage(final ParcelableDirectMessage message) throws IOException {
         if (message == null) return null;
         final ContentValues values = new ContentValues();
         ParcelableDirectMessageValuesCreator.writeTo(message, values);
@@ -150,7 +151,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     }
 
     @NonNull
-    public static ContentValues createStatus(final Status orig, final UserKey accountKey) {
+    public static ContentValues createStatus(final Status orig, final UserKey accountKey) throws IOException {
         return ParcelableStatusValuesCreator.create(ParcelableStatusUtils.INSTANCE.fromStatus(orig,
                 accountKey, false));
     }
@@ -158,7 +159,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
     @NonNull
     public static ContentValues createActivity(final ParcelableActivity activity,
                                                final ParcelableCredentials credentials,
-                                               final UserColorNameManager manager) {
+                                               final UserColorNameManager manager) throws IOException {
         final ContentValues values = new ContentValues();
         final ParcelableStatus status = ParcelableActivityExtensionsKt.getActivityStatus(activity);
 

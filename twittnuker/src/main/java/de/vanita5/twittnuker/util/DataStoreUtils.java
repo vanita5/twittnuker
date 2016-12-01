@@ -1066,6 +1066,8 @@ public class DataStoreUtils implements Constants {
                 values.put(activity._id, ParcelableActivityValuesCreator.create(activity));
                 c.moveToNext();
             }
+        } catch (IOException e) {
+            return;
         } finally {
             c.close();
         }
@@ -1139,20 +1141,25 @@ public class DataStoreUtils implements Constants {
         final Cursor cur = context.getContentResolver().query(Accounts.CONTENT_URI, Accounts.COLUMNS, selection, null, Accounts.SORT_POSITION);
         if (cur == null) return accounts;
         final ParcelableCredentialsCursorIndices indices = new ParcelableCredentialsCursorIndices(cur);
-        cur.moveToFirst();
-        while (!cur.isAfterLast()) {
-            if (!officialKeyOnly) {
-                accounts.add(indices.newObject(cur));
-            } else {
-                final String consumerKey = cur.getString(indices.consumer_key);
-                final String consumerSecret = cur.getString(indices.consumer_secret);
-                if (TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret)) {
+        try {
+            cur.moveToFirst();
+            while (!cur.isAfterLast()) {
+                if (!officialKeyOnly) {
                     accounts.add(indices.newObject(cur));
+                } else {
+                    final String consumerKey = cur.getString(indices.consumer_key);
+                    final String consumerSecret = cur.getString(indices.consumer_secret);
+                    if (TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret)) {
+                        accounts.add(indices.newObject(cur));
+                    }
                 }
+                cur.moveToNext();
             }
-            cur.moveToNext();
+        } catch (IOException e) {
+            return Collections.emptyList();
+        } finally {
+            cur.close();
         }
-        cur.close();
         return accounts;
     }
 
@@ -1227,19 +1234,24 @@ public class DataStoreUtils implements Constants {
         if (cur == null) return accounts;
         ParcelableCredentialsCursorIndices indices = new ParcelableCredentialsCursorIndices(cur);
         cur.moveToFirst();
-        while (!cur.isAfterLast()) {
-            if (officialKeyOnly) {
-                final String consumerKey = cur.getString(indices.consumer_key);
-                final String consumerSecret = cur.getString(indices.consumer_secret);
-                if (TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret)) {
+        try {
+            while (!cur.isAfterLast()) {
+                if (officialKeyOnly) {
+                    final String consumerKey = cur.getString(indices.consumer_key);
+                    final String consumerSecret = cur.getString(indices.consumer_secret);
+                    if (TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret)) {
+                        accounts.add(indices.newObject(cur));
+                    }
+                } else {
                     accounts.add(indices.newObject(cur));
                 }
-            } else {
-                accounts.add(indices.newObject(cur));
+                cur.moveToNext();
             }
-            cur.moveToNext();
+        } catch (IOException e) {
+            return Collections.emptyList();
+        } finally {
+            cur.close();
         }
-        cur.close();
         return accounts;
     }
 

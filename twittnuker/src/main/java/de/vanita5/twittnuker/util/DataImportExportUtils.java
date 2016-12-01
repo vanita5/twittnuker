@@ -151,7 +151,7 @@ public class DataImportExportUtils implements Constants {
     }
 
     private static <T> List<T> queryAll(ContentResolver cr, Uri uri, String[] projection,
-                                        Class<? extends ObjectCursor.CursorIndices<T>> cls) {
+                                        Class<? extends ObjectCursor.CursorIndices<T>> cls) throws IOException {
         Cursor c = cr.query(uri, projection, null, null, null);
         if (c == null) return null;
         try {
@@ -234,7 +234,7 @@ public class DataImportExportUtils implements Constants {
         if (hasFlag(flags, FLAG_FILTERS)) {
             importItem(context, zipFile, ENTRY_FILTERS, FiltersData.class, new ContentResolverProcessStrategy<FiltersData>() {
                 @Override
-                public boolean importItem(ContentResolver cr, FiltersData filtersData) {
+                public boolean importItem(ContentResolver cr, FiltersData filtersData) throws IOException {
                     if (filtersData == null) return false;
                     insertBase(cr, Filters.Keywords.CONTENT_URI, filtersData.getKeywords());
                     insertBase(cr, Filters.Sources.CONTENT_URI, filtersData.getSources());
@@ -243,7 +243,7 @@ public class DataImportExportUtils implements Constants {
                     return true;
                 }
 
-                void insertBase(ContentResolver cr, Uri uri, List<FiltersData.BaseItem> items) {
+                void insertBase(ContentResolver cr, Uri uri, List<FiltersData.BaseItem> items) throws IOException {
                     if (items == null) return;
                     List<ContentValues> values = new ArrayList<>(items.size());
                     for (FiltersData.BaseItem item : items) {
@@ -252,7 +252,7 @@ public class DataImportExportUtils implements Constants {
                     ContentResolverUtils.bulkInsert(cr, uri, values);
                 }
 
-                void insertUser(ContentResolver cr, Uri uri, List<FiltersData.UserItem> items) {
+                void insertUser(ContentResolver cr, Uri uri, List<FiltersData.UserItem> items) throws IOException {
                     if (items == null) return;
                     List<ContentValues> values = new ArrayList<>(items.size());
                     for (FiltersData.UserItem item : items) {
@@ -265,7 +265,7 @@ public class DataImportExportUtils implements Constants {
         if (hasFlag(flags, FLAG_TABS)) {
             importItemsList(context, zipFile, ENTRY_TABS, Tab.class, new ContentResolverProcessStrategy<List<Tab>>() {
                 @Override
-                public boolean importItem(ContentResolver cr, List<Tab> items) {
+                public boolean importItem(ContentResolver cr, List<Tab> items) throws IOException {
                     if (items == null) return false;
                     List<ContentValues> values = new ArrayList<>(items.size());
                     for (Tab item : items) {
@@ -373,7 +373,7 @@ public class DataImportExportUtils implements Constants {
     }
 
     private interface ContentResolverProcessStrategy<T> {
-        boolean importItem(ContentResolver cr, T item);
+        boolean importItem(ContentResolver cr, T item) throws IOException;
     }
 
     private interface SharedPreferencesProcessStrategy {

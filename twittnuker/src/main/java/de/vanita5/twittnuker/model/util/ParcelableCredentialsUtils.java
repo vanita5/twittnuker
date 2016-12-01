@@ -33,6 +33,8 @@ import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 
+import java.io.IOException;
+
 public class ParcelableCredentialsUtils {
     private ParcelableCredentialsUtils() {
     }
@@ -57,6 +59,8 @@ public class ParcelableCredentialsUtils {
             if (c.moveToFirst()) {
                 return i.newObject(c);
             }
+        } catch (IOException e) {
+            return null;
         } finally {
             c.close();
         }
@@ -75,6 +79,8 @@ public class ParcelableCredentialsUtils {
                 cursor.moveToNext();
             }
             return credentialses;
+        }  catch (IOException e) {
+            return new ParcelableCredentials[0];
         } finally {
             cursor.close();
         }

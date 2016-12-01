@@ -91,6 +91,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
+
+import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.RateLimitStatus;
@@ -108,7 +110,6 @@ import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.CopyLinkActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
-import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.AccountPreferences;
@@ -118,6 +119,7 @@ import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
+import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
@@ -380,10 +382,15 @@ public final class Utils implements Constants {
             if (cur == null) {
                 continue;
             }
-            if (cur.getCount() > 0 && cur.moveToFirst()) {
-                message = ParcelableDirectMessageCursorIndices.fromCursor(cur);
+            try {
+                if (cur.getCount() > 0 && cur.moveToFirst()) {
+                    message = ParcelableDirectMessageCursorIndices.fromCursor(cur);
+                }
+            } catch (IOException e) {
+                // Ignore
+            } finally {
+                cur.close();
             }
-            cur.close();
         }
         return message;
     }
@@ -398,14 +405,19 @@ public final class Utils implements Constants {
         if (cached != null) return cached;
         final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, accountKey, true);
         if (twitter == null) throw new MicroBlogException("Account does not exist");
-        final Status status = twitter.showStatus(statusId);
+        final Status result = twitter.showStatus(statusId);
         final String where = Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_KEY),
                 Expression.equalsArgs(Statuses.STATUS_ID)).getSQL();
         final String[] whereArgs = {accountKey.toString(), statusId};
         final ContentResolver resolver = context.getContentResolver();
+        final ParcelableStatus status = ParcelableStatusUtils.INSTANCE.fromStatus(result, accountKey, false);
         resolver.delete(CachedStatuses.CONTENT_URI, where, whereArgs);
-        resolver.insert(CachedStatuses.CONTENT_URI, ContentValuesCreator.createStatus(status, accountKey));
-        return ParcelableStatusUtils.INSTANCE.fromStatus(status, accountKey, false);
+        try {
+            resolver.insert(CachedStatuses.CONTENT_URI, ParcelableStatusValuesCreator.create(status));
+        } catch (IOException e) {
+            // Ignore
+        }
+        return status;
     }
 
     @Nullable
@@ -423,11 +435,15 @@ public final class Utils implements Constants {
             if (cur == null) {
                 continue;
             }
-            if (cur.getCount() > 0) {
-                cur.moveToFirst();
-                status = ParcelableStatusCursorIndices.fromCursor(cur);
+            try {
+                if (cur.getCount() > 0 && cur.moveToFirst()) {
+                    status = ParcelableStatusCursorIndices.fromCursor(cur);
+                }
+            } catch (IOException e) {
+                // Ignore
+            } finally {
+                cur.close();
             }
-            cur.close();
         }
         return status;
     }

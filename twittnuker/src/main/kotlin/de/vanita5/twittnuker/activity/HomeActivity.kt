@@ -77,6 +77,7 @@ import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.graphic.EmptyDrawable
 import de.vanita5.twittnuker.model.ParcelableAccount
 import de.vanita5.twittnuker.model.SupportTabSpec
+import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent
 import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent
@@ -724,7 +725,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
             val accountKey = UserKey.valueOf(uri!!.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY))
             for (i in 0 until pagerAdapter!!.count) {
                 val tab = pagerAdapter!!.getTab(i)
-                if (tabType == CustomTabUtils.getTabTypeAlias(tab.type)) {
+                if (tabType == Tab.getTypeAlias(tab.type)) {
                     val args = tab.args
                     if (args != null && CustomTabUtils.hasAccountId(this, args,
                             activatedAccountKeys, accountKey)) {

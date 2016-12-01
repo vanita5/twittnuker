@@ -30,7 +30,6 @@ import android.support.annotation.Nullable;
 import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Expression;
-
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableAccountCursorIndices;
@@ -39,6 +38,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ParcelableAccountUtils {
@@ -65,6 +65,8 @@ public class ParcelableAccountUtils {
             if (c.moveToFirst()) {
                 return i.newObject(c);
             }
+        } catch (IOException e) {
+            return null;
         } finally {
             c.close();
         }
@@ -113,6 +115,8 @@ public class ParcelableAccountUtils {
                 cursor.moveToNext();
             }
             return names;
+        } catch (IOException e) {
+            return new ParcelableAccount[0];
         } finally {
             cursor.close();
         }
