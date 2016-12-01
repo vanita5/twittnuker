@@ -7,9 +7,12 @@ import android.support.v4.app.Fragment;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.fragment.UserListTimelineFragment;
+import de.vanita5.twittnuker.model.ParcelableUserList;
+import de.vanita5.twittnuker.model.Tab;
 import de.vanita5.twittnuker.model.tab.TabConfiguration;
 import de.vanita5.twittnuker.model.tab.DrawableHolder;
 import de.vanita5.twittnuker.model.tab.StringHolder;
+import de.vanita5.twittnuker.model.tab.argument.UserListArguments;
 import de.vanita5.twittnuker.model.tab.conf.UserListExtraConfiguration;
 
 import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER_LIST;
@@ -27,9 +30,9 @@ public class UserListTimelineTabConfiguration extends TabConfiguration {
         return DrawableHolder.Builtin.LIST;
     }
 
-    @AccountRequirement
+    @AccountFlags
     @Override
-    public int getAccountRequirement() {
+    public int getAccountFlags() {
         return FLAG_HAS_ACCOUNT | FLAG_ACCOUNT_REQUIRED;
     }
 
@@ -39,6 +42,21 @@ public class UserListTimelineTabConfiguration extends TabConfiguration {
         return new ExtraConfiguration[]{
                 new UserListExtraConfiguration(EXTRA_USER_LIST).title(R.string.user_list).headerTitle(R.string.user_list)
         };
+    }
+
+    @Override
+    public boolean applyExtraConfigurationTo(@NonNull Tab tab, @NonNull ExtraConfiguration extraConf) {
+        UserListArguments arguments = (UserListArguments) tab.getArguments();
+        assert arguments != null;
+        switch (extraConf.getKey()) {
+            case EXTRA_USER_LIST: {
+                final ParcelableUserList userList = ((UserListExtraConfiguration) extraConf).getValue();
+                if (userList == null) return false;
+                arguments.setListId(userList.id);
+                break;
+            }
+        }
+        return true;
     }
 
     @NonNull

@@ -38,6 +38,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
+import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.util.imageloader.OvalBitmapDisplayer;
@@ -177,6 +178,10 @@ public class MediaLoaderWrapper {
         } else {
             displayProfileImage(view, user.profile_image_url);
         }
+    }
+
+    public void displayProfileImage(final ImageView view, final ParcelableUserList userList) {
+        displayProfileImage(view, userList.user_profile_image_url);
     }
 
     public void displayProfileImage(final ImageView view, final ParcelableAccount account) {

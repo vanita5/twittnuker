@@ -22,10 +22,10 @@ public class DMTabConfiguration extends TabConfiguration {
         return DrawableHolder.Builtin.MESSAGE;
     }
 
-    @AccountRequirement
+    @AccountFlags
     @Override
-    public int getAccountRequirement() {
-        return FLAG_HAS_ACCOUNT | FLAG_ACCOUNT_MULTIPLE;
+    public int getAccountFlags() {
+        return FLAG_HAS_ACCOUNT | FLAG_ACCOUNT_MULTIPLE | FLAG_ACCOUNT_MUTABLE;
     }
 
     @NonNull

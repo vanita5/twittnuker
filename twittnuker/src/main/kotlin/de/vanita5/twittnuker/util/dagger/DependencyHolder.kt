@@ -60,6 +60,12 @@ class DependencyHolder internal constructor(context: Context) {
     lateinit var defaultFeatures: DefaultFeatures
         internal set
     @Inject
+    lateinit var mediaLoader: MediaLoaderWrapper
+        internal set
+    @Inject
+    lateinit var userColorNameManager: UserColorNameManager
+        internal set
+    @Inject
     lateinit var asyncTwitterWrapper: AsyncTwitterWrapper
         internal set
     @Inject

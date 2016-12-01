@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.adapter.iface.IBaseAdapter
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.Utils.configBaseAdapter
-import de.vanita5.twittnuker.util.Utils.getUserTypeIconRes
+import de.vanita5.twittnuker.util.display
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder
 
 class SimpleParcelableUsersAdapter @JvmOverloads constructor(
@@ -64,16 +64,7 @@ class SimpleParcelableUsersAdapter @JvmOverloads constructor(
 
         val user = getItem(position)
 
-        holder.text1.setCompoundDrawablesWithIntrinsicBounds(0, 0,
-                getUserTypeIconRes(user.is_verified, user.is_protected), 0)
-        holder.text1.text = user.name
-        holder.text2.text = String.format("@%s", user.screen_name)
-        holder.icon.visibility = if (isProfileImageDisplayed) View.VISIBLE else View.GONE
-        if (isProfileImageDisplayed) {
-            mediaLoader.displayProfileImage(holder.icon, user)
-        } else {
-            mediaLoader.cancelDisplayTask(holder.icon)
-        }
+        holder.display(user, mediaLoader, userColorNameManager, isProfileImageDisplayed)
         return view
     }
 
