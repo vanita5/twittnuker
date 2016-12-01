@@ -43,6 +43,11 @@ android:
     # - sys-img-x86-android-17
     # #- sys-img-armeabi-v7a-android-24
 
+licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
 cache:
   directories:
     - $HOME/.gradle/caches/
