@@ -344,20 +344,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.CustomTabEditorActivity"
-            android:exported="false"
-            android:icon="@drawable/ic_action_twittnuker"
-            android:label="@string/add_tab"
-            android:theme="@style/Theme.Twidere.Dialog"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="de.vanita5.twittnuker.ADD_TAB"/>
-                <action android:name="de.vanita5.twittnuker.EDIT_TAB"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".activity.CreateComposeShortcutActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/compose"

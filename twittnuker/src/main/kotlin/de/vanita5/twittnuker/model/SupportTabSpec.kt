@@ -25,12 +25,13 @@ package de.vanita5.twittnuker.model
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import de.vanita5.twittnuker.annotation.CustomTabType
+import de.vanita5.twittnuker.model.tab.DrawableHolder
 import de.vanita5.twittnuker.util.CompareUtils.bundleEquals
 import de.vanita5.twittnuker.util.CompareUtils.objectEquals
 
 data class SupportTabSpec(
         var name: CharSequence? = null,
-        var icon: Any? = null,
+        var icon: DrawableHolder? = null,
         @CustomTabType val type: String? = null,
         var cls: Class<out Fragment>,
         var args: Bundle? = null,

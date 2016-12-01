@@ -23,15 +23,19 @@
 package de.vanita5.twittnuker.model.tab.argument;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 import de.vanita5.twittnuker.model.UserKey;
 
+@ParcelablePlease
 @JsonObject
-public class UserArguments extends TabArguments {
+public class UserArguments extends TabArguments implements Parcelable {
     @JsonField(name = "user_id")
     String userId;
     @JsonField(name = "user_key")
@@ -58,4 +62,26 @@ public class UserArguments extends TabArguments {
                 ", userKey=" + userKey +
                 "} " + super.toString();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        UserArgumentsParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    public static final Creator<UserArguments> CREATOR = new Creator<UserArguments>() {
+        public UserArguments createFromParcel(Parcel source) {
+            UserArguments target = new UserArguments();
+            UserArgumentsParcelablePlease.readFromParcel(target, source);
+            return target;
+        }
+
+        public UserArguments[] newArray(int size) {
+            return new UserArguments[size];
+        }
+    };
 }

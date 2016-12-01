@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.activity
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
-import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -48,15 +47,19 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.constant.IntentConstants
-import de.vanita5.twittnuker.fragment.*
-import de.vanita5.twittnuker.model.SupportTabSpec
+import de.vanita5.twittnuker.fragment.BaseDialogFragment
+import de.vanita5.twittnuker.fragment.BasePreferenceFragment
+import de.vanita5.twittnuker.fragment.BaseSupportFragment
+import de.vanita5.twittnuker.fragment.ProgressDialogFragment
+import de.vanita5.twittnuker.model.Tab
+import de.vanita5.twittnuker.model.TabValuesCreator
+import de.vanita5.twittnuker.model.tab.TabConfiguration
 import de.vanita5.twittnuker.preference.WizardPageHeaderPreference
 import de.vanita5.twittnuker.preference.WizardPageNavPreference
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs
 import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import de.vanita5.twittnuker.view.LinePageIndicator
-import java.io.File
-import java.util.*
 
 class SettingsWizardActivity : BaseActivity() {
 
@@ -154,12 +157,12 @@ class SettingsWizardActivity : BaseActivity() {
     }
 
     private fun initPages() {
-        adapter!!.addTab(WizardPageWelcomeFragment::class.java, null, getString(R.string.wizard_page_welcome_title), null, 0, null)
-        adapter!!.addTab(WizardPageThemeFragment::class.java, null, getString(R.string.theme), null, 0, null)
-        adapter!!.addTab(WizardPageTabsFragment::class.java, null, getString(R.string.tabs), null, 0, null)
-        adapter!!.addTab(WizardPageCardsFragment::class.java, null, getString(R.string.cards), null, 0, null)
-        adapter!!.addTab(WizardPageHintsFragment::class.java, null, getString(R.string.hints), null, 0, null)
-        adapter!!.addTab(WizardPageFinishedFragment::class.java, null, getString(R.string.wizard_page_finished_title), null, 0, null)
+        adapter!!.addTab(cls = WizardPageWelcomeFragment::class.java, name = getString(R.string.wizard_page_welcome_title))
+        adapter!!.addTab(cls = WizardPageThemeFragment::class.java, name = getString(R.string.theme))
+        adapter!!.addTab(cls = WizardPageTabsFragment::class.java, name = getString(R.string.tabs))
+        adapter!!.addTab(cls = WizardPageCardsFragment::class.java, name = getString(R.string.cards))
+        adapter!!.addTab(cls = WizardPageHintsFragment::class.java, name = getString(R.string.hints))
+        adapter!!.addTab(cls = WizardPageFinishedFragment::class.java, name = getString(R.string.wizard_page_finished_title))
     }
 
     private fun openImportSettingsDialog() {
@@ -457,45 +460,30 @@ class SettingsWizardActivity : BaseActivity() {
 
     internal abstract class AbsInitialSettingsTask(protected val activity: SettingsWizardActivity) : AsyncTask<Any, Any, Boolean>() {
 
-        override fun doInBackground(vararg params: Any): Boolean? {
+        override fun doInBackground(vararg params: Any): Boolean {
             val resolver = activity.contentResolver
-            val tabs = CustomTabUtils.getHomeTabs(activity)
+            val tabs = CustomTabUtils.getTabs(activity)
             if (wasConfigured(tabs)) return true
-            Collections.sort(tabs)
             var i = 0
-            val values_list = ArrayList<ContentValues>()
             for (type in DEFAULT_TAB_TYPES) {
-                val values = ContentValues()
-                val conf = CustomTabUtils.getTabConfiguration(type)
-                values.put(Tabs.TYPE, type)
-                values.put(Tabs.ICON, CustomTabUtils.findTabIconKey(conf.defaultIcon))
-                values.put(Tabs.POSITION, i++)
-                values_list.add(values)
+                val conf = TabConfiguration.ofType(type)!!
+                val tab = Tab()
+                tab.type = type
+                tab.icon = conf.icon.persistentKey
+                tab.position = i++
+                tabs.add(tab)
             }
-            for (spec in tabs) {
-                val type = CustomTabUtils.findTabType(spec.cls)
-                if (type != null) {
-                    val values = ContentValues()
-                    values.put(Tabs.TYPE, type)
-                    values.put(Tabs.ARGUMENTS, InternalParseUtils.bundleToJSON(spec.args))
-                    values.put(Tabs.NAME, ParseUtils.parseString(spec.name))
-                    val icon = spec.icon
-                    if (icon is Int) {
-                        values.put(Tabs.ICON, CustomTabUtils.findTabIconKey(icon))
-                    } else if (icon is File) {
-                        values.put(Tabs.ICON, icon.path)
-                    }
-                    values.put(Tabs.POSITION, i++)
-                }
+            for (tab in tabs) {
+                tab.position = i++
             }
             resolver.delete(Tabs.CONTENT_URI, null, null)
-            resolver.bulkInsert(Tabs.CONTENT_URI, values_list.toTypedArray())
+            ContentResolverUtils.bulkInsert(resolver, Tabs.CONTENT_URI, tabs.map(TabValuesCreator::create))
             return true
         }
 
         protected abstract fun nextStep()
 
-        override fun onPostExecute(result: Boolean?) {
+        override fun onPostExecute(result: Boolean) {
             activity.executeAfterFragmentResumed {
                 val activity = it as SettingsWizardActivity
                 val fm = activity.supportFragmentManager
@@ -512,15 +500,15 @@ class SettingsWizardActivity : BaseActivity() {
             }
         }
 
-        private fun wasConfigured(tabs: List<SupportTabSpec>): Boolean {
-            for (spec in tabs) {
-                if (spec.cls == HomeTimelineFragment::class.java
-                        || spec.cls == InteractionsTimelineFragment::class.java
-                        || spec.cls == DirectMessagesFragment::class.java
-                        || spec.cls == MessagesEntriesFragment::class.java)
-                    return true
-            }
-            return false
+        private fun wasConfigured(tabs: List<Tab>): Boolean {
+            return tabs.find({ tab ->
+                when (tab.type) {
+                    CustomTabType.HOME_TIMELINE, CustomTabType.NOTIFICATIONS_TIMELINE,
+                    CustomTabType.DIRECT_MESSAGES, CustomTabType.DIRECT_MESSAGES_NEXT ->
+                        return@find true
+                }
+                return@find false
+            }) != null
         }
 
         companion object {
