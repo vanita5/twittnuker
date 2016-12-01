@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 
+@ParcelablePlease
 @CursorObject(valuesCreator = true, tableInfo = true)
 public class ParcelableRelationship implements Parcelable {
 
