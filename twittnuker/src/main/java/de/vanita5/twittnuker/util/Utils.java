@@ -91,7 +91,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
-
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
@@ -104,7 +103,6 @@ import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.SQLFunctions;
 import org.mariotaku.sqliteqb.library.Selectable;
-
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
@@ -1025,14 +1023,6 @@ public final class Utils implements Constants {
     public static void scrollListToTop(final AbsListView list) {
         if (list == null) return;
         scrollListToPosition(list, 0);
-    }
-
-    public static void addCopyLinkIntent(Context context, Intent chooserIntent, Uri uri) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
-        final Intent copyLinkIntent = new Intent(context, CopyLinkActivity.class);
-        copyLinkIntent.setData(uri);
-        final Intent[] alternateIntents = {copyLinkIntent};
-        chooserIntent.putExtra(Intent.EXTRA_ALTERNATE_INTENTS, alternateIntents);
     }
 
     static boolean isMyStatus(ParcelableStatus status) {
