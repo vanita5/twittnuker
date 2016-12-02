@@ -180,6 +180,8 @@ dependencies {
     compile 'org.sufficientlysecure:donations:2.4'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    compile 'com.klinkerapps:giphy:1.0.2'
 }
 
 task svgToDrawable(type: SvgDrawableTask) {

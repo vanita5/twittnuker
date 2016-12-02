@@ -94,6 +94,7 @@ import de.vanita5.twittnuker.view.CheckableLinearLayout
 import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.ShapedImageView
 import de.vanita5.twittnuker.view.helper.SimpleItemTouchHelperCallback
+import xyz.klinker.giphy.Giphy
 import java.io.*
 import java.lang.ref.WeakReference
 import java.util.*
@@ -140,7 +141,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         when (requestCode) {
-            REQUEST_TAKE_PHOTO, REQUEST_PICK_IMAGE, REQUEST_OPEN_DOCUMENT -> {
+            REQUEST_TAKE_PHOTO, REQUEST_PICK_IMAGE, REQUEST_OPEN_DOCUMENT, Giphy.REQUEST_GIPHY -> {
                 if (resultCode == Activity.RESULT_OK && intent != null) {
                     val src = arrayOf(intent.data)
                     val dst = arrayOf(createTempImageUri(0))
@@ -288,6 +289,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         when (item.itemId) {
             R.id.take_photo -> {
                 takePhoto()
+            }
+            R.id.add_gif -> {
+                pickGif()
             }
             R.id.add_image -> {
                 pickImage()
@@ -1032,6 +1036,11 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         return true
     }
 
+    private fun pickGif(): Boolean {
+        Giphy.Builder(this, "dc6zaTOxFJmzC").maxFileSize(10 * 1024 * 1024).start()
+        return true
+    }
+
     private fun saveAccountSelection() {
         if (!shouldSaveAccounts) return
         val editor = preferences.edit()
@@ -1052,6 +1061,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
          */
         MenuUtils.setItemAvailability(menu, R.id.take_photo, true) //always
         MenuUtils.setItemAvailability(menu, R.id.add_image, true) //always
+        MenuUtils.setItemAvailability(menu, R.id.add_gif, true) //always
         MenuUtils.setItemAvailability(menu, R.id.media_menu, hasMedia)
         MenuUtils.setItemAvailability(menu, R.id.toggle_sensitive, hasMedia)
         MenuUtils.setItemAvailability(menu, R.id.schedule, scheduleSupported)

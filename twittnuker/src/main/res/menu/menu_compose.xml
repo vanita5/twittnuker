@@ -55,6 +55,11 @@
                 android:icon="@drawable/ic_action_gallery"
                 android:title="@string/add_image"
                 app:showAsAction="ifRoom" />
+            <item
+                android:id="@id/add_gif"
+                android:icon="@drawable/ic_action_web"
+                android:title="@string/add_gif"
+                app:showAsAction="ifRoom" />
         </menu>
     </item>
     <item

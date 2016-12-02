@@ -9,6 +9,7 @@
     <item name="select_account" type="id"/>
     <item name="add_location" type="id"/>
     <item name="take_photo" type="id"/>
+    <item name="add_gif" type="id"/>
     <item name="add_image" type="id"/>
     <item name="location" type="id"/>
     <item name="image" type="id"/>
