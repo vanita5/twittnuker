@@ -9,6 +9,7 @@
     <string name="send">Senden</string>
     <string name="add_image">Bild hinzufügen</string>
     <string name="take_photo">Foto aufnehmen</string>
+    <string name="add_gif">Gif hinzufügen</string>
     <string name="status_hint">Schreibe etwas...</string>
     <string name="sign_up">Registrieren</string>
     <string name="sign_in">Einloggen</string>
@@ -116,6 +117,7 @@
     <string name="likes">Likes</string>
     <string name="name">Name</string>
     <string name="refresh">Aktualisieren</string>
+    <string name="settings_refresh">Aktualisieren</string>
     <string name="retry">Wiederholen</string>
     <string name="more">Mehr</string>
     <string name="quote_format">Zitat-Format</string>
@@ -159,6 +161,7 @@
     <string name="ringtone">Klingelton</string>
     <string name="vibration">Vibration</string>
     <string name="light">Hell</string>
+    <string name="settings_notifications">Benachrichtigungen</string>
     <string name="notifications">Benachrichtigungen</string>
     <string name="refresh_on_start">Beim Start aktualisieren</string>
     <string name="refresh_on_start_summary">Timeline und Erwähnungen beim Start aktualisieren.</string>

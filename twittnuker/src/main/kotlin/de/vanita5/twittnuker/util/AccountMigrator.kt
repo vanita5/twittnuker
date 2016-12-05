@@ -73,7 +73,39 @@ fun migrateAccounts(am: AccountManager, db: SQLiteDatabase) {
 
 fun toHexColor(@ColorInt color: Int) = String.format(Locale.ROOT, "#%6X", color)
 
+@Suppress("deprecation")
 private fun ParcelableCredentials.toCredentials(): Credentials {
+
+    fun ParcelableCredentials.applyCommonProperties(credentials: Credentials) {
+        credentials.api_url_format = api_url_format
+        credentials.no_version_suffix = no_version_suffix
+    }
+
+    fun ParcelableCredentials.toOAuthCredentials(): OAuthCredentials {
+        val result = OAuthCredentials()
+        applyCommonProperties(result)
+        result.consumer_key = consumer_key
+        result.consumer_secret = consumer_secret
+        result.access_token = oauth_token
+        result.access_token_secret = oauth_token_secret
+        result.same_oauth_signing_url = same_oauth_signing_url
+        return result
+    }
+
+    fun ParcelableCredentials.toBasicCredentials(): BasicCredentials {
+        val result = BasicCredentials()
+        applyCommonProperties(result)
+        result.username = basic_auth_username
+        result.password = basic_auth_password
+        return result
+    }
+
+    fun ParcelableCredentials.toEmptyCredentials(): EmptyCredentials {
+        val result = EmptyCredentials()
+        applyCommonProperties(result)
+        return result
+    }
+
     when (auth_type) {
         AuthTypeInt.OAUTH, AuthTypeInt.XAUTH -> return toOAuthCredentials()
         AuthTypeInt.BASIC -> return toBasicCredentials()
@@ -83,40 +115,11 @@ private fun ParcelableCredentials.toCredentials(): Credentials {
 }
 
 @Credentials.Type
+@Suppress("deprecation")
 private fun ParcelableCredentials.getCredentialsType(): String {
     return AccountUtils.getCredentialsType(auth_type)
 }
 
-
-private fun ParcelableCredentials.toOAuthCredentials(): OAuthCredentials {
-    val result = OAuthCredentials()
-    applyCommonProperties(result)
-    result.consumer_key = consumer_key
-    result.consumer_secret = consumer_secret
-    result.access_token = oauth_token
-    result.access_token_secret = oauth_token_secret
-    result.same_oauth_signing_url = same_oauth_signing_url
-    return result
-}
-
-private fun ParcelableCredentials.toBasicCredentials(): BasicCredentials {
-    val result = BasicCredentials()
-    applyCommonProperties(result)
-    result.username = basic_auth_username
-    result.password = basic_auth_password
-    return result
-}
-
-private fun ParcelableCredentials.toEmptyCredentials(): EmptyCredentials {
-    val result = EmptyCredentials()
-    applyCommonProperties(result)
-    return result
-}
-
-private fun ParcelableCredentials.applyCommonProperties(credentials: Credentials) {
-    credentials.api_url_format = api_url_format
-    credentials.no_version_suffix = no_version_suffix
-}
-
+@Suppress("deprecation")
 private val ParcelableCredentials.account_name: String
     get() = UserKey(screen_name, account_key.host).toString()

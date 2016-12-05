@@ -24,8 +24,6 @@ package de.vanita5.twittnuker.annotation;
 
 import android.support.annotation.IntDef;
 
-import de.vanita5.twittnuker.model.ParcelableCredentials;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
