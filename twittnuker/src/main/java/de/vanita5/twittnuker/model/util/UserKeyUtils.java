@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.model.util;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -30,7 +29,6 @@ import android.text.TextUtils;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.UriUtils;
 
 import static de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM;
@@ -41,12 +39,7 @@ public class UserKeyUtils {
     private UserKeyUtils() {
     }
 
-    @Nullable
-    public static UserKey findById(Context context, String id) {
-        return DataStoreUtils.findAccountKey(context, id);
-    }
-
-    public static UserKey fromUser(User user) {
+    public static UserKey fromUser(@NonNull User user) {
         return new UserKey(user.getId(), getUserHost(user));
     }
 

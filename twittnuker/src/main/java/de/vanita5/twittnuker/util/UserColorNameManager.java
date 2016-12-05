@@ -163,7 +163,7 @@ public class UserColorNameManager implements TwittnukerConstants {
         @Override
         public void onSharedPreferenceChanged(final SharedPreferences preferences, final String key) {
             final UserKey userId = UserKey.valueOf(key);
-            if (mListener != null && userId != null) {
+            if (mListener != null) {
                 mListener.onUserColorChanged(userId, preferences.getInt(key, 0));
             }
         }

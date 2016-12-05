@@ -63,6 +63,7 @@ import kotlinx.android.synthetic.main.activity_home_content.*
 import kotlinx.android.synthetic.main.layout_empty_tab_hint.*
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
+import org.mariotaku.ktextension.convert
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
@@ -716,9 +717,10 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         val tabType = if (uri != null) Utils.matchTabType(uri) else null
         var initialTab = -1
         if (tabType != null) {
-            val accountKey = UserKey.valueOf(uri!!.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY))
-            for (i in 0 until pagerAdapter!!.count) {
-                val tab = pagerAdapter!!.getTab(i)
+            val accountKey = uri?.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY)?.convert(UserKey::valueOf)
+            val adapter = pagerAdapter!!
+            for (i in 0 until adapter.count) {
+                val tab = adapter.getTab(i)
                 if (tabType == Tab.getTypeAlias(tab.type)) {
                     val args = tab.args
                     if (args != null && CustomTabUtils.hasAccountId(this, args,
