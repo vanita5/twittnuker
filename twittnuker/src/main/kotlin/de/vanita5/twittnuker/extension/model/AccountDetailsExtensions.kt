@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.extension.model
 import android.content.Context
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.account.TwitterAccountExtras
+import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.util.TwitterContentUtils
 
@@ -40,3 +41,6 @@ fun AccountDetails.isOfficial(context: Context): Boolean {
     }
     return false
 }
+
+val AccountDetails.is_oauth: Boolean
+    get() = credentials_type == Credentials.Type.OAUTH || credentials_type == Credentials.Type.XAUTH
