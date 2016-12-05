@@ -130,6 +130,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         itemMenu.visibility = if (showCardActions) View.VISIBLE else View.GONE
         statusContentLowerSpace.visibility = if (showCardActions) View.GONE else View.VISIBLE
         quotedMediaPreview.visibility = View.GONE
+        quotedMediaLabel.visibility = View.GONE
         mediaPreview.displayMedia(R.drawable.nyan_stars_background)
         extraTypeView.setImageResource(R.drawable.ic_action_gallery)
     }
@@ -349,7 +350,6 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             mediaLabel.visibility = View.GONE
             mediaPreview.visibility = View.GONE
         }
-
 
 
         var displayEnd = -1
