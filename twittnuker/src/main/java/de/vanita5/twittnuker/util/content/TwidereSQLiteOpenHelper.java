@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util.content;
 
+import android.accounts.AccountManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -227,7 +228,7 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
         if (oldVersion <= 153) {
             migrateLegacyAccounts(db);
             if (newVersion > 153) {
-                AccountMigratorKt.migrateAccounts(mContext);
+                AccountMigratorKt.migrateAccounts(AccountManager.get(mContext), db);
                 db.execSQL(SQLQueryBuilder.dropTable(true, Accounts.TABLE_NAME).getSQL());
             }
         }
