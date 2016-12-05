@@ -32,7 +32,6 @@ import android.view.View
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT
 import de.vanita5.twittnuker.model.AccountDetails
-import de.vanita5.twittnuker.model.ParcelableAccount
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 
@@ -66,8 +65,8 @@ class AccountActionProvider(
             for (i in 0 until subMenu.size()) {
                 val item = subMenu.getItem(i)
                 val intent = item.intent
-                val account = intent.getParcelableExtra<ParcelableAccount>(EXTRA_ACCOUNT)
-                if (it.contains(account.account_key)) {
+                val account: AccountDetails = intent.getParcelableExtra(EXTRA_ACCOUNT)
+                if (it.contains(account.key)) {
                     item.isChecked = true
                 }
             }

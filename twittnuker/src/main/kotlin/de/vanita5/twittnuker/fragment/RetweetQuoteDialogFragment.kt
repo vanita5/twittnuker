@@ -217,7 +217,7 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
             val update = ParcelableStatusUpdate()
             update.accounts = arrayOf(account)
             val editingComment = editComment.text.toString()
-            when (AccountUtils.getAccountType(account)) {
+            when (account.type) {
                 AccountType.FANFOU -> {
                     if (!status.is_quote || !quoteOriginalStatus) {
                         if (status.user_is_protected && showProtectedConfirmation) {

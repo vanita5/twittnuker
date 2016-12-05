@@ -36,7 +36,6 @@ import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
-import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -51,7 +50,7 @@ public class DestroyUserBlockTask extends AbsFriendshipOperationTask {
     @Override
     protected User perform(@NonNull MicroBlog twitter, @NonNull AccountDetails details,
                            @NonNull Arguments args) throws MicroBlogException {
-        switch (AccountUtils.getAccountType(details)) {
+        switch (details.type) {
             case AccountType.FANFOU: {
                 return twitter.destroyFanfouBlock(args.userKey.getId());
             }

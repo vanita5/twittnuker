@@ -34,7 +34,6 @@ import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.IntentConstants.BROADCAST_NOTIFICATION_DELETED
 import de.vanita5.twittnuker.model.StringLongPair
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.util.CustomTabUtils
 import de.vanita5.twittnuker.util.UriExtraUtils
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.DependencyHolder

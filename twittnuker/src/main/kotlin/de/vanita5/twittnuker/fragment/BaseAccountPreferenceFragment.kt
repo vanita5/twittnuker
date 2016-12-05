@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_PREFERENCES_NAME_PREFIX
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
-import de.vanita5.twittnuker.model.ParcelableAccount
+import de.vanita5.twittnuker.model.AccountDetails
 
 abstract class BaseAccountPreferenceFragment : BasePreferenceFragment(), OnCheckedChangeListener, OnSharedPreferenceChangeListener {
 
@@ -47,8 +47,8 @@ abstract class BaseAccountPreferenceFragment : BasePreferenceFragment(), OnCheck
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         val pm = preferenceManager
-        val account = arguments.getParcelable<ParcelableAccount>(IntentConstants.EXTRA_ACCOUNT) ?: return
-        val preferenceName = "$ACCOUNT_PREFERENCES_NAME_PREFIX${account.account_key}"
+        val account: AccountDetails = arguments.getParcelable(IntentConstants.EXTRA_ACCOUNT) ?: return
+        val preferenceName = "$ACCOUNT_PREFERENCES_NAME_PREFIX${account.key}"
         pm.sharedPreferencesName = preferenceName
         addPreferencesFromResource(preferencesResource)
         val prefs = pm.sharedPreferences
@@ -57,8 +57,8 @@ abstract class BaseAccountPreferenceFragment : BasePreferenceFragment(), OnCheck
         val intent = activity.intent
         if (intent.hasExtra(EXTRA_SHOW_FRAGMENT)) {
             val nameFirst = prefs.getBoolean(KEY_NAME_FIRST, true)
-            val name = userColorNameManager.getDisplayName(account.account_key,
-                    account.name, account.screen_name, nameFirst)
+            val name = userColorNameManager.getDisplayName(account.key,
+                    account.user.name, account.user.screen_name, nameFirst)
             activity.title = name
         }
         updatePreferenceScreen()
@@ -99,10 +99,10 @@ abstract class BaseAccountPreferenceFragment : BasePreferenceFragment(), OnCheck
         }
     }
 
-    protected val account: ParcelableAccount?
+    protected val account: AccountDetails?
         get() {
             val args = arguments ?: return null
-            return args.getParcelable<ParcelableAccount>(IntentConstants.EXTRA_ACCOUNT)
+            return args.getParcelable<AccountDetails>(IntentConstants.EXTRA_ACCOUNT)
         }
 
     protected abstract val preferencesResource: Int

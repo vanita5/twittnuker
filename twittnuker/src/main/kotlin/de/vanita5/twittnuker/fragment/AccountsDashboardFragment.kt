@@ -54,6 +54,7 @@ import android.view.View.OnClickListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.header_drawer_account_selector.view.*
+import org.mariotaku.ktextension.convert
 import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.ktextension.setMenuItemIcon
 import org.mariotaku.ktextension.setMenuItemTitle
@@ -71,7 +72,6 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.SupportTabSpec
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.util.*
@@ -230,7 +230,7 @@ class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<Account
         mUseStarsForLikes = preferences.getBoolean(KEY_I_WANT_MY_STARS_BACK)
 
         mAccountsAdapter!!.accounts = accounts
-        var accountKey = UserKey.valueOf(preferences.getString(KEY_DEFAULT_ACCOUNT_KEY, null))
+        var accountKey = preferences.getString(KEY_DEFAULT_ACCOUNT_KEY, null)?.convert(UserKey::valueOf)
         if (accountKey == null) {
             accountKey = defaultId
         }
@@ -393,7 +393,7 @@ class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<Account
         var hasLists = false
         var hasGroups = false
         var hasPublicTimeline = false
-        when (AccountUtils.getAccountType(account)) {
+        when (account.type) {
             AccountType.TWITTER -> {
                 hasLists = true
             }

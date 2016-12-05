@@ -55,7 +55,6 @@ import de.vanita5.twittnuker.adapter.ArrayAdapter
 import de.vanita5.twittnuker.annotation.AuthTypeInt
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.CustomAPIConfig
-import de.vanita5.twittnuker.model.ParcelableCredentials
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory

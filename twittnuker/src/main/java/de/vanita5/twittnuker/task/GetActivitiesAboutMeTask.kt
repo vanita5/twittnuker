@@ -35,8 +35,6 @@ import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask
 import de.vanita5.twittnuker.util.ErrorInfoStore
@@ -48,17 +46,14 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
         get() = ErrorInfoStore.KEY_INTERACTIONS
 
     override fun saveReadPosition(accountKey: UserKey, details: AccountDetails, twitter: MicroBlog) {
-        if (AccountType.TWITTER == AccountUtils.getAccountType(details)) {
-            if (details.isOfficial(context)) {
-                try {
-                    val response = twitter.getActivitiesAboutMeUnread(true)
-                    val tag = Utils.getReadPositionTagWithAccount(ReadPositionTag.ACTIVITIES_ABOUT_ME,
-                            accountKey)
-                    readStateManager.setPosition(tag, response.cursor, false)
-                } catch (e: MicroBlogException) {
-                    // Ignore
-                }
-
+        if (AccountType.TWITTER == details.type && details.isOfficial(context)) {
+            try {
+                val response = twitter.getActivitiesAboutMeUnread(true)
+                val tag = Utils.getReadPositionTagWithAccount(ReadPositionTag.ACTIVITIES_ABOUT_ME,
+                        accountKey)
+                readStateManager.setPosition(tag, response.cursor, false)
+            } catch (e: MicroBlogException) {
+                // Ignore
             }
         }
     }
@@ -72,7 +67,7 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
         }
         val activities = ResponseList<Activity>()
         val statuses: ResponseList<Status>
-        when (AccountUtils.getAccountType(details)) {
+        when (details.type) {
             AccountType.FANFOU -> {
                 statuses = twitter.getMentions(paging)
             }

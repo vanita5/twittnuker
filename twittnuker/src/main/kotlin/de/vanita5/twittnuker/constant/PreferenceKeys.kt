@@ -30,7 +30,6 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AuthTypeInt
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
-import de.vanita5.twittnuker.model.ParcelableCredentials
 
 val mediaPreviewStyleKey = KStringKey(KEY_MEDIA_PREVIEW_STYLE, VALUE_MEDIA_PREVIEW_STYLE_CROP)
 val profileImageStyleKey = KStringKey(KEY_PROFILE_IMAGE_STYLE, VALUE_PROFILE_IMAGE_STYLE_SQUARE)

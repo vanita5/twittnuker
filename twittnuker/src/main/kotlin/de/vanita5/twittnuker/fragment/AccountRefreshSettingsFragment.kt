@@ -22,14 +22,11 @@
 
 package de.vanita5.twittnuker.fragment
 
-import android.app.Activity
 import android.content.SharedPreferences
-
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.util.Utils
-
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.DEFAULT_AUTO_REFRESH
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_AUTO_REFRESH
+import de.vanita5.twittnuker.util.Utils
 
 class AccountRefreshSettingsFragment : BaseAccountPreferenceFragment() {
 

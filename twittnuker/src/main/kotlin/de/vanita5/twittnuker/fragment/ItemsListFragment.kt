@@ -43,7 +43,6 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ITEMS
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.util.IntentUtils
-import de.vanita5.twittnuker.util.LinkCreator
 import de.vanita5.twittnuker.util.MenuUtils
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.view.ExtendedRecyclerView

@@ -64,7 +64,6 @@ import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableDirectMessageUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages
@@ -347,7 +346,7 @@ class BackgroundOperationService : IntentService("background_operation"), Consta
         val twitterUpload = details.credentials.newMicroBlogInstance(context = this, cls = TwitterUpload::class.java)
         try {
             val directMessage: ParcelableDirectMessage
-            when (AccountUtils.getAccountType(details)) {
+            when (details.type) {
                 AccountType.FANFOU -> {
                     if (imageUri != null) {
                         throw MicroBlogException("Can't send image DM on Fanfou")

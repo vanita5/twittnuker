@@ -21,6 +21,3 @@
  */
 
 package de.vanita5.twittnuker.account
-
-import android.accounts.AbstractAccountAuthenticator
-import android.content.Context

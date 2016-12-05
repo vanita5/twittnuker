@@ -24,12 +24,8 @@ package de.vanita5.twittnuker.activity
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
-
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.constant.IntentConstants
-import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_RESID
 import de.vanita5.twittnuker.fragment.SettingsDetailsFragment
 
 class HiddenSettingsActivity : BaseActivity() {

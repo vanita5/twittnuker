@@ -60,7 +60,10 @@ import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter
 import de.vanita5.twittnuker.adapter.ArrayAdapter
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.extension.model.isOfficial
-import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.Tab
+import de.vanita5.twittnuker.model.TabCursorIndices
+import de.vanita5.twittnuker.model.TabValuesCreator
 import de.vanita5.twittnuker.model.tab.DrawableHolder
 import de.vanita5.twittnuker.model.tab.TabConfiguration
 import de.vanita5.twittnuker.model.tab.iface.AccountCallback
@@ -373,9 +376,9 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                     tab.icon = (iconSpinner.selectedItem as DrawableHolder).persistentKey
                     tab.arguments = CustomTabUtils.newTabArguments(tabType)
                     if (hasAccount) {
-                        val account = accountSpinner.selectedItem as ParcelableAccount
-                        if (!account.is_dummy) {
-                            tab.arguments?.accountKeys = arrayOf(account.account_key)
+                    val account = accountSpinner.selectedItem as AccountDetails
+                    if (!account.dummy) {
+                        tab.arguments?.accountKeys = arrayOf(account.key)
                         } else {
                             tab.arguments?.accountKeys = null
                         }
@@ -402,8 +405,8 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                 }
             }
 
-        override fun getAccount(): ParcelableAccount {
-            return (dialog.findViewById(R.id.account_spinner) as Spinner).selectedItem as ParcelableAccount
+        override fun getAccount(): AccountDetails {
+            return (dialog.findViewById(R.id.account_spinner) as Spinner).selectedItem as AccountDetails
         }
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

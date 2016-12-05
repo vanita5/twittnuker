@@ -54,7 +54,7 @@ import de.vanita5.twittnuker.activity.ThemedImagePickerActivity
 import de.vanita5.twittnuker.extension.newMicroBlogInstance
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
-import de.vanita5.twittnuker.model.ParcelableAccount
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
@@ -397,7 +397,7 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
             if (callback == null) return
             val activity = callback.activity ?: return
             if (result.hasData()) {
-                val account = result.extras.getParcelable<ParcelableAccount>(EXTRA_ACCOUNT)
+                val account: AccountDetails? = result.extras.getParcelable(EXTRA_ACCOUNT)
                 if (account != null) {
                     val task = UpdateAccountInfoTask(activity)
                     task.params = Pair(account, result.data!!)

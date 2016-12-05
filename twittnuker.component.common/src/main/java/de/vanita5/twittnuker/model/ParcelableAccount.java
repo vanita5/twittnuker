@@ -22,107 +22,65 @@
 
 package de.vanita5.twittnuker.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.bluelinelabs.logansquare.annotation.OnJsonParseComplete;
-import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
-import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import org.mariotaku.commons.objectcursor.LoganSquareCursorFieldConverter;
 import org.mariotaku.library.objectcursor.annotation.AfterCursorObjectCreated;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
-
 import de.vanita5.twittnuker.annotation.AccountType;
-import de.vanita5.twittnuker.model.util.UserKeyConverter;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 
 @CursorObject
-@ParcelablePlease(allFields = false)
-@JsonObject
 @Deprecated
-public class ParcelableAccount implements Parcelable {
+public class ParcelableAccount {
 
-    @ParcelableThisPlease
-    @JsonField(name = "id")
+
     @CursorField(value = Accounts._ID, excludeWrite = true)
     public long id;
 
-    @ParcelableThisPlease
-    @JsonField(name = "account_id", typeConverter = UserKeyConverter.class)
+
     @CursorField(value = Accounts.ACCOUNT_KEY, converter = UserKeyCursorFieldConverter.class)
     public UserKey account_key;
 
-    @ParcelableThisPlease
-    @JsonField(name = "screen_name")
+
     @CursorField(Accounts.SCREEN_NAME)
     public String screen_name;
 
-    @ParcelableThisPlease
-    @JsonField(name = "name")
+
     @CursorField(Accounts.NAME)
     public String name;
 
     @Nullable
     @AccountType
-    @ParcelableThisPlease
-    @JsonField(name = "account_type")
     @CursorField(Accounts.ACCOUNT_TYPE)
     public String account_type;
 
-    @ParcelableThisPlease
-    @JsonField(name = "profile_image_url")
+
     @CursorField(Accounts.PROFILE_IMAGE_URL)
     public String profile_image_url;
 
-    @ParcelableThisPlease
-    @JsonField(name = "profile_banner_url")
+
     @CursorField(Accounts.PROFILE_BANNER_URL)
     public String profile_banner_url;
 
-    @ParcelableThisPlease
-    @JsonField(name = "color")
+
     @CursorField(Accounts.COLOR)
     public int color;
 
-    @ParcelableThisPlease
-    @JsonField(name = "is_activated")
+
     @CursorField(Accounts.IS_ACTIVATED)
     public boolean is_activated;
     @Nullable
-    @ParcelableThisPlease
-    @JsonField(name = "account_user")
+
+
     @CursorField(value = Accounts.ACCOUNT_USER, converter = LoganSquareCursorFieldConverter.class)
     public ParcelableUser account_user;
 
     public boolean is_dummy;
 
-    public static final Creator<ParcelableAccount> CREATOR = new Creator<ParcelableAccount>() {
-        @Override
-        public ParcelableAccount createFromParcel(Parcel source) {
-            ParcelableAccount target = new ParcelableAccount();
-            ParcelableAccountParcelablePlease.readFromParcel(target, source);
-            return target;
-        }
-
-        @Override
-        public ParcelableAccount[] newArray(int size) {
-            return new ParcelableAccount[size];
-        }
-    };
-
     ParcelableAccount() {
-    }
-
-    public static ParcelableCredentials dummyCredentials() {
-        final ParcelableCredentials credentials = new ParcelableCredentials();
-        credentials.is_dummy = true;
-        return credentials;
     }
 
     @Override
@@ -160,18 +118,7 @@ public class ParcelableAccount implements Parcelable {
         return account_key.hashCode();
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-        }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        ParcelableAccountParcelablePlease.writeToParcel(this, dest, flags);
-    }
-
     @AfterCursorObjectCreated
-    @OnJsonParseComplete
     void afterObjectCreated() {
         if (account_user != null) {
             account_user.is_cache = true;

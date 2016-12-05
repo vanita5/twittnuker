@@ -30,9 +30,11 @@ import android.support.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.AccountType;
+import de.vanita5.twittnuker.annotation.AuthTypeInt;
 import de.vanita5.twittnuker.extension.AccountExtensionsKt;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.account.cred.Credentials;
 
 import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_TYPE;
 
@@ -108,12 +110,6 @@ public class AccountUtils {
         return null;
     }
 
-    @NonNull
-    @AccountType
-    public static String getAccountType(@NonNull AccountDetails account) {
-        return account.type;
-    }
-
     public static int getAccountTypeIcon(@Nullable String accountType) {
         if (accountType == null) return R.drawable.ic_account_logo_twitter;
         switch (accountType) {
@@ -130,4 +126,21 @@ public class AccountUtils {
         }
         return R.drawable.ic_account_logo_twitter;
     }
+
+    public static String getCredentialsType(@AuthTypeInt int authType) {
+        switch (authType) {
+            case AuthTypeInt.OAUTH:
+                return Credentials.Type.OAUTH;
+            case AuthTypeInt.BASIC:
+                return Credentials.Type.BASIC;
+            case AuthTypeInt.TWIP_O_MODE:
+                return Credentials.Type.EMPTY;
+            case AuthTypeInt.XAUTH:
+                return Credentials.Type.XAUTH;
+            case AuthTypeInt.OAUTH2:
+                return Credentials.Type.OAUTH2;
+        }
+        throw new UnsupportedOperationException();
+    }
+
 }

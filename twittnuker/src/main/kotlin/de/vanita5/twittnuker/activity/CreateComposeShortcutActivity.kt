@@ -24,11 +24,8 @@ package de.vanita5.twittnuker.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.content.Intent.ShortcutIconResource
 import android.os.Bundle
-
 import de.vanita5.twittnuker.R
-
 import de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_COMPOSE
 
 class CreateComposeShortcutActivity : Activity() {

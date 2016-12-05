@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -44,6 +45,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import de.vanita5.twittnuker.extension.CredentialsExtensionsKt;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
@@ -56,9 +58,10 @@ import org.mariotaku.restfu.http.RestHttpClient;
 
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
+import de.vanita5.twittnuker.model.account.cred.OAuthCredentials;
+import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
@@ -187,20 +190,23 @@ public class NetworkDiagnosticsFragment extends BaseSupportFragment {
             publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
 
             for (UserKey accountKey : DataStoreUtils.getAccountKeys(mContext)) {
-                final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(mContext, accountKey);
+                final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(mContext), accountKey);
                 final MicroBlog twitter = MicroBlogAPIFactory.getInstance(mContext, accountKey, false);
-                if (credentials == null || twitter == null) continue;
+                if (details == null || twitter == null) continue;
                 publishProgress(new LogText("Testing connection for account " + accountKey));
                 publishProgress(LogText.LINEBREAK);
-                publishProgress(new LogText("api_url_format: " + credentials.api_url_format), LogText.LINEBREAK);
-                publishProgress(new LogText("same_oauth_signing_url: " + credentials.same_oauth_signing_url), LogText.LINEBREAK);
-                publishProgress(new LogText("auth_type: " + credentials.auth_type));
+                publishProgress(new LogText("api_url_format: " + details.credentials.api_url_format), LogText.LINEBREAK);
+                if (details.credentials instanceof OAuthCredentials) {
+                    publishProgress(new LogText("same_oauth_signing_url: " + ((OAuthCredentials)
+                            details.credentials).same_oauth_signing_url), LogText.LINEBREAK);
+                }
+                publishProgress(new LogText("auth_type: " + details.credentials_type));
 
                 publishProgress(LogText.LINEBREAK, LogText.LINEBREAK);
 
                 publishProgress(new LogText("Testing DNS functionality"));
                 publishProgress(LogText.LINEBREAK);
-                final Endpoint endpoint = MicroBlogAPIFactory.getEndpoint(credentials, MicroBlog.class);
+                final Endpoint endpoint = CredentialsExtensionsKt.getEndpoint(details.credentials, MicroBlog.class);
                 final Uri uri = Uri.parse(endpoint.getUrl());
                 final String host = uri.getHost();
                 if (host != null) {
@@ -217,8 +223,8 @@ public class NetworkDiagnosticsFragment extends BaseSupportFragment {
                 publishProgress(LogText.LINEBREAK);
 
                 final String baseUrl;
-                if (credentials.api_url_format != null) {
-                    baseUrl = MicroBlogAPIFactory.getApiBaseUrl(credentials.api_url_format, "api");
+                if (details.credentials.api_url_format != null) {
+                    baseUrl = MicroBlogAPIFactory.getApiBaseUrl(details.credentials.api_url_format, "api");
                 } else {
                     baseUrl = MicroBlogAPIFactory.getApiBaseUrl(DEFAULT_TWITTER_API_URL_FORMAT, "api");
                 }

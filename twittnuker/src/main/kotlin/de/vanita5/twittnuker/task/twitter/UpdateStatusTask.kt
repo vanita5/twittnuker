@@ -53,8 +53,6 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra
-import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.preference.ServicePickerPreference
@@ -244,7 +242,7 @@ class UpdateStatusTask(
             val microBlog = MicroBlogAPIFactory.getInstance(context, account.key, true)
             var bodyAndSize: Pair<Body, Point>? = null
             try {
-                when (AccountUtils.getAccountType(account)) {
+                when (account.type) {
                     AccountType.FANFOU -> {
                         // Call uploadPhoto if media present
                         if (!ArrayUtils.isEmpty(statusUpdate.media)) {
@@ -300,7 +298,7 @@ class UpdateStatusTask(
         // Return empty array if no media attached
         if (ArrayUtils.isEmpty(update.media)) return
         val ownersList = update.accounts.filter {
-            AccountType.TWITTER == AccountUtils.getAccountType(it)
+            AccountType.TWITTER == it.type
         }.map(AccountDetails::key)
         val ownerIds = ownersList.map {
             it.id
@@ -308,7 +306,7 @@ class UpdateStatusTask(
         for (i in 0..pendingUpdate.length - 1) {
             val account = update.accounts[i]
             val mediaIds: Array<String>?
-            when (AccountUtils.getAccountType(account)) {
+            when (account.type) {
                 AccountType.TWITTER -> {
                     val upload = MicroBlogAPIFactory.getInstance(context,
                             account.key, true, true, TwitterUpload::class.java)!!

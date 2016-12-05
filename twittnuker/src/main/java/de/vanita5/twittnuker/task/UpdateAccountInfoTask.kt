@@ -35,14 +35,13 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_KEY
 import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_USER
-import de.vanita5.twittnuker.extension.model.account_name
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import java.io.IOException
 
-class UpdateAccountInfoTask(private val context: Context) : AbstractTask<Pair<ParcelableAccount, ParcelableUser>, Any, Any>() {
+class UpdateAccountInfoTask(private val context: Context) : AbstractTask<Pair<AccountDetails, ParcelableUser>, Any, Any>() {
 
-    override fun doLongOperation(params: Pair<ParcelableAccount, ParcelableUser>): Any? {
+    override fun doLongOperation(params: Pair<AccountDetails, ParcelableUser>): Any? {
         val resolver = context.contentResolver
         val account = params.first
         val user = params.second
@@ -54,14 +53,14 @@ class UpdateAccountInfoTask(private val context: Context) : AbstractTask<Pair<Pa
         }
 
         val am = AccountManager.get(context)
-        val account1 = Account(account.account_name, TwittnukerConstants.ACCOUNT_TYPE)
+        val account1 = Account(account.user.name, TwittnukerConstants.ACCOUNT_TYPE)
         am.setUserData(account1, ACCOUNT_USER_DATA_USER, LoganSquare.serialize(user))
         am.setUserData(account1, ACCOUNT_USER_DATA_KEY, user.key.toString())
 
         val accountKeyValues = ContentValues()
         accountKeyValues.put(AccountSupportColumns.ACCOUNT_KEY, user.key.toString())
         val accountKeyWhere = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY).sql
-        val accountKeyWhereArgs = arrayOf(account.account_key.toString())
+        val accountKeyWhereArgs = arrayOf(account.key.toString())
 
         resolver.update(Statuses.CONTENT_URI, accountKeyValues, accountKeyWhere, accountKeyWhereArgs)
         resolver.update(Activities.AboutMe.CONTENT_URI, accountKeyValues, accountKeyWhere, accountKeyWhereArgs)

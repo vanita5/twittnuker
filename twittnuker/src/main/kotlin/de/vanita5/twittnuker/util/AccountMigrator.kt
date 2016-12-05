@@ -29,15 +29,15 @@ import android.os.Bundle
 import android.support.annotation.ColorInt
 import com.bluelinelabs.logansquare.LoganSquare
 import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.extension.model.account_name
-import de.vanita5.twittnuker.model.ParcelableCredentials
 import de.vanita5.twittnuker.annotation.AuthTypeInt
+import de.vanita5.twittnuker.model.ParcelableCredentials
 import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.account.cred.BasicCredentials
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
 import de.vanita5.twittnuker.util.support.AccountManagerSupport
 import java.util.*
@@ -84,7 +84,7 @@ private fun ParcelableCredentials.toCredentials(): Credentials {
 
 @Credentials.Type
 private fun ParcelableCredentials.getCredentialsType(): String {
-    return ParcelableCredentialsUtils.getCredentialsType(auth_type)
+    return AccountUtils.getCredentialsType(auth_type)
 }
 
 
@@ -117,3 +117,6 @@ private fun ParcelableCredentials.applyCommonProperties(credentials: Credentials
     credentials.api_url_format = api_url_format
     credentials.no_version_suffix = no_version_suffix
 }
+
+private val ParcelableCredentials.account_name: String
+    get() = UserKey(screen_name, account_key.host).toString()

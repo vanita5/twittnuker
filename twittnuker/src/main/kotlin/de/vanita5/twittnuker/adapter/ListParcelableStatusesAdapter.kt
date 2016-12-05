@@ -24,9 +24,7 @@ package de.vanita5.twittnuker.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.view.holder.StatusViewHolder

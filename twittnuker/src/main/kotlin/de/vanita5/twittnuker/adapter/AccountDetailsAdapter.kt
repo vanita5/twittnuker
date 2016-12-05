@@ -31,7 +31,6 @@ import de.vanita5.twittnuker.adapter.iface.IBaseAdapter
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.view.holder.AccountViewHolder

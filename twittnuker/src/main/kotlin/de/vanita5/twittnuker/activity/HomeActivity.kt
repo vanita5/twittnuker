@@ -75,7 +75,7 @@ import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.graphic.EmptyDrawable
-import de.vanita5.twittnuker.model.ParcelableAccount
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.SupportTabSpec
 import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.UserKey
@@ -95,7 +95,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
 
     private val accountChangeObserver = AccountChangeObserver(this, handler)
 
-    private var selectedAccountToSearch: ParcelableAccount? = null
+    private var selectedAccountToSearch: AccountDetails? = null
     private var tabColumns: Int = 0
 
 
@@ -528,7 +528,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         return true
     }
 
-    fun openSearchView(account: ParcelableAccount?) {
+    fun openSearchView(account: AccountDetails?) {
         selectedAccountToSearch = account
         onSearchRequested()
     }

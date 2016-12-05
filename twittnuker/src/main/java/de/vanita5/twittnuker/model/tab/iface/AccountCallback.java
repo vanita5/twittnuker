@@ -22,9 +22,10 @@
 
 package de.vanita5.twittnuker.model.tab.iface;
 
-import de.vanita5.twittnuker.model.ParcelableAccount;
+
+import de.vanita5.twittnuker.model.AccountDetails;
 
 public interface AccountCallback {
 
-    ParcelableAccount getAccount();
+    AccountDetails getAccount();
 }

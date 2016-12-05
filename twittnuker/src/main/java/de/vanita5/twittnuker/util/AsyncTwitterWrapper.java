@@ -1235,7 +1235,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
                 final ParcelableStatus result;
-                switch (AccountUtils.getAccountType(details)) {
+                switch (details.type) {
                     case AccountType.FANFOU: {
                         result = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.destroyFanfouFavorite(mStatusId),
                                 mAccountKey, false);
