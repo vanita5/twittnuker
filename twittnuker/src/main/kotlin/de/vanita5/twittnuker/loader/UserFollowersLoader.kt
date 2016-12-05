@@ -23,18 +23,15 @@
 package de.vanita5.twittnuker.loader
 
 import android.content.Context
-import de.vanita5.twittnuker.annotation.AccountType
-
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.User
-import de.vanita5.twittnuker.model.ParcelableAccount
-import de.vanita5.twittnuker.model.ParcelableCredentials
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 
 class UserFollowersLoader(
         context: Context,
@@ -46,53 +43,22 @@ class UserFollowersLoader(
 ) : CursorSupportUsersLoader(context, accountKey, data, fromUser) {
 
     @Throws(MicroBlogException::class)
-    override fun getCursoredUsers(twitter: MicroBlog, credentials: ParcelableCredentials, paging: Paging): ResponseList<User> {
-        when (ParcelableAccountUtils.getAccountType(credentials)) {
-            AccountType.STATUSNET -> {
-                run {
-                    if (userKey != null) {
-                        return twitter.getStatusesFollowersList(userKey.id, paging)
-                    } else if (screenName != null) {
-                        return twitter.getStatusesFollowersListByScreenName(screenName, paging)
-                    }
-                }
-                run {
-                    if (userKey != null) {
-                        return twitter.getUsersFollowers(userKey.id, paging)
-                    } else if (screenName != null) {
-                        return twitter.getUsersFollowers(screenName, paging)
-                    }
-                }
-                run {
-                    if (userKey != null) {
-                        return twitter.getFollowersList(userKey.id, paging)
-                    } else if (screenName != null) {
-                        return twitter.getFollowersListByScreenName(screenName, paging)
-                    }
-                }
+    override fun getCursoredUsers(twitter: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<User> {
+        when (details.type) {
+            AccountType.STATUSNET -> if (userKey != null) {
+                return twitter.getStatusesFollowersList(userKey.id, paging)
+            } else if (screenName != null) {
+                return twitter.getStatusesFollowersListByScreenName(screenName, paging)
             }
-            AccountType.FANFOU -> {
-                run {
-                    if (userKey != null) {
-                        return twitter.getUsersFollowers(userKey.id, paging)
-                    } else if (screenName != null) {
-                        return twitter.getUsersFollowers(screenName, paging)
-                    }
-                }
-                run {
-                    if (userKey != null) {
-                        return twitter.getFollowersList(userKey.id, paging)
-                    } else if (screenName != null) {
-                        return twitter.getFollowersListByScreenName(screenName, paging)
-                    }
-                }
+            AccountType.FANFOU -> if (userKey != null) {
+                return twitter.getUsersFollowers(userKey.id, paging)
+            } else if (screenName != null) {
+                return twitter.getUsersFollowers(screenName, paging)
             }
-            else -> {
-                if (userKey != null) {
-                    return twitter.getFollowersList(userKey.id, paging)
-                } else if (screenName != null) {
-                    return twitter.getFollowersListByScreenName(screenName, paging)
-                }
+            else -> if (userKey != null) {
+                return twitter.getFollowersList(userKey.id, paging)
+            } else if (screenName != null) {
+                return twitter.getFollowersListByScreenName(screenName, paging)
             }
         }
         throw MicroBlogException("user_id or screen_name required")

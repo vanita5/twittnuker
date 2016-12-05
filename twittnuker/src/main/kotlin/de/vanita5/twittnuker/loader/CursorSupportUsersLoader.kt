@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.loader.iface.ICursorSupportLoader
-import de.vanita5.twittnuker.model.ParcelableCredentials
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 
@@ -75,20 +75,17 @@ abstract class CursorSupportUsersLoader(
 
 
     @Throws(MicroBlogException::class)
-    protected open fun getCursoredUsers(twitter: MicroBlog,
-                                        credentials: ParcelableCredentials,
-                                        paging: Paging): List<User> {
+    protected open fun getCursoredUsers(twitter: MicroBlog, details: AccountDetails, paging: Paging): List<User> {
         throw UnsupportedOperationException()
     }
 
     @Throws(MicroBlogException::class)
-    protected open fun getIDs(twitter: MicroBlog, credentials: ParcelableCredentials,
-                              paging: Paging): IDs {
+    protected open fun getIDs(twitter: MicroBlog, details: AccountDetails, paging: Paging): IDs {
         throw UnsupportedOperationException()
     }
 
     @Throws(MicroBlogException::class)
-    override fun getUsers(twitter: MicroBlog, credentials: ParcelableCredentials): List<User> {
+    override fun getUsers(twitter: MicroBlog, details: AccountDetails): List<User> {
         val paging = Paging()
         paging.count(count)
         if (cursor > 0) {
@@ -97,12 +94,12 @@ abstract class CursorSupportUsersLoader(
             paging.setPage(page)
         }
         val users: List<User>
-        if (useIDs(credentials)) {
-            val ids = getIDs(twitter, credentials, paging)
+        if (useIDs(details)) {
+            val ids = getIDs(twitter, details, paging)
             setCursors(ids)
             users = twitter.lookupUsers(ids.iDs)
         } else {
-            users = getCursoredUsers(twitter, credentials, paging)
+            users = getCursoredUsers(twitter, details, paging)
             if (users is CursorSupport) {
                 setCursors(users)
             }
@@ -111,7 +108,7 @@ abstract class CursorSupportUsersLoader(
         return users
     }
 
-    protected open fun useIDs(credentials: ParcelableCredentials): Boolean {
+    protected open fun useIDs(details: AccountDetails): Boolean {
         return false
     }
 }
