@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.model.account.cred.Credentials;
 
 
 @ParcelablePlease
-public class AccountDetails implements Parcelable {
+public class AccountDetails implements Parcelable, Comparable<AccountDetails> {
 
     public boolean dummy;
     public Account account;
@@ -80,6 +80,18 @@ public class AccountDetails implements Parcelable {
                 '}';
     }
 
+    @Override
+    public int compareTo(@NonNull AccountDetails that) {
+        return this.position - that.position;
+    }
+
+    @NonNull
+    public static AccountDetails dummy() {
+        AccountDetails dummy = new AccountDetails();
+        dummy.dummy = true;
+        return dummy;
+    }
+
     public static final Creator<AccountDetails> CREATOR = new Creator<AccountDetails>() {
         public AccountDetails createFromParcel(Parcel source) {
             AccountDetails target = new AccountDetails();
@@ -91,11 +103,4 @@ public class AccountDetails implements Parcelable {
             return new AccountDetails[size];
         }
     };
-
-    @NonNull
-    public static AccountDetails dummy() {
-        AccountDetails dummy = new AccountDetails();
-        dummy.dummy = true;
-        return dummy;
-    }
 }

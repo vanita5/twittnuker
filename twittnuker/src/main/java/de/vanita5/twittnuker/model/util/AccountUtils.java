@@ -36,6 +36,8 @@ import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
 
+import java.util.Arrays;
+
 import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_TYPE;
 
 public class AccountUtils {
@@ -60,6 +62,7 @@ public class AccountUtils {
         for (int i = 0; i < accounts.length; i++) {
             details[i] = getAccountDetails(am, accounts[i]);
         }
+        Arrays.sort(details);
         return details;
     }
 
@@ -68,16 +71,12 @@ public class AccountUtils {
         for (int i = 0; i < accountKeys.length; i++) {
             details[i] = getAccountDetails(am, accountKeys[i]);
         }
+        Arrays.sort(details);
         return details;
     }
 
     public static AccountDetails[] getAllAccountDetails(@NonNull AccountManager am) {
-        Account[] accounts = getAccounts(am);
-        AccountDetails[] details = new AccountDetails[accounts.length];
-        for (int i = 0; i < accounts.length; i++) {
-            details[i] = getAccountDetails(am, accounts[i]);
-        }
-        return details;
+        return getAllAccountDetails(am, getAccounts(am));
     }
 
     @Nullable
