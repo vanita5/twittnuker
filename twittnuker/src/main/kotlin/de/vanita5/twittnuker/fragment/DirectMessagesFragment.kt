@@ -43,7 +43,6 @@ import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_DIRECT_MESSAGES
-import de.vanita5.twittnuker.activity.HomeActivity
 import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.adapter.MessageEntriesAdapter
@@ -293,11 +292,7 @@ class DirectMessagesFragment : AbsContentListRecyclerViewFragment<MessageEntries
             if (accountKeys != null) {
                 return accountKeys
             }
-            val activity = activity
-            if (activity is HomeActivity) {
-                return activity.activatedAccountKeys
-            }
-            return DataStoreUtils.getActivatedAccountKeys(getActivity())
+            return DataStoreUtils.getActivatedAccountKeys(activity)
         }
 
     private fun addReadPosition(firstVisibleItem: Int) {

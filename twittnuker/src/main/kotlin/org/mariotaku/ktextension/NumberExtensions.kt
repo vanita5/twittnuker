@@ -30,6 +30,14 @@ fun String.toLong(def: Long): Long {
     }
 }
 
+fun String.toInt(def: Int): Int {
+    try {
+        return toInt()
+    } catch (e: NumberFormatException) {
+        return def
+    }
+}
+
 fun String.toDoubleOrNull(): Double? {
     try {
         return toDouble()

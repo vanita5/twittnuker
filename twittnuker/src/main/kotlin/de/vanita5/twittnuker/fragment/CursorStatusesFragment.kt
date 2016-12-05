@@ -34,7 +34,6 @@ import org.mariotaku.sqliteqb.library.ArgsArray
 import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.activity.HomeActivity
 import de.vanita5.twittnuker.adapter.ListParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
@@ -122,13 +121,9 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
     override val accountKeys: Array<UserKey>
         get() {
             val args = arguments
-            val context = context
             val accountKeys = Utils.getAccountKeys(context, args)
             if (accountKeys != null) {
                 return accountKeys
-            }
-            if (context is HomeActivity) {
-                return context.activatedAccountKeys
             }
             return DataStoreUtils.getActivatedAccountKeys(context)
         }
