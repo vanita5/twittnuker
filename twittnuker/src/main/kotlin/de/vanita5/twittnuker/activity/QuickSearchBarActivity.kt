@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.CONTEXT_TAG_NAVI
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
 import de.vanita5.twittnuker.model.ParcelableAccount
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions
 import de.vanita5.twittnuker.util.*
@@ -165,7 +166,7 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quick_search_bar)
-        val accounts = DataStoreUtils.getCredentialsList(this, false)
+        val accounts = ParcelableCredentialsUtils.getCredentialses(this, false, false)
         val accountsSpinnerAdapter = AccountsSpinnerAdapter(this, R.layout.spinner_item_account_icon)
         accountsSpinnerAdapter.setDropDownViewResource(R.layout.list_item_simple_user)
         accountsSpinnerAdapter.addAll(accounts)

@@ -85,6 +85,7 @@ import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
@@ -2031,7 +2032,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
             val context = context
             val credentials = ParcelableCredentialsUtils.getCredentials(context,
                     mAccountKey)
-            if (credentials == null || ParcelableAccount.Type.TWITTER != ParcelableAccountUtils.getAccountType(credentials)) {
+            if (credentials == null || AccountType.TWITTER != ParcelableAccountUtils.getAccountType(credentials)) {
                 return null
             }
             val twitter = MicroBlogAPIFactory.getInstance(context, mAccountKey, false) ?: return null

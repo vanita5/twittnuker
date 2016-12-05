@@ -81,6 +81,7 @@ import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.preference.ServicePickerPreference
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
@@ -412,15 +413,15 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         mNameFirst = preferences.getBoolean(KEY_NAME_FIRST)
         setContentView(R.layout.activity_compose)
         setFinishOnTouchOutside(false)
-        val accounts = DataStoreUtils.getCredentialsArray(this, false, false)
-        if (accounts.size <= 0) {
+        val accounts = ParcelableCredentialsUtils.getCredentialses(this, false, false)
+        if (accounts.isEmpty()) {
             val intent = Intent(INTENT_ACTION_TWITTER_LOGIN)
             intent.setClass(this, SignInActivity::class.java)
             startActivity(intent)
             finish()
             return
         }
-        val defaultAccountIds = ParcelableAccountUtils.getAccountKeys(accounts)
+        val defaultAccountIds = accounts.map { it.account_key }.toTypedArray()
         menuBar.setOnMenuItemClickListener(this)
         setupEditText()
         accountSelectorContainer.setOnClickListener(this)
@@ -480,7 +481,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         accountSelector.itemAnimator = DefaultItemAnimator()
         accountsAdapter = AccountIconsAdapter(this)
         accountSelector.adapter = accountsAdapter
-        accountsAdapter!!.setAccounts(accounts)
+        accountsAdapter!!.setAccounts(accounts.toTypedArray())
 
 
         val adapter = MediaPreviewAdapter(this, PreviewGridOnStartDragListener(this))
@@ -1380,7 +1381,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             }
 
         val isSelectionEmpty: Boolean
-            get() = selectedAccountKeys.size == 0
+            get() = selectedAccountKeys.isEmpty()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountIconViewHolder {
             val view = mInflater.inflate(R.layout.adapter_item_compose_account, parent, false)
@@ -1616,12 +1617,12 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         internal class NoAddress
     }
 
-    internal class MediaPreviewAdapter(val mActivity: ComposeActivity, val mDragStartListener: SimpleItemTouchHelperCallback.OnStartDragListener) : ArrayRecyclerAdapter<ParcelableMediaUpdate, MediaPreviewViewHolder>(mActivity), SimpleItemTouchHelperCallback.ItemTouchHelperAdapter {
-        val mInflater: LayoutInflater
+    internal class MediaPreviewAdapter(activity: ComposeActivity, val mDragStartListener: SimpleItemTouchHelperCallback.OnStartDragListener) : ArrayRecyclerAdapter<ParcelableMediaUpdate, MediaPreviewViewHolder>(activity), SimpleItemTouchHelperCallback.ItemTouchHelperAdapter {
+        val inflater: LayoutInflater
 
         init {
             setHasStableIds(true)
-            mInflater = LayoutInflater.from(mActivity)
+            inflater = LayoutInflater.from(activity)
         }
 
         fun onStartDrag(viewHolder: ViewHolder) {
@@ -1641,7 +1642,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaPreviewViewHolder {
-            val view = mInflater.inflate(R.layout.grid_item_media_editor, parent, false)
+            val view = inflater.inflate(R.layout.grid_item_media_editor, parent, false)
             return MediaPreviewViewHolder(view)
         }
 

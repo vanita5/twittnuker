@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.library.twitter.model.IDs;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.User;
-import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
@@ -62,7 +62,7 @@ public class IncomingFriendshipsLoader extends CursorSupportUsersLoader {
     @Override
     protected boolean useIDs(@NonNull ParcelableCredentials credentials) {
         switch (ParcelableAccountUtils.getAccountType(credentials)) {
-            case ParcelableAccount.Type.FANFOU: {
+            case AccountType.FANFOU: {
                 return false;
             }
         }

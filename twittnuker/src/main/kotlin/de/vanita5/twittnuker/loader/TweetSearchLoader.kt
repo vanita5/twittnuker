@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
+import de.vanita5.twittnuker.annotation.AccountType
 
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -62,15 +63,15 @@ open class TweetSearchLoader(
         if (query == null) throw MicroBlogException("Empty query")
         val processedQuery = processQuery(credentials, query)
         when (ParcelableAccountUtils.getAccountType(credentials)) {
-            ParcelableAccount.Type.TWITTER -> {
+            AccountType.TWITTER -> {
                 val query = SearchQuery(processedQuery)
                 query.paging(paging)
                 return microBlog.search(query)
             }
-            ParcelableAccount.Type.STATUSNET -> {
+            AccountType.STATUSNET -> {
                 return microBlog.searchStatuses(processedQuery, paging)
             }
-            ParcelableAccount.Type.FANFOU -> {
+            AccountType.FANFOU -> {
                 return microBlog.searchPublicTimeline(processedQuery, paging)
             }
         }

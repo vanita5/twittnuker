@@ -60,6 +60,7 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.*
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
@@ -391,13 +392,13 @@ class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<Account
         var hasGroups = false
         var hasPublicTimeline = false
         when (ParcelableAccountUtils.getAccountType(account)) {
-            ParcelableAccount.Type.TWITTER -> {
+            AccountType.TWITTER -> {
                 hasLists = true
             }
-            ParcelableAccount.Type.STATUSNET -> {
+            AccountType.STATUSNET -> {
                 hasGroups = true
             }
-            ParcelableAccount.Type.FANFOU -> {
+            AccountType.FANFOU -> {
                 hasPublicTimeline = true
             }
         }

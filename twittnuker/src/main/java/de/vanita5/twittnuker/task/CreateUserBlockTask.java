@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
@@ -56,7 +57,7 @@ public class CreateUserBlockTask extends AbsFriendshipOperationTask implements C
     protected User perform(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials,
                            @NonNull Arguments args) throws MicroBlogException {
         switch (ParcelableAccountUtils.getAccountType(credentials)) {
-            case ParcelableAccount.Type.FANFOU: {
+            case AccountType.FANFOU: {
                 return twitter.createFanfouBlock(args.userKey.getId());
             }
         }

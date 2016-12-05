@@ -65,6 +65,7 @@ import de.vanita5.twittnuker.model.TabValuesCreator
 import de.vanita5.twittnuker.model.tab.DrawableHolder
 import de.vanita5.twittnuker.model.tab.TabConfiguration
 import de.vanita5.twittnuker.model.tab.iface.AccountCallback
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs
 import de.vanita5.twittnuker.util.CustomTabUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
@@ -329,7 +330,7 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                     accountsAdapter.add(ParcelableAccount.dummyCredentials())
                 }
                 val officialKeyOnly = arguments.getBoolean(EXTRA_OFFICIAL_KEY_ONLY, false)
-                accountsAdapter.addAll(DataStoreUtils.getCredentialsList(context, false, officialKeyOnly))
+                accountsAdapter.addAll(ParcelableCredentialsUtils.getCredentialses(context, false, officialKeyOnly))
                 accountsAdapter.setDummyItemText(R.string.activated_accounts)
 
                 tab.arguments?.accountKeys?.firstOrNull()?.let { key ->

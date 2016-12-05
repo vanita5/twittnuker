@@ -39,6 +39,7 @@ import de.vanita5.twittnuker.model.ParcelableAccount
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -93,14 +94,14 @@ class MultiSelectEventHandler(
                 val extractor = Extractor()
                 val intent = Intent(INTENT_ACTION_REPLY_MULTIPLE)
                 val bundle = Bundle()
-                val accountScreenNames = DataStoreUtils.getAccountScreenNames(activity)
+                val accountScreenNames = ParcelableAccountUtils.getAccounts(activity).map { it.screen_name }.toTypedArray()
                 val allMentions = TreeSet(String.CASE_INSENSITIVE_ORDER)
-                for (`object` in selectedItems) {
-                    if (`object` is ParcelableStatus) {
-                        allMentions.add(`object`.user_screen_name)
-                        allMentions.addAll(extractor.extractMentionedScreennames(`object`.text_plain))
-                    } else if (`object` is ParcelableUser) {
-                        allMentions.add(`object`.screen_name)
+                for (item in selectedItems) {
+                    if (item is ParcelableStatus) {
+                        allMentions.add(item.user_screen_name)
+                        allMentions.addAll(extractor.extractMentionedScreennames(item.text_plain))
+                    } else if (item is ParcelableUser) {
+                        allMentions.add(item.screen_name)
                     }
                 }
                 allMentions.removeAll(Arrays.asList(*accountScreenNames))

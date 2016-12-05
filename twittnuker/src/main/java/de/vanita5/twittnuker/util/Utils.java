@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -90,7 +91,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
+
+import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
@@ -101,12 +105,10 @@ import org.mariotaku.sqliteqb.library.AllColumns;
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
-import org.mariotaku.sqliteqb.library.SQLFunctions;
 import org.mariotaku.sqliteqb.library.Selectable;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.activity.CopyLinkActivity;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
@@ -121,14 +123,14 @@ import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
-import de.vanita5.twittnuker.model.TwitterAccountExtra;
+import de.vanita5.twittnuker.model.account.TwitterAccountExtras;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.util.AccountUtils;
+import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
 import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
-import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
@@ -344,7 +346,7 @@ public final class Utils implements Constants {
             } catch (NumberFormatException e) {
                 // Ignore
             }
-            final UserKey accountKey = UserKeyUtils.findById(context, accountId);
+            final UserKey accountKey = DataStoreUtils.findAccountKey(context, accountId);
             args.putParcelable(EXTRA_ACCOUNT_KEY, accountKey);
             if (accountKey == null) return new UserKey[]{new UserKey(accountId, null)};
             return new UserKey[]{accountKey};
@@ -355,7 +357,7 @@ public final class Utils implements Constants {
     @Nullable
     public static UserKey getAccountKey(@NonNull Context context, @Nullable Bundle args) {
         final UserKey[] accountKeys = getAccountKeys(context, args);
-        if (ArrayUtils.isEmpty(accountKeys)) return null;
+        if (accountKeys == null || accountKeys.length == 0) return null;
         return accountKeys[0];
     }
 
@@ -481,9 +483,9 @@ public final class Utils implements Constants {
 
     public static boolean isOfficialCredentials(@NonNull final Context context,
                                                 @NonNull final ParcelableCredentials account) {
-        if (ParcelableAccount.Type.TWITTER.equals(account.account_type)) {
-            final TwitterAccountExtra extra = JsonSerializer.parse(account.account_extras,
-                    TwitterAccountExtra.class);
+        if (AccountType.TWITTER.equals(account.account_type)) {
+            final TwitterAccountExtras extra = JsonSerializer.parse(account.account_extras,
+                    TwitterAccountExtras.class);
             if (extra != null) {
                 return extra.isOfficialCredentials();
             }
@@ -869,32 +871,19 @@ public final class Utils implements Constants {
         return plugged || level / scale > 0.15f;
     }
 
-    public static boolean isMyAccount(final Context context, @Nullable final UserKey accountKey) {
-        if (context == null || accountKey == null) return false;
-        final String[] projection = new String[]{SQLFunctions.COUNT()};
-        final Cursor cur = DataStoreUtils.getAccountCursor(context, projection, accountKey);
-        if (cur == null) return false;
-        try {
-            if (cur.moveToFirst()) return cur.getLong(0) > 0;
-        } finally {
-            cur.close();
-        }
-        return false;
+    public static boolean isMyAccount(@NonNull final Context context, @Nullable final UserKey accountKey) {
+        if (accountKey == null) return false;
+        final AccountManager am = AccountManager.get(context);
+        return AccountUtils.findByAccountKey(am, accountKey) != null;
     }
 
-    public static boolean isMyAccount(final Context context, final String screen_name) {
-        if (context == null) return false;
-        final ContentResolver resolver = context.getContentResolver();
-        final String where = Expression.equalsArgs(Accounts.SCREEN_NAME).getSQL();
-        final String[] projection = new String[0];
-        final Cursor cur = resolver.query(Accounts.CONTENT_URI, projection, where, new String[]{screen_name}, null);
-        try {
-            return cur != null && cur.getCount() > 0;
-        } finally {
-            if (cur != null) {
-                cur.close();
+    public static boolean isMyAccount(final Context context, final String screenName) {
+        for (ParcelableAccount account : ParcelableAccountUtils.getAccounts(context)) {
+            if (StringUtils.equalsIgnoreCase(account.screen_name, screenName)) {
+                return true;
             }
         }
+        return false;
     }
 
     public static boolean isMyRetweet(final ParcelableStatus status) {

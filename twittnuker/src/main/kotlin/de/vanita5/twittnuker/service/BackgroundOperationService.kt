@@ -58,6 +58,7 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
@@ -347,7 +348,7 @@ class BackgroundOperationService : IntentService("background_operation"), Consta
         try {
             val directMessage: ParcelableDirectMessage
             when (ParcelableAccountUtils.getAccountType(credentials)) {
-                ParcelableAccount.Type.FANFOU -> {
+                AccountType.FANFOU -> {
                     if (imageUri != null) {
                         throw MicroBlogException("Can't send image DM on Fanfou")
                     }

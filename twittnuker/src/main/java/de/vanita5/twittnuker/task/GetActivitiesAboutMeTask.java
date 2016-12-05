@@ -26,6 +26,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Activity;
@@ -57,7 +58,7 @@ public class GetActivitiesAboutMeTask extends GetActivitiesTask {
 
     @Override
     protected void saveReadPosition(@NonNull UserKey accountKey, ParcelableCredentials credentials, @NonNull MicroBlog twitter) {
-        if (ParcelableAccount.Type.TWITTER.equals(ParcelableAccountUtils.getAccountType(credentials))) {
+        if (AccountType.TWITTER.equals(ParcelableAccountUtils.getAccountType(credentials))) {
             if (Utils.isOfficialCredentials(getContext(), credentials)) {
                 try {
                     CursorTimestampResponse response = twitter.getActivitiesAboutMeUnread(true);
@@ -81,7 +82,7 @@ public class GetActivitiesAboutMeTask extends GetActivitiesTask {
         final ResponseList<Activity> activities = new ResponseList<>();
         final ResponseList<Status> statuses;
         switch (ParcelableAccountUtils.getAccountType(credentials)) {
-            case ParcelableAccount.Type.FANFOU: {
+            case AccountType.FANFOU: {
                 statuses = twitter.getMentions(paging);
                 break;
             }

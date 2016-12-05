@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.loader
 
 import android.content.Context
+import de.vanita5.twittnuker.annotation.AccountType
 
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -48,7 +49,7 @@ class UserFriendsLoader(
     override fun getCursoredUsers(twitter: MicroBlog,
                                   credentials: ParcelableCredentials, paging: Paging): ResponseList<User> {
         when (ParcelableAccountUtils.getAccountType(credentials)) {
-            ParcelableAccount.Type.STATUSNET -> {
+            AccountType.STATUSNET -> {
                 run {
                     if (userKey != null) {
                         return twitter.getStatusesFriendsList(userKey.id, paging)
@@ -71,7 +72,7 @@ class UserFriendsLoader(
                     }
                 }
             }
-            ParcelableAccount.Type.FANFOU -> {
+            AccountType.FANFOU -> {
                 run {
                     if (userKey != null) {
                         return twitter.getUsersFriends(userKey.id, paging)

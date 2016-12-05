@@ -35,6 +35,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
@@ -154,7 +155,7 @@ public class MediaLoaderWrapper {
 
     private String getBannerUrl(ParcelableAccount account) {
         String bannerUrl = account.profile_banner_url;
-        if (bannerUrl == null && ParcelableAccount.Type.FANFOU.equals(account.account_type)) {
+        if (bannerUrl == null && AccountType.FANFOU.equals(account.account_type)) {
             if (account.account_user != null) {
                 bannerUrl = ParcelableUserUtils.getProfileBannerUrl(account.account_user);
             }

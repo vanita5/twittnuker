@@ -24,7 +24,7 @@
     package="de.vanita5.twittnuker"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:installLocation="auto">
+    android:installLocation="internalOnly">
 
     <uses-sdk tools:overrideLibrary="android.support.customtabs"/>
 
@@ -62,6 +62,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.NFC"/>
+
+    <!-- Used for account management -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+
     <uses-permission android:name="com.android.vending.BILLING"/>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 

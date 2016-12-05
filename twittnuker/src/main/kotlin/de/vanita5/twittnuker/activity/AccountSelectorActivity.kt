@@ -44,6 +44,7 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.adapter.AccountsAdapter
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.model.ParcelableAccount
 import de.vanita5.twittnuker.model.ParcelableCredentials
@@ -93,7 +94,7 @@ class AccountSelectorActivity : BaseActivity(), LoaderCallbacks<Cursor?>, OnClic
         val conditionArgs = ArrayList<String>()
         if (isOAuthOnly) {
             conditions.add(Expression.equalsArgs(Accounts.AUTH_TYPE))
-            conditionArgs.add(ParcelableCredentials.AuthType.OAUTH.toString())
+            conditionArgs.add(ParcelableCredentials.AuthTypeInt.OAUTH.toString())
         }
         val accountHost = accountHost
         if (accountHost != null) {
@@ -103,7 +104,7 @@ class AccountSelectorActivity : BaseActivity(), LoaderCallbacks<Cursor?>, OnClic
                         Expression.isNull(Columns.Column(Accounts.ACCOUNT_TYPE)),
                         Expression.likeRaw(Columns.Column(Accounts.ACCOUNT_KEY), "'%@'||?"),
                         Expression.notLikeRaw(Columns.Column(Accounts.ACCOUNT_KEY), "'%@%'")))
-                conditionArgs.add(ParcelableAccount.Type.TWITTER)
+                conditionArgs.add(AccountType.TWITTER)
                 conditionArgs.add(accountHost)
             } else {
                 conditions.add(Expression.likeRaw(Columns.Column(Accounts.ACCOUNT_KEY), "'%@'||?"))

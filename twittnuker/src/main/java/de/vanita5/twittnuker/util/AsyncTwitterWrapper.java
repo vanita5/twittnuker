@@ -43,6 +43,8 @@ import org.apache.commons.collections.primitives.IntList;
 import org.apache.commons.collections.primitives.LongList;
 import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.abstask.library.TaskStarter;
+
+import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.http.HttpResponseCode;
@@ -752,7 +754,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             try {
                 final ParcelableStatus result;
                 switch (ParcelableAccountUtils.getAccountType(credentials)) {
-                    case ParcelableAccount.Type.FANFOU: {
+                    case AccountType.FANFOU: {
                         result = ParcelableStatusUtils.INSTANCE.fromStatus(twitter.createFanfouFavorite(mStatusId),
                                 mAccountKey, false);
                         break;
@@ -1231,7 +1233,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             try {
                 final ParcelableStatus result;
                 switch (ParcelableAccountUtils.getAccountType(credentials)) {
-                    case ParcelableAccount.Type.FANFOU: {
+                    case AccountType.FANFOU: {
                         result = ParcelableStatusUtils.INSTANCE.fromStatus(twitter.destroyFanfouFavorite(mStatusId),
                                 mAccountKey, false);
                         break;

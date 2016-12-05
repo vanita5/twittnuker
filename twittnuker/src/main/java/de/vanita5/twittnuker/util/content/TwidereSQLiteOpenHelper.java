@@ -22,7 +22,9 @@
 
 package de.vanita5.twittnuker.util.content;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
@@ -59,6 +61,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
+import de.vanita5.twittnuker.util.AccountMigratorKt;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationsEntryQueryBuilder;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.DirectMessagesQueryBuilder;
 
@@ -78,7 +81,6 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
     @Override
     public void onCreate(final SQLiteDatabase db) {
         db.beginTransaction();
-        db.execSQL(createTable(Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, true));
         db.execSQL(createTable(Statuses.TABLE_NAME, Statuses.COLUMNS, Statuses.TYPES, true));
         db.execSQL(createTable(Activities.AboutMe.TABLE_NAME, Activities.AboutMe.COLUMNS, Activities.AboutMe.TYPES, true));
         db.execSQL(createTable(Activities.ByFriends.TABLE_NAME, Activities.ByFriends.COLUMNS, Activities.ByFriends.TYPES, true));
@@ -206,40 +208,44 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         handleVersionChange(db, oldVersion, newVersion);
+        if (oldVersion <= 43 && newVersion >= 44 && newVersion <= 153) {
+            final ContentValues values = new ContentValues();
+            final SharedPreferences prefs = mContext
+                    .getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+            // Here I use old consumer key/secret because it's default key for
+            // older versions
+            final String prefConsumerKey = prefs.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY);
+            final String prefConsumerSecret = prefs.getString(KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET);
+            values.put(Accounts.CONSUMER_KEY, prefConsumerKey.trim());
+            values.put(Accounts.CONSUMER_SECRET, prefConsumerSecret.trim());
+            db.update(Accounts.TABLE_NAME, values, null, null);
+        }
     }
 
     private void handleVersionChange(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-        final HashMap<String, String> accountsAlias = new HashMap<>();
-        final HashMap<String, String> filtersAlias = new HashMap<>();
-        final HashMap<String, String> draftsAlias = new HashMap<>();
-        accountsAlias.put(Accounts.SCREEN_NAME, "username");
-        accountsAlias.put(Accounts.NAME, "username");
-        accountsAlias.put(Accounts.ACCOUNT_KEY, "user_id");
-        accountsAlias.put(Accounts.COLOR, "user_color");
-        accountsAlias.put(Accounts.OAUTH_TOKEN_SECRET, "token_secret");
-        accountsAlias.put(Accounts.API_URL_FORMAT, "rest_base_url");
-        draftsAlias.put(Drafts.MEDIA, "medias");
-        safeUpgrade(db, Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, false, accountsAlias);
+
+        if (oldVersion <= 153) {
+            migrateLegacyAccounts(db);
+            if (newVersion > 153) {
+                AccountMigratorKt.migrateAccounts(mContext);
+                db.execSQL(SQLQueryBuilder.dropTable(true, Accounts.TABLE_NAME).getSQL());
+            }
+        }
+
         safeUpgrade(db, Statuses.TABLE_NAME, Statuses.COLUMNS, Statuses.TYPES, true, null);
         safeUpgrade(db, Activities.AboutMe.TABLE_NAME, Activities.AboutMe.COLUMNS,
                 Activities.AboutMe.TYPES, true, null);
         safeUpgrade(db, Activities.ByFriends.TABLE_NAME, Activities.ByFriends.COLUMNS,
                 Activities.ByFriends.TYPES, true, null);
-        safeUpgrade(db, Drafts.TABLE_NAME, Drafts.COLUMNS, Drafts.TYPES, false, draftsAlias);
+        migrateDrafts(db);
         safeUpgrade(db, CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true, null,
                 createConflictReplaceConstraint(CachedUsers.USER_KEY));
         safeUpgrade(db, CachedStatuses.TABLE_NAME, CachedStatuses.COLUMNS, CachedStatuses.TYPES, true, null);
         safeUpgrade(db, CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, CachedHashtags.TYPES, true, null);
         safeUpgrade(db, CachedRelationships.TABLE_NAME, CachedRelationships.COLUMNS, CachedRelationships.TYPES, true, null,
                 createConflictReplaceConstraint(CachedRelationships.ACCOUNT_KEY, CachedRelationships.USER_KEY));
-        safeUpgrade(db, Filters.Users.TABLE_NAME, Filters.Users.COLUMNS, Filters.Users.TYPES,
-                oldVersion < 49, null);
-        safeUpgrade(db, Filters.Keywords.TABLE_NAME, Filters.Keywords.COLUMNS, Filters.Keywords.TYPES,
-                oldVersion < 49, filtersAlias);
-        safeUpgrade(db, Filters.Sources.TABLE_NAME, Filters.Sources.COLUMNS, Filters.Sources.TYPES,
-                oldVersion < 49, filtersAlias);
-        safeUpgrade(db, Filters.Links.TABLE_NAME, Filters.Links.COLUMNS, Filters.Links.TYPES,
-                oldVersion < 49, filtersAlias);
+
+        migrateFilters(db, oldVersion);
         safeUpgrade(db, DirectMessages.Inbox.TABLE_NAME, DirectMessages.Inbox.COLUMNS,
                 DirectMessages.Inbox.TYPES, true, null);
         safeUpgrade(db, DirectMessages.Outbox.TABLE_NAME, DirectMessages.Outbox.COLUMNS,
@@ -264,6 +270,36 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
         createIndices(db);
         db.setTransactionSuccessful();
         db.endTransaction();
+    }
+
+    private void migrateDrafts(SQLiteDatabase db) {
+        final HashMap<String, String> draftsAlias = new HashMap<>();
+        draftsAlias.put(Drafts.MEDIA, "medias");
+        safeUpgrade(db, Drafts.TABLE_NAME, Drafts.COLUMNS, Drafts.TYPES, false, draftsAlias);
+    }
+
+    private void migrateFilters(SQLiteDatabase db, int oldVersion) {
+        safeUpgrade(db, Filters.Users.TABLE_NAME, Filters.Users.COLUMNS, Filters.Users.TYPES,
+                oldVersion < 49, null);
+
+        final HashMap<String, String> filtersAlias = new HashMap<>();
+        safeUpgrade(db, Filters.Keywords.TABLE_NAME, Filters.Keywords.COLUMNS, Filters.Keywords.TYPES,
+                oldVersion < 49, filtersAlias);
+        safeUpgrade(db, Filters.Sources.TABLE_NAME, Filters.Sources.COLUMNS, Filters.Sources.TYPES,
+                oldVersion < 49, filtersAlias);
+        safeUpgrade(db, Filters.Links.TABLE_NAME, Filters.Links.COLUMNS, Filters.Links.TYPES,
+                oldVersion < 49, filtersAlias);
+    }
+
+    private void migrateLegacyAccounts(SQLiteDatabase db) {
+        final HashMap<String, String> accountsAlias = new HashMap<>();
+        accountsAlias.put(Accounts.SCREEN_NAME, "username");
+        accountsAlias.put(Accounts.NAME, "username");
+        accountsAlias.put(Accounts.ACCOUNT_KEY, "user_id");
+        accountsAlias.put(Accounts.COLOR, "user_color");
+        accountsAlias.put(Accounts.OAUTH_TOKEN_SECRET, "token_secret");
+        accountsAlias.put(Accounts.API_URL_FORMAT, "rest_base_url");
+        safeUpgrade(db, Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, false, accountsAlias);
     }
 
     private void migrateFilteredUsers(SQLiteDatabase db) {

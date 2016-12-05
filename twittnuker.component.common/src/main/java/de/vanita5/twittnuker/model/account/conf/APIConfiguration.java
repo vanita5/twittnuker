@@ -20,11 +20,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension
+package de.vanita5.twittnuker.model.account.conf;
 
-import de.vanita5.twittnuker.model.ParcelableAccount
-import de.vanita5.twittnuker.model.UserKey
-
-val ParcelableAccount.account_name: String
-    get() = UserKey(screen_name, account_key.host).toString()
-
+public class APIConfiguration {
+}

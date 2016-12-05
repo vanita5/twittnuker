@@ -27,6 +27,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
@@ -52,7 +53,7 @@ public class DestroyFriendshipTask extends AbsFriendshipOperationTask {
     @Override
     protected User perform(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull Arguments args) throws MicroBlogException {
         switch (ParcelableAccountUtils.getAccountType(credentials)) {
-            case ParcelableAccount.Type.FANFOU: {
+            case AccountType.FANFOU: {
                 return twitter.destroyFanfouFriendship(args.userKey.getId());
             }
         }

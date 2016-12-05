@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
@@ -117,12 +118,12 @@ public class TwitterWrapper implements Constants {
     public static User showUser(final MicroBlog twitter, final String id, final String screenName,
                                 final String accountType) throws MicroBlogException {
         if (id != null) {
-            if (ParcelableAccount.Type.FANFOU.equals(accountType)) {
+            if (AccountType.FANFOU.equals(accountType)) {
                 return twitter.showFanfouUser(id);
             }
             return twitter.showUser(id);
         } else if (screenName != null) {
-            if (ParcelableAccount.Type.FANFOU.equals(accountType)) {
+            if (AccountType.FANFOU.equals(accountType)) {
                 return twitter.showFanfouUser(screenName);
             }
             return twitter.showUserByScreenName(screenName);

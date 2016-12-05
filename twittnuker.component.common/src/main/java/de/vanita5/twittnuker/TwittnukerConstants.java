@@ -42,6 +42,14 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String TWITTNUKER_PACKAGE_NAME = "de.vanita5.twittnuker";
 
     String ACCOUNT_TYPE = "de.vanita5.twittnuker.account";
+    String ACCOUNT_AUTH_TOKEN_TYPE = "de.vanita5.twittnuker.account.token";
+    String ACCOUNT_USER_DATA_KEY = "key";
+    String ACCOUNT_USER_DATA_TYPE = "type";
+    String ACCOUNT_USER_DATA_CREDS_TYPE = "creds_type";
+    String ACCOUNT_USER_DATA_ACTIVATED = "activated";
+    String ACCOUNT_USER_DATA_USER = "user";
+    String ACCOUNT_USER_DATA_EXTRAS = "extras";
+    String ACCOUNT_USER_DATA_COLOR = "color";
 
     String LOGTAG = TWITTNUKER_APP_NAME;
 

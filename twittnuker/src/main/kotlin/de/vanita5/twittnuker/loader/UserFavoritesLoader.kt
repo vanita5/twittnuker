@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
+import de.vanita5.twittnuker.annotation.AccountType
 
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -71,7 +72,7 @@ class UserFavoritesLoader(
 
     override fun processPaging(credentials: ParcelableCredentials, loadItemLimit: Int, paging: Paging) {
         when (ParcelableAccountUtils.getAccountType(credentials)) {
-            ParcelableAccount.Type.FANFOU -> {
+            AccountType.FANFOU -> {
                 paging.setCount(loadItemLimit)
                 if (page > 0) {
                     paging.setPage(page)

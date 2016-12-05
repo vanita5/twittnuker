@@ -36,6 +36,7 @@ import android.webkit.URLUtil;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
+import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.Twitter;
@@ -91,7 +92,7 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
     public static final String CARDS_PLATFORM_ANDROID_12 = "Android-12";
 
 
-    private static final SimpleValueMap sConstantPoll = new SimpleValueMap();
+    public static final SimpleValueMap sConstantPoll = new SimpleValueMap();
 
     static {
         sConstantPoll.put("include_cards", "true");
@@ -168,11 +169,11 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
                                     @NonNull Class<T> cls) {
         final HashMap<String, String> extraParams = new HashMap<>();
         switch (ParcelableAccountUtils.getAccountType(credentials)) {
-            case ParcelableAccount.Type.FANFOU: {
+            case AccountType.FANFOU: {
                 extraParams.put("format", "html");
                 break;
             }
-            case ParcelableAccount.Type.TWITTER: {
+            case AccountType.TWITTER: {
                 extraParams.put("include_entities", String.valueOf(includeEntities));
                 extraParams.put("include_retweets", String.valueOf(includeRetweets));
                 break;
@@ -248,11 +249,11 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
             if (accountHost == null) return true;
             return USER_TYPE_TWITTER_COM.equals(accountHost);
         }
-        return ParcelableAccount.Type.TWITTER.equals(account.account_type);
+        return AccountType.TWITTER.equals(account.account_type);
     }
 
     public static boolean isStatusNetCredentials(ParcelableAccount account) {
-        return ParcelableAccount.Type.STATUSNET.equals(account.account_type);
+        return AccountType.STATUSNET.equals(account.account_type);
     }
 
     @WorkerThread
@@ -305,7 +306,7 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
         }
         final String endpointUrl;
         endpointUrl = getApiUrl(apiUrlFormat, domain, versionSuffix);
-        if (credentials.auth_type == ParcelableCredentials.AuthType.XAUTH || credentials.auth_type == ParcelableCredentials.AuthType.OAUTH) {
+        if (credentials.auth_type == ParcelableCredentials.AuthTypeInt.XAUTH || credentials.auth_type == ParcelableCredentials.AuthTypeInt.OAUTH) {
             final String signEndpointUrl;
             if (!sameOAuthSigningUrl) {
                 signEndpointUrl = getApiUrl(DEFAULT_TWITTER_API_URL_FORMAT, domain, versionSuffix);
@@ -322,8 +323,8 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
     public static Authorization getAuthorization(@Nullable ParcelableCredentials credentials) {
         if (credentials == null) return null;
         switch (credentials.auth_type) {
-            case ParcelableCredentials.AuthType.OAUTH:
-            case ParcelableCredentials.AuthType.XAUTH: {
+            case ParcelableCredentials.AuthTypeInt.OAUTH:
+            case ParcelableCredentials.AuthTypeInt.XAUTH: {
                 final String consumerKey = TextUtils.isEmpty(credentials.consumer_key) ?
                         TWITTER_CONSUMER_KEY : credentials.consumer_key;
                 final String consumerSecret = TextUtils.isEmpty(credentials.consumer_secret) ?
@@ -334,7 +335,7 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
                     return new OAuthAuthorization(consumerKey, consumerSecret, accessToken);
                 return new OAuthAuthorization(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, accessToken);
             }
-            case ParcelableCredentials.AuthType.BASIC: {
+            case ParcelableCredentials.AuthTypeInt.BASIC: {
                 final String screenName = credentials.screen_name;
                 final String username = credentials.basic_auth_username;
                 final String loginName = username != null ? username : screenName;
@@ -502,26 +503,6 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
                 || '0' <= codePoint && codePoint <= '9';
     }
 
-    @NonNull
-    public static ConsumerKeyType getOfficialKeyType(final Context context, final UserKey accountKey) {
-        if (context == null) return ConsumerKeyType.UNKNOWN;
-        final String[] projection = {Accounts.CONSUMER_KEY, Accounts.CONSUMER_SECRET, Accounts.AUTH_TYPE};
-        final String selection = Expression.equalsArgs(Accounts.ACCOUNT_KEY).getSQL();
-        final String[] selectionArgs = {accountKey.toString()};
-        final Cursor c = context.getContentResolver().query(Accounts.CONTENT_URI, projection,
-                selection, selectionArgs, null);
-        if (c == null) return ConsumerKeyType.UNKNOWN;
-        //noinspection TryFinallyCanBeTryWithResources
-        try {
-            if (c.moveToPosition(0) && ParcelableCredentialsUtils.isOAuth(c.getInt(2))) {
-                return TwitterContentUtils.getOfficialKeyType(context, c.getString(0), c.getString(1));
-            }
-        } finally {
-            c.close();
-        }
-        return ConsumerKeyType.UNKNOWN;
-    }
-
     public static class TwidereHttpRequestFactory implements HttpRequest.Factory {
 
         private final String userAgent;
@@ -554,7 +535,7 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
 
         private final TwitterConverterFactory converterFactory;
 
-        TwidereExceptionFactory(TwitterConverterFactory converterFactory) {
+        public TwidereExceptionFactory(TwitterConverterFactory converterFactory) {
             this.converterFactory = converterFactory;
         }
 
@@ -587,10 +568,11 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
         }
     }
 
-    private static class TwidereRestRequestFactory implements RestRequest.Factory<MicroBlogException> {
+    public static class TwidereRestRequestFactory implements RestRequest.Factory<MicroBlogException> {
+        @Nullable
         private final Map<String, String> extraRequestParams;
 
-        public TwidereRestRequestFactory(Map<String, String> extraRequestParams) {
+        public TwidereRestRequestFactory(@Nullable Map<String, String> extraRequestParams) {
             this.extraRequestParams = extraRequestParams;
         }
 

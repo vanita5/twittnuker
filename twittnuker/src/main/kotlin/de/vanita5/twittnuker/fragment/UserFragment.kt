@@ -96,6 +96,7 @@ import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
@@ -753,9 +754,6 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
         MenuUtils.setItemAvailability(menu, R.id.mention, !isMyself)
         MenuUtils.setItemAvailability(menu, R.id.incoming_friendships, isMyself)
         MenuUtils.setItemAvailability(menu, R.id.saved_searches, isMyself)
-        MenuUtils.setItemAvailability(menu, R.id.scheduled_statuses, isMyself &&
-                MicroBlogAPIFactory.getOfficialKeyType(activity, user.account_key)
-                        == ConsumerKeyType.TWEETDECK)
 
         MenuUtils.setItemAvailability(menu, R.id.blocked_users, isMyself)
         MenuUtils.setItemAvailability(menu, R.id.block, !isMyself)
@@ -764,7 +762,7 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
         val isTwitter: Boolean
 
         if (account != null) {
-            isTwitter = TextUtils.equals(ParcelableAccount.Type.TWITTER,
+            isTwitter = TextUtils.equals(AccountType.TWITTER,
                     ParcelableAccountUtils.getAccountType(account))
         } else {
             isTwitter = false

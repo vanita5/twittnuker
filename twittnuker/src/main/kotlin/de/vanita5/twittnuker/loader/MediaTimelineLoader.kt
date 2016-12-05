@@ -26,6 +26,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import android.text.TextUtils
+import de.vanita5.twittnuker.annotation.AccountType
 import org.apache.commons.lang3.StringUtils
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -61,7 +62,7 @@ class MediaTimelineLoader(
                              paging: Paging): ResponseList<Status> {
         val context = context
         when (ParcelableAccountUtils.getAccountType(credentials)) {
-            ParcelableAccount.Type.TWITTER -> {
+            AccountType.TWITTER -> {
                 if (Utils.isOfficialCredentials(context, credentials)) {
                     if (userKey != null) {
                         return microBlog.getMediaTimeline(userKey.id, paging)
@@ -100,7 +101,7 @@ class MediaTimelineLoader(
                 }
                 throw MicroBlogException("Wrong user")
             }
-            ParcelableAccount.Type.FANFOU -> {
+            AccountType.FANFOU -> {
                 if (userKey != null) {
                     return microBlog.getPhotosUserTimeline(userKey.id, paging)
                 }

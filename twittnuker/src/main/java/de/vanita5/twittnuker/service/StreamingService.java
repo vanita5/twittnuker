@@ -71,6 +71,7 @@ import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
@@ -218,7 +219,7 @@ public class StreamingService extends Service implements Constants {
     }
 
     private boolean setTwitterInstances() {
-        final List<ParcelableCredentials> accountsList = DataStoreUtils.getCredentialsList(this, true);
+        final List<ParcelableCredentials> accountsList = ParcelableCredentialsUtils.getCredentialses(this, true, false);
         final UserKey[] accountKeys = new UserKey[accountsList.size()];
         for (int i = 0, j = accountKeys.length; i < j; i++) {
             final ParcelableCredentials credentials = accountsList.get(i);
