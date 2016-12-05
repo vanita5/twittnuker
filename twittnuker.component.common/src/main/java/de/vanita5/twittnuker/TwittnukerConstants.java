@@ -41,6 +41,8 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String TWITTNUKER_PROJECT_EMAIL = "mail@twittnuker.org";
     String TWITTNUKER_PACKAGE_NAME = "de.vanita5.twittnuker";
 
+    String ACCOUNT_TYPE = "de.vanita5.twittnuker.account";
+
     String LOGTAG = TWITTNUKER_APP_NAME;
 
     String USER_COLOR_PREFERENCES_NAME = "user_colors";
