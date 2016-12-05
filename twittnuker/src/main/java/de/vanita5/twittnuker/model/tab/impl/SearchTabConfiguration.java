@@ -12,6 +12,7 @@ import de.vanita5.twittnuker.model.tab.DrawableHolder;
 import de.vanita5.twittnuker.model.tab.StringHolder;
 import de.vanita5.twittnuker.model.tab.TabConfiguration;
 import de.vanita5.twittnuker.model.tab.argument.TextQueryArguments;
+import de.vanita5.twittnuker.model.tab.conf.StringExtraConfiguration;
 
 import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_QUERY;
 

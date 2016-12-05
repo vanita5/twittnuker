@@ -8,16 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
 
-import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment.TabEditorDialogFragment;
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.Tab;
 import de.vanita5.twittnuker.model.tab.impl.DMTabConfiguration;
 import de.vanita5.twittnuker.model.tab.impl.FavoriteTimelineTabConfiguration;
@@ -135,7 +131,9 @@ public abstract class TabConfiguration {
         private StringHolder headerTitle;
         private int position;
         private boolean mutable;
+
         private Context context;
+        private View view;
 
         protected ExtraConfiguration(String key) {
             this.key = key;
@@ -215,100 +213,21 @@ public abstract class TabConfiguration {
             return context;
         }
 
-        public void onViewCreated(@NonNull Context context, @NonNull View view, @NonNull TabEditorDialogFragment fragment) {
+        public View getView() {
+            return view;
+        }
 
+        @CallSuper
+        public void onViewCreated(@NonNull Context context, @NonNull View view, @NonNull TabEditorDialogFragment fragment) {
+            this.view = view;
         }
 
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         }
-    }
 
-    public static class BooleanExtraConfiguration extends ExtraConfiguration {
+        public void onAccountSelectionChanged(@Nullable AccountDetails account) {
 
-        private final boolean def;
-        private CheckBox checkBox;
-
-        public BooleanExtraConfiguration(String key, boolean def) {
-            super(key);
-            this.def = def;
-        }
-
-        @NonNull
-        @Override
-        public View onCreateView(Context context, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.layout_extra_config_checkbox, parent, false);
-        }
-
-        @Override
-        public void onViewCreated(@NonNull Context context, @NonNull View view, @NonNull TabEditorDialogFragment fragment) {
-            final TextView titleView = (TextView) view.findViewById(android.R.id.title);
-            titleView.setText(getTitle().createString(context));
-
-            checkBox = (CheckBox) view.findViewById(android.R.id.checkbox);
-            checkBox.setVisibility(View.VISIBLE);
-            checkBox.setChecked(def);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    checkBox.toggle();
-                }
-            });
-        }
-
-        public void setValue(boolean value) {
-            checkBox.setChecked(value);
-        }
-
-        public boolean getValue() {
-            return checkBox.isChecked();
-        }
-    }
-
-    public static class StringExtraConfiguration extends ExtraConfiguration {
-
-        private final String def;
-        private int maxLines;
-
-        private EditText editText;
-
-        public StringExtraConfiguration(String key, String def) {
-            super(key);
-            this.def = def;
-        }
-
-        @NonNull
-        @Override
-        public View onCreateView(Context context, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.layout_extra_config_text, parent, false);
-        }
-
-        @Override
-        public void onViewCreated(@NonNull Context context, @NonNull View view, @NonNull final TabEditorDialogFragment fragment) {
-            editText = (EditText) view.findViewById(R.id.editText);
-            editText.setHint(getTitle().createString(context));
-            editText.setText(def);
-        }
-
-        public StringExtraConfiguration maxLines(int maxLines) {
-            setMaxLines(maxLines);
-            return this;
-        }
-
-        public void setMaxLines(int maxLines) {
-            this.maxLines = maxLines;
-        }
-
-        public int getMaxLines() {
-            return maxLines;
-        }
-
-        public String getValue() {
-            return editText.getText().toString();
-        }
-
-        public void setValue(String value) {
-            editText.setText(value);
         }
     }
 

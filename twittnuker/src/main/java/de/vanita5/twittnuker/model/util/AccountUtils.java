@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.model.util;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -32,6 +33,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.annotation.AuthTypeInt;
 import de.vanita5.twittnuker.extension.AccountExtensionsKt;
+import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
@@ -109,6 +111,15 @@ public class AccountUtils {
             }
         }
         return null;
+    }
+
+    public static boolean hasOfficialKeyAccount(Context context) {
+        for (AccountDetails details : getAllAccountDetails(AccountManager.get(context))) {
+            if (AccountDetailsExtensionsKt.isOfficial(details, context)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static int getAccountTypeIcon(@Nullable String accountType) {
