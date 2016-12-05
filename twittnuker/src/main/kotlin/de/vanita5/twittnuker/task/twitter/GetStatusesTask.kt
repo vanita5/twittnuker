@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.task.twitter
 
+import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
@@ -44,12 +45,13 @@ import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
 import de.vanita5.twittnuker.constant.loadItemLimitKey
-import de.vanita5.twittnuker.model.ParcelableCredentials
+import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
@@ -104,10 +106,10 @@ abstract class GetStatusesTask(protected val context: Context) : AbstractTask<Re
         val loadItemLimit = preferences[loadItemLimitKey]
         for (i in 0 until accountKeys.size) {
             val accountKey = accountKeys[i]
-            val credentials = ParcelableCredentialsUtils.getCredentials(context,
+            val details = AccountUtils.getAccountDetails(AccountManager.get(context),
                     accountKey) ?: continue
-            val twitter = MicroBlogAPIFactory.getInstance(context, credentials,
-                    true, true) ?: continue
+            val microBlog = details.credentials.newMicroBlogInstance(context = context,
+                    cls = MicroBlog::class.java)
             try {
                 val paging = Paging()
                 paging.count(loadItemLimit)
@@ -143,8 +145,8 @@ abstract class GetStatusesTask(protected val context: Context) : AbstractTask<Re
                 } else {
                     sinceId = null
                 }
-                val statuses = getStatuses(twitter, paging)
-                storeStatus(accountKey, credentials, statuses, sinceId, maxId, sinceSortId,
+                val statuses = getStatuses(microBlog, paging)
+                storeStatus(accountKey, details, statuses, sinceId, maxId, sinceSortId,
                         maxSortId, loadItemLimit, false)
                 // TODO cache related data and preload
                 val cacheTask = CacheUsersStatusesTask(context)
@@ -165,7 +167,7 @@ abstract class GetStatusesTask(protected val context: Context) : AbstractTask<Re
         return result
     }
 
-    private fun storeStatus(accountKey: UserKey, credentials: ParcelableCredentials,
+    private fun storeStatus(accountKey: UserKey, details: AccountDetails,
                             statuses: List<Status>,
                             sinceId: String?, maxId: String?,
                             sinceSortId: Long, maxSortId: Long,
@@ -189,7 +191,7 @@ abstract class GetStatusesTask(protected val context: Context) : AbstractTask<Re
                 val item = statuses[i]
                 val status = ParcelableStatusUtils.fromStatus(item, accountKey,
                         false)
-                ParcelableStatusUtils.updateExtraInformation(status, credentials, manager)
+                ParcelableStatusUtils.updateExtraInformation(status, details, manager)
                 status.position_key = getPositionKey(status.timestamp, status.sort_id, lastSortId,
                         sortDiff, i, statuses.size)
                 status.inserted_date = System.currentTimeMillis()

@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.model.ParcelableCredentials
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
@@ -65,12 +65,12 @@ class UserTimelineLoader(
 
     @Throws(MicroBlogException::class)
     override fun getStatuses(microBlog: MicroBlog,
-                             credentials: ParcelableCredentials,
+                             details: AccountDetails,
                              paging: Paging): ResponseList<Status> {
         if (pinnedStatusIds != null) {
             try {
                 pinnedStatuses = microBlog.lookupStatuses(pinnedStatusIds).mapIndexed { idx, status ->
-                    val created = ParcelableStatusUtils.fromStatus(status, credentials.account_key, false)
+                    val created = ParcelableStatusUtils.fromStatus(status, details.key, false)
                     created.sort_id = idx.toLong()
                     return@mapIndexed created
                 }

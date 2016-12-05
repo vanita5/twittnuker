@@ -33,11 +33,10 @@ import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
-import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
+import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.util.Utils;
 
 public class CreateFriendshipTask extends AbsFriendshipOperationTask implements Constants {
@@ -48,8 +47,8 @@ public class CreateFriendshipTask extends AbsFriendshipOperationTask implements 
 
     @NonNull
     @Override
-    protected User perform(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull Arguments args) throws MicroBlogException {
-        switch (ParcelableAccountUtils.getAccountType(credentials)) {
+    protected User perform(@NonNull MicroBlog twitter, @NonNull AccountDetails details, @NonNull Arguments args) throws MicroBlogException {
+        switch (AccountUtils.getAccountType(details)) {
             case AccountType.FANFOU: {
                 return twitter.createFanfouFriendship(args.userKey.getId());
             }
@@ -58,7 +57,7 @@ public class CreateFriendshipTask extends AbsFriendshipOperationTask implements 
     }
 
     @Override
-    protected void succeededWorker(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials, @NonNull Arguments args, @NonNull ParcelableUser user) {
+    protected void succeededWorker(@NonNull MicroBlog twitter, @NonNull AccountDetails details, @NonNull Arguments args, @NonNull ParcelableUser user) {
         user.is_following = true;
         Utils.setLastSeen(context, user.key, System.currentTimeMillis());
     }

@@ -33,11 +33,10 @@ import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
-import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
+import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.util.Utils;
 
@@ -50,9 +49,9 @@ public class DestroyUserBlockTask extends AbsFriendshipOperationTask {
 
     @NonNull
     @Override
-    protected User perform(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials,
+    protected User perform(@NonNull MicroBlog twitter, @NonNull AccountDetails details,
                            @NonNull Arguments args) throws MicroBlogException {
-        switch (ParcelableAccountUtils.getAccountType(credentials)) {
+        switch (AccountUtils.getAccountType(details)) {
             case AccountType.FANFOU: {
                 return twitter.destroyFanfouBlock(args.userKey.getId());
             }
@@ -62,7 +61,7 @@ public class DestroyUserBlockTask extends AbsFriendshipOperationTask {
 
     @Override
     protected void succeededWorker(@NonNull MicroBlog twitter,
-                                   @NonNull ParcelableCredentials credentials,
+                                   @NonNull AccountDetails details,
                                    @NonNull Arguments args, @NonNull ParcelableUser user) {
         final ContentResolver resolver = context.getContentResolver();
         // I bet you don't want to see this user in your auto complete list.

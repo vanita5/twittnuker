@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util
 
+import android.accounts.AccountManager
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
@@ -34,12 +35,13 @@ import com.twitter.Extractor
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.extension.getAccountUser
 import de.vanita5.twittnuker.menu.AccountActionProvider
-import de.vanita5.twittnuker.model.ParcelableAccount
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -92,16 +94,17 @@ class MultiSelectEventHandler(
         when (item.itemId) {
             R.id.reply -> {
                 val extractor = Extractor()
+                val am = AccountManager.get(activity)
                 val intent = Intent(INTENT_ACTION_REPLY_MULTIPLE)
                 val bundle = Bundle()
-                val accountScreenNames = ParcelableAccountUtils.getAccounts(activity).map { it.screen_name }.toTypedArray()
+                val accountScreenNames = AccountUtils.getAccounts(am).map { it.getAccountUser(am).name }.toTypedArray()
                 val allMentions = TreeSet(String.CASE_INSENSITIVE_ORDER)
-                for (item in selectedItems) {
-                    if (item is ParcelableStatus) {
-                        allMentions.add(item.user_screen_name)
-                        allMentions.addAll(extractor.extractMentionedScreennames(item.text_plain))
-                    } else if (item is ParcelableUser) {
-                        allMentions.add(item.screen_name)
+                for (selected in selectedItems) {
+                    if (selected is ParcelableStatus) {
+                        allMentions.add(selected.user_screen_name)
+                        allMentions.addAll(extractor.extractMentionedScreennames(selected.text_plain))
+                    } else if (selected is ParcelableUser) {
+                        allMentions.add(selected.screen_name)
                     }
                 }
                 allMentions.removeAll(Arrays.asList(*accountScreenNames))
@@ -155,9 +158,9 @@ class MultiSelectEventHandler(
         if (item.groupId == AccountActionProvider.MENU_GROUP) {
             val intent = item.intent
             if (intent == null || !intent.hasExtra(EXTRA_ACCOUNT)) return false
-            val account = intent.getParcelableExtra<ParcelableAccount>(EXTRA_ACCOUNT)
-            multiSelectManager.accountKey = account.account_key
-            accountActionProvider?.selectedAccountIds = arrayOf(account.account_key)
+            val account: AccountDetails = intent.getParcelableExtra(EXTRA_ACCOUNT)
+            multiSelectManager.accountKey = account.key
+            accountActionProvider?.selectedAccountIds = arrayOf(account.key)
             mode.invalidate()
         }
         return true

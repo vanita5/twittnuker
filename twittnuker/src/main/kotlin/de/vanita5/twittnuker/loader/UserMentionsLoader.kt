@@ -23,10 +23,10 @@
 package de.vanita5.twittnuker.loader
 
 import android.content.Context
-import de.vanita5.twittnuker.model.ParcelableCredentials
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 
 class UserMentionsLoader(
         context: Context,
@@ -44,10 +44,9 @@ class UserMentionsLoader(
 ) : TweetSearchLoader(context, accountId, screenName, sinceId, maxId, page, data, savedStatusesArgs,
         tabPosition, fromUser, makeGap, loadingMore) {
 
-    override fun processQuery(credentials: ParcelableCredentials, query: String): String {
-        val accountKey = accountKey ?: return query
+    override fun processQuery(details: AccountDetails, query: String): String {
         val screenName = if (query.startsWith("@")) query.substring(1) else query
-        if (MicroBlogAPIFactory.isTwitterCredentials(context, accountKey)) {
+        if (details.type == AccountType.TWITTER) {
             return "to:$screenName exclude:retweets"
         }
         return "@$screenName -RT"

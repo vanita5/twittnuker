@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.task.twitter
 
+import android.accounts.AccountManager
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
@@ -41,12 +42,13 @@ import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_LOAD_ITEM_LIMIT
-import de.vanita5.twittnuker.model.ParcelableCredentials
+import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
@@ -83,10 +85,8 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
             val accountKey = accountIds[i]
             val noItemsBefore = DataStoreUtils.getActivitiesCount(context, contentUri,
                     accountKey) <= 0
-            val credentials = ParcelableCredentialsUtils.getCredentials(context,
-                    accountKey) ?: continue
-            val twitter = MicroBlogAPIFactory.getInstance(context, credentials, true,
-                    true) ?: continue
+            val credentials = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey) ?: continue
+            val microBlog = credentials.credentials.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
             val paging = Paging()
             paging.count(loadItemLimit)
             var maxId: String? = null
@@ -113,11 +113,11 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
             }
             // We should delete old activities has intersection with new items
             try {
-                val activities = getActivities(twitter, credentials, paging)
+                val activities = getActivities(microBlog, credentials, paging)
                 storeActivities(cr, loadItemLimit, credentials, noItemsBefore, activities, sinceId,
                         maxId, false)
                 if (saveReadPosition) {
-                    saveReadPosition(accountKey, credentials, twitter)
+                    saveReadPosition(accountKey, credentials, microBlog)
                 }
                 errorInfoStore.remove(errorInfoKey, accountKey)
             } catch (e: MicroBlogException) {
@@ -139,7 +139,7 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
 
     protected abstract val errorInfoKey: String
 
-    private fun storeActivities(cr: ContentResolver, loadItemLimit: Int, credentials: ParcelableCredentials,
+    private fun storeActivities(cr: ContentResolver, loadItemLimit: Int, details: AccountDetails,
                                 noItemsBefore: Boolean, activities: ResponseList<Activity>,
                                 sinceId: String?, maxId: String?, notify: Boolean) {
         val deleteBound = LongArray(2, { return@LongArray -1 })
@@ -153,8 +153,7 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
             val sortDiff = firstSortId - lastSortId
             for (i in activities.indices) {
                 val item = activities[i]
-                val activity = ParcelableActivityUtils.fromActivity(item,
-                        credentials.account_key, false)
+                val activity = ParcelableActivityUtils.fromActivity(item, details.key, false)
                 activity.position_key = GetStatusesTask.getPositionKey(activity.timestamp,
                         activity.timestamp, lastSortId, sortDiff, i, activities.size)
                 if (deleteBound[0] < 0) {
@@ -174,14 +173,14 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
 
                 activity.inserted_date = System.currentTimeMillis()
                 val values = ContentValuesCreator.createActivity(activity,
-                        credentials, userColorNameManager)
+                        details, userColorNameManager)
                 valuesList.add(values)
             }
         }
         var olderCount = -1
         if (minPositionKey > 0) {
             olderCount = DataStoreUtils.getActivitiesCount(context, contentUri, minPositionKey,
-                    Activities.POSITION_KEY, false, credentials.account_key)
+                    Activities.POSITION_KEY, false, details.key)
         }
         val writeUri = UriUtils.appendQueryParameters(contentUri, QUERY_PARAM_NOTIFY, notify)
         if (deleteBound[0] > 0 && deleteBound[1] > 0) {
@@ -189,7 +188,7 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
                     Expression.equalsArgs(Activities.ACCOUNT_KEY),
                     Expression.greaterEqualsArgs(Activities.MIN_SORT_POSITION),
                     Expression.lesserEqualsArgs(Activities.MAX_SORT_POSITION))
-            val whereArgs = arrayOf(credentials.account_key.toString(), deleteBound[0].toString(), deleteBound[1].toString())
+            val whereArgs = arrayOf(details.key.toString(), deleteBound[0].toString(), deleteBound[1].toString())
             val rowsDeleted = cr.delete(writeUri, where.sql, whereArgs)
             // Why loadItemLimit / 2? because it will not acting strange in most cases
             val insertGap = !noItemsBefore && olderCount > 0  && rowsDeleted <= 0 && activities.size > loadItemLimit / 2
@@ -205,17 +204,17 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
             val noGapWhere = Expression.and(Expression.equalsArgs(Activities.ACCOUNT_KEY),
                     Expression.equalsArgs(Activities.MIN_REQUEST_POSITION),
                     Expression.equalsArgs(Activities.MAX_REQUEST_POSITION)).sql
-            val noGapWhereArgs = arrayOf(credentials.account_key.toString(), maxId, maxId)
+            val noGapWhereArgs = arrayOf(details.key.toString(), maxId, maxId)
             cr.update(writeUri, noGapValues, noGapWhere, noGapWhereArgs)
         }
     }
 
-    protected abstract fun saveReadPosition(accountId: UserKey,
-                                            credentials: ParcelableCredentials, twitter: MicroBlog)
+    protected abstract fun saveReadPosition(accountKey: UserKey,
+                                            details: AccountDetails, twitter: MicroBlog)
 
     @Throws(MicroBlogException::class)
     protected abstract fun getActivities(twitter: MicroBlog,
-                                         credentials: ParcelableCredentials,
+                                         details: AccountDetails,
                                          paging: Paging): ResponseList<Activity>
 
     public override fun afterExecute(handler: Any?, result: Any?) {

@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util;
 
+import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -43,8 +44,8 @@ import org.apache.commons.collections.primitives.IntList;
 import org.apache.commons.collections.primitives.LongList;
 import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.abstask.library.TaskStarter;
-
 import de.vanita5.twittnuker.annotation.AccountType;
+import de.vanita5.twittnuker.extension.CredentialsExtensionsKt;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.http.HttpResponseCode;
@@ -61,10 +62,9 @@ import de.vanita5.twittnuker.library.twitter.model.UserListUpdate;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ListResponse;
-import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableActivity;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
@@ -88,8 +88,7 @@ import de.vanita5.twittnuker.model.message.UserListMembersChangedEvent;
 import de.vanita5.twittnuker.model.message.UserListSubscriptionEvent;
 import de.vanita5.twittnuker.model.message.UserListUpdatedEvent;
 import de.vanita5.twittnuker.model.message.UsersBlockedEvent;
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils;
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
+import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
@@ -224,7 +223,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     }
 
     public int createFavoriteAsync(final UserKey accountKey, final String statusId) {
-        final CreateFavoriteTask task = new CreateFavoriteTask(accountKey, statusId);
+        final CreateFavoriteTask task = new CreateFavoriteTask(context, accountKey, statusId);
         return asyncTaskManager.add(task, true);
     }
 
@@ -520,9 +519,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         TaskStarter.execute(new AbstractTask<Object, SingleResponse<Relationship>, Bus>() {
             @Override
             public SingleResponse<Relationship> doLongOperation(Object param) {
-                final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, accountKey, true);
+                final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, accountKey, true);
                 try {
-                    final Relationship relationship = twitter.updateFriendship(userKey.getId(), update);
+                    final Relationship relationship = microBlog.updateFriendship(userKey.getId(), update);
                     if (!relationship.isSourceWantRetweetsFromTarget()) {
                         // TODO remove cached retweets
                         final Expression where = Expression.and(
@@ -563,10 +562,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             @Override
             public Object doLongOperation(Object o) {
                 for (UserKey accountId : accountKeys) {
-                    MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, accountId, false);
+                    MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, accountId, false);
                     if (!Utils.isOfficialCredentials(context, accountId)) continue;
                     try {
-                        twitter.setActivitiesAboutMeUnread(cursor);
+                        microBlog.setActivitiesAboutMeUnread(cursor);
                     } catch (MicroBlogException e) {
                         if (BuildConfig.DEBUG) {
                             Log.w(LOGTAG, e);
@@ -615,8 +614,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected SingleResponse<ParcelableUser> doLongOperation(final Object  params) {
             try {
-                final MicroBlog twitter = MicroBlogAPIFactory.getInstance(mContext, mAccountKey, true);
-                TwitterWrapper.updateProfileImage(mContext, twitter, mImageUri, mDeleteImage);
+                final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(mContext, mAccountKey, true);
+                TwitterWrapper.updateProfileImage(mContext, microBlog, mImageUri, mDeleteImage);
                 // Wait for 5 seconds, see
                 // https://dev.twitter.com/rest/reference/post/account/update_profile_image
                 try {
@@ -624,7 +623,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 } catch (InterruptedException e) {
                     Log.w(LOGTAG, e);
                 }
-                final User user = twitter.verifyCredentials();
+                final User user = microBlog.verifyCredentials();
                 return SingleResponse.Companion.getInstance(ParcelableUserUtils.fromUser(user, mAccountKey));
             } catch (MicroBlogException | IOException e) {
                 return SingleResponse.Companion.getInstance(e);
@@ -662,14 +661,14 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
-            if (twitter == null) return SingleResponse.Companion.getInstance();
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
+            if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
                 final UserKey[] userIds = new UserKey[mUsers.length];
                 for (int i = 0, j = mUsers.length; i < j; i++) {
                     userIds[i] = mUsers[i].key;
                 }
-                final UserList result = twitter.addUserListMembers(mListId, UserKey.getIds(userIds));
+                final UserList result = microBlog.addUserListMembers(mListId, UserKey.getIds(userIds));
                 final ParcelableUserList list = ParcelableUserListUtils.from(result, mAccountKey);
                 return SingleResponse.Companion.getInstance(list);
             } catch (final MicroBlogException e) {
@@ -739,7 +738,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         private final UserKey mAccountKey;
         private final String mStatusId;
 
-        public CreateFavoriteTask(final UserKey accountKey, final String statusId) {
+        public CreateFavoriteTask(Context context, final UserKey accountKey, final String statusId) {
             super(context);
             this.mAccountKey = accountKey;
             this.mStatusId = statusId;
@@ -747,26 +746,28 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableStatus> doInBackground(final Object... params) {
-            final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context, mAccountKey);
-            if (credentials == null) return SingleResponse.Companion.getInstance();
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, credentials, true, true);
-            if (twitter == null) return SingleResponse.Companion.getInstance();
+            final ContentResolver resolver = getContext().getContentResolver();
+            final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(getContext()), mAccountKey);
+            if (details == null) return SingleResponse.Companion.getInstance();
+            final MicroBlog microBlog = CredentialsExtensionsKt.newMicroBlogInstance(details.credentials,
+                    getContext(), true, null, MicroBlog.class);
+            if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
                 final ParcelableStatus result;
-                switch (ParcelableAccountUtils.getAccountType(credentials)) {
+                switch (details.type) {
                     case AccountType.FANFOU: {
-                        result = ParcelableStatusUtils.INSTANCE.fromStatus(twitter.createFanfouFavorite(mStatusId),
+                        result = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.createFanfouFavorite(mStatusId),
                                 mAccountKey, false);
                         break;
                     }
                     default: {
-                        result = ParcelableStatusUtils.INSTANCE.fromStatus(twitter.createFavorite(mStatusId),
+                        result = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.createFavorite(mStatusId),
                                 mAccountKey, false);
                     }
                 }
-                ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, credentials,
+                ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, details,
                         mUserColorNameManager);
-                Utils.setLastSeen(context, result.mentions, System.currentTimeMillis());
+                Utils.setLastSeen(getContext(), result.mentions, System.currentTimeMillis());
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.IS_FAVORITE, true);
                 values.put(Statuses.REPLY_COUNT, result.reply_count);
@@ -833,7 +834,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 taskEvent.setSucceeded(true);
             } else {
                 taskEvent.setSucceeded(false);
-                Utils.showErrorMessage(context, R.string.action_favoriting, result.getException(), true);
+                Utils.showErrorMessage(getContext(), R.string.action_favoriting, result.getException(), true);
             }
             bus.post(taskEvent);
             bus.post(new StatusListChangedEvent());
@@ -873,11 +874,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected ListResponse<String> doInBackground(final Object... params) {
             final List<String> blockedUsers = new ArrayList<>();
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
-            if (twitter != null) {
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
+            if (microBlog != null) {
                 for (final String userId : mUserIds) {
                     try {
-                        final User user = twitter.createBlock(userId);
+                        final User user = microBlog.createBlock(userId);
                         blockedUsers.add(user.getId());
                     } catch (final MicroBlogException e) {
                         deleteCaches(blockedUsers);
@@ -916,10 +917,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<SavedSearch> doInBackground(final Object... params) {
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
-            if (twitter == null) return null;
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
+            if (microBlog == null) return null;
             try {
-                return SingleResponse.Companion.getInstance(twitter.createSavedSearch(mQuery));
+                return SingleResponse.Companion.getInstance(microBlog.createSavedSearch(mQuery));
             } catch (final MicroBlogException e) {
                 return SingleResponse.Companion.getInstance(e);
             }
@@ -958,10 +959,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
-            if (twitter == null) return SingleResponse.Companion.getInstance();
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
+            if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
-                final UserList userList = twitter.createUserListSubscription(mListId);
+                final UserList userList = microBlog.createUserListSubscription(mListId);
                 final ParcelableUserList list = ParcelableUserListUtils.from(userList, mAccountKey);
                 return SingleResponse.Companion.getInstance(list);
             } catch (final MicroBlogException e) {
@@ -1002,15 +1003,16 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(getContext(), mAccountKey,
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(getContext(), mAccountKey,
                     false);
-            if (twitter == null || mListName == null) return SingleResponse.Companion.getInstance();
+            if (microBlog == null || mListName == null)
+                return SingleResponse.Companion.getInstance();
             try {
                 final UserListUpdate userListUpdate = new UserListUpdate();
                 userListUpdate.setName(mListName);
                 userListUpdate.setMode(mIsPublic ? UserList.Mode.PUBLIC : UserList.Mode.PRIVATE);
                 userListUpdate.setDescription(mDescription);
-                final UserList list = twitter.createUserList(userListUpdate);
+                final UserList list = microBlog.createUserList(userListUpdate);
                 return SingleResponse.Companion.getInstance(ParcelableUserListUtils.from(list, mAccountKey));
             } catch (final MicroBlogException e) {
                 return SingleResponse.Companion.getInstance(e);
@@ -1048,14 +1050,14 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
-            if (twitter == null) return SingleResponse.Companion.getInstance();
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
+            if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
                 final UserKey[] userIds = new UserKey[users.length];
                 for (int i = 0, j = users.length; i < j; i++) {
                     userIds[i] = users[i].key;
                 }
-                final UserList userList = twitter.deleteUserListMembers(mUserListId, UserKey.getIds(userIds));
+                final UserList userList = microBlog.deleteUserListMembers(mUserListId, UserKey.getIds(userIds));
                 final ParcelableUserList list = ParcelableUserListUtils.from(userList, mAccountKey);
                 return SingleResponse.Companion.getInstance(list);
             } catch (final MicroBlogException e) {
@@ -1120,10 +1122,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<DirectMessage> doInBackground(final Object... args) {
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
-            if (twitter == null) return SingleResponse.Companion.getInstance();
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
+            if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
-                final DirectMessage message = twitter.destroyDirectMessage(mMessageId);
+                final DirectMessage message = microBlog.destroyDirectMessage(mMessageId);
                 deleteMessages();
                 return SingleResponse.Companion.getInstance(message);
             } catch (final MicroBlogException e) {
@@ -1182,10 +1184,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<Void> doInBackground(final Object... args) {
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
-            if (twitter == null) return SingleResponse.Companion.getInstance();
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
+            if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
-                twitter.destroyDirectMessagesConversation(mAccountKey.getId(), mUserId);
+                microBlog.destroyDirectMessagesConversation(mAccountKey.getId(), mUserId);
                 deleteMessages(mAccountKey, mUserId);
                 return SingleResponse.Companion.getInstance();
             } catch (final MicroBlogException e) {
@@ -1226,20 +1228,21 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableStatus> doInBackground(final Object... params) {
-            final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context, mAccountKey);
-            if (credentials == null) return SingleResponse.Companion.getInstance();
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, credentials, true, true);
-            if (twitter == null) return SingleResponse.Companion.getInstance();
+            final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(context), mAccountKey);
+            if (details == null) return SingleResponse.Companion.getInstance();
+            final MicroBlog microBlog = CredentialsExtensionsKt.newMicroBlogInstance(details.credentials,
+                    getContext(), true, null, MicroBlog.class);
+            if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
                 final ParcelableStatus result;
-                switch (ParcelableAccountUtils.getAccountType(credentials)) {
+                switch (AccountUtils.getAccountType(details)) {
                     case AccountType.FANFOU: {
-                        result = ParcelableStatusUtils.INSTANCE.fromStatus(twitter.destroyFanfouFavorite(mStatusId),
+                        result = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.destroyFanfouFavorite(mStatusId),
                                 mAccountKey, false);
                         break;
                     }
                     default: {
-                        result = ParcelableStatusUtils.INSTANCE.fromStatus(twitter.destroyFavorite(mStatusId),
+                        result = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.destroyFavorite(mStatusId),
                                 mAccountKey, false);
                     }
                 }
@@ -1325,10 +1328,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<SavedSearch> doInBackground(final Object... params) {
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
-            if (twitter == null) return SingleResponse.Companion.getInstance();
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
+            if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
-                return SingleResponse.Companion.getInstance(twitter.destroySavedSearch(mSearchId));
+                return SingleResponse.Companion.getInstance(microBlog.destroySavedSearch(mSearchId));
             } catch (final MicroBlogException e) {
                 return SingleResponse.Companion.getInstance(e);
             }
@@ -1361,18 +1364,18 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableStatus> doInBackground(final Object... params) {
-            final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context,
+            final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(getContext()),
                     mAccountKey);
-            if (credentials == null) return SingleResponse.Companion.getInstance();
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, credentials, true,
-                    true);
-            if (twitter == null) return SingleResponse.Companion.getInstance();
+            if (details == null) return SingleResponse.Companion.getInstance();
+            final MicroBlog microBlog = CredentialsExtensionsKt.newMicroBlogInstance(details.credentials,
+                    getContext(), true, null, MicroBlog.class);
+            if (microBlog == null) return SingleResponse.Companion.getInstance();
             ParcelableStatus status = null;
             MicroBlogException exception = null;
             try {
-                status = ParcelableStatusUtils.INSTANCE.fromStatus(twitter.destroyStatus(mStatusId),
+                status = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.destroyStatus(mStatusId),
                         mAccountKey, false);
-                ParcelableStatusUtils.INSTANCE.updateExtraInformation(status, credentials,
+                ParcelableStatusUtils.INSTANCE.updateExtraInformation(status, details,
                         mUserColorNameManager);
             } catch (final MicroBlogException e) {
                 exception = e;
@@ -1427,10 +1430,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
 
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
-            if (twitter == null) return SingleResponse.Companion.getInstance();
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey, false);
+            if (microBlog == null) return SingleResponse.Companion.getInstance();
                 try {
-                final UserList userList = twitter.destroyUserListSubscription(mListId);
+                final UserList userList = microBlog.destroyUserListSubscription(mListId);
                 final ParcelableUserList list = ParcelableUserListUtils.from(userList, mAccountKey);
                 return SingleResponse.Companion.getInstance(list);
             } catch (final MicroBlogException e) {
@@ -1467,11 +1470,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(getContext(), mAccountKey,
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(getContext(), mAccountKey,
                     false);
-            if (twitter == null) return SingleResponse.Companion.getInstance();
+            if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
-                final UserList userList = twitter.destroyUserList(mListId);
+                final UserList userList = microBlog.destroyUserList(mListId);
                 final ParcelableUserList list = ParcelableUserListUtils.from(userList, mAccountKey);
                 return SingleResponse.Companion.getInstance(list);
             } catch (final MicroBlogException e) {
@@ -1583,17 +1586,18 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableStatus> doInBackground(final Object... params) {
-            final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context,
+            final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(getContext()),
                     mAccountKey);
-            if (credentials == null) return SingleResponse.Companion.getInstance();
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, credentials, true, true);
-            if (twitter == null) {
+            if (details == null) return SingleResponse.Companion.getInstance();
+            final MicroBlog microBlog = CredentialsExtensionsKt.newMicroBlogInstance(details.credentials,
+                    getContext(), true, null, MicroBlog.class);
+            if (microBlog == null) {
                 return SingleResponse.Companion.getInstance();
             }
             try {
-                final ParcelableStatus result = ParcelableStatusUtils.INSTANCE.fromStatus(twitter.retweetStatus(mStatusId),
+                final ParcelableStatus result = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.retweetStatus(mStatusId),
                         mAccountKey, false);
-                ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, credentials,
+                ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, details,
                         mUserColorNameManager);
                 Utils.setLastSeen(context, result.mentions, System.currentTimeMillis());
                 final ContentValues values = new ContentValues();
@@ -1679,10 +1683,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
 
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(mContext, mAccountKey, false);
-            if (twitter != null) {
+            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(mContext, mAccountKey, false);
+            if (microBlog != null) {
                 try {
-                    final UserList list = twitter.updateUserList(listId, update);
+                    final UserList list = microBlog.updateUserList(listId, update);
                     return SingleResponse.Companion.getInstance(ParcelableUserListUtils.from(list, mAccountKey));
                 } catch (final MicroBlogException e) {
                     return SingleResponse.Companion.getInstance(e);

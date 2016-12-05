@@ -23,8 +23,8 @@
 package de.vanita5.twittnuker.constant;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.annotation.AuthTypeInt;
 import de.vanita5.twittnuker.annotation.Preference;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
 
 import static de.vanita5.twittnuker.annotation.PreferenceType.BOOLEAN;
 import static de.vanita5.twittnuker.annotation.PreferenceType.INT;
@@ -137,8 +137,6 @@ public interface SharedPreferenceConstants {
     String KEY_THEME_BACKGROUND_ALPHA = "theme_background_alpha";
     @Preference(type = INT)
     String KEY_THEME_COLOR = "theme_color";
-    @Preference(type = INT)
-    String KEY_ACTION_BAR_COLOR = "action_bar_color";
     @Preference(type = STRING, hasDefault = true, defaultString = DEFAULT_THEME_FONT_FAMILY)
     String KEY_THEME_FONT_FAMILY = "theme_font_family";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
@@ -239,7 +237,7 @@ public interface SharedPreferenceConstants {
     String KEY_SAME_OAUTH_SIGNING_URL = "same_oauth_signing_url";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_NO_VERSION_SUFFIX = "no_version_suffix";
-    @Preference(type = INT, hasDefault = true, defaultInt = ParcelableCredentials.AuthTypeInt.OAUTH)
+    @Preference(type = INT, hasDefault = true, defaultInt = AuthTypeInt.OAUTH)
     String KEY_AUTH_TYPE = "auth_type";
     @Preference(type = STRING, hasDefault = true, defaultString = TwittnukerConstants.TWITTER_CONSUMER_KEY)
     String KEY_CONSUMER_KEY = "consumer_key";
@@ -270,8 +268,7 @@ public interface SharedPreferenceConstants {
     String KEY_STREAMING_NOTIFICATIONS = "stream_notifications";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_PEBBLE_NOTIFICATIONS = "pebble_notifications";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
-    String KEY_SWIPE_BACK = "swipe_back";
+
     @Preference(type = STRING, hasDefault = true, defaultString = VALUE_COMPOSE_NOW_ACTION_COMPOSE)
     String KEY_COMPOSE_NOW_ACTION = "compose_now_action";
 

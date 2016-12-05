@@ -30,6 +30,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -73,7 +74,7 @@ class AccountDetailsAdapter(context: Context) : ArrayAdapter<AccountDetails>(con
             mediaLoader.cancelDisplayTask(holder.profileImage)
         }
         val accountType = details.type
-        holder.accountType.setImageResource(ParcelableAccountUtils.getAccountTypeIcon(accountType))
+        holder.accountType.setImageResource(AccountUtils.getAccountTypeIcon(accountType))
         holder.toggle.isChecked = details.activated
         holder.toggle.setOnCheckedChangeListener(checkedChangeListener)
         holder.toggle.tag = details.user.key

@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.accounts.AccountManager
 import android.app.Activity
 import android.app.Dialog
 import android.content.ContentValues
@@ -58,14 +59,12 @@ import de.vanita5.twittnuker.activity.SettingsActivity
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter
 import de.vanita5.twittnuker.adapter.ArrayAdapter
 import de.vanita5.twittnuker.annotation.CustomTabType
-import de.vanita5.twittnuker.model.ParcelableAccount
-import de.vanita5.twittnuker.model.Tab
-import de.vanita5.twittnuker.model.TabCursorIndices
-import de.vanita5.twittnuker.model.TabValuesCreator
+import de.vanita5.twittnuker.extension.model.isOfficial
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.tab.DrawableHolder
 import de.vanita5.twittnuker.model.tab.TabConfiguration
 import de.vanita5.twittnuker.model.tab.iface.AccountCallback
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs
 import de.vanita5.twittnuker.util.CustomTabUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
@@ -327,10 +326,15 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                 val accountIdRequired = conf.accountFlags and TabConfiguration.FLAG_ACCOUNT_REQUIRED != 0
                 accountsAdapter.clear()
                 if (!accountIdRequired) {
-                    accountsAdapter.add(ParcelableAccount.dummyCredentials())
+                    accountsAdapter.add(AccountDetails.dummy())
                 }
                 val officialKeyOnly = arguments.getBoolean(EXTRA_OFFICIAL_KEY_ONLY, false)
-                accountsAdapter.addAll(ParcelableCredentialsUtils.getCredentialses(context, false, officialKeyOnly))
+                accountsAdapter.addAll(AccountUtils.getAllAccountDetails(AccountManager.get(context)).filter {
+                    if (officialKeyOnly && !it.isOfficial(context)) {
+                        return@filter false
+                    }
+                    return@filter true
+                })
                 accountsAdapter.setDummyItemText(R.string.activated_accounts)
 
                 tab.arguments?.accountKeys?.firstOrNull()?.let { key ->

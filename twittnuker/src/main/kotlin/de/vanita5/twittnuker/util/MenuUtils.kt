@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util
 
+import android.accounts.AccountManager
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -53,9 +54,9 @@ import de.vanita5.twittnuker.graphic.ActionIconDrawable
 import de.vanita5.twittnuker.graphic.PaddingDrawable
 import de.vanita5.twittnuker.menu.FavoriteItemProvider
 import de.vanita5.twittnuker.menu.SupportStatusShareProvider
-import de.vanita5.twittnuker.model.ParcelableCredentials
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo
 
 object MenuUtils {
@@ -112,7 +113,7 @@ object MenuUtils {
                        menu: Menu,
                        status: ParcelableStatus,
                        twitter: AsyncTwitterWrapper) {
-        val account = ParcelableCredentialsUtils.getCredentials(context,
+        val account = AccountUtils.getAccountDetails(AccountManager.get(context),
                 status.account_key) ?: return
         setupForStatus(context, preferences, menu, status, account, twitter)
     }
@@ -122,7 +123,7 @@ object MenuUtils {
                        preferences: SharedPreferencesWrapper,
                        menu: Menu,
                        status: ParcelableStatus,
-                       account: ParcelableCredentials,
+                       details: AccountDetails,
                        twitter: AsyncTwitterWrapper) {
         if (menu is ContextMenu) {
             menu.setHeaderTitle(context.getString(R.string.status_menu_title_format,
@@ -192,8 +193,7 @@ object MenuUtils {
         }
         val translate = menu.findItem(R.id.translate)
         if (translate != null) {
-            val isOfficialKey = Utils.isOfficialCredentials(context, account)
-            val prefs = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+            val isOfficialKey = Utils.isOfficialCredentials(context, details)
             setItemAvailability(menu, R.id.translate, isOfficialKey)
         }
         val shareItem = menu.findItem(R.id.share)

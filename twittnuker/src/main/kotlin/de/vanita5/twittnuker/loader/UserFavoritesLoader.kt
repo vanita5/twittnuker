@@ -32,11 +32,9 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.model.ParcelableAccount
-import de.vanita5.twittnuker.model.ParcelableCredentials
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 
 class UserFavoritesLoader(
@@ -56,7 +54,7 @@ class UserFavoritesLoader(
         tabPosition, fromUser, loadingMore) {
 
     @Throws(MicroBlogException::class)
-    public override fun getStatuses(microBlog: MicroBlog, credentials: ParcelableCredentials, paging: Paging): ResponseList<Status> {
+    public override fun getStatuses(microBlog: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<Status> {
         if (userKey != null) {
             return microBlog.getFavorites(userKey.id, paging)
         } else if (screenName != null) {
@@ -70,8 +68,8 @@ class UserFavoritesLoader(
         return InternalTwitterContentUtils.isFiltered(database, status, false)
     }
 
-    override fun processPaging(credentials: ParcelableCredentials, loadItemLimit: Int, paging: Paging) {
-        when (ParcelableAccountUtils.getAccountType(credentials)) {
+    override fun processPaging(details: AccountDetails, loadItemLimit: Int, paging: Paging) {
+        when (details.type) {
             AccountType.FANFOU -> {
                 paging.setCount(loadItemLimit)
                 if (page > 0) {
@@ -79,7 +77,7 @@ class UserFavoritesLoader(
                 }
             }
             else -> {
-                super.processPaging(credentials, loadItemLimit, paging)
+                super.processPaging(details, loadItemLimit, paging)
             }
         }
     }

@@ -29,8 +29,7 @@ import android.text.TextUtils;
 import com.twitter.Validator;
 
 import de.vanita5.twittnuker.annotation.AccountType;
-import de.vanita5.twittnuker.model.ParcelableAccount;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.account.StatusNetAccountExtras;
 
 public class TwidereValidator {
@@ -41,10 +40,10 @@ public class TwidereValidator {
         mValidator = new Validator();
     }
 
-    public static int getTextLimit(@NonNull ParcelableCredentials[] credentials) {
+    public static int getTextLimit(@NonNull AccountDetails[] credentials) {
         int limit = -1;
-        for (ParcelableCredentials credential : credentials) {
-            int currentLimit = getTextLimit(credential);
+        for (AccountDetails details : credentials) {
+            int currentLimit = getTextLimit(details);
             if (currentLimit != 0) {
                 if (limit <= 0) {
                     limit = currentLimit;
@@ -60,14 +59,13 @@ public class TwidereValidator {
      * @param credentials Account for getting limit
      * @return Text limit, <= 0 if no limit
      */
-    public static int getTextLimit(@NonNull ParcelableCredentials credentials) {
-        if (credentials.account_type == null) {
+    public static int getTextLimit(@NonNull AccountDetails credentials) {
+        if (credentials.type == null) {
             return Validator.MAX_TWEET_LENGTH;
         }
-        switch (credentials.account_type) {
+        switch (credentials.type) {
             case AccountType.STATUSNET: {
-                StatusNetAccountExtras extra = JsonSerializer.parse(credentials.account_extras,
-                        StatusNetAccountExtras.class);
+                StatusNetAccountExtras extra = (StatusNetAccountExtras) credentials.extras;
                 if (extra != null) {
                     return extra.getTextLimit();
                 }

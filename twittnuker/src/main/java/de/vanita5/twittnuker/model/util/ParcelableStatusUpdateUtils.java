@@ -22,10 +22,11 @@
 
 package de.vanita5.twittnuker.model.util;
 
+import android.accounts.AccountManager;
 import android.content.Context;
 
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.Draft;
-import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
 
@@ -36,9 +37,9 @@ public class ParcelableStatusUpdateUtils {
     public static ParcelableStatusUpdate fromDraftItem(final Context context, final Draft draft) {
         ParcelableStatusUpdate statusUpdate = new ParcelableStatusUpdate();
         if (draft.account_keys != null) {
-            statusUpdate.accounts = ParcelableAccountUtils.getAccounts(context, draft.account_keys);
+            statusUpdate.accounts = AccountUtils.getAllAccountDetails(AccountManager.get(context), draft.account_keys);
         } else {
-            statusUpdate.accounts = new ParcelableAccount[0];
+            statusUpdate.accounts = new AccountDetails[0];
         }
         statusUpdate.text = draft.text;
         statusUpdate.location = draft.location;

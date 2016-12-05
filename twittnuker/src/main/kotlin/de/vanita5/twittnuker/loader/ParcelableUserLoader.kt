@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.loader
 
+import android.accounts.AccountManager
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.content.AsyncTaskLoader
@@ -34,15 +35,17 @@ import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
+import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.model.*
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.task.UpdateAccountInfoTask
 import de.vanita5.twittnuker.util.ContentValuesCreator.createCachedUser
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.TwitterWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -69,29 +72,27 @@ class ParcelableUserLoader(
         val context = context
         val resolver = context.contentResolver
         val accountKey = accountKey
-        var credentials: ParcelableCredentials? = null
-        for (cred in ParcelableCredentialsUtils.getCredentialses(context)) {
-            if (cred.account_key == accountKey) {
-                credentials = cred
-                break
-            } else if (cred.account_user != null && cred.account_user!!.account_key == accountKey) {
-                credentials = cred
-                break
+        val am = AccountManager.get(context)
+        val details = AccountUtils.getAllAccountDetails(am, AccountUtils.getAccounts(am)).firstOrNull {
+            if (it.key == accountKey) {
+                return@firstOrNull true
+            } else if (it.user.account_key == accountKey) {
+                return@firstOrNull true
             }
-        }
-        if (credentials == null) return SingleResponse()
+            return@firstOrNull false
+        } ?: return SingleResponse()
         if (!omitIntentExtra && extras != null) {
             val user = extras.getParcelable<ParcelableUser>(EXTRA_USER)
             if (user != null) {
                 val values = ParcelableUserValuesCreator.create(user)
                 resolver.insert(CachedUsers.CONTENT_URI, values)
-                ParcelableUserUtils.updateExtraInformation(user, credentials, userColorNameManager)
+                ParcelableUserUtils.updateExtraInformation(user, details, userColorNameManager)
                 val response = SingleResponse(user)
-                response.extras.putParcelable(EXTRA_ACCOUNT, credentials)
+                response.extras.putParcelable(EXTRA_ACCOUNT, details)
                 return response
             }
         }
-        val twitter = MicroBlogAPIFactory.getInstance(context, credentials, true, true) ?: return SingleResponse()
+        val twitter = details.credentials.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
         if (loadFromCache) {
             val where: Expression
             val whereArgs: Array<String>
@@ -122,9 +123,9 @@ class ParcelableUserLoader(
                         val user = indices.newObject(cur)
                         if (TextUtils.equals(UserKeyUtils.getUserHost(user), user.key.host)) {
                             user.account_key = accountKey
-                            user.account_color = credentials.color
+                            user.account_color = details.color
                             val response = SingleResponse(user)
-                            response.extras.putParcelable(EXTRA_ACCOUNT, credentials)
+                            response.extras.putParcelable(EXTRA_ACCOUNT, details)
                             return response
                         }
                         cur.moveToNext()
@@ -143,22 +144,21 @@ class ParcelableUserLoader(
                 if (extras != null) {
                     profileUrl = extras.getString(EXTRA_PROFILE_URL)
                 }
-                if (MicroBlogAPIFactory.isStatusNetCredentials(credentials) && userKey != null &&
-                        profileUrl != null && !TextUtils.equals(credentials.account_key.host,
-                        userKey.host)) {
+                if (details.type == AccountType.STATUSNET && userKey != null && profileUrl != null
+                        && details.key.host != userKey.host) {
                     twitterUser = twitter.showExternalProfile(profileUrl)
                 } else {
                     val id = userKey?.id
                     twitterUser = TwitterWrapper.tryShowUser(twitter, id, screenName,
-                            credentials.account_type)
+                            details.type)
                 }
             }
             val cachedUserValues = createCachedUser(twitterUser)
             resolver.insert(CachedUsers.CONTENT_URI, cachedUserValues)
             val user = ParcelableUserUtils.fromUser(twitterUser, accountKey)
-            ParcelableUserUtils.updateExtraInformation(user, credentials, userColorNameManager)
+            ParcelableUserUtils.updateExtraInformation(user, details, userColorNameManager)
             val response = SingleResponse.Companion.getInstance(user)
-            response.extras.putParcelable(EXTRA_ACCOUNT, credentials)
+            response.extras.putParcelable(EXTRA_ACCOUNT, details)
             return response
         } catch (e: MicroBlogException) {
             Log.w(LOGTAG, e)

@@ -53,6 +53,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
@@ -137,7 +138,7 @@ class UpdateStatusTask(
             val exception = result.exceptions[i]
             if (exception != null && !isDuplicate(exception)) {
                 hasError = true
-                failedAccounts.add(update.accounts[i].account_key)
+                failedAccounts.add(update.accounts[i].key)
             }
         }
         val cr = context.contentResolver
@@ -178,7 +179,7 @@ class UpdateStatusTask(
         for (i in 0..pending.length - 1) {
             val account = update.accounts[i]
             // Skip upload if shared media found
-            val accountKey = account.account_key
+            val accountKey = account.key
             var uploadResult: MediaUploadResult? = sharedMedia[accountKey]
             if (uploadResult == null) {
                 uploadResult = uploader.upload(update, accountKey, media)
@@ -208,7 +209,7 @@ class UpdateStatusTask(
         for (i in 0..pending.length - 1) {
             val account = update.accounts[i]
             // Skip upload if this shared media found
-            val accountKey = account.account_key
+            val accountKey = account.key
             var shortenResult: StatusShortenResult? = sharedShortened[accountKey]
             if (shortenResult == null) {
                 shortenResult = shortener.shorten(update, accountKey, pending.overrideTexts[i])
@@ -240,10 +241,10 @@ class UpdateStatusTask(
 
         for (i in 0 until pendingUpdate.length) {
             val account = statusUpdate.accounts[i]
-            val microBlog = MicroBlogAPIFactory.getInstance(context, account.account_key, true)
+            val microBlog = MicroBlogAPIFactory.getInstance(context, account.key, true)
             var bodyAndSize: Pair<Body, Point>? = null
             try {
-                when (ParcelableAccountUtils.getAccountType(account)) {
+                when (AccountUtils.getAccountType(account)) {
                     AccountType.FANFOU -> {
                         // Call uploadPhoto if media present
                         if (!ArrayUtils.isEmpty(statusUpdate.media)) {
@@ -264,14 +265,14 @@ class UpdateStatusTask(
                                 val requestResult = microBlog.uploadPhoto(photoUpdate)
 
                                 result.statuses[i] = ParcelableStatusUtils.fromStatus(requestResult,
-                                        account.account_key, false)
+                                        account.key, false)
                             }
                         } else {
                             val requestResult = twitterUpdateStatus(microBlog,
                                     statusUpdate, pendingUpdate, pendingUpdate.overrideTexts[i], i)
 
                             result.statuses[i] = ParcelableStatusUtils.fromStatus(requestResult,
-                                    account.account_key, false)
+                                    account.key, false)
                         }
                     }
                     else -> {
@@ -279,7 +280,7 @@ class UpdateStatusTask(
                                 pendingUpdate, pendingUpdate.overrideTexts[i], i)
 
                         result.statuses[i] = ParcelableStatusUtils.fromStatus(requestResult,
-                                account.account_key, false)
+                                account.key, false)
                     }
                 }
             } catch (e: MicroBlogException) {
@@ -299,18 +300,18 @@ class UpdateStatusTask(
         // Return empty array if no media attached
         if (ArrayUtils.isEmpty(update.media)) return
         val ownersList = update.accounts.filter {
-            AccountType.TWITTER == ParcelableAccountUtils.getAccountType(it)
-        }.map(ParcelableAccount::account_key)
+            AccountType.TWITTER == AccountUtils.getAccountType(it)
+        }.map(AccountDetails::key)
         val ownerIds = ownersList.map {
             it.id
         }.toTypedArray()
         for (i in 0..pendingUpdate.length - 1) {
             val account = update.accounts[i]
             val mediaIds: Array<String>?
-            when (ParcelableAccountUtils.getAccountType(account)) {
+            when (AccountUtils.getAccountType(account)) {
                 AccountType.TWITTER -> {
                     val upload = MicroBlogAPIFactory.getInstance(context,
-                            account.account_key, true, true, TwitterUpload::class.java)!!
+                            account.key, true, true, TwitterUpload::class.java)!!
                     if (pendingUpdate.sharedMediaIds != null) {
                         mediaIds = pendingUpdate.sharedMediaIds
                     } else {
@@ -325,7 +326,7 @@ class UpdateStatusTask(
                 AccountType.STATUSNET -> {
                     // TODO use their native API
                     val upload = MicroBlogAPIFactory.getInstance(context,
-                            account.account_key, true, true, TwitterUpload::class.java)!!
+                            account.key, true, true, TwitterUpload::class.java)!!
                     mediaIds = uploadAllMediaShared(upload, update, ownerIds, false)
                 }
                 else -> {
@@ -525,7 +526,7 @@ class UpdateStatusTask(
 
     private fun saveDraft(@Draft.Action draftAction: String?, statusUpdate: ParcelableStatusUpdate): Long {
         val draft = Draft()
-        draft.account_keys = ParcelableAccountUtils.getAccountKeys(statusUpdate.accounts)
+        draft.account_keys = statusUpdate.accounts.map { it.key }.toTypedArray()
         if (draftAction != null) {
             draft.action_type = draftAction
         } else {

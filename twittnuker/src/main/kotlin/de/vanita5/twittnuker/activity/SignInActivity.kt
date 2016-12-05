@@ -71,9 +71,9 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.iface.APIEditorActivity
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.AuthTypeInt
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
-import de.vanita5.twittnuker.model.ParcelableCredentials.AuthTypeInt
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
@@ -83,7 +83,10 @@ import de.vanita5.twittnuker.model.account.cred.BasicCredentials
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
-import de.vanita5.twittnuker.model.util.*
+import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils
+import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator.*
@@ -561,7 +564,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
             val userId = apiUser.id!!
             val accountKey = UserKey(userId, UserKeyUtils.getUserHost(apiUser))
             val user = ParcelableUserUtils.fromUser(apiUser, accountKey)
-            val account = ParcelableAccountUtils.getAccount(context, accountKey)
+            val account = AccountUtils.getAccount(AccountManager.get(context), accountKey)
             if (account != null) {
                 color = account.color
             }
@@ -857,7 +860,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
             val accountType = SignInActivity.detectAccountType(twitter, apiUser)
             val accountKey = UserKey(userId, UserKeyUtils.getUserHost(apiUser))
             val user = ParcelableUserUtils.fromUser(apiUser, accountKey)
-            val account = ParcelableAccountUtils.getAccount(activity, accountKey)
+            val account = AccountUtils.getAccount(AccountManager.get(activity), accountKey)
             if (account != null) {
                 color = account.color
             }
@@ -885,7 +888,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
             val accountType = SignInActivity.detectAccountType(twitter, apiUser)
             val accountKey = UserKey(userId, UserKeyUtils.getUserHost(apiUser))
             val user = ParcelableUserUtils.fromUser(apiUser, accountKey)
-            val account = ParcelableAccountUtils.getAccount(activity, accountKey)
+            val account = AccountUtils.getAccountDetails(AccountManager.get(activity), accountKey)
             if (account != null) {
                 color = account.color
             }
@@ -911,7 +914,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
             val accountType = SignInActivity.detectAccountType(twitter, apiUser)
             val accountKey = UserKey(userId, UserKeyUtils.getUserHost(apiUser))
             val user = ParcelableUserUtils.fromUser(apiUser, accountKey)
-            val account = ParcelableAccountUtils.getAccount(activity, accountKey)
+            val account = AccountUtils.getAccountDetails(AccountManager.get(activity), accountKey)
             if (account != null) {
                 color = account.color
             }

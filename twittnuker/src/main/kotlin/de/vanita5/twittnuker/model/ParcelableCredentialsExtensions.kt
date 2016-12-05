@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.model
 import android.accounts.Account
 import android.accounts.AccountManager
 import com.bluelinelabs.logansquare.LoganSquare
+import de.vanita5.twittnuker.annotation.AuthTypeInt
 import de.vanita5.twittnuker.extension.getAccountExtras
 import de.vanita5.twittnuker.extension.getCredentials
 import de.vanita5.twittnuker.extension.getCredentialsType
@@ -42,12 +43,12 @@ fun Account.toParcelableCredentials(am: AccountManager): ParcelableCredentials {
 internal fun Account.writeParcelableCredentials(am: AccountManager, credentials: ParcelableCredentials) {
     writeParcelableAccount(am, credentials)
     credentials.auth_type = when (getCredentialsType(am)) {
-        Credentials.Type.OAUTH -> ParcelableCredentials.AuthTypeInt.OAUTH
-        Credentials.Type.XAUTH -> ParcelableCredentials.AuthTypeInt.XAUTH
-        Credentials.Type.BASIC -> ParcelableCredentials.AuthTypeInt.BASIC
-        Credentials.Type.EMPTY -> ParcelableCredentials.AuthTypeInt.TWIP_O_MODE
-        Credentials.Type.OAUTH2 -> ParcelableCredentials.AuthTypeInt.OAUTH2
-        else -> ParcelableCredentials.AuthTypeInt.OAUTH
+        Credentials.Type.OAUTH -> AuthTypeInt.OAUTH
+        Credentials.Type.XAUTH -> AuthTypeInt.XAUTH
+        Credentials.Type.BASIC -> AuthTypeInt.BASIC
+        Credentials.Type.EMPTY -> AuthTypeInt.TWIP_O_MODE
+        Credentials.Type.OAUTH2 -> AuthTypeInt.OAUTH2
+        else -> AuthTypeInt.OAUTH
     }
     val extras = getAccountExtras(am)
     if (extras != null) {

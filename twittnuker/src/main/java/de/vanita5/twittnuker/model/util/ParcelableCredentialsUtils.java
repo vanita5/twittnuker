@@ -30,7 +30,7 @@ import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
-import de.vanita5.twittnuker.model.ParcelableCredentials.AuthTypeInt;
+import de.vanita5.twittnuker.annotation.AuthTypeInt;
 import de.vanita5.twittnuker.model.ParcelableCredentialsExtensionsKt;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
@@ -80,7 +80,7 @@ public class ParcelableCredentialsUtils {
 
     public static ParcelableCredentials[] getCredentialses(@NonNull final Context context) {
         final AccountManager am = AccountManager.get(context);
-        final Account[] accounts = am.getAccountsByType(TwittnukerConstants.ACCOUNT_TYPE);
+        final Account[] accounts = AccountUtils.getAccounts(am);
         final ParcelableCredentials[] credentialses = new ParcelableCredentials[accounts.length];
         for (int i = 0; i < accounts.length; i++) {
             credentialses[i] = ParcelableCredentialsExtensionsKt.toParcelableCredentials(accounts[i], am);

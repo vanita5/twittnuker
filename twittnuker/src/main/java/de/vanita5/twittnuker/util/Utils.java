@@ -91,7 +91,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
 import de.vanita5.twittnuker.annotation.AccountType;
@@ -110,8 +109,10 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
+import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
 import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.ParcelableCredentials;
@@ -291,7 +292,7 @@ public final class Utils implements Constants {
         adapter.notifyDataSetChanged();
     }
 
-    public static int[] getAccountColors(@Nullable final ParcelableAccount[] accounts) {
+    public static int[] getAccountColors(@Nullable final AccountDetails[] accounts) {
         if (accounts == null) return null;
         final int[] colors = new int[accounts.length];
         for (int i = 0, j = accounts.length; i < j; i++) {
@@ -476,23 +477,15 @@ public final class Utils implements Constants {
     }
 
     public static boolean isOfficialCredentials(@NonNull final Context context, final UserKey accountKey) {
-        final ParcelableCredentials credentials = ParcelableCredentialsUtils.getCredentials(context, accountKey);
-        if (credentials == null) return false;
-        return isOfficialCredentials(context, credentials);
+        final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey);
+        if (details == null) return false;
+        return AccountDetailsExtensionsKt.isOfficial(details, context);
     }
 
+
     public static boolean isOfficialCredentials(@NonNull final Context context,
-                                                @NonNull final ParcelableCredentials account) {
-        if (AccountType.TWITTER.equals(account.account_type)) {
-            final TwitterAccountExtras extra = JsonSerializer.parse(account.account_extras,
-                    TwitterAccountExtras.class);
-            if (extra != null) {
-                return extra.isOfficialCredentials();
-            }
-        }
-        final boolean isOAuth = ParcelableCredentialsUtils.isOAuth(account.auth_type);
-        final String consumerKey = account.consumer_key, consumerSecret = account.consumer_secret;
-        return isOAuth && TwitterContentUtils.isOfficialKey(context, consumerKey, consumerSecret);
+                                                @NonNull final AccountDetails account) {
+        return AccountDetailsExtensionsKt.isOfficial(account, context);
     }
 
     public static boolean setLastSeen(Context context, ParcelableUserMention[] entities, long time) {
@@ -871,19 +864,14 @@ public final class Utils implements Constants {
         return plugged || level / scale > 0.15f;
     }
 
-    public static boolean isMyAccount(@NonNull final Context context, @Nullable final UserKey accountKey) {
-        if (accountKey == null) return false;
+    public static boolean isMyAccount(@NonNull final Context context, @NonNull final UserKey accountKey) {
         final AccountManager am = AccountManager.get(context);
         return AccountUtils.findByAccountKey(am, accountKey) != null;
     }
 
-    public static boolean isMyAccount(final Context context, final String screenName) {
-        for (ParcelableAccount account : ParcelableAccountUtils.getAccounts(context)) {
-            if (StringUtils.equalsIgnoreCase(account.screen_name, screenName)) {
-                return true;
-            }
-        }
-        return false;
+    public static boolean isMyAccount(@NonNull final Context context, @NonNull final String screenName) {
+        final AccountManager am = AccountManager.get(context);
+        return AccountUtils.findByScreenName(am, screenName) != null;
     }
 
     public static boolean isMyRetweet(final ParcelableStatus status) {

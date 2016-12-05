@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -50,12 +51,14 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.activity.ThemedImagePickerActivity
+import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.model.ParcelableAccount
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.task.UpdateAccountInfoTask
 import de.vanita5.twittnuker.task.UpdateProfileBackgroundImageTask
@@ -348,9 +351,8 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
     ) : AbstractTask<Context, SingleResponse<ParcelableUser>, UserProfileEditorFragment>() {
 
         override fun doLongOperation(context: Context): SingleResponse<ParcelableUser> {
-            val credentials = ParcelableCredentialsUtils.getCredentials(context, accountKey) ?: return SingleResponse.Companion.getInstance<ParcelableUser>()
-            val twitter = MicroBlogAPIFactory.getInstance(context, credentials,
-                    true, true) ?: return SingleResponse.Companion.getInstance<ParcelableUser>()
+            val details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey) ?: return SingleResponse.getInstance()
+            val microBlog = details.credentials.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
             try {
                 var user: User? = null
                 if (isProfileChanged) {
@@ -361,7 +363,7 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
                     profileUpdate.url(url)
                     profileUpdate.linkColor(linkColor)
                     profileUpdate.backgroundColor(backgroundColor)
-                    user = twitter.updateProfile(profileUpdate)
+                    user = microBlog.updateProfile(profileUpdate)
                 }
                 if (user == null) {
                     // User profile unchanged
@@ -369,7 +371,7 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
                 }
                 val response = SingleResponse.Companion.getInstance(
                         ParcelableUserUtils.fromUser(user, accountKey))
-                response.extras.putParcelable(EXTRA_ACCOUNT, credentials)
+                response.extras.putParcelable(EXTRA_ACCOUNT, details)
                 return response
             } catch (e: MicroBlogException) {
                 return SingleResponse.Companion.getInstance<ParcelableUser>(e)

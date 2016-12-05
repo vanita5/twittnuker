@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.util.media;
 
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -42,11 +43,12 @@ import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.restfu.oauth.OAuthAuthorization;
 import org.mariotaku.restfu.oauth.OAuthEndpoint;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.extension.CredentialsExtensionsKt;
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.CacheMetadata;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableMedia;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils;
+import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
@@ -109,15 +111,17 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
                                                              @Nullable Object extra) throws IOException {
         final Uri uri = Uri.parse(url);
         Authorization auth = null;
-        ParcelableCredentials account = null;
+        AccountDetails account = null;
         if (extra instanceof MediaExtra) {
             UserKey accountKey = ((MediaExtra) extra).getAccountKey();
             if (accountKey != null) {
-                account = ParcelableCredentialsUtils.getCredentials(mContext, accountKey);
-            auth = MicroBlogAPIFactory.getAuthorization(account);
+                account = AccountUtils.getAccountDetails(AccountManager.get(mContext), accountKey);
+                if (account != null) {
+                    auth = CredentialsExtensionsKt.getAuthorization(account.credentials);
+                }
             }
         }
-        final Uri modifiedUri = getReplacedUri(uri, account != null ? account.api_url_format : null);
+        final Uri modifiedUri = getReplacedUri(uri, account != null ? account.credentials.api_url_format : null);
         final MultiValueMap<String> additionalHeaders = new MultiValueMap<>();
         additionalHeaders.add("User-Agent", mUserAgent);
         final String method = GET.METHOD;
@@ -175,10 +179,10 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         return sb.toString();
     }
 
-    private boolean isAuthRequired(final Uri uri, @Nullable final ParcelableCredentials credentials) {
-        if (credentials == null) return false;
+    private boolean isAuthRequired(final Uri uri, @Nullable final AccountDetails details) {
+        if (details == null) return false;
         final String host = uri.getHost();
-        if (credentials.api_url_format != null && credentials.api_url_format.contains(host)) {
+        if (details.credentials.api_url_format != null && details.credentials.api_url_format.contains(host)) {
             return true;
         }
         return "ton.twitter.com".equalsIgnoreCase(host);

@@ -27,21 +27,18 @@ import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
 import android.text.TextUtils
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.isOfficial
 import org.mariotaku.commons.parcel.ParcelUtils
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.SearchQuery
 import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.model.ParcelableAccount
-import de.vanita5.twittnuker.model.ParcelableCredentials
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.Nullables
-import de.vanita5.twittnuker.util.Utils
 import java.util.*
 
 class ConversationLoader(
@@ -66,18 +63,16 @@ class ConversationLoader(
     }
 
     @Throws(MicroBlogException::class)
-    public override fun getStatuses(microBlog: MicroBlog,
-                                    credentials: ParcelableCredentials,
-                                    paging: Paging): List<Status> {
+    public override fun getStatuses(microBlog: MicroBlog, details: AccountDetails, paging: Paging): List<Status> {
         canLoadAllReplies = false
-        when (ParcelableAccountUtils.getAccountType(credentials)) {
+        when (details.type) {
             AccountType.TWITTER -> {
-                val isOfficial = Utils.isOfficialCredentials(context, credentials)
+                val isOfficial = details.isOfficial(context)
                 canLoadAllReplies = isOfficial
                 if (isOfficial) {
                     return microBlog.showConversation(status.id, paging)
                 } else {
-                    return showConversationCompat(microBlog, credentials, status, true)
+                    return showConversationCompat(microBlog, details, status, true)
                 }
             }
             AccountType.STATUSNET -> {
@@ -94,14 +89,14 @@ class ConversationLoader(
         }
         // Set to true because there's no conversation support on this platform
         canLoadAllReplies = true
-        return showConversationCompat(microBlog, credentials, status, false)
+        return showConversationCompat(microBlog, details, status, false)
     }
 
     @Throws(MicroBlogException::class)
     private fun showConversationCompat(twitter: MicroBlog,
-                                         credentials: ParcelableCredentials,
-                                         status: ParcelableStatus,
-                                         loadReplies: Boolean): List<Status> {
+                                       details: AccountDetails,
+                                       status: ParcelableStatus,
+                                       loadReplies: Boolean): List<Status> {
         val statuses = ArrayList<Status>()
         val noSinceMaxId = maxId == null && sinceId == null
         // Load conversations
@@ -119,7 +114,7 @@ class ConversationLoader(
             // Load replies
             if (sinceId != null && sinceSortId > status.sort_id || noSinceMaxId) {
                 val query = SearchQuery()
-                if (MicroBlogAPIFactory.isTwitterCredentials(credentials)) {
+                if (details.type == AccountType.TWITTER) {
                     query.query("to:${status.user_screen_name}")
                 } else {
                     query.query("@${status.user_screen_name}")

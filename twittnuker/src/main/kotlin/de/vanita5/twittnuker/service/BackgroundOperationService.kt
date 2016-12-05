@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.service
 
+import android.accounts.AccountManager
 import android.app.IntentService
 import android.app.Notification
 import android.app.Service
@@ -52,17 +53,18 @@ import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse
 import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse.ProcessingInfo
 import org.mariotaku.restfu.http.ContentType
 import org.mariotaku.restfu.http.mime.Body
-import org.mariotaku.restfu.http.mime.FileBody
 import org.mariotaku.restfu.http.mime.SimpleBody
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableCredentialsUtils
 import de.vanita5.twittnuker.model.util.ParcelableDirectMessageUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages
@@ -339,15 +341,13 @@ class BackgroundOperationService : IntentService("background_operation"), Consta
                                   recipientId: String,
                                   text: String,
                                   imageUri: String?): SingleResponse<ParcelableDirectMessage> {
-        val credentials = ParcelableCredentialsUtils.getCredentials(this,
+        val details = AccountUtils.getAccountDetails(AccountManager.get(this),
                 accountKey) ?: return SingleResponse.getInstance<ParcelableDirectMessage>()
-        val twitter = MicroBlogAPIFactory.getInstance(this, credentials, true, true)
-        val twitterUpload = MicroBlogAPIFactory.getInstance(this, credentials,
-                true, true, TwitterUpload::class.java)
-        if (twitter == null || twitterUpload == null) return SingleResponse.getInstance<ParcelableDirectMessage>()
+        val twitter = details.credentials.newMicroBlogInstance(context = this, cls = MicroBlog::class.java)
+        val twitterUpload = details.credentials.newMicroBlogInstance(context = this, cls = TwitterUpload::class.java)
         try {
             val directMessage: ParcelableDirectMessage
-            when (ParcelableAccountUtils.getAccountType(credentials)) {
+            when (AccountUtils.getAccountType(details)) {
                 AccountType.FANFOU -> {
                     if (imageUri != null) {
                         throw MicroBlogException("Can't send image DM on Fanfou")

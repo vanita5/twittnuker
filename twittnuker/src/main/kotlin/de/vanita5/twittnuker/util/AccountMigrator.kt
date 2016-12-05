@@ -31,7 +31,7 @@ import com.bluelinelabs.logansquare.LoganSquare
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.extension.model.account_name
 import de.vanita5.twittnuker.model.ParcelableCredentials
-import de.vanita5.twittnuker.model.ParcelableCredentials.AuthTypeInt
+import de.vanita5.twittnuker.annotation.AuthTypeInt
 import de.vanita5.twittnuker.model.ParcelableCredentialsCursorIndices
 import de.vanita5.twittnuker.model.account.cred.BasicCredentials
 import de.vanita5.twittnuker.model.account.cred.Credentials

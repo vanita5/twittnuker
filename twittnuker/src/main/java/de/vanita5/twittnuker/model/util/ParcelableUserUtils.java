@@ -31,7 +31,7 @@ import android.text.TextUtils;
 import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.model.ParcelableAccount;
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.SpanItem;
 import de.vanita5.twittnuker.model.UserKey;
@@ -146,7 +146,7 @@ public class ParcelableUserUtils implements TwittnukerConstants{
         return null;
     }
 
-    public static void updateExtraInformation(ParcelableUser user, ParcelableAccount account, UserColorNameManager manager) {
+    public static void updateExtraInformation(ParcelableUser user, AccountDetails account, UserColorNameManager manager) {
         user.account_color = account.color;
         user.color = manager.getUserColor(user.key);
     }

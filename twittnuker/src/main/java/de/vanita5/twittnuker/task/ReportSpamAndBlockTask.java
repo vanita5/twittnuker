@@ -28,17 +28,16 @@ import android.support.annotation.NonNull;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.AccountDetails;
 
 public class ReportSpamAndBlockTask extends CreateUserBlockTask {
     public ReportSpamAndBlockTask(Context context) {
         super(context);
     }
 
-
     @NonNull
     @Override
-    protected User perform(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials,
+    protected User perform(@NonNull MicroBlog twitter, @NonNull AccountDetails details,
                            @NonNull Arguments args) throws MicroBlogException {
         return twitter.reportSpam(args.userKey.getId());
     }

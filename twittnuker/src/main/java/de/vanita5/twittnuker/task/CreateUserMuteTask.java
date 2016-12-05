@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
@@ -52,14 +52,14 @@ public class CreateUserMuteTask extends AbsFriendshipOperationTask {
 
     @NonNull
     @Override
-    protected User perform(@NonNull MicroBlog twitter, @NonNull ParcelableCredentials credentials,
+    protected User perform(@NonNull MicroBlog twitter, @NonNull AccountDetails details,
                            @NonNull Arguments args) throws MicroBlogException {
         return twitter.createMute(args.userKey.getId());
     }
 
     @Override
     protected void succeededWorker(@NonNull MicroBlog twitter,
-                                   @NonNull ParcelableCredentials credentials,
+                                   @NonNull AccountDetails details,
                                    @NonNull Arguments args, @NonNull ParcelableUser user) {
         final ContentResolver resolver = context.getContentResolver();
         Utils.setLastSeen(context, args.userKey, -1);

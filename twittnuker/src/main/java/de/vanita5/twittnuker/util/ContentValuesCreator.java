@@ -32,10 +32,10 @@ import de.vanita5.twittnuker.library.twitter.model.Trend;
 import de.vanita5.twittnuker.library.twitter.model.Trends;
 import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.ParcelableActivity;
 import de.vanita5.twittnuker.model.ParcelableActivityValuesCreator;
-import de.vanita5.twittnuker.model.ParcelableCredentials;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageValuesCreator;
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate;
@@ -158,15 +158,15 @@ public final class ContentValuesCreator implements TwittnukerConstants {
 
     @NonNull
     public static ContentValues createActivity(final ParcelableActivity activity,
-                                               final ParcelableCredentials credentials,
+                                               final AccountDetails details,
                                                final UserColorNameManager manager) throws IOException {
         final ContentValues values = new ContentValues();
         final ParcelableStatus status = ParcelableActivityExtensionsKt.getActivityStatus(activity);
 
-        activity.account_color = credentials.color;
+        activity.account_color = details.color;
 
         if (status != null) {
-            ParcelableStatusUtils.INSTANCE.updateExtraInformation(status, credentials, manager);
+            ParcelableStatusUtils.INSTANCE.updateExtraInformation(status, details, manager);
 
             activity.status_id = status.id;
             activity.status_retweet_id = status.retweet_id;

@@ -32,13 +32,10 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.SearchQuery
 import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.model.ParcelableAccount
-import de.vanita5.twittnuker.model.ParcelableCredentials
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.ParcelableAccountUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 
 open class TweetSearchLoader(
         context: Context,
@@ -58,11 +55,11 @@ open class TweetSearchLoader(
 
     @Throws(MicroBlogException::class)
     public override fun getStatuses(microBlog: MicroBlog,
-                                    credentials: ParcelableCredentials,
+                                    details: AccountDetails,
                                     paging: Paging): List<Status> {
         if (query == null) throw MicroBlogException("Empty query")
-        val processedQuery = processQuery(credentials, query)
-        when (ParcelableAccountUtils.getAccountType(credentials)) {
+        val processedQuery = processQuery(details, query)
+        when (details.type) {
             AccountType.TWITTER -> {
                 val query = SearchQuery(processedQuery)
                 query.paging(paging)
@@ -78,8 +75,8 @@ open class TweetSearchLoader(
         throw MicroBlogException("Not implemented")
     }
 
-    protected open fun processQuery(credentials: ParcelableCredentials, query: String): String {
-        if (MicroBlogAPIFactory.isTwitterCredentials(credentials)) {
+    protected open fun processQuery(details: AccountDetails, query: String): String {
+        if (details.type == AccountType.TWITTER) {
             return String.format("%s exclude:retweets", query)
         }
         return query
@@ -90,15 +87,15 @@ open class TweetSearchLoader(
         return InternalTwitterContentUtils.isFiltered(database, status, true)
     }
 
-    override fun processPaging(credentials: ParcelableCredentials, loadItemLimit: Int, paging: Paging) {
-        if (MicroBlogAPIFactory.isStatusNetCredentials(credentials)) {
+    override fun processPaging(details: AccountDetails, loadItemLimit: Int, paging: Paging) {
+        if (details.type == AccountType.STATUSNET) {
             paging.setRpp(loadItemLimit)
             val page = page
             if (page > 0) {
                 paging.setPage(page)
             }
         } else {
-            super.processPaging(credentials, loadItemLimit, paging)
+            super.processPaging(details, loadItemLimit, paging)
         }
     }
 
