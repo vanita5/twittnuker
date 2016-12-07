@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.extension
 
 import android.accounts.Account
 import android.accounts.AccountManager
-import android.graphics.Color
 import android.support.annotation.ColorInt
 import com.bluelinelabs.logansquare.LoganSquare
 import org.mariotaku.ktextension.toInt
@@ -39,6 +38,7 @@ import de.vanita5.twittnuker.model.account.cred.BasicCredentials
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
+import de.vanita5.twittnuker.util.ParseUtils
 import de.vanita5.twittnuker.util.toHexColor
 
 
@@ -73,7 +73,7 @@ fun Account.setAccountUser(am: AccountManager, user: ParcelableUser) {
 
 @ColorInt
 fun Account.getColor(am: AccountManager): Int {
-    return Color.parseColor(am.getUserData(this, ACCOUNT_USER_DATA_COLOR))
+    return ParseUtils.parseColor(am.getUserData(this, ACCOUNT_USER_DATA_COLOR), 0)
 }
 
 fun Account.getPosition(am: AccountManager): Int {
