@@ -38,17 +38,17 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import java.io.IOException
 
-class UpdateAccountInfoTask(private val context: Context) : AbstractTask<Pair<AccountDetails, ParcelableUser>, Any, Any>() {
+class UpdateAccountInfoTask(private val context: Context) : AbstractTask<Pair<AccountDetails, ParcelableUser>, Any, Unit>() {
 
-    override fun doLongOperation(params: Pair<AccountDetails, ParcelableUser>): Any? {
+    override fun doLongOperation(params: Pair<AccountDetails, ParcelableUser>) {
         val resolver = context.contentResolver
         val details = params.first
         val user = params.second
         if (user.is_cache) {
-            return null
+            return
         }
         if (!user.key.maybeEquals(user.account_key)) {
-            return null
+            return
         }
 
         val am = AccountManager.get(context)
@@ -67,13 +67,10 @@ class UpdateAccountInfoTask(private val context: Context) : AbstractTask<Pair<Ac
         resolver.update(DirectMessages.Outbox.CONTENT_URI, accountKeyValues, accountKeyWhere, accountKeyWhereArgs)
         resolver.update(CachedRelationships.CONTENT_URI, accountKeyValues, accountKeyWhere, accountKeyWhereArgs)
 
-        updateTabs(context, resolver, user.key)
-
-
-        return null
+        updateTabs(resolver, user.key)
     }
 
-    private fun updateTabs(context: Context, resolver: ContentResolver, accountKey: UserKey) {
+    private fun updateTabs(resolver: ContentResolver, accountKey: UserKey) {
         val tabsCursor = resolver.query(Tabs.CONTENT_URI, Tabs.COLUMNS, null, null, null) ?: return
         try {
             val indices = TabCursorIndices(tabsCursor)
@@ -93,12 +90,9 @@ class UpdateAccountInfoTask(private val context: Context) : AbstractTask<Pair<Ac
                 tabsCursor.moveToNext()
             }
             val where = Expression.equalsArgs(Tabs._ID).sql
-            var i = 0
-            val j = values.size()
-            while (i < j) {
+            for (i in 0 until values.size()) {
                 val whereArgs = arrayOf(values.keyAt(i).toString())
                 resolver.update(Tabs.CONTENT_URI, values.valueAt(i), where, whereArgs)
-                i++
             }
         } catch (e: IOException) {
             // Ignore
