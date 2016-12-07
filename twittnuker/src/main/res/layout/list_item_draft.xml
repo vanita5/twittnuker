@@ -21,16 +21,18 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<de.vanita5.twittnuker.view.ColorLabelLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorLabelLinearLayout
+    android:id="@+id/content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:activatedBackgroundIndicator"
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical"
     android:padding="@dimen/element_spacing_normal"
+    android:tag="tint_background|accent_color"
     app:ignorePadding="true"
     tools:context=".adapter.DraftsAdapter">
 
