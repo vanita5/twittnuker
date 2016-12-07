@@ -219,3 +219,6 @@
 -dontwarn de.vanita5.twittnuker.fragment.ItemsListFragment
 
 -keep class com.afollestad.** { *; }
+
+# Dropbox
+-dontwarn javax.servlet.**
