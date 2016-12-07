@@ -20,28 +20,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.mariotaku.ktextension
+package de.vanita5.twittnuker.extension.model
 
-fun String?.toLong(def: Long): Long {
-    try {
-        return this?.toLong() ?: def
-    } catch (e: NumberFormatException) {
-        return def
-    }
-}
+import android.content.ContentResolver
+import android.graphics.BitmapFactory
+import android.net.Uri
+import de.vanita5.twittnuker.model.ParcelableMedia
+import de.vanita5.twittnuker.model.ParcelableMediaUpdate
+import de.vanita5.twittnuker.util.BitmapFactoryUtils
 
-fun String?.toInt(def: Int): Int {
-    try {
-        return this?.toInt() ?: def
-    } catch (e: NumberFormatException) {
-        return def
-    }
-}
-
-fun String.toDoubleOrNull(): Double? {
-    try {
-        return toDouble()
-    } catch (e: NumberFormatException) {
-        return null
+fun ParcelableMediaUpdate.getMimeType(resolver: ContentResolver): String? {
+    val uri = Uri.parse(this.uri)
+    return resolver.getType(uri) ?: when (type) {
+        ParcelableMedia.Type.IMAGE -> {
+            val o = BitmapFactory.Options()
+            o.inJustDecodeBounds = true
+            BitmapFactoryUtils.decodeUri(resolver, uri, null, o)
+            return o.outMimeType
+        }
+        else -> return null
     }
 }

@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent;
-import de.vanita5.twittnuker.provider.TwidereDataStore;
+import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
@@ -63,7 +63,7 @@ public class CreateUserMuteTask extends AbsFriendshipOperationTask {
                                    @NonNull Arguments args, @NonNull ParcelableUser user) {
         final ContentResolver resolver = context.getContentResolver();
         Utils.setLastSeen(context, args.userKey, -1);
-        for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
+        for (final Uri uri : DataStoreUtils.STATUSES_URIS) {
             final Expression where = Expression.and(
                     Expression.equalsArgs(Statuses.ACCOUNT_KEY),
                     Expression.equalsArgs(Statuses.USER_KEY)
@@ -72,7 +72,7 @@ public class CreateUserMuteTask extends AbsFriendshipOperationTask {
             resolver.delete(uri, where.getSQL(), whereArgs);
         }
         if (!user.is_following) {
-            for (final Uri uri : TwidereDataStore.ACTIVITIES_URIS) {
+            for (final Uri uri : DataStoreUtils.ACTIVITIES_URIS) {
                 final Expression where = Expression.and(
                         Expression.equalsArgs(Activities.ACCOUNT_KEY),
                         Expression.equalsArgs(Activities.STATUS_USER_KEY)

@@ -20,28 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.mariotaku.ktextension
+package de.vanita5.twittnuker.util.collection;
 
-fun String?.toLong(def: Long): Long {
-    try {
-        return this?.toLong() ?: def
-    } catch (e: NumberFormatException) {
-        return def
-    }
-}
+import java.util.HashMap;
 
-fun String?.toInt(def: Int): Int {
-    try {
-        return this?.toInt() ?: def
-    } catch (e: NumberFormatException) {
-        return def
+public class NonEmptyHashMap<K, V> extends HashMap<K, V> {
+    @Override
+    public V put(K key, V value) {
+        if (value == null) {
+            remove(key);
+            return null;
+        }
+        return super.put(key, value);
     }
-}
 
-fun String.toDoubleOrNull(): Double? {
-    try {
-        return toDouble()
-    } catch (e: NumberFormatException) {
-        return null
-    }
 }

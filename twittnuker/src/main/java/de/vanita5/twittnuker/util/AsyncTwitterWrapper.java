@@ -44,8 +44,6 @@ import org.apache.commons.collections.primitives.IntList;
 import org.apache.commons.collections.primitives.LongList;
 import org.mariotaku.abstask.library.AbstractTask;
 import org.mariotaku.abstask.library.TaskStarter;
-import de.vanita5.twittnuker.annotation.AccountType;
-import de.vanita5.twittnuker.extension.CredentialsExtensionsKt;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.http.HttpResponseCode;
@@ -62,6 +60,8 @@ import de.vanita5.twittnuker.library.twitter.model.UserListUpdate;
 import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.annotation.AccountType;
+import de.vanita5.twittnuker.extension.CredentialsExtensionsKt;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableActivity;
@@ -92,7 +92,6 @@ import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
-import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
@@ -782,7 +781,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 ).getSQL();
                 final String[] statusWhereArgs = {mAccountKey.toString(), String.valueOf(mStatusId),
                         String.valueOf(mStatusId)};
-                for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
+                for (final Uri uri : DataStoreUtils.STATUSES_URIS) {
                     resolver.update(uri, values, statusWhere, statusWhereArgs);
                 }
                 DataStoreUtils.updateActivityStatus(resolver, mAccountKey, mStatusId, new DataStoreUtils.UpdateActivityAction() {
@@ -855,7 +854,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         }
 
         private void deleteCaches(final List<String> list) {
-            for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
+            for (final Uri uri : DataStoreUtils.STATUSES_URIS) {
                 // TODO delete caches
                 // ContentResolverUtils.bulkDelete(mResolver, uri, Statuses.USER_ID, list,
                 // Statuses.ACCOUNT_ID + " = " + mAccountKey, false);
@@ -1256,7 +1255,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                         Expression.or(Expression.equalsArgs(Statuses.STATUS_ID),
                                 Expression.equalsArgs(Statuses.RETWEET_ID)));
                 final String[] whereArgs = {mAccountKey.toString(), mStatusId, mStatusId};
-                for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
+                for (final Uri uri : DataStoreUtils.STATUSES_URIS) {
                     resolver.update(uri, values, where.getSQL(), whereArgs);
                 }
 
@@ -1610,7 +1609,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                         Expression.equalsArgs(Statuses.RETWEET_ID)
                 );
                 final String[] whereArgs = {mStatusId, mStatusId};
-                for (final Uri uri : TwidereDataStore.STATUSES_URIS) {
+                for (final Uri uri : DataStoreUtils.STATUSES_URIS) {
                     resolver.update(uri, values, where.getSQL(), whereArgs);
                 }
                 DataStoreUtils.updateActivityStatus(resolver, mAccountKey, mStatusId, new DataStoreUtils.UpdateActivityAction() {

@@ -36,9 +36,9 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 
-import static de.vanita5.twittnuker.provider.TwidereDataStore.CACHE_URIS;
-import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_URIS;
-import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
+import static de.vanita5.twittnuker.util.DataStoreUtils.CACHE_URIS;
+import static de.vanita5.twittnuker.util.DataStoreUtils.DIRECT_MESSAGES_URIS;
+import static de.vanita5.twittnuker.util.DataStoreUtils.STATUSES_URIS;
 
 public class ClearDatabasesPreference extends AsyncTaskPreference implements Constants {
 

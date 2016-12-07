@@ -39,6 +39,7 @@ public class ParcelableMediaUpdate implements Parcelable {
     @NonNull
     @JsonField(name = "uri")
     public String uri;
+    @ParcelableMedia.Type
     @JsonField(name = "type")
     public int type;
 

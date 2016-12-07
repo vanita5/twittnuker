@@ -151,8 +151,8 @@ import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLException;
 
-import static de.vanita5.twittnuker.provider.TwidereDataStore.DIRECT_MESSAGES_URIS;
-import static de.vanita5.twittnuker.provider.TwidereDataStore.STATUSES_URIS;
+import static de.vanita5.twittnuker.util.DataStoreUtils.DIRECT_MESSAGES_URIS;
+import static de.vanita5.twittnuker.util.DataStoreUtils.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 
 public final class Utils implements Constants {

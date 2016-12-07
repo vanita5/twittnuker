@@ -20,28 +20,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.mariotaku.ktextension
+package de.vanita5.twittnuker.test.provider
 
-fun String?.toLong(def: Long): Long {
-    try {
-        return this?.toLong() ?: def
-    } catch (e: NumberFormatException) {
-        return def
-    }
-}
+import android.net.Uri
+import android.support.test.InstrumentationRegistry
+import android.support.test.runner.AndroidJUnit4
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import de.vanita5.twittnuker.provider.TwidereDataStore
 
-fun String?.toInt(def: Int): Int {
-    try {
-        return this?.toInt() ?: def
-    } catch (e: NumberFormatException) {
-        return def
-    }
-}
 
-fun String.toDoubleOrNull(): Double? {
-    try {
-        return toDouble()
-    } catch (e: NumberFormatException) {
-        return null
+@RunWith(AndroidJUnit4::class)
+class TwidereDataStoreTest {
+    @Test
+    fun testBaseUris() {
+        val context = InstrumentationRegistry.getTargetContext()
+        val resolver = context.contentResolver
+        Assert.assertEquals(TwidereDataStore.BASE_CONTENT_URI, Uri.parse("content://twidere"))
+        Assert.assertNull(resolver.query(TwidereDataStore.CONTENT_URI_NULL, null, null, null, null))
+        Assert.assertNotNull(resolver.query(TwidereDataStore.CONTENT_URI_EMPTY, null, null, null, null))
     }
 }
