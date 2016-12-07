@@ -29,6 +29,7 @@ import android.support.v4.content.AsyncTaskLoader
 import android.text.TextUtils
 import android.util.Log
 import org.mariotaku.abstask.library.TaskStarter
+import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Columns
@@ -38,7 +39,6 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.extension.newMicroBlogInstance
-import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
@@ -113,9 +113,8 @@ class ParcelableUserLoader(
             } else {
                 return SingleResponse()
             }
-            val cur = resolver.query(CachedUsers.CONTENT_URI, CachedUsers.COLUMNS,
-                    where.sql, whereArgs, null)
-            if (cur != null) {
+            val cur = resolver.query(CachedUsers.CONTENT_URI, CachedUsers.COLUMNS, where.sql,
+                    whereArgs, null)?.let { cur ->
                 try {
                     cur.moveToFirst()
                     val indices = ParcelableUserCursorIndices(cur)
