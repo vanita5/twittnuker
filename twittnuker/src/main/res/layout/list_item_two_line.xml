@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
@@ -21,49 +20,48 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:gravity="center_vertical"
-	android:minHeight="?android:listPreferredItemHeight"
-	android:orientation="horizontal"
-	android:padding="@dimen/element_spacing_normal">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="?android:listPreferredItemHeight"
+    android:orientation="horizontal"
+    android:padding="@dimen/element_spacing_normal">
 
-	<ImageView
-		android:id="@android:id/icon"
-		android:layout_width="@dimen/icon_size_list_item"
-		android:layout_height="@dimen/icon_size_list_item"
-		android:contentDescription="@string/icon"
+    <ImageView
+        android:id="@android:id/icon"
+        android:layout_width="@dimen/icon_size_list_item"
+        android:layout_height="@dimen/icon_size_list_item"
+        android:contentDescription="@string/icon"
         android:scaleType="fitCenter"
         tools:src="@android:drawable/sym_def_app_icon" />
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center_vertical"
-		android:orientation="vertical"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
         android:paddingEnd="0dp"
         android:paddingLeft="@dimen/element_spacing_normal"
         android:paddingRight="0dp"
         android:paddingStart="@dimen/element_spacing_normal">
 
-		<TextView
-			android:id="@android:id/text1"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:singleLine="true"
+        <TextView
+            android:id="@android:id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
             tools:text="text1" />
 
-		<TextView
-			android:id="@android:id/text2"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:singleLine="true"
+        <TextView
+            android:id="@android:id/text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
             android:textAppearance="?android:attr/textAppearanceSmall"
             tools:text="text2" />
-	</LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

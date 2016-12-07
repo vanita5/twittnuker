@@ -188,7 +188,7 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
             MenuUtils.setItemAvailability(menu, R.id.follow, !isMyList)
             MenuUtils.setItemAvailability(menu, R.id.add, isMyList)
             MenuUtils.setItemAvailability(menu, R.id.delete, isMyList)
-            val followItem = menu.findItem(R.id.follow)
+            val followItem = menu!!.findItem(R.id.follow)
             if (isFollowing) {
                 followItem.setIcon(R.drawable.ic_action_cancel)
                 followItem.setTitle(R.string.unsubscribe)
