@@ -26,70 +26,71 @@ import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 public class PaddingDrawable extends Drawable {
 
-	private final Drawable mDrawable;
-	private final int mPaddingTop;
-	private final int mPaddingLeft;
-	private final int mPaddingBottom;
-	private final int mPaddingRight;
+    private final Drawable mDrawable;
+    private final int mPaddingTop;
+    private final int mPaddingLeft;
+    private final int mPaddingBottom;
+    private final int mPaddingRight;
 
-	public PaddingDrawable(final Drawable drawable, final int padding) {
-		this(drawable, padding, padding, padding, padding);
-	}
+    public PaddingDrawable(final Drawable drawable, final int padding) {
+        this(drawable, padding, padding, padding, padding);
+    }
 
-	public PaddingDrawable(final Drawable drawable, final int paddingTop, final int paddingLeft,
-						   final int paddingRight, final int paddingBottom) {
-		mDrawable = drawable;
-		mPaddingTop = paddingTop;
-		mPaddingLeft = paddingLeft;
-		mPaddingBottom = paddingBottom;
-		mPaddingRight = paddingRight;
-	}
+    public PaddingDrawable(final Drawable drawable, final int paddingTop, final int paddingLeft,
+                           final int paddingRight, final int paddingBottom) {
+        mDrawable = drawable;
+        mPaddingTop = paddingTop;
+        mPaddingLeft = paddingLeft;
+        mPaddingBottom = paddingBottom;
+        mPaddingRight = paddingRight;
+    }
 
-	@Override
-	public void draw(final Canvas canvas) {
-		mDrawable.draw(canvas);
-	}
+    @Override
+    public void draw(@NonNull final Canvas canvas) {
+        mDrawable.draw(canvas);
+    }
 
-	@Override
-	public int getIntrinsicHeight() {
-		return mDrawable.getIntrinsicHeight() + mPaddingTop + mPaddingBottom;
-	}
+    @Override
+    public int getIntrinsicHeight() {
+        return mDrawable.getIntrinsicHeight() + mPaddingTop + mPaddingBottom;
+    }
 
-	@Override
-	public int getIntrinsicWidth() {
-		return mDrawable.getIntrinsicWidth() + mPaddingLeft + mPaddingRight;
-	}
+    @Override
+    public int getIntrinsicWidth() {
+        return mDrawable.getIntrinsicWidth() + mPaddingLeft + mPaddingRight;
+    }
 
-	@Override
-	public int getOpacity() {
-		return mDrawable.getOpacity();
-	}
+    @Override
+    public int getOpacity() {
+        return mDrawable.getOpacity();
+    }
 
-	@Override
-	public void setAlpha(final int alpha) {
-		mDrawable.setAlpha(alpha);
-	}
+    @Override
+    public void setAlpha(final int alpha) {
+        mDrawable.setAlpha(alpha);
+    }
 
-	@Override
-	public void setBounds(final int left, final int top, final int right, final int bottom) {
-		mDrawable.setBounds(left + mPaddingLeft, top + mPaddingTop, right - mPaddingRight, bottom - mPaddingBottom);
-	}
+    @Override
+    public void setBounds(final int left, final int top, final int right, final int bottom) {
+        mDrawable.setBounds(left + mPaddingLeft, top + mPaddingTop, right - mPaddingRight, bottom - mPaddingBottom);
+    }
 
-	@Override
-	public void setBounds(final Rect bounds) {
-		final int left = bounds.left + mPaddingLeft;
-		final int top = bounds.top + mPaddingTop;
-		final int right = bounds.right - mPaddingRight;
-		final int bottom = bounds.bottom - mPaddingBottom;
-		mDrawable.setBounds(left, top, right, bottom);
-	}
+    @Override
+    public void setBounds(@NonNull final Rect bounds) {
+        final int left = bounds.left + mPaddingLeft;
+        final int top = bounds.top + mPaddingTop;
+        final int right = bounds.right - mPaddingRight;
+        final int bottom = bounds.bottom - mPaddingBottom;
+        mDrawable.setBounds(left, top, right, bottom);
+    }
 
-	@Override
-	public void setColorFilter(final ColorFilter cf) {
-		mDrawable.setColorFilter(cf);
-	}
+    @Override
+    public void setColorFilter(final ColorFilter cf) {
+        mDrawable.setColorFilter(cf);
+    }
 
 }

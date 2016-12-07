@@ -49,7 +49,6 @@ import de.vanita5.twittnuker.activity.MediaViewerActivity;
 import de.vanita5.twittnuker.annotation.Referral;
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants;
 import de.vanita5.twittnuker.fragment.SensitiveContentWarningDialogFragment;
-import de.vanita5.twittnuker.fragment.UserFragment;
 import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableGroup;
 import de.vanita5.twittnuker.model.ParcelableMedia;
@@ -99,11 +98,7 @@ public class IntentUtils implements Constants {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && newDocument) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         }
-        if (context instanceof Activity) {
-            ActivityCompat.startActivity((Activity) context, intent, activityOptions);
-        } else {
-            context.startActivity(intent);
-        }
+        ActivityCompat.startActivity(context, intent, activityOptions);
     }
 
     public static void openUserProfile(@NonNull final Context context, @Nullable final UserKey accountKey,
@@ -115,11 +110,7 @@ public class IntentUtils implements Constants {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && newDocument) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         }
-        if (context instanceof Activity) {
-            ActivityCompat.startActivity((Activity) context, intent, activityOptions);
-        } else {
-            context.startActivity(intent);
-        }
+        ActivityCompat.startActivity(context, intent, activityOptions);
     }
 
     public static Intent userProfile(@Nullable UserKey accountKey, UserKey userKey, String screenName,
@@ -305,11 +296,7 @@ public class IntentUtils implements Constants {
         if (newDocument && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         }
-        if (context instanceof Activity) {
-            ActivityCompat.startActivity((Activity) context, intent, options);
-        } else {
-            context.startActivity(intent);
-        }
+        ActivityCompat.startActivity(context, intent, options);
     }
 
     public static Uri getMediaViewerUri(@NonNull final String type, final String id,
@@ -451,11 +438,7 @@ public class IntentUtils implements Constants {
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
         intent.setExtrasClassLoader(context.getClassLoader());
         intent.putExtras(extras);
-        if (context instanceof Activity) {
-            ActivityCompat.startActivity((Activity) context, intent, activityOptions);
-        } else {
-            context.startActivity(intent);
-        }
+        ActivityCompat.startActivity(context, intent, activityOptions);
     }
 
     public static void openStatusFavoriters(@NonNull final Context context, @Nullable final UserKey accountKey,
@@ -468,7 +451,7 @@ public class IntentUtils implements Constants {
         }
         builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, statusId);
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        context.startActivity(intent);
+        ActivityCompat.startActivity(context, intent, null);
     }
 
     public static void openStatusRetweeters(@NonNull final Context context, @Nullable final UserKey accountKey,
@@ -481,7 +464,7 @@ public class IntentUtils implements Constants {
         }
         builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, statusId);
         final Intent intent = new Intent(Intent.ACTION_VIEW, builder.build());
-        context.startActivity(intent);
+        ActivityCompat.startActivity(context, intent, null);
     }
 
     public static void openTweetSearch(@NonNull final Context context, @Nullable final UserKey accountKey,

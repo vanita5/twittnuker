@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:singleLine="true" />
+                    android:maxLines="1"/>
 
                 <de.vanita5.twittnuker.view.IconActionButton
                     android:id="@+id/screen_name_confirm"

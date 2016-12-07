@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.support.annotation.NonNull;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceViewHolder;
 import android.support.v7.widget.RecyclerView;
@@ -76,7 +77,7 @@ public class CardPreviewPreference extends Preference implements OnSharedPrefere
         mHolder.displaySampleStatus();
         mHolder.setStatusClickListener(new IStatusViewHolder.SimpleStatusClickListener() {
             @Override
-            public void onItemActionClick(RecyclerView.ViewHolder holder, int id, int position) {
+            public void onItemActionClick(@NonNull RecyclerView.ViewHolder holder, int id, int position) {
                 if (id == R.id.favorite) {
                     ((StatusViewHolder) holder).playLikeAnimation(new LikeAnimationDrawable.OnLikedListener() {
                         @Override

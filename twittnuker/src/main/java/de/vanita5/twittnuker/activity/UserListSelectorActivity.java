@@ -302,7 +302,7 @@ public class UserListSelectorActivity extends BaseActivity implements OnClickLis
 
         @Override
         protected SingleResponse<List<ParcelableUserList>> doInBackground(final Object... params) {
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(mActivity, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(mActivity, mAccountKey);
             if (twitter == null) return SingleResponse.Companion.getInstance();
             try {
                 final ResponseList<UserList> lists = twitter.getUserLists(mScreenName, true);
@@ -366,7 +366,7 @@ public class UserListSelectorActivity extends BaseActivity implements OnClickLis
 
         @Override
         protected SingleResponse<List<ParcelableUser>> doInBackground(final Object... params) {
-            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(mActivity, mAccountKey, false);
+            final MicroBlog twitter = MicroBlogAPIFactory.getInstance(mActivity, mAccountKey);
             if (twitter == null) return SingleResponse.Companion.getInstance();
             try {
                 final Paging paging = new Paging();

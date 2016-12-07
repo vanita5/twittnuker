@@ -43,7 +43,6 @@ import org.mariotaku.restfu.http.ContentType;
 import org.mariotaku.restfu.http.mime.FileBody;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.model.ListResponse;
-import de.vanita5.twittnuker.model.ParcelableAccount;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
@@ -75,7 +74,7 @@ public class TwitterWrapper implements Constants {
 
     public static SingleResponse<Boolean> deleteProfileBannerImage(final Context context,
                                                                    final UserKey accountKey) {
-        final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, accountKey, false);
+        final MicroBlog twitter = MicroBlogAPIFactory.getInstance(context, accountKey);
         if (twitter == null) return SingleResponse.Companion.getInstance(false);
         try {
             twitter.removeProfileBannerImage();

@@ -27,9 +27,9 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.library.statusnet.model.Group;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.statusnet.model.Group;
 import de.vanita5.twittnuker.library.twitter.model.CursorSupport;
 import de.vanita5.twittnuker.library.twitter.model.PageableResponseList;
 import de.vanita5.twittnuker.loader.iface.ICursorSupportLoader;
@@ -81,7 +81,7 @@ public abstract class BaseGroupsLoader extends AsyncTaskLoader<List<ParcelableGr
 
     @Override
     public List<ParcelableGroup> loadInBackground() {
-        final MicroBlog twitter = MicroBlogAPIFactory.getInstance(getContext(), mAccountId, true);
+        final MicroBlog twitter = MicroBlogAPIFactory.getInstance(getContext(), mAccountId);
         List<Group> listLoaded = null;
         try {
             listLoaded = getGroups(twitter);

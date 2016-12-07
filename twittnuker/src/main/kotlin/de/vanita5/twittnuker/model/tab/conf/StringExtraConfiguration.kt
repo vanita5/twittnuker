@@ -32,11 +32,11 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.fragment.CustomTabsFragment
 import de.vanita5.twittnuker.model.tab.TabConfiguration
 
-class StringExtraConfiguration(key: String, private val def: String) : TabConfiguration.ExtraConfiguration(key) {
+class StringExtraConfiguration(key: String, private val def: String?) : TabConfiguration.ExtraConfiguration(key) {
     var maxLines: Int = 0
 
-    var value: String
-        get() = editText.text.toString()
+    var value: String?
+        get() = editText.text?.toString()
         set(value) = editText.setText(value)
 
     private lateinit var editText: EditText

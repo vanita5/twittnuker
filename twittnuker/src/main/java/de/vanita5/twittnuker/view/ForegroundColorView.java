@@ -31,6 +31,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -148,7 +149,7 @@ public class ForegroundColorView extends View implements IForegroundView {
     }
 
     @Override
-    protected boolean verifyDrawable(final Drawable who) {
+    protected boolean verifyDrawable(@NonNull final Drawable who) {
         return super.verifyDrawable(who) || (mForegroundViewHelper != null && mForegroundViewHelper.verifyDrawable(who));
     }
 

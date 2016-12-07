@@ -199,7 +199,7 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
             val lastItemIndex = Math.min(activityEndIndex, lastVisiblePos)
             lastReadId = adapter.getTimestamp(lastItemIndex)
             val positionView = layoutManager.findViewByPosition(lastItemIndex)
-            lastVisibleTop = if (positionView != null) positionView.top else 0
+            lastVisibleTop = positionView?.top ?: 0
         } else if (rememberPosition && tag != null) {
             lastReadId = readStateManager.getPosition(tag)
             lastVisibleTop = 0
@@ -225,7 +225,7 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
         if (loader !is IExtendedLoader || loader.fromUser) {
             adapter.loadMoreSupportedPosition = if (hasMoreData(data)) ILoadMoreSupportAdapter.END else ILoadMoreSupportAdapter.NONE
             var pos = -1
-            for (i in activityStartIndex..activityEndExclusiveIndex - 1) {
+            for (i in activityStartIndex until activityEndExclusiveIndex) {
                 if (lastReadId != -1L && adapter.getTimestamp(i) <= lastReadId) {
                     pos = i
                     break

@@ -1,23 +1,17 @@
 /*
- * Twittnuker - Twitter client for Android
+ * Copyright (C) 2010 Daniel Nilsson
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package de.vanita5.twittnuker.graphic;
@@ -28,74 +22,75 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 /**
  * This drawable that draws a simple white and gray chessboard pattern. It's
  * pattern you will often see as a background behind a partly transparent image
  * in many applications.
- * 
+ *
  * @author Daniel Nilsson
  */
 public class AlphaPatternDrawable extends Drawable {
 
-	private final int mAlphaPatternSize;
+    private final int mAlphaPatternSize;
 
     private int mNumRectanglesHorizontal;
     private int mNumRectanglesVertical;
 
-	private final Rect mRect = new Rect(), mBounds = new Rect();
-	private final Paint mPaint = new Paint();
+    private final Rect mRect = new Rect(), mBounds = new Rect();
+    private final Paint mPaint = new Paint();
 
     public AlphaPatternDrawable(final int alphaPatternSize) {
         mAlphaPatternSize = alphaPatternSize;
-	}
+    }
 
-	@Override
-	public void draw(final Canvas canvas) {
+    @Override
+    public void draw(@NonNull final Canvas canvas) {
 
-		boolean verticalStartWhite = true;
+        boolean verticalStartWhite = true;
         for (int i = 0; i <= mNumRectanglesVertical; i++) {
-			boolean horizontalStartWhite = verticalStartWhite;
+            boolean horizontalStartWhite = verticalStartWhite;
             for (int j = 0; j <= mNumRectanglesHorizontal; j++) {
-				mRect.setEmpty();
+                mRect.setEmpty();
                 mRect.top = i * mAlphaPatternSize + mBounds.top;
                 mRect.left = j * mAlphaPatternSize + mBounds.left;
                 mRect.bottom = Math.min(mRect.top + mAlphaPatternSize, mBounds.bottom);
                 mRect.right = Math.min(mRect.left + mAlphaPatternSize, mBounds.right);
 
                 mPaint.setColor(horizontalStartWhite ? Color.WHITE : Color.LTGRAY);
-				canvas.drawRect(mRect, mPaint);
+                canvas.drawRect(mRect, mPaint);
 
-				horizontalStartWhite = !horizontalStartWhite;
-			}
-			verticalStartWhite = !verticalStartWhite;
-		}
-	}
+                horizontalStartWhite = !horizontalStartWhite;
+            }
+            verticalStartWhite = !verticalStartWhite;
+        }
+    }
 
-	@Override
-	public int getOpacity() {
-		return 0;
-	}
+    @Override
+    public int getOpacity() {
+        return 0;
+    }
 
-	@Override
-	public void setAlpha(final int alpha) {
+    @Override
+    public void setAlpha(final int alpha) {
 
-	}
+    }
 
-	@Override
-	public void setColorFilter(final ColorFilter cf) {
+    @Override
+    public void setColorFilter(final ColorFilter cf) {
 
-	}
+    }
 
-	@Override
-	protected void onBoundsChange(final Rect bounds) {
-		super.onBoundsChange(bounds);
-		mBounds.set(bounds);
-		final int height = bounds.height();
-		final int width = bounds.width();
+    @Override
+    protected void onBoundsChange(final Rect bounds) {
+        super.onBoundsChange(bounds);
+        mBounds.set(bounds);
+        final int height = bounds.height();
+        final int width = bounds.width();
         mNumRectanglesHorizontal = (int) Math.ceil(width / mAlphaPatternSize);
         mNumRectanglesVertical = (int) Math.ceil(height / mAlphaPatternSize);
-		invalidateSelf();
-	}
+        invalidateSelf();
+    }
 
 }

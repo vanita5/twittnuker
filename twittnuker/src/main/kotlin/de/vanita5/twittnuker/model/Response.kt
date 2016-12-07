@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.model
 
 import android.os.Bundle
 
-interface Response<Data> {
+interface Response<out Data> {
     val data: Data?
 
     val exception: Exception?

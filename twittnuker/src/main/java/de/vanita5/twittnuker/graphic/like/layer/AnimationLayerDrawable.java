@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.graphic.like.layer;
 import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable;
 
@@ -80,6 +81,7 @@ public abstract class AnimationLayerDrawable extends Drawable implements LikeAni
         return mState;
     }
 
+    @NonNull
     @Override
     public Drawable mutate() {
         if (!mMutated && super.mutate() == this) {

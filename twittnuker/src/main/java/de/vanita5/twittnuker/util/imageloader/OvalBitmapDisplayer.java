@@ -1,24 +1,18 @@
-/*
- * Twittnuker - Twitter client for Android
+/*******************************************************************************
+ * Copyright 2011-2013 Sergey Tarasevich
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package de.vanita5.twittnuker.util.imageloader;
 
 import android.graphics.Bitmap;
@@ -32,6 +26,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 
 import com.nostra13.universalimageloader.core.assist.LoadedFrom;
 import com.nostra13.universalimageloader.core.display.BitmapDisplayer;
@@ -56,75 +51,75 @@ import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
  */
 public class OvalBitmapDisplayer implements BitmapDisplayer {
 
-	protected final int margin;
+    protected final int margin;
 
-	public OvalBitmapDisplayer() {
-		this(0);
-	}
+    public OvalBitmapDisplayer() {
+        this(0);
+    }
 
-	public OvalBitmapDisplayer(int marginPixels) {
-		this.margin = marginPixels;
-	}
+    public OvalBitmapDisplayer(int marginPixels) {
+        this.margin = marginPixels;
+    }
 
-	@Override
-	public void display(Bitmap bitmap, ImageAware imageAware, LoadedFrom loadedFrom) {
-		if (!(imageAware instanceof ImageViewAware)) {
-			throw new IllegalArgumentException("ImageAware should wrap ImageView. ImageViewAware is expected.");
-		}
+    @Override
+    public void display(Bitmap bitmap, ImageAware imageAware, LoadedFrom loadedFrom) {
+        if (!(imageAware instanceof ImageViewAware)) {
+            throw new IllegalArgumentException("ImageAware should wrap ImageView. ImageViewAware is expected.");
+        }
 
-		imageAware.setImageDrawable(new OvalDrawable(bitmap, margin));
-	}
+        imageAware.setImageDrawable(new OvalDrawable(bitmap, margin));
+    }
 
-	public static class OvalDrawable extends Drawable {
+    public static class OvalDrawable extends Drawable {
 
-		protected final int margin;
+        protected final int margin;
 
-		protected final RectF mRect = new RectF(),
-				mBitmapRect;
-		protected final BitmapShader bitmapShader;
-		protected final Paint paint;
+        protected final RectF mRect = new RectF(),
+                mBitmapRect;
+        protected final BitmapShader bitmapShader;
+        protected final Paint paint;
 
-		public OvalDrawable(Bitmap bitmap, int margin) {
-			this.margin = margin;
+        public OvalDrawable(Bitmap bitmap, int margin) {
+            this.margin = margin;
 
-			bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-			mBitmapRect = new RectF(margin, margin, bitmap.getWidth() - margin, bitmap.getHeight() - margin);
+            bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            mBitmapRect = new RectF(margin, margin, bitmap.getWidth() - margin, bitmap.getHeight() - margin);
 
-			paint = new Paint();
-			paint.setAntiAlias(true);
-			paint.setShader(bitmapShader);
-		}
+            paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setShader(bitmapShader);
+        }
 
-		@Override
-		protected void onBoundsChange(Rect bounds) {
-			super.onBoundsChange(bounds);
-			mRect.set(margin, margin, bounds.width() - margin, bounds.height() - margin);
+        @Override
+        protected void onBoundsChange(Rect bounds) {
+            super.onBoundsChange(bounds);
+            mRect.set(margin, margin, bounds.width() - margin, bounds.height() - margin);
 
-			// Resize the original bitmap to fit the new bound
-			Matrix shaderMatrix = new Matrix();
-			shaderMatrix.setRectToRect(mBitmapRect, mRect, Matrix.ScaleToFit.FILL);
-			bitmapShader.setLocalMatrix(shaderMatrix);
+            // Resize the original bitmap to fit the new bound
+            Matrix shaderMatrix = new Matrix();
+            shaderMatrix.setRectToRect(mBitmapRect, mRect, Matrix.ScaleToFit.FILL);
+            bitmapShader.setLocalMatrix(shaderMatrix);
 
-		}
+        }
 
-		@Override
-		public void draw(Canvas canvas) {
-			canvas.drawOval(mRect, paint);
-		}
+        @Override
+        public void draw(@NonNull Canvas canvas) {
+            canvas.drawOval(mRect, paint);
+        }
 
-		@Override
-		public int getOpacity() {
-			return PixelFormat.TRANSLUCENT;
-		}
+        @Override
+        public int getOpacity() {
+            return PixelFormat.TRANSLUCENT;
+        }
 
-		@Override
-		public void setAlpha(int alpha) {
-			paint.setAlpha(alpha);
-		}
+        @Override
+        public void setAlpha(int alpha) {
+            paint.setAlpha(alpha);
+        }
 
-		@Override
-		public void setColorFilter(ColorFilter cf) {
-			paint.setColorFilter(cf);
-		}
-	}
+        @Override
+        public void setColorFilter(ColorFilter cf) {
+            paint.setColorFilter(cf);
+        }
+    }
 }

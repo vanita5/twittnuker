@@ -188,7 +188,7 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
             MenuUtils.setItemAvailability(menu, R.id.follow, !isMyList)
             MenuUtils.setItemAvailability(menu, R.id.add, isMyList)
             MenuUtils.setItemAvailability(menu, R.id.delete, isMyList)
-            val followItem = menu!!.findItem(R.id.follow)
+            val followItem = menu.findItem(R.id.follow)
             if (isFollowing) {
                 followItem.setIcon(R.drawable.ic_action_cancel)
                 followItem.setTitle(R.string.unsubscribe)
@@ -412,8 +412,8 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
                 val cache = extras.getParcelable<ParcelableUserList>(EXTRA_USER_LIST)
                 if (cache != null) return SingleResponse.Companion.getInstance(cache)
             }
-            val twitter = MicroBlogAPIFactory.getInstance(context, accountKey,
-                    true) ?: return SingleResponse.Companion.getInstance<ParcelableUserList>()
+            val twitter = MicroBlogAPIFactory.getInstance(context, accountKey
+            ) ?: return SingleResponse.Companion.getInstance<ParcelableUserList>()
             try {
                 val list: UserList
                 when {

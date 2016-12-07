@@ -20,8 +20,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.message
+package de.vanita5.twittnuker.receiver
 
-object DatabaseReadyEvent {
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 
+class PowerStateReceiver : BroadcastReceiver() {
+
+    override fun onReceive(context: Context, intent: Intent) {
+        when (intent.action) {
+            Intent.ACTION_BATTERY_LOW, Intent.ACTION_BATTERY_OKAY, Intent.ACTION_POWER_CONNECTED,
+            Intent.ACTION_POWER_DISCONNECTED -> {
+                if (serviceReceiverStarted) return
+            }
+        }
+    }
+
+    companion object {
+        var serviceReceiverStarted: Boolean = false
+    }
 }

@@ -109,7 +109,7 @@ dependencies {
     compile project(':twittnuker.component.common')
 
     // START Non-FOSS component
-    compile 'com.google.android.gms:play-services-gcm:10.0.0'
+    compile 'com.google.android.gms:play-services-gcm:10.0.1'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') { transitive = true; }
     compile ':YouTubeAndroidPlayerApi:1.2.2@jar'
     // END Non-FOSS component

@@ -76,7 +76,7 @@ abstract class SaveFileTask(context: Context, private val source: Uri,
     protected abstract fun dismissProgress()
 
 
-    protected val context: Context
+    protected val context: Context?
         get() = contextRef.get()
 
     interface FileInfoCallback {

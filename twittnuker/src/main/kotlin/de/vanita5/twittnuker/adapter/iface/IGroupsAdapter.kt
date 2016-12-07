@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.adapter.iface
 import de.vanita5.twittnuker.model.ParcelableGroup
 import de.vanita5.twittnuker.view.holder.GroupViewHolder
 
-interface IGroupsAdapter<Data> : IContentCardAdapter {
+interface IGroupsAdapter<in Data> : IContentCardAdapter {
 
     val groupsCount: Int
 

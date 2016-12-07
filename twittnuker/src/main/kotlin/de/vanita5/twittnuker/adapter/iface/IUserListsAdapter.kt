@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.adapter.iface
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.view.holder.UserListViewHolder
 
-interface IUserListsAdapter<Data> : IContentCardAdapter {
+interface IUserListsAdapter<in Data> : IContentCardAdapter {
 
     val userListsCount: Int
 

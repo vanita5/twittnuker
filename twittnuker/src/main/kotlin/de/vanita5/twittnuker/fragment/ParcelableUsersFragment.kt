@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallb
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 
-abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<ParcelableUsersAdapter>,
+abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<ParcelableUsersAdapter>(),
         LoaderCallbacks<List<ParcelableUser>?>, UserClickListener, KeyboardShortcutCallback,
         IUsersAdapter.FriendshipClickListener {
 
@@ -60,7 +60,7 @@ abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<Parc
 
     private var navigationHelper: RecyclerViewNavigationHelper? = null
 
-    protected constructor() {
+    init {
         usersBusCallback = createMessageBusCallback()
     }
 

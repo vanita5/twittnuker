@@ -108,9 +108,9 @@
             android:drawableLeft="@drawable/ic_indicator_followers"
             android:drawablePadding="4dp"
             android:drawableStart="@drawable/ic_indicator_followers"
-            android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            tools:text="255"/>
+            tools:text="255"
+            android:maxLines="1"/>
 
         <TextView
             android:id="@+id/adminsCount"
@@ -120,9 +120,9 @@
             android:drawableLeft="@drawable/ic_indicator_followers"
             android:drawablePadding="4dp"
             android:drawableStart="@drawable/ic_indicator_followers"
-            android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            tools:text="255"/>
+            tools:text="255"
+            android:maxLines="1"/>
     </LinearLayout>
 
 </de.vanita5.twittnuker.view.ColorLabelRelativeLayout>

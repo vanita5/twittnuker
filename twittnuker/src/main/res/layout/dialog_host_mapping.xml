@@ -22,10 +22,10 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	android:padding="16dp">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:padding="16dp">
 
     <CheckBox
         android:id="@+id/exclude"
@@ -33,21 +33,21 @@
         android:layout_height="wrap_content"
         android:text="@string/exclude_this_host"/>
 
-	<EditText
-		android:id="@+id/host"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:hint="@string/host_mapping_host"
-		android:inputType="text|textUri"
-		android:singleLine="true"/>
+    <EditText
+        android:id="@+id/host"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/host_mapping_host"
+        android:inputType="text|textUri"
+        android:maxLines="1"/>
 
-	<EditText
-		android:id="@+id/address"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="16dp"
-		android:hint="@string/host_mapping_address"
-		android:inputType="text|textUri"
-		android:singleLine="true"/>
+    <EditText
+        android:id="@+id/address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/host_mapping_address"
+        android:inputType="text|textUri"
+        android:maxLines="1"/>
 
 </LinearLayout>

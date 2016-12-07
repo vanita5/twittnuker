@@ -26,7 +26,7 @@ import de.vanita5.twittnuker.model.ParcelableActivity
 import de.vanita5.twittnuker.util.MediaLoadingHandler
 import de.vanita5.twittnuker.view.holder.ActivityTitleSummaryViewHolder
 
-interface IActivitiesAdapter<Data> : IContentCardAdapter, IGapSupportedAdapter {
+interface IActivitiesAdapter<in Data> : IContentCardAdapter, IGapSupportedAdapter {
 
     val activityCount: Int
 

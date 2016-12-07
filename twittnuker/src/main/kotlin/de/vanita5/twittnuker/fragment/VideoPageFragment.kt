@@ -194,13 +194,10 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPrep
                 if (media.video_info == null) {
                     return Pair.create<String, String>(media.media_url, null)
                 }
-                for (supportedType in supportedTypes) {
-                    for (variant in media.video_info.variants) {
-                        if (supportedType.equals(variant.content_type, ignoreCase = true))
-                            return Pair.create(variant.url, variant.content_type)
-                    }
-                }
-                return null
+                val firstMatch = media.video_info.variants.first { variant ->
+                    supportedTypes.any { it.equals(variant.content_type, ignoreCase = true) }
+                } ?: return null
+                return Pair.create(firstMatch.url, firstMatch.content_type)
             }
             ParcelableMedia.Type.CARD_ANIMATED_GIF -> {
                 return Pair.create<String, String>(media.media_url, "video/mp4")

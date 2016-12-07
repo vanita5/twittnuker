@@ -34,7 +34,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:inputType="text"
-        android:minLines="10"
-        android:singleLine="false"/>
+        android:minLines="10"/>
 
 </RelativeLayout>
