@@ -100,7 +100,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     private var tabColumns: Int = 0
 
 
-    private var multiSelectHandler: MultiSelectEventHandler? = null
+    private lateinit var multiSelectHandler: MultiSelectEventHandler
 
     private var mGCMRegistrationReceiver: BroadcastReceiver? = null
 
@@ -156,8 +156,8 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
 
     override fun triggerRefresh(position: Int): Boolean {
         val f = pagerAdapter!!.instantiateItem(mainPager, position) as Fragment
-        if (f !is RefreshScrollTopInterface) return false
         if (f.activity == null || f.isDetached) return false
+        if (f !is RefreshScrollTopInterface) return false
         return f.triggerRefresh()
     }
 
@@ -309,7 +309,8 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         multiSelectHandler = MultiSelectEventHandler(this)
-        multiSelectHandler!!.dispatchOnCreate()
+        multiSelectHandler.dispatchOnCreate()
+        DataStoreUtils.prepareDatabase(this)
         if (!DataStoreUtils.hasAccount(this)) {
             val signInIntent = Intent(INTENT_ACTION_TWITTER_LOGIN)
             signInIntent.setClass(this, SignInActivity::class.java)
@@ -368,7 +369,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
             drawerToggleButton.visibility = View.GONE
         }
 
-        homeContent!!.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+        homeContent.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             if (top != oldTop) {
                 val fragment = leftDrawerFragment
                 if (fragment is AccountsDashboardFragment) {
@@ -404,7 +405,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
 
     override fun onStart() {
         super.onStart()
-        multiSelectHandler!!.dispatchOnStart()
+        multiSelectHandler.dispatchOnStart()
         val resolver = contentResolver
         resolver.registerContentObserver(Accounts.CONTENT_URI, true, accountChangeObserver)
         bus.register(this)
@@ -450,7 +451,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     }
 
     override fun onStop() {
-        multiSelectHandler!!.dispatchOnStop()
+        multiSelectHandler.dispatchOnStop()
         readStateManager.unregisterOnSharedPreferenceChangeListener(readStateChangeListener)
         bus.unregister(this)
         val resolver = contentResolver

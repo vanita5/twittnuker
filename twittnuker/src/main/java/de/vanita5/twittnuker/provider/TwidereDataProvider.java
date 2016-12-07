@@ -631,10 +631,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             final int tableId = DataStoreUtils.getTableId(uri);
             final String table = DataStoreUtils.getTableNameById(tableId);
             switch (tableId) {
-                case VIRTUAL_TABLE_ID_DATABASE_READY: {
-                    if (mDatabaseWrapper.isReady())
-                        return new MatrixCursor(projection != null ? projection : new String[0]);
-                    return null;
+                case VIRTUAL_TABLE_ID_DATABASE_PREPARE: {
+                    mDatabaseWrapper.prepare();
+                    return new MatrixCursor(projection != null ? projection : new String[0]);
                 }
                 case VIRTUAL_TABLE_ID_ALL_PREFERENCES: {
                     return getPreferencesCursor(mPreferences, null);
@@ -729,6 +728,9 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 case VIRTUAL_TABLE_ID_SUGGESTIONS_SEARCH: {
                     return getSearchSuggestionCursor(uri);
                 }
+                case VIRTUAL_TABLE_ID_NULL: {
+                    return null;
+                }
                 case VIRTUAL_TABLE_ID_EMPTY: {
                     return new MatrixCursor(projection);
                 }
@@ -751,7 +753,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
     private Cursor getSearchSuggestionCursor(Uri uri) {
         final String query = uri.getQueryParameter(QUERY_PARAM_QUERY);
-        final UserKey accountKey = UserKey.valueOf(uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY));
+        final String paramAccountKey = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY);
+        final UserKey accountKey = paramAccountKey != null ? UserKey.valueOf(paramAccountKey) : null;
         if (query == null || accountKey == null) return null;
         final boolean emptyQuery = TextUtils.isEmpty(query);
         final String queryEscaped = query.replace("_", "^_");
