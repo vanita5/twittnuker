@@ -19,7 +19,7 @@ public class TrendsTabConfiguration extends TabConfiguration {
     @NonNull
     @Override
     public DrawableHolder getIcon() {
-        return DrawableHolder.Builtin.TRENDS;
+        return DrawableHolder.Builtin.HASHTAG;
     }
 
     @AccountFlags

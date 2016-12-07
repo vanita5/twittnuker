@@ -39,11 +39,9 @@ import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.extension.model.id
 import de.vanita5.twittnuker.fragment.CursorActivitiesFragment
-import de.vanita5.twittnuker.model.ParcelableActivity
-import de.vanita5.twittnuker.model.ParcelableActivityCursorIndices
-import de.vanita5.twittnuker.model.ParcelableMedia
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus
 import de.vanita5.twittnuker.util.IntentUtils
@@ -54,6 +52,7 @@ import de.vanita5.twittnuker.view.holder.*
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
 import java.lang.ref.WeakReference
+import java.util.*
 
 class ParcelableActivitiesAdapter(
         context: Context,
@@ -67,6 +66,8 @@ class ParcelableActivitiesAdapter(
     private var data: List<ParcelableActivity>? = null
     private var activityAdapterListener: ActivityAdapterListener? = null
     private var filteredUserIds: Array<UserKey>? = null
+    private val gapLoadingIds: MutableSet<ObjectId> = HashSet()
+
     var followingOnly: Boolean = false
         set(value) {
             field = value
@@ -170,6 +171,7 @@ class ParcelableActivitiesAdapter(
             filteredUserIds = data.filteredUserIds
         }
         this.data = data
+        gapLoadingIds.clear()
         notifyDataSetChanged()
     }
 
@@ -218,7 +220,7 @@ class ParcelableActivitiesAdapter(
                 return holder
             }
             ITEM_VIEW_TYPE_GAP -> {
-                val view = inflater.inflate(R.layout.card_item_gap, parent, false)
+                val view = inflater.inflate(GapViewHolder.layoutResource, parent, false)
                 return GapViewHolder(this, view)
             }
             ITEM_VIEW_TYPE_LOAD_INDICATOR -> {
@@ -248,6 +250,11 @@ class ParcelableActivitiesAdapter(
             }
             ITEM_VIEW_TYPE_STUB -> {
                 (holder as StubViewHolder).displayActivity(getActivity(position)!!)
+            }
+            ITEM_VIEW_TYPE_GAP -> {
+                val activity = getActivity(position)!!
+                val loading = gapLoadingIds.find { it.accountKey == activity.account_key && it.id == activity.id } != null
+                (holder as GapViewHolder).display(loading)
             }
         }
     }
@@ -300,6 +307,13 @@ class ParcelableActivitiesAdapter(
         return ITEM_VIEW_TYPE_STUB
     }
 
+    override fun addGapLoadingId(id: ObjectId) {
+        gapLoadingIds.add(id)
+    }
+
+    override fun removeGapLoadingId(id: ObjectId) {
+        gapLoadingIds.remove(id)
+    }
 
     override fun getItemCount(): Int {
         val position = loadMoreIndicatorPosition
@@ -389,16 +403,14 @@ class ParcelableActivitiesAdapter(
 
         override fun onGapClick(holder: GapViewHolder, position: Int) {
             val adapter = adapterRef.get() ?: return
-            if (adapter.activityAdapterListener != null) {
-                adapter.activityAdapterListener!!.onGapClick(holder, position)
-            }
+            val activity = adapter.getActivity(position) ?: return
+            adapter.addGapLoadingId(ObjectId(activity.account_key, activity.id))
+            adapter.activityAdapterListener?.onGapClick(holder, position)
         }
 
         override fun onItemActionClick(holder: RecyclerView.ViewHolder, id: Int, position: Int) {
             val adapter = adapterRef.get() ?: return
-            if (adapter.activityAdapterListener != null) {
-                adapter.activityAdapterListener!!.onStatusActionClick(holder as IStatusViewHolder, id, position)
-            }
+            adapter.activityAdapterListener?.onStatusActionClick(holder as IStatusViewHolder, id, position)
         }
 
         override fun onStatusLongClick(holder: IStatusViewHolder, position: Int): Boolean {

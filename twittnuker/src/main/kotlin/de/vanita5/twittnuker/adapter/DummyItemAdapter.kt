@@ -31,10 +31,7 @@ import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.adapter.iface.*
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
-import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.ParcelableUserList
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.getActivityStatus
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -198,6 +195,14 @@ class DummyItemAdapter @JvmOverloads constructor(
 
     override fun isGapItem(position: Int): Boolean {
         return false
+    }
+
+    override fun addGapLoadingId(id: ObjectId) {
+
+    }
+
+    override fun removeGapLoadingId(id: ObjectId) {
+
     }
 
     fun updateOptions() {

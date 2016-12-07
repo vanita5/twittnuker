@@ -22,11 +22,16 @@
 
 package de.vanita5.twittnuker.adapter.iface
 
+import de.vanita5.twittnuker.model.ObjectId
 import de.vanita5.twittnuker.view.holder.GapViewHolder
 
 interface IGapSupportedAdapter {
 
     fun isGapItem(position: Int): Boolean
+
+    fun addGapLoadingId(id: ObjectId)
+
+    fun removeGapLoadingId(id: ObjectId)
 
     val gapClickListener: GapClickListener?
 
