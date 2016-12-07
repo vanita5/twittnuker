@@ -32,6 +32,7 @@ import android.support.v4.app.FragmentTransaction;
 import org.sufficientlysecure.donations.DonationsFragment;
 
 import de.vanita5.twittnuker.BuildConfig;
+import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 
 public class DonationsActivity extends FragmentActivity {
@@ -39,7 +40,6 @@ public class DonationsActivity extends FragmentActivity {
     /**
      * Google
      */
-    private static final String GOOGLE_PUBKEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs2KZ58y8Z56KchEP2iQHvuznrZAyDf9ULm+L0C2PZKcZjHGxC3XbXH9VC9qVV1GUcPJEIXht0VanUGYPHbCQDVnRPQuNyrF4rOLB5qLEh71IxnlK0OjnKGXRolSTldsZUhC1ja8n5MI0bi3r1oRduM0fDC4E+piIrfRZBjPm6p9OLckwgzz+rulYFErmQAoPhmUr4AvV3WgYNm0Lof+eLpZVpGfxqxOpmt3fMe30/nEnvLVHdOU1wNix9hq94uLrzHVLBuXTT7v99QnX/HB5dztnI54lGK7GvmwCTfrjcgdyf63D4+r1eF/E3Bx2kp/ZtezE0vWGda6bXgecdlJ/LQIDAQAB";
     private static final String[] GOOGLE_CATALOG = new String[]{
             "twittnuker.donate.1",
             "twittnuker.donate.2",
@@ -74,7 +74,7 @@ public class DonationsActivity extends FragmentActivity {
         DonationsFragment donationsFragment;
         donationsFragment = DonationsFragment.newInstance(
                 BuildConfig.DEBUG,
-                true, GOOGLE_PUBKEY, GOOGLE_CATALOG, getResources().getStringArray(R.array.donation_google_catalog_values), //Google
+                true, Constants.GOOGLE_PLAY_LICENCING_PUBKEY, GOOGLE_CATALOG, getResources().getStringArray(R.array.donation_google_catalog_values), //Google
                 true, PAYPAL_USER, PAYPAL_CURRENCY_CODE, getString(R.string.donation),                                      //Paypal
                 true, FLATTR_PROJECT_URL, FLATTR_URL,                                                                       //Flattr
                 false, null);                                                                                               //Bitcoin

@@ -87,4 +87,7 @@ public interface Constants extends TwittnukerConstants {
             R.color.material_lime, R.color.material_yellow, R.color.material_amber,
             R.color.material_orange, R.color.material_deep_orange};
 
+    @SuppressWarnings("SpellCheckingInspection")
+    String GOOGLE_PLAY_LICENCING_PUBKEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs2KZ58y8Z56KchEP2iQHvuznrZAyDf9ULm+L0C2PZKcZjHGxC3XbXH9VC9qVV1GUcPJEIXht0VanUGYPHbCQDVnRPQuNyrF4rOLB5qLEh71IxnlK0OjnKGXRolSTldsZUhC1ja8n5MI0bi3r1oRduM0fDC4E+piIrfRZBjPm6p9OLckwgzz+rulYFErmQAoPhmUr4AvV3WgYNm0Lof+eLpZVpGfxqxOpmt3fMe30/nEnvLVHdOU1wNix9hq94uLrzHVLBuXTT7v99QnX/HB5dztnI54lGK7GvmwCTfrjcgdyf63D4+r1eF/E3Bx2kp/ZtezE0vWGda6bXgecdlJ/LQIDAQAB";
+
 }

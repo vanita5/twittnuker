@@ -111,6 +111,7 @@ dependencies {
     // START Non-FOSS component
     compile 'com.google.android.gms:play-services-gcm:10.0.1'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') { transitive = true; }
+    compile 'com.anjlab.android.iab.v3:library:1.0.36'
     compile ':YouTubeAndroidPlayerApi:1.2.2@jar'
     // END Non-FOSS component
 
