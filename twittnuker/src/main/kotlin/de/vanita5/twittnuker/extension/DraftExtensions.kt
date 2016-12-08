@@ -24,8 +24,10 @@ package de.vanita5.twittnuker.extension
 
 import android.content.Context
 import android.net.Uri
+import android.text.TextUtils
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nostra13.universalimageloader.utils.IoUtils
+import de.vanita5.twittnuker.R
 import org.apache.james.mime4j.dom.Header
 import org.apache.james.mime4j.dom.MessageServiceFactory
 import org.apache.james.mime4j.dom.address.Mailbox
@@ -66,7 +68,9 @@ fun Draft.writeMimeMessageTo(context: Context, st: OutputStream) {
     val message = builder.newMessage() as AbstractMessage
 
     message.date = Date(this.timestamp)
+    message.subject = this.getActionName(context)
     message.setFrom(this.account_keys?.map { Mailbox(it.id, it.host) })
+    message.setTo(message.from)
     if (message.header == null) {
         message.header = HeaderImpl()
     }
@@ -114,6 +118,25 @@ fun Draft.readMimeMessageFrom(context: Context, st: InputStream) {
     parser.isContentDecoding = true
     parser.setContentHandler(DraftContentHandler(context, this))
     parser.parse(st)
+}
+
+fun Draft.getActionName(context: Context): String? {
+    if (TextUtils.isEmpty(action_type)) return context.getString(R.string.update_status)
+    when (action_type) {
+        Draft.Action.UPDATE_STATUS, Draft.Action.UPDATE_STATUS_COMPAT_1, Draft.Action.UPDATE_STATUS_COMPAT_2 -> {
+            return context.getString(R.string.update_status)
+        }
+        Draft.Action.REPLY -> {
+            return context.getString(R.string.reply)
+        }
+        Draft.Action.QUOTE -> {
+            return context.getString(R.string.quote)
+        }
+        Draft.Action.SEND_DIRECT_MESSAGE, Draft.Action.SEND_DIRECT_MESSAGE_COMPAT -> {
+            return context.getString(R.string.send_direct_message)
+        }
+    }
+    return null
 }
 
 private class DraftContentHandler(private val context: Context, private val draft: Draft) : SimpleContentHandler() {
