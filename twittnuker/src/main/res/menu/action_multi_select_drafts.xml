@@ -24,15 +24,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-	<item
-		android:id="@id/delete"
-		android:icon="@drawable/ic_action_delete"
-        app:showAsAction="ifRoom|withText"
-		android:title="@string/delete"/>
-	<item
-		android:id="@id/send"
-		android:icon="@drawable/ic_action_send"
-        app:showAsAction="ifRoom|withText"
-		android:title="@string/send"/>
-
+    <item
+        android:id="@id/delete"
+        android:icon="@drawable/ic_action_delete"
+        android:title="@string/delete"
+        app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@id/send"
+        android:icon="@drawable/ic_action_send"
+        android:title="@string/send"
+        app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@id/save"
+        android:enabled="@bool/debug"
+        android:icon="@drawable/ic_action_save"
+        android:title="@string/save"
+        android:visible="@bool/debug"/>
 </menu>

@@ -30,41 +30,38 @@ import com.bluelinelabs.logansquare.LoganSquare;
 
 import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
 import de.vanita5.twittnuker.model.Draft;
-import de.vanita5.twittnuker.model.draft.ActionExtra;
-import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra;
-import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra;
+import de.vanita5.twittnuker.model.draft.ActionExtras;
+import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras;
+import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 
-public class DraftExtrasConverter implements CursorFieldConverter<ActionExtra> {
+public class DraftExtrasConverter implements CursorFieldConverter<ActionExtras> {
     @Override
-    public ActionExtra parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) throws IOException {
+    public ActionExtras parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) throws IOException {
         final String actionType = cursor.getString(cursor.getColumnIndex(Drafts.ACTION_TYPE));
-        if (TextUtils.isEmpty(actionType)) return null;
+        final String json = cursor.getString(columnIndex);
+        if (TextUtils.isEmpty(actionType) || TextUtils.isEmpty(json)) return null;
         switch (actionType) {
             case "0":
             case "1":
             case Draft.Action.UPDATE_STATUS:
             case Draft.Action.REPLY:
             case Draft.Action.QUOTE: {
-                final String string = cursor.getString(columnIndex);
-                if (TextUtils.isEmpty(string)) return null;
-                return LoganSquare.parse(string, UpdateStatusActionExtra.class);
+                return LoganSquare.parse(json, UpdateStatusActionExtras.class);
             }
             case "2":
             case Draft.Action.SEND_DIRECT_MESSAGE: {
-                final String string = cursor.getString(columnIndex);
-                if (TextUtils.isEmpty(string)) return null;
-                return LoganSquare.parse(string, SendDirectMessageActionExtra.class);
+                return LoganSquare.parse(json, SendDirectMessageActionExtras.class);
             }
         }
         return null;
     }
 
     @Override
-    public void writeField(ContentValues values, ActionExtra object, String columnName, ParameterizedType fieldType) throws IOException {
+    public void writeField(ContentValues values, ActionExtras object, String columnName, ParameterizedType fieldType) throws IOException {
         if (object == null) return;
         values.put(columnName, LoganSquare.serialize(object));
     }

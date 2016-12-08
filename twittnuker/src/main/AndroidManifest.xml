@@ -458,6 +458,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="de.vanita5.twittnuker.activity.DropboxAuthStarterActivity"
+            android:theme="@style/Theme.Twidere.NoDisplay"/>
+        <activity
             android:name="com.dropbox.core.android.AuthActivity"
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask">

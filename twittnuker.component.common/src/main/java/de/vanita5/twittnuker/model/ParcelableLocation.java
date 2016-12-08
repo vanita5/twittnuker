@@ -26,6 +26,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
@@ -88,7 +89,7 @@ public class ParcelableLocation implements Parcelable {
     }
 
     @Nullable
-    public static ParcelableLocation valueOf(@Nullable final String locationString) {
+    public static ParcelableLocation valueOf(@NonNull final String locationString) {
         if (locationString == null) return null;
         final String[] longlat = locationString.split(",");
         if (longlat.length != 2) {
@@ -109,7 +110,9 @@ public class ParcelableLocation implements Parcelable {
     public static class Converter implements CursorFieldConverter<ParcelableLocation> {
         @Override
         public ParcelableLocation parseField(Cursor cursor, int columnIndex, ParameterizedType fieldType) {
-            return valueOf(cursor.getString(columnIndex));
+            final String locationString = cursor.getString(columnIndex);
+            if (locationString == null) return null;
+            return valueOf(locationString);
         }
 
         @Override

@@ -31,7 +31,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 @ParcelablePlease
 @JsonObject
-public class SendDirectMessageActionExtra implements ActionExtra {
+public class SendDirectMessageActionExtras implements ActionExtras {
     @ParcelableThisPlease
     @JsonField(name = "recipient_id")
     String recipientId;
@@ -51,20 +51,36 @@ public class SendDirectMessageActionExtra implements ActionExtra {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        SendDirectMessageActionExtraParcelablePlease.writeToParcel(this, dest, flags);
+        SendDirectMessageActionExtrasParcelablePlease.writeToParcel(this, dest, flags);
     }
 
-    public static final Creator<SendDirectMessageActionExtra> CREATOR = new Creator<SendDirectMessageActionExtra>() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SendDirectMessageActionExtras that = (SendDirectMessageActionExtras) o;
+
+        return recipientId != null ? recipientId.equals(that.recipientId) : that.recipientId == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return recipientId != null ? recipientId.hashCode() : 0;
+    }
+
+    public static final Creator<SendDirectMessageActionExtras> CREATOR = new Creator<SendDirectMessageActionExtras>() {
         @Override
-        public SendDirectMessageActionExtra createFromParcel(Parcel source) {
-            SendDirectMessageActionExtra target = new SendDirectMessageActionExtra();
-            SendDirectMessageActionExtraParcelablePlease.readFromParcel(target, source);
+        public SendDirectMessageActionExtras createFromParcel(Parcel source) {
+            SendDirectMessageActionExtras target = new SendDirectMessageActionExtras();
+            SendDirectMessageActionExtrasParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
         @Override
-        public SendDirectMessageActionExtra[] newArray(int size) {
-            return new SendDirectMessageActionExtra[size];
+        public SendDirectMessageActionExtras[] newArray(int size) {
+            return new SendDirectMessageActionExtras[size];
         }
     };
 }

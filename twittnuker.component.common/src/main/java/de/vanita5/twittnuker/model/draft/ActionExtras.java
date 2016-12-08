@@ -24,5 +24,5 @@ package de.vanita5.twittnuker.model.draft;
 
 import android.os.Parcelable;
 
-public interface ActionExtra extends Parcelable {
+public interface ActionExtras extends Parcelable {
 }

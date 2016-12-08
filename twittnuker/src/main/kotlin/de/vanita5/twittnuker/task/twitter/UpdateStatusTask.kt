@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.model.*
-import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtra
+import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.preference.ServicePickerPreference
@@ -533,7 +533,8 @@ class UpdateStatusTask(
         draft.text = statusUpdate.text
         draft.location = statusUpdate.location
         draft.media = statusUpdate.media
-        draft.action_extras = UpdateStatusActionExtra().apply {
+        draft.timestamp = System.currentTimeMillis()
+        draft.action_extras = UpdateStatusActionExtras().apply {
             inReplyToStatus = statusUpdate.in_reply_to_status
             isPossiblySensitive = statusUpdate.is_possibly_sensitive
             isRepostStatusId = statusUpdate.repost_status_id

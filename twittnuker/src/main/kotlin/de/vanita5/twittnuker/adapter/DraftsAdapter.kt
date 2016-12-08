@@ -53,7 +53,7 @@ class DraftsAdapter(context: Context) : SimpleCursorAdapter(context, R.layout.li
     private val mediaPreviewStyle: Int
 
     private var mTextSize: Float = 0.toFloat()
-    private var mIndices: DraftCursorIndices? = null
+    private var indices: DraftCursorIndices? = null
 
     init {
         GeneralComponentHelper.build(context).inject(this)
@@ -63,7 +63,7 @@ class DraftsAdapter(context: Context) : SimpleCursorAdapter(context, R.layout.li
 
     override fun bindView(view: View, context: Context, cursor: Cursor) {
         val holder = view.tag as DraftViewHolder
-        val indices = mIndices!!
+        val indices = indices!!
         val accountKeys = UserKey.arrayOf(cursor.getString(indices.account_keys))
         val text = cursor.getString(indices.text)
         val mediaUpdates = JsonSerializer.parseArray(cursor.getString(indices.media), ParcelableMediaUpdate::class.java)
@@ -120,9 +120,14 @@ class DraftsAdapter(context: Context) : SimpleCursorAdapter(context, R.layout.li
     override fun swapCursor(c: Cursor?): Cursor? {
         val old = super.swapCursor(c)
         if (c != null) {
-            mIndices = DraftCursorIndices(c)
+            indices = DraftCursorIndices(c)
         }
         return old
+    }
+
+    fun getDraft(position: Int): Draft {
+        cursor.moveToPosition(position)
+        return indices!!.newObject(cursor)
     }
 
     private fun getActionName(context: Context, actionType: String): String? {

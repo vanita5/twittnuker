@@ -112,7 +112,6 @@ dependencies {
     // START Non-FOSS component
     compile "com.google.android.gms:play-services-gcm:10.0.1"
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') { transitive = true; }
-    compile "com.anjlab.android.iab.v3:library:1.0.36"
     compile "com.dropbox.core:dropbox-core-sdk:2.1.2"
     compile ":YouTubeAndroidPlayerApi:1.2.2@jar"
     // END Non-FOSS component
@@ -128,6 +127,7 @@ dependencies {
     androidTestCompile "com.android.support:support-annotations:$android_support_lib_version"
     androidTestCompile "com.android.support.test:runner:0.5"
     androidTestCompile "com.android.support.test:rules:0.5"
+    androidTestCompile "commons-io:commons-io:2.5"
 
     compile "com.android.support:multidex:1.0.1"
     compile "com.android.support:support-v4:$android_support_lib_version"

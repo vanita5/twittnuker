@@ -34,17 +34,18 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.IStatusShortener;
-import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
 import de.vanita5.twittnuker.model.StatusShortenResult;
+import de.vanita5.twittnuker.model.UserKey;
 
 import java.util.List;
 
-public final class StatusShortenerInterface extends AbsServiceInterface<IStatusShortener>
-        implements Constants {
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
+import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_EXTENSION_SHORTEN_STATUS;
+
+public final class StatusShortenerInterface extends AbsServiceInterface<IStatusShortener> {
 
     protected StatusShortenerInterface(Context context, String shortenerName, Bundle metaData) {
         super(context, shortenerName, metaData);

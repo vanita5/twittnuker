@@ -30,9 +30,11 @@ import android.content.DialogInterface
 import android.content.DialogInterface.OnClickListener
 import android.content.Intent
 import android.database.Cursor
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentActivity
@@ -46,7 +48,10 @@ import android.widget.AbsListView.MultiChoiceModeListener
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
+import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_drafts.*
+import nl.komponents.kovenant.task
+import nl.komponents.kovenant.ui.successUi
 import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.RawItemArray
@@ -55,10 +60,10 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity
 import de.vanita5.twittnuker.adapter.DraftsAdapter
 import de.vanita5.twittnuker.constant.IntentConstants
+import de.vanita5.twittnuker.extension.writeMimeMessageTo
 import de.vanita5.twittnuker.model.Draft
-import de.vanita5.twittnuker.model.DraftCursorIndices
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate
-import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra
+import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.service.BackgroundOperationService
@@ -66,6 +71,7 @@ import de.vanita5.twittnuker.util.AsyncTaskUtils
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.Utils.getDefaultTextSize
 import java.io.File
+import java.io.FileOutputStream
 import java.util.*
 
 class DraftsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnItemClickListener, MultiChoiceModeListener {
@@ -88,25 +94,50 @@ class DraftsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnItemCl
             R.id.delete -> {
                 val f = DeleteDraftsConfirmDialogFragment()
                 val args = Bundle()
-                args.putLongArray(IntentConstants.EXTRA_IDS, listView!!.checkedItemIds)
+                args.putLongArray(IntentConstants.EXTRA_IDS, listView.checkedItemIds)
                 f.arguments = args
                 f.show(childFragmentManager, "delete_drafts_confirm")
             }
             R.id.send -> {
-                val c = adapter!!.cursor
-                if (c == null || c.isClosed) return false
-                val checked = listView!!.checkedItemPositions
+                val checked = listView.checkedItemPositions
                 val list = ArrayList<Draft>()
-                val indices = DraftCursorIndices(c)
                 for (i in 0 until checked.size()) {
-                    if (checked.valueAt(i) && c.moveToPosition(checked.keyAt(i))) {
-                        list.add(indices.newObject(c))
+                    val position = checked.keyAt(i)
+                    if (checked.valueAt(i)) {
+                        list.add(adapter!!.getDraft(position))
                     }
                 }
                 if (sendDrafts(list)) {
                     val where = Expression.`in`(Column(Drafts._ID),
-                            RawItemArray(listView!!.checkedItemIds))
+                            RawItemArray(listView.checkedItemIds))
                     contentResolver.delete(Drafts.CONTENT_URI, where.sql, null)
+                }
+            }
+            R.id.save -> {
+                val checked = listView.checkedItemPositions
+                val drafts = ArrayList<Draft>()
+                for (i in 0 until checked.size()) {
+                    val position = checked.keyAt(i)
+                    if (checked.valueAt(i)) {
+                        drafts.add(adapter!!.getDraft(position))
+                    }
+                }
+                task {
+                    val pubDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+                    val paths = drafts.map { draft ->
+                        val name = "${draft.timestamp}.eml"
+                        val destFile = File(pubDir, name)
+                        FileOutputStream(destFile).use {
+                            draft.writeMimeMessageTo(context, it)
+                            it.flush()
+                        }
+                        return@map destFile.absolutePath
+                    }
+                    MediaScannerConnection.scanFile(context, paths.toTypedArray(), null, null)
+                }.successUi {
+                    Toast.makeText(context, R.string.draft_saved, Toast.LENGTH_SHORT).show()
+                }.fail { ex ->
+                    Log.w(LOGTAG, ex)
                 }
             }
             else -> {
@@ -143,9 +174,7 @@ class DraftsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnItemCl
     }
 
     override fun onItemClick(view: AdapterView<*>, child: View, position: Int, id: Long) {
-        val c = adapter!!.cursor
-        if (c == null || c.isClosed || !c.moveToPosition(position)) return
-        val item = DraftCursorIndices.fromCursor(c)
+        val item = adapter!!.getDraft(position)
         if (TextUtils.isEmpty(item.action_type)) {
             editDraft(item)
             return
@@ -165,13 +194,13 @@ class DraftsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnItemCl
         super.onActivityCreated(savedInstanceState)
         adapter = DraftsAdapter(activity)
         adapter!!.setTextSize(preferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(activity)).toFloat())
-        listView!!.adapter = adapter
-        listView!!.emptyView = emptyView
-        listView!!.onItemClickListener = this
-        listView!!.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
-        listView!!.setMultiChoiceModeListener(this)
-        emptyIcon!!.setImageResource(R.drawable.ic_info_draft)
-        emptyText!!.setText(R.string.drafts_hint_messages)
+        listView.adapter = adapter
+        listView.emptyView = emptyView
+        listView.onItemClickListener = this
+        listView.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
+        listView.setMultiChoiceModeListener(this)
+        emptyIcon.setImageResource(R.drawable.ic_info_draft)
+        emptyText.setText(R.string.drafts_hint_messages)
         loaderManager.initLoader(0, null, this)
         setListShown(false)
     }
@@ -210,8 +239,8 @@ class DraftsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnItemCl
                 }
                 Draft.Action.SEND_DIRECT_MESSAGE_COMPAT, Draft.Action.SEND_DIRECT_MESSAGE -> {
                     var recipientId: String? = null
-                    if (item.action_extras is SendDirectMessageActionExtra) {
-                        recipientId = (item.action_extras as SendDirectMessageActionExtra).recipientId
+                    if (item.action_extras is SendDirectMessageActionExtras) {
+                        recipientId = (item.action_extras as SendDirectMessageActionExtras).recipientId
                     }
                     if (item.account_keys?.isEmpty() ?: true || recipientId == null) {
                         continue@loop
@@ -227,7 +256,7 @@ class DraftsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnItemCl
 
     private fun updateTitle(mode: ActionMode?) {
         if (listView == null || mode == null) return
-        val count = listView!!.checkedItemCount
+        val count = listView.checkedItemCount
         mode.title = resources.getQuantityString(R.plurals.Nitems_selected, count, count)
     }
 

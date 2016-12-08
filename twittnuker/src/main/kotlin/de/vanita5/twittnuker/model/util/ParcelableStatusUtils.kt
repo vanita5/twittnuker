@@ -218,7 +218,7 @@ object ParcelableStatusUtils {
     private fun getPlaceFullName(status: Status): String? {
         val place = status.place
         if (place != null) return place.fullName
-        val location = status.location
+        val location = status.location ?: return null
         if (ParcelableLocation.valueOf(location) == null) {
             return location
         }
@@ -230,7 +230,7 @@ object ParcelableStatusUtils {
         if (geoLocation != null) {
             return ParcelableLocationUtils.fromGeoLocation(geoLocation)
         }
-        val locationString = status.location
+        val locationString = status.location ?: return null
         val location = ParcelableLocation.valueOf(locationString)
         if (location != null) {
             return location

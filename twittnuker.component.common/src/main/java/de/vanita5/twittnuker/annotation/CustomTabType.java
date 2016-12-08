@@ -24,6 +24,9 @@ package de.vanita5.twittnuker.annotation;
 
 import android.support.annotation.StringDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 @StringDef({
         CustomTabType.HOME_TIMELINE,
         CustomTabType.NOTIFICATIONS_TIMELINE,
@@ -34,6 +37,7 @@ import android.support.annotation.StringDef;
         CustomTabType.SEARCH_STATUSES,
         CustomTabType.LIST_TIMELINE,
 })
+@Retention(RetentionPolicy.SOURCE)
 public @interface CustomTabType {
     String HOME_TIMELINE = "home_timeline";
     String NOTIFICATIONS_TIMELINE = "notifications_timeline";

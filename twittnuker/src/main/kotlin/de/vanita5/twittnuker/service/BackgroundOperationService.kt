@@ -62,7 +62,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.newMicroBlogInstance
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.model.*
-import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtra
+import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableDirectMessageUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
@@ -173,7 +173,7 @@ class BackgroundOperationService : IntentService("background_operation"), Consta
                 updateStatuses(item.action_type, ParcelableStatusUpdateUtils.fromDraftItem(this, item))
             }
             Draft.Action.SEND_DIRECT_MESSAGE_COMPAT, Draft.Action.SEND_DIRECT_MESSAGE -> {
-                val recipientId = (item.action_extras as? SendDirectMessageActionExtra)?.recipientId ?: return
+                val recipientId = (item.action_extras as? SendDirectMessageActionExtras)?.recipientId ?: return
                 if (item.account_keys?.isEmpty() ?: true) {
                     return
                 }
