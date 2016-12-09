@@ -82,7 +82,7 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
 
     override fun onLoadFinished(loader: Loader<List<ParcelableUserList>>, data: List<ParcelableUserList>) {
         val adapter = adapter
-        adapter!!.setData(data)
+        adapter.setData(data)
         if (loader !is IExtendedLoader || loader.fromUser) {
             adapter.loadMoreSupportedPosition = if (hasMoreData(data)) ILoadMoreSupportAdapter.END else ILoadMoreSupportAdapter.NONE
             refreshEnabled = true
@@ -116,7 +116,7 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
     }
 
     val data: List<ParcelableUserList>?
-        get() = adapter!!.getData()
+        get() = adapter.getData()
 
     override fun handleKeyboardShortcutSingle(handler: KeyboardShortcutsHandler, keyCode: Int, event: KeyEvent, metaState: Int): Boolean {
         return navigationHelper!!.handleKeyboardShortcutSingle(handler, keyCode, event, metaState)
@@ -134,9 +134,9 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
         super.onActivityCreated(savedInstanceState)
         val adapter = adapter
         val layoutManager = layoutManager
-        adapter!!.userListClickListener = this
+        adapter.userListClickListener = this
 
-        navigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager!!, adapter,
+        navigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
                 this)
         val loaderArgs = Bundle(arguments)
         loaderArgs.putBoolean(EXTRA_FROM_USER, true)
@@ -156,7 +156,7 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
     }
 
     override fun onUserListClick(holder: UserListViewHolder, position: Int) {
-        val userList = adapter!!.getUserList(position) ?: return
+        val userList = adapter.getUserList(position) ?: return
         IntentUtils.openUserListDetails(activity, userList)
     }
 

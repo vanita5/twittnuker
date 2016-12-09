@@ -71,7 +71,6 @@ import de.vanita5.twittnuker.model.tab.extra.TabExtras;
 import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CacheFiles;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
@@ -114,8 +113,6 @@ public class DataStoreUtils implements Constants {
     private static Map<UserKey, String> sAccountNames = new HashMap<>();
 
     static {
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Accounts.CONTENT_PATH,
-                TABLE_ID_ACCOUNTS);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Statuses.CONTENT_PATH,
                 TABLE_ID_STATUSES);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Activities.AboutMe.CONTENT_PATH,
@@ -549,8 +546,6 @@ public class DataStoreUtils implements Constants {
 
     public static String getTableNameById(final int id) {
         switch (id) {
-            case TwittnukerConstants.TABLE_ID_ACCOUNTS:
-                return Accounts.TABLE_NAME;
             case TwittnukerConstants.TABLE_ID_STATUSES:
                 return Statuses.TABLE_NAME;
             case TwittnukerConstants.TABLE_ID_ACTIVITIES_ABOUT_ME:

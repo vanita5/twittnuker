@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.accounts.AccountManager
+import android.accounts.OnAccountsUpdateListener
 import android.content.Context
 import android.database.Cursor
 import android.os.AsyncTask
@@ -58,18 +60,17 @@ import de.vanita5.twittnuker.model.BaseRefreshTaskParam
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
-import de.vanita5.twittnuker.util.content.SupportFragmentReloadCursorObserver
 import java.util.*
 
 class DirectMessagesFragment : AbsContentListRecyclerViewFragment<MessageEntriesAdapter>(), LoaderCallbacks<Cursor>, MessageEntriesAdapterListener, KeyboardShortcutCallback {
 
     // Listeners
-    private val reloadContentObserver = SupportFragmentReloadCursorObserver(
-            this, 0, this)
+    private var accountListener: OnAccountsUpdateListener? = null
 
     private var mRemoveUnreadCountsTask: RemoveUnreadCountsTask? = null
     private var mNavigationHelper: RecyclerViewNavigationHelper? = null
@@ -132,8 +133,7 @@ class DirectMessagesFragment : AbsContentListRecyclerViewFragment<MessageEntries
         if (activity == null) return
         val isEmpty = cursor != null && cursor.count == 0
         mFirstVisibleItem = -1
-        val adapter = adapter
-        adapter!!.setCursor(cursor)
+        adapter.setCursor(cursor)
         adapter.loadMoreIndicatorPosition = ILoadMoreSupportAdapter.NONE
         adapter.loadMoreSupportedPosition = if (hasMoreData(cursor)) ILoadMoreSupportAdapter.END else ILoadMoreSupportAdapter.NONE
         val accountIds = accountKeys
@@ -158,8 +158,7 @@ class DirectMessagesFragment : AbsContentListRecyclerViewFragment<MessageEntries
     }
 
     override fun onLoaderReset(loader: Loader<Cursor>) {
-        val adapter = adapter
-        adapter!!.setCursor(null)
+        adapter.setCursor(null)
     }
 
     override fun onEntryClick(position: Int, entry: DirectMessageEntry) {
@@ -222,8 +221,7 @@ class DirectMessagesFragment : AbsContentListRecyclerViewFragment<MessageEntries
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(activity is LinkHandlerActivity)
-        val adapter = adapter!!
-        mNavigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager!!, adapter, this)
+        mNavigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter, this)
 
         adapter.listener = this
 
@@ -233,15 +231,17 @@ class DirectMessagesFragment : AbsContentListRecyclerViewFragment<MessageEntries
 
     override fun onStart() {
         super.onStart()
-        contentResolver.registerContentObserver(Accounts.CONTENT_URI, true, reloadContentObserver)
+        accountListener = OnAccountsUpdateListener { accounts ->
+
+        }
+        AccountManager.get(context).addOnAccountsUpdatedListener(accountListener, null, false)
         bus.register(this)
-        val adapter = adapter
-        adapter!!.updateReadState()
+        adapter.updateReadState()
     }
 
     override fun onStop() {
         bus.unregister(this)
-        contentResolver.unregisterContentObserver(reloadContentObserver)
+        AccountManager.get(context).removeOnAccountsUpdatedListener(accountListener)
         super.onStop()
     }
 
@@ -353,7 +353,7 @@ class DirectMessagesFragment : AbsContentListRecyclerViewFragment<MessageEntries
 
         init {
             this.readPositions = Collections.synchronizedSet(HashSet(readPositions))
-            adapter = fragment.adapter!!
+            adapter = fragment.adapter
         }
 
         override fun doInBackground(vararg params: Any): Any? {

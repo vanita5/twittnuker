@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.accounts.AccountManager
+import android.accounts.OnAccountsUpdateListener
 import android.content.Context
 import android.database.ContentObserver
 import android.database.Cursor
@@ -41,7 +43,8 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FROM_USER
 import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.message.*
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
+import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri
 import de.vanita5.twittnuker.util.ErrorInfoStore
@@ -52,7 +55,7 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
     override fun onLoadingFinished() {
         val accountKeys = accountKeys
         val adapter = adapter
-        if (adapter!!.itemCount > 0) {
+        if (adapter.itemCount > 0) {
             showContent()
         } else if (accountKeys.isNotEmpty()) {
             val errorInfo = ErrorInfoStore.getErrorInfo(context,
@@ -70,6 +73,7 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
     protected abstract val errorInfoKey: String
 
     private var contentObserver: ContentObserver? = null
+    private var accountListener: OnAccountsUpdateListener? = null
 
     abstract val contentUri: Uri
 
@@ -95,7 +99,7 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
         }
         val expression = processWhere(where, accountSelectionArgs)
         val selection = expression.sql
-        val adapter = adapter!!
+        val adapter = adapter
         adapter.showAccountsColor = accountKeys.size > 1
         val projection = Activities.COLUMNS
         return CursorActivitiesLoader(context, uri, projection, selection, expression.parameters,
@@ -107,26 +111,28 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
     }
 
     override val accountKeys: Array<UserKey>
-        get() {
-            val accountKeys = Utils.getAccountKeys(context, arguments)
-            if (accountKeys != null) {
-                return accountKeys
-            }
-            return DataStoreUtils.getActivatedAccountKeys(context)
-        }
+        get() = Utils.getAccountKeys(context, arguments) ?: DataStoreUtils.getActivatedAccountKeys(context)
 
     override fun onStart() {
         super.onStart()
-        val cr = contentResolver
         contentObserver = object : ContentObserver(Handler()) {
             override fun onChange(selfChange: Boolean) {
                 reloadActivities()
             }
         }
-        cr.registerContentObserver(Accounts.CONTENT_URI, true, contentObserver!!)
-        cr.registerContentObserver(Filters.CONTENT_URI, true, contentObserver!!)
+        accountListener = OnAccountsUpdateListener { accounts ->
+            reloadActivities()
+        }
+        context.contentResolver.registerContentObserver(Filters.CONTENT_URI, true, contentObserver)
+        AccountManager.get(context).addOnAccountsUpdatedListener(accountListener, null, false)
         updateRefreshState()
         reloadActivities()
+    }
+
+    override fun onStop() {
+        context.contentResolver.unregisterContentObserver(contentObserver)
+        AccountManager.get(context).removeOnAccountsUpdatedListener(accountListener)
+        super.onStop()
     }
 
     protected fun reloadActivities() {
@@ -140,18 +146,12 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
         loaderManager.restartLoader(0, args, this)
     }
 
-    override fun onStop() {
-        val cr = contentResolver
-        cr.unregisterContentObserver(contentObserver!!)
-        super.onStop()
-    }
-
     override fun hasMoreData(data: List<ParcelableActivity>?): Boolean {
         return data?.size != 0
     }
 
     override fun onLoaderReset(loader: Loader<List<ParcelableActivity>>) {
-        adapter!!.setData(null)
+        adapter.setData(null)
     }
 
     override fun onLoadMoreContents(@IndicatorPosition position: Long) {
@@ -258,7 +258,7 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
         if (result == null) return
         val lm = layoutManager
         val adapter = adapter
-        val rangeStart = Math.max(adapter!!.activityStartIndex, lm!!.findFirstVisibleItemPosition())
+        val rangeStart = Math.max(adapter.activityStartIndex, lm.findFirstVisibleItemPosition())
         val rangeEnd = Math.min(lm.findLastVisibleItemPosition(), adapter.activityStartIndex + adapter.activityCount - 1)
         loop@ for (i in rangeStart..rangeEnd) {
             val activity = adapter.getActivity(i)
@@ -309,7 +309,7 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
 
         @Subscribe
         fun notifyStatusListChanged(event: StatusListChangedEvent) {
-            adapter!!.notifyDataSetChanged()
+            adapter.notifyDataSetChanged()
         }
 
         @Subscribe

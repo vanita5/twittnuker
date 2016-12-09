@@ -23,19 +23,16 @@
 package de.vanita5.twittnuker.service
 
 import android.accounts.AccountManager
+import android.accounts.OnAccountsUpdateListener
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.BroadcastReceiver
-import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.database.ContentObserver
-import android.net.Uri
-import android.os.Handler
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.support.v4.util.SimpleArrayMap
@@ -48,9 +45,9 @@ import de.vanita5.twittnuker.library.twitter.UserStreamCallback
 import de.vanita5.twittnuker.library.twitter.model.*
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.BuildConfig
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants
+import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.HomeActivity
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
@@ -61,15 +58,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper
-import de.vanita5.twittnuker.util.ContentValuesCreator
-import de.vanita5.twittnuker.util.DataStoreUtils
-import de.vanita5.twittnuker.util.NotificationHelper
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper
-import de.vanita5.twittnuker.util.TwidereArrayUtils
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
-import de.vanita5.twittnuker.util.Utils
-import de.vanita5.twittnuker.util.dagger.DependencyHolder
+import de.vanita5.twittnuker.util.*
 
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -77,16 +66,14 @@ import java.nio.charset.Charset
 
 class StreamingService : Service() {
 
-    private val mCallbacks = SimpleArrayMap<UserKey, UserStreamCallback>()
-    private var mResolver: ContentResolver? = null
+    private val callbacks = SimpleArrayMap<UserKey, UserStreamCallback>()
 
-    private var mPreferences: SharedPreferences? = null
-    private var mNotificationManager: NotificationManager? = null
+    private var notificationManager: NotificationManager? = null
 
-    private var mTwitterWrapper: AsyncTwitterWrapper? = null
+    private var preferences: SharedPreferencesWrapper? = null
+    private var twitterWrapper: AsyncTwitterWrapper? = null
 
-    private var mAccountKeys: Array<UserKey>? = null
-    private val mNetworkOK: Boolean = false
+    private var accountKeys: Array<UserKey>? = null
 
     private val mStateReceiver = object : BroadcastReceiver() {
 
@@ -115,35 +102,19 @@ class StreamingService : Service() {
         }
     }
 
-    private val mAccountChangeObserver = object : ContentObserver(Handler()) {
-
-        override fun onChange(selfChange: Boolean) {
-            onChange(selfChange, null)
+    private val accountChangeObserver = OnAccountsUpdateListener {
+        if (!TwidereArrayUtils.contentMatch(accountKeys, DataStoreUtils.getActivatedAccountKeys(this@StreamingService))) {
+            initStreaming()
         }
-
-        override fun onChange(selfChange: Boolean, uri: Uri?) {
-            if (!TwidereArrayUtils.contentMatch(mAccountKeys, DataStoreUtils.getActivatedAccountKeys(this@StreamingService))) {
-                clearTwitterInstances()
-                initStreaming()
-            }
-        }
-
-    }
-
-    override fun onBind(intent: Intent): IBinder? {
-        return null
     }
 
     override fun onCreate() {
         super.onCreate()
-        mPreferences = SharedPreferencesWrapper.getInstance(this, TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-        mResolver = contentResolver
-        mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        preferences = SharedPreferencesWrapper.getInstance(this, TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (BuildConfig.DEBUG) {
-            Log.d(Constants.LOGTAG, "Stream service started.")
+            Log.d(LOGTAG, "Stream service started.")
         }
-        val holder = DependencyHolder.get(this)
-        mTwitterWrapper = holder.asyncTwitterWrapper
 
         //        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         //        NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -155,34 +126,38 @@ class StreamingService : Service() {
         registerReceiver(mStateReceiver, filter)
 
         initStreaming()
-        mResolver!!.registerContentObserver(Accounts.CONTENT_URI, true, mAccountChangeObserver)
+        AccountManager.get(this).addOnAccountsUpdatedListener(accountChangeObserver, null, false)
     }
 
     override fun onDestroy() {
         clearTwitterInstances()
         unregisterReceiver(mStateReceiver)
-        mResolver!!.unregisterContentObserver(mAccountChangeObserver)
+        AccountManager.get(this).removeOnAccountsUpdatedListener(accountChangeObserver)
         if (BuildConfig.DEBUG) {
-            Log.d(Constants.LOGTAG, "Stream service stopped.")
+            Log.d(LOGTAG, "Stream service stopped.")
         }
         super.onDestroy()
     }
 
+    override fun onBind(intent: Intent): IBinder? {
+        return null
+    }
+
     private fun clearTwitterInstances() {
         var i = 0
-        val j = mCallbacks.size()
+        val j = callbacks.size()
         while (i < j) {
-            Thread(ShutdownStreamTwitterRunnable(mCallbacks.valueAt(i))).start()
+            Thread(ShutdownStreamTwitterRunnable(callbacks.valueAt(i))).start()
             i++
         }
-        mCallbacks.clear()
+        callbacks.clear()
         updateStreamState()
     }
 
     private fun initStreaming() {
         //FIXME temporary fix for fc
         Toast.makeText(this, "Streaming is broken. Disabling...", Toast.LENGTH_SHORT).show()
-        mPreferences!!.edit().putBoolean(SharedPreferenceConstants.KEY_STREAMING_ENABLED, false).apply()
+        preferences!!.edit().putBoolean(SharedPreferenceConstants.KEY_STREAMING_ENABLED, false).apply()
         //        if (!mPreferences.getBoolean(KEY_STREAMING_ENABLED, true)) return;
         //
         ////        if (mPreferences.getBoolean(KEY_STREAMING_ON_MOBILE, false)
@@ -196,40 +171,42 @@ class StreamingService : Service() {
         val accountKeys = accountsList.map { it.key }.toTypedArray()
         val activatedPreferences = AccountPreferences.getAccountPreferences(this, accountKeys)
         if (BuildConfig.DEBUG) {
-            Log.d(Constants.LOGTAG, "Setting up twitter stream instances")
+            Log.d(LOGTAG, "Setting up twitter stream instances")
         }
-        mAccountKeys = accountKeys
+        this.accountKeys = accountKeys
         //        clearTwitterInstances();
         var result = false
         accountsList.forEachIndexed { i, account ->
             val twitter = account.credentials.newMicroBlogInstance(context = this, cls = TwitterUserStream::class.java)
-            val callback = TwidereUserStreamCallback(this, account, mPreferences!!)
-            mCallbacks.put(account.key, callback)
-            Log.d(Constants.LOGTAG, String.format("Stream %s starts...", account.key))
+            val callback = TwidereUserStreamCallback(this, account, preferences!!)
+            callbacks.put(account.key, callback)
+            Log.d(LOGTAG, String.format("Stream %s starts...", account.key))
             object : Thread() {
                 override fun run() {
                     twitter.getUserStream(callback)
+                    Log.d(LOGTAG, String.format("Stream %s disconnected", account.key))
+                    callbacks.remove(account.key)
+                    updateStreamState()
                 }
             }.start()
             result = result or true
         }
-        updateStreamState()
         return result
     }
 
     private fun refreshBefore(mAccountId: Array<UserKey>) {
-        if (mPreferences!!.getBoolean(SharedPreferenceConstants.KEY_REFRESH_BEFORE_STREAMING, true)) {
-            mTwitterWrapper!!.refreshAll(mAccountId)
+        if (preferences!!.getBoolean(SharedPreferenceConstants.KEY_REFRESH_BEFORE_STREAMING, true)) {
+            twitterWrapper!!.refreshAll(mAccountId)
         }
     }
 
     private fun updateStreamState() {
-        Log.d(TwittnukerConstants.LOGTAG, "updateStreamState()")
-        if (!mPreferences!!.getBoolean(SharedPreferenceConstants.KEY_STREAMING_NOTIFICATION, true)) {
-            mNotificationManager!!.cancel(TwittnukerConstants.NOTIFICATION_ID_STREAMING)
+        Log.d(LOGTAG, "updateStreamState()")
+        if (!preferences!!.getBoolean(SharedPreferenceConstants.KEY_STREAMING_NOTIFICATION, true)) {
+            notificationManager!!.cancel(TwittnukerConstants.NOTIFICATION_ID_STREAMING)
             return
         }
-        if (mCallbacks.size() > 0) {
+        if (callbacks.size() > 0) {
             val intent = Intent(this, HomeActivity::class.java)
             val builder = NotificationCompat.Builder(this)
             builder.setOngoing(true)
@@ -241,9 +218,9 @@ class StreamingService : Service() {
                     .setPriority(NotificationCompat.PRIORITY_MIN)
                     .setCategory(NotificationCompat.CATEGORY_SERVICE)
                     .setContentIntent(PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT))
-            mNotificationManager!!.notify(TwittnukerConstants.NOTIFICATION_ID_STREAMING, builder.build())
+            notificationManager!!.notify(NOTIFICATION_ID_STREAMING, builder.build())
         } else {
-            mNotificationManager!!.cancel(TwittnukerConstants.NOTIFICATION_ID_STREAMING)
+            notificationManager!!.cancel(NOTIFICATION_ID_STREAMING)
         }
     }
 
@@ -251,7 +228,7 @@ class StreamingService : Service() {
 
         override fun run() {
             if (callback == null) return
-            Log.d(Constants.LOGTAG, "Disconnecting stream")
+            Log.d(LOGTAG, "Disconnecting stream")
             callback.disconnect()
         }
 
@@ -279,7 +256,7 @@ class StreamingService : Service() {
                         account.key)
                 val notification = NotificationContent()
                 notification.accountKey = account.key
-                notification.objectId = if (status != null) status.id.toString() else null
+                notification.objectId = status?.id
                 notification.objectUserKey = status?.user_key
                 notification.fromUser = fromUser
                 notification.type = type
@@ -303,7 +280,7 @@ class StreamingService : Service() {
 
         override fun onBlock(source: User, blockedUser: User) {
             val message = String.format("%s blocked %s", source.screenName, blockedUser.screenName)
-            Log.d(TwittnukerConstants.LOGTAG, message)
+            Log.d(LOGTAG, message)
         }
 
         override fun onDirectMessageDeleted(event: DeletionEvent) {
@@ -346,7 +323,7 @@ class StreamingService : Service() {
                 val values = ContentValuesCreator.createDirectMessage(directMessage,
                         account.key, false)
                 val builder = DirectMessages.Inbox.CONTENT_URI.buildUpon()
-                builder.appendQueryParameter(TwittnukerConstants.QUERY_PARAM_NOTIFY, "true")
+                builder.appendQueryParameter(QUERY_PARAM_NOTIFY, "true")
                 if (values != null) {
                     resolver.insert(builder.build(), values)
                 }
@@ -356,7 +333,7 @@ class StreamingService : Service() {
 
         override fun onException(ex: Throwable) {
             if (ex is MicroBlogException) {
-                Log.w(TwittnukerConstants.LOGTAG, String.format("Error %d", ex.statusCode), ex)
+                Log.w(LOGTAG, String.format("Error %d", ex.statusCode), ex)
                 val response = ex.httpResponse
                 if (response != null) {
                     try {
@@ -376,15 +353,15 @@ class StreamingService : Service() {
                             } else {
                                 charsetName = Charset.defaultCharset().name()
                             }
-                            Log.w(TwittnukerConstants.LOGTAG, os.toString(charsetName))
+                            Log.w(LOGTAG, os.toString(charsetName))
                         }
                     } catch (e: IOException) {
-                        Log.w(TwittnukerConstants.LOGTAG, e)
+                        Log.w(LOGTAG, e)
                     }
 
                 }
             } else {
-                Log.w(Constants.LOGTAG, ex)
+                Log.w(LOGTAG, ex)
             }
         }
 

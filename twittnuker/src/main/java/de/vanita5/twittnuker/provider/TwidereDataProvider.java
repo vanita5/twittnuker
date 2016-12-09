@@ -1076,14 +1076,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
     private void onDatabaseUpdated(final int tableId, final Uri uri) {
         if (uri == null) return;
-        switch (tableId) {
-            case TABLE_ID_ACCOUNTS: {
-                DataStoreUtils.clearAccountName();
-                break;
-            }
-        }
         notifyContentObserver(Utils.getNotificationUri(tableId, uri));
-
     }
 
     private void onNewItemsInserted(final Uri uri, final int tableId, final ContentValues values) {

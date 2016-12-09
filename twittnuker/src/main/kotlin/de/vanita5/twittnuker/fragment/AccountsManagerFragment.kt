@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity
 import android.app.AlertDialog
@@ -44,7 +45,9 @@ import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.activity.SignInActivity
 import de.vanita5.twittnuker.adapter.AccountDetailsAdapter
 import de.vanita5.twittnuker.annotation.Referral
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants
+import de.vanita5.twittnuker.constant.IntentConstants
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.extension.getAccountKey
 import de.vanita5.twittnuker.extension.setActivated
 import de.vanita5.twittnuker.extension.setColor
 import de.vanita5.twittnuker.extension.setPosition
@@ -55,30 +58,38 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.support.AccountManagerSupport
 
 class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<List<AccountDetails>>,
         AdapterView.OnItemClickListener {
 
-    private var adapter: AccountDetailsAdapter? = null
+    private lateinit var adapter: AccountDetailsAdapter
     private var selectedAccount: AccountDetails? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
-        val activity = activity
-        adapter = AccountDetailsAdapter(activity).apply {
-            Utils.configBaseAdapter(activity, this)
+        val am = AccountManager.get(context)
+        adapter = AccountDetailsAdapter(context).apply {
+            Utils.configBaseAdapter(context, this)
             setSortEnabled(true)
             setSwitchEnabled(true)
             accountToggleListener = { pos, checked ->
-                getItem(pos).activated = checked
+                val item = getItem(pos)
+                item.activated = checked
+                item.account.setActivated(am, checked)
             }
         }
         listView.adapter = adapter
         listView.isDragEnabled = true
         listView.onItemClickListener = this
         listView.setDropListener { from, to ->
-            adapter?.drop(from, to)
+            adapter.drop(from, to)
+            for (i in 0 until adapter.count) {
+                val item = adapter.getItem(i)
+                item.account.setActivated(am, item.activated)
+                item.account.setPosition(am, i)
+            }
         }
         listView.setOnCreateContextMenuListener(this)
         listView.emptyView = emptyView
@@ -119,9 +130,8 @@ class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallb
 
     override fun onContextItemSelected(item: MenuItem?): Boolean {
         val menuInfo = item!!.menuInfo as? AdapterContextMenuInfo ?: return false
-        val details = adapter!!.getItem(menuInfo.position)
+        val details = adapter.getItem(menuInfo.position) ?: return false
         selectedAccount = details
-        if (details == null) return false
         when (item.itemId) {
             R.id.set_color -> {
                 val intent = Intent(activity, ColorPickerDialogActivity::class.java)
@@ -141,16 +151,9 @@ class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallb
     }
 
     override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-        val account = adapter!!.getItem(position)
-        IntentUtils.openUserProfile(context, account.user, null,
-                preferences.getBoolean(SharedPreferenceConstants.KEY_NEW_DOCUMENT_API),
+        val account = adapter.getItem(position)
+        IntentUtils.openUserProfile(context, account.user, null, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
                 Referral.SELF_PROFILE)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        saveActivatedState()
-        saveAccountPositions()
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<AccountDetails>> {
@@ -162,27 +165,17 @@ class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallb
     }
 
     override fun onLoadFinished(loader: Loader<List<AccountDetails>>, data: List<AccountDetails>) {
-        adapter?.apply {
+        adapter.apply {
             clear()
             addAll(data)
         }
         setListShown(true)
     }
 
-    private fun saveActivatedState() {
-        val am = AccountManager.get(context)
-        adapter?.let { adapter ->
-            for (i in 0 until adapter.count) {
-                val item = adapter.getItem(i)
-                item.account.setActivated(am, item.activated)
-            }
-        }
-    }
-
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo) {
         if (menuInfo !is AdapterContextMenuInfo) return
-        val account = adapter!!.getItem(menuInfo.position)
-        menu.setHeaderTitle(account!!.user.name)
+        val account = adapter.getItem(menuInfo.position)!!
+        menu.setHeaderTitle(account.user.name)
         val inflater = MenuInflater(v.context)
         inflater.inflate(R.menu.action_manager_account, menu)
     }
@@ -196,25 +189,18 @@ class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallb
         progressContainer.visibility = if (shown) View.GONE else View.VISIBLE
     }
 
-    private fun saveAccountPositions() {
-        val am = AccountManager.get(context)
-        adapter?.let { adapter ->
-            for (i in 0 until adapter.count) {
-                adapter.getItem(i).account.setPosition(am, i)
-            }
-        }
-    }
-
     class AccountDeletionDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
 
         override fun onClick(dialog: DialogInterface, which: Int) {
-            val id = arguments.getLong(EXTRA_ID)
+            val account: Account = arguments.getParcelable(IntentConstants.EXTRA_ACCOUNT)
             val resolver = context.contentResolver
+            val am = AccountManager.get(context)
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
-                    val where = Expression.equalsArgs(Accounts._ID).sql
-                    val whereArgs = arrayOf(id.toString())
-                    resolver.delete(Accounts.CONTENT_URI, where, whereArgs)
+                    val accountKey = account.getAccountKey(am)
+                    AccountManagerSupport.removeAccount(am, account, activity, null, null)
+                    val where = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY).sql
+                    val whereArgs = arrayOf(accountKey.toString())
                     // Also delete tweets related to the account we previously
                     // deleted.
                     resolver.delete(Statuses.CONTENT_URI, where, whereArgs)
