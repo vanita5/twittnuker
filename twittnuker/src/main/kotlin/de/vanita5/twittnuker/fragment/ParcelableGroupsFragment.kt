@@ -79,7 +79,6 @@ abstract class ParcelableGroupsFragment : AbsContentListRecyclerViewFragment<Par
     }
 
     override fun onLoadFinished(loader: Loader<List<ParcelableGroup>?>, data: List<ParcelableGroup>?) {
-        val adapter = adapter
         adapter.setData(data)
         if (loader !is IExtendedLoader || loader.fromUser) {
             adapter.loadMoreSupportedPosition = if (hasMoreData(data)) ILoadMoreSupportAdapter.END else ILoadMoreSupportAdapter.NONE
@@ -126,7 +125,6 @@ abstract class ParcelableGroupsFragment : AbsContentListRecyclerViewFragment<Par
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val adapter = adapter
         val layoutManager = layoutManager
         adapter.groupAdapterListener = this
 

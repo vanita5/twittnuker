@@ -114,7 +114,8 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         OnMediaClickListener, StatusClickListener, KeyboardShortcutCallback, ContentListSupport {
     private var mItemDecoration: DividerItemDecoration? = null
 
-    override var adapter: StatusAdapter? = null
+    override lateinit var adapter: StatusAdapter
+        private set
 
     private var layoutManager: LinearLayoutManager? = null
     private var loadTranslationTask: LoadTranslationTask? = null
@@ -126,11 +127,10 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
 
     private var mActivityLoaderInitialized: Boolean = false
     private var hasMoreConversation = true
-
     // Listeners
     private val conversationsLoaderCallback = object : LoaderCallbacks<List<ParcelableStatus>> {
         override fun onCreateLoader(id: Int, args: Bundle): Loader<List<ParcelableStatus>> {
-            val adapter = this@StatusFragment.adapter!!
+            val adapter = this@StatusFragment.adapter
             adapter.isRepliesLoading = true
             adapter.isConversationsLoading = true
             adapter.updateItemDecoration()
@@ -148,7 +148,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         }
 
         override fun onLoadFinished(loader: Loader<List<ParcelableStatus>>, data: List<ParcelableStatus>?) {
-            val adapter = this@StatusFragment.adapter!!
+            val adapter = this@StatusFragment.adapter
             adapter.updateItemDecoration()
             val conversationLoader = loader as ConversationLoader
             var supportedPositions: Long = 0
@@ -209,8 +209,8 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         }
 
         override fun onLoadFinished(loader: Loader<StatusActivity?>, data: StatusActivity?) {
-            adapter!!.updateItemDecoration()
-            adapter!!.statusActivity = data
+            adapter.updateItemDecoration()
+            adapter.statusActivity = data
         }
 
         override fun onLoaderReset(loader: Loader<StatusActivity?>) {
@@ -222,7 +222,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         val activity = activity ?: return
         when (requestCode) {
             REQUEST_SET_COLOR -> {
-                val status = adapter!!.status ?: return
+                val status = adapter.status ?: return
                 if (resultCode == Activity.RESULT_OK) {
                     if (data == null) return
                     val color = data.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT)
@@ -239,7 +239,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
                 loaderManager.restartLoader(LOADER_ID_DETAIL_STATUS, args, this)
             }
             REQUEST_SELECT_ACCOUNT -> {
-                val status = adapter!!.status ?: return
+                val status = adapter.status ?: return
                 if (resultCode == Activity.RESULT_OK) {
                     if (data == null || !data.hasExtra(EXTRA_ID)) return
                     val accountKey = data.getParcelableExtra<UserKey>(EXTRA_ACCOUNT_KEY)
@@ -265,12 +265,12 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         })
         adapter = StatusAdapter(this)
         layoutManager = StatusListLinearLayoutManager(context, recyclerView)
-        mItemDecoration = StatusDividerItemDecoration(context, adapter!!, layoutManager!!.orientation)
+        mItemDecoration = StatusDividerItemDecoration(context, adapter, layoutManager!!.orientation)
         recyclerView.addItemDecoration(mItemDecoration)
         layoutManager!!.recycleChildrenOnDetach = true
         recyclerView.layoutManager = layoutManager
         recyclerView.clipToPadding = false
-        adapter!!.statusClickListener = this
+        adapter.statusClickListener = this
         recyclerView.adapter = adapter
         registerForContextMenu(recyclerView!!)
 
@@ -279,7 +279,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         scrollListener!!.touchSlop = ViewConfiguration.get(context).scaledTouchSlop
 
         navigationHelper = RecyclerViewNavigationHelper(recyclerView!!, layoutManager!!,
-                adapter!!, null)
+                adapter, null)
 
         setState(STATE_LOADING)
 
@@ -287,7 +287,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     }
 
     override fun onMediaClick(holder: IStatusViewHolder, view: View, media: ParcelableMedia, statusPosition: Int) {
-        val status = adapter!!.getStatus(statusPosition) ?: return
+        val status = adapter.getStatus(statusPosition) ?: return
         IntentUtils.openMedia(activity, status, media, null,
                 preferences.getBoolean(SharedPreferenceConstants.KEY_NEW_DOCUMENT_API))
 
@@ -299,13 +299,13 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     }
 
     override fun onItemActionClick(holder: ViewHolder, id: Int, position: Int) {
-        val status = adapter!!.getStatus(position)
+        val status = adapter.getStatus(position)
         AbsStatusesFragment.handleStatusActionClick(context, fragmentManager, twitterWrapper,
                 holder as StatusViewHolder, status, id)
     }
 
     override fun onStatusClick(holder: IStatusViewHolder, position: Int) {
-        IntentUtils.openStatus(activity, adapter!!.getStatus(position)!!, null)
+        IntentUtils.openStatus(activity, adapter.getStatus(position)!!, null)
     }
 
     override fun onStatusLongClick(holder: IStatusViewHolder, position: Int): Boolean {
@@ -320,14 +320,14 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
 
     override fun onUserProfileClick(holder: IStatusViewHolder, position: Int) {
         val activity = activity
-        val status = adapter!!.getStatus(position)
+        val status = adapter.getStatus(position)
         IntentUtils.openUserProfile(activity, status!!.account_key, status.user_key,
                 status.user_screen_name, null, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
                 Referral.TIMELINE_STATUS)
     }
 
     override fun onMediaClick(view: View, media: ParcelableMedia?, accountKey: UserKey, extraId: Long) {
-        val status = adapter!!.status
+        val status = adapter.status
         if (status == null || media == null) return
         IntentUtils.openMediaDirectly(activity, accountKey, status, media, null,
                 preferences.getBoolean(KEY_NEW_DOCUMENT_API))
@@ -345,7 +345,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
             return false
         }
         if (position == -1) return false
-        val status = adapter!!.getStatus(position) ?: return false
+        val status = adapter.getStatus(position) ?: return false
         val action = handler.getKeyAction(CONTEXT_TAG_STATUS, keyCode, event, metaState) ?: return false
         when (action) {
             ACTION_STATUS_REPLY -> {
@@ -402,17 +402,17 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
             val readPosition = saveReadPosition()
             val dataExtra = data.extras
             val details: AccountDetails = dataExtra.getParcelable(EXTRA_ACCOUNT)
-            if (adapter!!.setStatus(status, details)) {
+            if (adapter.setStatus(status, details)) {
                 val args = arguments
                 if (args.containsKey(EXTRA_STATUS)) {
                     args.putParcelable(EXTRA_STATUS, status)
                 }
-                adapter!!.loadMoreSupportedPosition = ILoadMoreSupportAdapter.BOTH
-                adapter!!.setData(null)
+                adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.BOTH
+                adapter.setData(null)
                 loadConversation(status, null, null)
                 loadActivity(status)
 
-                val position = adapter!!.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS)
+                val position = adapter.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS)
                 if (position != RecyclerView.NO_POSITION) {
                     layoutManager!!.scrollToPositionWithOffset(position, 0)
                 }
@@ -422,7 +422,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
             }
             setState(STATE_LOADED)
         } else {
-            adapter!!.loadMoreSupportedPosition = ILoadMoreSupportAdapter.NONE
+            adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.NONE
             setState(STATE_ERROR)
             errorText.text = Utils.getErrorMessage(context, data.exception)
         }
@@ -437,15 +437,15 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
-        MenuUtils.setItemAvailability(menu, R.id.current_status, adapter!!.status != null)
+        MenuUtils.setItemAvailability(menu, R.id.current_status, adapter.status != null)
         super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
             R.id.current_status -> {
-                if (adapter!!.status != null) {
-                    val position = adapter!!.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS)
+                if (adapter.status != null) {
+                    val position = adapter.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS)
                     recyclerView!!.smoothScrollToPosition(position)
                 }
                 return true
@@ -456,7 +456,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
 
     private fun setConversation(data: List<ParcelableStatus>?) {
         val readPosition = saveReadPosition()
-        val changed = adapter!!.setData(data)
+        val changed = adapter.setData(data)
         hasMoreConversation = data != null && changed
         restoreReadPosition(readPosition)
     }
@@ -467,16 +467,16 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     override fun onLoadMoreContents(@IndicatorPosition position: Long) {
         if (!hasMoreConversation) return
         if (position and ILoadMoreSupportAdapter.START !== 0L) {
-            val start = adapter!!.getIndexStart(StatusAdapter.ITEM_IDX_CONVERSATION)
-            val status = adapter!!.getStatus(start)
+            val start = adapter.getIndexStart(StatusAdapter.ITEM_IDX_CONVERSATION)
+            val status = adapter.getStatus(start)
             if (status == null || status.in_reply_to_status_id == null) return
             loadConversation(status, null, status.id)
         } else if (position and ILoadMoreSupportAdapter.END !== 0L) {
-            val start = adapter!!.getIndexStart(StatusAdapter.ITEM_IDX_CONVERSATION)
-            val status = adapter!!.getStatus(start + adapter!!.statusCount - 1) ?: return
+            val start = adapter.getIndexStart(StatusAdapter.ITEM_IDX_CONVERSATION)
+            val status = adapter.getStatus(start + adapter.statusCount - 1) ?: return
             loadConversation(status, status.id, null)
         }
-        adapter!!.loadMoreIndicatorPosition = position
+        adapter.loadMoreIndicatorPosition = position
     }
 
     override fun setControlVisible(visible: Boolean) {
@@ -484,13 +484,13 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     }
 
     override val reachingEnd: Boolean
-        get() = layoutManager!!.findLastCompletelyVisibleItemPosition() >= adapter!!.itemCount - 1
+        get() = layoutManager!!.findLastCompletelyVisibleItemPosition() >= adapter.itemCount - 1
 
     override val reachingStart: Boolean
         get() = layoutManager!!.findFirstCompletelyVisibleItemPosition() <= 1
 
     private val status: ParcelableStatus?
-        get() = adapter!!.status
+        get() = adapter.status
 
     private fun loadConversation(status: ParcelableStatus?, sinceId: String?, maxId: String?) {
         if (status == null || activity == null) return
@@ -533,12 +533,12 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
 
 
     private fun displayTranslation(translation: TranslationResult) {
-        adapter?.translationResult = translation
+        adapter.translationResult = translation
     }
 
     private fun saveReadPosition(): ReadPosition? {
         val lm = layoutManager ?: return null
-        val adapter = this.adapter ?: return null
+        val adapter = this.adapter
         val position = lm.findFirstVisibleItemPosition()
         if (position == RecyclerView.NO_POSITION) return null
         val itemType = adapter.getItemType(position)
@@ -555,7 +555,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     }
 
     private fun restoreReadPosition(position: ReadPosition?) {
-        val adapter = this.adapter ?: return
+        val adapter = this.adapter
         if (position == null) return
         val adapterPosition = adapter.findPositionByItemId(position.statusId)
         if (adapterPosition < 0) return
@@ -591,7 +591,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         if (!userVisibleHint || menuInfo == null) return
         val inflater = MenuInflater(context)
         val contextMenuInfo = menuInfo as ExtendedRecyclerView.ContextMenuInfo?
-        val status = adapter!!.getStatus(contextMenuInfo!!.position)
+        val status = adapter.getStatus(contextMenuInfo!!.position)
         inflater.inflate(R.menu.action_status, menu)
         MenuUtils.setupForStatus(context, preferences, menu, status!!,
                 twitterWrapper)
@@ -600,7 +600,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     override fun onContextItemSelected(item: MenuItem?): Boolean {
         if (!userVisibleHint) return false
         val contextMenuInfo = item!!.menuInfo as ExtendedRecyclerView.ContextMenuInfo
-        val status = adapter!!.getStatus(contextMenuInfo.position) ?: return false
+        val status = adapter.getStatus(contextMenuInfo.position) ?: return false
         if (item.itemId == R.id.share) {
             val shareIntent = Utils.createStatusShareIntent(activity, status)
             val chooser = Intent.createChooser(shareIntent, getString(R.string.share_status))
@@ -613,15 +613,13 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
 
     @Subscribe
     fun notifyStatusListChanged(event: StatusListChangedEvent) {
-        val adapter = adapter
-        adapter!!.notifyDataSetChanged()
+        adapter.notifyDataSetChanged()
     }
 
     @Subscribe
     fun notifyFavoriteTask(event: FavoriteTaskEvent) {
         if (!event.isSucceeded) return
-        val adapter = adapter
-        val status = adapter!!.findStatusById(event.accountKey, event.statusId)
+        val status = adapter.findStatusById(event.accountKey, event.statusId)
         if (status != null) {
             when (event.action) {
                 FavoriteTaskEvent.Action.CREATE -> {
@@ -647,7 +645,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
                     val f = parentFragment
                     if (f is StatusFragment) {
                         val adapter = f.adapter
-                        adapter!!.isDetailMediaExpanded = true
+                        adapter.isDetailMediaExpanded = true
                     }
                 }
             }

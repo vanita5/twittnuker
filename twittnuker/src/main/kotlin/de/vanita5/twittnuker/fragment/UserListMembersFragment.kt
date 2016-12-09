@@ -90,7 +90,6 @@ class UserListMembersFragment : CursorSupportUsersListFragment() {
         val accountId = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
         val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
         if (accountId == null || accountId != userKey) return
-        val adapter = adapter
         val inflater = MenuInflater(context)
         val contextMenuInfo = menuInfo as ExtendedRecyclerView.ContextMenuInfo?
         inflater.inflate(R.menu.action_user_list_member, menu)
@@ -135,7 +134,6 @@ class UserListMembersFragment : CursorSupportUsersListFragment() {
         }
         when (event.action) {
             UserListMembersChangedEvent.Action.ADDED -> {
-                val adapter = adapter
                 val newUsers = Arrays.asList(*event.users)
                 val users = adapter.getData() ?: return
                 if (users is MutableList) {
@@ -146,7 +144,6 @@ class UserListMembersFragment : CursorSupportUsersListFragment() {
                 adapter.notifyDataSetChanged()
             }
             UserListMembersChangedEvent.Action.REMOVED -> {
-                val adapter = adapter
                 val removedUsers = Arrays.asList(*event.users)
                 val users = adapter.getData() ?: return
                 if (users is MutableList) {

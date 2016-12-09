@@ -173,14 +173,10 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
     }
 
     protected fun saveReadPosition() {
-        val layoutManager = layoutManager
-        if (layoutManager != null) {
-            saveReadPosition(layoutManager.findFirstVisibleItemPosition())
-        }
+        saveReadPosition(layoutManager.findFirstVisibleItemPosition())
     }
 
     override fun onLoadFinished(loader: Loader<List<ParcelableActivity>>, data: List<ParcelableActivity>) {
-        val adapter = adapter
         val rememberPosition = preferences.getBoolean(KEY_REMEMBER_POSITION, false)
         val readFromBottom = preferences.getBoolean(KEY_READ_FROM_BOTTOM, true)
         var lastReadId: Long
@@ -271,7 +267,6 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
     }
 
     override fun onMediaClick(holder: IStatusViewHolder, view: View, media: ParcelableMedia, position: Int) {
-        val adapter = adapter
         val status = adapter.getActivity(position)?.getActivityStatus() ?: return
         IntentUtils.openMedia(activity, status, media, null, preferences.getBoolean(KEY_NEW_DOCUMENT_API))
     }
@@ -363,7 +358,6 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
         super.onActivityCreated(savedInstanceState)
         //no reverse
         //        scrollListener!!.reversed = preferences.getBoolean(KEY_READ_FROM_BOTTOM))
-        val adapter = adapter
         val layoutManager = layoutManager
         adapter.setListener(this)
         registerForContextMenu(recyclerView)
@@ -380,7 +374,6 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
     override val reachingEnd: Boolean
         get() {
             val lm = layoutManager
-            val adapter = adapter
             val lastPosition = lm.findLastCompletelyVisibleItemPosition()
             val itemCount = adapter.itemCount
             var finalPos = itemCount - 1
@@ -448,7 +441,6 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
         if (!userVisibleHint || menuInfo == null) return
-        val adapter = adapter
         val inflater = MenuInflater(context)
         val contextMenuInfo = menuInfo as ExtendedRecyclerView.ContextMenuInfo?
         val position = contextMenuInfo!!.position
@@ -462,10 +454,9 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
         }
     }
 
-    override fun onContextItemSelected(item: MenuItem?): Boolean {
+    override fun onContextItemSelected(item: MenuItem): Boolean {
         if (!userVisibleHint) return false
-        val adapter = adapter
-        val contextMenuInfo = item!!.menuInfo as ExtendedRecyclerView.ContextMenuInfo
+        val contextMenuInfo = item.menuInfo as ExtendedRecyclerView.ContextMenuInfo
         val position = contextMenuInfo.position
 
         when (adapter.getItemViewType(position)) {
@@ -487,7 +478,6 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
 
     override fun createItemDecoration(context: Context, recyclerView: RecyclerView,
                                       layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
-        val adapter = adapter
         val itemDecoration = object : DividerItemDecoration(context,
                 (recyclerView.layoutManager as LinearLayoutManager).orientation) {
             override fun isDividerEnabled(childPos: Int): Boolean {

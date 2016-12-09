@@ -104,7 +104,6 @@ class UserListsFragment : ParcelableUserListsFragment() {
     }
 
     private fun removeUserList(id: String) {
-        val adapter = adapter
         //        final int listsIdx = adapter.findItemPosition(id);
         //        if (listsIdx >= 0) {
         //            adapter.removeAt(listsIdx);

@@ -76,7 +76,7 @@ import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder
 
 class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, MultiChoiceModeListener {
 
-    private var adapter: CustomTabsAdapter? = null
+    private lateinit var adapter: CustomTabsAdapter
 
     override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
         when (item.itemId) {
@@ -98,7 +98,7 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
         listView.choiceMode = ListView.CHOICE_MODE_MULTIPLE_MODAL
         listView.setMultiChoiceModeListener(this)
         listView.onItemClickListener = OnItemClickListener { parent, view, position, id ->
-            val tab = adapter!!.getTab(position)
+            val tab = adapter.getTab(position)
             val df = TabEditorDialogFragment()
             df.arguments = Bundle {
                 this[EXTRA_OBJECT] = tab
@@ -108,7 +108,7 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
         listView.adapter = adapter
         listView.emptyView = emptyView
         listView.setDropListener { from, to ->
-            adapter!!.drop(from, to)
+            adapter.drop(from, to)
             if (listView.choiceMode != AbsListView.CHOICE_MODE_NONE) {
                 listView.moveCheckState(from, to)
             }
@@ -135,7 +135,7 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                     values.put(Tabs.TYPE, data.getStringExtra(EXTRA_TYPE))
                     values.put(Tabs.ARGUMENTS, data.getStringExtra(EXTRA_ARGUMENTS))
                     values.put(Tabs.EXTRAS, data.getStringExtra(EXTRA_EXTRAS))
-                    values.put(Tabs.POSITION, adapter!!.count)
+                    values.put(Tabs.POSITION, adapter.count)
                     contentResolver.insert(Tabs.CONTENT_URI, values)
                     SettingsActivity.setShouldRestart(activity)
                 }
@@ -190,7 +190,6 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                     val df = TabEditorDialogFragment()
                     df.arguments = Bundle {
                         this[EXTRA_TAB_TYPE] = type
-                        val adapter = adapter!!
                         if (!adapter.isEmpty) {
                             this[EXTRA_TAB_POSITION] = adapter.getTab(adapter.count - 1).position + 1
                         }
@@ -217,11 +216,11 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
 
 
     override fun onLoaderReset(loader: Loader<Cursor?>) {
-        adapter!!.changeCursor(null)
+        adapter.changeCursor(null)
     }
 
     override fun onLoadFinished(loader: Loader<Cursor?>, cursor: Cursor?) {
-        adapter!!.changeCursor(cursor)
+        adapter.changeCursor(cursor)
         setListShown(true)
     }
 
@@ -245,8 +244,8 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
     }
 
     private fun saveTabPositions() {
-        val positions = adapter!!.cursorPositions
-        val c = adapter!!.cursor
+        val positions = adapter.cursorPositions
+        val c = adapter.cursor
         if (positions != null && c != null && !c.isClosed) {
             val idIdx = c.getColumnIndex(Tabs._ID)
             for (i in 0 until positions.size) {
