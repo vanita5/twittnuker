@@ -205,10 +205,11 @@
         android:drawableLeft="@drawable/ic_indicator_location"
         android:drawablePadding="@dimen/element_spacing_small"
         android:drawableStart="@drawable/ic_indicator_location"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:paddingTop="@dimen/element_spacing_small"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        tools:text="Earth"
-        android:maxLines="1"/>
+        tools:text="Earth"/>
 
     <de.vanita5.twittnuker.view.ActionIconThemedTextView
         android:id="@+id/url"
@@ -220,10 +221,11 @@
         android:drawableLeft="@drawable/ic_indicator_web"
         android:drawablePadding="@dimen/element_spacing_small"
         android:drawableStart="@drawable/ic_indicator_web"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:paddingTop="@dimen/element_spacing_small"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        tools:text="https://github.com/TwidereProject"
-        android:maxLines="1"/>
+        tools:text="https://github.com/TwidereProject"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -242,9 +244,10 @@
             android:drawableLeft="@drawable/ic_indicator_twitter"
             android:drawablePadding="@dimen/element_spacing_small"
             android:drawableStart="@drawable/ic_indicator_twitter"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            tools:text="255"
-            android:maxLines="1"/>
+            tools:text="255"/>
 
         <de.vanita5.twittnuker.view.ActionIconThemedTextView
             android:id="@+id/followersCount"
@@ -254,9 +257,10 @@
             android:drawableLeft="@drawable/ic_indicator_followers"
             android:drawablePadding="@dimen/element_spacing_small"
             android:drawableStart="@drawable/ic_indicator_followers"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            tools:text="255"
-            android:maxLines="1"/>
+            tools:text="255"/>
 
         <de.vanita5.twittnuker.view.ActionIconThemedTextView
             android:id="@+id/friendsCount"
@@ -266,9 +270,10 @@
             android:drawableLeft="@drawable/ic_indicator_following"
             android:drawablePadding="@dimen/element_spacing_small"
             android:drawableStart="@drawable/ic_indicator_following"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            tools:text="255"
-            android:maxLines="1"/>
+            tools:text="255"/>
     </LinearLayout>
 
 </de.vanita5.twittnuker.view.ColorLabelRelativeLayout>

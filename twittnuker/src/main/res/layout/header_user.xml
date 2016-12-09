@@ -101,6 +101,7 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:maxLines="1"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="?android:textColorPrimary"
@@ -111,6 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/name"
+                android:ellipsize="end"
                 android:maxLines="1"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="?android:textColorPrimary"
@@ -125,6 +127,7 @@
                 android:layout_marginStart="@dimen/element_spacing_small"
                 android:layout_toEndOf="@+id/screenName"
                 android:layout_toRightOf="@+id/screenName"
+                android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/following_you"
                 android:textAppearance="?android:textAppearanceSmall"
@@ -162,18 +165,6 @@
                 android:orientation="vertical"
                 android:padding="@dimen/element_spacing_small">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:padding="@dimen/element_spacing_small"
-                    android:text="@string/description"
-                    android:textAllCaps="true"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="?android:textColorPrimary"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
                 <de.vanita5.twittnuker.view.TimelineContentTextView
                     android:id="@+id/description"
                     android:layout_width="match_parent"
@@ -205,6 +196,7 @@
                     android:id="@+id/location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingLeft="@dimen/element_spacing_small"
                     android:paddingRight="@dimen/element_spacing_small"
@@ -234,12 +226,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoLink="web"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:paddingLeft="@dimen/element_spacing_small"
                     android:paddingRight="@dimen/element_spacing_small"
                     android:textAppearance="?android:textAppearanceSmall"
                     android:textColor="?android:textColorPrimary"
-                    tools:text="mariotaku.org"
-                    android:maxLines="1"/>
+                    tools:text="mariotaku.org"/>
             </LinearLayout>
 
             <LinearLayout
@@ -262,12 +255,13 @@
                     android:id="@+id/createdAt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:paddingLeft="@dimen/element_spacing_small"
                     android:paddingRight="@dimen/element_spacing_small"
                     android:textAppearance="?android:textAppearanceSmall"
                     android:textColor="?android:textColorPrimary"
-                    tools:text="July 17, 2009 18:35 (20 tweets per day)"
-                    android:maxLines="1"/>
+                    tools:text="July 17, 2009 18:35 (20 tweets per day)"/>
             </LinearLayout>
 
             <LinearLayout
@@ -292,18 +286,19 @@
                         android:id="@+id/statusesCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:maxLines="1"
                         android:textAppearance="?android:textAppearanceMedium"
                         android:textColor="?android:textColorPrimary"
-                        tools:text="255"
-                        android:maxLines="1"/>
+                        tools:text="255"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="@string/statuses"
                         android:textAppearance="?android:textAppearanceSmall"
-                        android:textColor="?android:textColorSecondary"
-                        android:maxLines="1"/>
+                        android:textColor="?android:textColorSecondary"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -321,18 +316,19 @@
                         android:id="@+id/followersCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:maxLines="1"
                         android:textAppearance="?android:textAppearanceMedium"
                         android:textColor="?android:textColorPrimary"
-                        tools:text="255"
-                        android:maxLines="1"/>
+                        tools:text="255"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="@string/followers"
                         android:textAppearance="?android:textAppearanceSmall"
-                        android:textColor="?android:textColorSecondary"
-                        android:maxLines="1"/>
+                        android:textColor="?android:textColorSecondary"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -350,18 +346,19 @@
                         android:id="@+id/friendsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:maxLines="1"
                         android:textAppearance="?android:textAppearanceMedium"
                         android:textColor="?android:textColorPrimary"
-                        tools:text="255"
-                        android:maxLines="1"/>
+                        tools:text="255"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="@string/following"
                         android:textAppearance="?android:textAppearanceSmall"
-                        android:textColor="?android:textColorSecondary"
-                        android:maxLines="1"/>
+                        android:textColor="?android:textColorSecondary"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -379,18 +376,19 @@
                         android:id="@+id/groupsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:maxLines="1"
                         android:textAppearance="?android:textAppearanceMedium"
                         android:textColor="?android:textColorPrimary"
-                        tools:text="255"
-                        android:maxLines="1"/>
+                        tools:text="255"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="@string/groups"
                         android:textAppearance="?android:textAppearanceSmall"
-                        android:textColor="?android:textColorSecondary"
-                        android:maxLines="1"/>
+                        android:textColor="?android:textColorSecondary"/>
                 </LinearLayout>
             </LinearLayout>
 
