@@ -31,7 +31,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
@@ -72,6 +71,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.iface.APIEditorActivity
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CREDENTIALS_TYPE
 import de.vanita5.twittnuker.extension.newMicroBlogInstance
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
@@ -778,7 +778,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
             for ((k, v) in map) {
                 userData[k] = v
             }
-            userData[ACCOUNT_USER_DATA_POSITION] = AccountUtils.getAccounts(am).size
+            userData[ACCOUNT_USER_DATA_POSITION] = AccountUtils.getAccounts(am).size.toString()
             am.addAccountExplicitly(account, null, userData)
             writeAuthToken(am, account)
             return account
