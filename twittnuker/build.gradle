@@ -118,7 +118,7 @@ dependencies {
 
     compile "org.osmdroid:osmdroid-android:5.5:release@aar"
 
-    debugCompile "com.squareup.leakcanary:leakcanary-android:1.4-beta2"
+    debugCompile "com.squareup.leakcanary:leakcanary-android:1.5"
 
     provided "javax.annotation:jsr250-api:1.0"
 
