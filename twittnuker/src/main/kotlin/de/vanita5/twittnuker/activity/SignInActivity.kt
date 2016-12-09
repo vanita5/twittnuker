@@ -72,7 +72,6 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.iface.APIEditorActivity
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.annotation.AuthTypeInt
 import de.vanita5.twittnuker.extension.newMicroBlogInstance
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
@@ -361,7 +360,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
         val apiLastChange = preferences.getLong(KEY_API_LAST_CHANGE, apiChangeTimestamp)
         val defaultApiChanged = apiLastChange != apiChangeTimestamp
         val apiUrlFormat = Utils.getNonEmptyString(preferences, KEY_API_URL_FORMAT, DEFAULT_TWITTER_API_URL_FORMAT)
-        val authType = AccountUtils.getCredentialsType(preferences.getInt(KEY_AUTH_TYPE, AuthTypeInt.OAUTH))
+        val authType = preferences.getString(KEY_CREDENTIALS_TYPE, Credentials.Type.OAUTH)
         val sameOAuthSigningUrl = preferences.getBoolean(KEY_SAME_OAUTH_SIGNING_URL, false)
         val noVersionSuffix = preferences.getBoolean(KEY_NO_VERSION_SUFFIX, false)
         val consumerKey = Utils.getNonEmptyString(preferences, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY)
@@ -414,7 +413,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
             result.updateAccount(am)
             Toast.makeText(this, R.string.error_already_logged_in, Toast.LENGTH_SHORT).show()
         } else {
-            result.insertAccount(am)
+            result.addAccount(am)
             val intent = Intent(this, HomeActivity::class.java)
             //TODO refresh timelines
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
@@ -771,7 +770,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
             writeAuthToken(am, account)
         }
 
-        fun insertAccount(am: AccountManager): Account {
+        fun addAccount(am: AccountManager): Account {
             val account = Account(UserKey(user.screen_name, user.key.host).toString(), ACCOUNT_TYPE)
             val map: MutableMap<String, String?> = HashMap()
             writeAccountInfo(map)
@@ -779,7 +778,9 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
             for ((k, v) in map) {
                 userData[k] = v
             }
+            userData[ACCOUNT_USER_DATA_POSITION] = AccountUtils.getAccounts(am).size
             am.addAccountExplicitly(account, null, userData)
+            writeAuthToken(am, account)
             return account
         }
     }

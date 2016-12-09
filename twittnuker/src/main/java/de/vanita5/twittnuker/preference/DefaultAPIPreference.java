@@ -45,8 +45,8 @@ import android.widget.Toast;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.iface.APIEditorActivity;
-import de.vanita5.twittnuker.annotation.AuthTypeInt;
 import de.vanita5.twittnuker.fragment.ThemedPreferenceDialogFragmentCompat;
+import de.vanita5.twittnuker.model.account.cred.Credentials;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.util.ParseUtils;
@@ -119,13 +119,13 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
                     mEditAuthType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(RadioGroup group, int checkedId) {
-                            final int authType = APIEditorActivity.Companion.getCheckedAuthType(checkedId);
-                            final boolean isOAuth = authType == AuthTypeInt.OAUTH || authType == AuthTypeInt.XAUTH;
+                            final String authType = APIEditorActivity.Companion.getCheckedAuthType(checkedId);
+                            final boolean isOAuth = Credentials.Type.OAUTH.equals(authType) || Credentials.Type.XAUTH.equals(authType);
                             mEditSameOAuthSigningUrl.setVisibility(isOAuth ? View.VISIBLE : View.GONE);
                             mEditConsumerKey.setVisibility(isOAuth ? View.VISIBLE : View.GONE);
                             mEditConsumerSecret.setVisibility(isOAuth ? View.VISIBLE : View.GONE);
                             if (!mEditNoVersionSuffixChanged) {
-                                mEditNoVersionSuffix.setChecked(authType == AuthTypeInt.TWIP_O_MODE);
+                                mEditNoVersionSuffix.setChecked(Credentials.Type.EMPTY.equals(authType));
                             }
                         }
                     });
@@ -138,7 +138,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
 
                     if (savedInstanceState != null) {
                         final String apiUrlFormat = savedInstanceState.getString(Accounts.API_URL_FORMAT);
-                        final int authType = savedInstanceState.getInt(Accounts.AUTH_TYPE);
+                        final String authType = savedInstanceState.getString(Accounts.AUTH_TYPE);
                         final boolean sameOAuthSigningUrl = savedInstanceState.getBoolean(Accounts.SAME_OAUTH_SIGNING_URL);
                         final boolean noVersionSuffix = savedInstanceState.getBoolean(Accounts.NO_VERSION_SUFFIX);
                         final String consumerKey = trim(savedInstanceState.getString(Accounts.CONSUMER_KEY));
@@ -147,7 +147,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
                     } else {
                         final SharedPreferences preferences = preference.getSharedPreferences();
                         final String apiUrlFormat = preferences.getString(KEY_API_URL_FORMAT, DEFAULT_TWITTER_API_URL_FORMAT);
-                        final int authType = preferences.getInt(KEY_AUTH_TYPE, AuthTypeInt.OAUTH);
+                        final String authType = preferences.getString(KEY_CREDENTIALS_TYPE, Credentials.Type.OAUTH);
                         final boolean sameOAuthSigningUrl = preferences.getBoolean(KEY_SAME_OAUTH_SIGNING_URL, true);
                         final boolean noVersionSuffix = preferences.getBoolean(KEY_NO_VERSION_SUFFIX, false);
                         final String consumerKey = trim(preferences.getString(KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY));
@@ -166,7 +166,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
             final SharedPreferences preferences = preference.getSharedPreferences();
 
             final String apiUrlFormat = ParseUtils.parseString(mEditAPIUrlFormat.getText());
-            final int authType = APIEditorActivity.Companion.getCheckedAuthType(mEditAuthType.getCheckedRadioButtonId());
+            final String authType = APIEditorActivity.Companion.getCheckedAuthType(mEditAuthType.getCheckedRadioButtonId());
             final boolean sameOAuthSigningUrl = mEditSameOAuthSigningUrl.isChecked();
             final boolean noVersionSuffix = mEditNoVersionSuffix.isChecked();
             final String consumerKey = ParseUtils.parseString(mEditConsumerKey.getText());
@@ -180,7 +180,7 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
                 editor.remove(KEY_CONSUMER_SECRET);
             }
             editor.putString(KEY_API_URL_FORMAT, apiUrlFormat);
-            editor.putInt(KEY_AUTH_TYPE, authType);
+            editor.putString(KEY_CREDENTIALS_TYPE, authType);
             editor.putBoolean(KEY_SAME_OAUTH_SIGNING_URL, sameOAuthSigningUrl);
             editor.putBoolean(KEY_NO_VERSION_SUFFIX, noVersionSuffix);
             editor.apply();
@@ -190,24 +190,20 @@ public class DefaultAPIPreference extends DialogPreference implements Constants,
         public void onSaveInstanceState(@NonNull Bundle outState) {
             super.onSaveInstanceState(outState);
             outState.putString(Accounts.API_URL_FORMAT, ParseUtils.parseString(mEditAPIUrlFormat.getText()));
-            outState.putInt(Accounts.AUTH_TYPE, APIEditorActivity.Companion.getCheckedAuthType(mEditAuthType.getCheckedRadioButtonId()));
+            outState.putString(Accounts.AUTH_TYPE, APIEditorActivity.Companion.getCheckedAuthType(mEditAuthType.getCheckedRadioButtonId()));
             outState.putBoolean(Accounts.SAME_OAUTH_SIGNING_URL, mEditSameOAuthSigningUrl.isChecked());
             outState.putString(Accounts.CONSUMER_KEY, ParseUtils.parseString(mEditConsumerKey.getText()));
             outState.putString(Accounts.CONSUMER_SECRET, ParseUtils.parseString(mEditConsumerSecret.getText()));
         }
 
-        private void setValues(final String apiUrlFormat, final int authType, final boolean sameOAuthSigningUrl,
+        private void setValues(final String apiUrlFormat, final String authType, final boolean sameOAuthSigningUrl,
                                final boolean noVersionSuffix, final String consumerKey, final String consumerSecret) {
             mEditAPIUrlFormat.setText(apiUrlFormat);
             mEditSameOAuthSigningUrl.setChecked(sameOAuthSigningUrl);
             mEditNoVersionSuffix.setChecked(noVersionSuffix);
             mEditConsumerKey.setText(consumerKey);
             mEditConsumerSecret.setText(consumerSecret);
-
-            mButtonOAuth.setChecked(authType == AuthTypeInt.OAUTH);
-            mButtonxAuth.setChecked(authType == AuthTypeInt.XAUTH);
-            mButtonBasic.setChecked(authType == AuthTypeInt.BASIC);
-            mButtonTwipOMode.setChecked(authType == AuthTypeInt.TWIP_O_MODE);
+            mEditAuthType.check(APIEditorActivity.Companion.getAuthTypeId(authType));
             if (mEditAuthType.getCheckedRadioButtonId() == -1) {
                 mButtonOAuth.setChecked(true);
             }

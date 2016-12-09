@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.loader
 
 import android.accounts.AccountManager
+import android.accounts.OnAccountsUpdateListener
 import android.content.Context
 import android.support.v4.content.AsyncTaskLoader
 import de.vanita5.twittnuker.model.AccountDetails
@@ -33,6 +34,7 @@ class AccountDetailsLoader(
         val filter: (AccountDetails.() -> Boolean)? = null
 ) : AsyncTaskLoader<List<AccountDetails>>(context) {
     private val am: AccountManager
+    private var accountUpdateListener: OnAccountsUpdateListener? = null
 
     init {
         am = AccountManager.get(context)
@@ -44,7 +46,28 @@ class AccountDetailsLoader(
         }.sortedBy(AccountDetails::position)
     }
 
+    override fun onReset() {
+        super.onReset()
+        onStopLoading()
+        if (accountUpdateListener != null) {
+            am.removeOnAccountsUpdatedListener(accountUpdateListener)
+            accountUpdateListener = null
+        }
+    }
+
     override fun onStartLoading() {
-        forceLoad()
+        if (accountUpdateListener == null) {
+            accountUpdateListener = OnAccountsUpdateListener {
+                onContentChanged()
+            }
+            am.addOnAccountsUpdatedListener(accountUpdateListener, null, true)
+        }
+        if (takeContentChanged()) {
+            forceLoad()
+        }
+    }
+
+    override fun onStopLoading() {
+        cancelLoad()
     }
 }

@@ -83,7 +83,7 @@ fun migrateAccounts(am: AccountManager, db: SQLiteDatabase) {
     }
 }
 
-fun toHexColor(@ColorInt color: Int) = String.format(Locale.ROOT, "#%6X", color)
+fun toHexColor(@ColorInt color: Int) = String.format(Locale.ROOT, "#%06X", color)
 
 @Suppress("deprecation")
 private fun ParcelableCredentials.toCredentials(): Credentials {

@@ -52,9 +52,9 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.adapter.ArrayAdapter
-import de.vanita5.twittnuker.annotation.AuthTypeInt
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.CustomAPIConfig
+import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
@@ -70,12 +70,12 @@ class APIEditorActivity : BaseActivity(), OnCheckedChangeListener, OnClickListen
 
     override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
         val authType = getCheckedAuthType(checkedId)
-        val isOAuth = authType == AuthTypeInt.OAUTH || authType == AuthTypeInt.XAUTH
+        val isOAuth = authType == Credentials.Type.OAUTH || authType == Credentials.Type.XAUTH
         editSameOAuthSigningUrl.visibility = if (isOAuth) View.VISIBLE else View.GONE
         editConsumerKey.visibility = if (isOAuth) View.VISIBLE else View.GONE
         editConsumerSecret.visibility = if (isOAuth) View.VISIBLE else View.GONE
         if (!editNoVersionSuffixChanged) {
-            editNoVersionSuffix.isChecked = authType == AuthTypeInt.TWIP_O_MODE
+            editNoVersionSuffix.isChecked = authType == Credentials.Type.EMPTY
         }
     }
 
@@ -114,7 +114,7 @@ class APIEditorActivity : BaseActivity(), OnCheckedChangeListener, OnClickListen
         val consumerKey = ParseUtils.parseString(this.editConsumerKey.text)
         val consumerSecret = ParseUtils.parseString(this.editConsumerSecret.text)
         outState.putString(Accounts.API_URL_FORMAT, apiUrlFormat)
-        outState.putInt(Accounts.AUTH_TYPE, authType)
+        outState.putString(Accounts.AUTH_TYPE, authType)
         outState.putBoolean(Accounts.SAME_OAUTH_SIGNING_URL, sameOAuthSigningUrl)
         outState.putBoolean(Accounts.NO_VERSION_SUFFIX, noVersionSuffix)
         outState.putString(Accounts.CONSUMER_KEY, consumerKey)
@@ -149,7 +149,7 @@ class APIEditorActivity : BaseActivity(), OnCheckedChangeListener, OnClickListen
         setContentView(R.layout.activity_api_editor)
 
         val apiUrlFormat: String?
-        val authType: Int
+        val authType: String
         val sameOAuthSigningUrl: Boolean
         val noVersionSuffix: Boolean
         val consumerKey: String?
@@ -157,7 +157,7 @@ class APIEditorActivity : BaseActivity(), OnCheckedChangeListener, OnClickListen
 
         val pref = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         val prefApiUrlFormat = Utils.getNonEmptyString(pref, KEY_API_URL_FORMAT, DEFAULT_TWITTER_API_URL_FORMAT)
-        val prefAuthType = pref.getInt(KEY_AUTH_TYPE, AuthTypeInt.OAUTH)
+        val prefAuthType = pref.getString(KEY_CREDENTIALS_TYPE, Credentials.Type.OAUTH)
         val prefSameOAuthSigningUrl = pref.getBoolean(KEY_SAME_OAUTH_SIGNING_URL, false)
         val prefNoVersionSuffix = pref.getBoolean(KEY_NO_VERSION_SUFFIX, false)
         val prefConsumerKey = Utils.getNonEmptyString(pref, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY)
@@ -171,7 +171,7 @@ class APIEditorActivity : BaseActivity(), OnCheckedChangeListener, OnClickListen
             bundle = Bundle()
         }
         apiUrlFormat = bundle.getString(Accounts.API_URL_FORMAT, prefApiUrlFormat)?.trim()
-        authType = bundle.getInt(Accounts.AUTH_TYPE, prefAuthType)
+        authType = bundle.getString(Accounts.AUTH_TYPE, prefAuthType)
         sameOAuthSigningUrl = bundle.getBoolean(Accounts.SAME_OAUTH_SIGNING_URL, prefSameOAuthSigningUrl)
         noVersionSuffix = bundle.getBoolean(Accounts.NO_VERSION_SUFFIX, prefNoVersionSuffix)
         consumerKey = bundle.getString(Accounts.CONSUMER_KEY, prefConsumerKey)?.trim()
@@ -191,36 +191,16 @@ class APIEditorActivity : BaseActivity(), OnCheckedChangeListener, OnClickListen
         editConsumerKey.setText(consumerKey)
         editConsumerSecret.setText(consumerSecret)
 
-        oauth.isChecked = authType == AuthTypeInt.OAUTH
-        xauth.isChecked = authType == AuthTypeInt.XAUTH
-        basic.isChecked = authType == AuthTypeInt.BASIC
-        twipO.isChecked = authType == AuthTypeInt.TWIP_O_MODE
+        editAuthType.check(getAuthTypeId(authType))
         if (editAuthType.checkedRadioButtonId == -1) {
             oauth.isChecked = true
         }
     }
 
 
-    private fun getAuthTypeId(authType: Int): Int {
-        when (authType) {
-            AuthTypeInt.XAUTH -> {
-                return R.id.xauth
-            }
-            AuthTypeInt.BASIC -> {
-                return R.id.basic
-            }
-            AuthTypeInt.TWIP_O_MODE -> {
-                return R.id.twipO
-            }
-            else -> {
-                return R.id.oauth
-            }
-        }
-    }
-
     private fun setAPIConfig(apiConfig: CustomAPIConfig) {
         editApiUrlFormat.setText(apiConfig.apiUrlFormat)
-        editAuthType.check(getAuthTypeId(apiConfig.authType))
+        editAuthType.check(getAuthTypeId(apiConfig.credentialsType))
         editSameOAuthSigningUrl.isChecked = apiConfig.isSameOAuthUrl
         editNoVersionSuffix.isChecked = apiConfig.isNoVersionSuffix
         editConsumerKey.setText(apiConfig.consumerKey)
@@ -311,19 +291,37 @@ class APIEditorActivity : BaseActivity(), OnCheckedChangeListener, OnClickListen
 
     companion object {
 
-        fun getCheckedAuthType(checkedId: Int): Int {
+        @Credentials.Type
+        fun getCheckedAuthType(checkedId: Int): String {
             when (checkedId) {
                 R.id.xauth -> {
-                    return AuthTypeInt.XAUTH
+                    return Credentials.Type.XAUTH
                 }
                 R.id.basic -> {
-                    return AuthTypeInt.BASIC
+                    return Credentials.Type.BASIC
                 }
                 R.id.twipO -> {
-                    return AuthTypeInt.TWIP_O_MODE
+                    return Credentials.Type.EMPTY
                 }
                 else -> {
-                    return AuthTypeInt.OAUTH
+                    return Credentials.Type.OAUTH
+                }
+            }
+        }
+
+        fun getAuthTypeId(authType: String): Int {
+            when (authType) {
+                Credentials.Type.XAUTH -> {
+                    return R.id.xauth
+                }
+                Credentials.Type.BASIC -> {
+                    return R.id.basic
+                }
+                Credentials.Type.EMPTY -> {
+                    return R.id.twipO
+                }
+                else -> {
+                    return R.id.oauth
                 }
             }
         }

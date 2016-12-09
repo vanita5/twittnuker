@@ -50,6 +50,7 @@ import nl.komponents.kovenant.task
 import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.ktextension.configure
+import org.mariotaku.mediaviewer.library.MediaDownloader
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
@@ -78,6 +79,8 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     lateinit internal var restHttpClient: RestHttpClient
     @Inject
     lateinit internal var dns: TwidereDns
+    @Inject
+    lateinit internal var mediaDownloader: MediaDownloader
     @Inject
     lateinit internal var defaultFeatures: DefaultFeatures
     @Inject
@@ -254,13 +257,15 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
                 stopService(Intent(this, RefreshService::class.java))
                 Utils.startRefreshServiceIfNeeded(this)
             }
-            KEY_ENABLE_PROXY, KEY_PROXY_HOST, KEY_PROXY_PORT, KEY_PROXY_TYPE, KEY_PROXY_USERNAME, KEY_PROXY_PASSWORD, KEY_CONNECTION_TIMEOUT, KEY_RETRY_ON_NETWORK_ISSUE -> {
+            KEY_ENABLE_PROXY, KEY_PROXY_HOST, KEY_PROXY_PORT, KEY_PROXY_TYPE, KEY_PROXY_USERNAME,
+            KEY_PROXY_PASSWORD, KEY_CONNECTION_TIMEOUT, KEY_RETRY_ON_NETWORK_ISSUE -> {
                 HttpClientFactory.reloadConnectivitySettings(this)
             }
             KEY_DNS_SERVER, KEY_TCP_DNS_QUERY, KEY_BUILTIN_DNS_RESOLVER -> {
                 reloadDnsSettings()
             }
-            KEY_CONSUMER_KEY, KEY_CONSUMER_SECRET, KEY_API_URL_FORMAT, KEY_AUTH_TYPE, KEY_SAME_OAUTH_SIGNING_URL -> {
+            KEY_CONSUMER_KEY, KEY_CONSUMER_SECRET, KEY_API_URL_FORMAT, KEY_CREDENTIALS_TYPE,
+            KEY_SAME_OAUTH_SIGNING_URL -> {
                 val editor = preferences.edit()
                 editor.putLong(KEY_API_LAST_CHANGE, System.currentTimeMillis())
                 editor.apply()
