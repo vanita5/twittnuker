@@ -516,7 +516,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
         @Throws(MicroBlogException::class)
         internal fun analyseUserProfileColor(user: User?): Int {
             if (user == null) throw MicroBlogException("Unable to get user info")
-            return ParseUtils.parseColor("#" + user.profileLinkColor, Color.TRANSPARENT)
+            return ParcelableUserUtils.parseColor(user.profileLinkColor)
         }
 
     }

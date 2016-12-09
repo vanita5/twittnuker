@@ -129,7 +129,7 @@ public class ParcelableUserUtils implements TwittnukerConstants{
         return result;
     }
 
-    private static int parseColor(@Nullable String colorString) {
+    public static int parseColor(@Nullable String colorString) {
         if (colorString == null) return 0;
         if (!colorString.startsWith("#")) {
             colorString = "#" + colorString;
