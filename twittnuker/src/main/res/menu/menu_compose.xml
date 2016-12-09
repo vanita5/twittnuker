@@ -46,6 +46,11 @@
         tools:ignore="AlwaysShowAction">
         <menu>
             <item
+                android:id="@id/add_gif"
+                android:icon="@drawable/ic_action_web"
+                android:title="@string/add_gif"
+                app:showAsAction="ifRoom" />
+            <item
                 android:id="@id/take_photo"
                 android:icon="@drawable/ic_action_camera"
                 android:title="@string/take_photo"
@@ -54,11 +59,6 @@
                 android:id="@id/add_image"
                 android:icon="@drawable/ic_action_gallery"
                 android:title="@string/add_image"
-                app:showAsAction="ifRoom" />
-            <item
-                android:id="@id/add_gif"
-                android:icon="@drawable/ic_action_web"
-                android:title="@string/add_gif"
                 app:showAsAction="ifRoom" />
         </menu>
     </item>
