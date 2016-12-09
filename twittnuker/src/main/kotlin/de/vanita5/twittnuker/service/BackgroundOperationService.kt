@@ -59,7 +59,7 @@ import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
@@ -342,8 +342,8 @@ class BackgroundOperationService : IntentService("background_operation"), Consta
                                   imageUri: String?): SingleResponse<ParcelableDirectMessage> {
         val details = AccountUtils.getAccountDetails(AccountManager.get(this),
                 accountKey) ?: return SingleResponse.getInstance<ParcelableDirectMessage>()
-        val twitter = details.credentials.newMicroBlogInstance(context = this, cls = MicroBlog::class.java)
-        val twitterUpload = details.credentials.newMicroBlogInstance(context = this, cls = TwitterUpload::class.java)
+        val twitter = details.newMicroBlogInstance(context = this, cls = MicroBlog::class.java)
+        val twitterUpload = details.newMicroBlogInstance(context = this, cls = TwitterUpload::class.java)
         try {
             val directMessage: ParcelableDirectMessage
             when (details.type) {

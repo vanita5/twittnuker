@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
-import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
@@ -92,7 +92,7 @@ class ParcelableUserLoader(
                 return response
             }
         }
-        val twitter = details.credentials.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
+        val twitter = details.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
         if (loadFromCache) {
             val where: Expression
             val whereArgs: Array<String>

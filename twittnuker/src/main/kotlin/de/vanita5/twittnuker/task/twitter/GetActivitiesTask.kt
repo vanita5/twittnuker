@@ -42,7 +42,7 @@ import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_LOAD_ITEM_LIMIT
-import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
@@ -86,7 +86,7 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
             val noItemsBefore = DataStoreUtils.getActivitiesCount(context, contentUri,
                     accountKey) <= 0
             val credentials = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey) ?: continue
-            val microBlog = credentials.credentials.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
+            val microBlog = credentials.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
             val paging = Paging()
             paging.count(loadItemLimit)
             var maxId: String? = null

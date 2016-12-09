@@ -51,7 +51,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.activity.ThemedImagePickerActivity
-import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.model.AccountDetails
@@ -352,7 +352,7 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
 
         override fun doLongOperation(context: Context): SingleResponse<ParcelableUser> {
             val details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey) ?: return SingleResponse.getInstance()
-            val microBlog = details.credentials.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
+            val microBlog = details.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
             try {
                 var user: User? = null
                 if (isProfileChanged) {

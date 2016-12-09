@@ -29,7 +29,7 @@ import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.TwittnukerConstants
-import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ListResponse
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import java.util.*
 
-abstract class TwitterAPIUsersLoader(
+abstract class MicroBlogAPIUsersLoader(
         context: Context,
         val accountKey: UserKey?,
         data: List<ParcelableUser>?,
@@ -52,7 +52,7 @@ abstract class TwitterAPIUsersLoader(
         val am = AccountManager.get(context)
         val details = AccountUtils.getAccountDetails(am, accountKey) ?:
                 return ListResponse.getListInstance<ParcelableUser>(MicroBlogException("No Account"))
-        val twitter: MicroBlog = details.credentials.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
+        val twitter: MicroBlog = details.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
         val data = data
         val users: List<User>
         try {

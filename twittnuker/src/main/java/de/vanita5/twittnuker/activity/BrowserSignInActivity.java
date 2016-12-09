@@ -40,6 +40,8 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import org.attoparser.ParseException;
+
+import de.vanita5.twittnuker.extension.CredentialsExtensionsKt;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.TwitterOAuth;
 import org.mariotaku.restfu.http.Authorization;
@@ -246,8 +248,8 @@ public class BrowserSignInActivity extends BaseActivity {
                 final Endpoint endpoint = MicroBlogAPIFactory.getOAuthSignInEndpoint(mAPIUrlFormat,
                         mSameOAuthSigningUrl);
                 final Authorization auth = new OAuthAuthorization(mConsumerKey, mConsumerSecret);
-                final TwitterOAuth oauth = MicroBlogAPIFactory.getInstance(mActivity, endpoint,
-                        auth, TwitterOAuth.class);
+                final TwitterOAuth oauth = CredentialsExtensionsKt.newMicroBlogInstance(mActivity, endpoint,
+                        auth, true, null, TwitterOAuth.class);
                 return new SingleResponse<>(oauth.getRequestToken(OAUTH_CALLBACK_OOB), null, new Bundle());
             } catch (final MicroBlogException e) {
                 return new SingleResponse<>(null, e, new Bundle());

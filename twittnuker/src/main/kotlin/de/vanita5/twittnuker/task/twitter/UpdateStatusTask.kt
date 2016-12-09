@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
@@ -318,8 +319,7 @@ class UpdateStatusTask(
             val mediaIds: Array<String>?
             when (account.type) {
                 AccountType.TWITTER -> {
-                    val upload = MicroBlogAPIFactory.getInstance(context,
-                            account.key, true, true, TwitterUpload::class.java)!!
+                    val upload = account.newMicroBlogInstance(context, cls = TwitterUpload::class.java)
                     if (pendingUpdate.sharedMediaIds != null) {
                         mediaIds = pendingUpdate.sharedMediaIds
                     } else {
@@ -333,8 +333,7 @@ class UpdateStatusTask(
                 }
                 AccountType.STATUSNET -> {
                     // TODO use their native API
-                    val upload = MicroBlogAPIFactory.getInstance(context,
-                            account.key, true, true, TwitterUpload::class.java)!!
+                    val upload = account.newMicroBlogInstance(context, cls = TwitterUpload::class.java)
                     mediaIds = uploadAllMediaShared(upload, update, ownerIds, false)
                 }
                 else -> {

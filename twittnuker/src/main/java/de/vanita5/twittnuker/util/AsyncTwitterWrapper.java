@@ -61,7 +61,7 @@ import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.AccountType;
-import de.vanita5.twittnuker.extension.CredentialsExtensionsKt;
+import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.ParcelableActivity;
@@ -482,7 +482,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     }
 
     public int retweetStatusAsync(final UserKey accountKey, final String statusId) {
-        final RetweetStatusTask task = new RetweetStatusTask(accountKey, statusId);
+        final RetweetStatusTask task = new RetweetStatusTask(context, accountKey, statusId);
         return asyncTaskManager.add(task, true);
     }
 
@@ -748,8 +748,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             final ContentResolver resolver = getContext().getContentResolver();
             final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(getContext()), mAccountKey);
             if (details == null) return SingleResponse.Companion.getInstance();
-            final MicroBlog microBlog = CredentialsExtensionsKt.newMicroBlogInstance(details.credentials,
-                    getContext(), true, null, MicroBlog.class);
+            final MicroBlog microBlog = AccountDetailsExtensionsKt.newMicroBlogInstance(details,
+                    getContext(), MicroBlog.class);
             if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
                 final ParcelableStatus result;
@@ -1229,8 +1229,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         protected SingleResponse<ParcelableStatus> doInBackground(final Object... params) {
             final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(context), mAccountKey);
             if (details == null) return SingleResponse.Companion.getInstance();
-            final MicroBlog microBlog = CredentialsExtensionsKt.newMicroBlogInstance(details.credentials,
-                    getContext(), true, null, MicroBlog.class);
+            final MicroBlog microBlog = AccountDetailsExtensionsKt.newMicroBlogInstance(details,
+                    getContext(), MicroBlog.class);
             if (microBlog == null) return SingleResponse.Companion.getInstance();
             try {
                 final ParcelableStatus result;
@@ -1366,8 +1366,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(getContext()),
                     mAccountKey);
             if (details == null) return SingleResponse.Companion.getInstance();
-            final MicroBlog microBlog = CredentialsExtensionsKt.newMicroBlogInstance(details.credentials,
-                    getContext(), true, null, MicroBlog.class);
+            final MicroBlog microBlog = AccountDetailsExtensionsKt.newMicroBlogInstance(details,
+                    getContext(), MicroBlog.class);
             if (microBlog == null) return SingleResponse.Companion.getInstance();
             ParcelableStatus status = null;
             MicroBlogException exception = null;
@@ -1572,12 +1572,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
     }
 
-    class RetweetStatusTask extends ManagedAsyncTask<Object, Object, SingleResponse<ParcelableStatus>> {
+    private class RetweetStatusTask extends ManagedAsyncTask<Object, Object, SingleResponse<ParcelableStatus>> {
 
         private final UserKey mAccountKey;
         private final String mStatusId;
 
-        public RetweetStatusTask(@NonNull final UserKey accountKey, final String statusId) {
+        RetweetStatusTask(@NonNull Context context, @NonNull final UserKey accountKey, final String statusId) {
             super(context);
             this.mAccountKey = accountKey;
             this.mStatusId = statusId;
@@ -1585,11 +1585,12 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected SingleResponse<ParcelableStatus> doInBackground(final Object... params) {
+            final ContentResolver resolver = getContext().getContentResolver();
             final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(getContext()),
                     mAccountKey);
             if (details == null) return SingleResponse.Companion.getInstance();
-            final MicroBlog microBlog = CredentialsExtensionsKt.newMicroBlogInstance(details.credentials,
-                    getContext(), true, null, MicroBlog.class);
+            final MicroBlog microBlog = AccountDetailsExtensionsKt.newMicroBlogInstance(details,
+                    getContext(), MicroBlog.class);
             if (microBlog == null) {
                 return SingleResponse.Companion.getInstance();
             }
@@ -1598,7 +1599,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                         mAccountKey, false);
                 ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, details,
                         mUserColorNameManager);
-                Utils.setLastSeen(context, result.mentions, System.currentTimeMillis());
+                Utils.setLastSeen(getContext(), result.mentions, System.currentTimeMillis());
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.MY_RETWEET_ID, result.id);
                 values.put(Statuses.REPLY_COUNT, result.reply_count);
@@ -1655,7 +1656,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 final ParcelableStatus status = result.getData();
                 bus.post(new StatusRetweetedEvent(status));
             } else {
-                Utils.showErrorMessage(context, R.string.action_retweeting, result.getException(), true);
+                Utils.showErrorMessage(getContext(), R.string.action_retweeting, result.getException(), true);
             }
             super.onPostExecute(result);
         }

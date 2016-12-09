@@ -45,7 +45,7 @@ import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
 import de.vanita5.twittnuker.constant.loadItemLimitKey
-import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator
 import de.vanita5.twittnuker.model.RefreshTaskParam
@@ -108,8 +108,7 @@ abstract class GetStatusesTask(protected val context: Context) : AbstractTask<Re
             val accountKey = accountKeys[i]
             val details = AccountUtils.getAccountDetails(AccountManager.get(context),
                     accountKey) ?: continue
-            val microBlog = details.credentials.newMicroBlogInstance(context = context,
-                    cls = MicroBlog::class.java)
+            val microBlog = details.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
             try {
                 val paging = Paging()
                 paging.count(loadItemLimit)

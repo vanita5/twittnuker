@@ -23,10 +23,13 @@
 package de.vanita5.twittnuker.extension.model
 
 import android.content.Context
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.account.TwitterAccountExtras
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.TwitterContentUtils
 
 fun AccountDetails.isOfficial(context: Context): Boolean {
@@ -40,6 +43,15 @@ fun AccountDetails.isOfficial(context: Context): Boolean {
                 credentials.consumer_key, credentials.consumer_secret)
     }
     return false
+}
+
+
+@JvmOverloads
+fun <T> AccountDetails.newMicroBlogInstance(context: Context, includeEntities: Boolean = true, includeRetweets: Boolean = true,
+                                            extraRequestParams: Map<String, String>? =
+                                            MicroBlogAPIFactory.getExtraParams(type, includeEntities, includeRetweets),
+                                            cls: Class<T>): T {
+    return credentials.newMicroBlogInstance(context, type == AccountType.TWITTER, extraRequestParams, cls)
 }
 
 val AccountDetails.is_oauth: Boolean

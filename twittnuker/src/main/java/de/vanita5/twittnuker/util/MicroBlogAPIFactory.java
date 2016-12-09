@@ -65,6 +65,7 @@ import de.vanita5.twittnuker.extension.CredentialsExtensionsKt;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.model.account.cred.Credentials;
 import de.vanita5.twittnuker.model.util.AccountUtils;
 
 import java.io.IOException;
@@ -79,31 +80,34 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
     public static final String CARDS_PLATFORM_ANDROID_12 = "Android-12";
 
 
-    public static final SimpleValueMap sConstantPoll = new SimpleValueMap();
+    public static final SimpleValueMap sTwitterConstantPool = new SimpleValueMap();
+    public static final SimpleValueMap sFanfouConstantPool = new SimpleValueMap();
 
     static {
-        sConstantPoll.put("include_cards", "true");
-        sConstantPoll.put("cards_platform", CARDS_PLATFORM_ANDROID_12);
-        sConstantPoll.put("include_my_retweet", "true");
-        sConstantPoll.put("include_rts", "true");
-        sConstantPoll.put("include_reply_count", "true");
-        sConstantPoll.put("include_descendent_reply_count", "true");
-        sConstantPoll.put("full_text", "true");
-        sConstantPoll.put("model_version", "7");
-        sConstantPoll.put("skip_aggregation", "false");
-        sConstantPoll.put("include_ext_alt_text", "true");
-        sConstantPoll.put("tweet_mode", "extended");
+        sTwitterConstantPool.put("include_cards", "true");
+        sTwitterConstantPool.put("cards_platform", CARDS_PLATFORM_ANDROID_12);
+        sTwitterConstantPool.put("include_my_retweet", "true");
+        sTwitterConstantPool.put("include_rts", "true");
+        sTwitterConstantPool.put("include_reply_count", "true");
+        sTwitterConstantPool.put("include_descendent_reply_count", "true");
+        sTwitterConstantPool.put("full_text", "true");
+        sTwitterConstantPool.put("model_version", "7");
+        sTwitterConstantPool.put("skip_aggregation", "false");
+        sTwitterConstantPool.put("include_ext_alt_text", "true");
+        sTwitterConstantPool.put("tweet_mode", "extended");
+
+        sFanfouConstantPool.put("format", "html");
     }
 
     private MicroBlogAPIFactory() {
     }
 
     @WorkerThread
-    public static MicroBlog getDefaultTwitterInstance(final Context context, final boolean includeEntities) {
+    public static MicroBlog getDefaultTwitterInstance(final Context context) {
         if (context == null) return null;
         final UserKey accountKey = Utils.getDefaultAccountKey(context);
         if (accountKey == null) return null;
-        return getInstance(context, accountKey, includeEntities, true);
+        return getInstance(context, accountKey);
     }
 
     @WorkerThread
@@ -112,39 +116,17 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
         AccountManager am = AccountManager.get(context);
         Account account = AccountUtils.findByAccountKey(am, accountKey);
         if (account == null) return null;
-        return CredentialsExtensionsKt.newMicroBlogInstance(AccountExtensionsKt.getCredentials(account,
-                am), context, true, null, MicroBlog.class);
+        final Credentials credentials = AccountExtensionsKt.getCredentials(account, am);
+        final String accountType = AccountExtensionsKt.getAccountType(account, am);
+        final HashMap<String, String> extraParams = getExtraParams(accountType, true, true);
+        return CredentialsExtensionsKt.newMicroBlogInstance(credentials, context,
+                AccountType.TWITTER.equals(accountType), extraParams, MicroBlog.class);
     }
 
-    @Nullable
-    @WorkerThread
-    public static MicroBlog getInstance(@NonNull final Context context,
-                                        @NonNull final UserKey accountKey,
-                                        final boolean includeEntities,
-                                        final boolean includeRetweets) {
-        return getInstance(context, accountKey, includeEntities, includeRetweets, MicroBlog.class);
-    }
-
-
-    @Nullable
-    @WorkerThread
-    public static <T> T getInstance(@NonNull final Context context,
-                                    @NonNull final UserKey accountKey,
-                                    final boolean includeEntities,
-                                    final boolean includeRetweets,
-                                    @NonNull Class<T> cls) {
-        final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey);
-        if (details == null) return null;
-        return getInstance(context, details, includeEntities, includeRetweets, cls);
-    }
-
-    @Nullable
-    public static <T> T getInstance(@NonNull final Context context,
-                                    @NonNull final AccountDetails details,
-                                    final boolean includeEntities, final boolean includeRetweets,
-                                    @NonNull Class<T> cls) {
+    @NonNull
+    public static HashMap<String, String> getExtraParams(@NonNull @AccountType String accountType, boolean includeEntities, boolean includeRetweets) {
         final HashMap<String, String> extraParams = new HashMap<>();
-        switch (details.type) {
+        switch (accountType) {
             case AccountType.FANFOU: {
                 extraParams.put("format", "html");
                 break;
@@ -155,17 +137,8 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
                 break;
             }
         }
-        return CredentialsExtensionsKt.newMicroBlogInstance(details.credentials, context,
-                AccountType.TWITTER.equals(details.type), extraParams, cls);
+        return extraParams;
     }
-
-
-    @WorkerThread
-    public static <T> T getInstance(final Context context, final Endpoint endpoint,
-                                    final Authorization auth, final Class<T> cls) {
-        return CredentialsExtensionsKt.newMicroBlogInstance(context, auth, endpoint, true, null, cls);
-    }
-
 
     public static boolean verifyApiFormat(@NonNull String format) {
         final String url = getApiBaseUrl(format, "test");

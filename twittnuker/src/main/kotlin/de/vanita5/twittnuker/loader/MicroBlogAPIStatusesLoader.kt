@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
-import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ListResponse
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -114,8 +114,7 @@ abstract class MicroBlogAPIStatusesLoader(
             }
         }
         if (!fromUser) return ListResponse.getListInstance(data)
-        val microBlog = details.credentials.newMicroBlogInstance(context = context,
-                cls = MicroBlog::class.java)
+        val microBlog = details.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
         val statuses: List<Status>
         val noItemsBefore = data.isEmpty()
         val loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT)

@@ -44,7 +44,7 @@ import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory.sConstantPoll
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory.sTwitterConstantPool
 import de.vanita5.twittnuker.util.TwitterContentUtils
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
 
@@ -122,13 +122,13 @@ fun <T> Credentials.newMicroBlogInstance(context: Context,
                                          twitterExtraQueries: Boolean = true,
                                          extraRequestParams: Map<String, String>? = null,
                                          cls: Class<T>): T {
-    return newMicroBlogInstance(context, getAuthorization(), getEndpoint(cls),
+    return newMicroBlogInstance(context, getEndpoint(cls), getAuthorization(),
             twitterExtraQueries, extraRequestParams, cls)
 }
 
 fun <T> newMicroBlogInstance(context: Context,
-                             auth: Authorization,
                              endpoint: Endpoint,
+                             auth: Authorization,
                              twitterExtraQueries: Boolean = true,
                              extraRequestParams: Map<String, String>? = null,
                              cls: Class<T>): T {
@@ -150,7 +150,7 @@ fun <T> newMicroBlogInstance(context: Context,
     factory.setAuthorization(auth)
     factory.setEndpoint(endpoint)
     if (twitterExtraQueries) {
-        factory.setConstantPool(sConstantPoll)
+        factory.setConstantPool(sTwitterConstantPool)
     } else {
         factory.setConstantPool(SimpleValueMap())
     }

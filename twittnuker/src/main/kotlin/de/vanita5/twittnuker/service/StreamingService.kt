@@ -51,7 +51,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.HomeActivity
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
-import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -177,7 +177,7 @@ class StreamingService : Service() {
         //        clearTwitterInstances();
         var result = false
         accountsList.forEachIndexed { i, account ->
-            val twitter = account.credentials.newMicroBlogInstance(context = this, cls = TwitterUserStream::class.java)
+            val twitter = account.newMicroBlogInstance(context = this, cls = TwitterUserStream::class.java)
             val callback = TwidereUserStreamCallback(this, account, preferences!!)
             callbacks.put(account.key, callback)
             Log.d(LOGTAG, String.format("Stream %s starts...", account.key))
