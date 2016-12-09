@@ -63,8 +63,8 @@ import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.task.UpdateAccountInfoTask
 import de.vanita5.twittnuker.task.UpdateProfileBackgroundImageTask
 import de.vanita5.twittnuker.task.UpdateProfileBannerImageTask
+import de.vanita5.twittnuker.task.UpdateProfileImageTask
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper.UpdateProfileImageTask
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener
 
 class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, TextWatcher,
@@ -393,9 +393,9 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
                 return false
             }
 
-        override fun afterExecute(callback: UserProfileEditorFragment?, result: SingleResponse<ParcelableUser>) {
-            if (callback == null) return
-            val activity = callback.activity ?: return
+        override fun afterExecute(handler: UserProfileEditorFragment?, result: SingleResponse<ParcelableUser>) {
+            if (handler == null) return
+            val activity = handler.activity ?: return
             if (result.hasData()) {
                 val account: AccountDetails? = result.extras.getParcelable(EXTRA_ACCOUNT)
                 if (account != null) {
@@ -404,7 +404,7 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
                     TaskStarter.execute(task)
                 }
             }
-            callback.executeAfterFragmentResumed { fragment ->
+            handler.executeAfterFragmentResumed { fragment ->
                 val f = (fragment as UserProfileEditorFragment).fragmentManager.findFragmentByTag(DIALOG_FRAGMENT_TAG)
                 if (f is DialogFragment) {
                     f.dismissAllowingStateLoss()
@@ -435,8 +435,8 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
             return TwitterWrapper.deleteProfileBannerImage(activity, accountKey)
         }
 
-        override fun afterExecute(callback: UserProfileEditorFragment?, result: SingleResponse<Boolean>) {
-            super.afterExecute(callback, result)
+        override fun afterExecute(handler: UserProfileEditorFragment?, result: SingleResponse<Boolean>) {
+            super.afterExecute(handler, result)
             if (result.data != null) {
                 getUserInfo()
                 Toast.makeText(activity, R.string.profile_banner_image_updated, Toast.LENGTH_SHORT).show()
@@ -457,8 +457,8 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
     private inner class UpdateProfileBannerImageTaskInternal(context: Context, accountKey: UserKey,
                                                              imageUri: Uri, deleteImage: Boolean) : UpdateProfileBannerImageTask<UserProfileEditorFragment>(context, accountKey, imageUri, deleteImage) {
 
-        override fun afterExecute(callback: UserProfileEditorFragment?, result: SingleResponse<ParcelableUser>?) {
-            super.afterExecute(callback, result)
+        override fun afterExecute(handler: UserProfileEditorFragment?, result: SingleResponse<ParcelableUser>?) {
+            super.afterExecute(handler, result)
             setUpdateState(false)
             getUserInfo()
         }
@@ -470,12 +470,17 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
 
     }
 
-    private inner class UpdateProfileBackgroundImageTaskInternal(context: Context, accountKey: UserKey,
-                                                                 imageUri: Uri, tile: Boolean,
-                                                                 deleteImage: Boolean) : UpdateProfileBackgroundImageTask<UserProfileEditorFragment>(context, accountKey, imageUri, tile, deleteImage) {
+    private inner class UpdateProfileBackgroundImageTaskInternal(
+            context: Context,
+            accountKey: UserKey,
+            imageUri: Uri,
+            tile: Boolean,
+            deleteImage: Boolean
+    ) : UpdateProfileBackgroundImageTask<UserProfileEditorFragment>(context, accountKey, imageUri,
+            tile, deleteImage) {
 
-        override fun afterExecute(callback: UserProfileEditorFragment?, result: SingleResponse<ParcelableUser>?) {
-            super.afterExecute(callback, result)
+        override fun afterExecute(handler: UserProfileEditorFragment?, result: SingleResponse<ParcelableUser>) {
+            super.afterExecute(handler, result)
             setUpdateState(false)
             getUserInfo()
         }
@@ -487,12 +492,16 @@ class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, 
 
     }
 
-    private inner class UpdateProfileImageTaskInternal(context: Context, accountKey: UserKey,
-                                                       imageUri: Uri, deleteImage: Boolean) : UpdateProfileImageTask<UserProfileEditorFragment>(context, accountKey, imageUri, deleteImage) {
+    private inner class UpdateProfileImageTaskInternal(
+            context: Context,
+            accountKey: UserKey,
+            imageUri: Uri,
+            deleteImage: Boolean
+    ) : UpdateProfileImageTask<UserProfileEditorFragment>(context, accountKey, imageUri, deleteImage) {
 
-        override fun afterExecute(callback: UserProfileEditorFragment?, result: SingleResponse<ParcelableUser>?) {
-            super.afterExecute(callback, result)
-            if (result != null && result.data != null) {
+        override fun afterExecute(handler: UserProfileEditorFragment?, result: SingleResponse<ParcelableUser>) {
+            super.afterExecute(handler, result)
+            if (result.data != null) {
                 displayUser(result.data)
             }
             setUpdateState(false)

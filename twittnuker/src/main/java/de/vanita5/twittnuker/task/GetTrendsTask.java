@@ -78,7 +78,7 @@ public abstract class GetTrendsTask extends AbstractTask<Object, Object, Object>
     }
 
     @Override
-    protected void afterExecute(Object callback, Object result) {
+    protected void afterExecute(Object handler, Object result) {
         mBus.post(new TrendsRefreshedEvent());
     }
 

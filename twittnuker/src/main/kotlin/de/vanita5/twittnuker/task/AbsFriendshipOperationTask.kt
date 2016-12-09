@@ -26,6 +26,7 @@ import android.accounts.AccountManager
 import android.content.Context
 import com.squareup.otto.Bus
 import org.mariotaku.abstask.library.AbstractTask
+import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
@@ -56,6 +57,8 @@ abstract class AbsFriendshipOperationTask(
     @Inject
     lateinit var preferences: SharedPreferencesWrapper
     @Inject
+    lateinit var kPreferences: KPreferences
+    @Inject
     lateinit var manager: UserColorNameManager
 
     init {
@@ -71,7 +74,7 @@ abstract class AbsFriendshipOperationTask(
         bus.post(event)
     }
 
-    override fun afterExecute(callback: Any?, result: SingleResponse<ParcelableUser>?) {
+    override fun afterExecute(handler: Any?, result: SingleResponse<ParcelableUser>?) {
         twitter.removeUpdatingRelationshipId(params.accountKey, params.userKey)
         val event = FriendshipTaskEvent(action, params.accountKey,
                 params.userKey)

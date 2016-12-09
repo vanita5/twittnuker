@@ -20,25 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.task;
+package de.vanita5.twittnuker.task
 
-import android.content.Context;
-import android.support.annotation.NonNull;
+import android.content.Context
 
-import de.vanita5.twittnuker.library.MicroBlog;
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.model.User;
-import de.vanita5.twittnuker.model.AccountDetails;
+import de.vanita5.twittnuker.library.MicroBlog
+import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.twitter.model.User
+import de.vanita5.twittnuker.model.AccountDetails
 
-public class ReportSpamAndBlockTask extends CreateUserBlockTask {
-    public ReportSpamAndBlockTask(Context context) {
-        super(context);
-    }
+class ReportSpamAndBlockTask(context: Context) : CreateUserBlockTask(context) {
 
-    @NonNull
-    @Override
-    protected User perform(@NonNull MicroBlog twitter, @NonNull AccountDetails details,
-                           @NonNull Arguments args) throws MicroBlogException {
-        return twitter.reportSpam(args.getUserKey().getId());
+    @Throws(MicroBlogException::class)
+    override fun perform(twitter: MicroBlog, details: AccountDetails,
+                         args: AbsFriendshipOperationTask.Arguments): User {
+        return twitter.reportSpam(args.userKey.id)
     }
 }

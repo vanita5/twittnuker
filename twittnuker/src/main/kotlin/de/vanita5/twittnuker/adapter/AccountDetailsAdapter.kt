@@ -29,6 +29,7 @@ import android.widget.CompoundButton
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IBaseAdapter
 import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -40,6 +41,15 @@ class AccountDetailsAdapter(context: Context) : ArrayAdapter<AccountDetails>(con
 
     @Inject
     lateinit override var mediaLoader: MediaLoaderWrapper
+
+    override val linkHighlightOption: Int
+        get() = 0
+
+    override var textSize: Float = 0f
+
+    override var isDisplayNameFirst: Boolean = true
+
+    override var isShowAccountColor: Boolean = true
 
     override var isProfileImageDisplayed: Boolean = false
     private var sortEnabled: Boolean = false
@@ -81,30 +91,10 @@ class AccountDetailsAdapter(context: Context) : ArrayAdapter<AccountDetails>(con
         return view
     }
 
-    override val linkHighlightOption: Int
-        get() = 0
-
     override fun setLinkHighlightOption(option: String) {
 
     }
 
-    override var textSize: Float
-        get() = 0f
-        set(textSize) {
-
-        }
-
-    override var isDisplayNameFirst: Boolean
-        get() = false
-        set(nameFirst) {
-
-        }
-
-    override var isShowAccountColor: Boolean
-        get() = false
-        set(show) {
-
-        }
 
     override fun hasStableIds(): Boolean {
         return true
@@ -130,6 +120,14 @@ class AccountDetailsAdapter(context: Context) : ArrayAdapter<AccountDetails>(con
         val fromItem = getItem(from)
         removeAt(from)
         insert(fromItem, to)
+    }
+
+    fun findItem(key: UserKey): AccountDetails? {
+        (0 until count).forEach { i ->
+            val item = getItem(i)
+            if (key == item.key) return item
+        }
+        return null
     }
 
 }

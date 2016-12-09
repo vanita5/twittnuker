@@ -79,7 +79,6 @@ import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
 import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent;
 import de.vanita5.twittnuker.model.message.SavedSearchDestroyedEvent;
-import de.vanita5.twittnuker.model.message.StatusDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.message.StatusRetweetedEvent;
 import de.vanita5.twittnuker.model.message.UserListCreatedEvent;
@@ -102,11 +101,13 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.task.AcceptFriendshipTask;
+import de.vanita5.twittnuker.task.AddUserListMembersTask;
 import de.vanita5.twittnuker.task.CreateFriendshipTask;
 import de.vanita5.twittnuker.task.CreateUserBlockTask;
 import de.vanita5.twittnuker.task.CreateUserMuteTask;
 import de.vanita5.twittnuker.task.DenyFriendshipTask;
 import de.vanita5.twittnuker.task.DestroyFriendshipTask;
+import de.vanita5.twittnuker.task.DestroyStatusTask;
 import de.vanita5.twittnuker.task.DestroyUserBlockTask;
 import de.vanita5.twittnuker.task.DestroyUserMuteTask;
 import de.vanita5.twittnuker.task.GetActivitiesAboutMeTask;
@@ -139,8 +140,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     private IntList mCreatingFavoriteIds = new ArrayIntList();
     private IntList mDestroyingFavoriteIds = new ArrayIntList();
     private IntList mCreatingRetweetIds = new ArrayIntList();
-    private IntList mDestroyingStatusIds = new ArrayIntList();
-    private IntList mUpdatingRelationshipIds = new ArrayIntList();
+    public IntList destroyingStatusIds = new ArrayIntList();
+    private IntList updatingRelationshipIds = new ArrayIntList();
 
     private final LongList sendingDraftIds = new ArrayLongList();
 
@@ -189,7 +190,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     }
 
     public int addUserListMembersAsync(final UserKey accountKey, final String listId, @NonNull final ParcelableUser... users) {
-        final AddUserListMembersTask task = new AddUserListMembersTask(accountKey, listId, users);
+        final AddUserListMembersTask task = new AddUserListMembersTask(context, accountKey, listId, users);
         return asyncTaskManager.add(task, true);
     }
 
@@ -310,7 +311,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     }
 
     public int destroyStatusAsync(final UserKey accountKey, final String statusId) {
-        final DestroyStatusTask task = new DestroyStatusTask(accountKey, statusId);
+        final DestroyStatusTask task = new DestroyStatusTask(context,accountKey, statusId);
         return asyncTaskManager.add(task, true);
     }
 
@@ -376,10 +377,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     }
 
     public boolean isDestroyingStatus(@Nullable final UserKey accountId, @Nullable final String statusId) {
-        return mDestroyingStatusIds.contains(calculateHashCode(accountId, statusId));
+        return destroyingStatusIds.contains(calculateHashCode(accountId, statusId));
     }
 
-    static int calculateHashCode(@Nullable final UserKey accountId, @Nullable final String statusId) {
+    public static int calculateHashCode(@Nullable final UserKey accountId, @Nullable final String statusId) {
         return (accountId == null ? 0 : accountId.hashCode()) ^ (statusId == null ? 0 : statusId.hashCode());
     }
 
@@ -578,128 +579,15 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     }
 
     public void addUpdatingRelationshipId(UserKey accountKey, UserKey userId) {
-        mUpdatingRelationshipIds.add(ParcelableUser.calculateHashCode(accountKey, userId));
+        updatingRelationshipIds.add(ParcelableUser.calculateHashCode(accountKey, userId));
     }
 
     public void removeUpdatingRelationshipId(UserKey accountKey, UserKey userId) {
-        mUpdatingRelationshipIds.removeElement(ParcelableUser.calculateHashCode(accountKey, userId));
+        updatingRelationshipIds.removeElement(ParcelableUser.calculateHashCode(accountKey, userId));
     }
 
     public boolean isUpdatingRelationship(UserKey accountId, UserKey userId) {
-        return mUpdatingRelationshipIds.contains(ParcelableUser.calculateHashCode(accountId, userId));
-    }
-
-    public static class UpdateProfileImageTask<ResultHandler> extends AbstractTask<Object,
-            SingleResponse<ParcelableUser>, ResultHandler> {
-
-        @Inject
-        protected Bus mBus;
-
-        private final UserKey mAccountKey;
-        private final Uri mImageUri;
-        private final boolean mDeleteImage;
-        private final Context mContext;
-
-        public UpdateProfileImageTask(final Context context, final UserKey accountKey,
-                                      final Uri imageUri, final boolean deleteImage) {
-            //noinspection unchecked
-            GeneralComponentHelper.build(context).inject((UpdateProfileImageTask<Object>) this);
-            this.mContext = context;
-            this.mAccountKey = accountKey;
-            this.mImageUri = imageUri;
-            this.mDeleteImage = deleteImage;
-        }
-
-        @Override
-        protected SingleResponse<ParcelableUser> doLongOperation(final Object  params) {
-            try {
-                final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(mContext, mAccountKey);
-                TwitterWrapper.updateProfileImage(mContext, microBlog, mImageUri, mDeleteImage);
-                // Wait for 5 seconds, see
-                // https://dev.twitter.com/rest/reference/post/account/update_profile_image
-                try {
-                    Thread.sleep(5000L);
-                } catch (InterruptedException e) {
-                    Log.w(LOGTAG, e);
-                }
-                final User user = microBlog.verifyCredentials();
-                return SingleResponse.Companion.getInstance(ParcelableUserUtils.fromUser(user, mAccountKey));
-            } catch (MicroBlogException | IOException e) {
-                return SingleResponse.Companion.getInstance(e);
-            }
-        }
-
-        @Override
-        protected void afterExecute(ResultHandler handler, SingleResponse<ParcelableUser> result) {
-            super.afterExecute(handler, result);
-            if (result.hasData()) {
-                Utils.showOkMessage(mContext, R.string.profile_image_updated, false);
-                mBus.post(new ProfileUpdatedEvent(result.getData()));
-            } else {
-                Utils.showErrorMessage(mContext, R.string.action_updating_profile_image, result.getException(), true);
-            }
-        }
-
-    }
-
-    class AddUserListMembersTask extends ManagedAsyncTask<Object, Object, SingleResponse<ParcelableUserList>> {
-
-        private final UserKey mAccountKey;
-        private final String mListId;
-        @NonNull
-        private final ParcelableUser[] mUsers;
-
-        AddUserListMembersTask(@NonNull final UserKey accountKey,
-                                      final String listId,
-                                      @NonNull final ParcelableUser[] users) {
-            super(context);
-            this.mAccountKey = accountKey;
-            this.mListId = listId;
-            this.mUsers = users;
-        }
-
-        @Override
-        protected SingleResponse<ParcelableUserList> doInBackground(final Object... params) {
-            final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey);
-            if (microBlog == null) return SingleResponse.Companion.getInstance();
-            try {
-                final UserKey[] userIds = new UserKey[mUsers.length];
-                for (int i = 0, j = mUsers.length; i < j; i++) {
-                    userIds[i] = mUsers[i].key;
-                }
-                final UserList result = microBlog.addUserListMembers(mListId, UserKey.getIds(userIds));
-                final ParcelableUserList list = ParcelableUserListUtils.from(result, mAccountKey);
-                return SingleResponse.Companion.getInstance(list);
-            } catch (final MicroBlogException e) {
-                return SingleResponse.Companion.getInstance(e);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(final SingleResponse<ParcelableUserList> result) {
-            final boolean succeed = result.hasData();
-            if (succeed) {
-                final String message;
-                if (mUsers.length == 1) {
-                    final ParcelableUser user = mUsers[0];
-                    final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
-                    final String displayName = mUserColorNameManager.getDisplayName(user.key, user.name,
-                            user.screen_name, nameFirst);
-                    message = context.getString(R.string.added_user_to_list, displayName, result.getData().name);
-                } else {
-                    final Resources res = context.getResources();
-                    message = res.getQuantityString(R.plurals.added_N_users_to_list, mUsers.length, mUsers.length,
-                            result.getData().name);
-                }
-                Utils.showOkMessage(context, message, false);
-            } else {
-                Utils.showErrorMessage(context, R.string.action_adding_member, result.getException(), true);
-            }
-            bus.post(new UserListMembersChangedEvent(UserListMembersChangedEvent.Action.ADDED,
-                    result.getData(), mUsers));
-            super.onPostExecute(result);
-        }
-
+        return updatingRelationshipIds.contains(ParcelableUser.calculateHashCode(accountId, userId));
     }
 
     final class ClearNotificationTask extends AsyncTask<Object, Object, Integer> {
@@ -765,7 +653,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                     }
                 }
                 ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, details,
-                        mUserColorNameManager);
+                        getUserColorNameManager());
                 Utils.setLastSeen(getContext(), result.mentions, System.currentTimeMillis());
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.IS_FAVORITE, true);
@@ -818,7 +706,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (!mCreatingFavoriteIds.contains(hashCode)) {
                 mCreatingFavoriteIds.add(hashCode);
             }
-            bus.post(new StatusListChangedEvent());
+            getBus().post(new StatusListChangedEvent());
         }
 
         @Override
@@ -835,8 +723,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 taskEvent.setSucceeded(false);
                 Utils.showErrorMessage(getContext(), R.string.action_favoriting, result.getException(), true);
             }
-            bus.post(taskEvent);
-            bus.post(new StatusListChangedEvent());
+            getBus().post(taskEvent);
+            getBus().post(new StatusListChangedEvent());
             super.onPostExecute(result);
         }
 
@@ -975,7 +863,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (succeed) {
                 final String message = context.getString(R.string.subscribed_to_list, result.getData().name);
                 Utils.showOkMessage(context, message, false);
-                bus.post(new UserListSubscriptionEvent(UserListSubscriptionEvent.Action.SUBSCRIBE,
+                getBus().post(new UserListSubscriptionEvent(UserListSubscriptionEvent.Action.SUBSCRIBE,
                         result.getData()));
             } else {
                 Utils.showErrorMessage(context, R.string.action_subscribing_to_list, result.getException(), true);
@@ -1025,7 +913,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 final ParcelableUserList userList = result.getData();
                 final String message = context.getString(R.string.created_list, userList.name);
                 Utils.showOkMessage(context, message, false);
-                bus.post(new UserListCreatedEvent(userList));
+                getBus().post(new UserListCreatedEvent(userList));
             } else {
                 Utils.showErrorMessage(context, R.string.action_creating_list, result.getException(), true);
             }
@@ -1071,8 +959,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (succeed) {
                 if (users.length == 1) {
                     final ParcelableUser user = users[0];
-                    final boolean nameFirst = mPreferences.getBoolean(KEY_NAME_FIRST);
-                    final String displayName = mUserColorNameManager.getDisplayName(user.key,
+                    final boolean nameFirst = getPreferences().getBoolean(KEY_NAME_FIRST);
+                    final String displayName = getUserColorNameManager().getDisplayName(user.key,
                             user.name, user.screen_name, nameFirst);
                     message = context.getString(R.string.deleted_user_from_list, displayName,
                             result.getData().name);
@@ -1081,7 +969,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                     message = res.getQuantityString(R.plurals.deleted_N_users_from_list, users.length, users.length,
                             result.getData().name);
                 }
-                bus.post(new UserListMembersChangedEvent(UserListMembersChangedEvent.Action.REMOVED,
+                getBus().post(new UserListMembersChangedEvent(UserListMembersChangedEvent.Action.REMOVED,
                         result.getData(), users));
                 Utils.showInfoMessage(context, message, false);
             } else {
@@ -1289,7 +1177,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (!mDestroyingFavoriteIds.contains(hashCode)) {
                 mDestroyingFavoriteIds.add(hashCode);
             }
-            bus.post(new StatusListChangedEvent());
+            getBus().post(new StatusListChangedEvent());
         }
 
         @Override
@@ -1307,8 +1195,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 taskEvent.setSucceeded(false);
                 Utils.showErrorMessage(context, R.string.action_unfavoriting, result.getException(), true);
             }
-            bus.post(taskEvent);
-            bus.post(new StatusListChangedEvent());
+            getBus().post(taskEvent);
+            getBus().post(new StatusListChangedEvent());
             super.onPostExecute(result);
         }
 
@@ -1341,74 +1229,9 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (result.hasData()) {
                 final String message = context.getString(R.string.search_name_deleted, result.getData().getQuery());
                 Utils.showOkMessage(context, message, false);
-                bus.post(new SavedSearchDestroyedEvent(mAccountKey, mSearchId));
+                getBus().post(new SavedSearchDestroyedEvent(mAccountKey, mSearchId));
             } else {
                 Utils.showErrorMessage(context, R.string.action_deleting_search, result.getException(), false);
-            }
-            super.onPostExecute(result);
-        }
-
-    }
-
-    class DestroyStatusTask extends ManagedAsyncTask<Object, Object, SingleResponse<ParcelableStatus>> {
-
-        private final UserKey mAccountKey;
-        private final String mStatusId;
-
-        public DestroyStatusTask(final UserKey accountKey, final String statusId) {
-            super(context);
-            this.mAccountKey = accountKey;
-            this.mStatusId = statusId;
-        }
-
-        @Override
-        protected SingleResponse<ParcelableStatus> doInBackground(final Object... params) {
-            final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(getContext()),
-                    mAccountKey);
-            if (details == null) return SingleResponse.Companion.getInstance();
-            final MicroBlog microBlog = AccountDetailsExtensionsKt.newMicroBlogInstance(details,
-                    getContext(), MicroBlog.class);
-            if (microBlog == null) return SingleResponse.Companion.getInstance();
-            ParcelableStatus status = null;
-            MicroBlogException exception = null;
-            try {
-                status = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.destroyStatus(mStatusId),
-                        mAccountKey, false);
-                ParcelableStatusUtils.INSTANCE.updateExtraInformation(status, details,
-                        mUserColorNameManager);
-            } catch (final MicroBlogException e) {
-                exception = e;
-            }
-            if (status != null || (exception.getErrorCode() == ErrorInfo.STATUS_NOT_FOUND)) {
-                DataStoreUtils.deleteStatus(resolver, mAccountKey, mStatusId, status);
-                DataStoreUtils.deleteActivityStatus(resolver, mAccountKey, mStatusId, status);
-            }
-            return SingleResponse.Companion.getInstance(status);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            final int hashCode = calculateHashCode(mAccountKey, mStatusId);
-            if (!mDestroyingStatusIds.contains(hashCode)) {
-                mDestroyingStatusIds.add(hashCode);
-            }
-            bus.post(new StatusListChangedEvent());
-        }
-
-        @Override
-        protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
-            mDestroyingStatusIds.removeElement(calculateHashCode(mAccountKey, mStatusId));
-            if (result.hasData()) {
-                final ParcelableStatus status = result.getData();
-                if (status.retweet_id != null) {
-                    Utils.showInfoMessage(context, R.string.retweet_cancelled, false);
-                } else {
-                    Utils.showInfoMessage(context, R.string.status_deleted, false);
-                }
-                bus.post(new StatusDestroyedEvent(status));
-            } else {
-                Utils.showErrorMessage(context, R.string.action_deleting, result.getException(), true);
             }
             super.onPostExecute(result);
         }
@@ -1446,7 +1269,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (succeed) {
                 final String message = context.getString(R.string.unsubscribed_from_list, result.getData().name);
                 Utils.showOkMessage(context, message, false);
-                bus.post(new UserListSubscriptionEvent(UserListSubscriptionEvent.Action.UNSUBSCRIBE,
+                getBus().post(new UserListSubscriptionEvent(UserListSubscriptionEvent.Action.UNSUBSCRIBE,
                         result.getData()));
             } else {
                 Utils.showErrorMessage(context, R.string.action_unsubscribing_from_list, result.getException(), true);
@@ -1488,7 +1311,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (succeed) {
                 final String message = context.getString(R.string.deleted_list, result.getData().name);
                 Utils.showInfoMessage(context, message, false);
-                bus.post(new UserListDestroyedEvent(result.getData()));
+                getBus().post(new UserListDestroyedEvent(result.getData()));
             } else {
                 Utils.showErrorMessage(context, R.string.action_deleting, result.getException(), true);
             }
@@ -1598,7 +1421,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 final ParcelableStatus result = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.retweetStatus(mStatusId),
                         mAccountKey, false);
                 ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, details,
-                        mUserColorNameManager);
+                        getUserColorNameManager());
                 Utils.setLastSeen(getContext(), result.mentions, System.currentTimeMillis());
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.MY_RETWEET_ID, result.id);
@@ -1646,7 +1469,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (!mCreatingRetweetIds.contains(hashCode)) {
                 mCreatingRetweetIds.add(hashCode);
             }
-            bus.post(new StatusListChangedEvent());
+            getBus().post(new StatusListChangedEvent());
         }
 
         @Override
@@ -1654,7 +1477,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             mCreatingRetweetIds.removeElement(calculateHashCode(mAccountKey, mStatusId));
             if (result.hasData()) {
                 final ParcelableStatus status = result.getData();
-                bus.post(new StatusRetweetedEvent(status));
+                getBus().post(new StatusRetweetedEvent(status));
             } else {
                 Utils.showErrorMessage(getContext(), R.string.action_retweeting, result.getException(), true);
             }
@@ -1700,7 +1523,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             if (result.hasData()) {
                 final String message = mContext.getString(R.string.updated_list_details, result.getData().name);
                 Utils.showOkMessage(mContext, message, false);
-                bus.post(new UserListUpdatedEvent(result.getData()));
+                getBus().post(new UserListUpdatedEvent(result.getData()));
             } else {
                 Utils.showErrorMessage(mContext, R.string.action_updating_details, result.getException(), true);
             }

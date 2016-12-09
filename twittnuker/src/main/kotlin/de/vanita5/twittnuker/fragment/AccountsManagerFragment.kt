@@ -38,6 +38,8 @@ import android.view.ContextMenu.ContextMenuInfo
 import android.widget.AdapterView
 import android.widget.AdapterView.AdapterContextMenuInfo
 import kotlinx.android.synthetic.main.layout_draggable_list_with_empty_view.*
+import org.mariotaku.ktextension.Bundle
+import org.mariotaku.ktextension.set
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
@@ -45,7 +47,7 @@ import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.activity.SignInActivity
 import de.vanita5.twittnuker.adapter.AccountDetailsAdapter
 import de.vanita5.twittnuker.annotation.Referral
-import de.vanita5.twittnuker.constant.IntentConstants
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
 import de.vanita5.twittnuker.extension.getAccountKey
 import de.vanita5.twittnuker.extension.setActivated
@@ -53,6 +55,7 @@ import de.vanita5.twittnuker.extension.setColor
 import de.vanita5.twittnuker.extension.setPosition
 import de.vanita5.twittnuker.loader.AccountDetailsLoader
 import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox
@@ -64,7 +67,6 @@ class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallb
         AdapterView.OnItemClickListener {
 
     private lateinit var adapter: AccountDetailsAdapter
-    private var selectedAccount: AccountDetails? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -103,10 +105,15 @@ class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallb
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_SET_COLOR -> {
-                if (resultCode != Activity.RESULT_OK || data == null || selectedAccount == null)
+                if (resultCode != Activity.RESULT_OK || data == null)
                     return
                 val am = AccountManager.get(context)
-                selectedAccount?.account?.setColor(am, data.getIntExtra(EXTRA_COLOR, Color.WHITE))
+                val accountKey: UserKey = data.getBundleExtra(EXTRA_EXTRAS).getParcelable(EXTRA_ACCOUNT_KEY) ?: return
+                val color = data.getIntExtra(EXTRA_COLOR, Color.WHITE)
+                val details = adapter.findItem(accountKey) ?: return
+                details.color = color
+                details.account.setColor(am, color)
+                adapter.notifyDataSetChanged()
                 return
             }
         }
@@ -131,11 +138,13 @@ class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallb
     override fun onContextItemSelected(item: MenuItem?): Boolean {
         val menuInfo = item!!.menuInfo as? AdapterContextMenuInfo ?: return false
         val details = adapter.getItem(menuInfo.position) ?: return false
-        selectedAccount = details
         when (item.itemId) {
             R.id.set_color -> {
                 val intent = Intent(activity, ColorPickerDialogActivity::class.java)
                 intent.putExtra(EXTRA_COLOR, details.color)
+                intent.putExtra(EXTRA_EXTRAS, Bundle {
+                    this[EXTRA_ACCOUNT_KEY] = details.key
+                })
                 intent.putExtra(EXTRA_ALPHA_SLIDER, false)
                 startActivityForResult(intent, REQUEST_SET_COLOR)
             }
@@ -192,7 +201,7 @@ class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallb
     class AccountDeletionDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
 
         override fun onClick(dialog: DialogInterface, which: Int) {
-            val account: Account = arguments.getParcelable(IntentConstants.EXTRA_ACCOUNT)
+            val account: Account = arguments.getParcelable(EXTRA_ACCOUNT)
             val resolver = context.contentResolver
             val am = AccountManager.get(context)
             when (which) {
