@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserClickListener
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_SIMPLE_LAYOUT
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -96,6 +97,7 @@ abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<Parc
 
     override fun onCreateAdapter(context: Context): ParcelableUsersAdapter {
         val adapter = ParcelableUsersAdapter(context)
+        adapter.simpleLayout = simpleLayout
         adapter.followClickListener = this
         return adapter
     }
@@ -173,6 +175,9 @@ abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<Parc
     protected open val userReferral: String?
         @Referral
         get() = null
+
+    protected val simpleLayout: Boolean
+        get() = arguments.getBoolean(EXTRA_SIMPLE_LAYOUT)
 
     override fun onUserLongClick(holder: UserViewHolder, position: Int): Boolean {
         return true

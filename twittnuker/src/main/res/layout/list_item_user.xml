@@ -30,6 +30,7 @@
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
     android:clipChildren="false"
+    android:clipToPadding="false"
     android:padding="@dimen/element_spacing_normal"
     app:ignorePadding="true"
     tools:context=".adapter.ParcelableUsersAdapter">
@@ -45,6 +46,7 @@
         android:layout_marginEnd="@dimen/element_spacing_normal"
         android:layout_marginRight="@dimen/element_spacing_normal"
         android:clipChildren="false"
+        android:clipToPadding="false"
         tools:visibility="visible">
 
         <de.vanita5.twittnuker.view.ProfileImageView
@@ -71,7 +73,6 @@
             tools:src="@drawable/ic_user_type_verified"
             tools:visibility="visible"/>
     </RelativeLayout>
-
 
     <de.vanita5.twittnuker.view.NameView
         android:id="@+id/name"
@@ -228,6 +229,7 @@
         tools:text="https://github.com/TwidereProject"/>
 
     <LinearLayout
+        android:id="@+id/countsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/name"

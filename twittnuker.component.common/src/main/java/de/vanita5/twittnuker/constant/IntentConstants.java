@@ -216,6 +216,7 @@ public interface IntentConstants {
     String EXTRA_START_INTENT = "start_intent";
     String EXTRA_SELECT_ONLY_ITEM = "select_only_item";
     String EXTRA_OBJECT = "object";
+    String EXTRA_SIMPLE_LAYOUT = "simple_layout";
 
     /* Twittnuker */
     String EXTRA_HOTOTIN_EXPANDED_TEXT = "hototin_expanded_text";

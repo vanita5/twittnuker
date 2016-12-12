@@ -28,6 +28,7 @@ import com.squareup.otto.Bus
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import org.mariotaku.kpreferences.KPreferences
 import javax.inject.Inject
 
 open class BaseDialogFragment : DialogFragment(), Constants {
@@ -38,6 +39,8 @@ open class BaseDialogFragment : DialogFragment(), Constants {
     lateinit var userColorNameManager: UserColorNameManager
     @Inject
     lateinit var preferences: SharedPreferencesWrapper
+    @Inject
+    lateinit var kPreferences: KPreferences
     @Inject
     lateinit var validator: TwidereValidator
     @Inject

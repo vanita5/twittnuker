@@ -29,6 +29,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.MutesUsersLoader
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
 
 class MutesUsersListFragment : CursorSupportUsersListFragment() {
 
@@ -40,6 +41,16 @@ class MutesUsersListFragment : CursorSupportUsersListFragment() {
         loader.cursor = nextCursor
         loader.page = nextPage
         return loader
+    }
+
+    override fun shouldRemoveUser(position: Int, event: FriendshipTaskEvent): Boolean {
+        if (!event.isSucceeded) return false
+        when (event.action) {
+            FriendshipTaskEvent.Action.UNMUTE -> {
+                return true
+            }
+        }
+        return false
     }
 
 }

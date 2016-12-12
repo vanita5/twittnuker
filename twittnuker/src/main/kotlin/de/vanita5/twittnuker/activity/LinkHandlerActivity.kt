@@ -37,12 +37,14 @@ import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.Window
 import org.mariotaku.ktextension.convert
+import org.mariotaku.ktextension.set
 import org.mariotaku.ktextension.toDoubleOrNull
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
 import de.vanita5.twittnuker.constant.CompatibilityConstants
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_SIMPLE_LAYOUT
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER_KEY
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
@@ -555,9 +557,11 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             }
             LINK_ID_USER_BLOCKS -> {
                 fragment = UserBlocksListFragment()
+                args[EXTRA_SIMPLE_LAYOUT] = true
             }
             LINK_ID_MUTES_USERS -> {
                 fragment = MutesUsersListFragment()
+                args[EXTRA_SIMPLE_LAYOUT] = true
             }
             LINK_ID_DIRECT_MESSAGES_CONVERSATION -> {
                 fragment = MessagesConversationFragment()

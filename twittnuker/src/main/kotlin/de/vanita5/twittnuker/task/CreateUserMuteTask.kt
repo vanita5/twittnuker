@@ -37,7 +37,10 @@ import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.Utils
 
-class CreateUserMuteTask(context: Context) : AbsFriendshipOperationTask(context, FriendshipTaskEvent.Action.MUTE) {
+class CreateUserMuteTask(
+        context: Context,
+        val filterEverywhere: Boolean
+) : AbsFriendshipOperationTask(context, FriendshipTaskEvent.Action.MUTE) {
 
     @Throws(MicroBlogException::class)
     override fun perform(twitter: MicroBlog, details: AccountDetails,
@@ -74,6 +77,9 @@ class CreateUserMuteTask(context: Context) : AbsFriendshipOperationTask(context,
         values.put(CachedRelationships.USER_KEY, args.userKey.toString())
         values.put(CachedRelationships.MUTING, true)
         resolver.insert(CachedRelationships.CONTENT_URI, values)
+        if (filterEverywhere) {
+            DataStoreUtils.addToFilter(context, user, true)
+        }
     }
 
     override fun showSucceededMessage(params: AbsFriendshipOperationTask.Arguments, user: ParcelableUser) {
