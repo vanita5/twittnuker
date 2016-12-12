@@ -32,16 +32,19 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class AccountManagerSupport {
-    public static AccountManagerFuture<Bundle> removeAccount(AccountManager am, Account account,
-                                                             Activity activity,
-                                                             final AccountManagerCallback<Bundle> callback,
-                                                             Handler handler) {
+    public static AccountManagerFuture<Bundle> removeAccount(@NonNull AccountManager am,
+                                                             @NonNull Account account,
+                                                             @Nullable Activity activity,
+                                                             @Nullable final AccountManagerCallback<Bundle> callback,
+                                                             @Nullable Handler handler) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             return AccountManagerSupportL.removeAccount(am, account, activity, callback, handler);
         }
@@ -49,7 +52,9 @@ public class AccountManagerSupport {
         final AccountManagerFuture<Boolean> future = am.removeAccount(account, new AccountManagerCallback<Boolean>() {
             @Override
             public void run(AccountManagerFuture<Boolean> future) {
-                callback.run(new BooleanToBundleAccountManagerFuture(future));
+                if (callback != null) {
+                    callback.run(new BooleanToBundleAccountManagerFuture(future));
+                }
             }
         }, handler);
         return new BooleanToBundleAccountManagerFuture(future);

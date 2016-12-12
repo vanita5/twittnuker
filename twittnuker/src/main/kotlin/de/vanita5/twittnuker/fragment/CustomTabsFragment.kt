@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.fragment
 
 import android.accounts.AccountManager
-import android.app.Activity
 import android.app.Dialog
 import android.content.ContentValues
 import android.content.Context
@@ -125,36 +124,6 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
         progressContainer.visibility = if (shown) View.GONE else View.VISIBLE
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            REQUEST_ADD_TAB -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    val values = ContentValues()
-                    values.put(Tabs.NAME, data!!.getStringExtra(EXTRA_NAME))
-                    values.put(Tabs.ICON, data.getStringExtra(EXTRA_ICON))
-                    values.put(Tabs.TYPE, data.getStringExtra(EXTRA_TYPE))
-                    values.put(Tabs.ARGUMENTS, data.getStringExtra(EXTRA_ARGUMENTS))
-                    values.put(Tabs.EXTRAS, data.getStringExtra(EXTRA_EXTRAS))
-                    values.put(Tabs.POSITION, adapter.count)
-                    contentResolver.insert(Tabs.CONTENT_URI, values)
-                    SettingsActivity.setShouldRestart(activity)
-                }
-            }
-            REQUEST_EDIT_TAB -> {
-                if (resultCode == Activity.RESULT_OK && data!!.hasExtra(EXTRA_ID)) {
-                    val values = ContentValues()
-                    values.put(Tabs.NAME, data.getStringExtra(EXTRA_NAME))
-                    values.put(Tabs.ICON, data.getStringExtra(EXTRA_ICON))
-                    values.put(Tabs.EXTRAS, data.getStringExtra(EXTRA_EXTRAS))
-                    val where = Expression.equals(Tabs._ID, data.getLongExtra(EXTRA_ID, -1)).sql
-                    contentResolver.update(Tabs.CONTENT_URI, values, where, null)
-                    SettingsActivity.setShouldRestart(activity)
-                }
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
         mode.menuInflater.inflate(R.menu.action_multi_select_items, menu)
         return true
@@ -222,16 +191,6 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
     override fun onLoadFinished(loader: Loader<Cursor?>, cursor: Cursor?) {
         adapter.changeCursor(cursor)
         setListShown(true)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-            else -> {
-                val intent = item.intent ?: return false
-                startActivityForResult(intent, REQUEST_ADD_TAB)
-                return true
-            }
-        }
     }
 
     override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
@@ -418,9 +377,10 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                         context.contentResolver.insert(Tabs.CONTENT_URI, TabValuesCreator.create(tab))
                     }
                 }
-                    dismiss()
-                }
+                SettingsActivity.setShouldRestart(activity)
+                dismiss()
             }
+        }
 
         override fun getAccount(): AccountDetails? {
             return (dialog.findViewById(R.id.account_spinner) as Spinner).selectedItem as? AccountDetails
