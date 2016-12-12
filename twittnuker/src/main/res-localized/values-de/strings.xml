@@ -301,7 +301,9 @@
     <string name="action_refreshing_mentions">Aktualisieren der Erwähnungen</string>
     <string name="action_refreshing_direct_messages">Aktualisieren der Direktnachrichten</string>
     <string name="action_favoriting">Favorisieren</string>
-    <string name="action_unfavoriting">Entfernen Favorits</string>
+    <string name="action_unfavoriting">Favorit entfernen</string>
+    <string name="action_liking">Liken</string>
+    <string name="action_cancelling_like">Like entfernen</string>
     <string name="action_deleting">Löschen</string>
     <string name="action_updating_profile">Aktualisieren des Profils</string>
     <string name="action_updating_profile_image">Aktualisieren des Profilbilds</string>
@@ -379,7 +381,7 @@
     <string name="status_favorited">Tweet favorisiert.</string>
     <string name="status_unfavorited">Favorit gelöscht.</string>
     <string name="status_liked">Liked Tweet.</string>
-    <string name="status_unliked">Unliked Tweet.</string>
+    <string name="status_unliked">Like entfernt.</string>
     <string name="status_retweeted">Retweeted.</string>
     <string name="retweet_cancelled">Retweet entfernt.</string>
     <string name="direct_message_sent">DM gesendet.</string>
@@ -471,7 +473,8 @@
     <string name="keyword_filter_name">Keyword: <xliff:g id="name">%s</xliff:g></string>
     <string name="source_filter_name">Quelle: <xliff:g id="name">%s</xliff:g></string>
     <string name="block_user"><xliff:g id="name">%s</xliff:g> blocken</string>
-    <string name="block_user_confirm_message"><xliff:g id="name">%s</xliff:g> blocken? Dieser Benutzer kann dir dann nicht folgen, dich erwähnen oder dir DMs schicken.</string>
+    <string name="block_user_confirm_message"><xliff:g example="Username" id="name">%s</xliff:g> blocken? Dieser Benutzer kann dir dann nicht mehr folgen, dich erwähnen oder dir Direktnachrichten schicken.</string>
+    <string name="filter_user_confirm_message"><xliff:g example="Username" id="name">%s</xliff:g> zum Filter hinzufügen?</string>
     <string name="unfollow_user"><xliff:g id="name">%s</xliff:g> entfolgen</string>
     <string name="unfollow_user_confirm_message"><xliff:g id="name">%s</xliff:g> entfolgen? Du kannst die Tweets dieses Users dann nicht mehr sehen.</string>
     <string name="delete_user_list">Lösche Liste <xliff:g id="name">%s</xliff:g></string>
@@ -801,6 +804,9 @@
     <string name="hide_replies">Mentions ausblenden</string>
     <string name="pinned_status">Angehefteter Tweet</string>
     <string name="add_or_remove_from_list">Zur Liste hinzufügen oder entfernen</string>
+    <string name="filter_everywhere">Überall filtern</string>
+    <string name="filter_everywhere_description">Das wird gefiltert:\n  &#xb7;Die Tweets des Benutzers\n  &#xb7;Tweets mit Erwähnungen des Benutzers\n  &#xb7;Retweets und Zitate dieses Benutzers</string>
+    <string name="message_toast_added_to_filter">Zum Filter hinzugefügt.</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

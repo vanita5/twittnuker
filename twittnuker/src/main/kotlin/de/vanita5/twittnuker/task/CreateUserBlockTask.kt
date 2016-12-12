@@ -39,11 +39,14 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.Utils
 
-open class CreateUserBlockTask(context: Context) : AbsFriendshipOperationTask(context, FriendshipTaskEvent.Action.BLOCK), Constants {
+open class CreateUserBlockTask(
+        context: Context,
+        val filterEverywhere: Boolean = false
+) : AbsFriendshipOperationTask(context, FriendshipTaskEvent.Action.BLOCK), Constants {
 
     @Throws(MicroBlogException::class)
     override fun perform(twitter: MicroBlog, details: AccountDetails,
-                         args: AbsFriendshipOperationTask.Arguments): User {
+                         args: Arguments): User {
         when (details.type) {
             AccountType.FANFOU -> {
                 return twitter.createFanfouBlock(args.userKey.id)
@@ -52,9 +55,8 @@ open class CreateUserBlockTask(context: Context) : AbsFriendshipOperationTask(co
         return twitter.createBlock(args.userKey.id)
     }
 
-    override fun succeededWorker(twitter: MicroBlog,
-                                 details: AccountDetails,
-                                 args: AbsFriendshipOperationTask.Arguments, user: ParcelableUser) {
+    override fun succeededWorker(twitter: MicroBlog, details: AccountDetails, args: Arguments,
+                                 user: ParcelableUser) {
         val resolver = context.contentResolver
         Utils.setLastSeen(context, args.userKey, -1)
         for (uri in DataStoreUtils.STATUSES_URIS) {
@@ -81,9 +83,13 @@ open class CreateUserBlockTask(context: Context) : AbsFriendshipOperationTask(co
         values.put(CachedRelationships.FOLLOWING, false)
         values.put(CachedRelationships.FOLLOWED_BY, false)
         resolver.insert(CachedRelationships.CONTENT_URI, values)
+
+        if (filterEverywhere) {
+            DataStoreUtils.addToFilter(context, user, true)
+        }
     }
 
-    override fun showSucceededMessage(params: AbsFriendshipOperationTask.Arguments, user: ParcelableUser) {
+    override fun showSucceededMessage(params: Arguments, user: ParcelableUser) {
         val nameFirst = kPreferences[nameFirstKey]
         val message = context.getString(R.string.blocked_user, manager.getDisplayName(user,
                 nameFirst))
@@ -91,7 +97,7 @@ open class CreateUserBlockTask(context: Context) : AbsFriendshipOperationTask(co
 
     }
 
-    override fun showErrorMessage(params: AbsFriendshipOperationTask.Arguments, exception: Exception?) {
+    override fun showErrorMessage(params: Arguments, exception: Exception?) {
         Utils.showErrorMessage(context, R.string.action_blocking, exception, true)
     }
 }

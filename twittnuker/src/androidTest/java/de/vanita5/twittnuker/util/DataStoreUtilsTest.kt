@@ -34,4 +34,10 @@ class DataStoreUtilsTest {
         val context = InstrumentationRegistry.getTargetContext()
         DataStoreUtils.cleanDatabasesByItemLimit(context)
     }
+
+    @Test
+    fun testGetAccountKeys() {
+        val context = InstrumentationRegistry.getTargetContext()
+        DataStoreUtils.getAccountKeys(context)
+    }
 }

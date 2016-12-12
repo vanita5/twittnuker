@@ -77,7 +77,6 @@ import de.vanita5.twittnuker.model.message.FavoriteTaskEvent;
 import de.vanita5.twittnuker.model.message.FriendshipUpdatedEvent;
 import de.vanita5.twittnuker.model.message.GetMessagesTaskEvent;
 import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent;
-import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent;
 import de.vanita5.twittnuker.model.message.SavedSearchDestroyedEvent;
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent;
 import de.vanita5.twittnuker.model.message.StatusRetweetedEvent;
@@ -90,7 +89,6 @@ import de.vanita5.twittnuker.model.message.UsersBlockedEvent;
 import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils;
-import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
@@ -119,14 +117,10 @@ import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.task.ReportSpamAndBlockTask;
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
 import de.vanita5.twittnuker.util.collection.CompactHashSet;
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import javax.inject.Inject;
 
 public class AsyncTwitterWrapper extends TwitterWrapper {
 
@@ -216,8 +210,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         AsyncTaskUtils.executeTask(task);
     }
 
-    public void createBlockAsync(final UserKey accountKey, final UserKey userKey) {
-        final CreateUserBlockTask task = new CreateUserBlockTask(context);
+    public void createBlockAsync(final UserKey accountKey, final UserKey userKey, boolean filterEverywhere) {
+        final CreateUserBlockTask task = new CreateUserBlockTask(context, filterEverywhere);
         task.setup(accountKey, userKey);
         TaskStarter.execute(task);
     }

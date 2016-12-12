@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.fragment
 
 import android.content.Context
 import android.support.v4.app.DialogFragment
+import com.squareup.otto.Bus
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -41,6 +42,8 @@ open class BaseDialogFragment : DialogFragment(), Constants {
     lateinit var validator: TwidereValidator
     @Inject
     lateinit var keyboardShortcutsHandler: KeyboardShortcutsHandler
+    @Inject
+    lateinit var bus: Bus
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)

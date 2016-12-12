@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.`FiltersData$UserItemCursorIndices`
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.Utils.getDefaultAccountKey
@@ -280,16 +281,6 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
 
     }
 
-    private class FilterListAdapter(context: Context) : SimpleCursorAdapter(context, android.R.layout.simple_list_item_activated_1, null, BaseFiltersFragment.FilterListAdapter.from, BaseFiltersFragment.FilterListAdapter.to, 0) {
-        companion object {
-
-            private val from = arrayOf(Filters.VALUE)
-
-            private val to = intArrayOf(android.R.id.text1)
-        }
-
-    }
-
     class FilteredKeywordsFragment : BaseFiltersFragment() {
 
         override val contentUri: Uri
@@ -298,8 +289,8 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
         public override val contentColumns: Array<String>
             get() = Filters.Keywords.COLUMNS
 
-
     }
+
 
     class FilteredLinksFragment : BaseFiltersFragment() {
 
@@ -332,6 +323,19 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
                 }
             }
             return super.onOptionsItemSelected(item)
+        }
+
+    }
+
+    private class FilterListAdapter(
+            context: Context
+    ) : SimpleCursorAdapter(context, R.layout.simple_list_item_activated_1, null,
+            BaseFiltersFragment.FilterListAdapter.from, BaseFiltersFragment.FilterListAdapter.to, 0) {
+        companion object {
+
+            private val from = arrayOf(Filters.VALUE)
+
+            private val to = intArrayOf(android.R.id.text1)
         }
 
     }
@@ -378,16 +382,19 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
             return FilterUsersListAdapter(context)
         }
 
-        class FilterUsersListAdapter internal constructor(context: Context) : SimpleCursorAdapter(context, android.R.layout.simple_list_item_activated_2, null, arrayOfNulls<String>(0), IntArray(0), 0) {
+        class FilterUsersListAdapter(
+                context: Context
+        ) : SimpleCursorAdapter(context, R.layout.simple_list_item_activated_2, null,
+                emptyArray(), IntArray(0), 0) {
 
-            private val nameFirst: Boolean
             @Inject
             lateinit var userColorNameManager: UserColorNameManager
             @Inject
             lateinit var preferences: SharedPreferencesWrapper
-            private var userIdIdx: Int = 0
-            private var nameIdx: Int = 0
-            private var screenNameIdx: Int = 0
+
+            private val nameFirst: Boolean
+
+            private var indices: `FiltersData$UserItemCursorIndices`? = null
 
             init {
                 GeneralComponentHelper.build(context).inject(this)
@@ -396,11 +403,12 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
 
             override fun bindView(view: View, context: Context?, cursor: Cursor) {
                 super.bindView(view, context, cursor)
+                val indices = this.indices!!
                 val text1 = view.findViewById(android.R.id.text1) as TextView
                 val text2 = view.findViewById(android.R.id.text2) as TextView
-                val userId = UserKey.valueOf(cursor.getString(userIdIdx))
-                val name = cursor.getString(nameIdx)
-                val screenName = cursor.getString(screenNameIdx)
+                val userId = UserKey.valueOf(cursor.getString(indices.userKey))
+                val name = cursor.getString(indices.name)
+                val screenName = cursor.getString(indices.screenName)
                 val displayName = userColorNameManager.getDisplayName(userId, name, screenName,
                         nameFirst)
                 text1.text = displayName
@@ -410,9 +418,7 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
             override fun swapCursor(c: Cursor?): Cursor? {
                 val old = super.swapCursor(c)
                 if (c != null) {
-                    userIdIdx = c.getColumnIndex(Filters.Users.USER_KEY)
-                    nameIdx = c.getColumnIndex(Filters.Users.NAME)
-                    screenNameIdx = c.getColumnIndex(Filters.Users.SCREEN_NAME)
+                    indices = `FiltersData$UserItemCursorIndices`(c)
                 }
                 return old
             }

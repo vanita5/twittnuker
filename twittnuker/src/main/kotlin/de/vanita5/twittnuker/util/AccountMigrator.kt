@@ -40,14 +40,9 @@ import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
-import de.vanita5.twittnuker.util.support.AccountManagerSupport
 import java.util.*
 
 fun migrateAccounts(am: AccountManager, db: SQLiteDatabase) {
-    am.getAccountsByType(ACCOUNT_TYPE).map { account ->
-        AccountManagerSupport.removeAccount(am, account, null, null, null)
-    }
-
     val cur = db.query(Accounts.TABLE_NAME, Accounts.COLUMNS, null, null, null, null, null) ?: return
     try {
         val indices = ParcelableCredentialsCursorIndices(cur)
