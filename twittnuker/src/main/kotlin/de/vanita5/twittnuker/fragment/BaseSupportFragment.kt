@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.fragment
 
-import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
@@ -76,11 +75,6 @@ open class BaseSupportFragment : Fragment(), IBaseFragment {
         super.onAttach(context)
         GeneralComponentHelper.build(context!!).inject(this)
     }
-
-    val contentResolver: ContentResolver
-        get() {
-            return activity!!.contentResolver!!
-        }
 
     override val extraConfiguration: Bundle?
         get() {

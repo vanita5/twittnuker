@@ -59,7 +59,6 @@ class SettingsDetailsFragment : BasePreferenceFragment(), OnSharedPreferenceChan
         if (resId != 0) {
             addPreferencesFromResource(resId)
         }
-
     }
 
     override fun onStart() {
