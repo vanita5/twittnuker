@@ -111,10 +111,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     @Inject
     lateinit var defaultFeatures: DefaultFeatures
 
-    private var locationManager: LocationManager? = null
-    private var currentTask: AsyncTask<Any, Any, *>? = null
-    private val supportMenuInflater by lazy { SupportMenuInflater(this) }
+    private lateinit var locationManager: LocationManager
     private lateinit var itemTouchHelper: ItemTouchHelper
+    private val supportMenuInflater by lazy { SupportMenuInflater(this) }
+    private var currentTask: AsyncTask<Any, Any, *>? = null
 
     private val backTimeoutRunnable = Runnable { navigateBackPressed = false }
 
@@ -165,7 +165,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
 
     override fun onBackPressed() {
-        if (currentTask != null && currentTask!!.status == AsyncTask.Status.RUNNING) return
+        if (currentTask?.status == AsyncTask.Status.RUNNING) return
         if (!shouldSkipDraft && hasComposingStatus() ) {
             saveToDrafts()
             Toast.makeText(this, R.string.status_saved_to_draft, Toast.LENGTH_SHORT).show()
@@ -186,7 +186,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     private fun discardTweet() {
-        if (isFinishing || currentTask != null && currentTask!!.status == AsyncTask.Status.RUNNING) return
+        if (isFinishing || currentTask?.status == AsyncTask.Status.RUNNING) return
         currentTask = AsyncTaskUtils.executeTask(DiscardTweetTask(this))
     }
 
@@ -226,7 +226,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         saveAccountSelection()
         try {
             if (locationListener != null) {
-                locationManager!!.removeUpdates(locationListener)
+                locationManager.removeUpdates(locationListener)
                 locationListener = null
             }
         } catch (ignore: SecurityException) {
@@ -467,7 +467,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 LOCATION_VALUE_COORDINATE -> {
                     attachLocationChecked = true
                     attachPreciseLocationChecked = true
-                    locationText!!.tag = null
+                    locationText.tag = null
                 }
                 LOCATION_VALUE_PLACE -> {
                     attachLocationChecked = true
@@ -482,7 +482,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 requestOrUpdateLocation()
             } else if (locationListener != null) {
                 try {
-                    locationManager!!.removeUpdates(locationListener)
+                    locationManager.removeUpdates(locationListener)
                     locationListener = null
                 } catch (e: SecurityException) {
                     //Ignore
@@ -791,10 +791,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             addMedia(Arrays.asList(*draft.media))
         }
         recentLocation = draft.location
-        if (draft.action_extras is UpdateStatusActionExtras) {
-            val extra = draft.action_extras as UpdateStatusActionExtras?
-            possiblySensitive = extra!!.isPossiblySensitive
-            inReplyToStatus = extra.inReplyToStatus
+        (draft.action_extras as? UpdateStatusActionExtras)?.let {
+            possiblySensitive = it.isPossiblySensitive
+            inReplyToStatus = it.inReplyToStatus
         }
         return true
     }
@@ -916,7 +915,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         val replyToName = userColorNameManager.getDisplayName(status, nameFirst)
         replyLabel.text = getString(R.string.quote_name_text, replyToName, status.text_unescaped)
         replyLabel.visibility = View.VISIBLE
-        replyLabelDivider!!.visibility = View.VISIBLE
+        replyLabelDivider.visibility = View.VISIBLE
     }
 
     private fun showReplyLabel(status: ParcelableStatus?) {
@@ -927,12 +926,12 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         val replyToName = userColorNameManager.getDisplayName(status, nameFirst)
         replyLabel.text = getString(R.string.reply_to_name_text, replyToName, status.text_unescaped)
         replyLabel.visibility = View.VISIBLE
-        replyLabelDivider!!.visibility = View.VISIBLE
+        replyLabelDivider.visibility = View.VISIBLE
     }
 
     private fun hideLabel() {
         replyLabel.visibility = View.GONE
-        replyLabelDivider!!.visibility = View.GONE
+        replyLabelDivider.visibility = View.GONE
     }
 
     private fun handleReplyIntent(status: ParcelableStatus?): Boolean {
@@ -1125,9 +1124,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         if (location != null) {
             val attachPreciseLocation = preferences.getBoolean(KEY_ATTACH_PRECISE_LOCATION)
             if (attachPreciseLocation) {
-                locationText!!.text = ParcelableLocationUtils.getHumanReadableString(location, 3)
+                locationText.text = ParcelableLocationUtils.getHumanReadableString(location, 3)
             } else {
-                if (locationText!!.tag == null || location != recentLocation) {
+                if (locationText.tag == null || location != recentLocation) {
                     val task = DisplayPlaceNameTask(this)
                     task.params = location
                     task.callback = locationText
@@ -1135,7 +1134,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 }
             }
         } else {
-            locationText!!.setText(R.string.unknown_location)
+            locationText.setText(R.string.unknown_location)
         }
         recentLocation = location
     }
@@ -1159,14 +1158,14 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         } else {
             criteria.accuracy = Criteria.ACCURACY_COARSE
         }
-        val provider = locationManager!!.getBestProvider(criteria, true)
+        val provider = locationManager.getBestProvider(criteria, true)
         if (provider != null) {
-            locationText!!.setText(R.string.getting_location)
+            locationText.setText(R.string.getting_location)
             locationListener = ComposeLocationListener(this)
-            locationManager!!.requestLocationUpdates(provider, 0, 0f, locationListener)
+            locationManager.requestLocationUpdates(provider, 0, 0f, locationListener)
             val location = Utils.getCachedLocation(this)
             if (location != null) {
-                locationListener!!.onLocationChanged(location)
+                locationListener?.onLocationChanged(location)
             }
         } else {
             Toast.makeText(this, R.string.cannot_get_location, Toast.LENGTH_SHORT).show()
@@ -1196,13 +1195,13 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     private fun updateLocationState() {
         val attachLocation = preferences.getBoolean(KEY_ATTACH_LOCATION)
-        locationIcon!!.isActivated = attachLocation
+        locationIcon.isActivated = attachLocation
         if (!attachLocation) {
-            locationText!!.setText(R.string.no_location)
+            locationText.setText(R.string.no_location)
         } else if (recentLocation != null) {
             setRecentLocation(recentLocation)
         } else {
-            locationText!!.setText(R.string.getting_location)
+            locationText.setText(R.string.getting_location)
         }
     }
 
@@ -1583,16 +1582,17 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
 
         override fun afterExecute(textView: TextView?, addresses: List<Address>?) {
+            textView!!
             val preferences = context.preferences
             val attachLocation = preferences.getBoolean(KEY_ATTACH_LOCATION)
             val attachPreciseLocation = preferences.getBoolean(KEY_ATTACH_PRECISE_LOCATION)
             if (attachLocation) {
                 if (attachPreciseLocation) {
                     val location = params
-                    textView!!.text = ParcelableLocationUtils.getHumanReadableString(location, 3)
+                    textView.text = ParcelableLocationUtils.getHumanReadableString(location, 3)
                     textView.tag = location
                 } else if (addresses == null || addresses.isEmpty()) {
-                    val tag = textView!!.tag
+                    val tag = textView.tag
                     if (tag is Address) {
                         textView.text = tag.locality
                     } else {
@@ -1601,18 +1601,21 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                     }
                 } else {
                     val address = addresses[0]
-                    textView!!.tag = address
+                    textView.tag = address
                     textView.text = address.locality
                 }
             } else {
-                textView!!.setText(R.string.no_location)
+                textView.setText(R.string.no_location)
             }
         }
 
         internal class NoAddress
     }
 
-    internal class MediaPreviewAdapter(activity: ComposeActivity, val mDragStartListener: SimpleItemTouchHelperCallback.OnStartDragListener) : ArrayRecyclerAdapter<ParcelableMediaUpdate, MediaPreviewViewHolder>(activity), SimpleItemTouchHelperCallback.ItemTouchHelperAdapter {
+    internal class MediaPreviewAdapter(
+            activity: ComposeActivity,
+            val dragStartListener: SimpleItemTouchHelperCallback.OnStartDragListener
+    ) : ArrayRecyclerAdapter<ParcelableMediaUpdate, MediaPreviewViewHolder>(activity), SimpleItemTouchHelperCallback.ItemTouchHelperAdapter {
         val inflater: LayoutInflater
 
         init {
@@ -1621,7 +1624,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
 
         fun onStartDrag(viewHolder: ViewHolder) {
-            mDragStartListener.onStartDrag(viewHolder)
+            dragStartListener.onStartDrag(viewHolder)
         }
 
         val asList: List<ParcelableMediaUpdate>
@@ -1641,13 +1644,13 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             return MediaPreviewViewHolder(view)
         }
 
-        override fun onViewAttachedToWindow(holder: MediaPreviewViewHolder?) {
+        override fun onViewAttachedToWindow(holder: MediaPreviewViewHolder) {
             super.onViewAttachedToWindow(holder)
-            holder!!.adapter = this
+            holder.adapter = this
         }
 
-        override fun onViewDetachedFromWindow(holder: MediaPreviewViewHolder?) {
-            holder!!.adapter = null
+        override fun onViewDetachedFromWindow(holder: MediaPreviewViewHolder) {
+            holder.adapter = null
             super.onViewDetachedFromWindow(holder)
         }
 
@@ -1698,16 +1701,14 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
 
         override fun onLongClick(v: View): Boolean {
-            if (adapter == null) return false
-            adapter!!.onStartDrag(this)
+            adapter?.onStartDrag(this)
             return false
         }
 
         override fun onClick(v: View) {
-            if (adapter == null) return
             when (v.id) {
                 R.id.remove -> {
-                    adapter!!.remove(layoutPosition)
+                    adapter?.remove(layoutPosition)
                 }
                 R.id.edit -> {
                     itemView.parent.showContextMenuForChild(itemView)
