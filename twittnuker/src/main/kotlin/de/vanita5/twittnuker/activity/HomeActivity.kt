@@ -33,13 +33,10 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.res.Configuration
-import android.database.ContentObserver
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Handler
 import android.preference.PreferenceActivity
 import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
@@ -86,7 +83,8 @@ import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent
 import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.service.RegistrationIntentService
 import de.vanita5.twittnuker.service.StreamingService
 import de.vanita5.twittnuker.util.*
@@ -96,7 +94,7 @@ import de.vanita5.twittnuker.view.TabPagerIndicator
 
 class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, SupportFragmentCallback, OnLongClickListener, DrawerLayout.DrawerListener {
 
-    private val accountChangeObserver = AccountChangeObserver(this)
+    private val accountUpdatedListener = AccountUpdatedListener(this)
 
     private var selectedAccountToSearch: AccountDetails? = null
     private var tabColumns: Int = 0
@@ -408,7 +406,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     override fun onStart() {
         super.onStart()
         multiSelectHandler.dispatchOnStart()
-        AccountManager.get(this).addOnAccountsUpdatedListener(accountChangeObserver, null, false)
+        AccountManager.get(this).addOnAccountsUpdatedListener(accountUpdatedListener, null, false)
         bus.register(this)
 
         readStateManager.registerOnSharedPreferenceChangeListener(readStateChangeListener)
@@ -451,7 +449,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         multiSelectHandler.dispatchOnStop()
         readStateManager.unregisterOnSharedPreferenceChangeListener(readStateChangeListener)
         bus.unregister(this)
-        AccountManager.get(this).removeOnAccountsUpdatedListener(accountChangeObserver)
+        AccountManager.get(this).removeOnAccountsUpdatedListener(accountUpdatedListener)
         preferences.edit().putInt(SharedPreferenceConstants.KEY_SAVED_TAB_POSITION, mainPager.currentItem).apply()
         unregisterReceiver(mGCMRegistrationReceiver)
 
@@ -861,7 +859,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         }
     }
 
-    private class AccountChangeObserver(private val activity: HomeActivity) : OnAccountsUpdateListener {
+    private class AccountUpdatedListener(private val activity: HomeActivity) : OnAccountsUpdateListener {
 
         override fun onAccountsUpdated(accounts: Array<out Account>?) {
             activity.notifyAccountsChanged()
