@@ -52,7 +52,7 @@ class AddUserFilterDialogFragment : AbsUserMuteBlockDialogFragment() {
 
     companion object {
 
-        val FRAGMENT_TAG = "add_user_filter"
+        const val FRAGMENT_TAG = "add_user_filter"
 
         fun show(fm: FragmentManager, user: ParcelableUser): AddUserFilterDialogFragment {
             val args = Bundle()

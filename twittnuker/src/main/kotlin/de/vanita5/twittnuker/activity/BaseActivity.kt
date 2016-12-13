@@ -59,6 +59,7 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener
+import org.mariotaku.kpreferences.KPreferences
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import javax.inject.Inject
@@ -78,6 +79,8 @@ open class BaseActivity : ATEActivity(), Constants, IExtendedActivity, IThemedAc
     lateinit var bus: Bus
     @Inject
     lateinit var preferences: SharedPreferencesWrapper
+    @Inject
+    lateinit var kPreferences: KPreferences
     @Inject
     lateinit var notificationManager: NotificationManagerWrapper
     @Inject

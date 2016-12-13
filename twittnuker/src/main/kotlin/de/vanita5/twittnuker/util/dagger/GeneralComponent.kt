@@ -46,7 +46,6 @@ import de.vanita5.twittnuker.task.twitter.GetStatusesTask
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.text.util.EmojiEditableFactory
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.MultiSelectEventHandler
 import de.vanita5.twittnuker.util.NotificationHelper
 import javax.inject.Singleton
@@ -139,4 +138,6 @@ interface GeneralComponent {
     fun inject(task: UpdateStatusTask)
 
     fun inject(application: TwittnukerApplication)
+
+    fun inject(fragment: ThemedPreferenceDialogFragmentCompat)
 }

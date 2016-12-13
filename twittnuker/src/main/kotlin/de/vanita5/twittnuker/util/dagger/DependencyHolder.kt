@@ -29,6 +29,7 @@ import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.net.TwidereDns
+import org.mariotaku.kpreferences.KPreferences
 import javax.inject.Inject
 
 class DependencyHolder internal constructor(context: Context) {
@@ -64,6 +65,9 @@ class DependencyHolder internal constructor(context: Context) {
         internal set
     @Inject
     lateinit var userColorNameManager: UserColorNameManager
+        internal set
+    @Inject
+    lateinit var kPreferences: KPreferences
         internal set
     @Inject
     lateinit var asyncTwitterWrapper: AsyncTwitterWrapper

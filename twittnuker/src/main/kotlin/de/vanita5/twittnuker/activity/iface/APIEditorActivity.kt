@@ -49,16 +49,15 @@ import org.mariotaku.restfu.http.HttpResponse
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.adapter.ArrayAdapter
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_API_CONFIG
+import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.account.cred.Credentials
-import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
-import de.vanita5.twittnuker.util.ParseUtils
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 
@@ -107,75 +106,38 @@ class APIEditorActivity : BaseActivity(), OnCheckedChangeListener, OnClickListen
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {
-        val apiUrlFormat = ParseUtils.parseString(this.editApiUrlFormat.text)
-        val authType = getCheckedAuthType(this.editAuthType.checkedRadioButtonId)
-        val sameOAuthSigningUrl = this.editSameOAuthSigningUrl.isChecked
-        val noVersionSuffix = this.editNoVersionSuffix.isChecked
-        val consumerKey = ParseUtils.parseString(this.editConsumerKey.text)
-        val consumerSecret = ParseUtils.parseString(this.editConsumerSecret.text)
-        outState.putString(Accounts.API_URL_FORMAT, apiUrlFormat)
-        outState.putString(Accounts.AUTH_TYPE, authType)
-        outState.putBoolean(Accounts.SAME_OAUTH_SIGNING_URL, sameOAuthSigningUrl)
-        outState.putBoolean(Accounts.NO_VERSION_SUFFIX, noVersionSuffix)
-        outState.putString(Accounts.CONSUMER_KEY, consumerKey)
-        outState.putString(Accounts.CONSUMER_SECRET, consumerSecret)
+        outState.putParcelable(EXTRA_API_CONFIG, createCustomAPIConfig())
         super.onSaveInstanceState(outState)
     }
 
     fun saveAndFinish() {
-        val apiUrlFormat = ParseUtils.parseString(this.editApiUrlFormat.text)
-        val authType = getCheckedAuthType(this.editAuthType.checkedRadioButtonId)
-        val sameOAuthSigningUrl = this.editSameOAuthSigningUrl.isChecked
-        val noVersionSuffix = this.editNoVersionSuffix.isChecked
-        val consumerKey = ParseUtils.parseString(this.editConsumerKey.text)
-        val consumerSecret = ParseUtils.parseString(this.editConsumerSecret.text)
         val intent = Intent()
-        intent.putExtra(Accounts.API_URL_FORMAT, apiUrlFormat)
-        intent.putExtra(Accounts.AUTH_TYPE, authType)
-        intent.putExtra(Accounts.SAME_OAUTH_SIGNING_URL, sameOAuthSigningUrl)
-        intent.putExtra(Accounts.NO_VERSION_SUFFIX, noVersionSuffix)
-        intent.putExtra(Accounts.CONSUMER_KEY, consumerKey)
-        intent.putExtra(Accounts.CONSUMER_SECRET, consumerSecret)
+        intent.putExtra(EXTRA_API_CONFIG, createCustomAPIConfig())
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
 
+    private fun createCustomAPIConfig(): CustomAPIConfig {
+        return CustomAPIConfig().apply {
+            this.apiUrlFormat = editApiUrlFormat.text.toString()
+            this.credentialsType = getCheckedAuthType(editAuthType.checkedRadioButtonId)
+            this.isSameOAuthUrl = editSameOAuthSigningUrl.isChecked
+            this.isNoVersionSuffix = editNoVersionSuffix.isChecked
+            this.consumerKey = editConsumerKey.text.toString()
+            this.consumerSecret = editConsumerSecret.text.toString()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val intent = intent
-        val extras = intent.extras
-
         setContentView(R.layout.activity_api_editor)
 
-        val apiUrlFormat: String?
-        val authType: String
-        val sameOAuthSigningUrl: Boolean
-        val noVersionSuffix: Boolean
-        val consumerKey: String?
-        val consumerSecret: String?
-
-        val pref = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-        val prefApiUrlFormat = Utils.getNonEmptyString(pref, KEY_API_URL_FORMAT, DEFAULT_TWITTER_API_URL_FORMAT)
-        val prefAuthType = pref.getString(KEY_CREDENTIALS_TYPE, Credentials.Type.OAUTH)
-        val prefSameOAuthSigningUrl = pref.getBoolean(KEY_SAME_OAUTH_SIGNING_URL, false)
-        val prefNoVersionSuffix = pref.getBoolean(KEY_NO_VERSION_SUFFIX, false)
-        val prefConsumerKey = Utils.getNonEmptyString(pref, KEY_CONSUMER_KEY, TWITTER_CONSUMER_KEY)
-        val prefConsumerSecret = Utils.getNonEmptyString(pref, KEY_CONSUMER_SECRET, TWITTER_CONSUMER_SECRET)
-        val bundle: Bundle
+        val apiConfig: CustomAPIConfig
         if (savedInstanceState != null) {
-            bundle = savedInstanceState
-        } else if (extras != null) {
-            bundle = extras
+            apiConfig = savedInstanceState.getParcelable(EXTRA_API_CONFIG)
         } else {
-            bundle = Bundle()
+            apiConfig = intent.getParcelableExtra(EXTRA_API_CONFIG) ?: kPreferences[defaultAPIConfigKey]
         }
-        apiUrlFormat = bundle.getString(Accounts.API_URL_FORMAT, prefApiUrlFormat)?.trim()
-        authType = bundle.getString(Accounts.AUTH_TYPE, prefAuthType)
-        sameOAuthSigningUrl = bundle.getBoolean(Accounts.SAME_OAUTH_SIGNING_URL, prefSameOAuthSigningUrl)
-        noVersionSuffix = bundle.getBoolean(Accounts.NO_VERSION_SUFFIX, prefNoVersionSuffix)
-        consumerKey = bundle.getString(Accounts.CONSUMER_KEY, prefConsumerKey)?.trim()
-        consumerSecret = bundle.getString(Accounts.CONSUMER_SECRET, prefConsumerSecret)?.trim()
 
         editAuthType.setOnCheckedChangeListener(this)
         editNoVersionSuffix.setOnCheckedChangeListener(this)
@@ -185,13 +147,13 @@ class APIEditorActivity : BaseActivity(), OnCheckedChangeListener, OnClickListen
         loadDefaults.visibility = View.VISIBLE
         loadDefaults.setOnClickListener(this)
 
-        editApiUrlFormat.setText(apiUrlFormat)
-        editSameOAuthSigningUrl.isChecked = sameOAuthSigningUrl
-        editNoVersionSuffix.isChecked = noVersionSuffix
-        editConsumerKey.setText(consumerKey)
-        editConsumerSecret.setText(consumerSecret)
+        editApiUrlFormat.setText(apiConfig.apiUrlFormat)
+        editSameOAuthSigningUrl.isChecked = apiConfig.isSameOAuthUrl
+        editNoVersionSuffix.isChecked = apiConfig.isNoVersionSuffix
+        editConsumerKey.setText(apiConfig.consumerKey)
+        editConsumerSecret.setText(apiConfig.consumerSecret)
 
-        editAuthType.check(getAuthTypeId(authType))
+        editAuthType.check(getAuthTypeId(apiConfig.credentialsType))
         if (editAuthType.checkedRadioButtonId == -1) {
             oauth.isChecked = true
         }
