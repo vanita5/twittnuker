@@ -58,10 +58,7 @@ import android.view.View.OnClickListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.header_drawer_account_selector.view.*
-import org.mariotaku.ktextension.convert
-import org.mariotaku.ktextension.setItemAvailability
-import org.mariotaku.ktextension.setMenuItemIcon
-import org.mariotaku.ktextension.setMenuItemTitle
+import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.*
@@ -727,7 +724,9 @@ class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<Account
 
     class AccountsInfoLoader(context: Context) : AsyncTaskLoader<AccountsInfo>(context) {
         private var contentObserver: ContentObserver? = null
-        private var accountListener: OnAccountsUpdateListener? = null
+        private val accountListener = OnAccountsUpdateListener {
+            onContentChanged()
+        }
 
         private var firstLoad: Boolean
 
@@ -755,10 +754,7 @@ class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<Account
                 context.contentResolver.unregisterContentObserver(contentObserver)
                 contentObserver = null
             }
-            if (accountListener != null) {
-                AccountManager.get(context).removeOnAccountsUpdatedListener(accountListener)
-                accountListener = null
-            }
+            AccountManager.get(context).removeOnAccountsUpdatedListenerSafe(accountListener)
         }
 
         /**
@@ -779,12 +775,7 @@ class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<Account
                 }
                 context.contentResolver.registerContentObserver(Drafts.CONTENT_URI, true, contentObserver)
             }
-            if (accountListener == null) {
-                accountListener = OnAccountsUpdateListener { accounts ->
-                    onContentChanged()
-                }
-                AccountManager.get(context).addOnAccountsUpdatedListener(accountListener, null, false)
-            }
+            AccountManager.get(context).addOnAccountsUpdatedListenerSafe(accountListener, updateImmediately = false)
 
             if (takeContentChanged() || firstLoad) {
                 firstLoad = false

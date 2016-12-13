@@ -26,6 +26,8 @@ import android.accounts.AccountManager
 import android.accounts.OnAccountsUpdateListener
 import android.content.Context
 import android.support.v4.content.AsyncTaskLoader
+import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
+import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.util.AccountUtils
 
@@ -34,7 +36,9 @@ class AccountDetailsLoader(
         val filter: (AccountDetails.() -> Boolean)? = null
 ) : AsyncTaskLoader<List<AccountDetails>>(context) {
     private val am: AccountManager
-    private var accountUpdateListener: OnAccountsUpdateListener? = null
+    private val accountUpdateListener = OnAccountsUpdateListener {
+        onContentChanged()
+    }
 
     init {
         am = AccountManager.get(context)
@@ -49,19 +53,11 @@ class AccountDetailsLoader(
     override fun onReset() {
         super.onReset()
         onStopLoading()
-        if (accountUpdateListener != null) {
-            am.removeOnAccountsUpdatedListener(accountUpdateListener)
-            accountUpdateListener = null
-        }
+        am.removeOnAccountsUpdatedListenerSafe(accountUpdateListener)
     }
 
     override fun onStartLoading() {
-        if (accountUpdateListener == null) {
-            accountUpdateListener = OnAccountsUpdateListener {
-                onContentChanged()
-            }
-            am.addOnAccountsUpdatedListener(accountUpdateListener, null, true)
-        }
+        am.addOnAccountsUpdatedListenerSafe(accountUpdateListener, updateImmediately = true)
         if (takeContentChanged()) {
             forceLoad()
         }
