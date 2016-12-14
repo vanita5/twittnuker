@@ -26,11 +26,13 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.text.TextUtils
 import org.mariotaku.kpreferences.*
+import de.vanita5.twittnuker.Constants.KEY_NO_CLOSE_AFTER_TWEET_SENT
 import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CREDENTIALS_TYPE
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_ATTACH_PRECISE_LOCATION
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.account.cred.Credentials
+
 
 val mediaPreviewStyleKey = KStringKey(KEY_MEDIA_PREVIEW_STYLE, VALUE_MEDIA_PREVIEW_STYLE_CROP)
 val profileImageStyleKey = KStringKey(KEY_PROFILE_IMAGE_STYLE, VALUE_PROFILE_IMAGE_STYLE_SQUARE)
@@ -47,6 +49,9 @@ val linkHighlightOptionKey = KStringKey(KEY_LINK_HIGHLIGHT_OPTION, VALUE_LINK_HI
 val statusShortenerKey = KNullableStringKey(KEY_STATUS_SHORTENER, null)
 val mediaUploaderKey = KNullableStringKey(KEY_MEDIA_UPLOADER, null)
 val newDocumentApiKey = KBooleanKey(KEY_NEW_DOCUMENT_API, Build.VERSION.SDK_INT == Build.VERSION_CODES.M)
+val attachLocationKey = KBooleanKey(KEY_ATTACH_LOCATION, false)
+val attachPreciseLocationKey = KBooleanKey(KEY_ATTACH_PRECISE_LOCATION, false)
+val noCloseAfterTweetSentKey = KBooleanKey(KEY_NO_CLOSE_AFTER_TWEET_SENT, false)
 val loadItemLimitKey = KIntKey(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT)
 val defaultFeatureLastUpdated = KLongKey("default_feature_last_updated", -1)
 

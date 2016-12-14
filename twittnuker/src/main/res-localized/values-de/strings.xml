@@ -807,6 +807,13 @@
     <string name="filter_everywhere">Überall filtern</string>
     <string name="filter_everywhere_description">Das wird gefiltert:\n  &#xb7;Die Tweets des Benutzers\n  &#xb7;Tweets mit Erwähnungen des Benutzers\n  &#xb7;Retweets und Zitate dieses Benutzers</string>
     <string name="message_toast_added_to_filter">Zum Filter hinzugefügt.</string>
+    <!-- Verb. Used for skip some settings -->
+    <string name="action_skip">Überspringen</string>
+    <!-- Used for decide something later, like permission request -->
+    <string name="action_later">Später</string>
+    <string name="message_permission_request_compose_location">Twittnuker benötigt Berechtigungen, um Tweets mit deinem Standort versehen zu können.</string>
+    <string name="message_permission_request_save_media">Twittnuker benötigt Berechtigungen, um Medien speichern zu können.</string>
+    <string name="message_permission_request_share_media">Twittnuker benötigt Berechtigungen, um Medien mit anderen Apps teilen zu können.</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

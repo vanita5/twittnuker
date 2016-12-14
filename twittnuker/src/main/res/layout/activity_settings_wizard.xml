@@ -22,22 +22,27 @@
   -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	tools:context=".activity.SettingsWizardActivity">
+       xmlns:app="http://schemas.android.com/apk/res-auto"
+       xmlns:tools="http://schemas.android.com/tools"
+       tools:context=".activity.SettingsWizardActivity">
 
-	<de.vanita5.twittnuker.view.ExtendedViewPager
-		android:id="@+id/pager"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"/>
+    <de.vanita5.twittnuker.view.ExtendedViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-	<de.vanita5.twittnuker.view.LinePageIndicator
-		android:id="@+id/indicator"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="top"
-		android:padding="@dimen/element_spacing_normal"
-		app:lineWidth="@dimen/line_indicator_line_width_wizard"
-		app:strokeWidth="@dimen/line_indicator_stroke_width_wizard"/>
+    <de.vanita5.twittnuker.view.LinePageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:padding="@dimen/element_spacing_normal"
+        app:lineWidth="@dimen/line_indicator_line_width_wizard"
+        app:strokeWidth="@dimen/line_indicator_stroke_width_wizard"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:text="@string/action_skip"/>
 </merge>
