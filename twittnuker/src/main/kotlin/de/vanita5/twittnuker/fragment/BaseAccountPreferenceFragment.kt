@@ -34,7 +34,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener
 
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_PREFERENCES_NAME_PREFIX
-import de.vanita5.twittnuker.constant.IntentConstants
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
 import de.vanita5.twittnuker.model.AccountDetails
 
@@ -47,7 +47,7 @@ abstract class BaseAccountPreferenceFragment : BasePreferenceFragment(), OnCheck
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         val pm = preferenceManager
-        val account: AccountDetails = arguments.getParcelable(IntentConstants.EXTRA_ACCOUNT) ?: return
+        val account: AccountDetails = arguments.getParcelable(EXTRA_ACCOUNT) ?: return
         val preferenceName = "$ACCOUNT_PREFERENCES_NAME_PREFIX${account.key}"
         pm.sharedPreferencesName = preferenceName
         addPreferencesFromResource(preferencesResource)
@@ -77,14 +77,15 @@ abstract class BaseAccountPreferenceFragment : BasePreferenceFragment(), OnCheck
         if (prefs.getBoolean(switchPreferenceKey, switchPreferenceDefault) != isChecked) {
             editor.putBoolean(switchPreferenceKey, isChecked)
             editor.apply()
+            updatePreferenceScreen()
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val switchKey = switchPreferenceKey
         if (!TextUtils.isEmpty(switchKey)) {
-            inflater!!.inflate(R.menu.menu_switch_preference, menu)
-            val actionView = menu!!.findItem(R.id.toggle).actionView
+            inflater.inflate(R.menu.menu_switch_preference, menu)
+            val actionView = menu.findItem(R.id.toggle).actionView
             val toggle = actionView.findViewById(android.R.id.toggle) as CompoundButton
             val prefs = preferenceManager.sharedPreferences
             toggle.setOnCheckedChangeListener(this)
@@ -101,8 +102,7 @@ abstract class BaseAccountPreferenceFragment : BasePreferenceFragment(), OnCheck
 
     protected val account: AccountDetails?
         get() {
-            val args = arguments ?: return null
-            return args.getParcelable<AccountDetails>(IntentConstants.EXTRA_ACCOUNT)
+            return arguments?.getParcelable(EXTRA_ACCOUNT)
         }
 
     protected abstract val preferencesResource: Int
