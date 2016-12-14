@@ -29,6 +29,7 @@ import org.mariotaku.kpreferences.*
 import de.vanita5.twittnuker.Constants.KEY_NO_CLOSE_AFTER_TWEET_SENT
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_ATTACH_PRECISE_LOCATION
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_SETTINGS_WIZARD_COMPLETED
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.account.cred.Credentials
@@ -54,6 +55,7 @@ val attachPreciseLocationKey = KBooleanKey(KEY_ATTACH_PRECISE_LOCATION, false)
 val noCloseAfterTweetSentKey = KBooleanKey(KEY_NO_CLOSE_AFTER_TWEET_SENT, false)
 val loadItemLimitKey = KIntKey(KEY_LOAD_ITEM_LIMIT, DEFAULT_LOAD_ITEM_LIMIT)
 val defaultFeatureLastUpdated = KLongKey("default_feature_last_updated", -1)
+val drawerTutorialCompleted = KBooleanKey(KEY_SETTINGS_WIZARD_COMPLETED, false)
 
 object defaultAPIConfigKey : KPreferenceKey<CustomAPIConfig> {
     override fun contains(preferences: SharedPreferences): Boolean {

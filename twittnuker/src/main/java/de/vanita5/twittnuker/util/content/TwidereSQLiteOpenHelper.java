@@ -47,6 +47,10 @@ import org.mariotaku.sqliteqb.library.query.SQLCreateTriggerQuery.Event;
 import org.mariotaku.sqliteqb.library.query.SQLCreateTriggerQuery.Type;
 import org.mariotaku.sqliteqb.library.query.SQLDeleteQuery;
 import de.vanita5.twittnuker.Constants;
+import de.vanita5.twittnuker.annotation.CustomTabType;
+import de.vanita5.twittnuker.model.Tab;
+import de.vanita5.twittnuker.model.TabValuesCreator;
+import de.vanita5.twittnuker.model.tab.TabConfiguration;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
@@ -66,6 +70,7 @@ import de.vanita5.twittnuker.util.AccountMigratorKt;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationsEntryQueryBuilder;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.DirectMessagesQueryBuilder;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import static de.vanita5.twittnuker.util.content.DatabaseUpgradeHelper.safeUpgrade;
@@ -86,31 +91,71 @@ public final class TwidereSQLiteOpenHelper extends SQLiteOpenHelper implements C
         db.execSQL(createTable(Activities.AboutMe.TABLE_NAME, Activities.AboutMe.COLUMNS, Activities.AboutMe.TYPES, true));
         db.execSQL(createTable(Activities.ByFriends.TABLE_NAME, Activities.ByFriends.COLUMNS, Activities.ByFriends.TYPES, true));
         db.execSQL(createTable(Drafts.TABLE_NAME, Drafts.COLUMNS, Drafts.TYPES, true));
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        db.beginTransaction();
         db.execSQL(createTable(CachedUsers.TABLE_NAME, CachedUsers.COLUMNS, CachedUsers.TYPES, true,
                 createConflictReplaceConstraint(CachedUsers.USER_KEY)));
         db.execSQL(createTable(CachedStatuses.TABLE_NAME, CachedStatuses.COLUMNS, CachedStatuses.TYPES, true));
+        db.execSQL(createTable(CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS, CachedTrends.Local.TYPES,
+                true));
         db.execSQL(createTable(CachedHashtags.TABLE_NAME, CachedHashtags.COLUMNS, CachedHashtags.TYPES, true));
         db.execSQL(createTable(CachedRelationships.TABLE_NAME, CachedRelationships.COLUMNS, CachedRelationships.TYPES, true,
                 createConflictReplaceConstraint(CachedRelationships.ACCOUNT_KEY, CachedRelationships.USER_KEY)));
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+
+        db.beginTransaction();
         db.execSQL(createTable(Filters.Users.TABLE_NAME, Filters.Users.COLUMNS, Filters.Users.TYPES, true));
         db.execSQL(createTable(Filters.Keywords.TABLE_NAME, Filters.Keywords.COLUMNS, Filters.Keywords.TYPES, true));
         db.execSQL(createTable(Filters.Sources.TABLE_NAME, Filters.Sources.COLUMNS, Filters.Sources.TYPES, true));
         db.execSQL(createTable(Filters.Links.TABLE_NAME, Filters.Links.COLUMNS, Filters.Links.TYPES, true));
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        db.beginTransaction();
         db.execSQL(createTable(DirectMessages.Inbox.TABLE_NAME, DirectMessages.Inbox.COLUMNS,
                 DirectMessages.Inbox.TYPES, true));
         db.execSQL(createTable(DirectMessages.Outbox.TABLE_NAME, DirectMessages.Outbox.COLUMNS,
                 DirectMessages.Outbox.TYPES, true));
-        db.execSQL(createTable(CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS, CachedTrends.Local.TYPES,
-                true));
         db.execSQL(createTable(Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, true));
         db.execSQL(createTable(SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true));
         db.execSQL(createTable(SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true));
         db.execSQL(createTable(PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES, true));
+        db.setTransactionSuccessful();
+        db.endTransaction();
 
+        db.beginTransaction();
         createViews(db);
         createTriggers(db);
         createIndices(db);
+        db.setTransactionSuccessful();
+        db.endTransaction();
 
+        setupDefaultTabs(db);
+    }
+
+    private void setupDefaultTabs(SQLiteDatabase db) {
+        db.beginTransaction();
+        @CustomTabType
+        String[] tabTypes = {CustomTabType.HOME_TIMELINE, CustomTabType.NOTIFICATIONS_TIMELINE,
+                CustomTabType.DIRECT_MESSAGES, CustomTabType.TRENDS_SUGGESTIONS};
+        for (int i = 0, j = tabTypes.length; i < j; i++) {
+            @CustomTabType
+            final String tabType = tabTypes[i];
+            final TabConfiguration conf = TabConfiguration.ofType(tabType);
+            final Tab tab = new Tab();
+            tab.setType(tabType);
+            tab.setIcon(conf.getIcon().getPersistentKey());
+            tab.setPosition(i);
+            try {
+                db.insert(Tabs.TABLE_NAME, null, TabValuesCreator.create(tab));
+            } catch (IOException e) {
+                // Ignore
+            }
+        }
         db.setTransactionSuccessful();
         db.endTransaction();
     }

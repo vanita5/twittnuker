@@ -57,13 +57,16 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.Toast
-
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetView
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home_content.*
 import kotlinx.android.synthetic.main.layout_empty_tab_hint.*
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
+import org.mariotaku.kpreferences.get
+import org.mariotaku.kpreferences.set
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.convert
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
@@ -75,6 +78,7 @@ import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
+import de.vanita5.twittnuker.constant.drawerTutorialCompleted
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
@@ -322,11 +326,6 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         } else {
             notifyAccountsChanged()
         }
-        val intent = intent
-        if (openSettingsWizard()) {
-            finish()
-            return
-        }
         supportRequestWindowFeature(AppCompatDelegate.FEATURE_ACTION_MODE_OVERLAY)
         setContentView(R.layout.activity_home)
 
@@ -403,6 +402,8 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         val initialTabPosition = handleIntent(intent, savedInstanceState == null,
                 savedInstanceState != null)
         setTabPosition(initialTabPosition)
+
+        openDrawerTutorial()
     }
 
     override fun onStart() {
@@ -759,10 +760,32 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         homeMenu.openDrawer(GravityCompat.START)
     }
 
-    private fun openSettingsWizard(): Boolean {
-        if (preferences.getBoolean(SharedPreferenceConstants.KEY_SETTINGS_WIZARD_COMPLETED, false))
-            return false
-        startActivity(Intent(this, SettingsWizardActivity::class.java))
+    private fun openDrawerTutorial(): Boolean {
+        if (preferences[drawerTutorialCompleted]) return false
+        val targetSize = resources.getDimensionPixelSize(R.dimen.element_size_mlarge)
+        val height = resources.displayMetrics.heightPixels
+        val listener: TapTargetView.Listener = object : TapTargetView.Listener() {
+            override fun onTargetClick(view: TapTargetView?) {
+                if (!homeMenu.isDrawerOpen(GravityCompat.START)) {
+                    homeMenu.openDrawer(GravityCompat.START)
+                }
+                super.onTargetClick(view)
+            }
+
+            override fun onTargetDismissed(view: TapTargetView?, userInitiated: Boolean) {
+                preferences[drawerTutorialCompleted] = true
+            }
+        }
+        val target = Rect(0, 0, targetSize, targetSize)
+        target.offsetTo(0, height / 2 - targetSize / 2)
+        TapTargetView.showFor(this, TapTarget.forBounds(target,
+                getString(R.string.hint_accounts_dashboard_title),
+                getString(R.string.hint_accounts_dashboard_message))
+                .apply {
+                    outerCircleColor(R.color.branding_color)
+                    dimColor(android.R.color.black)
+                }, listener)
+
         return true
     }
 

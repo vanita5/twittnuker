@@ -37,11 +37,5 @@
         app:progressTextSuffix="s" />
 
 
-    <Preference android:title="@string/settings_wizard">
-        <intent
-            android:targetClass="de.vanita5.twittnuker.activity.SettingsWizardActivity"
-            android:targetPackage="de.vanita5.twittnuker" />
-    </Preference>
-
     <de.vanita5.twittnuker.preference.HiddenSettingEntryPreference android:title="@string/hidden_settings"/>
 </PreferenceScreen>

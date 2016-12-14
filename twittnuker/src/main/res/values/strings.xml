@@ -833,6 +833,8 @@
     <string name="message_permission_request_compose_location">Twittnuker needs location permission for adding location to tweets.</string>
     <string name="message_permission_request_save_media">Twittnuker needs storage permission for saving media.</string>
     <string name="message_permission_request_share_media">Twittnuker needs storage permission for sharing media with other apps.</string>
+    <string name="hint_accounts_dashboard_title">Accounts dashboard</string>
+    <string name="hint_accounts_dashboard_message">Swipe from screen edge to open accounts dashboard.</string>
 
 
     <!-- Twittnuker -->

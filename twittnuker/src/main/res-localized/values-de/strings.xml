@@ -814,6 +814,8 @@
     <string name="message_permission_request_compose_location">Twittnuker benötigt Berechtigungen, um Tweets mit deinem Standort versehen zu können.</string>
     <string name="message_permission_request_save_media">Twittnuker benötigt Berechtigungen, um Medien speichern zu können.</string>
     <string name="message_permission_request_share_media">Twittnuker benötigt Berechtigungen, um Medien mit anderen Apps teilen zu können.</string>
+    <string name="hint_accounts_dashboard_title">Account Dashboard</string>
+    <string name="hint_accounts_dashboard_message">Am Rand ziehen um das Account Dashboard zu öffnen.</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
