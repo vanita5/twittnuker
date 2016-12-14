@@ -382,7 +382,7 @@
     <string name="status_favorited">Tweet favorisiert.</string>
     <string name="status_unfavorited">Favorit gelöscht.</string>
     <string name="status_liked">Liked Tweet.</string>
-    <string name="status_unliked">Like entfernt.</string>
+    <string name="status_like_removed">Like entfernt.</string>
     <string name="status_retweeted">Retweeted.</string>
     <string name="retweet_cancelled">Retweet entfernt.</string>
     <string name="direct_message_sent">DM gesendet.</string>
@@ -509,7 +509,7 @@
     <string name="status_share_subject_format_with_time">Tweet von <xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>) um <xliff:g id="time">%3$s</xliff:g></string>
     <string name="status_share_text_format_with_link"><xliff:g id="text">%1$s</xliff:g>\n\n<xliff:g id="link">%2$s</xliff:g></string>
     <string name="rate_limit">Rate limit</string>
-    <string name="wizard_hint_rate_limit">Falls Rate Limit Probleme auftreten liegt das an Twitter\'s API Beschränkungen.</string>
+   <!-- <string name="wizard_hint_rate_limit">Falls Rate Limit Probleme auftreten liegt das an Twitter\'s API Beschränkungen.</string-->>
     <string name="action_name_saved_at_time"><xliff:g id="action">%1$s</xliff:g>, gespeichert um <xliff:g id="time">%2$s</xliff:g></string>
     <string name="update_status">Tweet senden</string>
     <string name="sending_direct_message">Direktnachricht senden</string>
@@ -738,8 +738,7 @@
     <string name="unknown_language">Unbekannte Sprache</string>
     <string name="system_default">Systemstandard</string>
     <string name="emoji_support">Emoji Support</string>
-    <string name="open_poll_in_official_app">Umfrage in der offiziellen Twitter App öffnen</string>
-    <string name="action_vote">Abstimmen</string>
+    <!--<string name="open_poll_in_official_app">Umfrage in der offiziellen Twitter App öffnen</string>-->
     <string name="label_poll">Umfrage</string>
     <string name="poll_summary_format"><xliff:g id="poll_count">%1$s</xliff:g> · <xliff:g id="poll_time_left">%2$s</xliff:g></string>
     <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
@@ -776,7 +775,7 @@
     <string name="error_message_device_incompatible">Dein Gerät ist nicht kompatibel mit Twittnuker. Ein Update auf ein aktuelles Android OS wird empfohlen.\nDu kannst uns die Informationen unten zukommen lassen, damit wir das dem Gerätehersteller melden können.</string>
     <string name="password_sign_in_twitter_only">Password Login (Nur für Twitter)</string>
     <string name="edit_description">Beschreibung hinzufügen</string>
-    <string name="edit_media">Medien bearbeiten</string>
+    <!--<string name="edit_media">Medien bearbeiten</string>-->
     <string name="no_status_content_text">Kein Inhalt</string>
     <string name="status_not_available_text">Tweet existiert nicht</string>
     <string name="share_link">Link teilen</string>

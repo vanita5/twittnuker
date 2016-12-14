@@ -621,8 +621,8 @@
     <string name="no_location">Geen locatie</string>
     <string name="getting_location">Locatie ophalen</string>
     <string name="save_to_gallery">Opslaan naar gallerij</string>
-    <string name="usage_statistics">Gebruiksstatistieken</string>
-    <string name="research_hot_mobile">Gegevensgestuurd mobiel netwerkonderzoek</string>
+   <!-- <string name="usage_statistics">Gebruiksstatistieken</string-->>
+    <!--<string name="research_hot_mobile">Gegevensgestuurd mobiel netwerkonderzoek</string>-->
     <string name="unknown_location">Onbekende locatie</string>
     <string name="ellipsis">&#8230;</string>
     <string name="import_export_settings">Importeer/exporteer instellingen</string>
@@ -637,7 +637,7 @@
     <string name="from_name">Van <xliff:g id="name">%1$s</xliff:g></string>
     <string name="from_name_and_name">Van <xliff:g id="name">%1$s</xliff:g> en <xliff:g id="name">%2$s</xliff:g></string>
     <string name="from_name_and_N_others">Van <xliff:g id="name">%1$s</xliff:g> en <xliff:g id="name">%2$d</xliff:g> anderen</string>
-    <string name="projects_we_took_part">Projecten waar we aan deelnamen</string>
+    <!--<string name="projects_we_took_part">Projecten waar we aan deelnamen</string>-->
     <string name="activated_accounts">Geactiveerde accounts</string>
     <string name="search">Zoeken</string>
     <string name="crop">Bijsnijden</string>
@@ -650,12 +650,12 @@
     <string name="pebble_notifications_summary">Verstuur notificaties naar jouw Pebble</string>
     <!-- 'Tweet' here is a verb -->
     <string name="tweet_from_name">Tweet vanaf <xliff:g id="text">%1$s</xliff:g></string>
-    <string name="permission_label_shorten_status">Tweet inkorten</string>
-    <string name="permission_label_upload_media">Media uploaden</string>
+   <!-- <string name="permission_label_shorten_status">Tweet inkorten</string-->>
+   <!-- <string name="permission_label_upload_media">Media uploaden</string-->>
     <!--<string name="permission_label_sync_timeline">Synchroniseer tijdlijn</string>-->
     <!--<string name="thumbor_integration">Thumbor integratie</string>-->
     <!--<string name="server_address">Server adres</string>-->
-    <string name="security_key">Beveiligingssleutel</string>
+   <!-- <string name="security_key">Beveiligingssleutel</string-->>
     <string name="hide_card_actions">Kaartacties verbergen</string>
     <string name="drafts_hint_messages">Je niet-verzonden tweets worden hier opgeslagen</string>
     <string name="keyboard_shortcuts">Sneltoetsen</string>
@@ -692,13 +692,13 @@
     <string name="streaming">Streaming</string>
     <string name="enable_streaming">Streaming inschakelen</string>
     <string name="dark_theme">Donker thema</string>
-    <string name="scrapyard">Schroothoop</string>
+   <!-- <string name="scrapyard">Schroothoop</string-->>
     <string name="crop_image">Afbeelding bijsnijden</string>
     <string name="media_preload">Media vooraf laden</string>
     <string name="set_consumer_key_secret_message">Twittnuker bereikt de tokenlimiet. Je moet een app aanmaken op https://apps.twitter.com/ en de \'consumer key\' en \'secret\' hieronder plakken.\nAls je doorgaat met de standaardkey kun je mogelijk niet inloggen.</string>
     <string name="send_at">Versturen om</string>
     <string name="scheduled_statuses">Ingeplande tweets</string>
-    <string name="report_usage_statistics_now">Gebruiksstatistieken nu rapporteren</string>
+    <!--<string name="report_usage_statistics_now">Gebruiksstatistieken nu rapporteren</string>-->
     <string name="cache_size_limit">Cachelimiet</string>
     <string name="bug_reports">Bugmeldingen</string>
     <string name="bug_reports_summary">Ondersteund door Fabric</string>
@@ -755,8 +755,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Vertaal vanuit <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Vertaling</string>
-    <string name="shortener_version_incompatible">Incompatibele tweet-verkorter</string>
-    <string name="uploader_version_incompatible">Incompatibele media-uploader</string>
+   <!-- <string name="shortener_version_incompatible">Incompatibele tweet-verkorter</string-->>
+   <!-- <string name="uploader_version_incompatible">Incompatibele media-uploader</string-->>
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Groepen</string>
     <string name="public_timeline">Publieke tijdlijn</string>
@@ -784,10 +784,10 @@
     <string name="password_sign_in_twitter_only">Inloggen met wachtwoord (alleen Twitter)</string>
     <string name="direct_messages_next">Volgende DM</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">Google ID</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">E-mail</string>
-    <string name="sign_in_with_ellip">Inloggen met&#8230;</string>
+   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">E-mail</string-->>
+   <!-- <string name="sign_in_with_ellip">Inloggen met&#8230;</string-->>
     <string name="edit_description">Bewerk omschrijving</string>
     <string name="no_status_content_text">Geen inhoud</string>
     <string name="status_not_available_text">Tweet niet beschikbaar</string>
@@ -795,7 +795,7 @@
     <string name="hide_retweets">Retweets verbergen</string>
     <string name="hide_quotes">Quotes verbergen</string>
     <string name="hide_replies">Antwoorden verbergen</string>
-    <string name="no_extension_installed">Geen extensie geïnstalleerd</string>
+    <!--<string name="no_extension_installed">Geen extensie geïnstalleerd</string>-->
     <string name="pinned_status">Vastgemaakte tweet</string>
     <string name="add_or_remove_from_list">Toevoegen of verwijderen uit lijst</string>
     <!-- Verb. Used for skip some settings -->

@@ -152,7 +152,7 @@
     <string name="add_member">הוסף משתמש</string>
     <string name="new_user_list">רשימה חדשה</string>
     <string name="is_public">ציבורי</string>
-    <string name="extensions">הרחבות</string>
+    <!--<string name="extensions">הרחבות</string>-->
     <string name="uninstall">הסר התקנה</string>
     <string name="saved_searches">חיפושים שמורים</string>
     <string name="tabs">כרטיסיות</string>
@@ -259,8 +259,8 @@
     <string name="small">קטן</string>
     <string name="and_N_more">ועוד <xliff:g id="count">%d</xliff:g></string>
     <string name="clear_search_history">נקה היסטוריית חיפוש</string>
-    <string name="permission_description_none">אין צורך בהרשאות</string>
-    <string name="permission_description_refresh">רענן את ציר הזמן (כולל הודעות ישירות)</string>
+   <!-- <string name="permission_description_none">אין צורך בהרשאות</string-->>
+   <!-- <string name="permission_description_refresh">רענן את ציר הזמן (כולל הודעות ישירות)</string-->>
     <string name="phishing_link_warning_message_1">את/ה פותח/ת קישור בהודעה ישירה, שעלול להוביל אותך לאתר דיוג.\n\nאנא בדוק/י את כתובת האתר פעם נוספת לפני הזנת פרטים אישיים.</string>
     <string name="phishing_link_warning_message_2">האם את/ה בטוח/ה שברצונך להמשיך?</string>
     <string name="profile_images">תמונות פרופיל</string>
@@ -373,7 +373,7 @@
     <string name="export_settings">ייצא הגדרות</string>
     <string name="export_settings_type_dialog_title">ייצוא הגדרות&#8230;</string>
     <string name="import_settings_type_dialog_title">ייבוא הגדרות&#8230;</string>
-    <string name="nicknames">כינויים</string>
+    <!--<string name="nicknames">כינויים</string>-->
     <string name="hidden_settings">הגדרות מוסתרות</string>
     <string name="hidden_settings_warning_title">אזהרה: הגדרות אלו עלולות לפגוע!</string>
     <string name="hidden_settings_warning_message">לעולם אל תשנה/י את ההגדרות האלו אם את/ה לא יודע/ת מה הן, אחרת הן:\n * יהרגו את החתול שלך\n * ישגרו טילים גרעיניים מצפון קוריאה\n * יהפכו את כל ה-Mahou Shoujo ל-Majo\n * יהרסו את היקום</string>
@@ -381,8 +381,8 @@
     <string name="quote_protected_status_warning_message">ציוץ זה הינו מוגן.\n\nמשתמשים מוגנים בדרך כלל לא רוצים שהציוצים שלהם ישותפו בפומבי.</string>
     <string name="send_anyway">שלח בכל מקרה</string>
     <string name="new_direct_message">הודעה ישירה חדשה</string>
-    <string name="want_old_icon_back">רוצה את הסמל הישן בחזרה?</string>
-    <string name="icon_restored_message">הסמל שוחזר!</string>
+   <!-- <string name="want_old_icon_back">רוצה את הסמל הישן בחזרה?</string-->>
+    <!--<string name="icon_restored_message">הסמל שוחזר!</string>-->
     <string name="add">הוסף</string>
     <string name="delete_drafts_confirm">למחוק את הטיוטות שנבחרו?</string>
     <string name="extra_configurations">הגדרות נוספות</string>
@@ -413,8 +413,8 @@
     <string name="no_location">ללא מיקום</string>
     <string name="getting_location">מקבל מיקום</string>
     <string name="save_to_gallery">שמור לגלריה</string>
-    <string name="usage_statistics">סטטיסטיקות שימוש</string>
-    <string name="research_hot_mobile">מחקר רשתות סלולריות מבוססת נתונים</string>
+   <!-- <string name="usage_statistics">סטטיסטיקות שימוש</string-->>
+    <!--<string name="research_hot_mobile">מחקר רשתות סלולריות מבוססת נתונים</string>-->
     <string name="unknown_location">מיקום לא ידוע</string>
     <string name="ellipsis">&#8230;</string>
     <string name="import_export_settings">ייבוא/ייצוא הגדרות</string>

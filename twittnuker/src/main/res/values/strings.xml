@@ -384,7 +384,7 @@
     <string name="status_favorited">Tweet favorited.</string>
     <string name="status_unfavorited">Tweet unfavorited.</string>
     <string name="status_liked">Tweet liked.</string>
-    <string name="status_unliked">Like removed.</string>
+    <string name="status_like_removed">Like removed.</string>
     <string name="status_retweeted">Retweeted.</string>
     <string name="retweet_cancelled">Retweet cancelled.</string>
     <string name="direct_message_sent">Direct message sent.</string>
@@ -455,20 +455,6 @@
     <string name="previous_item">Previous</string>
     <!-- Next item (tweet, user etc.) -->
     <string name="next_item">Next</string>
-    <string name="settings_wizard">Settings wizard</string>
-    <string name="wizard_page_welcome_title">Welcome</string>
-    <string name="wizard_page_welcome_text">Thanks for choosing Twittnuker.\nWould you like to config it now?</string>
-    <string name="wizard_page_welcome_yes">Yes</string>
-    <string name="wizard_page_welcome_not_now">Not now</string>
-    <string name="wizard_page_welcome_import_settings">Import settings</string>
-    <string name="wizard_page_theme_text">Pick a theme you like.</string>
-    <string name="wizard_page_tabs_text">Add some tabs to Twittnuker.\nKeep track of people or things you care about.</string>
-    <string name="wizard_page_tabs_unchanged_message">You can add tabs in &quot;Settings&quot; - &quot;Tabs&quot;</string>
-    <string name="wizard_page_cards_text">Config card items.</string>
-    <string name="wizard_page_hints_text">Here are some useful hints.</string>
-    <!--<string name="wizard_page_usage_statistics_text">Twidere took part in some research project that needs some usage data.</string>-->
-    <string name="wizard_page_finished_title">Finished</string>
-    <string name="wizard_page_finished_text">Now Twittnuker is ready for use.</string>
     <string name="invalid_tab">Invalid tab</string>
     <string name="send_crash_report">Send crash report of Twittnuker</string>
     <string name="add_to_filter">Add to filter</string>
@@ -517,15 +503,12 @@
     <string name="theme_background_solid">Pure white/black</string>
     <string name="theme_background_transparent">Transparent</string>
     <string name="theme_dark_actionbar">Dark ActionBar</string>
-    <string name="wizard_hint_compose_select_account">Click profile image to select account when writing a tweet.</string>
-    <string name="wizard_hint_filters">You can hide unwanted tweets from timeline and notification by using &quot;Filters&quot;.</string>
     <string name="view_replies">View Replies</string>
     <string name="compact_cards">Compact cards</string>
     <string name="compact_cards_summary">Display more cards on screen</string>
     <string name="status_share_subject_format_with_time">Tweet from <xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), at <xliff:g id="time">%3$s</xliff:g></string>
     <string name="status_share_text_format_with_link"><xliff:g id="text">%1$s</xliff:g>\n\n<xliff:g id="link">%2$s</xliff:g></string>
     <string name="rate_limit">Rate limit</string>
-    <string name="wizard_hint_rate_limit">If you encounter rate limit problems, please don\'t blame me, that\'s Twitter\'s policy.</string>
     <string name="action_name_saved_at_time"><xliff:g id="action">%1$s</xliff:g>, saved at <xliff:g id="time">%2$s</xliff:g></string>
     <string name="update_status">Send tweet</string>
     <string name="sending_direct_message">Sending direct message</string>
@@ -654,9 +637,9 @@
     <string name="no_tab">No tab</string>
     <string name="user_protected_summary">You need to send follow request to this protected user to see tweets</string>
     <string name="no_account">No account</string>
-    <string name="permission_description_shorten_status">Application can shorten tweet for Twidere, so it can access your tweet to send.</string>
-    <string name="permission_description_upload_media">Application can upload media for Twidere, so it can access media in your tweet to send.</string>
-    <string name="permission_description_sync_timeline">Application can sync read position for Twidere, so it can access your read position.</string>
+    <!--<string name="permission_description_shorten_status">Application can shorten tweet for Twidere, so it can access your tweet to send.</string>-->
+    <!--<string name="permission_description_upload_media">Application can upload media for Twidere, so it can access media in your tweet to send.</string>-->
+    <!--<string name="permission_description_sync_timeline">Application can sync read position for Twidere, so it can access your read position.</string>-->
     <!--<string name="usage_statistics_notification_summary">Help us improve Twidere!</string>-->
     <string name="from_name">From <xliff:g id="name">%1$s</xliff:g></string>
     <string name="from_name_and_name">From <xliff:g id="name">%1$s</xliff:g> and <xliff:g id="name">%2$s</xliff:g></string>
@@ -716,10 +699,6 @@
     <string name="streaming">Streaming</string>
     <string name="enable_streaming">Enable streaming</string>
     <string name="dark_theme">Dark theme</string>
-    <string name="wizard_hint_title_location_requirement">Location permission</string>
-    <string name="wizard_hint_summary_location_requirement">Twittnuker needs location permission when you send tweets containing location.</string>
-    <string name="wizard_hint_title_storage_requirement">Storage permission</string>
-    <string name="wizard_hint_summary_storage_requirement">Twittnuker needs storage permission when you access documents.</string>
     <!--<string name="scrapyard">Scrapyard</string>-->
     <string name="crop_image">Crop image</string>
     <string name="media_preload">Media preload</string>
@@ -761,8 +740,6 @@
     <string name="unknown_language">Unknown language</string>
     <string name="system_default">System default</string>
     <string name="emoji_support">Emoji support</string>
-    <string name="open_poll_in_official_app">Open poll in the official app</string>
-    <string name="action_vote">Vote</string>
     <string name="label_poll">Poll</string>
     <string name="poll_summary_format"><xliff:g id="poll_count">%1$s</xliff:g> · <xliff:g id="poll_time_left">%2$s</xliff:g></string>
     <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
@@ -785,6 +762,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Translate from <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Translation</string>
+    <!--<string name="shortener_version_incompatible">Incompatible tweet shortener</string>-->
+    <!--<string name="uploader_version_incompatible">Incompatible media uploader</string>-->
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Groups</string>
     <string name="public_timeline">Public timeline</string>
@@ -813,16 +792,22 @@
     <string name="error_message_device_incompatible">This device is not compatible with Twittnuker. Upgrading to the latest Android OS is recommended.\nYou can send the information below to help me to report this issue to the device manufacturer.</string>
     <string name="password_sign_in_twitter_only">Password sign in (Twitter only)</string>
     <string name="direct_messages_next">DM next</string>
-    <string name="edit_description">Add description</string>
-    <string name="edit_media">Edit media</string>
+    <!--<string name="plus_service_name">Twidere ∞</string>-->
+    <!--<string name="sign_in_service_google_id">Google ID</string>-->
+    <!--<string name="sign_in_service_twitter">Twitter</string>-->
+    <!--<string name="sign_in_service_email">Email</string>-->
+    <!--<string name="sign_in_with_ellip">Sign in with…</string>-->
+    <string name="edit_description">Edit description</string>
     <string name="no_status_content_text">No content</string>
     <string name="status_not_available_text">Tweet not available</string>
     <string name="share_link">Share link</string>
     <string name="hide_retweets">Hide retweets</string>
     <string name="hide_quotes">Hide quotes</string>
     <string name="hide_replies">Hide replies</string>
+    <!--<string name="no_extension_installed">No extension installed</string>-->
     <string name="pinned_status">Pinned tweet</string>
     <string name="add_or_remove_from_list">Add or remove from list</string>
+    <string name="title_extra_features">Extra features</string>
     <string name="filter_everywhere">Filter everywhere</string>
     <string name="filter_everywhere_description">These will be filtered in Twittnuker:\n  &#xb7;User\'s tweets\n  &#xb7;Tweets mentioning this user\n  &#xb7;Retweets/Quotes of this user</string>
     <string name="message_toast_added_to_filter">Added to filter.</string>

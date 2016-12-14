@@ -750,8 +750,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Traduzir do <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Tradução</string>
-    <string name="shortener_version_incompatible">Encurtador de tweet incompatível</string>
-    <string name="uploader_version_incompatible">Uploader de mídia incompatível</string>
+   <!-- <string name="shortener_version_incompatible">Encurtador de tweet incompatível</string-->>
+   <!-- <string name="uploader_version_incompatible">Uploader de mídia incompatível</string-->>
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Grupos</string>
     <string name="public_timeline">Timeline pública</string>
@@ -778,10 +778,10 @@
     <string name="error_message_device_incompatible">Este dispositivo não é compatível com Twittnuker, atualize para o Android mais recente. \nVocê pode enviar as informações abaixo para ajudar-me a relatar esse problema para o fabricante do dispositivo.</string>
     <string name="password_sign_in_twitter_only">Senha (só no Twitter)</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">Google ID</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">E-mail</string>
-    <string name="sign_in_with_ellip">Entrar com...</string>
+   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">E-mail</string-->>
+   <!-- <string name="sign_in_with_ellip">Entrar com...</string-->>
     <string name="edit_description">Editar descrição</string>
     <!-- Verb. Used for skip some settings -->
     <!-- Used for decide something later, like permission request -->

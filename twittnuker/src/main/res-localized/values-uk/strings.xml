@@ -92,7 +92,7 @@
     <string name="sources">Джерела</string>
     <string name="content">Вміст</string>
     <string name="customize">Налаштувати</string>
-    <string name="set_nickname">Задати псевдо</string>
+   <!-- <string name="set_nickname">Задати псевдо</string-->>
     <string name="set_color">Задати колір</string>
     <string name="clear">Очистити</string>
     <string name="pick_color">Вибрати колір</string>
@@ -430,7 +430,7 @@
     <string name="no_rule">Правила відсутні</string>
     <string name="safety">Безпека</string>
     <string name="updating_status_notification">Надсилання твіту&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
+    <!--<string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>-->
     <string name="query">Запит</string>
     <string name="input_text">Введіть текст запиту</string>
     <string name="users_lists_with_name">Списки <xliff:g id="name">%s</xliff:g></string>
@@ -521,7 +521,7 @@
     <string name="export_settings">Експорт налаштувань</string>
     <string name="export_settings_type_dialog_title">Експорт налаштувань&#8230;</string>
     <string name="import_settings_type_dialog_title">Імпорт налаштувань&#8230;</string>
-    <string name="nicknames">Псевдо</string>
+    <!--<string name="nicknames">Псевдо</string>-->
     <string name="user_colors">Кольори користувача</string>
     <string name="progress">Перебіг</string>
     <string name="hidden_settings">Приховані налаштування</string>
@@ -751,8 +751,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Переклад з <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Переклад</string>
-    <string name="shortener_version_incompatible">Несумісний скорочувач твітів</string>
-    <string name="uploader_version_incompatible">Несумісний завантажувач медіафайлів</string>
+   <!-- <string name="shortener_version_incompatible">Несумісний скорочувач твітів</string-->>
+   <!-- <string name="uploader_version_incompatible">Несумісний завантажувач медіафайлів</string-->>
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Групи</string>
     <string name="public_timeline">Публічна стрічка</string>
@@ -780,10 +780,10 @@
     <string name="password_sign_in_twitter_only">Парольний вхід (тільки Twitter)</string>
     <string name="direct_messages_next">наступне ПП</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">Google ID</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">Email</string>
-    <string name="sign_in_with_ellip">Увійти через&#8230;</string>
+   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">Email</string-->>
+   <!-- <string name="sign_in_with_ellip">Увійти через&#8230;</string-->>
     <string name="edit_description">Редагувати опис</string>
     <string name="no_status_content_text">Немає вмісту</string>
     <string name="status_not_available_text">Твіт недоступний</string>
@@ -791,7 +791,7 @@
     <string name="hide_retweets">Сховати ретвіти</string>
     <string name="hide_quotes">Сховати цитати</string>
     <string name="hide_replies">Сховати відповіді</string>
-    <string name="no_extension_installed">Розширення не встановлені</string>
+    <!--<string name="no_extension_installed">Розширення не встановлені</string>-->
     <string name="pinned_status">Закріплений твіт</string>
     <string name="add_or_remove_from_list">Додати або вилучити зі списку</string>
     <!-- Verb. Used for skip some settings -->

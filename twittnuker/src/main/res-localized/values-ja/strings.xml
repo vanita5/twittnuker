@@ -782,10 +782,10 @@
     <string name="password_sign_in_twitter_only">パスワードでログイン (Twitterのみ)</string>
     <string name="direct_messages_next">DM next</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">Google ID</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">メールアドレス</string>
-    <string name="sign_in_with_ellip">ログイン方法</string>
+   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">メールアドレス</string-->>
+   <!-- <string name="sign_in_with_ellip">ログイン方法</string-->>
     <string name="edit_description">説明を編集</string>
     <string name="no_status_content_text">コンテンツがありません</string>
     <string name="status_not_available_text">このツイートは利用できません</string>
@@ -793,7 +793,7 @@
     <string name="hide_retweets">リツイートを非表示</string>
     <string name="hide_quotes">引用リツイートを非表示</string>
     <string name="hide_replies">リプライを非表示</string>
-    <string name="no_extension_installed">拡張機能がインストールされていません</string>
+    <!--<string name="no_extension_installed">拡張機能がインストールされていません</string>-->
     <string name="pinned_status">固定ツイート</string>
     <string name="add_or_remove_from_list">リストから追加または削除する</string>
     <!-- Verb. Used for skip some settings -->

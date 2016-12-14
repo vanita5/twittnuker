@@ -529,7 +529,7 @@
     <string name="api_url_format_help">[DOMAIN]: Twitter API-domene.\nEksempel: https://[DOMAIN].twitter.com/ erstattes med https://api.twitter.com/.</string>
     <string name="no_version_suffix">Ingen versjonssuffiks</string>
     <string name="inverse_selection">Omvendt valg</string>
-    <string name="edit_media">Rediger media</string>
+    <!--<string name="edit_media">Rediger media</string>-->
     <string name="media">Media</string>
     <string name="mute_user">Skjul <xliff:g id="name">%s</xliff:g></string>
     <string name="muted_user">Skjuler <xliff:g id="name">%s</xliff:g></string>

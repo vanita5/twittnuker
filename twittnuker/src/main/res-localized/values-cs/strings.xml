@@ -157,7 +157,7 @@
   <string name="new_user_list">Nový seznam</string>
   <string name="is_public">Veřejné</string>
   <string name="send_direct_message">Poslat DM</string>
-  <string name="extensions">Rozšíření</string>
+  <!--<string name="extensions">Rozšíření</string>-->
   <string name="uninstall">Odinstalovat</string>
   <string name="saved_searches">Uložená hledání</string>
   <string name="tabs">Záložky</string>
@@ -200,11 +200,11 @@
   <string name="large">Velké</string>
   <string name="small">Malé</string>
   <string name="clear_search_history">Vymazat historii vyhledávání</string>
-  <string name="permission_description_none">Nejsou potřebná žádná oprávnění</string>
-  <string name="permissions_request">Žádost o oprávnění</string>
-  <string name="accept_permission_request">Přijmout</string>
+ <!-- <string name="permission_description_none">Nejsou potřebná žádná oprávnění</string-->>
+ <!-- <string name="permissions_request">Žádost o oprávnění</string-->>
+  <!--<string name="accept_permission_request">Přijmout</string>-->
   <string name="no_thanks">Ne, děkuji</string>
-  <string name="revoke_permissions">Odvolat oprávnění</string>
+  <!--<string name="revoke_permissions">Odvolat oprávnění</string>-->
   <string name="default_ringtone">Výchozí vyzvánění</string>
   <string name="profile_images">Profilové obrázky</string>
   <string name="sign_in_method_introduction_title">Jak to funguje?</string>
@@ -232,7 +232,7 @@
   <string name="no_rule">Žádné pravidlo</string>
   <string name="safety">Bezpečnost</string>
   <string name="updating_status_notification">Odesílání tweetu&#8230;</string>
-  <string name="name_with_nickname"><xliff:g id="name">%1$s </xliff:g> (<xliff:g id="nickname">%2$s </xliff:g>)</string>
+  <!--<string name="name_with_nickname"><xliff:g id="name">%1$s </xliff:g> (<xliff:g id="nickname">%2$s </xliff:g>)</string>-->
   <string name="highlight">Zvýraznění</string>
   <string name="underline">Podtržení</string>
   <string name="link_highlight_option">Možnost zvýraznění odkazu</string>
@@ -272,7 +272,7 @@
   <string name="back">Zpět</string>
   <string name="accept">Přijmout</string>
   <string name="deny">Odmítnout</string>
-  <string name="nicknames">Přezdívky</string>
+  <!--<string name="nicknames">Přezdívky</string>-->
   <string name="user_colors">Uživatelské barvy</string>
   <string name="progress">Průběh</string>
   <string name="hidden_settings">Skrytá nastavení</string>
@@ -307,7 +307,7 @@
   <string name="no_location">Žádná pozice</string>
   <string name="getting_location">Získání umístění</string>
   <string name="save_to_gallery">Uložit do galerie</string>
-  <string name="usage_statistics">Statistiky využití</string>
+ <!-- <string name="usage_statistics">Statistiky využití</string-->>
   <string name="unknown_location">Neznámé místo</string>
   <string name="import_export_settings">Nastavení importu/exportu</string>
   <string name="no_account">Žádný účet</string>
@@ -317,8 +317,8 @@
   <string name="user_type_verified">Ověřený</string>
   <string name="user_type_protected">Chráněný</string>
     <!-- 'Tweet' here is a verb -->
-  <string name="server_address">Adresa serveru</string>
-  <string name="security_key">Bezpečnostní klíč</string>
+ <!-- <string name="server_address">Adresa serveru</string-->>
+ <!-- <string name="security_key">Bezpečnostní klíč</string-->>
   <string name="navigation">Navigace</string>
   <string name="keyboard_shortcut_back">Zpět</string>
   <string name="delete_conversation">Odstranit konverzaci</string>
@@ -356,16 +356,16 @@
   <string name="group">Skupina</string>
   <string name="error_title_device_incompatible">Nekompatibilní zařízení</string>
   <!--<string name="plus_service_name">Twidere ∞</string>-->
-  <string name="sign_in_service_google_id">Google ID</string>
-  <string name="sign_in_service_twitter">Twitter</string>
-  <string name="sign_in_service_email">E-mail</string>
-  <string name="sign_in_with_ellip">Přihlásit se pomocí&#8230;</string>
+ <!-- <string name="sign_in_service_google_id">Google ID</string-->>
+ <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+ <!-- <string name="sign_in_service_email">E-mail</string-->>
+ <!-- <string name="sign_in_with_ellip">Přihlásit se pomocí&#8230;</string-->>
   <string name="edit_description">Upravit popis</string>
   <string name="no_status_content_text">Žádný obsah</string>
   <string name="status_not_available_text">Tweet není k dispozici</string>
   <string name="share_link">Sdílet odkaz</string>
   <string name="hide_replies">Skrýt odpovědi</string>
-  <string name="no_extension_installed">Žádná nainstalovaná rozšíření</string>
+  <!--<string name="no_extension_installed">Žádná nainstalovaná rozšíření</string>-->
   <string name="add_or_remove_from_list">Přidat nebo odstranit ze seznamu</string>
   <!-- Verb. Used for skip some settings -->
   <!-- Used for decide something later, like permission request -->

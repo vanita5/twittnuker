@@ -730,8 +730,8 @@
     <string name="bandwidth_saving_mode_summary">Média-előnézet letiltása forgalmi díjas hálózaton</string>
     <string name="recent_media">Legújabb média</string>
     <string name="translation">Fordítás</string>
-    <string name="shortener_version_incompatible">Inkompatibilis tweet rövidítő</string>
-    <string name="uploader_version_incompatible">Inkompatibilis média feltöltő</string>
+   <!-- <string name="shortener_version_incompatible">Inkompatibilis tweet rövidítő</string-->>
+   <!-- <string name="uploader_version_incompatible">Inkompatibilis média feltöltő</string-->>
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Csoportok</string>
     <string name="public_timeline">Nyilvános idővonal</string>
@@ -749,8 +749,8 @@
     <string name="group">Csoport</string>
     <string name="location_countrywide">Országos</string>
     <string name="error_title_device_incompatible">Inkompatibilis eszköz</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">E-mail</string>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">E-mail</string-->>
     <string name="edit_description">Leírás szerkesztése</string>
     <!-- Verb. Used for skip some settings -->
     <!-- Used for decide something later, like permission request -->

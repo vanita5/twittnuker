@@ -92,7 +92,7 @@
     <string name="sources">Fontes</string>
     <string name="content">Contido</string>
     <string name="customize">Personalizar</string>
-    <string name="set_nickname">Alcume</string>
+   <!-- <string name="set_nickname">Alcume</string-->>
     <string name="set_color">Cor</string>
     <string name="clear">Limpar</string>
     <string name="pick_color">Escoller cor</string>
@@ -185,7 +185,7 @@
     <string name="new_user_list">Nova lista</string>
     <string name="is_public">Público</string>
     <string name="send_direct_message">Enviar MD</string>
-    <string name="extensions">Extensións</string>
+    <!--<string name="extensions">Extensións</string>-->
     <string name="uninstall">Desinstalar</string>
     <string name="saved_searches">Buscas gardadas</string>
     <string name="tabs">Tabs.</string>
@@ -337,18 +337,18 @@
     <string name="small">Pequeno</string>
     <string name="and_N_more">e <xliff:g id="count">%d</xliff:g> máis</string>
     <string name="clear_search_history">Borrar historial de buscas</string>
-    <string name="permission_description_none">Permisos non necesarios</string>
-    <string name="permission_description_refresh">Recargar liña de tempo (inclúe mensaxes directas)</string>
-    <string name="permission_description_read">Ler chíos e algún contido en caché</string>
-    <string name="permission_description_write">Escribir na base de datos, actualizar estado</string>
-    <string name="permission_description_direct_messages">Ler/Escribir/Enviar mensaxes directas</string>
-    <string name="permission_description_accounts">Ler información da conta</string>
-    <string name="permission_description_preferences">Ler configuracións</string>
-    <string name="permissions_request">Petición de permisos</string>
-    <string name="permissions_request_message">A aplicación pide os seguintes permisos</string>
-    <string name="accept_permission_request">Aceptar</string>
+    <!--<string name="permission_description_none">Permisos non necesarios</string>-->
+    <!--<string name="permission_description_refresh">Recargar liña de tempo (inclúe mensaxes directas)</string>-->
+    <!--<string name="permission_description_read">Ler chíos e algún contido en caché</string>-->
+    <!--<string name="permission_description_write">Escribir na base de datos, actualizar estado</string>-->
+    <!--<string name="permission_description_direct_messages">Ler/Escribir/Enviar mensaxes directas</string>-->
+    <!--<string name="permission_description_accounts">Ler información da conta</string>-->
+    <!--<string name="permission_description_preferences">Ler configuracións</string>-->
+    <!--<string name="permissions_request">Petición de permisos</string>-->
+    <!--<string name="permissions_request_message">A aplicación pide os seguintes permisos</string>-->
+    <!--<string name="accept_permission_request">Aceptar</string>-->
     <string name="no_thanks">Non, grazas</string>
-    <string name="revoke_permissions">Revocar permisos</string>
+    <!--<string name="revoke_permissions">Revocar permisos</string>-->
     <string name="default_ringtone">Son de aviso por defecto</string>
     <string name="phishing_link_warning">Advertencia de phishing</string>
     <string name="phishing_link_warning_summary">Advírteche cando tentas abrir unha posible ligazón phishing nunha mensaxe directa.</string>
@@ -428,7 +428,7 @@
     <string name="no_rule">Sen regra</string>
     <string name="safety">Seguridade</string>
     <string name="updating_status_notification">Enviando chío&#8230;</string>
-    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
+    <!--<string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>-->
     <string name="query">Consulta</string>
     <string name="input_text">Introducir texto</string>
     <string name="users_lists_with_name">Listas de <xliff:g id="name">%s</xliff:g></string>
@@ -519,7 +519,7 @@
     <string name="export_settings">Exportar configuración</string>
     <string name="export_settings_type_dialog_title">Exportar configuración&#8230;</string>
     <string name="import_settings_type_dialog_title">Importar configuración&#8230;</string>
-    <string name="nicknames">Alcumes</string>
+    <!--<string name="nicknames">Alcumes</string>-->
     <string name="user_colors">Cores do usuario</string>
     <string name="progress">Progreso</string>
     <string name="hidden_settings">Agochar configuración</string>
@@ -539,8 +539,8 @@
     <string name="following_only">Só dos que segues</string>
     <string name="following_only_summary">Amosar notificacións só de usuarios que segues.</string>
     <string name="new_direct_message">Nova mensaxe directa</string>
-    <string name="want_old_icon_back">Queres a vella icona de volta?</string>
-    <string name="icon_restored_message">Icona restaurada!</string>
+   <!-- <string name="want_old_icon_back">Queres a vella icona de volta?</string-->>
+    <!--<string name="icon_restored_message">Icona restaurada!</string>-->
     <string name="add">Engadir</string>
     <string name="delete_drafts_confirm">Eliminar borradores seleccionados?</string>
     <string name="extra_configurations">Configuración extra</string>
@@ -553,7 +553,7 @@
     <string name="api_url_format_help">[DOMAIN]: Dominio API do Twitter.\nExemplo: https://[DOMAIN].twitter.com/ vai substituír a https://api.twitter.com/.</string>
     <string name="no_version_suffix">Sen sufixo de versión</string>
     <string name="inverse_selection">Inverter selección</string>
-    <string name="edit_media">Editar multimedia</string>
+    <!--<string name="edit_media">Editar multimedia</string>-->
     <string name="media">Multimedia</string>
     <string name="mute_user">Silenciar a <xliff:g id="name">%s</xliff:g></string>
     <string name="muted_user"><xliff:g id="name">%s</xliff:g> silenciado</string>
@@ -615,8 +615,8 @@
     <string name="no_location">Sen localización</string>
     <string name="getting_location">Localizando</string>
     <string name="save_to_gallery">Gardar na galería</string>
-    <string name="usage_statistics">Uso de estatísticas</string>
-    <string name="research_hot_mobile">Investigación Datos Rede Móbil</string>
+   <!-- <string name="usage_statistics">Uso de estatísticas</string-->>
+    <!--<string name="research_hot_mobile">Investigación Datos Rede Móbil</string>-->
     <string name="unknown_location">Localización descoñecida</string>
     <string name="ellipsis">&#8230;</string>
     <string name="import_export_settings">Configuración Importar/Exportar</string>
@@ -631,7 +631,7 @@
     <string name="from_name">De <xliff:g id="name">%1$s</xliff:g></string>
     <string name="from_name_and_name">De <xliff:g id="name">%1$s</xliff:g> e <xliff:g id="name">%2$s</xliff:g></string>
     <string name="from_name_and_N_others">De <xliff:g id="name">%1$s</xliff:g> e outros <xliff:g id="name">%2$d</xliff:g></string>
-    <string name="projects_we_took_part">Proxectos nos que participamos</string>
+    <!--<string name="projects_we_took_part">Proxectos nos que participamos</string>-->
     <string name="activated_accounts">Contas activadas</string>
     <string name="search">Buscar</string>
     <string name="crop">Recortar</string>
@@ -644,12 +644,12 @@
     <string name="pebble_notifications_summary">Enviar Notificacións ao teu Pebble</string>
     <!-- 'Tweet' here is a verb -->
     <string name="tweet_from_name">Chiar de <xliff:g id="text">%1$s</xliff:g></string>
-    <string name="permission_label_shorten_status">Acurtar chío</string>
-    <string name="permission_label_upload_media">Subir multimedia</string>
-    <string name="permission_label_sync_timeline">Sincronizar liña de tempo</string>
-    <string name="thumbor_integration">Integración Thumbor</string>
-    <string name="server_address">Enderezo do servidor</string>
-    <string name="security_key">Clave de seguridade</string>
+   <!-- <string name="permission_label_shorten_status">Acurtar chío</string-->>
+   <!-- <string name="permission_label_upload_media">Subir multimedia</string-->>
+   <!-- <string name="permission_label_sync_timeline">Sincronizar liña de tempo</string-->>
+   <!-- <string name="thumbor_integration">Integración Thumbor</string-->>
+   <!-- <string name="server_address">Enderezo do servidor</string-->>
+   <!-- <string name="security_key">Clave de seguridade</string-->>
     <string name="hide_card_actions">Accións de agocho de cartóns</string>
     <string name="drafts_hint_messages">Aquí gárdanse os teus chíos non enviados</string>
     <string name="keyboard_shortcuts">Atallos de teclado</string>
@@ -686,13 +686,13 @@
     <string name="streaming">Streaming</string>
     <string name="enable_streaming">Activar streaming</string>
     <string name="dark_theme">Tema escuro</string>
-    <string name="scrapyard">Scrapyard</string>
+   <!-- <string name="scrapyard">Scrapyard</string-->>
     <string name="crop_image">Recortar imaxe</string>
     <string name="media_preload">Pre-carga multimedia</string>
     <string name="set_consumer_key_secret_message">Twittnuker está chegando ao límite \"token\", terás que crear unha app en https://apps.twitter.com/ e colar abaixo as chaves cliente e secreta.\nSe continúas usando a chave por defecto, é posible que non poidas entrar.</string>
     <string name="send_at">Enviar en</string>
     <string name="scheduled_statuses">Chíos programados</string>
-    <string name="report_usage_statistics_now">Reportar agora estatísticas de uso</string>
+    <!--<string name="report_usage_statistics_now">Reportar agora estatísticas de uso</string>-->
     <string name="cache_size_limit">Tamaño límite da caché</string>
     <string name="bug_reports">Informe de erros</string>
     <string name="bug_reports_summary">Powered by Fabric</string>
@@ -749,8 +749,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Traducir do <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Tradución</string>
-    <string name="shortener_version_incompatible">Acurtador de chíos incompatible</string>
-    <string name="uploader_version_incompatible">Xestor de subida multimedia incompatible</string>
+   <!-- <string name="shortener_version_incompatible">Acurtador de chíos incompatible</string-->>
+   <!-- <string name="uploader_version_incompatible">Xestor de subida multimedia incompatible</string-->>
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Grupos</string>
     <string name="public_timeline">Liña de tempo pública</string>
@@ -778,10 +778,10 @@
     <string name="password_sign_in_twitter_only">Entrada de contrasinal (só Twitter)</string>
     <string name="direct_messages_next">DM next</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">Google ID</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">Email</string>
-    <string name="sign_in_with_ellip">Entrar con&#8230;</string>
+   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">Email</string-->>
+   <!-- <string name="sign_in_with_ellip">Entrar con&#8230;</string-->>
     <string name="edit_description">Editar descrición</string>
     <!-- Verb. Used for skip some settings -->
     <!-- Used for decide something later, like permission request -->

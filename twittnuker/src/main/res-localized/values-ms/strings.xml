@@ -120,7 +120,7 @@
     <string name="links">Pautan</string>
     <string name="large">Besar</string>
     <string name="small">Kecil</string>
-    <string name="accept_permission_request">Terima</string>
+    <!--<string name="accept_permission_request">Terima</string>-->
     <string name="default_ringtone">Nada dering lalai</string>
     <string name="profile_images">Imej profil</string>
     <string name="theme_color">Warna tema</string>

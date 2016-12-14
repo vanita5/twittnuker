@@ -749,8 +749,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">從 <xliff:g id="language">%s</xliff:g> 翻譯</string>
     <string name="translation">翻譯</string>
-    <string name="shortener_version_incompatible">不相容的推文縮短服務</string>
-    <string name="uploader_version_incompatible">不相容的媒體上傳服務</string>
+   <!-- <string name="shortener_version_incompatible">不相容的推文縮短服務</string-->>
+   <!-- <string name="uploader_version_incompatible">不相容的媒體上傳服務</string-->>
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">群組</string>
     <string name="public_timeline">公開時間軸</string>
@@ -775,10 +775,10 @@
     <string name="password_sign_in_twitter_only">密碼登入 (僅限於 Twitter )</string>
     <string name="direct_messages_next">下一則私訊</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">Google ID</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">Email</string>
-    <string name="sign_in_with_ellip">登入方式&#8230;</string>
+   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">Email</string-->>
+   <!-- <string name="sign_in_with_ellip">登入方式&#8230;</string-->>
     <string name="edit_description">編輯簡介</string>
     <string name="no_status_content_text">沒有內容</string>
     <string name="status_not_available_text">推文不可用</string>
@@ -786,7 +786,7 @@
     <string name="hide_retweets">隱藏轉推</string>
     <string name="hide_quotes">隱藏引用</string>
     <string name="hide_replies">隱藏回覆</string>
-    <string name="no_extension_installed">沒有安裝附加元件</string>
+    <!--<string name="no_extension_installed">沒有安裝附加元件</string>-->
     <string name="pinned_status">置頂推文</string>
     <string name="add_or_remove_from_list">從列表新增或移除</string>
     <!-- Verb. Used for skip some settings -->

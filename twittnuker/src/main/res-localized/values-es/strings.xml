@@ -729,8 +729,7 @@
     <string name="unknown_language">Idioma desconocido</string>
     <string name="system_default">Por defecto del sistema</string>
     <string name="emoji_support">Soporte para emojis</string>
-    <string name="open_poll_in_official_app">Abrir encuesta en app oficial</string>
-    <string name="action_vote">Votar</string>
+    <!--<string name="open_poll_in_official_app">Abrir encuesta en app oficial</string>-->
     <string name="label_poll">Encuesta</string>
     <string name="poll_summary_format"><xliff:g id="poll_count">%1$s</xliff:g> · <xliff:g id="poll_time_left">%2$s</xliff:g></string>
     <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
@@ -782,10 +781,10 @@
     <string name="password_sign_in_twitter_only">Introducir contraseña (Sólo Twitter)</string>
     <string name="direct_messages_next">Siguiente MD</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">ID de Google</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">Correo electrónico</string>
-    <string name="sign_in_with_ellip">Registrarse con&#8230;</string>
+   <!-- <string name="sign_in_service_google_id">ID de Google</string-->>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">Correo electrónico</string-->>
+   <!-- <string name="sign_in_with_ellip">Registrarse con&#8230;</string-->>
     <string name="edit_description">Editar descripción</string>
     <string name="no_status_content_text">No hay contenido</string>
     <string name="status_not_available_text">Tweet no disponible</string>
@@ -793,7 +792,7 @@
     <string name="hide_retweets">Esconder retweets</string>
     <string name="hide_quotes">Esconder citas</string>
     <string name="hide_replies">Esconder respuestas</string>
-    <string name="no_extension_installed">Ninguna extensión instalada</string>
+    <!--<string name="no_extension_installed">Ninguna extensión instalada</string>-->
     <string name="pinned_status">Se fijo el tweet</string>
     <string name="add_or_remove_from_list">Añadir o eliminar de la lista</string>
     <!-- Verb. Used for skip some settings -->

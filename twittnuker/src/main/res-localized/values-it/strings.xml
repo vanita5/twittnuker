@@ -688,7 +688,7 @@
     <string name="streaming">Streaming</string>
     <string name="enable_streaming">Attiva streaming</string>
     <string name="dark_theme">Tema scuro</string>
-    <string name="scrapyard">Discarica</string>
+   <!-- <string name="scrapyard">Discarica</string-->>
     <string name="crop_image">Ritaglia immagine</string>
     <string name="media_preload">Precarica media</string>
     <string name="set_consumer_key_secret_message">Twittnuker sta per raggiungere il limite di token, dovrai creare un\'app in https://apps.twitter.com/ e incollare la chiave e segreto qui sotto.\nSe continui a usare la chiave predefinita, potresti non riuscire ad accedere.</string>
@@ -745,7 +745,7 @@
     <string name="quote_name_text">Cita <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Traduci da <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Traduzione</string>
-    <string name="uploader_version_incompatible">Caricatore media incompatibile</string>
+   <!-- <string name="uploader_version_incompatible">Caricatore media incompatibile</string-->>
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Gruppi</string>
     <string name="public_timeline">Timeline pubblica</string>
@@ -758,7 +758,7 @@
     <string name="error_message_device_incompatible">Questo dispositivo non è compatibile con Twittnuker, è consigliato l\'aggiornamento all\'ultima versione di Android OS.\nPuoi mandare le informazioni presenti qui sotto per aiutarmi a segnalare il problema al produttore del dispositivo.</string>
     <string name="password_sign_in_twitter_only">Autenticazione con password (solo Twitter)</string>
     <string name="direct_messages_next">DM successivo</string>
-    <string name="sign_in_with_ellip">Collegati con&#8230;</string>
+   <!-- <string name="sign_in_with_ellip">Collegati con&#8230;</string-->>
     <string name="edit_description">Modifica descrizione</string>
     <string name="no_status_content_text">Nessun contenuto</string>
     <string name="status_not_available_text">Tweet non disponibile</string>
@@ -766,7 +766,7 @@
     <string name="hide_retweets">Nascondi retweets</string>
     <string name="hide_quotes">Nascondi citazioni</string>
     <string name="hide_replies">Nascondi risposte</string>
-    <string name="no_extension_installed">Nessuna estensione installata</string>
+    <!--<string name="no_extension_installed">Nessuna estensione installata</string>-->
     <string name="add_or_remove_from_list">Aggiungi o rimuovi dalla lista</string>
     <!-- Verb. Used for skip some settings -->
     <!-- Used for decide something later, like permission request -->

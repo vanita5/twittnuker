@@ -751,8 +751,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Terjemahkan dari <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Terjemahan</string>
-    <string name="shortener_version_incompatible">Penyingkat tweet tidak kompatibel</string>
-    <string name="uploader_version_incompatible">Pengunggah media tidak kompatibel</string>
+   <!-- <string name="shortener_version_incompatible">Penyingkat tweet tidak kompatibel</string-->>
+   <!-- <string name="uploader_version_incompatible">Pengunggah media tidak kompatibel</string-->>
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Grup</string>
     <string name="public_timeline">Linimasa publik</string>
@@ -780,10 +780,10 @@
     <string name="password_sign_in_twitter_only">Kata sandi masuk (hanya Twitter)</string>
     <string name="direct_messages_next">DM selanjutnya</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">ID Google</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">Surel</string>
-    <string name="sign_in_with_ellip">Masuk menggunakan&#8230;</string>
+   <!-- <string name="sign_in_service_google_id">ID Google</string-->>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">Surel</string-->>
+   <!-- <string name="sign_in_with_ellip">Masuk menggunakan&#8230;</string-->>
     <string name="edit_description">Mengubah deskripsi</string>
     <string name="no_status_content_text">Tanpa konten</string>
     <string name="status_not_available_text">Tweet tidak tersedia</string>
@@ -791,7 +791,7 @@
     <string name="hide_retweets">Sembunyikan retweet</string>
     <string name="hide_quotes">Sembunyikan kutipan</string>
     <string name="hide_replies">Sembunyikan balasan</string>
-    <string name="no_extension_installed">Tidak ada ekstensi terpasang</string>
+    <!--<string name="no_extension_installed">Tidak ada ekstensi terpasang</string>-->
     <string name="pinned_status">Tweet Disematkan</string>
     <string name="add_or_remove_from_list">Tambah atau hapus dari daftar</string>
     <!-- Verb. Used for skip some settings -->

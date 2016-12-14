@@ -530,7 +530,7 @@
     <string name="no_location">Brak lokalizacji</string>
     <string name="getting_location">Uzyskiwanie lokalizacji</string>
     <string name="save_to_gallery">Zapisz w galerii</string>
-    <string name="usage_statistics">Statystyki użytkowania</string>
+   <!-- <string name="usage_statistics">Statystyki użytkowania</string-->>
     <string name="import_export_settings">Importuj/eksportuj ustawienia</string>
     <!--<string name="usage_statistics_notification_summary">Pomóż nam ulepszyć Twittnuker!</string>-->
     <string name="from_name"><xliff:g id="name">%1$s</xliff:g></string>

@@ -555,7 +555,7 @@
     <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nตัวอย่าง: https://[DOMAIN].twitter.com/ จะแทนที่ด้วย https://api.twitter.com/.</string>
     <string name="no_version_suffix">ไม่มีเลขเวอร์ชั่นต่อท้าย</string>
     <string name="inverse_selection">เลือกย้อนกลับ</string>
-    <string name="edit_media">แก้ไขรูปภาพ</string>
+    <!--<string name="edit_media">แก้ไขรูปภาพ</string>-->
     <string name="media">รูปภาพ</string>
     <string name="mute_user">มิ้ว <xliff:g id="name">%s</xliff:g></string>
     <string name="muted_user">มิ้ว <xliff:g id="name">%s</xliff:g> แล้ว</string>
@@ -780,10 +780,10 @@
     <string name="password_sign_in_twitter_only">รหัสผ่านเข้าสู่ระบบ (Twitter เท่านั้น)</string>
     <string name="direct_messages_next">ข้อความถัดไป</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">รหัส Google</string>
-    <string name="sign_in_service_twitter">ทวิตเตอร์</string>
-    <string name="sign_in_service_email">อีเมล</string>
-    <string name="sign_in_with_ellip">ลงชื่อเข้าใช้ด้วย...</string>
+   <!-- <string name="sign_in_service_google_id">รหัส Google</string-->>
+   <!-- <string name="sign_in_service_twitter">ทวิตเตอร์</string-->>
+   <!-- <string name="sign_in_service_email">อีเมล</string-->>
+   <!-- <string name="sign_in_with_ellip">ลงชื่อเข้าใช้ด้วย...</string-->>
     <string name="edit_description">แก้ไขคำอธิบาย</string>
     <string name="no_status_content_text">ไม่มีเนื้อหา</string>
     <string name="status_not_available_text">ทวิตไม่พร้อมใช้งาน</string>
@@ -791,7 +791,7 @@
     <string name="hide_retweets">ซ่อนรีทวิต</string>
     <string name="hide_quotes">ซ่อนคำอ้างอิง</string>
     <string name="hide_replies">ซ่อนการตอบกลับ</string>
-    <string name="no_extension_installed">ไม่ได้ติดตั้งส่วนขยาย</string>
+    <!--<string name="no_extension_installed">ไม่ได้ติดตั้งส่วนขยาย</string>-->
     <string name="pinned_status">ปักหมุดทวิต</string>
     <string name="add_or_remove_from_list">เพิ่มหรือลบออกจากรายการ</string>
     <!-- Verb. Used for skip some settings -->

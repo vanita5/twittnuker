@@ -786,10 +786,10 @@
     <string name="password_sign_in_twitter_only">Mot de passe de connexion (Twitter seulement)</string>
     <string name="direct_messages_next">DM suivant</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">Google ID</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">E-mail</string>
-    <string name="sign_in_with_ellip">Se connecter avec&#8230;</string>
+   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">E-mail</string-->>
+   <!-- <string name="sign_in_with_ellip">Se connecter avec&#8230;</string-->>
     <string name="edit_description">Éditer la description</string>
     <string name="no_status_content_text">Aucun contenu</string>
     <string name="status_not_available_text">Tweet non disponible</string>
@@ -797,7 +797,7 @@
     <string name="hide_retweets">Masquer les retweets</string>
     <string name="hide_quotes">Masquer les citations</string>
     <string name="hide_replies">Masquer les réponses</string>
-    <string name="no_extension_installed">Aucune extension installée</string>
+    <!--<string name="no_extension_installed">Aucune extension installée</string>-->
     <string name="pinned_status">Tweet épinglé</string>
     <string name="add_or_remove_from_list">Ajouter ou supprimer de la liste</string>
     <string name="title_extra_features">Fonctionnalités supplémentaires</string>

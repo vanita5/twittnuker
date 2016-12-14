@@ -751,8 +751,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Переведено с <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Перевод</string>
-    <string name="shortener_version_incompatible">Несовместимый сервис сокращения твитов</string>
-    <string name="uploader_version_incompatible">Несовместимый загрузчик медиа-файлов</string>
+   <!-- <string name="shortener_version_incompatible">Несовместимый сервис сокращения твитов</string-->>
+   <!-- <string name="uploader_version_incompatible">Несовместимый загрузчик медиа-файлов</string-->>
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Группы</string>
     <string name="public_timeline">Публичная лента</string>
@@ -780,10 +780,10 @@
     <string name="password_sign_in_twitter_only">Пароль входа в (только Твиттер)</string>
     <string name="direct_messages_next">Следующая DM</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">Google ID</string>
-    <string name="sign_in_service_twitter">Твиттер</string>
-    <string name="sign_in_service_email">Email</string>
-    <string name="sign_in_with_ellip">Вход с помощью...</string>
+   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
+   <!-- <string name="sign_in_service_twitter">Твиттер</string-->>
+   <!-- <string name="sign_in_service_email">Email</string-->>
+   <!-- <string name="sign_in_with_ellip">Вход с помощью...</string-->>
     <string name="edit_description">Изменить описание</string>
     <string name="no_status_content_text">Нет содержимого</string>
     <string name="status_not_available_text">Твит недоступен</string>
@@ -791,7 +791,7 @@
     <string name="hide_retweets">Скрыть ретвиты</string>
     <string name="hide_quotes">Скрыть цитируемые</string>
     <string name="hide_replies">Скрыть ответы</string>
-    <string name="no_extension_installed">Расширение не установлено</string>
+    <!--<string name="no_extension_installed">Расширение не установлено</string>-->
     <string name="pinned_status">Закреплённый твит</string>
     <string name="add_or_remove_from_list">Добавить или удалить из списка</string>
     <!-- Verb. Used for skip some settings -->

@@ -555,7 +555,7 @@
     <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nExample: https://[DOMAIN].twitter.com/ adı https://api.twitter.com/ için değiştirilecek.</string>
     <string name="no_version_suffix">Düzeltme yok</string>
     <string name="inverse_selection">Seçimi ters çevir</string>
-    <string name="edit_media">Medya düzenle</string>
+    <!--<string name="edit_media">Medya düzenle</string>-->
     <string name="media">Medya</string>
     <string name="mute_user">Sustur <xliff:g id="name">%s</xliff:g></string>
     <string name="muted_user"><xliff:g id="name">%s</xliff:g> susturuldu</string>
@@ -617,8 +617,8 @@
     <string name="no_location">Konum yok</string>
     <string name="getting_location">Konumu bul</string>
     <string name="save_to_gallery">Galeriye kaydet</string>
-    <string name="usage_statistics">Kullanım istatistikleri</string>
-    <string name="research_hot_mobile">Mobil ağ veri uygulamalı araştırma</string>
+   <!-- <string name="usage_statistics">Kullanım istatistikleri</string-->>
+    <!--<string name="research_hot_mobile">Mobil ağ veri uygulamalı araştırma</string>-->
     <string name="unknown_location">Bilinmeyen konum</string>
     <string name="ellipsis">&#8230;</string>
     <string name="import_export_settings">Ayarları Al/Ver</string>
@@ -633,7 +633,7 @@
     <string name="from_name"><xliff:g id="name">%1$s</xliff:g>\'dan</string>
     <string name="from_name_and_name"><xliff:g id="name">%1$s</xliff:g> ve <xliff:g id="name">%2$s</xliff:g>\'den</string>
     <string name="from_name_and_N_others"><xliff:g id="name">%1$s</xliff:g> ve <xliff:g id="name">%2$d</xliff:g> kişi tarafından</string>
-    <string name="projects_we_took_part">Projelerde yer aldık</string>
+    <!--<string name="projects_we_took_part">Projelerde yer aldık</string>-->
     <string name="activated_accounts">Etkinleştirilmiş hesaplar</string>
     <string name="search">Ara</string>
     <string name="crop">Kırp</string>
@@ -649,9 +649,9 @@
     <!--<string name="permission_label_shorten_status">Tweet kısalt</string>-->
     <!--<string name="permission_label_upload_media">Medya yükle</string>-->
     <!--<string name="permission_label_sync_timeline">Zaman akışını senk. et</string>-->
-    <string name="thumbor_integration">Thumbor entegrasyonu</string>
-    <string name="server_address">Sunucu adresi</string>
-    <string name="security_key">Güvenlik anahtarı</string>
+   <!-- <string name="thumbor_integration">Thumbor entegrasyonu</string-->>
+   <!-- <string name="server_address">Sunucu adresi</string-->>
+   <!-- <string name="security_key">Güvenlik anahtarı</string-->>
     <string name="hide_card_actions">Kart eylemlerini gizle</string>
     <string name="drafts_hint_messages">Gönderilmemiş tweetleri buradan kurtarabilirsiniz</string>
     <string name="keyboard_shortcuts">Klavye kısayolları</string>
@@ -688,13 +688,13 @@
     <string name="streaming">Akış</string>
     <string name="enable_streaming">Akışı etkinleştir</string>
     <string name="dark_theme">Karanlık tema</string>
-    <string name="scrapyard">Scrapyard</string>
+   <!-- <string name="scrapyard">Scrapyard</string-->>
     <string name="crop_image">Görüntüyü kırp</string>
     <string name="media_preload">Medyayı önceden yükleme</string>
     <string name="set_consumer_key_secret_message">Twittnuker token\'i sınırı geçiyorsa, https://apps.twitter.com/ adresinden bir uygulama oluşturabilir ve consumer key ve secret kısımlarına yapıştırın.\nEğer, varsayılan anahtar kullanmaya devam ederseniz oturum açmanız mümkün olmayabilir.</string>
     <string name="send_at">Gönder</string>
     <string name="scheduled_statuses">Zamanlanmış tweetler</string>
-    <string name="report_usage_statistics_now">Kullanım istatistiklerini şimdi gönder</string>
+    <!--<string name="report_usage_statistics_now">Kullanım istatistiklerini şimdi gönder</string>-->
     <string name="cache_size_limit">Önbellek boyutu sınırı</string>
     <string name="bug_reports">Hata raporları</string>
     <string name="bug_reports_summary">Fabric tarafından desteklenmektedir</string>
@@ -751,8 +751,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Şunu çevir <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Çevir</string>
-    <string name="shortener_version_incompatible">Tweet kısaltması desteklenmiyor</string>
-    <string name="uploader_version_incompatible">Medya yükleme desteklenmiyor</string>
+   <!-- <string name="shortener_version_incompatible">Tweet kısaltması desteklenmiyor</string-->>
+   <!-- <string name="uploader_version_incompatible">Medya yükleme desteklenmiyor</string-->>
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Gruplar</string>
     <string name="public_timeline">Genel zaman çizelgesi</string>
@@ -780,10 +780,10 @@
     <string name="password_sign_in_twitter_only">Parola oturum açma (yalnızca Twitter)</string>
     <string name="direct_messages_next">sonraki DM</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">Google Kimliği</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">E-posta</string>
-    <string name="sign_in_with_ellip">Şununla giriş yap&#8230;</string>
+   <!-- <string name="sign_in_service_google_id">Google Kimliği</string-->>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">E-posta</string-->>
+   <!-- <string name="sign_in_with_ellip">Şununla giriş yap&#8230;</string-->>
     <string name="edit_description">Açıklama düzenle</string>
     <string name="no_status_content_text">İçerik yok</string>
     <string name="status_not_available_text">Tweet mevcut değil</string>
@@ -791,7 +791,7 @@
     <string name="hide_retweets">Retweet\'leri gizle</string>
     <string name="hide_quotes">Alıntıları gizle</string>
     <string name="hide_replies">Cevapları gizle</string>
-    <string name="no_extension_installed">Kurulu eklenti bulunamadı</string>
+    <!--<string name="no_extension_installed">Kurulu eklenti bulunamadı</string>-->
     <string name="pinned_status">Sabitlenmiş tweet</string>
     <string name="add_or_remove_from_list">Listeye ekle veya sil</string>
     <!-- Verb. Used for skip some settings -->

@@ -768,10 +768,10 @@
     <string name="password_sign_in_twitter_only">Salasana kirjautuminen (Ainoastaan Twitter)</string>
     <string name="direct_messages_next">DM seuraavaksi</string>
     <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <string name="sign_in_service_google_id">Google tunnus</string>
-    <string name="sign_in_service_twitter">Twitter</string>
-    <string name="sign_in_service_email">Sähköposti</string>
-    <string name="sign_in_with_ellip">Kirjaudu sisään&#8230;</string>
+   <!-- <string name="sign_in_service_google_id">Google tunnus</string-->>
+   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
+   <!-- <string name="sign_in_service_email">Sähköposti</string-->>
+   <!-- <string name="sign_in_with_ellip">Kirjaudu sisään&#8230;</string-->>
     <string name="edit_description">Muokkaa kuvausta</string>
     <!-- Verb. Used for skip some settings -->
     <!-- Used for decide something later, like permission request -->

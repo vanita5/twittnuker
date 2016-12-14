@@ -92,7 +92,7 @@
     <string name="sources">클라이언트</string>
     <string name="content">콘텐츠</string>
     <string name="customize">사용자 지정</string>
-    <string name="set_nickname">별명 설정</string>
+   <!-- <string name="set_nickname">별명 설정</string-->>
     <string name="set_color">색상 설정</string>
     <string name="clear">설정 취소</string>
     <string name="pick_color">색상 선택</string>
@@ -755,8 +755,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>:<xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language"><xliff:g id="language">%s</xliff:g>에서 번역</string>
     <string name="translation">번역</string>
-    <string name="shortener_version_incompatible">호환되지 않는 트윗 확장기</string>
-    <string name="uploader_version_incompatible">호환되지 않는 미디어 업로더</string>
+   <!-- <string name="shortener_version_incompatible">호환되지 않는 트윗 확장기</string-->>
+   <!-- <string name="uploader_version_incompatible">호환되지 않는 미디어 업로더</string-->>
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">그룹</string>
     <string name="public_timeline">공개 타임라인</string>
@@ -782,10 +782,10 @@
     <string name="error_title_device_incompatible">호환되지 않는 기기</string>
     <string name="error_message_device_incompatible">이 기기는 Twittnuker와 호환되지 않습니다. 최신 버전의 안드로이드 운영체제로 업데이트하시기를 권장합니다.\n아래에 정보를 남겨 주시면 기기를 제조하는 측에 전달하도록 하겠습니다.</string>
     <string name="password_sign_in_twitter_only">비밀번호 로그인 (트위터 전용)</string>
-    <string name="sign_in_service_google_id">구글 ID</string>
-    <string name="sign_in_service_twitter">트위터</string>
-    <string name="sign_in_service_email">이메일</string>
-    <string name="sign_in_with_ellip">다음으로 로그인</string>
+   <!-- <string name="sign_in_service_google_id">구글 ID</string-->>
+   <!-- <string name="sign_in_service_twitter">트위터</string-->>
+   <!-- <string name="sign_in_service_email">이메일</string-->>
+   <!-- <string name="sign_in_with_ellip">다음으로 로그인</string-->>
     <string name="edit_description">설명 편집</string>
     <string name="pinned_status">메인 트윗</string>
     <!-- Verb. Used for skip some settings -->
