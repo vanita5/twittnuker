@@ -71,6 +71,7 @@ import org.mariotaku.ktextension.toTypedArray
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.SecretConstants
 import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.constant.*
@@ -1044,7 +1045,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     private fun pickGif(): Boolean {
-        Giphy.Builder(this, "dc6zaTOxFJmzC").maxFileSize(10 * 1024 * 1024).start()
+        Giphy.Builder(this, SecretConstants.GIPHY_API_KEY).maxFileSize(10 * 1024 * 1024).start()
         return true
     }
 
