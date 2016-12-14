@@ -809,7 +809,7 @@
     <string name="contact">Contacto</string>
     <string name="mail">E-mail</string>
     <string name="mail_summary">Envía un e-mail a mail@twittnuker.org para reportar un bug o solicitar alguna característica</string>
-    <string name="twidere_developed_by">Basado en Twittnuker</string>
+    <string name="twidere_developed_by">Basado en Twidere</string>
 
     <string name="stream_enabled">Habilitar actualización automática</string>
     <string name="stream_enabled_summary">Recargar tweets automáticamente mientras estés conectado a una red Wi-Fi</string>
