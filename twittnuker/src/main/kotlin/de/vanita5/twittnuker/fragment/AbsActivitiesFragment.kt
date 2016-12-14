@@ -177,7 +177,7 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
     }
 
     override fun onLoadFinished(loader: Loader<List<ParcelableActivity>>, data: List<ParcelableActivity>) {
-        val rememberPosition = preferences.getBoolean(KEY_REMEMBER_POSITION, false)
+        val rememberPosition = preferences.getBoolean(KEY_REMEMBER_POSITION, true)
         val readFromBottom = preferences.getBoolean(KEY_READ_FROM_BOTTOM, true)
         var lastReadId: Long
         val lastVisiblePos: Int

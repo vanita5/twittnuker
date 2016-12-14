@@ -149,7 +149,7 @@ public interface SharedPreferenceConstants {
     String KEY_ATTACH_PRECISE_LOCATION = "attach_precise_location";
     @Preference(type = STRING)
     String KEY_QUOTE_FORMAT = "quote_format";
-    @Preference(type = BOOLEAN)
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_REMEMBER_POSITION = "remember_position";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_READ_FROM_BOTTOM = "read_from_bottom";
@@ -198,9 +198,9 @@ public interface SharedPreferenceConstants {
     String KEY_HOME_REFRESH_MENTIONS = "home_refresh_mentions";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_HOME_REFRESH_DIRECT_MESSAGES = "home_refresh_direct_messages";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_HOME_REFRESH_TRENDS = "home_refresh_trends";
-    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
+    @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = false)
     String KEY_HOME_REFRESH_SAVED_SEARCHES = "home_refresh_saved_searches";
     @Preference(type = STRING, hasDefault = true, defaultString = "none")
     String KEY_STATUS_SHORTENER = "tweet_shortener";

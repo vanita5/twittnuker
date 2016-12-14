@@ -242,8 +242,8 @@ abstract class AbsStatusesFragment protected constructor() :
     }
 
     override fun onLoadFinished(loader: Loader<List<ParcelableStatus>?>, data: List<ParcelableStatus>?) {
-        val rememberPosition = preferences.getBoolean(SharedPreferenceConstants.KEY_REMEMBER_POSITION, false)
-        val readFromBottom = preferences.getBoolean(SharedPreferenceConstants.KEY_READ_FROM_BOTTOM, false)
+        val rememberPosition = preferences.getBoolean(SharedPreferenceConstants.KEY_REMEMBER_POSITION, true)
+        val readFromBottom = preferences.getBoolean(SharedPreferenceConstants.KEY_READ_FROM_BOTTOM, true)
         var lastReadPositionKey: Long
         val lastVisiblePos: Int
         val lastVisibleTop: Int

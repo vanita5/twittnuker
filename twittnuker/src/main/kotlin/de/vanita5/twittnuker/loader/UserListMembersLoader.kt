@@ -39,7 +39,7 @@ class UserListMembersLoader(
         private val listId: String?,
         private val userKey: UserKey?,
         private val screenName: String?,
-        private val listName: String,
+        private val listName: String?,
         data: List<ParcelableUser>?,
         fromUser: Boolean
 ) : CursorSupportUsersLoader(context, accountKey, data, fromUser) {
@@ -49,9 +49,9 @@ class UserListMembersLoader(
         if (listId != null)
             return twitter.getUserListMembers(listId, paging)
         else if (userKey != null)
-            return twitter.getUserListMembers(listName.replace(' ', '-'), userKey.id, paging)
+            return twitter.getUserListMembers(listName!!.replace(' ', '-'), userKey.id, paging)
         else if (screenName != null)
-            return twitter.getUserListMembersByScreenName(listName.replace(' ', '-'), screenName, paging)
+            return twitter.getUserListMembersByScreenName(listName!!.replace(' ', '-'), screenName, paging)
         throw MicroBlogException("list_id or list_name and user_id (or screen_name) required")
     }
 
