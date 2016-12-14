@@ -28,6 +28,11 @@ package de.vanita5.twittnuker;
 public interface SecretConstants {
 
     String TWITLONGER_API_KEY = "";
+    
+    /**
+     * This is only the beta API key.
+     */
+    String GIPHY_API_KEY = "dc6zaTOxFJmzC";
 
     /**
      * Twitter OAuth keys
