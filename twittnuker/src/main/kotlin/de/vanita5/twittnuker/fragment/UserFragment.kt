@@ -88,7 +88,6 @@ import org.mariotaku.ktextension.toTypedArray
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate
 import de.vanita5.twittnuker.library.twitter.model.Paging
-import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
@@ -116,7 +115,8 @@ import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent
 import de.vanita5.twittnuker.model.tab.DrawableHolder
 import de.vanita5.twittnuker.model.util.*
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener
@@ -832,11 +832,8 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
             }
             R.id.add_to_filter -> {
                 if (userRelationship == null) return true
-                val cr = context.contentResolver
                 if (userRelationship.filtering) {
-                    val where = Expression.equalsArgs(Filters.Users.USER_KEY).sql
-                    val whereArgs = arrayOf(user.key.toString())
-                    cr.delete(Filters.Users.CONTENT_URI, where, whereArgs)
+                    DataStoreUtils.removeFromFilter(context, user)
                     Utils.showInfoMessage(activity, R.string.message_user_unmuted, false)
                     getFriendship()
                 } else {
