@@ -37,7 +37,7 @@ public class InteractionsTabConfiguration extends TabConfiguration {
     @NonNull
     @Override
     public DrawableHolder getIcon() {
-        return DrawableHolder.Builtin.NOTIFICATIONS;
+        return DrawableHolder.Builtin.MENTION;
     }
 
     @AccountFlags
