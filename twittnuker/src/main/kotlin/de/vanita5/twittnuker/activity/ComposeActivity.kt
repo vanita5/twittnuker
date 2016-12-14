@@ -591,13 +591,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         return super.dispatchKeyEvent(event)
     }
 
-    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo) {
-        if (v === attachedMediaPreview) {
-            menu.setHeaderTitle(R.string.edit_media)
-            supportMenuInflater.inflate(R.menu.menu_attached_media_edit, menu)
-        }
-    }
-
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val menuInfo = item.menuInfo
         if (menuInfo is ExtendedRecyclerView.ContextMenuInfo) {

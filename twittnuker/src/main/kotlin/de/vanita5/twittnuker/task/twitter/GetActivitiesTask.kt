@@ -31,6 +31,7 @@ import android.support.annotation.UiThread
 import android.util.Log
 import com.squareup.otto.Bus
 import org.mariotaku.abstask.library.AbstractTask
+import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Activity
@@ -41,7 +42,7 @@ import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_LOAD_ITEM_LIMIT
+import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.RefreshTaskParam
@@ -56,9 +57,9 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import java.util.*
 import javax.inject.Inject
 
-abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<RefreshTaskParam, Any, Any>(), Constants {
+abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<RefreshTaskParam, Any, () -> Unit>(), Constants {
     @Inject
-    lateinit var preferences: SharedPreferencesWrapper
+    lateinit var preferences: KPreferences
     @Inject
     lateinit var bus: Bus
     @Inject
@@ -79,12 +80,11 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
         val maxSortIds = param.maxSortIds
         val sinceIds = param.sinceIds
         val cr = context.contentResolver
-        val loadItemLimit = preferences.getInt(KEY_LOAD_ITEM_LIMIT)
+        val loadItemLimit = preferences[loadItemLimitKey]
         var saveReadPosition = false
         for (i in accountIds.indices) {
             val accountKey = accountIds[i]
-            val noItemsBefore = DataStoreUtils.getActivitiesCount(context, contentUri,
-                    accountKey) <= 0
+            val noItemsBefore = DataStoreUtils.getActivitiesCount(context, contentUri, accountKey) <= 0
             val credentials = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey) ?: continue
             val microBlog = credentials.newMicroBlogInstance(context = context, cls = MicroBlog::class.java)
             val paging = Paging()
@@ -142,7 +142,7 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
     private fun storeActivities(cr: ContentResolver, loadItemLimit: Int, details: AccountDetails,
                                 noItemsBefore: Boolean, activities: ResponseList<Activity>,
                                 sinceId: String?, maxId: String?, notify: Boolean) {
-        val deleteBound = LongArray(2, { return@LongArray -1 })
+        val deleteBound = LongArray(2) { -1 }
         val valuesList = ArrayList<ContentValues>()
         var minIdx = -1
         var minPositionKey: Long = -1
@@ -209,15 +209,12 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
         }
     }
 
-    protected abstract fun saveReadPosition(accountKey: UserKey,
-                                            details: AccountDetails, twitter: MicroBlog)
+    protected abstract fun saveReadPosition(accountKey: UserKey, details: AccountDetails, twitter: MicroBlog)
 
     @Throws(MicroBlogException::class)
-    protected abstract fun getActivities(twitter: MicroBlog,
-                                         details: AccountDetails,
-                                         paging: Paging): ResponseList<Activity>
+    protected abstract fun getActivities(twitter: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<Activity>
 
-    public override fun afterExecute(handler: Any?, result: Any?) {
+    public override fun afterExecute(handler: (() -> Unit)?, result: Any?) {
         context.contentResolver.notifyChange(contentUri, null)
         bus.post(GetActivitiesTaskEvent(contentUri, false, null))
     }

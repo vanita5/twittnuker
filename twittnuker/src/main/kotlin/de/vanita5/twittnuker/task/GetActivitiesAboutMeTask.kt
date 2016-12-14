@@ -59,9 +59,7 @@ class GetActivitiesAboutMeTask(context: Context) : GetActivitiesTask(context) {
     }
 
     @Throws(MicroBlogException::class)
-    override fun getActivities(twitter: MicroBlog,
-                               details: AccountDetails,
-                               paging: Paging): ResponseList<Activity> {
+    override fun getActivities(twitter: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<Activity> {
         if (details.isOfficial(context)) {
             return twitter.getActivitiesAboutMe(paging)
         }

@@ -62,7 +62,8 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import java.util.*
 import javax.inject.Inject
 
-abstract class GetStatusesTask(protected val context: Context) : AbstractTask<RefreshTaskParam, List<TwitterWrapper.StatusListResponse>, Any>(), Constants {
+abstract class GetStatusesTask(protected val context: Context) :
+        AbstractTask<RefreshTaskParam, List<TwitterWrapper.StatusListResponse>, () -> Unit>(), Constants {
     @Inject
     lateinit var preferences: KPreferences
     @Inject
@@ -84,9 +85,10 @@ abstract class GetStatusesTask(protected val context: Context) : AbstractTask<Re
     protected abstract val contentUri: Uri
 
 
-    public override fun afterExecute(handler: Any?, result: List<TwitterWrapper.StatusListResponse>?) {
+    public override fun afterExecute(handler: (() -> Unit)?, result: List<TwitterWrapper.StatusListResponse>?) {
         context.contentResolver.notifyChange(contentUri, null)
         bus.post(GetStatusesTaskEvent(contentUri, false, AsyncTwitterWrapper.getException(result)))
+        handler?.invoke()
     }
 
     override fun beforeExecute() {

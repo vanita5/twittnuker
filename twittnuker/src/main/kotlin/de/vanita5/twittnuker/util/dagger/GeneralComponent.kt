@@ -39,6 +39,7 @@ import de.vanita5.twittnuker.preference.KeyboardShortcutPreference
 import de.vanita5.twittnuker.provider.CacheProvider
 import de.vanita5.twittnuker.provider.TwidereDataProvider
 import de.vanita5.twittnuker.service.BackgroundOperationService
+import de.vanita5.twittnuker.service.JobRefreshService
 import de.vanita5.twittnuker.service.RefreshService
 import de.vanita5.twittnuker.task.*
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask
@@ -110,6 +111,8 @@ interface GeneralComponent {
     fun inject(activity: MediaViewerActivity)
 
     fun inject(task: GetStatusesTask)
+
+    fun inject(service: JobRefreshService)
 
     fun inject(task: GetActivitiesTask)
 

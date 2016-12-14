@@ -30,7 +30,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.graphics.Color
 import android.os.AsyncTask
-import android.os.Handler
 import android.support.design.widget.FloatingActionButton
 import android.support.multidex.MultiDex
 import android.support.v4.content.ContextCompat
@@ -49,6 +48,8 @@ import nl.komponents.kovenant.android.stopKovenant
 import nl.komponents.kovenant.task
 import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.kpreferences.KPreferences
+import org.mariotaku.kpreferences.get
+import org.mariotaku.kpreferences.set
 import org.mariotaku.ktextension.configure
 import org.mariotaku.mediaviewer.library.MediaDownloader
 import org.mariotaku.restfu.http.RestHttpClient
@@ -56,6 +57,8 @@ import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.constant.apiLastChangeKey
+import de.vanita5.twittnuker.constant.bugReportsKey
 import de.vanita5.twittnuker.constant.defaultFeatureLastUpdated
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.service.RefreshService
@@ -88,23 +91,12 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     @Inject
     lateinit internal var kPreferences: KPreferences
 
-    var handler: Handler? = null
-        private set
-
-    private var profileImageViewViewProcessor: ProfileImageViewViewProcessor? = null
-    private var fontFamilyTagProcessor: FontFamilyTagProcessor? = null
+    private lateinit var profileImageViewViewProcessor: ProfileImageViewViewProcessor
+    private lateinit var fontFamilyTagProcessor: FontFamilyTagProcessor
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
         MultiDex.install(this)
-    }
-
-    fun initKeyboardShortcuts() {
-        val preferences = sharedPreferences
-        if (!preferences.getBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, false)) {
-            //            getApplicationModule().getKeyboardShortcutsHandler().reset();
-            preferences.edit().putBoolean(KEY_KEYBOARD_SHORTCUT_INITIALIZED, true).apply()
-        }
     }
 
 
@@ -130,9 +122,11 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         initializeAsyncTask()
         initDebugMode()
         initBugReport()
-        handler = Handler()
 
-        Utils.startRefreshServiceIfNeeded(this)
+        if (resources.getBoolean(R.bool.use_job_refresh_service)) {
+        } else {
+            Utils.startRefreshServiceIfNeeded(this)
+        }
 
         GeneralComponentHelper.build(this).inject(this)
 
@@ -200,9 +194,9 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         ATE.registerViewProcessor(ImageView::class.java, ImageViewViewProcessor())
         ATE.registerViewProcessor(MaterialEditText::class.java, MaterialEditTextViewProcessor())
         ATE.registerViewProcessor(ProgressWheel::class.java, ProgressWheelViewProcessor())
-        ATE.registerViewProcessor(ProfileImageView::class.java, profileImageViewViewProcessor!!)
+        ATE.registerViewProcessor(ProfileImageView::class.java, profileImageViewViewProcessor)
         ATE.registerTagProcessor(OptimalLinkColorTagProcessor.TAG, OptimalLinkColorTagProcessor())
-        ATE.registerTagProcessor(FontFamilyTagProcessor.TAG, fontFamilyTagProcessor!!)
+        ATE.registerTagProcessor(FontFamilyTagProcessor.TAG, fontFamilyTagProcessor)
         ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR,
                 IconActionButtonTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR))
         ATE.registerTagProcessor(IconActionButtonTagProcessor.PREFIX_COLOR_ACTIVATED,
@@ -231,8 +225,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     }
 
     private fun initBugReport() {
-        val preferences = sharedPreferences
-        if (!preferences.getBoolean(KEY_BUG_REPORTS, BuildConfig.DEBUG)) return
+        if (!sharedPreferences[bugReportsKey]) return
         BugReporter.setImplementation(TwidereBugReporter())
         BugReporter.init(this)
     }
@@ -266,9 +259,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             }
             KEY_CONSUMER_KEY, KEY_CONSUMER_SECRET, KEY_API_URL_FORMAT, KEY_CREDENTIALS_TYPE,
             KEY_SAME_OAUTH_SIGNING_URL -> {
-                val editor = preferences.edit()
-                editor.putLong(KEY_API_LAST_CHANGE, System.currentTimeMillis())
-                editor.apply()
+                preferences[apiLastChangeKey] = System.currentTimeMillis()
             }
             KEY_EMOJI_SUPPORT -> {
                 externalThemeManager.reloadEmojiPreferences()
@@ -282,11 +273,11 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             }
             KEY_PROFILE_IMAGE_STYLE -> {
                 Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK)
-                profileImageViewViewProcessor!!.setStyle(Utils.getProfileImageStyle(preferences.getString(key, null)))
+                profileImageViewViewProcessor.setStyle(Utils.getProfileImageStyle(preferences.getString(key, null)))
             }
             KEY_THEME_FONT_FAMILY -> {
                 Config.markChanged(this, VALUE_THEME_NAME_LIGHT, VALUE_THEME_NAME_DARK)
-                fontFamilyTagProcessor!!.setFontFamily(ThemeUtils.getThemeFontFamily(preferences))
+                fontFamilyTagProcessor.setFontFamily(ThemeUtils.getThemeFontFamily(preferences))
             }
             KEY_THEME_COLOR -> {
                 val themeColor = preferences.getInt(key, ContextCompat.getColor(this,
