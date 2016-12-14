@@ -33,7 +33,12 @@ import de.vanita5.twittnuker.provider.CacheProvider
 
 import java.io.File
 
-class SaveMediaToGalleryTask(activity: Activity, source: Uri, destination: File, type: String) : ProgressSaveFileTask(activity, source, destination, CacheProvider.CacheFileTypeCallback(activity, type)) {
+class SaveMediaToGalleryTask(
+        activity: Activity,
+        source: Uri,
+        destination: File,
+        type: String
+) : ProgressSaveFileTask(activity, source, destination, CacheProvider.CacheFileTypeCallback(activity, type)) {
 
     override fun onFileSaved(savedFile: File, mimeType: String?) {
         val context = context ?: return
