@@ -44,7 +44,6 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
-import de.vanita5.twittnuker.activity.SignInActivity
 import de.vanita5.twittnuker.adapter.AccountDetailsAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
@@ -123,9 +122,8 @@ class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallb
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.add_account -> {
-                val intent = Intent(INTENT_ACTION_TWITTER_LOGIN)
-                intent.setClass(activity, SignInActivity::class.java)
-                startActivity(intent)
+                AccountManager.get(context).addAccount(ACCOUNT_TYPE, ACCOUNT_AUTH_TOKEN_TYPE,
+                        null, null, activity, null, null)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -135,8 +133,8 @@ class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallb
         inflater.inflate(R.menu.menu_accounts_manager, menu)
     }
 
-    override fun onContextItemSelected(item: MenuItem?): Boolean {
-        val menuInfo = item!!.menuInfo as? AdapterContextMenuInfo ?: return false
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val menuInfo = item.menuInfo as? AdapterContextMenuInfo ?: return false
         val details = adapter.getItem(menuInfo.position) ?: return false
         when (item.itemId) {
             R.id.set_color -> {
