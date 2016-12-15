@@ -28,7 +28,6 @@ import android.util.Log
 import com.squareup.otto.Bus
 import org.mariotaku.abstask.library.AbstractTask
 import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -49,7 +48,7 @@ open class UpdateProfileBannerImageTask<ResultHandler>(
         private val accountKey: UserKey,
         private val imageUri: Uri,
         private val deleteImage: Boolean
-) : AbstractTask<Any, SingleResponse<ParcelableUser>, ResultHandler>(), Constants {
+) : AbstractTask<Any?, SingleResponse<ParcelableUser>, ResultHandler>() {
 
     @Inject
     lateinit var mBus: Bus
@@ -70,7 +69,7 @@ open class UpdateProfileBannerImageTask<ResultHandler>(
         }
     }
 
-    override fun doLongOperation(params: Any): SingleResponse<ParcelableUser> {
+    override fun doLongOperation(params: Any?): SingleResponse<ParcelableUser> {
         try {
             val twitter = MicroBlogAPIFactory.getInstance(context, accountKey)!!
             TwitterWrapper.updateProfileBannerImage(context, twitter, imageUri, deleteImage)

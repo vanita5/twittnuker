@@ -46,7 +46,6 @@ import org.mariotaku.restfu.http.mime.Body
 import org.mariotaku.restfu.http.mime.FileBody
 import org.mariotaku.restfu.http.mime.SimpleBody
 import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
@@ -69,7 +68,7 @@ import javax.inject.Inject
 class UpdateStatusTask(
         internal val context: Context,
         internal val stateCallback: UpdateStatusTask.StateCallback
-) : AbstractTask<Pair<String, ParcelableStatusUpdate>, UpdateStatusTask.UpdateStatusResult, Context>(), Constants {
+) : AbstractTask<Pair<String, ParcelableStatusUpdate>, UpdateStatusTask.UpdateStatusResult, Any?>() {
 
     @Inject
     lateinit var twitterWrapper: AsyncTwitterWrapper
@@ -100,8 +99,8 @@ class UpdateStatusTask(
         stateCallback.beforeExecute()
     }
 
-    override fun afterExecute(handler: Context?, result: UpdateStatusResult) {
-        stateCallback.afterExecute(handler, result)
+    override fun afterExecute(handler: Any?, result: UpdateStatusResult) {
+        stateCallback.afterExecute(result)
     }
 
     @Throws(UpdateStatusException::class)
@@ -674,7 +673,7 @@ class UpdateStatusTask(
         fun onUpdatingStatus()
 
         @UiThread
-        fun afterExecute(handler: Context?, result: UpdateStatusResult)
+        fun afterExecute(result: UpdateStatusResult)
 
         @UiThread
         fun beforeExecute()

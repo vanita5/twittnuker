@@ -38,7 +38,9 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import java.io.IOException
 
-class UpdateAccountInfoTask(private val context: Context) : AbstractTask<Pair<AccountDetails, ParcelableUser>, Any, Unit>() {
+class UpdateAccountInfoTask(
+        private val context: Context
+) : AbstractTask<Pair<AccountDetails, ParcelableUser>, Unit, Unit?>() {
 
     override fun doLongOperation(params: Pair<AccountDetails, ParcelableUser>) {
         val resolver = context.contentResolver

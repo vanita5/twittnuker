@@ -31,7 +31,11 @@ import de.vanita5.twittnuker.library.twitter.model.Trends
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends
 
-class GetLocalTrendsTask(context: Context, accountKey: UserKey, private val woeid: Int) : GetTrendsTask(context, accountKey) {
+class GetLocalTrendsTask(
+        context: Context,
+        accountKey: UserKey,
+        private val woeid: Int
+) : GetTrendsTask(context, accountKey) {
 
     @Throws(MicroBlogException::class)
     override fun getTrends(twitter: MicroBlog): List<Trends> {

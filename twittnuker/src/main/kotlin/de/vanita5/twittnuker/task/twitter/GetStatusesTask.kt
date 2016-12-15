@@ -41,7 +41,6 @@ import de.vanita5.twittnuker.library.twitter.model.Status
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.BuildConfig
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
 import de.vanita5.twittnuker.constant.loadItemLimitKey
@@ -62,8 +61,9 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import java.util.*
 import javax.inject.Inject
 
-abstract class GetStatusesTask(protected val context: Context) :
-        AbstractTask<RefreshTaskParam, List<TwitterWrapper.StatusListResponse>, () -> Unit>(), Constants {
+abstract class GetStatusesTask(
+        protected val context: Context
+) : AbstractTask<RefreshTaskParam, List<TwitterWrapper.StatusListResponse>, () -> Unit>() {
     @Inject
     lateinit var preferences: KPreferences
     @Inject

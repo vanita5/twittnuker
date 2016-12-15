@@ -34,12 +34,14 @@ import de.vanita5.twittnuker.util.TwitterWrapper.TwitterListResponse
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import java.util.*
 
-class CacheUsersStatusesTask(private val context: Context) : AbstractTask<TwitterListResponse<Status>, Any, Any>() {
+class CacheUsersStatusesTask(
+        private val context: Context
+) : AbstractTask<TwitterListResponse<Status>, Unit, Unit>() {
 
-    public override fun doLongOperation(params: TwitterListResponse<Status>): Any? {
+    public override fun doLongOperation(params: TwitterListResponse<Status>) {
         val resolver = context.contentResolver
         val extractor = Extractor()
-        val list = params.data ?: return null
+        val list = params.data ?: return
         var bulkIdx = 0
         val totalSize = list.size
         while (bulkIdx < totalSize) {
@@ -76,7 +78,6 @@ class CacheUsersStatusesTask(private val context: Context) : AbstractTask<Twitte
             }
             bulkIdx += 100
         }
-        return null
     }
 
 }

@@ -47,7 +47,7 @@ open class UpdateProfileImageTask<ResultHandler>(
         private val accountKey: UserKey,
         private val imageUri: Uri,
         private val deleteImage: Boolean
-) : AbstractTask<Unit, SingleResponse<ParcelableUser>, ResultHandler>() {
+) : AbstractTask<Any?, SingleResponse<ParcelableUser>, ResultHandler>() {
 
     @Inject
     lateinit var bus: Bus
@@ -57,7 +57,7 @@ open class UpdateProfileImageTask<ResultHandler>(
         GeneralComponentHelper.build(context).inject(this as UpdateProfileImageTask<Any>)
     }
 
-    override fun doLongOperation(params: Unit): SingleResponse<ParcelableUser> {
+    override fun doLongOperation(params: Any?): SingleResponse<ParcelableUser> {
         try {
             val microBlog = MicroBlogAPIFactory.getInstance(context, accountKey)!!
             TwitterWrapper.updateProfileImage(context, microBlog, imageUri, deleteImage)

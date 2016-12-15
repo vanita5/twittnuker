@@ -36,7 +36,6 @@ import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.BuildConfig
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.model.RefreshTaskParam
@@ -48,8 +47,9 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import java.util.*
 import javax.inject.Inject
 
-abstract class GetDirectMessagesTask(protected val context: Context) : AbstractTask<RefreshTaskParam,
-        List<TwitterWrapper.MessageListResponse>, () -> Unit>(), Constants {
+abstract class GetDirectMessagesTask(
+        protected val context: Context
+) : AbstractTask<RefreshTaskParam, List<TwitterWrapper.MessageListResponse>, () -> Unit>() {
     @Inject
     protected lateinit var errorInfoStore: ErrorInfoStore
     @Inject

@@ -39,7 +39,6 @@ import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.BuildConfig
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
 import de.vanita5.twittnuker.constant.loadItemLimitKey
@@ -57,7 +56,9 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import java.util.*
 import javax.inject.Inject
 
-abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<RefreshTaskParam, Any, () -> Unit>(), Constants {
+abstract class GetActivitiesTask(
+        protected val context: Context
+) : AbstractTask<RefreshTaskParam, Unit, () -> Unit>() {
     @Inject
     lateinit var preferences: KPreferences
     @Inject
@@ -73,8 +74,8 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
         GeneralComponentHelper.build(context).inject(this)
     }
 
-    public override fun doLongOperation(param: RefreshTaskParam): Any? {
-        if (param.shouldAbort) return null
+    public override fun doLongOperation(param: RefreshTaskParam) {
+        if (param.shouldAbort) return
         val accountIds = param.accountKeys
         val maxIds = param.maxIds
         val maxSortIds = param.maxSortIds
@@ -134,7 +135,6 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
             }
 
         }
-        return null
     }
 
     protected abstract val errorInfoKey: String
@@ -214,7 +214,7 @@ abstract class GetActivitiesTask(protected val context: Context) : AbstractTask<
     @Throws(MicroBlogException::class)
     protected abstract fun getActivities(twitter: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<Activity>
 
-    public override fun afterExecute(handler: (() -> Unit)?, result: Any?) {
+    public override fun afterExecute(handler: (() -> Unit)?, result: Unit) {
         context.contentResolver.notifyChange(contentUri, null)
         bus.post(GetActivitiesTaskEvent(contentUri, false, null))
     }
