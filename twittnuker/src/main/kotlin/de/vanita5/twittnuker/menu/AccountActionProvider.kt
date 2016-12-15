@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 
 class AccountActionProvider(
         context: Context,
-        var accounts: Array<AccountDetails>? = AccountUtils.getAllAccountDetails(AccountManager.get(context))
+        var accounts: Array<AccountDetails>? = AccountUtils.getAllAccountDetails(AccountManager.get(context), true)
 ) : ActionProvider(context), TwittnukerConstants {
 
     var selectedAccountIds: Array<UserKey>? = null

@@ -20,15 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util
+package de.vanita5.twittnuker.model.analyzer
 
-import android.content.Context
-import android.support.v4.app.Fragment
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.util.Analyzer
 
-import de.vanita5.twittnuker.fragment.OpenStreetMapViewerFragment
-
-class OSMMapFragmentFactory : MapFragmentFactory() {
-    override fun createMapFragment(context: Context): Fragment {
-        return OpenStreetMapViewerFragment()
-    }
-}
+data class SignIn(
+        val success: Boolean,
+        @AccountType val type: String,
+        override val account: String? = null,
+        val officialKey: Boolean = false,
+        val authType: String? = null,
+        val errorReason: String? = null
+) : Analyzer.Event

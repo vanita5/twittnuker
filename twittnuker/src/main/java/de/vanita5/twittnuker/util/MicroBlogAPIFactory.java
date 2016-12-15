@@ -62,7 +62,6 @@ import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.extension.AccountExtensionsKt;
 import de.vanita5.twittnuker.extension.CredentialsExtensionsKt;
-import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
@@ -113,8 +112,8 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
     @WorkerThread
     public static MicroBlog getInstance(@NonNull final Context context,
                                         @NonNull final UserKey accountKey) {
-        AccountManager am = AccountManager.get(context);
-        Account account = AccountUtils.findByAccountKey(am, accountKey);
+        final AccountManager am = AccountManager.get(context);
+        final Account account = AccountUtils.findByAccountKey(am, accountKey);
         if (account == null) return null;
         final Credentials credentials = AccountExtensionsKt.getCredentials(account, am);
         final String accountType = AccountExtensionsKt.getAccountType(account, am);

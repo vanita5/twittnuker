@@ -50,7 +50,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.service.BackgroundOperationService
-import de.vanita5.twittnuker.util.BugReporter
+import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.EditTextEnterHandler
 import de.vanita5.twittnuker.util.LinkCreator
 import de.vanita5.twittnuker.util.TwidereValidator
@@ -66,7 +66,7 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
         val builder = AlertDialog.Builder(context)
         val context = builder.context
         val status = status!!
-        val details = AccountUtils.getAccountDetails(AccountManager.get(context), status.account_key)!!
+        val details = AccountUtils.getAccountDetails(AccountManager.get(context), status.account_key, true)!!
 
         builder.setView(R.layout.dialog_status_quote_retweet)
         builder.setTitle(R.string.retweet_quote_confirm_title)
@@ -162,7 +162,7 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
                 } else if (useQuote(!status.user_is_protected, details)) {
                     dismissDialog = retweetOrQuote(details, status, SHOW_PROTECTED_CONFIRM)
                 } else {
-                    BugReporter.logException(IllegalStateException(status.toString()))
+                    Analyzer.logException(IllegalStateException(status.toString()))
                 }
                 if (dismissDialog) {
                     dismiss()

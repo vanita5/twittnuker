@@ -42,6 +42,7 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.AdapterView.OnItemSelectedListener
 import jopt.csp.util.SortableIntList
 import kotlinx.android.synthetic.main.activity_quick_search_bar.*
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_ACCOUNT_KEY
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_QUERY
@@ -50,7 +51,7 @@ import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.ACTION_NAVIGATION_BACK
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -96,7 +97,7 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor?> {
-        val accountId = selectedAccountKey
+        val accountId = selectedAccountDetails?.key
         val builder = Suggestions.Search.CONTENT_URI.buildUpon()
         builder.appendQueryParameter(QUERY_PARAM_QUERY, ParseUtils.parseString(searchQuery.text))
         if (accountId != null) {
@@ -125,19 +126,19 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
         val item = adapter.getSuggestionItem(position)!!
         when (adapter.getItemViewType(position)) {
             SuggestionsAdapter.VIEW_TYPE_USER_SUGGESTION_ITEM -> {
-                IntentUtils.openUserProfile(this, selectedAccountKey,
+                IntentUtils.openUserProfile(this, selectedAccountDetails?.key,
                         UserKey.valueOf(item.extra_id!!), item.summary, null,
-                        preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                        preferences[newDocumentApiKey],
                         Referral.DIRECT)
                 finish()
             }
             SuggestionsAdapter.VIEW_TYPE_USER_SCREEN_NAME -> {
-                IntentUtils.openUserProfile(this, selectedAccountKey, null, item.title, null,
-                        preferences.getBoolean(KEY_NEW_DOCUMENT_API), Referral.DIRECT)
+                IntentUtils.openUserProfile(this, selectedAccountDetails?.key, null, item.title,
+                        null, preferences[newDocumentApiKey], Referral.DIRECT)
                 finish()
             }
             SuggestionsAdapter.VIEW_TYPE_SAVED_SEARCH, SuggestionsAdapter.VIEW_TYPE_SEARCH_HISTORY -> {
-                IntentUtils.openSearch(this, selectedAccountKey, item.title)
+                IntentUtils.openSearch(this, selectedAccountDetails?.key, item.title)
                 finish()
             }
         }
@@ -168,7 +169,7 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quick_search_bar)
         val am = AccountManager.get(this)
-        val accounts = AccountUtils.getAllAccountDetails(am, AccountUtils.getAccounts(am)).toList()
+        val accounts = AccountUtils.getAllAccountDetails(am, AccountUtils.getAccounts(am), true).toList()
         val accountsSpinnerAdapter = AccountsSpinnerAdapter(this, R.layout.spinner_item_account_icon)
         accountsSpinnerAdapter.setDropDownViewResource(R.layout.list_item_simple_user)
         accountsSpinnerAdapter.addAll(accounts)
@@ -231,14 +232,14 @@ class QuickSearchBarActivity : BaseActivity(), OnClickListener, LoaderCallbacks<
         if (isFinishing) return
         val query = ParseUtils.parseString(searchQuery.text)
         if (TextUtils.isEmpty(query)) return
-        IntentUtils.openSearch(this, selectedAccountKey, query)
+        val details = selectedAccountDetails ?: return
+        IntentUtils.openSearch(this, details.key, query)
         finish()
     }
 
-    private val selectedAccountKey: UserKey?
+    private val selectedAccountDetails: AccountDetails?
         get() {
-            val account = accountSpinner.selectedItem as AccountDetails
-            return account.key
+            return accountSpinner.selectedItem as? AccountDetails
         }
 
     private fun updateWindowAttributes() {

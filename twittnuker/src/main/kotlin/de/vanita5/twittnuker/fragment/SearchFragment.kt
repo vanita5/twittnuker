@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
@@ -31,6 +32,7 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import org.mariotaku.ktextension.convert
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.ComposeActivity
@@ -41,9 +43,12 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCal
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.analyzer.Search
 import de.vanita5.twittnuker.model.tab.DrawableHolder
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.RecentSearchProvider
 import de.vanita5.twittnuker.provider.TwidereDataStore.SearchHistory
+import de.vanita5.twittnuker.util.Analyzer
 
 class SearchFragment : AbsToolbarTabPagesFragment(), RefreshScrollTopInterface, SupportFragmentCallback, SystemWindowsInsetsCallback, ControlBarOffsetListener, OnPageChangeListener, LinkHandlerActivity.HideUiOnScroll {
 
@@ -58,16 +63,20 @@ class SearchFragment : AbsToolbarTabPagesFragment(), RefreshScrollTopInterface, 
             val values = ContentValues()
             values.put(SearchHistory.QUERY, query)
             context.contentResolver.insert(SearchHistory.CONTENT_URI, values)
+
+            Analyzer.log(Search(query, accountKey.convert {
+                AccountUtils.findByAccountKey(AccountManager.get(context), it)
+            }?.name))
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.menu_search, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_search, menu)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         if (isDetached || activity == null) return
-        val item = menu!!.findItem(R.id.compose)
+        val item = menu.findItem(R.id.compose)
         item.title = getString(R.string.tweet_hashtag, query)
     }
 

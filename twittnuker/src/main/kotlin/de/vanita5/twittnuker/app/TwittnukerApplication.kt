@@ -71,6 +71,7 @@ import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.TabPagerIndicator
 import de.vanita5.twittnuker.view.ThemedMultiValueSwitch
 import de.vanita5.twittnuker.view.TimelineContentTextView
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -226,8 +227,8 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
 
     private fun initBugReport() {
         if (!sharedPreferences[bugReportsKey]) return
-        BugReporter.setImplementation(TwidereBugReporter())
-        BugReporter.init(this)
+        Analyzer.implementation = ServiceLoader.load(Analyzer::class.java).firstOrNull()
+        Analyzer.init(this)
     }
 
     private val sharedPreferences: SharedPreferences by lazy {

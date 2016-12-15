@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.util
 
 import android.content.Context
 import android.support.v4.app.Fragment
+import java.util.*
 
 abstract class MapFragmentFactory {
 
@@ -31,7 +32,8 @@ abstract class MapFragmentFactory {
 
     companion object {
 
-        fun getInstance(): MapFragmentFactory = MapFragmentFactoryImpl()
+        val instance: MapFragmentFactory
+            get() = ServiceLoader.load(MapFragmentFactory::class.java).first()
     }
 
 }

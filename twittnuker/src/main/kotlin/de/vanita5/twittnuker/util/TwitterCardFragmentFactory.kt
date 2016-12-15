@@ -30,6 +30,7 @@ import de.vanita5.twittnuker.fragment.card.CardPollFragment
 import de.vanita5.twittnuker.model.ParcelableCardEntity
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils
+import java.util.*
 
 abstract class TwitterCardFragmentFactory {
 
@@ -42,7 +43,7 @@ abstract class TwitterCardFragmentFactory {
     companion object {
 
         val instance: TwitterCardFragmentFactory
-            get() = TwitterCardFragmentFactoryImpl()
+            get() = ServiceLoader.load(TwitterCardFragmentFactory::class.java).first()
 
         fun createGenericPlayerFragment(card: ParcelableCardEntity?, args: Bundle?): Fragment? {
             if (card == null) return null

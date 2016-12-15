@@ -71,7 +71,6 @@
 -dontwarn com.squareup.okhttp.**
 
 -dontwarn rx.**
-#-dontwarn okio.**
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
 -keepattributes Signature
@@ -88,6 +87,7 @@
 -dontwarn com.bluelinelabs.logansquare.**
 -dontwarn okio.**
 -dontwarn android.support.**
+-dontwarn com.afollestad.**
 -dontwarn com.facebook.stetho.**
 -dontwarn com.google.android.**
 -dontwarn okhttp3.**
@@ -140,6 +140,20 @@
 # https://github.com/mariotaku/RestFu
 -keep class org.mariotaku.restfu.annotation.** { *; }
 
+# http://square.github.io/otto/
+-keepclassmembers class ** {
+    @com.squareup.otto.Subscribe public *;
+    @com.squareup.otto.Produce public *;
+}
+
+-keep class * extends android.support.v4.view.ActionProvider
+-keepclassmembers class * extends android.support.v4.view.ActionProvider {
+    <init>(android.content.Context);
+}
+
+-keep class * extends de.vanita5.twittnuker.util.OSMMapFragmentFactory
+-keep class * extends de.vanita5.twittnuker.util.TwitterCardFragmentFactory
+-keep class * extends de.vanita5.twittnuker.util.BugReporter
 
 #jackson fasterxml
 -keepnames class org.codehaus.jackson.** { *; }

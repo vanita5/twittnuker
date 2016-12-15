@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.util.BugReporter
+import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.Utils
 
@@ -68,7 +68,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
             startActivity(handled.first)
         } else {
             if (!handled.second) {
-                BugReporter.logException(TwitterLinkException("Unable to handle twitter uri " + uri))
+                Analyzer.logException(TwitterLinkException("Unable to handle twitter uri " + uri))
             }
             val fallbackIntent = Intent(Intent.ACTION_VIEW, uri)
             fallbackIntent.addCategory(Intent.CATEGORY_BROWSABLE)

@@ -26,6 +26,7 @@ import android.content.Context
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.account.AccountExtras
 import de.vanita5.twittnuker.model.account.TwitterAccountExtras
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
@@ -44,6 +45,14 @@ fun AccountDetails.isOfficial(context: Context): Boolean {
     }
     return false
 }
+
+val AccountExtras.official: Boolean
+    get() {
+        if (this is TwitterAccountExtras) {
+            return isOfficialCredentials
+        }
+        return false
+    }
 
 
 @JvmOverloads

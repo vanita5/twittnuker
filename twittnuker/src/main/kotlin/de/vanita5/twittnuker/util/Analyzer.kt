@@ -22,13 +22,40 @@
 
 package de.vanita5.twittnuker.util
 
-import android.content.Context
-import android.support.v4.app.Fragment
+import android.app.Application
 
-import de.vanita5.twittnuker.fragment.OpenStreetMapViewerFragment
+abstract class Analyzer {
 
-class OSMMapFragmentFactory : MapFragmentFactory() {
-    override fun createMapFragment(context: Context): Fragment {
-        return OpenStreetMapViewerFragment()
+    protected abstract fun log(priority: Int, tag: String, msg: String)
+
+    protected abstract fun log(event: Event)
+
+    protected abstract fun logException(throwable: Throwable)
+
+    protected abstract fun init(application: Application)
+
+    interface Event {
+        val account: String?
+    }
+
+    companion object {
+
+        var implementation: Analyzer? = null
+
+        fun init(application: Application) {
+            implementation?.init(application)
+        }
+
+        fun log(event: Event) {
+            implementation?.log(event)
+        }
+
+        fun log(priority: Int, tag: String, msg: String) {
+            implementation?.log(priority, tag, msg)
+        }
+
+        fun logException(throwable: Throwable) {
+            implementation?.logException(throwable)
+        }
     }
 }

@@ -115,7 +115,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         if (extra instanceof MediaExtra) {
             UserKey accountKey = ((MediaExtra) extra).getAccountKey();
             if (accountKey != null) {
-                account = AccountUtils.getAccountDetails(AccountManager.get(mContext), accountKey);
+                account = AccountUtils.getAccountDetails(AccountManager.get(mContext), accountKey, true);
                 if (account != null) {
                     auth = CredentialsExtensionsKt.getAuthorization(account.credentials);
                 }
