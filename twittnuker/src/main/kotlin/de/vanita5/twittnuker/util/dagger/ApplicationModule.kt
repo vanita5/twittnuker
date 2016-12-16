@@ -200,7 +200,7 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun twidereValidator(preferences: SharedPreferencesWrapper): TwidereValidator {
+    fun twidereValidator(): TwidereValidator {
         return TwidereValidator()
     }
 
