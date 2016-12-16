@@ -101,6 +101,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.ContentScrollHandler.ContentListSupport
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
+import de.vanita5.twittnuker.util.RecyclerViewScrollHandler.RecyclerViewCallback
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener
 import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.GapViewHolder
@@ -115,13 +116,12 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     private var mItemDecoration: DividerItemDecoration? = null
 
     override lateinit var adapter: StatusAdapter
-        private set
 
-    private var layoutManager: LinearLayoutManager? = null
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var navigationHelper: RecyclerViewNavigationHelper
+    private lateinit var scrollListener: RecyclerViewScrollHandler
+
     private var loadTranslationTask: LoadTranslationTask? = null
-
-    private var navigationHelper: RecyclerViewNavigationHelper? = null
-    private var scrollListener: RecyclerViewScrollHandler? = null
     // Data fields
     private var conversationLoaderInitialized: Boolean = false
 
@@ -249,36 +249,32 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_status, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_status, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
-        val view = view!!
-        val context = view.context
         Utils.setNdefPushMessageCallback(activity, CreateNdefMessageCallback {
             val status = status ?: return@CreateNdefMessageCallback null
             NdefMessage(arrayOf(NdefRecord.createUri(LinkCreator.getStatusWebLink(status))))
         })
         adapter = StatusAdapter(this)
         layoutManager = StatusListLinearLayoutManager(context, recyclerView)
-        mItemDecoration = StatusDividerItemDecoration(context, adapter, layoutManager!!.orientation)
+        mItemDecoration = StatusDividerItemDecoration(context, adapter, layoutManager.orientation)
         recyclerView.addItemDecoration(mItemDecoration)
-        layoutManager!!.recycleChildrenOnDetach = true
+        layoutManager.recycleChildrenOnDetach = true
         recyclerView.layoutManager = layoutManager
         recyclerView.clipToPadding = false
         adapter.statusClickListener = this
         recyclerView.adapter = adapter
-        registerForContextMenu(recyclerView!!)
+        registerForContextMenu(recyclerView)
 
-        scrollListener = RecyclerViewScrollHandler(this,
-                RecyclerViewScrollHandler.RecyclerViewCallback(recyclerView))
-        scrollListener!!.touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+        scrollListener = RecyclerViewScrollHandler(this, RecyclerViewCallback(recyclerView))
+        scrollListener.touchSlop = ViewConfiguration.get(context).scaledTouchSlop
 
-        navigationHelper = RecyclerViewNavigationHelper(recyclerView!!, layoutManager!!,
+        navigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager,
                 adapter, null)
 
         setState(STATE_LOADING)
@@ -314,14 +310,13 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
 
     override fun onItemMenuClick(holder: ViewHolder, menuView: View, position: Int) {
         if (activity == null) return
-        val view = layoutManager!!.findViewByPosition(position) ?: return
+        val view = layoutManager.findViewByPosition(position) ?: return
         recyclerView.showContextMenuForChild(view)
     }
 
     override fun onUserProfileClick(holder: IStatusViewHolder, position: Int) {
-        val activity = activity
-        val status = adapter.getStatus(position)
-        IntentUtils.openUserProfile(activity, status!!.account_key, status.user_key,
+        val status = adapter.getStatus(position)!!
+        IntentUtils.openUserProfile(activity, status.account_key, status.user_key,
                 status.user_screen_name, null, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
                 Referral.TIMELINE_STATUS)
     }
@@ -337,10 +332,10 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
                                               keyCode: Int, event: KeyEvent,
                                               metaState: Int): Boolean {
         if (!KeyboardShortcutsHandler.isValidForHotkey(keyCode, event)) return false
-        val focusedChild = RecyclerViewUtils.findRecyclerViewChild(recyclerView, layoutManager!!.focusedChild)
+        val focusedChild = RecyclerViewUtils.findRecyclerViewChild(recyclerView, layoutManager.focusedChild)
         val position: Int
         if (focusedChild != null && focusedChild.parent === recyclerView) {
-            position = recyclerView!!.getChildLayoutPosition(focusedChild)
+            position = recyclerView.getChildLayoutPosition(focusedChild)
         } else {
             return false
         }
@@ -376,13 +371,13 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         when (action) {
             ACTION_STATUS_REPLY, ACTION_STATUS_RETWEET, ACTION_STATUS_FAVORITE -> return true
         }
-        return navigationHelper!!.isKeyboardShortcutHandled(handler, keyCode, event, metaState)
+        return navigationHelper.isKeyboardShortcutHandled(handler, keyCode, event, metaState)
     }
 
     override fun handleKeyboardShortcutRepeat(handler: KeyboardShortcutsHandler,
                                               keyCode: Int, repeatCount: Int,
                                               event: KeyEvent, metaState: Int): Boolean {
-        return navigationHelper!!.handleKeyboardShortcutRepeat(handler, keyCode,
+        return navigationHelper.handleKeyboardShortcutRepeat(handler, keyCode,
                 repeatCount, event, metaState)
     }
 
@@ -414,7 +409,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
 
                 val position = adapter.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS)
                 if (position != RecyclerView.NO_POSITION) {
-                    layoutManager!!.scrollToPositionWithOffset(position, 0)
+                    layoutManager.scrollToPositionWithOffset(position, 0)
                 }
 
             } else if (readPosition != null) {
@@ -432,21 +427,21 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     override fun onLoaderReset(loader: Loader<SingleResponse<ParcelableStatus>>) {
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.menu_status, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_status, menu)
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         MenuUtils.setItemAvailability(menu, R.id.current_status, adapter.status != null)
         super.onPrepareOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.current_status -> {
                 if (adapter.status != null) {
                     val position = adapter.getFirstPositionOfItem(StatusAdapter.ITEM_IDX_STATUS)
-                    recyclerView!!.smoothScrollToPosition(position)
+                    recyclerView.smoothScrollToPosition(position)
                 }
                 return true
             }
@@ -484,10 +479,10 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     }
 
     override val reachingEnd: Boolean
-        get() = layoutManager!!.findLastCompletelyVisibleItemPosition() >= adapter.itemCount - 1
+        get() = layoutManager.findLastCompletelyVisibleItemPosition() >= adapter.itemCount - 1
 
     override val reachingStart: Boolean
-        get() = layoutManager!!.findFirstCompletelyVisibleItemPosition() <= 1
+        get() = layoutManager.findFirstCompletelyVisibleItemPosition() <= 1
 
     private val status: ParcelableStatus?
         get() = adapter.status
@@ -537,7 +532,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     }
 
     private fun saveReadPosition(): ReadPosition? {
-        val lm = layoutManager ?: return null
+        val lm = layoutManager
         val adapter = this.adapter
         val position = lm.findFirstVisibleItemPosition()
         if (position == RecyclerView.NO_POSITION) return null
@@ -560,7 +555,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         val adapterPosition = adapter.findPositionByItemId(position.statusId)
         if (adapterPosition < 0) return
         //TODO maintain read position
-        layoutManager!!.scrollToPositionWithOffset(adapterPosition, position.offsetTop)
+        layoutManager.scrollToPositionWithOffset(adapterPosition, position.offsetTop)
     }
 
     private fun setState(state: Int) {
@@ -576,30 +571,29 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
     override fun onStart() {
         super.onStart()
         bus.register(this)
-        recyclerView!!.addOnScrollListener(scrollListener)
-        recyclerView!!.setOnTouchListener(scrollListener!!.touchListener)
+        recyclerView.addOnScrollListener(scrollListener)
+        recyclerView.setOnTouchListener(scrollListener.touchListener)
     }
 
     override fun onStop() {
         recyclerView.setOnTouchListener(null)
-        recyclerView!!.removeOnScrollListener(scrollListener)
+        recyclerView.removeOnScrollListener(scrollListener)
         bus.unregister(this)
         super.onStop()
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
-        if (!userVisibleHint || menuInfo == null) return
+        if (!userVisibleHint) return
+        val contextMenuInfo = menuInfo as? ExtendedRecyclerView.ContextMenuInfo ?: return
+        val status = adapter.getStatus(contextMenuInfo.position) ?: return
         val inflater = MenuInflater(context)
-        val contextMenuInfo = menuInfo as ExtendedRecyclerView.ContextMenuInfo?
-        val status = adapter.getStatus(contextMenuInfo!!.position)
         inflater.inflate(R.menu.action_status, menu)
-        MenuUtils.setupForStatus(context, preferences, menu, status!!,
-                twitterWrapper)
+        MenuUtils.setupForStatus(context, preferences, menu, status, twitterWrapper)
     }
 
-    override fun onContextItemSelected(item: MenuItem?): Boolean {
+    override fun onContextItemSelected(item: MenuItem): Boolean {
         if (!userVisibleHint) return false
-        val contextMenuInfo = item!!.menuInfo as ExtendedRecyclerView.ContextMenuInfo
+        val contextMenuInfo = item.menuInfo as? ExtendedRecyclerView.ContextMenuInfo ?: return false
         val status = adapter.getStatus(contextMenuInfo.position) ?: return false
         if (item.itemId == R.id.share) {
             val shareIntent = Utils.createStatusShareIntent(activity, status)
