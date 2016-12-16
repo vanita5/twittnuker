@@ -20,17 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.analyzer
+package de.vanita5.twittnuker.annotation;
 
-import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.model.account.cred.Credentials
-import de.vanita5.twittnuker.util.Analyzer
+import android.support.annotation.StringDef;
 
-data class SignIn(
-        val success: Boolean,
-        val officialKey: Boolean = false,
-        @Credentials.Type val credentialsType: String? = null,
-        val errorReason: String? = null,
-        @AccountType override val accountType: String,
-        override val accountHost: String? = null
-) : Analyzer.Event
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@StringDef({ContentType.STATUS, ContentType.USER})
+@Retention(RetentionPolicy.SOURCE)
+public @interface ContentType {
+    String STATUS = "status";
+    String USER = "user";
+}

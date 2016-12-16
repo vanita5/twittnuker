@@ -31,7 +31,6 @@ import android.support.v4.app.LoaderManager
 import android.support.v4.content.AsyncTaskLoader
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.Loader
-import android.text.TextUtils
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -59,10 +58,10 @@ import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
+import de.vanita5.twittnuker.util.TwitterCardUtils
 import de.vanita5.twittnuker.util.support.ViewSupport
 
 import java.util.*
-import java.util.regex.Pattern
 
 class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<ParcelableCardEntity?>, View.OnClickListener {
     private var fetchedCard: ParcelableCardEntity? = null
@@ -86,7 +85,7 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
     private fun initChoiceView(savedInstanceState: Bundle?) {
         val card = card
         val status = status
-        val choicesCount = getChoicesCount(card)
+        val choicesCount = TwitterCardUtils.getChoicesCount(card)
         val inflater = getLayoutInflater(savedInstanceState)
 
         for (i in 0 until choicesCount) {
@@ -100,7 +99,7 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
         val context = context
         if (card == null || status == null || context == null) return
         fetchedCard = card
-        val choicesCount = getChoicesCount(card)
+        val choicesCount = TwitterCardUtils.getChoicesCount(card)
         var votesSum = 0
         val countsAreFinal = ParcelableCardEntityUtils.getAsBoolean(card, "counts_are_final", false)
         val selectedChoice = ParcelableCardEntityUtils.getAsInteger(card, "selected_choice", -1)
@@ -210,11 +209,6 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
         loaderManager.restartLoader(0, null, this)
     }
 
-    private fun getChoicesCount(card: ParcelableCardEntity): Int {
-        val matcher = PATTERN_POLL_TEXT_ONLY.matcher(card.name)
-        if (!matcher.matches()) throw IllegalStateException()
-        return NumberUtils.toInt(matcher.group(1))
-    }
 
     private val card: ParcelableCardEntity
         get() {
@@ -317,9 +311,6 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
 
     companion object {
 
-        val PATTERN_POLL_TEXT_ONLY: Pattern = Pattern.compile("poll([\\d]+)choice_text_only")
-
-
         fun show(status: ParcelableStatus): CardPollFragment {
             val fragment = CardPollFragment()
             val args = Bundle()
@@ -329,8 +320,5 @@ class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<Pa
             return fragment
         }
 
-        fun isPoll(card: ParcelableCardEntity): Boolean {
-            return PATTERN_POLL_TEXT_ONLY.matcher(card.name).matches() && !TextUtils.isEmpty(card.url)
-        }
     }
 }

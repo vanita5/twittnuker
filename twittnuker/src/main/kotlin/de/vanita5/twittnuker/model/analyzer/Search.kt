@@ -22,9 +22,11 @@
 
 package de.vanita5.twittnuker.model.analyzer
 
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.util.Analyzer
 
 data class Search(
         val query: String,
-        override val account: String?
+        @AccountType override val accountType: String?,
+        override val accountHost: String? = null
 ) : Analyzer.Event

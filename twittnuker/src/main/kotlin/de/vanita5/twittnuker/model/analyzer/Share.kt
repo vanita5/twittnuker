@@ -23,14 +23,12 @@
 package de.vanita5.twittnuker.model.analyzer
 
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.model.account.cred.Credentials
+import de.vanita5.twittnuker.annotation.ContentType
 import de.vanita5.twittnuker.util.Analyzer
 
-data class SignIn(
-        val success: Boolean,
-        val officialKey: Boolean = false,
-        @Credentials.Type val credentialsType: String? = null,
-        val errorReason: String? = null,
+data class Share(
+        val id: String,
+        @ContentType val type: String,
         @AccountType override val accountType: String,
         override val accountHost: String? = null
 ) : Analyzer.Event

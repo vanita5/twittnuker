@@ -39,6 +39,7 @@ import de.vanita5.twittnuker.activity.ComposeActivity
 import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
+import de.vanita5.twittnuker.extension.getAccountType
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
@@ -63,10 +64,10 @@ class SearchFragment : AbsToolbarTabPagesFragment(), RefreshScrollTopInterface, 
             val values = ContentValues()
             values.put(SearchHistory.QUERY, query)
             context.contentResolver.insert(SearchHistory.CONTENT_URI, values)
-
+            val am = AccountManager.get(context)
             Analyzer.log(Search(query, accountKey.convert {
-                AccountUtils.findByAccountKey(AccountManager.get(context), it)
-            }?.name))
+                AccountUtils.findByAccountKey(am, it)
+            }?.getAccountType(am)))
         }
     }
 

@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util
 
 import android.app.Application
+import de.vanita5.twittnuker.annotation.AccountType
 
 abstract class Analyzer {
 
@@ -35,7 +36,15 @@ abstract class Analyzer {
     protected abstract fun init(application: Application)
 
     interface Event {
-        val account: String?
+        val name: String
+            get() = "Custom Event"
+        @AccountType val accountType: String?
+        @AccountType val accountHost: String?
+            get() = null
+
+        fun forEachValues(action: (key: String, value: String?) -> Unit) {
+
+        }
     }
 
     companion object {
