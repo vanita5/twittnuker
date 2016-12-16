@@ -30,10 +30,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
-import android.util.Log;
 
-import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.IMediaUploader;
 import de.vanita5.twittnuker.model.MediaUploadResult;
 import de.vanita5.twittnuker.model.ParcelableStatus;
@@ -43,7 +40,6 @@ import de.vanita5.twittnuker.model.UserKey;
 
 import java.util.List;
 
-import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
 import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_EXTENSION_UPLOAD_MEDIA;
 
 public final class MediaUploaderInterface extends AbsServiceInterface<IMediaUploader> {
@@ -61,12 +57,9 @@ public final class MediaUploaderInterface extends AbsServiceInterface<IMediaUplo
             final String mediaJson = JsonSerializer.serialize(media, UploaderMediaItem.class);
             return JsonSerializer.parse(iface.upload(statusJson, currentAccountKey.toString(),
                     mediaJson), MediaUploadResult.class);
-        } catch (final RemoteException e) {
-            if (BuildConfig.DEBUG) {
-                Log.w(LOGTAG, e);
-            }
+        } catch (final Exception e) {
+            return MediaUploadResult.error(2, e.getMessage());
         }
-        return null;
     }
 
 
@@ -77,12 +70,9 @@ public final class MediaUploaderInterface extends AbsServiceInterface<IMediaUplo
             final String resultJson = JsonSerializer.serialize(uploadResult, MediaUploadResult.class);
             final String statusJson = JsonSerializer.serialize(status, ParcelableStatus.class);
             return iface.callback(resultJson, statusJson);
-        } catch (final RemoteException e) {
-            if (BuildConfig.DEBUG) {
-                Log.w(LOGTAG, e);
-            }
+        } catch (final Exception e) {
+            return false;
         }
-        return false;
     }
 
     @Override

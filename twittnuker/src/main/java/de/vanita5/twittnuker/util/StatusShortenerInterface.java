@@ -30,10 +30,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
-import android.util.Log;
 
-import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.IStatusShortener;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate;
@@ -42,7 +39,6 @@ import de.vanita5.twittnuker.model.UserKey;
 
 import java.util.List;
 
-import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
 import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_EXTENSION_SHORTEN_STATUS;
 
 public final class StatusShortenerInterface extends AbsServiceInterface<IStatusShortener> {
@@ -66,12 +62,9 @@ public final class StatusShortenerInterface extends AbsServiceInterface<IStatusS
             final String resultJson = iface.shorten(statusJson, currentAccountId.toString(),
                     overrideStatusText);
             return JsonSerializer.parse(resultJson, StatusShortenResult.class);
-        } catch (final RemoteException e) {
-            if (BuildConfig.DEBUG) {
-                Log.w(LOGTAG, e);
-            }
+        } catch (final Exception e) {
+            return StatusShortenResult.error(2, e.getMessage());
         }
-        return null;
     }
 
     public boolean callback(StatusShortenResult result, ParcelableStatus status) {
@@ -81,12 +74,9 @@ public final class StatusShortenerInterface extends AbsServiceInterface<IStatusS
             final String resultJson = JsonSerializer.serialize(result, StatusShortenResult.class);
             final String statusJson = JsonSerializer.serialize(status, ParcelableStatus.class);
             return iface.callback(resultJson, statusJson);
-        } catch (final RemoteException e) {
-            if (BuildConfig.DEBUG) {
-                Log.w(LOGTAG, e);
-            }
+        } catch (final Exception e) {
+            return false;
         }
-        return false;
     }
 
     public static StatusShortenerInterface getInstance(final Application application, final String shortenerName) {

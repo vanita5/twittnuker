@@ -405,10 +405,9 @@ class UpdateStatusTask(
 //                    throw ExtensionVersionMismatchException()
 //                }
 //            }
+//        } catch (e: ExtensionVersionMismatchException) {
+//            throw ShortenException(context.getString(R.string.shortener_version_incompatible))
 //        } catch (e: AbsServiceInterface.CheckServiceException) {
-//            if (e is ExtensionVersionMismatchException) {
-//                throw ShortenException(context.getString(R.string.shortener_version_incompatible))
-//            }
 //            throw ShortenException(e)
 //        }
 
