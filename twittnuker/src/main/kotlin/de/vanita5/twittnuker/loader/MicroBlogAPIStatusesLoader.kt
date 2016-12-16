@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
+import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ListResponse
@@ -48,11 +49,10 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.TwidereArrayUtils
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import org.mariotaku.kpreferences.get
+import java.io.ByteArrayInputStream
 import java.io.IOException
-import java.io.PipedInputStream
-import java.io.PipedOutputStream
 import java.util.*
-import java.util.concurrent.Callable
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicReference
@@ -228,17 +228,12 @@ abstract class MicroBlogAPIStatusesLoader(
     private fun saveCachedData(data: List<ParcelableStatus>?) {
         val key = serializationKey
         if (key == null || data == null) return
-        val databaseItemLimit = preferences.getInt(KEY_DATABASE_ITEM_LIMIT, DEFAULT_DATABASE_ITEM_LIMIT)
+        val databaseItemLimit = preferences[loadItemLimitKey]
         try {
             val statuses = data.subList(0, Math.min(databaseItemLimit, data.size))
-            val pos = PipedOutputStream()
-            val pis = PipedInputStream(pos)
-            val future = pool.submit(Callable<Unit> {
-                LoganSquare.serialize(statuses, pos)
-            })
-            val saved = fileCache.save(key, pis) { current, total -> !future.isDone }
-            if (BuildConfig.DEBUG) {
-                Log.v(LOGTAG, key + " saved: " + saved)
+            fileCache.save(key, ByteArrayInputStream(byteArrayOf())) { current, total -> true }
+            fileCache.get(key)?.outputStream()?.use {
+                LoganSquare.serialize(statuses, it, ParcelableStatus::class.java)
             }
         } catch (e: Exception) {
             // Ignore
