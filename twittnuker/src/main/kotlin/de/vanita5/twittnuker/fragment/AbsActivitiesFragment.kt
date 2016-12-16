@@ -68,7 +68,10 @@ import java.util.*
 
 abstract class AbsActivitiesFragment protected constructor() : AbsContentListRecyclerViewFragment<ParcelableActivitiesAdapter>(), LoaderCallbacks<List<ParcelableActivity>>, ParcelableActivitiesAdapter.ActivityAdapterListener, KeyboardShortcutCallback {
 
-    private val statusesBusCallback: Any
+    private lateinit var activitiesBusCallback: Any
+    private lateinit var navigationHelper: RecyclerViewNavigationHelper
+
+    private var pauseOnScrollListener: OnScrollListener? = null
 
     private val onScrollListener = object : OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
@@ -79,11 +82,22 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
         }
     }
 
-    private var navigationHelper: RecyclerViewNavigationHelper? = null
-    private var pauseOnScrollListener: OnScrollListener? = null
 
-    init {
-        statusesBusCallback = createMessageBusCallback()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        activitiesBusCallback = createMessageBusCallback()
+        scrollListener!!.reversed = preferences.getBoolean(KEY_READ_FROM_BOTTOM)
+        val layoutManager = layoutManager
+        adapter.setListener(this)
+        registerForContextMenu(recyclerView)
+        navigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
+                this)
+        pauseOnScrollListener = PauseRecyclerViewOnScrollListener(adapter.mediaLoader.imageLoader, false, true)
+
+        val loaderArgs = Bundle(arguments)
+        loaderArgs.putBoolean(IntentConstants.EXTRA_FROM_USER, true)
+        loaderManager.initLoader(0, loaderArgs, this)
+        showProgress()
     }
 
     abstract fun getActivities(param: RefreshTaskParam): Boolean
@@ -136,7 +150,7 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
                 }
             }
         }
-        return navigationHelper!!.handleKeyboardShortcutSingle(handler, keyCode, event, metaState)
+        return navigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event, metaState)
     }
 
     private fun openActivity(activity: ParcelableActivity) {
@@ -158,12 +172,12 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
         when (action) {
             ACTION_STATUS_REPLY, ACTION_STATUS_RETWEET, ACTION_STATUS_FAVORITE -> return true
         }
-        return navigationHelper!!.isKeyboardShortcutHandled(handler, keyCode, event, metaState)
+        return navigationHelper.isKeyboardShortcutHandled(handler, keyCode, event, metaState)
     }
 
     override fun handleKeyboardShortcutRepeat(handler: KeyboardShortcutsHandler, keyCode: Int, repeatCount: Int,
                                               event: KeyEvent, metaState: Int): Boolean {
-        return navigationHelper!!.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState)
+        return navigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState)
     }
 
     override fun onCreateLoader(id: Int, args: Bundle): Loader<List<ParcelableActivity>> {
@@ -329,11 +343,11 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
         super.onStart()
         recyclerView.addOnScrollListener(onScrollListener)
         recyclerView.addOnScrollListener(pauseOnScrollListener)
-        bus.register(statusesBusCallback)
+        bus.register(activitiesBusCallback)
     }
 
     override fun onStop() {
-        bus.unregister(statusesBusCallback)
+        bus.unregister(activitiesBusCallback)
         recyclerView.removeOnScrollListener(pauseOnScrollListener)
         recyclerView.removeOnScrollListener(onScrollListener)
         if (userVisibleHint) {
@@ -352,23 +366,6 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
             saveReadPosition(0)
         }
         return result
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        //no reverse
-        //        scrollListener!!.reversed = preferences.getBoolean(KEY_READ_FROM_BOTTOM))
-        val layoutManager = layoutManager
-        adapter.setListener(this)
-        registerForContextMenu(recyclerView)
-        navigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
-                this)
-        pauseOnScrollListener = PauseRecyclerViewOnScrollListener(adapter.mediaLoader.imageLoader, false, true)
-
-        val loaderArgs = Bundle(arguments)
-        loaderArgs.putBoolean(IntentConstants.EXTRA_FROM_USER, true)
-        loaderManager.initLoader(0, loaderArgs, this)
-        showProgress()
     }
 
     override val reachingEnd: Boolean

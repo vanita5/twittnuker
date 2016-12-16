@@ -715,9 +715,7 @@ class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<Account
 
     class AccountsInfoLoader(context: Context) : AsyncTaskLoader<AccountsInfo>(context) {
         private var contentObserver: ContentObserver? = null
-        private val accountListener = OnAccountsUpdateListener {
-            onContentChanged()
-        }
+        private var accountListener: OnAccountsUpdateListener? = null
 
         private var firstLoad: Boolean
 
@@ -745,7 +743,10 @@ class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<Account
                 context.contentResolver.unregisterContentObserver(contentObserver)
                 contentObserver = null
             }
-            AccountManager.get(context).removeOnAccountsUpdatedListenerSafe(accountListener)
+            if (accountListener != null) {
+                AccountManager.get(context).removeOnAccountsUpdatedListenerSafe(accountListener!!)
+                accountListener = null
+            }
         }
 
         /**
@@ -766,7 +767,12 @@ class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<Account
                 }
                 context.contentResolver.registerContentObserver(Drafts.CONTENT_URI, true, contentObserver)
             }
-            AccountManager.get(context).addOnAccountsUpdatedListenerSafe(accountListener, updateImmediately = false)
+            if (accountListener == null) {
+                accountListener = OnAccountsUpdateListener {
+                    onContentChanged()
+                }
+                AccountManager.get(context).addOnAccountsUpdatedListenerSafe(accountListener!!, updateImmediately = false)
+            }
 
             if (takeContentChanged() || firstLoad) {
                 firstLoad = false
