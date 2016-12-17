@@ -28,7 +28,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.apache.commons.lang3.StringUtils;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.annotation.AuthTypeInt;
@@ -108,9 +107,10 @@ public class AccountUtils {
         return details;
     }
 
-    public static Account findByScreenName(AccountManager am, String screenName) {
+    @Nullable
+    public static Account findByScreenName(AccountManager am, @NonNull String screenName) {
         for (Account account : getAccounts(am)) {
-            if (StringUtils.equalsIgnoreCase(UserKey.valueOf(account.name).getId(), screenName)) {
+            if (screenName.equalsIgnoreCase(AccountExtensionsKt.getAccountUser(account, am).screen_name)) {
                 return account;
             }
         }

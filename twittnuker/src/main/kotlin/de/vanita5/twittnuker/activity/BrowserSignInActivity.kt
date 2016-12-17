@@ -59,6 +59,7 @@ import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient
 
 import java.io.IOException
 import java.io.StringReader
+import java.lang.ref.WeakReference
 
 @SuppressLint("SetJavaScriptEnabled")
 class BrowserSignInActivity : BaseActivity() {
@@ -194,15 +195,17 @@ class BrowserSignInActivity : BaseActivity() {
 
     }
 
-    internal class GetRequestTokenTask(private val activity: BrowserSignInActivity) : AsyncTask<Any, Any, SingleResponse<OAuthToken>>() {
+    internal class GetRequestTokenTask(activity: BrowserSignInActivity) : AsyncTask<Any, Any, SingleResponse<OAuthToken>>() {
+        private val activityRef: WeakReference<BrowserSignInActivity>
         private val apiConfig: CustomAPIConfig
 
         init {
-            val intent = activity.intent
-            apiConfig = intent.getParcelableExtra<CustomAPIConfig>(EXTRA_API_CONFIG)
+            activityRef = WeakReference(activity)
+            apiConfig = activity.intent.getParcelableExtra(EXTRA_API_CONFIG)
         }
 
         override fun doInBackground(vararg params: Any): SingleResponse<OAuthToken> {
+            val activity = activityRef.get() ?: return SingleResponse(exception = InterruptedException())
             if (isEmpty(apiConfig.consumerKey) || isEmpty(apiConfig.consumerSecret)) {
                 return SingleResponse()
             }
@@ -210,16 +213,17 @@ class BrowserSignInActivity : BaseActivity() {
                 val endpoint = MicroBlogAPIFactory.getOAuthSignInEndpoint(apiConfig.apiUrlFormat,
                         apiConfig.isSameOAuthUrl)
                 val auth = OAuthAuthorization(apiConfig.consumerKey, apiConfig.consumerSecret)
-                val oauth = newMicroBlogInstance(activity, endpoint,
-                        auth, true, null, TwitterOAuth::class.java)
-                return SingleResponse(oauth.getRequestToken(TwittnukerConstants.OAUTH_CALLBACK_OOB), null, Bundle())
+                val oauth = newMicroBlogInstance(activity, endpoint, auth, true, null,
+                        TwitterOAuth::class.java)
+                return SingleResponse(oauth.getRequestToken(TwittnukerConstants.OAUTH_CALLBACK_OOB))
             } catch (e: MicroBlogException) {
-                return SingleResponse(null, e, Bundle())
+                return SingleResponse(exception = e)
             }
 
         }
 
         override fun onPostExecute(result: SingleResponse<OAuthToken>) {
+            val activity = activityRef.get() ?: return
             activity.setLoadProgressShown(false)
             if (result.hasData()) {
                 val token = result.data!!
@@ -238,6 +242,7 @@ class BrowserSignInActivity : BaseActivity() {
         }
 
         override fun onPreExecute() {
+            val activity = activityRef.get() ?: return
             activity.setLoadProgressShown(true)
         }
 

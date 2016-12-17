@@ -31,7 +31,7 @@ import android.support.v4.util.LongSparseArray
 import android.text.TextUtils
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.TwittnukerConstants
+import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_TYPE
 import de.vanita5.twittnuker.extension.setAccountKey
 import de.vanita5.twittnuker.extension.setAccountUser
 import de.vanita5.twittnuker.model.*
@@ -54,7 +54,7 @@ class UpdateAccountInfoTask(
         }
 
         val am = AccountManager.get(context)
-        val account = Account(details.account.name, TwittnukerConstants.ACCOUNT_TYPE)
+        val account = Account(details.account.name, ACCOUNT_TYPE)
         account.setAccountUser(am, user)
         account.setAccountKey(am, user.key)
 
