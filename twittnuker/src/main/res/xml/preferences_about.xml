@@ -36,21 +36,21 @@
             android:title="@string/project_account">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="twittnuker://user?user_key=2238101485@twitter.com&amp;finish_only=true" />
+                android:data="twittnuker://user?user_key=2238101485@twitter.com&amp;account_host=twitter.com&amp;finish_only=true" />
         </Preference>
         <Preference
             android:summary="@string/developer_name"
             android:title="@string/developed_by">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="twittnuker://user?user_key=335920521@twitter.com&amp;finish_only=true" />
+                android:data="twittnuker://user?user_key=335920521@twitter.com&amp;account_host=twitter.com&amp;finish_only=true" />
         </Preference>
         <Preference
             android:summary="@string/twidere_project_account"
             android:title="@string/twidere_developed_by">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="twittnuker://user?user_key=583328497@twitter.com&amp;finish_only=true" />
+                android:data="twittnuker://user?user_key=583328497@twitter.com&amp;account_host=twitter.com&amp;finish_only=true" />
         </Preference>
     </PreferenceCategory>
     <PreferenceCategory
@@ -103,35 +103,35 @@
             android:title="trvmmergemyt">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="twittnuker://user?user_key=1036836883@twitter.com&amp;finish_only=true"/>
+                android:data="twittnuker://user?user_key=1036836883@twitter.com&amp;account_host=twitter.com&amp;finish_only=true"/>
         </Preference>
         <Preference
             android:summary="for some logos"
             android:title="kinaudiz">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="twittnuker://user?user_key=2754101507@twitter.com&amp;finish_only=true" />
+                android:data="twittnuker://user?user_key=2754101507@twitter.com&amp;account_host=twitter.com&amp;finish_only=true" />
         </Preference>
         <Preference
             android:summary="for the awesome Twittnuker website"
             android:title="pixeldesu">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="twittnuker://user?user_key=2823141749@twitter.com&amp;finish_only=true" />
+                android:data="twittnuker://user?user_key=2823141749@twitter.com&amp;account_host=twitter.com&amp;finish_only=true" />
         </Preference>
         <Preference
             android:summary="for the screenshots provided"
             android:title="nilsding and therealkings86">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="twittnuker://user_list_members?list_id=112765631&amp;user_key=2493385122@twitter.com&amp;finish_only=true" />
+                android:data="twittnuker://user_list_members?list_id=112765631&amp;user_key=2493385122@twitter.com&amp;account_host=twitter.com&amp;finish_only=true" />
         </Preference>
         <Preference
             android:summary="for the Japanese translation"
             android:title="Noumi Ryoko (AndroPlus)">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="twittnuker://user?user_key=210818534@twitter.com&amp;finish_only=true" />
+                android:data="twittnuker://user?user_key=210818534@twitter.com&amp;account_host=twitter.com&amp;finish_only=true" />
         </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/contact">
