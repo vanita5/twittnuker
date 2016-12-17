@@ -193,9 +193,12 @@ public class Tab implements Parcelable {
     public static String getTypeAlias(String key) {
         if (key == null) return null;
         switch (key) {
+            case "mentions":
             case "mentions_timeline":
             case "activities_about_me":
                 return CustomTabType.NOTIFICATIONS_TIMELINE;
+            case "home":
+                return CustomTabType.HOME_TIMELINE;
         }
         return key;
     }

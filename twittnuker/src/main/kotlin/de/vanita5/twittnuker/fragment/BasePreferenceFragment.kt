@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.preference.RingtonePreference
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import org.mariotaku.kpreferences.KPreferences
 
 import javax.inject.Inject
 
@@ -46,6 +47,8 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
     lateinit var keyboardShortcutHandler: KeyboardShortcutsHandler
     @Inject
     lateinit var userColorNameManager: UserColorNameManager
+    @Inject
+    lateinit var kPreferences: KPreferences
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
