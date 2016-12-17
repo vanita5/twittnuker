@@ -31,7 +31,6 @@ import android.os.Bundle
 import android.support.annotation.DrawableRes
 import android.support.annotation.XmlRes
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
@@ -216,7 +215,7 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
         if (isFinishing) return
         val entry = entriesAdapter.getItem(position) as? PreferenceEntry ?: return
         val fm = supportFragmentManager
-        fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        fm.popBackStackImmediate(null, 0)
         val ft = fm.beginTransaction()
         if (entry.preference != 0) {
             val args = Bundle()

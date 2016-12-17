@@ -21,7 +21,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout
+<de.vanita5.twittnuker.view.AccountDashboardHeaderView
     android:id="@+id/accountDashboardHeader"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -29,6 +29,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
+    app:sizeMeasurementId="@+id/profileContainer"
     tools:layout_height="160dp"
     tools:layout_width="280dp">
 
@@ -74,7 +75,7 @@
             <de.vanita5.twittnuker.view.ExtendedViewPager
                 android:id="@+id/otherAccountsList"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:layout_alignBottom="@id/profileImage"
                 android:layout_alignTop="@id/profileImage"
                 android:layout_marginBottom="@dimen/element_spacing_large"
@@ -205,4 +206,4 @@
 
     </FrameLayout>
 
-</RelativeLayout>
+</de.vanita5.twittnuker.view.AccountDashboardHeaderView>
