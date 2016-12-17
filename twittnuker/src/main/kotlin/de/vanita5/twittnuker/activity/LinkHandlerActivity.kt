@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
 import de.vanita5.twittnuker.constant.CompatibilityConstants
+import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_SIMPLE_LAYOUT
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER_KEY
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants
@@ -163,7 +164,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             val accountHost: String? = intent.getStringExtra(EXTRA_ACCOUNT_HOST) ?:
                     uri.getQueryParameter(QUERY_PARAM_ACCOUNT_HOST) ?: e.accountHost
             selectIntent.putExtra(EXTRA_SINGLE_SELECTION, true)
-            selectIntent.putExtra(EXTRA_SELECT_ONLY_ITEM, true)
+            selectIntent.putExtra(EXTRA_SELECT_ONLY_ITEM_AUTOMATICALLY, true)
             selectIntent.putExtra(EXTRA_ACCOUNT_HOST, accountHost)
             selectIntent.putExtra(EXTRA_START_INTENT, intent)
             startActivity(selectIntent)
