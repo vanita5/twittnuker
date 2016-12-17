@@ -132,4 +132,8 @@ private fun ParcelableCredentials.getCredentialsType(): String {
 
 @Suppress("deprecation")
 private val ParcelableCredentials.account_name: String
-    get() = UserKey(screen_name, account_key.host).toString()
+    get() = generateAccountName(screen_name, account_key.host)
+
+fun generateAccountName(screenName: String, accountHost: String?): String {
+    return UserKey(screenName, accountHost).toString()
+}

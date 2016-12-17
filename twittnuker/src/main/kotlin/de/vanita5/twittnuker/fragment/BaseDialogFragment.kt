@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import org.mariotaku.kpreferences.KPreferences
 import javax.inject.Inject
 
-open class BaseDialogFragment : DialogFragment(), Constants {
+open class BaseDialogFragment : DialogFragment() {
 
     @Inject
     lateinit var twitterWrapper: AsyncTwitterWrapper

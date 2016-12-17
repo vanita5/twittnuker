@@ -24,9 +24,16 @@ package de.vanita5.twittnuker.model.util;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.content.Context;
+import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.AccountType;
@@ -36,12 +43,34 @@ import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
+import de.vanita5.twittnuker.util.support.AccountManagerSupport;
 
+import java.io.IOException;
 import java.util.Arrays;
 
+import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_AUTH_TOKEN_TYPE;
 import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_TYPE;
+import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_ACTIVATED;
+import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_COLOR;
+import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_CREDS_TYPE;
+import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_EXTRAS;
+import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_KEY;
+import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_POSITION;
+import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_TYPE;
+import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_USER;
 
 public class AccountUtils {
+
+    public static final String[] ACCOUNT_USER_DATA_KEYS = {
+            ACCOUNT_USER_DATA_KEY,
+            ACCOUNT_USER_DATA_TYPE,
+            ACCOUNT_USER_DATA_CREDS_TYPE,
+            ACCOUNT_USER_DATA_ACTIVATED,
+            ACCOUNT_USER_DATA_USER,
+            ACCOUNT_USER_DATA_EXTRAS,
+            ACCOUNT_USER_DATA_COLOR,
+            ACCOUNT_USER_DATA_POSITION,
+    };
 
     @Nullable
     public static Account findByAccountKey(@NonNull AccountManager am, @NonNull UserKey userKey) {
@@ -157,6 +186,42 @@ public class AccountUtils {
                 return Credentials.Type.OAUTH2;
         }
         throw new UnsupportedOperationException();
+    }
+
+    public static Account renameAccount(AccountManager am, Account oldAccount, String newName) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            try {
+                return AccountManagerSupportL.renameAccount(am, oldAccount, newName, null, null).getResult();
+            } catch (OperationCanceledException e) {
+                return null;
+            } catch (IOException e) {
+                return null;
+            } catch (AuthenticatorException e) {
+                return null;
+            }
+        }
+        final Account newAccount = new Account(newName, oldAccount.type);
+        if (am.addAccountExplicitly(newAccount, null, null)) {
+            for (String key : ACCOUNT_USER_DATA_KEYS) {
+                am.setUserData(newAccount, key, am.getUserData(oldAccount, key));
+            }
+            am.setAuthToken(newAccount, ACCOUNT_AUTH_TOKEN_TYPE,
+                    am.peekAuthToken(oldAccount, ACCOUNT_AUTH_TOKEN_TYPE));
+            AccountManagerSupport.removeAccount(am, oldAccount, null, null, null);
+            return newAccount;
+        }
+        return null;
+    }
+
+    private static class AccountManagerSupportL {
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        static AccountManagerFuture<Account> renameAccount(AccountManager am, Account account,
+                                                           String newName,
+                                                           AccountManagerCallback<Account> callback,
+                                                           Handler handler) {
+            return am.renameAccount(account, newName, callback, handler);
+        }
     }
 
 }

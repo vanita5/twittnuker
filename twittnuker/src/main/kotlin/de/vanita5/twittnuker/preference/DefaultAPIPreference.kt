@@ -35,6 +35,8 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Toast
 import org.mariotaku.kpreferences.KPreferences
+import org.mariotaku.ktextension.Bundle
+import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.APIEditorActivity
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_API_CONFIG
@@ -144,9 +146,9 @@ class DefaultAPIPreference @JvmOverloads constructor(context: Context,
 
             fun newInstance(key: String): DefaultAPIPreferenceDialogFragment {
                 val df = DefaultAPIPreferenceDialogFragment()
-                val args = Bundle()
-                args.putString(PreferenceDialogFragmentCompat.ARG_KEY, key)
-                df.arguments = args
+                df.arguments = Bundle {
+                    this[PreferenceDialogFragmentCompat.ARG_KEY] = key
+                }
                 return df
             }
         }
