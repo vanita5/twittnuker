@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.activity
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.accounts.OnAccountsUpdateListener
-import android.app.PendingIntent
+import android.app.Dialog
 import android.app.SearchManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -45,6 +45,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener
 import android.support.v4.widget.DrawerLayout
 import android.support.v4.widget.DrawerLayoutAccessor
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.TintTypedArray
 import android.text.TextUtils
@@ -78,6 +79,7 @@ import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
+import de.vanita5.twittnuker.constant.defaultAutoRefreshKeyAsked
 import de.vanita5.twittnuker.constant.drawerTutorialCompleted
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
@@ -322,6 +324,10 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
             signInIntent.setClass(this, SignInActivity::class.java)
             startActivity(signInIntent)
             finish()
+            if (defaultAutoRefreshKeyAsked !in kPreferences) {
+                // Assume first install
+                kPreferences[defaultAutoRefreshKeyAsked] = false
+            }
             return
         } else {
             notifyAccountsChanged()
@@ -403,7 +409,9 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
                 savedInstanceState != null)
         setTabPosition(initialTabPosition)
 
-        openDrawerTutorial()
+        if (!showDrawerTutorial() && !kPreferences[defaultAutoRefreshKeyAsked]) {
+            showAutoRefreshConfirm()
+        }
     }
 
     override fun onStart() {
@@ -760,7 +768,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         homeMenu.openDrawer(GravityCompat.START)
     }
 
-    private fun openDrawerTutorial(): Boolean {
+    private fun showDrawerTutorial(): Boolean {
         if (preferences[drawerTutorialCompleted]) return false
         val targetSize = resources.getDimensionPixelSize(R.dimen.element_size_mlarge)
         val height = resources.displayMetrics.heightPixels
@@ -774,6 +782,8 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
 
             override fun onTargetDismissed(view: TapTargetView?, userInitiated: Boolean) {
                 preferences[drawerTutorialCompleted] = true
+                showAutoRefreshConfirm()
+
             }
         }
         val target = Rect(0, 0, targetSize, targetSize)
@@ -787,6 +797,10 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
                 }, listener)
 
         return true
+    }
+
+    private fun showAutoRefreshConfirm() {
+
     }
 
     private fun setTabPosition(initialTab: Int) {
@@ -952,6 +966,21 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         }
 
         internal class TabBadge(var index: Int, var count: Int)
+    }
+
+    class AutoRefreshConfirmDialogFragment : BaseDialogFragment() {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle(R.string.auto_refresh)
+            builder.setMessage(R.string.message_auto_refresh_confirm)
+            builder.setPositiveButton(android.R.string.ok) { dialog, which ->
+
+            }
+            builder.setPositiveButton(R.string.no_thanks) { dialog, which ->
+
+            }
+            return builder.create()
+        }
     }
 
     companion object {

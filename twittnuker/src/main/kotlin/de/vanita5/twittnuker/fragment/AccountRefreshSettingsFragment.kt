@@ -23,9 +23,10 @@
 package de.vanita5.twittnuker.fragment
 
 import android.content.SharedPreferences
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.DEFAULT_AUTO_REFRESH
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_AUTO_REFRESH
+import de.vanita5.twittnuker.constant.defaultAutoRefreshKey
 import de.vanita5.twittnuker.util.Utils
 
 class AccountRefreshSettingsFragment : BaseAccountPreferenceFragment() {
@@ -34,7 +35,7 @@ class AccountRefreshSettingsFragment : BaseAccountPreferenceFragment() {
         get() = R.xml.preferences_account_refresh
 
     override val switchPreferenceDefault: Boolean
-        get() = DEFAULT_AUTO_REFRESH
+        get() = preferenceManager.sharedPreferences[defaultAutoRefreshKey]
 
     override val switchPreferenceKey: String?
         get() = KEY_AUTO_REFRESH
