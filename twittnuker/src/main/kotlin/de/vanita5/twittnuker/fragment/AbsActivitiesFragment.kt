@@ -36,6 +36,7 @@ import android.util.Log
 import android.view.*
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
@@ -50,6 +51,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
+import de.vanita5.twittnuker.constant.readFromBottomKey
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.DefaultOnLikedListener
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
@@ -71,7 +73,7 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
     private lateinit var activitiesBusCallback: Any
     private lateinit var navigationHelper: RecyclerViewNavigationHelper
 
-    private var pauseOnScrollListener: OnScrollListener? = null
+    private lateinit var pauseOnScrollListener: OnScrollListener
 
     private val onScrollListener = object : OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
@@ -86,8 +88,7 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         activitiesBusCallback = createMessageBusCallback()
-        scrollListener!!.reversed = preferences.getBoolean(KEY_READ_FROM_BOTTOM)
-        val layoutManager = layoutManager
+        scrollListener.reversed = preferences[readFromBottomKey]
         adapter.setListener(this)
         registerForContextMenu(recyclerView)
         navigationHelper = RecyclerViewNavigationHelper(recyclerView, layoutManager, adapter,
@@ -108,13 +109,11 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
             triggerRefresh()
             return true
         }
-        val layoutManager = layoutManager
-        if (recyclerView == null || layoutManager == null) return false
         val focusedChild = RecyclerViewUtils.findRecyclerViewChild(recyclerView,
                 layoutManager.focusedChild)
         var position = RecyclerView.NO_POSITION
         if (focusedChild != null && focusedChild.parent === recyclerView) {
-            position = recyclerView!!.getChildLayoutPosition(focusedChild)
+            position = recyclerView.getChildLayoutPosition(focusedChild)
         }
         if (position != RecyclerView.NO_POSITION) {
             val activity = adapter.getActivity(position) ?: return false
@@ -439,14 +438,13 @@ abstract class AbsActivitiesFragment protected constructor() : AbsContentListRec
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
         if (!userVisibleHint || menuInfo == null) return
         val inflater = MenuInflater(context)
-        val contextMenuInfo = menuInfo as ExtendedRecyclerView.ContextMenuInfo?
-        val position = contextMenuInfo!!.position
+        val contextMenuInfo = menuInfo as ExtendedRecyclerView.ContextMenuInfo
+        val position = contextMenuInfo.position
         when (adapter.getItemViewType(position)) {
             ITEM_VIEW_TYPE_STATUS -> {
                 val status = getActivityStatus(position) ?: return
                 inflater.inflate(R.menu.action_status, menu)
-                MenuUtils.setupForStatus(context, preferences, menu, status,
-                        twitterWrapper)
+                MenuUtils.setupForStatus(context, preferences, menu, status, twitterWrapper)
             }
         }
     }

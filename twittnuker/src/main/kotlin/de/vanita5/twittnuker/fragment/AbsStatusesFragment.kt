@@ -32,14 +32,12 @@ import android.support.v4.content.Loader
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.OnScrollListener
-import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.BuildConfig
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter
@@ -62,7 +60,6 @@ import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.GapViewHolder
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
-import java.util.*
 
 abstract class AbsStatusesFragment protected constructor() :
         AbsContentListRecyclerViewFragment<ParcelableStatusesAdapter>(),
@@ -74,6 +71,7 @@ abstract class AbsStatusesFragment protected constructor() :
     private var pauseOnScrollListener: OnScrollListener? = null
     var loaderInitialized: Boolean = false
         private set
+
     private val onScrollListener = object : OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
