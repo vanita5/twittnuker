@@ -34,6 +34,10 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_NAME;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_SEARCH_ID;
+
 public class DestroySavedSearchDialogFragment extends BaseDialogFragment implements
         DialogInterface.OnClickListener {
 

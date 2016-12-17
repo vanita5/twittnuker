@@ -34,6 +34,8 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER_LIST;
+
 public class DestroyUserListDialogFragment extends BaseDialogFragment implements DialogInterface.OnClickListener {
 
     public static final String FRAGMENT_TAG = "destroy_user_list";

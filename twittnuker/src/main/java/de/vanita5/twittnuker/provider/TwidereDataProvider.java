@@ -99,7 +99,6 @@ import de.vanita5.twittnuker.model.UnreadItem;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
-import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedImages;
@@ -1154,8 +1153,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         if (context == null) return;
         final Resources resources = context.getResources();
         final NotificationManagerWrapper nm = mNotificationManager;
-        final Expression selection = Expression.and(Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY),
-                Expression.greaterThan(Statuses.STATUS_ID, position));
+        final Expression selection = Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_KEY),
+                Expression.greaterThan(Statuses.POSITION_KEY, position));
         final String filteredSelection = DataStoreUtils.buildStatusFilterWhereClause(Statuses.TABLE_NAME,
                 selection).getSQL();
         final String[] selectionArgs = {accountKey.toString()};
@@ -1229,8 +1228,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final SQLiteDatabase db = mDatabaseWrapper.getSQLiteDatabase();
         final UserKey accountKey = pref.getAccountKey();
         final String where = Expression.and(
-                Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY),
-                Expression.greaterThanArgs(Activities.TIMESTAMP)
+                Expression.equalsArgs(Activities.ACCOUNT_KEY),
+                Expression.greaterThanArgs(Activities.POSITION_KEY)
         ).getSQL();
         final String[] whereArgs = {accountKey.toString(), String.valueOf(position)};
         Cursor c = query(Activities.AboutMe.CONTENT_URI, Activities.COLUMNS, where, whereArgs,
@@ -1413,7 +1412,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         orExpressions.add(Expression.notIn(new Column(DirectMessages.SENDER_ID), new ArgsArray(senderIds.size())));
         whereArgs.addAll(senderIds);
         final Expression selection = Expression.and(
-                Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY),
+                Expression.equalsArgs(DirectMessages.ACCOUNT_KEY),
                 Expression.greaterThanArgs(DirectMessages.MESSAGE_ID),
                 Expression.or(orExpressions.toArray(new Expression[orExpressions.size()]))
         );

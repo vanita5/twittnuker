@@ -61,6 +61,10 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static android.os.Environment.getExternalStorageDirectory;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACTION;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FILE_EXTENSIONS;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_PATH;
+import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_PICK_DIRECTORY;
 
 public class FileSelectorDialogFragment extends BaseDialogFragment implements LoaderCallbacks<List<File>>,
         OnClickListener, OnItemClickListener {
