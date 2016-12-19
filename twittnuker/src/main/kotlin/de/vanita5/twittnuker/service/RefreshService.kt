@@ -26,10 +26,8 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import org.mariotaku.abstask.library.AbstractTask
-import org.mariotaku.ktextension.convert
-import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
+import org.mariotaku.abstask.library.TaskStarter
 import de.vanita5.twittnuker.annotation.AutoRefreshType
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.model.AccountPreferences
@@ -57,9 +55,9 @@ class RefreshService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d(LOGTAG, "onStartCommand ${intent?.action}")
         val task = run {
-            val type = intent?.action?.convert { getRefreshType(it) } ?: return@run null
+            val action = intent?.action ?: return@run null
+            val type = getRefreshType(action) ?: return@run null
             return@run createJobTask(this, type)
         } ?: run {
             stopSelfResult(startId)
@@ -68,6 +66,7 @@ class RefreshService : Service() {
         task.callback = {
             stopSelfResult(startId)
         }
+        TaskStarter.execute(task)
         return START_NOT_STICKY
     }
 
