@@ -767,6 +767,8 @@
     <string name="load_defaults">Voreinstellungen</string>
     <string name="new_document_api">New Document API</string>
     <string name="new_document_api_summary">Öffne Profile und Medien in einem neuen Fenster</string>
+    <string name="preference_multitasking">Multitasking</string>
+    <string name="preference_multitasking_summary">Öffne Profile und Medien in einem neuen Fenster</string>
     <string name="drawer_toggle">Menu Button</string>
     <string name="group">Gruppe</string>
     <string name="your_coarse_location">Dein ungefährer Standort</string>
