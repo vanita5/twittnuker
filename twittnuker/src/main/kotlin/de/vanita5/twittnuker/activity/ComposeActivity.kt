@@ -971,8 +971,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             }
         }
 
-        mentions.filterNot { it.equals(status.user_screen_name, ignoreCase = true)
-                || it.equals(accountUser.screen_name, ignoreCase = true) }
+        mentions.filterNot {
+            it.equals(status.user_screen_name, ignoreCase = true)
+                    || it.equals(accountUser.screen_name, ignoreCase = true)
+        }
                 .forEach { editText.append("@$it ") }
         val selectionEnd = editText.length()
         editText.setSelection(selectionStart, selectionEnd)
@@ -1725,7 +1727,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         override fun onClick(v: View) {
             when (v.id) {
                 R.id.remove -> {
-                    adapter?.remove(layoutPosition)
+                    val adapter = this.adapter ?: return
+                    if (layoutPosition >= 0 && layoutPosition < adapter.itemCount) {
+                        adapter.remove(layoutPosition)
+                    }
                 }
                 R.id.edit -> {
                     itemView.parent.showContextMenuForChild(itemView)
@@ -1745,7 +1750,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 (activity as ComposeActivity).setMediaAltText(arguments.getInt(EXTRA_POSITION),
                         ParseUtils.parseString(editText.text))
             }
-            builder.setNeutralButton(R.string.clear) { dialogInterface, i -> (activity as ComposeActivity).setMediaAltText(arguments.getInt(EXTRA_POSITION), null) }
+            builder.setNeutralButton(R.string.clear) { dialogInterface, i ->
+                (activity as ComposeActivity).setMediaAltText(arguments.getInt(EXTRA_POSITION), null)
+            }
             val dialog = builder.create()
             dialog.setOnShowListener { dialog ->
                 val materialDialog = dialog as Dialog
