@@ -44,6 +44,7 @@ import org.mariotaku.mediaviewer.library.MediaDownloader
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
@@ -219,6 +220,14 @@ class ApplicationModule(private val application: Application) {
     @Provides
     fun provideBidiFormatter(): BidiFormatter {
         return BidiFormatter.getInstance()
+    }
+
+    @Provides
+    fun autoRefreshController(kPreferences: KPreferences): AutoRefreshController {
+        if (application.resources.getBoolean(R.bool.use_job_refresh_service)) {
+            return JobSchedulerAutoRefreshController(application, kPreferences)
+        }
+        return LegacyAutoRefreshController(application, kPreferences)
     }
 
     @Provides

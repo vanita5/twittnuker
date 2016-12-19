@@ -22,11 +22,9 @@
 
 package de.vanita5.twittnuker.fragment
 
-import android.content.SharedPreferences
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_AUTO_REFRESH
 import de.vanita5.twittnuker.constant.defaultAutoRefreshKey
-import de.vanita5.twittnuker.util.Utils
 
 class AccountRefreshSettingsFragment : BaseAccountPreferenceFragment() {
 
@@ -39,9 +37,4 @@ class AccountRefreshSettingsFragment : BaseAccountPreferenceFragment() {
     override val switchPreferenceKey: String?
         get() = KEY_AUTO_REFRESH
 
-    override fun onSharedPreferenceChanged(preferences: SharedPreferences, key: String) {
-        if (KEY_AUTO_REFRESH == key) {
-            Utils.startRefreshServiceIfNeeded(activity)
-        }
-    }
 }

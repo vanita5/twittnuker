@@ -47,7 +47,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -131,7 +130,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-import de.vanita5.twittnuker.service.RefreshService;
 import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView;
@@ -1129,27 +1127,6 @@ public final class Utils implements Constants {
         showErrorMessage(context, message, long_message);
     }
 
-    public static void startRefreshServiceIfNeeded(@NonNull final Context context) {
-        final Context appContext = context.getApplicationContext();
-        if (appContext == null) return;
-        if (!appContext.getResources().getBoolean(R.bool.use_legacy_refresh_service)) return;
-        final Intent refreshServiceIntent = new Intent(appContext, RefreshService.class);
-        DataStoreUtils.prepareDatabase(context);
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (isNetworkAvailable(appContext) && hasAutoRefreshAccounts(appContext)) {
-                    if (BuildConfig.DEBUG) {
-                        Log.d(LOGTAG, "Start background refresh service");
-                    }
-                    appContext.startService(refreshServiceIntent);
-                } else {
-                    appContext.stopService(refreshServiceIntent);
-                }
-            }
-        });
-    }
-
     public static void startStatusShareChooser(final Context context, final ParcelableStatus status) {
         final Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
@@ -1173,10 +1150,6 @@ public final class Utils implements Constants {
             list.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
                     MotionEvent.ACTION_UP, 0, 0, 0));
         }
-    }
-
-    public static String trim(final String str) {
-        return str != null ? str.trim() : null;
     }
 
     public static String trimLineBreak(final String orig) {
@@ -1276,11 +1249,6 @@ public final class Utils implements Constants {
         return null;
     }
 
-
-    public static void setSharedElementTransition(Context context, Window window, int transitionRes) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
-        UtilsL.setSharedElementTransition(context, window, transitionRes);
-    }
 
     public static <T> Object findFieldOfTypes(T obj, Class<? extends T> cls, Class<?>... checkTypes) {
         labelField:

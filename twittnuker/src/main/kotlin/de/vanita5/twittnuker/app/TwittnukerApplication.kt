@@ -61,7 +61,6 @@ import de.vanita5.twittnuker.constant.apiLastChangeKey
 import de.vanita5.twittnuker.constant.bugReportsKey
 import de.vanita5.twittnuker.constant.defaultFeatureLastUpdated
 import de.vanita5.twittnuker.model.DefaultFeatures
-import de.vanita5.twittnuker.service.RefreshService
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -91,6 +90,8 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     lateinit internal var externalThemeManager: ExternalThemeManager
     @Inject
     lateinit internal var kPreferences: KPreferences
+    @Inject
+    lateinit internal var autoRefreshController: AutoRefreshController
 
     private lateinit var profileImageViewViewProcessor: ProfileImageViewViewProcessor
     private lateinit var fontFamilyTagProcessor: FontFamilyTagProcessor
@@ -124,12 +125,9 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         initDebugMode()
         initBugReport()
 
-        if (resources.getBoolean(R.bool.use_job_refresh_service)) {
-        } else {
-            Utils.startRefreshServiceIfNeeded(this)
-        }
-
         GeneralComponentHelper.build(this).inject(this)
+
+        autoRefreshController.appStarted()
 
         registerActivityLifecycleCallbacks(activityTracker)
 
@@ -248,8 +246,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     override fun onSharedPreferenceChanged(preferences: SharedPreferences, key: String) {
         when (key) {
             KEY_REFRESH_INTERVAL -> {
-                stopService(Intent(this, RefreshService::class.java))
-                Utils.startRefreshServiceIfNeeded(this)
+                autoRefreshController.rescheduleAll()
             }
             KEY_ENABLE_PROXY, KEY_PROXY_HOST, KEY_PROXY_PORT, KEY_PROXY_TYPE, KEY_PROXY_USERNAME,
             KEY_PROXY_PASSWORD, KEY_CONNECTION_TIMEOUT, KEY_RETRY_ON_NETWORK_ISSUE -> {

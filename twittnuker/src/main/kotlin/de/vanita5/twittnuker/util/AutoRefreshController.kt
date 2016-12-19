@@ -20,24 +20,31 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.receiver
+package de.vanita5.twittnuker.util
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
+import org.mariotaku.kpreferences.KPreferences
+import de.vanita5.twittnuker.annotation.AutoRefreshType
 
-class PowerStateReceiver : BroadcastReceiver() {
 
-    override fun onReceive(context: Context, intent: Intent) {
-        when (intent.action) {
-            Intent.ACTION_BATTERY_LOW, Intent.ACTION_BATTERY_OKAY, Intent.ACTION_POWER_CONNECTED,
-            Intent.ACTION_POWER_DISCONNECTED -> {
-                if (serviceReceiverStarted) return
-            }
-        }
+abstract class AutoRefreshController(
+        val context: Context,
+        val kPreferences: KPreferences
+) {
+
+    abstract fun appStarted()
+
+    abstract fun schedule(@AutoRefreshType type: String)
+
+    abstract fun unschedule(@AutoRefreshType type: String)
+
+    fun reschedule(@AutoRefreshType type: String) {
+        unschedule(type)
+        schedule(type)
     }
 
-    companion object {
-        var serviceReceiverStarted: Boolean = false
+    fun rescheduleAll() {
+        AutoRefreshType.ALL.forEach { reschedule(it) }
     }
+
 }

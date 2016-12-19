@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.account.cred.Credentials
+import org.mariotaku.ktextension.toLong
 
 
 val mediaPreviewStyleKey = KStringKey(KEY_MEDIA_PREVIEW_STYLE, VALUE_MEDIA_PREVIEW_STYLE_CROP)
@@ -62,6 +63,17 @@ val readFromBottomKey = KBooleanKey(KEY_READ_FROM_BOTTOM, true)
 val randomizeAccountNameKey = KBooleanKey(KEY_RANDOMIZE_ACCOUNT_NAME, false)
 val defaultAutoRefreshKey = KBooleanKey(KEY_DEFAULT_AUTO_REFRESH, false)
 val defaultAutoRefreshKeyAsked = KBooleanKey("default_auto_refresh_asked", true)
+
+object refreshIntervalKey : KSimpleKey<Long>(KEY_REFRESH_INTERVAL, 15) {
+    override fun read(preferences: SharedPreferences): Long {
+        return preferences.getString(key, null).toLong(def)
+    }
+
+    override fun write(editor: SharedPreferences.Editor, value: Long): Boolean {
+        editor.putString(key, value.toString())
+        return true
+    }
+}
 
 object defaultAPIConfigKey : KPreferenceKey<CustomAPIConfig> {
     override fun contains(preferences: SharedPreferences): Boolean {
