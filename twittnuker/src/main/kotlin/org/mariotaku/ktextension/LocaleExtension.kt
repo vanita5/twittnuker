@@ -4,6 +4,10 @@ import android.os.Build
 import java.util.*
 
 /**
+ * Created by mariotaku on 16/8/15.
+ */
+
+/**
  * Modified from:
  * https://github.com/apache/cordova-plugin-globalization/blob/master/src/android/Globalization.java
 
