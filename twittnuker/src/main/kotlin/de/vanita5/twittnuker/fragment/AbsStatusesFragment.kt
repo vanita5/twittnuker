@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.accounts.AccountManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
@@ -52,7 +53,9 @@ import de.vanita5.twittnuker.constant.readFromBottomKey
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.analyzer.Share
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.imageloader.PauseRecyclerViewOnScrollListener
@@ -455,6 +458,10 @@ abstract class AbsStatusesFragment protected constructor() :
             val shareIntent = Utils.createStatusShareIntent(activity, status)
             val chooser = Intent.createChooser(shareIntent, getString(R.string.share_status))
             startActivity(chooser)
+
+            val am = AccountManager.get(context)
+            val accountType = AccountUtils.findByAccountKey(am, status.account_key)?.getAccountType(am)
+            Analyzer.log(Share.status(accountType, status))
             return true
         }
         return MenuUtils.handleStatusClick(activity, this, fragmentManager,

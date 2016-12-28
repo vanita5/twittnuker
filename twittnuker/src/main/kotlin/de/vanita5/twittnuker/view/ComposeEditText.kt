@@ -23,21 +23,22 @@
 package de.vanita5.twittnuker.view
 
 import android.content.Context
-import android.content.res.ColorStateList
+import android.support.v7.widget.AppCompatMultiAutoCompleteTextView
 import android.text.InputType
 import android.text.Selection
 import android.text.method.ArrowKeyMovementMethod
 import android.text.method.MovementMethod
 import android.util.AttributeSet
 import android.widget.AdapterView
-import com.afollestad.appthemeengine.inflation.ATEMultiAutoCompleteTextView
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.EmojiSupportUtils
 import de.vanita5.twittnuker.util.widget.StatusTextTokenizer
-import de.vanita5.twittnuker.view.iface.IThemeBackgroundTintView
 
-class ComposeEditText @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : ATEMultiAutoCompleteTextView(context, attrs), IThemeBackgroundTintView {
+class ComposeEditText @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null
+) : AppCompatMultiAutoCompleteTextView(context, attrs) {
 
     private var adapter: ComposeAutoCompleteAdapter? = null
     var accountKey: UserKey? = null
@@ -54,10 +55,6 @@ class ComposeEditText @JvmOverloads constructor(context: Context, attrs: Attribu
         }
         // HACK: remove AUTO_COMPLETE flag to force IME show auto completion
         setRawInputType(inputType and InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE.inv())
-    }
-
-    override fun setBackgroundTintColor(color: ColorStateList) {
-        supportBackgroundTintList = color
     }
 
     override fun getDefaultMovementMethod(): MovementMethod {

@@ -24,11 +24,20 @@ package de.vanita5.twittnuker.model.analyzer
 
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.ContentType
+import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.util.Analyzer
+import de.vanita5.twittnuker.util.LinkCreator
 
 data class Share(
         val id: String,
         @ContentType val type: String,
-        @AccountType override val accountType: String,
+        @AccountType override val accountType: String?,
         override val accountHost: String? = null
-) : Analyzer.Event
+) : Analyzer.Event {
+    companion object {
+        fun status(accountType: String?, status: ParcelableStatus): Share {
+            val uri = LinkCreator.getStatusWebLink(status).toString()
+            return Share(uri, ContentType.STATUS, accountType, status.account_key.host)
+        }
+    }
+}

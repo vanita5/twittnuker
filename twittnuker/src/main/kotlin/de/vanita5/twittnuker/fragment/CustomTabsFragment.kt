@@ -42,11 +42,10 @@ import android.view.*
 import android.widget.*
 import android.widget.AbsListView.MultiChoiceModeListener
 import android.widget.AdapterView.OnItemClickListener
-import com.afollestad.appthemeengine.ATEActivity
-import com.afollestad.appthemeengine.Config
 import com.mobeta.android.dslv.SimpleDragSortCursorAdapter
 import kotlinx.android.synthetic.main.layout_draggable_list_with_empty_view.*
 import kotlinx.android.synthetic.main.list_item_section_header.view.*
+import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
 import org.mariotaku.sqliteqb.library.Columns.Column
@@ -138,6 +137,7 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
         val context = this.context
         val accountIds = DataStoreUtils.getAccountKeys(context)
         val itemAdd = menu.findItem(R.id.add_submenu)
+        val theme = Chameleon.getOverrideTheme(context, context)
         if (itemAdd != null && itemAdd.hasSubMenu()) {
             val subMenu = itemAdd.subMenu
             subMenu.clear()
@@ -150,10 +150,7 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                 subItem.isVisible = !shouldDisable
                 subItem.isEnabled = !shouldDisable
                 val icon = conf.icon.createDrawable(context)
-                if (context is ATEActivity) {
-                    icon.mutate().setColorFilter(Config.textColorPrimary(context, context.ateKey),
-                            Mode.SRC_ATOP)
-                }
+                icon.mutate().setColorFilter(theme.textColorPrimary, Mode.SRC_ATOP)
                 subItem.icon = icon
                 subItem.setOnMenuItemClickListener { item ->
                     val df = TabEditorDialogFragment()
@@ -319,17 +316,17 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                 extraConf.position = idx + 1
                 // Hide immutable settings in edit mode
                 if (editMode && !extraConf.isMutable) return@forEachIndexed
-                    extraConf.headerTitle?.let {
+                extraConf.headerTitle?.let {
                     // Inflate header with headerTitle
-                        extraConfigContainer.addView(inflateHeader(it.createString(context)))
-                    }
-                    val view = extraConf.onCreateView(context, extraConfigContainer)
-                    extraConf.onViewCreated(context, view, this)
-                    conf.readExtraConfigurationFrom(tab, extraConf)
-                    extraConfigContainer.addView(view)
+                    extraConfigContainer.addView(inflateHeader(it.createString(context)))
                 }
+                val view = extraConf.onCreateView(context, extraConfigContainer)
+                extraConf.onViewCreated(context, view, this)
+                conf.readExtraConfigurationFrom(tab, extraConf)
+                extraConfigContainer.addView(view)
+            }
 
-            accountSpinner.onItemSelectedListener = object :AdapterView.OnItemSelectedListener {
+            accountSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
                 private fun updateExtraTabs(account: AccountDetails?) {
                     extraConfigurations.forEach {
@@ -347,20 +344,20 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                 }
             }
 
-                positiveButton.setOnClickListener {
-                    tab.name = tabName.text.toString()
-                    tab.icon = (iconSpinner.selectedItem as DrawableHolder).persistentKey
-                    tab.arguments = CustomTabUtils.newTabArguments(tabType)
-                    if (hasAccount) {
+            positiveButton.setOnClickListener {
+                tab.name = tabName.text.toString()
+                tab.icon = (iconSpinner.selectedItem as DrawableHolder).persistentKey
+                tab.arguments = CustomTabUtils.newTabArguments(tabType)
+                if (hasAccount) {
                     val account = accountSpinner.selectedItem as? AccountDetails ?: return@setOnClickListener
                     if (!account.dummy) {
                         tab.arguments?.accountKeys = arrayOf(account.key)
-                        } else {
-                            tab.arguments?.accountKeys = null
-                        }
+                    } else {
+                        tab.arguments?.accountKeys = null
                     }
-                    tab.extras = CustomTabUtils.newTabExtras(tabType)
-                    extraConfigurations.forEach {
+                }
+                tab.extras = CustomTabUtils.newTabExtras(tabType)
+                extraConfigurations.forEach {
                     // Make sure immutable configuration skipped in edit mode
                     if (editMode && !it.isMutable) return@forEach
                     if (!conf.applyExtraConfigurationTo(tab, it)) {

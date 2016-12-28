@@ -440,8 +440,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
         } else {
             Utils.showErrorMessage(this, getString(R.string.action_signing_in), exception, true)
         }
-        Analyzer.log(SignIn(false, accountType = "unknown", credentialsType = apiConfig.credentialsType,
-                errorReason = errorReason))
+        Analyzer.log(SignIn(false, credentialsType = apiConfig.credentialsType, errorReason = errorReason))
     }
 
     internal fun dismissDialogFragment(tag: String) {
@@ -879,7 +878,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
             val apiUser: User
             try {
                 apiUser = twitter.verifyCredentials()
-            } catch(e: MicroBlogException) {
+            } catch (e: MicroBlogException) {
                 if (e.statusCode == 401) {
                     throw WrongBasicCredentialException()
                 } else if (e.statusCode == 404) {
@@ -1005,7 +1004,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
                     // Wait for 50ms
                     try {
                         Thread.sleep(50)
-                    } catch(e: InterruptedException) {
+                    } catch (e: InterruptedException) {
                         // Ignore
                     }
 
@@ -1040,7 +1039,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
                     extras.textLimit = site.textLimit
                 }
                 return Pair(AccountType.STATUSNET, extras)
-            } catch(e: MicroBlogException) {
+            } catch (e: MicroBlogException) {
                 // Ignore
             }
 
@@ -1052,7 +1051,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
                 val extras = TwitterAccountExtras()
                 extras.setIsOfficialCredentials(true)
                 return Pair(AccountType.TWITTER, extras)
-            } catch(e: MicroBlogException) {
+            } catch (e: MicroBlogException) {
                 // Ignore
             }
 
