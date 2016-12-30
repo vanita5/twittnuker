@@ -802,6 +802,8 @@
     <string name="preference_randomize_account_name_summary">Verhindert, dass andere Apps deine echten Accountnamen auslesen können.</string>
     <string name="preference_randomize_account_rename_accounts_confirm">Accounts umbenennen?</string>
     <string name="message_auto_refresh_confirm">Soll die Timeline im Hintergrund automatisch aktualisiert werden?</string>
+    <string name="fab_visible">Floating Action Button</string>
+    <string name="fab_visible_summary">Den Floating Action Button anzeigen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
