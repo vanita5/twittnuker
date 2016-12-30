@@ -42,7 +42,7 @@ import org.mariotaku.chameleon.Chameleon;
 import org.mariotaku.chameleon.Chameleon.Theme.LightStatusBarMode;
 import org.mariotaku.chameleon.ChameleonUtils;
 import org.mariotaku.chameleon.ChameleonView;
-import org.mariotaku.chameleon.internal.WindowSupport;
+import org.mariotaku.chameleon.internal.SupportMethods;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.view.iface.TintedStatusLayout;
 
@@ -150,7 +150,7 @@ public class TintedStatusFrameLayout extends ExtendedFrameLayout implements Tint
         final Activity activity = ChameleonUtils.getActivity(getContext());
         if (activity != null) {
             final Window window = activity.getWindow();
-            WindowSupport.setStatusBarColor(window, Color.TRANSPARENT);
+            SupportMethods.setStatusBarColor(window, Color.TRANSPARENT);
             ChameleonUtils.applyLightStatusBar(window, statusBarColor, a.getLightStatusBarMode());
         }
     }
