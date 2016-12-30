@@ -52,7 +52,9 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.view.TabPagerIndicator
 
-abstract class AbsToolbarTabPagesFragment : BaseSupportFragment(), RefreshScrollTopInterface, SupportFragmentCallback, IBaseFragment.SystemWindowsInsetsCallback, ControlBarOffsetListener, HideUiOnScroll, OnPageChangeListener, IToolBarSupportFragment, KeyboardShortcutCallback {
+abstract class AbsToolbarTabPagesFragment : BaseSupportFragment(), RefreshScrollTopInterface,
+        SupportFragmentCallback, IBaseFragment.SystemWindowsInsetsCallback, ControlBarOffsetListener,
+        HideUiOnScroll, OnPageChangeListener, IToolBarSupportFragment, KeyboardShortcutCallback {
 
     private var pagerAdapter: SupportTabsAdapter? = null
     override val toolbar: Toolbar

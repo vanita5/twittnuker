@@ -25,10 +25,7 @@ package de.vanita5.twittnuker.fragment
 import android.accounts.AccountManager
 import android.app.Activity
 import android.app.Dialog
-import android.content.ContentValues
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.*
 import android.graphics.Color
 import android.graphics.Rect
 import android.nfc.NdefMessage
@@ -70,6 +67,7 @@ import kotlinx.android.synthetic.main.adapter_item_status_count_label.view.*
 import kotlinx.android.synthetic.main.fragment_status.*
 import kotlinx.android.synthetic.main.header_status_common.view.*
 import kotlinx.android.synthetic.main.layout_content_fragment_common.*
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.findPositionByItemId
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
@@ -90,6 +88,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.getAccountType
 import de.vanita5.twittnuker.loader.ConversationLoader
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader
@@ -863,9 +862,9 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
 
             val timeString = Utils.formatToLongTimeString(context, timestamp)
             if (!TextUtils.isEmpty(timeString) && !TextUtils.isEmpty(status.source)) {
-                itemView.timeSource.text = HtmlSpanBuilder.fromHtml(context.getString(R.string.time_source, timeString, status.source))
+                itemView.timeSource.text = HtmlSpanBuilder.fromHtml(context.getString(R.string.status_format_time_source, timeString, status.source))
             } else if (TextUtils.isEmpty(timeString) && !TextUtils.isEmpty(status.source)) {
-                itemView.timeSource.text = HtmlSpanBuilder.fromHtml(context.getString(R.string.source, status.source))
+                itemView.timeSource.text = HtmlSpanBuilder.fromHtml(status.source)
             } else if (!TextUtils.isEmpty(timeString) && TextUtils.isEmpty(status.source)) {
                 itemView.timeSource.text = timeString
             }
@@ -1348,7 +1347,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
                 context: Context,
                 manager: MultiSelectManager,
                 private val adapter: StatusAdapter,
-                preferences: SharedPreferencesWrapper
+                preferences: SharedPreferences
         ) : StatusLinkClickHandler(context, manager, preferences) {
 
             override fun onLinkClick(link: String, orig: String?, accountKey: UserKey?,
@@ -1364,7 +1363,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
             private fun expandOrOpenMedia(current: ParcelableMedia) {
                 if (adapter.isDetailMediaExpanded) {
                     IntentUtils.openMedia(adapter.context, adapter.status, current, null,
-                            preferences.getBoolean(SharedPreferenceConstants.KEY_NEW_DOCUMENT_API))
+                            preferences[newDocumentApiKey])
                     return
                 }
                 adapter.isDetailMediaExpanded = true

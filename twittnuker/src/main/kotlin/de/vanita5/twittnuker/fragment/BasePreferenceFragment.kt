@@ -25,22 +25,23 @@ package de.vanita5.twittnuker.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
-
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment
+import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.preference.RingtonePreference
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
-import org.mariotaku.kpreferences.KPreferences
 
 import javax.inject.Inject
 
-abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
+abstract class BasePreferenceFragment : PreferenceFragmentCompat(), IBaseFragment {
     private var ringtonePreferenceKey: String? = null
 
     @Inject
@@ -50,10 +51,7 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
     @Inject
     lateinit var kPreferences: KPreferences
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        GeneralComponentHelper.build(context).inject(this)
-    }
+    private val actionHelper = IBaseFragment.ActionHelper(this)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
@@ -62,9 +60,19 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
         super.onActivityCreated(savedInstanceState)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState!!.putString(EXTRA_RINGTONE_PREFERENCE_KEY, ringtonePreferenceKey)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        GeneralComponentHelper.build(context).inject(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(EXTRA_RINGTONE_PREFERENCE_KEY, ringtonePreferenceKey)
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        requestFitSystemWindows()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -110,6 +118,14 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
             return true
         }
         return super.onPreferenceTreeClick(preference)
+    }
+
+    override fun executeAfterFragmentResumed(action: (IBaseFragment) -> Unit) {
+        actionHelper.executeAfterFragmentResumed(action)
+    }
+
+    override fun fitSystemWindows(insets: Rect) {
+        listView.setPadding(insets.left, insets.top, insets.right, insets.bottom)
     }
 
     companion object {

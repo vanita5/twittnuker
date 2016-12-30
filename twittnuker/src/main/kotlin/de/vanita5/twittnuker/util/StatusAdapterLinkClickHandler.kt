@@ -24,9 +24,10 @@ package de.vanita5.twittnuker.util
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 
@@ -43,7 +44,7 @@ class StatusAdapterLinkClickHandler<D>(context: Context, preferences: SharedPref
         if (current != null && current.open_browser) {
             openLink(link)
         } else {
-            val newDocument = preferences.getBoolean(KEY_NEW_DOCUMENT_API)
+            val newDocument = preferences[newDocumentApiKey]
             IntentUtils.openMedia(context, status, current, null, newDocument)
         }
     }

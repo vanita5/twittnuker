@@ -23,8 +23,10 @@
 package de.vanita5.twittnuker.util
 
 import android.content.Context
+import android.content.SharedPreferences
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.Constants
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -32,7 +34,7 @@ import de.vanita5.twittnuker.model.UserKey
 open class StatusLinkClickHandler(
         context: Context,
         manager: MultiSelectManager,
-        preferences: SharedPreferencesWrapper
+        preferences: SharedPreferences
 ) : OnLinkClickHandler(context, manager, preferences), Constants {
 
     var status: ParcelableStatus? = null
@@ -44,8 +46,7 @@ open class StatusLinkClickHandler(
         if (current == null || current.open_browser) {
             openLink(link)
         } else {
-            IntentUtils.openMedia(context, status, current, null,
-                    preferences.getBoolean(KEY_NEW_DOCUMENT_API))
+            IntentUtils.openMedia(context, status, current, null, preferences[newDocumentApiKey])
         }
     }
 

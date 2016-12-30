@@ -25,26 +25,28 @@ package de.vanita5.twittnuker.util
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.BadParcelableException
 import android.support.customtabs.CustomTabsIntent
 import org.apache.commons.lang3.StringUtils
+import org.mariotaku.chameleon.Chameleon
+import org.mariotaku.chameleon.ChameleonUtils
 import de.vanita5.twittnuker.activity.WebLinkHandlerActivity
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor
-import org.mariotaku.chameleon.Chameleon
-import org.mariotaku.chameleon.ChameleonUtils
+import org.mariotaku.kpreferences.get
 
 open class OnLinkClickHandler(
         protected val context: Context,
         protected val manager: MultiSelectManager?,
-        protected val preferences: SharedPreferencesWrapper
+        protected val preferences: SharedPreferences
 ) : OnLinkClickListener {
 
     override fun onLinkClick(link: String, orig: String?, accountKey: UserKey?,
@@ -55,8 +57,7 @@ open class OnLinkClickHandler(
         when (type) {
             TwidereLinkify.LINK_TYPE_MENTION -> {
                 IntentUtils.openUserProfile(context, accountKey, null, link, null,
-                        preferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                        Referral.USER_MENTION)
+                        preferences[newDocumentApiKey], Referral.USER_MENTION)
                 return true
             }
             TwidereLinkify.LINK_TYPE_HASHTAG -> {
@@ -96,7 +97,7 @@ open class OnLinkClickHandler(
                                         }
                                         val screenName = orig.substring(1, length)
                                         IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(id),
-                                                screenName, null, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                                                screenName, null, preferences[newDocumentApiKey],
                                                 Referral.USER_MENTION)
                                         return true
                                     }
@@ -132,7 +133,7 @@ open class OnLinkClickHandler(
             }
             TwidereLinkify.LINK_TYPE_USER_ID -> {
                 IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(link), null, null,
-                        preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                        preferences[newDocumentApiKey],
                         Referral.USER_MENTION)
                 return true
             }
@@ -147,7 +148,7 @@ open class OnLinkClickHandler(
     protected open fun openMedia(accountKey: UserKey, extraId: Long, sensitive: Boolean, link: String, start: Int, end: Int) {
         val media = arrayOf(ParcelableMediaUtils.image(link))
         IntentUtils.openMedia(context, accountKey, sensitive, null, media, null,
-                preferences.getBoolean(KEY_NEW_DOCUMENT_API))
+                preferences[newDocumentApiKey])
     }
 
     protected open fun openLink(link: String) {
