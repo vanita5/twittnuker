@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.constant.readFromBottomKey
+import de.vanita5.twittnuker.extension.getAccountType
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*

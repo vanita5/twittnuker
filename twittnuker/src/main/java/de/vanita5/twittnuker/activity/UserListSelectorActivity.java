@@ -67,6 +67,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_IS_MY_ACCOUNT;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_SCREEN_NAME;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER_LIST;
+import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_SELECT_USER;
 import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
 
 public class UserListSelectorActivity extends BaseActivity implements OnClickListener,

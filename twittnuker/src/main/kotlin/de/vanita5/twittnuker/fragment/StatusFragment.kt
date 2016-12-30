@@ -88,6 +88,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
+import de.vanita5.twittnuker.extension.getAccountType
 import de.vanita5.twittnuker.loader.ConversationLoader
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader
 import de.vanita5.twittnuker.menu.FavoriteItemProvider
