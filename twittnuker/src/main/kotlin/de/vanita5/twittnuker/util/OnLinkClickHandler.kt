@@ -38,6 +38,8 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor
+import org.mariotaku.chameleon.Chameleon
+import org.mariotaku.chameleon.ChameleonUtils
 
 open class OnLinkClickHandler(
         protected val context: Context,
@@ -151,6 +153,9 @@ open class OnLinkClickHandler(
     protected open fun openLink(link: String) {
         if (manager != null && manager.isActive) return
         val builder = CustomTabsIntent.Builder()
+        (ChameleonUtils.getActivity(context) as? Chameleon.Themeable)?.overrideTheme?.let { theme ->
+            builder.setToolbarColor(theme.colorToolbar)
+        }
         val intent = builder.build()
         try {
             intent.launchUrl(context, Uri.parse(link))
