@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -126,10 +127,11 @@ public class ErrorInfoStore {
 
     public static class DisplayErrorInfo {
         int code;
+        @DrawableRes
         int icon;
         String message;
 
-        public DisplayErrorInfo(int code, int icon, String message) {
+        public DisplayErrorInfo(int code, @DrawableRes int icon, String message) {
             this.code = code;
             this.icon = icon;
             this.message = message;
@@ -139,6 +141,7 @@ public class ErrorInfoStore {
             return code;
         }
 
+        @DrawableRes
         public int getIcon() {
             return icon;
         }

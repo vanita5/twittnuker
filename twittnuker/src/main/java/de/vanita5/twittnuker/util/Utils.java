@@ -571,7 +571,7 @@ public final class Utils implements Constants {
             return context.getString(R.string.error_unknown_error);
         }
         if (t instanceof MicroBlogException)
-            return getTwitterErrorMessage(context, (MicroBlogException) t);
+            return StatusCodeMessageUtils.getMicroBlogErrorMessage(context, (MicroBlogException) t);
         return t.getMessage();
     }
 

@@ -25,7 +25,10 @@ package de.vanita5.twittnuker.fragment
 import android.accounts.AccountManager
 import android.app.Activity
 import android.app.Dialog
-import android.content.*
+import android.content.ContentValues
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.nfc.NdefMessage
@@ -39,7 +42,6 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.app.hasRunningLoadersSafe
 import android.support.v4.content.AsyncTaskLoader
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.IntentCompat
 import android.support.v4.content.Loader
 import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewCompat
@@ -419,7 +421,9 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         } else {
             adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.NONE
             setState(STATE_ERROR)
-            errorText.text = Utils.getErrorMessage(context, data.exception)
+            val errorInfo = StatusCodeMessageUtils.getErrorInfo(context, data.exception!!)
+            errorText.text = errorInfo.message
+            errorIcon.setImageResource(errorInfo.icon)
         }
         activity.supportInvalidateOptionsMenu()
     }

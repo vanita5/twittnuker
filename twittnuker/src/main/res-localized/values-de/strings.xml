@@ -146,6 +146,7 @@
     <string name="block">Blockieren</string>
     <string name="unblock">Blockierung aufheben</string>
     <string name="report_for_spam">Spam melden</string>
+    <string name="action_report_spam">Spam melden</string>
     <string name="twitter_mute_user">Stummschalten</string>
     <string name="twitter_muted_users">Stummgeschaltete Benutzer</string>
     <string name="message_user_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieses Benutzers erscheinen nicht in der Timeline oder bei Erwähnungen.</string>
@@ -804,6 +805,9 @@
     <string name="message_auto_refresh_confirm">Soll die Timeline im Hintergrund automatisch aktualisiert werden?</string>
     <string name="fab_visible">Floating Action Button</string>
     <string name="fab_visible_summary">Den Floating Action Button anzeigen</string>
+    <string name="action_block">Block</string>
+    <string name="status_format_time_source"><xliff:g example="0:00, Jan 1 2017" id="time">%1$s</xliff:g> · <xliff:g example="Twidere for Android" id="source">%2$s</xliff:g></string>
+    <string name="status_format_source"><xliff:g example="Twidere for Android" id="source">%s</xliff:g></string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
