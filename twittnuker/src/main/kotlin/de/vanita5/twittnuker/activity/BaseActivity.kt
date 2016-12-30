@@ -31,6 +31,7 @@ import android.content.res.Resources
 import android.graphics.Rect
 import android.nfc.NfcAdapter
 import android.os.Bundle
+import android.support.annotation.StyleRes
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.support.v7.preference.PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback
@@ -46,11 +47,15 @@ import org.mariotaku.chameleon.Chameleon.Theme.LightStatusBarMode
 import org.mariotaku.chameleon.ChameleonActivity
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.KPreferences
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.BuildConfig
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity
 import de.vanita5.twittnuker.activity.iface.IThemedActivity
+import de.vanita5.twittnuker.constant.themeColorKey
+import de.vanita5.twittnuker.constant.themeKey
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.preference.iface.IDialogPreference
 import de.vanita5.twittnuker.util.*
@@ -96,6 +101,11 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity, IThemedActivit
         theme.colorPrimary = ThemeUtils.getUserAccentColor(this)
         if (theme.isToolbarColored) {
             theme.colorToolbar = theme.colorPrimary
+        }
+        theme.actionBarWidgetTheme = if (ChameleonUtils.isColorLight(theme.colorToolbar)) {
+            R.style.Theme_Twidere_Light
+        } else {
+            R.style.Theme_Twidere_Dark
         }
         theme.statusBarColor = ChameleonUtils.darkenColor(theme.colorToolbar)
         theme.lightStatusBarMode = LightStatusBarMode.AUTO
@@ -166,10 +176,16 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity, IThemedActivit
             StrictModeUtils.detectAllVmPolicy()
             StrictModeUtils.detectAllThreadPolicy()
         }
-        ThemeUtils.applyDayNight(getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE), delegate)
+        val prefs = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+        val themeResource = getThemeResource(prefs[themeKey], prefs[themeColorKey])
+        if (themeResource != 0) {
+            setTheme(themeResource)
+        }
+        ThemeUtils.applyDayNight(prefs, delegate)
         super.onCreate(savedInstanceState)
         GeneralComponentHelper.build(this).inject(this)
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -364,6 +380,9 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity, IThemedActivit
     override fun onCreateAppearanceCreator(): Chameleon.AppearanceCreator? {
         return TwidereAppearanceCreator
     }
+
+    @StyleRes
+    protected open fun getThemeResource(theme: String, themeColor: Int): Int = 0
 
     companion object {
 
