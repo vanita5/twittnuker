@@ -56,6 +56,7 @@ import de.vanita5.twittnuker.preference.iface.IDialogPreference
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.theme.TwidereAppearanceCreator
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener
 import java.lang.reflect.InvocationTargetException
 import java.util.*
@@ -358,6 +359,10 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity, IThemedActivit
 
     override fun getOverrideTheme(): Chameleon.Theme {
         return userTheme
+    }
+
+    override fun onCreateAppearanceCreator(): Chameleon.AppearanceCreator? {
+        return TwidereAppearanceCreator
     }
 
     companion object {
