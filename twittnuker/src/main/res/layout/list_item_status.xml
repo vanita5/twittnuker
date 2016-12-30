@@ -63,14 +63,14 @@
         android:layout_toRightOf="@+id/statusInfoIcon"
         android:ellipsize="end"
         android:gravity="center_vertical|start"
+        android:maxLines="1"
         android:minHeight="@dimen/element_size_small"
         android:tag="font_family|user"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:visibility="gone"
         tools:text="Retweeted by Mariotaku"
         tools:textSize="@dimen/text_size_extra_small"
-        tools:visibility="visible"
-        android:maxLines="1"/>
+        tools:visibility="visible"/>
 
     <de.vanita5.twittnuker.view.ProfileImageView
         android:id="@+id/profileImage"
@@ -374,6 +374,7 @@
                 android:contentDescription="@string/reply"
                 android:focusable="false"
                 android:gravity="center"
+                android:padding="@dimen/element_spacing_small"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_action_reply"
                 app:iabActivatedColor="@color/highlight_reply"
@@ -389,11 +390,11 @@
                 android:ellipsize="end"
                 android:focusable="false"
                 android:gravity="center"
+                android:maxLines="1"
                 android:minHeight="@dimen/button_size_content_card_action"
                 android:tag="font_family|user"
                 android:textAppearance="?android:textAppearanceSmall"
-                tools:text="255"
-                android:maxLines="1"/>
+                tools:text="255"/>
         </LinearLayout>
 
         <LinearLayout
@@ -413,6 +414,7 @@
                 android:contentDescription="@string/retweet"
                 android:focusable="false"
                 android:gravity="center"
+                android:padding="@dimen/element_spacing_small"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_action_retweet"
                 app:iabActivatedColor="@color/highlight_retweet"
@@ -428,11 +430,11 @@
                 android:ellipsize="end"
                 android:focusable="false"
                 android:gravity="center"
+                android:maxLines="1"
                 android:minHeight="@dimen/button_size_content_card_action"
                 android:tag="font_family|user"
                 android:textAppearance="?android:textAppearanceSmall"
-                tools:text="255"
-                android:maxLines="1"/>
+                tools:text="255"/>
 
         </LinearLayout>
 
@@ -453,6 +455,7 @@
                 android:contentDescription="@string/like"
                 android:focusable="false"
                 android:gravity="center"
+                android:padding="@dimen/element_spacing_small"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_action_heart"
                 app:iabActivatedColor="@color/highlight_like"
@@ -468,11 +471,11 @@
                 android:ellipsize="end"
                 android:focusable="false"
                 android:gravity="center"
+                android:maxLines="1"
                 android:minHeight="@dimen/button_size_content_card_action"
                 android:tag="font_family|user"
                 android:textAppearance="?android:textAppearanceSmall"
-                tools:text="255"
-                android:maxLines="1"/>
+                tools:text="255"/>
         </LinearLayout>
     </LinearLayout>
 
