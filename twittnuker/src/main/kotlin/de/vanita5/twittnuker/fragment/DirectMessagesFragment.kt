@@ -69,7 +69,8 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import java.util.*
 
-class DirectMessagesFragment : AbsContentListRecyclerViewFragment<MessageEntriesAdapter>(), LoaderCallbacks<Cursor>, MessageEntriesAdapterListener, KeyboardShortcutCallback {
+class DirectMessagesFragment : AbsContentListRecyclerViewFragment<MessageEntriesAdapter>(),
+        LoaderCallbacks<Cursor>, MessageEntriesAdapterListener, KeyboardShortcutCallback {
 
     // Listeners
     private var accountListener: OnAccountsUpdateListener = OnAccountsUpdateListener { accounts ->
