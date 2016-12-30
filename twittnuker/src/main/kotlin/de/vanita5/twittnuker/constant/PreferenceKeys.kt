@@ -62,7 +62,10 @@ val bugReportsKey = KBooleanKey(KEY_BUG_REPORTS, BuildConfig.DEBUG)
 val readFromBottomKey = KBooleanKey(KEY_READ_FROM_BOTTOM, true)
 val randomizeAccountNameKey = KBooleanKey(KEY_RANDOMIZE_ACCOUNT_NAME, false)
 val defaultAutoRefreshKey = KBooleanKey(KEY_DEFAULT_AUTO_REFRESH, false)
-val defaultAutoRefreshKeyAsked = KBooleanKey("default_auto_refresh_asked", true)
+val defaultAutoRefreshAskedKey = KBooleanKey("default_auto_refresh_asked", true)
+val unreadCountKey = KBooleanKey(KEY_UNREAD_COUNT, true)
+val drawerToggleKey = KBooleanKey(KEY_DRAWER_TOGGLE, false)
+val fabVisibleKey = KBooleanKey(KEY_FAB_VISIBLE, true)
 
 object refreshIntervalKey : KSimpleKey<Long>(KEY_REFRESH_INTERVAL, 15) {
     override fun read(preferences: SharedPreferences): Long {
@@ -73,6 +76,7 @@ object refreshIntervalKey : KSimpleKey<Long>(KEY_REFRESH_INTERVAL, 15) {
         editor.putString(key, value.toString())
         return true
     }
+
 }
 
 object defaultAPIConfigKey : KPreferenceKey<CustomAPIConfig> {

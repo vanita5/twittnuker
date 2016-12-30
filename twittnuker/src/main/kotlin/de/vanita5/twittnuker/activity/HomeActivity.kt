@@ -324,9 +324,9 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
             signInIntent.setClass(this, SignInActivity::class.java)
             startActivity(signInIntent)
             finish()
-            if (defaultAutoRefreshKeyAsked !in kPreferences) {
+            if (defaultAutoRefreshAskedKey !in kPreferences) {
                 // Assume first install
-                kPreferences[defaultAutoRefreshKeyAsked] = false
+                kPreferences[defaultAutoRefreshAskedKey] = false
             }
             return
         } else {
@@ -367,16 +367,16 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         }
         mainTabs.setTabDisplayOption(tabDisplayOptionInt)
         mainTabs.setTabExpandEnabled(tabDisplayOptionInt and TabPagerIndicator.DisplayOption.LABEL == 0)
-        mainTabs.setDisplayBadge(preferences.getBoolean(SharedPreferenceConstants.KEY_UNREAD_COUNT, true))
+        mainTabs.setDisplayBadge(preferences[unreadCountKey])
         mainTabs.updateAppearance()
 
-        if (preferences.getBoolean(SharedPreferenceConstants.KEY_DRAWER_TOGGLE)) {
+        if (preferences[drawerToggleKey]) {
             drawerToggleButton.visibility = View.VISIBLE
         } else {
             drawerToggleButton.visibility = View.GONE
         }
 
-        if (preferences.getBoolean(SharedPreferenceConstants.KEY_FAB_VISIBLE)) {
+        if (preferences[fabVisibleKey]) {
             actionsButton.visibility = View.VISIBLE
         } else {
             actionsButton.visibility = View.GONE
@@ -415,7 +415,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
                 savedInstanceState != null)
         setTabPosition(initialTabPosition)
 
-        if (!showDrawerTutorial() && !kPreferences[defaultAutoRefreshKeyAsked]) {
+        if (!showDrawerTutorial() && !kPreferences[defaultAutoRefreshAskedKey]) {
             showAutoRefreshConfirm()
         }
     }
@@ -990,7 +990,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         }
 
         override fun onDismiss(dialog: DialogInterface?) {
-            kPreferences[defaultAutoRefreshKeyAsked] = true
+            kPreferences[defaultAutoRefreshAskedKey] = true
             super.onDismiss(dialog)
         }
     }

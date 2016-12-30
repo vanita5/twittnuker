@@ -71,6 +71,7 @@ import de.vanita5.twittnuker.util.CustomTabUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.ThemeUtils
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder
+import java.lang.ref.WeakReference
 
 class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, MultiChoiceModeListener {
 
@@ -152,7 +153,12 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                 val icon = conf.icon.createDrawable(context)
                 icon.mutate().setColorFilter(theme.textColorPrimary, Mode.SRC_ATOP)
                 subItem.icon = icon
+                val weakFragment = WeakReference(this)
                 subItem.setOnMenuItemClickListener { item ->
+                    val fragment = weakFragment.get() ?: return@setOnMenuItemClickListener false
+                    val adapter = fragment.adapter
+                    val fm = fragment.childFragmentManager
+
                     val df = TabEditorDialogFragment()
                     df.arguments = Bundle {
                         this[EXTRA_TAB_TYPE] = type
@@ -160,7 +166,7 @@ class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, Mult
                             this[EXTRA_TAB_POSITION] = adapter.getTab(adapter.count - 1).position + 1
                         }
                     }
-                    df.show(fragmentManager, TabEditorDialogFragment.TAG_ADD_TAB)
+                    df.show(fm, TabEditorDialogFragment.TAG_ADD_TAB)
                     return@setOnMenuItemClickListener true
                 }
             }

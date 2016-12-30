@@ -29,7 +29,11 @@ import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 
-open class StatusLinkClickHandler(context: Context, manager: MultiSelectManager, preferences: SharedPreferencesWrapper) : OnLinkClickHandler(context, manager, preferences), Constants {
+open class StatusLinkClickHandler(
+        context: Context,
+        manager: MultiSelectManager,
+        preferences: SharedPreferencesWrapper
+) : OnLinkClickHandler(context, manager, preferences), Constants {
 
     var status: ParcelableStatus? = null
 
