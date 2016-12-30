@@ -80,6 +80,7 @@ import nl.komponents.kovenant.ui.promiseOnUi
 import nl.komponents.kovenant.ui.successUi
 import org.apache.commons.lang3.ObjectUtils
 import org.mariotaku.chameleon.Chameleon
+import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.empty
 import org.mariotaku.ktextension.set
@@ -429,7 +430,7 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
             profileImage.visibility = View.GONE
             profileType.visibility = View.GONE
             val theme = Chameleon.getOverrideTheme(activity, activity)
-            setUiColor(theme.primaryColor)
+            setUiColor(theme.colorPrimary)
             return
         }
         val adapter = pagerAdapter
@@ -495,7 +496,7 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
             setUiColor(user.link_color)
         } else {
             val theme = Chameleon.getOverrideTheme(activity, activity)
-            setUiColor(theme.primaryColor)
+            setUiColor(theme.colorPrimary)
         }
         val defWidth = resources.displayMetrics.widthPixels
         val width = if (bannerWidth > 0) bannerWidth else defWidth
@@ -676,7 +677,7 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
         viewPager.offscreenPageLimit = 3
         viewPager.adapter = pagerAdapter
         toolbarTabs.setViewPager(viewPager)
-        toolbarTabs.setTabDisplayOption(TabPagerIndicator.LABEL)
+        toolbarTabs.setTabDisplayOption(TabPagerIndicator.DisplayOption.LABEL)
         toolbarTabs.setOnPageChangeListener(this)
 
         followContainer.follow.setOnClickListener(this)
@@ -1243,15 +1244,12 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
         }
         val activity = activity as BaseActivity
         val theme = Chameleon.getOverrideTheme(activity, activity)
-        primaryColor = theme.primaryColor
-        primaryColorDark = ThemeUtils.computeDarkColor(primaryColor)
         if (theme.isToolbarColored) {
             primaryColor = color
-            primaryColorDark = ThemeUtils.computeDarkColor(color)
         } else {
-            primaryColor = theme.primaryColor
-            primaryColorDark = Color.BLACK
+            primaryColor = theme.colorToolbar
         }
+        primaryColorDark = ChameleonUtils.darkenColor(primaryColor)
         if (actionBarBackground != null) {
             actionBarBackground!!.color = primaryColor
         }
@@ -1259,7 +1257,7 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
         if (theme.isToolbarColored) {
             taskColor = color
         } else {
-            taskColor = theme.toolbarColor
+            taskColor = theme.colorToolbar
         }
         if (user != null) {
             val name = userColorNameManager.getDisplayName(user, nameFirst)

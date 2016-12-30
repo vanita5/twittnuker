@@ -17,5 +17,5 @@ include 'services:webservice'
 */
 
 rootProject.name = 'twittnuker'
-include ':twittnuker'
+include ':twittnuker', ':chameleon'
 include ':twittnuker.component.common'

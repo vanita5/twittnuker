@@ -134,6 +134,7 @@ import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
 import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.ShapedImageView;
 import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
+import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 import java.io.Closeable;
 import java.io.File;
@@ -752,10 +753,10 @@ public final class Utils implements Constants {
 
     public static int getTabDisplayOptionInt(final String option) {
         if (VALUE_TAB_DISPLAY_OPTION_ICON.equals(option))
-            return VALUE_TAB_DISPLAY_OPTION_CODE_ICON;
+            return TabPagerIndicator.DisplayOption.ICON;
         else if (VALUE_TAB_DISPLAY_OPTION_LABEL.equals(option))
-            return VALUE_TAB_DISPLAY_OPTION_CODE_LABEL;
-        return VALUE_TAB_DISPLAY_OPTION_CODE_BOTH;
+            return TabPagerIndicator.DisplayOption.LABEL;
+        return TabPagerIndicator.DisplayOption.BOTH;
     }
 
     public static boolean hasNavBar(@NonNull Context context) {
@@ -1412,4 +1413,5 @@ public final class Utils implements Constants {
         }
         return true;
     }
+
 }

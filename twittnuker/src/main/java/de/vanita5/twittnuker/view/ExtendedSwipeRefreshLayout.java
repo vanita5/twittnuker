@@ -25,13 +25,13 @@ package de.vanita5.twittnuker.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import org.mariotaku.chameleon.view.ChameleonSwipeRefreshLayout;
 import de.vanita5.twittnuker.view.iface.IExtendedView;
 
-public class ExtendedSwipeRefreshLayout extends SwipeRefreshLayout implements IExtendedView {
+public class ExtendedSwipeRefreshLayout extends ChameleonSwipeRefreshLayout implements IExtendedView {
 
     private TouchInterceptor mTouchInterceptor;
     private OnSizeChangedListener mOnSizeChangedListener;

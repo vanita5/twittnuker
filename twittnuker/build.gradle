@@ -104,6 +104,7 @@ dependencies {
     kapt 'com.github.mariotaku.ObjectCursor:processor:0.9.12'
 
     compile project(':twittnuker.component.common')
+    compile project(':chameleon')
 
     // START Non-FOSS component
     compile "com.google.android.gms:play-services-gcm:$play_services_version"
