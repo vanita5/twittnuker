@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER_KEY
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.fragment.*
+import de.vanita5.twittnuker.fragment.filter.FiltersFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment
