@@ -27,6 +27,7 @@ import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
@@ -44,6 +45,9 @@ import com.bluelinelabs.logansquare.LoganSquare;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.mariotaku.kpreferences.SharedPreferencesExtensionsKt;
+
+import de.vanita5.twittnuker.constant.PreferenceKeysKt;
 import de.vanita5.twittnuker.library.twitter.model.Activity;
 import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns;
@@ -323,7 +327,9 @@ public class DataStoreUtils implements Constants {
     }
 
     @NonNull
-    public static Expression buildStatusFilterWhereClause(@NonNull final String table, final Expression extraSelection) {
+    public static Expression buildStatusFilterWhereClause(@NonNull final SharedPreferences preferences,
+                                                          @NonNull final String table,
+                                                          @Nullable final Expression extraSelection) {
         final SQLSelectQuery filteredUsersQuery = SQLQueryBuilder
                 .select(new Column(new Table(Filters.Users.TABLE_NAME), Filters.Users.USER_KEY))
                 .from(new Tables(Filters.Users.TABLE_NAME))
@@ -364,8 +370,16 @@ public class DataStoreUtils implements Constants {
                         Expression.likeRaw(new Column(new Table(table), Statuses.QUOTED_SPANS),
                                 "'%'||" + Filters.Links.TABLE_NAME + "." + Filters.Links.VALUE + "||'%'")
                 ));
+        int filterFlags = 0;
+        if (SharedPreferencesExtensionsKt.get(preferences, PreferenceKeysKt.getFilterUnavailableQuoteStatusesKey())) {
+            filterFlags |= ParcelableStatus.FilterFlags.QUOTE_NOT_AVAILABLE;
+        }
+
         final Expression filterExpression = Expression.or(
-                Expression.notIn(new Column(new Table(table), Statuses._ID), filteredIdsQueryBuilder.build()),
+                Expression.and(
+                        new Expression("(" + Statuses.FILTER_FLAGS + " & " + filterFlags + ") == 0"),
+                        Expression.notIn(new Column(new Table(table), Statuses._ID), filteredIdsQueryBuilder.build())
+                ),
                 Expression.equals(new Column(new Table(table), Statuses.IS_GAP), 1)
         );
         if (extraSelection != null) {
@@ -420,7 +434,9 @@ public class DataStoreUtils implements Constants {
         return keys.toArray(new UserKey[keys.size()]);
     }
 
-    public static int getStatusesCount(@NonNull final Context context, final Uri uri,
+    public static int getStatusesCount(@NonNull final Context context,
+                                       @NonNull final SharedPreferences preferences,
+                                       final Uri uri,
                                        @Nullable final Bundle extraArgs, final long compare,
                                        String compareColumn, boolean greaterThan,
                                        @Nullable UserKey[] accountKeys) {
@@ -443,7 +459,7 @@ public class DataStoreUtils implements Constants {
         }
         expressionArgs.add(String.valueOf(compare));
 
-        expressions.add(buildStatusFilterWhereClause(getTableNameByUri(uri), null));
+        expressions.add(buildStatusFilterWhereClause(preferences, getTableNameByUri(uri), null));
 
         if (extraArgs != null) {
             Parcelable extras = extraArgs.getParcelable(EXTRA_EXTRAS);

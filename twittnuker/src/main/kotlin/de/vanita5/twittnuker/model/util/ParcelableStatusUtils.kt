@@ -123,7 +123,7 @@ object ParcelableStatusUtils {
             result.quoted_user_profile_image = TwitterContentUtils.getProfileImageUrl(quotedUser)
             result.quoted_user_is_protected = quotedUser.isProtected
             result.quoted_user_is_verified = quotedUser.isVerified
-        } else {
+        } else if (status.isQuoteStatus) {
             result.filter_flags = result.filter_flags or FilterFlags.QUOTE_NOT_AVAILABLE
         }
 
