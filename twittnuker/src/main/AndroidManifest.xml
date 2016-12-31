@@ -451,6 +451,9 @@
             android:label="@string/error_title_device_incompatible"
             android:theme="@android:style/Theme.DeviceDefault.Dialog"/>
         <activity
+            android:name=".activity.InvalidAccountAlertActivity"
+            android:theme="@style/Theme.Twidere.NoDisplay" />
+        <activity
             android:name=".activity.DonationsActivity"
             android:label="@string/donation"
             android:theme="@style/Theme.Twidere.NoActionBar">

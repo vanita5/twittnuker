@@ -22,9 +22,12 @@
 
 package de.vanita5.twittnuker.activity
 
+import android.accounts.AccountManager
 import android.content.Intent
 import android.os.Bundle
 import de.vanita5.twittnuker.BuildConfig
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_INTENT
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.StrictModeUtils
 import de.vanita5.twittnuker.util.Utils
 
@@ -36,12 +39,15 @@ open class MainActivity : BaseActivity() {
             StrictModeUtils.detectAllThreadPolicy()
         }
         super.onCreate(savedInstanceState)
+        val am = AccountManager.get(this)
         if (!Utils.checkDeviceCompatible()) {
-            val intent = Intent(this, IncompatibleAlertActivity::class.java)
+            startActivity(Intent(this, IncompatibleAlertActivity::class.java))
+        } else if (AccountUtils.hasInvalidAccount(am)) {
+            val intent = Intent(this, InvalidAccountAlertActivity::class.java)
+            intent.putExtra(EXTRA_INTENT, Intent(this, HomeActivity::class.java))
             startActivity(intent)
         } else {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, HomeActivity::class.java))
         }
         finish()
     }

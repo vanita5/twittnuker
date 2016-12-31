@@ -46,6 +46,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.ListView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_content_listview.*
+import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.RawItemArray
@@ -355,9 +356,14 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
             inflater.inflate(R.menu.menu_filters_users, menu)
         }
 
+        override fun onPrepareOptionsMenu(menu: Menu) {
+            super.onPrepareOptionsMenu(menu)
+            menu.setItemAvailability(R.id.add_user_single, true)
+        }
+
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             when (item.itemId) {
-                R.id.add -> {
+                R.id.add_user_single -> {
                     val intent = Intent(INTENT_ACTION_SELECT_USER)
                     intent.setClass(context, UserListSelectorActivity::class.java)
                     intent.putExtra(EXTRA_ACCOUNT_KEY, getDefaultAccountKey(activity))

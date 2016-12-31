@@ -64,7 +64,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.Utils
-import de.vanita5.twittnuker.util.support.AccountManagerSupport
+import de.vanita5.twittnuker.util.support.removeAccountSupport
 
 class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<List<AccountDetails>>,
         AdapterView.OnItemClickListener {
@@ -233,7 +233,7 @@ class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallb
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
                     val accountKey = account.getAccountKey(am)
-                    AccountManagerSupport.removeAccount(am, account, null, null, null)
+                    am.removeAccountSupport(account)
                     val where = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY).sql
                     val whereArgs = arrayOf(accountKey.toString())
                     // Also delete tweets related to the account we previously
