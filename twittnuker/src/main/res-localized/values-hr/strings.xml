@@ -19,8 +19,8 @@
     <string name="basic">Temeljno</string>
     <string name="twip_o">twip O Modus</string>
     <string name="advanced">Napredno</string>
-    <string name="save">Spremi</string>
-    <string name="edit">Uredi</string>
+    <string name="action_save">Spremi</string>
+    <string name="action_edit">Uredi</string>
     <string name="edit_api">Uredi API</string>
     <string name="home">Polazno</string>
     <string name="mentions">Spominjanja</string>
@@ -40,15 +40,15 @@
     <string name="label_streaming_service">Streaming servis</string>
     <string name="label_background_operation_service">Servis za pozadinske radnje</string>
     <string name="open_in_browser">Otvori u pregledniku</string>
-    <string name="delete">Obriši</string>
-    <string name="retweet">Retweet</string>
+    <string name="action_delete">Obriši</string>
+    <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweetovi</string>
     <string name="cancel_retweet">Poništi retweet</string>
-    <string name="favorite">Spremi u favorite</string>
-    <string name="unfavorite">Ukloni iz favorita</string>
+    <string name="action_favorite">Spremi u favorite</string>
+    <string name="action_unfavorite">Ukloni iz favorita</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="reply">Odgovori</string>
-    <string name="share">Podijeli</string>
+    <string name="action_reply">Odgovori</string>
+    <string name="action_share">Podijeli</string>
     <string name="view_map">Mapa</string>
     <string name="statuses">Tweetovi</string>
     <string name="followers">Sljedbenici</string>
@@ -80,33 +80,32 @@
     <string name="quote_user">Citiraj <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">Filtri</string>
+    <string name="title_filters">Filtri</string>
     <string name="users">Korisnici</string>
-    <string name="user">Korisnik</string>
+    <string name="title_user">Korisnik</string>
     <string name="keywords">Ključne riječi</string>
     <string name="sources">Izvori</string>
     <string name="content">Sadržaj</string>
-    <string name="customize">Prilagodi</string>
     <!--<string name="set_nickname">Postavi nadimak</string>-->
-    <string name="set_color">Postavi boju</string>
-    <string name="clear">Očisti</string>
-    <string name="pick_color">Odaberi boju</string>
-    <string name="follow">Slijedi</string>
-    <string name="unfollow">Prestani slijediti</string>
+    <string name="action_set_color">Postavi boju</string>
+    <string name="action_clear">Očisti</string>
+    <string name="action_pick_color">Odaberi boju</string>
+    <string name="action_follow">Slijedi</string>
+    <string name="action_unfollow">Prestani slijediti</string>
     <string name="leftside_compose_button">Gumb za sastavljanje na lijevoj strani</string>
     <string name="leftside_compose_button_summary">Stavi gumb za sastavljanje na lijevu stranu.</string>
     <string name="load_item_limit">Limit učitanih stavki</string>
     <string name="load_item_limit_summary">Postavi limit stavki kod učitavanja.</string>
-    <string name="quote">Citat</string>
+    <string name="action_quote">Citat</string>
     <string name="add_rule">Dodaj pravilo</string>
     <string name="text_size">Veličina teksta</string>
     <string name="text_size_summary">Veličina teksta tweetova.</string>
     <string name="cannot_get_location">Nije moguće dobiti lokaciju.</string>
-    <string name="drafts">Skice</string>
-    <string name="description">Opis</string>
-    <string name="location">Lokacija</string>
-    <string name="url">URL</string>
-    <string name="favorites">Favoriti</string>
+    <string name="title_drafts">Skice</string>
+
+    <string name="user_profile_location">Lokacija</string>
+    <string name="user_profile_url">URL</string>
+    <string name="title_favorites">Favoriti</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
     <string name="name">Ime</string>
     <string name="refresh">Osvježi</string>
@@ -130,8 +129,8 @@
     <string name="proxy">Proxy</string>
     <string name="proxy_host">Proxy Host</string>
     <string name="proxy_port">Proxy Port</string>
-    <string name="block">Blokiraj</string>
-    <string name="unblock">Odblokiraj</string>
+    <string name="action_block">Blokiraj</string>
+    <string name="action_unblock">Odblokiraj</string>
     <string name="report_for_spam">Prijavi spam</string>
     <string name="twitter_mute_user">Ušuti korisnika</string>
     <string name="twitter_muted_users">Ušutjeli korisnici</string>
@@ -285,8 +284,8 @@
     <string name="text_copied">Tekst kopiran u međumemoriju.</string>
     <string name="hashtag">Hashtag</string>
     <string name="links">Linkovi</string>
-    <string name="edit_profile">Uredi profil</string>
-    <string name="edit_details">Uredi detalje</string>
+    <string name="title_edit_profile">Uredi profil</string>
+    <string name="title_edit_details">Uredi detalje</string>
     <string name="display_sensitive_contents">Prikaži osvjetljive sadržaje</string>
     <string name="display_sensitive_contents_summary">Prikaži osjetljive sadržaje bez obavijesti u timelineu</string>
     <string name="sensitive_content_warning">Ovaj tweet možda sadržava osjetljiv sadržaj, nastaviti?</string>
@@ -336,10 +335,10 @@
     <string name="retweet_cancelled">Retweet poništen.</string>
     <string name="direct_message_sent">Izravna poruka poslana.</string>
     <string name="direct_message_deleted">Izravna poruka obrisana.</string>
-    <string name="search_saved">Pretraga spremljena.</string>
-    <string name="search_name_saved">Pretraga \"<xliff:g id="name">%s</xliff:g>\" spremljena.</string>
-    <string name="search_deleted">Pretraga obrisana.</string>
-    <string name="search_name_deleted">Pretraga \"<xliff:g id="name">%s</xliff:g>\" obrisana.</string>
+    <string name="message_search_saved">Pretraga spremljena.</string>
+    <string name="message_search_name_saved">Pretraga \"<xliff:g id="name">%s</xliff:g>\" spremljena.</string>
+    <string name="message_search_deleted">Pretraga obrisana.</string>
+    <string name="message_search_name_deleted">Pretraga \"<xliff:g id="name">%s</xliff:g>\" obrisana.</string>
     <string name="import_from">Uvezi iz&#8230;</string>
     <string name="link_to_quoted_status">Link do citiranog tweeta</string>
     <string name="quote_original_status">Citiraj originalni tweet</string>
@@ -422,7 +421,7 @@
     <string name="report_user">Prijavi <xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">Prijaviti <xliff:g id="name">%s</xliff:g> zbog spama? Također ćete blokirati korisnika.</string>
     <string name="twidere_test">Twittnuker test</string>
-    <string name="staggered_home_timeline">Raspoređen Polazni Timeline</string>
+
     <string name="unread_count">Brojač nepročitanog</string>
     <string name="developed_by">Razvio</string>
     <string name="project_account">Račun projekta</string>
@@ -482,8 +481,8 @@
     <string name="hidden_settings">Skrivene postavke</string>
     <string name="hidden_settings_warning_title">UPOZORENJE: Ovo postavke mogu vas ugristi!</string>
     <string name="hidden_settings_warning_message">NIKAD nemojte mijenjati postavke ako ne znate što radite ili ćete\n * Ubiti vašu mačku\n * Lansirati nuklearno oružje u Sjevernoj Koreji\n * Izgubiti u beli sljedeće dvije godine\n * Uništiti svemir</string>
-    <string name="force_using_private_apis">Prisilno korištenje privatnih API-ja</string>
-    <string name="status_text_limit">Ograničenje teksta za tweetove</string>
+
+
     <string name="load_more_from_top">Učitaj više s vrha</string>
     <string name="load_more_from_top_summary">Korisno ako vam je draže čitati odozdo prema gore</string>
     <string name="compose_now">Sastavi Sada</string>
@@ -515,8 +514,8 @@
     <string name="muted_user">Utišan <xliff:g id="name">%s</xliff:g></string>
     <string name="unmute_user">Ozvuči <xliff:g id="name">%s</xliff:g></string>
     <string name="unmuted_user">Ozvučen <xliff:g id="name">%s</xliff:g></string>
-    <string name="mute">Utišaj</string>
-    <string name="unmute">Ozvuči</string>
+    <string name="action_mute">Utišaj</string>
+    <string name="action_unmute">Ozvuči</string>
     <string name="action_muting">utišavam</string>
     <string name="action_unmuting">poništavama ušućivanje</string>
     <string name="mute_user_confirm_message">Ušutjeti <xliff:g id="name">%s</xliff:g>? Više nećete vidjeti tweetove od ovog korisnika sve dok ga pratite.</string>

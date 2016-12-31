@@ -20,8 +20,8 @@
     <string name="basic">Basic</string>
     <string name="twip_o">twip O-modus</string>
     <string name="advanced">Avansert</string>
-    <string name="save">Lagre</string>
-    <string name="edit">Rediger</string>
+    <string name="action_save">Lagre</string>
+    <string name="action_edit">Rediger</string>
     <string name="edit_api">Endre API</string>
     <string name="home">Hjem</string>
     <string name="mentions">Omtalelser</string>
@@ -41,17 +41,17 @@
     <string name="label_streaming_service">Strømmetjeneste</string>
     <string name="label_background_operation_service">Bakgrunnstjeneste</string>
     <string name="open_in_browser">Åpne i nettleser</string>
-    <string name="delete">Slett</string>
-    <string name="retweet">Retweet</string>
+    <string name="action_delete">Slett</string>
+    <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweets</string>
     <string name="cancel_retweet">Avbryt retweet</string>
-    <string name="favorite">Favorittmarker</string>
-    <string name="unfavorite">Fjern favorittmarkering</string>
+    <string name="action_favorite">Favorittmarker</string>
+    <string name="action_unfavorite">Fjern favorittmarkering</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">Liker</string>
-    <string name="undo_like">Liker ikke</string>
-    <string name="reply">Svar</string>
-    <string name="share">Del</string>
+    <string name="action_like">Liker</string>
+    <string name="action_undo_like">Liker ikke</string>
+    <string name="action_reply">Svar</string>
+    <string name="action_share">Del</string>
     <string name="view_map">Kart</string>
     <string name="statuses">Tweets</string>
     <string name="followers">Følgere</string>
@@ -84,35 +84,35 @@
     <string name="quote_user">Sitat <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, via <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">Filtre</string>
+    <string name="title_filters">Filtre</string>
     <string name="users">Brukere</string>
-    <string name="user">Bruker</string>
+    <string name="title_user">Bruker</string>
     <string name="keywords">Stikkord</string>
     <string name="sources">Kilder</string>
     <string name="content">Innhold</string>
-    <string name="customize">Tilpass</string>
+
     <!--<string name="set_nickname">Velg kallenavn</string>-->
-    <string name="set_color">Velg farge</string>
-    <string name="clear">Tøm</string>
-    <string name="pick_color">Velg farge</string>
-    <string name="follow">Følg</string>
-    <string name="unfollow">Avfølg</string>
+    <string name="action_set_color">Velg farge</string>
+    <string name="action_clear">Tøm</string>
+    <string name="action_pick_color">Velg farge</string>
+    <string name="action_follow">Følg</string>
+    <string name="action_unfollow">Avfølg</string>
     <string name="leftside_compose_button">Ny-tweet-knappen på venstre side</string>
     <string name="leftside_compose_button_summary">Plasser ny-tweet-knappen til venstre.</string>
     <string name="load_item_limit">Lastegrense</string>
     <string name="load_item_limit_summary">Sett elementgrensen per innlasting.</string>
-    <string name="quote">Siter</string>
+    <string name="action_quote">Siter</string>
     <string name="add_rule">Legg til regel</string>
     <string name="text_size">Tekststørrelse</string>
     <string name="text_size_summary">Tekststørrelse for tweets.</string>
     <string name="cannot_get_location">Kan ikke finne din posisjon.</string>
-    <string name="drafts">Utkast</string>
-    <string name="description">Beskrivelse</string>
-    <string name="location">Posisjon</string>
-    <string name="url">Nettadresse</string>
-    <string name="favorites">Favoritter</string>
+    <string name="title_drafts">Utkast</string>
+
+    <string name="user_profile_location">Posisjon</string>
+    <string name="user_profile_url">Nettadresse</string>
+    <string name="title_favorites">Favoritter</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">Liker</string>
+    <string name="title_likes">Liker</string>
     <string name="name">Navn</string>
     <string name="refresh">Oppdater</string>
     <string name="retry">Prøv igjen</string>
@@ -135,8 +135,8 @@
     <string name="proxy">Proxy</string>
     <string name="proxy_host">Proxy-tjener</string>
     <string name="proxy_port">Proxy-port</string>
-    <string name="block">Blokker</string>
-    <string name="unblock">Opphev blokkering</string>
+    <string name="action_block">Blokker</string>
+    <string name="action_unblock">Opphev blokkering</string>
     <string name="report_for_spam">Rapporter spam</string>
     <string name="twitter_mute_user">Skjul bruker</string>
     <string name="twitter_muted_users">Skjulte brukere</string>
@@ -304,8 +304,8 @@
     <string name="text_copied">Tekst kopiert til utklippstavlen.</string>
     <string name="hashtag">Hashtag</string>
     <string name="links">Lenker</string>
-    <string name="edit_profile">Rediger profil</string>
-    <string name="edit_details">Rediger detaljer</string>
+    <string name="title_edit_profile">Rediger profil</string>
+    <string name="title_edit_details">Rediger detaljer</string>
     <string name="display_sensitive_contents">Vis sensitivt innhold</string>
     <string name="display_sensitive_contents_summary">Vis sensitivt innhold i tidslinjen uten forvarsel</string>
     <string name="sensitive_content_warning">Denne tweeten kan ha sensitivt innhold. Fortsette?</string>
@@ -356,10 +356,10 @@
     <string name="retweet_cancelled">Retweet avbrutt.</string>
     <string name="direct_message_sent">Direktemelding sendt.</string>
     <string name="direct_message_deleted">Direktemelding slettet.</string>
-    <string name="search_saved">Søk lagret.</string>
-    <string name="search_name_saved">Søket «<xliff:g id="name">%s</xliff:g>» er lagret.</string>
-    <string name="search_deleted">Søk slettet.</string>
-    <string name="search_name_deleted">Søket «<xliff:g id="name">%s</xliff:g>» er slettet.</string>
+    <string name="message_search_saved">Søk lagret.</string>
+    <string name="message_search_name_saved">Søket «<xliff:g id="name">%s</xliff:g>» er lagret.</string>
+    <string name="message_search_deleted">Søk slettet.</string>
+    <string name="message_search_name_deleted">Søket «<xliff:g id="name">%s</xliff:g>» er slettet.</string>
     <string name="import_from">Importer fra&#8230;</string>
     <string name="link_to_quoted_status">Lenke til sitert tweet</string>
     <string name="quote_original_status">Siter opprinnelig tweet</string>
@@ -442,7 +442,7 @@
     <string name="report_user">Rapporter <xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">Rapportere <xliff:g id="name">%s</xliff:g> for spam? Brukeren vil også bli blokkert.</string>
     <string name="twidere_test">Twittnuker-test</string>
-    <string name="staggered_home_timeline">Forskjøvet tidslinje</string>
+
     <string name="unread_count">Ulest-teller</string>
     <string name="developed_by">Utviklet av</string>
     <string name="project_account">Prosjektkonto</string>
@@ -502,8 +502,8 @@
     <string name="hidden_settings">Skjulte innstillinger</string>
     <string name="hidden_settings_warning_title">ADVARSEL: Disse innstillingene kan være skadelige!</string>
     <string name="hidden_settings_warning_message">ALDRI forandre disse innstillingene hvis du ikke vet hva du gjør, ellers vil de:\n* Ta livet av katten din\n* Sende atomvåpen mot Nord-Korea\n* Øke skattene og avgiftene ytterligere\n* Ødelegge universet</string>
-    <string name="force_using_private_apis">Tving bruk av private API-er</string>
-    <string name="status_text_limit">Tegnbegrensning på tweet</string>
+
+
     <string name="load_more_from_top">Last inn mer fra toppen</string>
     <string name="load_more_from_top_summary">Nyttig hvis du foretrekker å lese fra bunn til topp</string>
     <string name="compose_now">Skriv Nå</string>
@@ -535,8 +535,8 @@
     <string name="muted_user">Skjuler <xliff:g id="name">%s</xliff:g></string>
     <string name="unmute_user">Vis <xliff:g id="name">%s</xliff:g></string>
     <string name="unmuted_user">Viser <xliff:g id="name">%s</xliff:g></string>
-    <string name="mute">Skjul</string>
-    <string name="unmute">Vis</string>
+    <string name="action_mute">Skjul</string>
+    <string name="action_unmute">Vis</string>
     <string name="action_muting">skjuler</string>
     <string name="action_unmuting">viser</string>
     <string name="mute_user_confirm_message">Skjule <xliff:g id="name">%s</xliff:g>? Du vil ikke lenger se tweets fra denne brukeren men du fortsetter å følge den.</string>

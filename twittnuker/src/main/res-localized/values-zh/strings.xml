@@ -21,8 +21,8 @@
     <string name="basic">Basic</string>
     <string name="twip_o">twip O 模式</string>
     <string name="advanced">高級</string>
-    <string name="save">保存</string>
-    <string name="edit">編輯</string>
+    <string name="action_save">保存</string>
+    <string name="action_edit">編輯</string>
     <string name="edit_api">編輯 API</string>
     <string name="home">主頁</string>
     <string name="mentions">提及</string>
@@ -42,17 +42,17 @@
     <string name="label_streaming_service">實時流服務</string>
     <string name="label_background_operation_service">後台操作服務</string>
     <string name="open_in_browser">在瀏覽器中打開</string>
-    <string name="delete">刪除</string>
-    <string name="retweet">轉推</string>
+    <string name="action_delete">刪除</string>
+    <string name="action_retweet">轉推</string>
     <string name="retweets">轉推</string>
     <string name="cancel_retweet">取消轉推</string>
-    <string name="favorite">收藏</string>
-    <string name="unfavorite">取消收藏</string>
+    <string name="action_favorite">收藏</string>
+    <string name="action_unfavorite">取消收藏</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">喜歡</string>
-    <string name="undo_like">取消喜歡</string>
-    <string name="reply">回覆</string>
-    <string name="share">分享</string>
+    <string name="action_like">喜歡</string>
+    <string name="action_undo_like">取消喜歡</string>
+    <string name="action_reply">回覆</string>
+    <string name="action_share">分享</string>
     <string name="view_map">地圖</string>
     <string name="statuses">推文</string>
     <string name="followers">關注者</string>
@@ -85,35 +85,35 @@
     <string name="quote_user">引用<xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">過濾</string>
+    <string name="title_filters">過濾</string>
     <string name="users">用戶</string>
-    <string name="user">用戶</string>
+    <string name="title_user">用戶</string>
     <string name="keywords">關鍵詞</string>
     <string name="sources">來源</string>
     <string name="content">內容</string>
-    <string name="customize">自訂</string>
+
     <!--<string name="set_nickname">設定暱稱</string>-->
-    <string name="set_color">設定顏色</string>
-    <string name="clear">清除</string>
-    <string name="pick_color">選取顏色</string>
-    <string name="follow">關注</string>
-    <string name="unfollow">取消關注</string>
+    <string name="action_set_color">設定顏色</string>
+    <string name="action_clear">清除</string>
+    <string name="action_pick_color">選取顏色</string>
+    <string name="action_follow">關注</string>
+    <string name="action_unfollow">取消關注</string>
     <string name="leftside_compose_button">左側撰寫按鈕</string>
     <string name="leftside_compose_button_summary">將撰寫按鈕放置在左邊</string>
     <string name="load_item_limit">載入條目上限</string>
     <string name="load_item_limit_summary">設定一次載入條目的數量上限</string>
-    <string name="quote">引用</string>
+    <string name="action_quote">引用</string>
     <string name="add_rule">新增規則</string>
     <string name="text_size">文字尺寸</string>
     <string name="text_size_summary">推文的字體大小</string>
     <string name="cannot_get_location">無法取得您的位置</string>
-    <string name="drafts">草稿</string>
-    <string name="description">簡介</string>
-    <string name="location">位置</string>
-    <string name="url">網址</string>
-    <string name="favorites">收藏</string>
+    <string name="title_drafts">草稿</string>
+
+    <string name="user_profile_location">位置</string>
+    <string name="user_profile_url">網址</string>
+    <string name="title_favorites">收藏</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">喜歡</string>
+    <string name="title_likes">喜歡</string>
     <string name="name">名字</string>
     <string name="refresh">更新</string>
     <string name="retry">重試</string>
@@ -140,8 +140,8 @@
     <string name="proxy_port">代理伺服器埠</string>
     <string name="proxy_username">代理伺服器用戶名</string>
     <string name="proxy_password">代理伺服器密碼</string>
-    <string name="block">封鎖</string>
-    <string name="unblock">取消封鎖</string>
+    <string name="action_block">封鎖</string>
+    <string name="action_unblock">取消封鎖</string>
     <string name="report_for_spam">報告垃圾信息</string>
     <string name="twitter_mute_user">靜音用戶</string>
     <string name="twitter_muted_users">已靜音的用戶</string>
@@ -327,8 +327,8 @@
     <string name="text_copied">文字已複製到剪貼簿</string>
     <string name="hashtag">話題標籤</string>
     <string name="links">連結</string>
-    <string name="edit_profile">編輯個人資料</string>
-    <string name="edit_details">編輯詳情</string>
+    <string name="title_edit_profile">編輯個人資料</string>
+    <string name="title_edit_details">編輯詳情</string>
     <string name="display_sensitive_contents">顯示敏感內容</string>
     <string name="display_sensitive_contents_summary">顯示色情等敏感內容而不發出提示</string>
     <string name="sensitive_content_warning">這條推文可能有敏感內容，繼續？</string>
@@ -380,10 +380,10 @@
     <string name="retweet_cancelled">轉推已取消</string>
     <string name="direct_message_sent">私信已發送</string>
     <string name="direct_message_deleted">私信已刪除</string>
-    <string name="search_saved">搜尋已保存</string>
-    <string name="search_name_saved">搜尋 \"<xliff:g id="name">%s</xliff:g>\" 已儲存</string>
-    <string name="search_deleted">搜尋已刪除</string>
-    <string name="search_name_deleted">搜尋 \"<xliff:g id="name">%s</xliff:g>\" 已刪除</string>
+    <string name="message_search_saved">搜尋已保存</string>
+    <string name="message_search_name_saved">搜尋 \"<xliff:g id="name">%s</xliff:g>\" 已儲存</string>
+    <string name="message_search_deleted">搜尋已刪除</string>
+    <string name="message_search_name_deleted">搜尋 \"<xliff:g id="name">%s</xliff:g>\" 已刪除</string>
     <string name="import_from">匯入從&#8230;</string>
     <string name="link_to_quoted_status">連結到引用的推文</string>
     <string name="quote_original_status">引用原推文</string>
@@ -467,7 +467,7 @@
     <string name="report_user">報告<xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">你確定報告<xliff:g id="name">%s</xliff:g>發送垃圾信息嗎？</string>
     <string name="twidere_test">Twittnuker 測試</string>
-    <string name="staggered_home_timeline">主頁信息流</string>
+
     <string name="unread_count">未讀條目</string>
     <string name="developed_by">開發者</string>
     <string name="project_account">項目帳號</string>
@@ -527,8 +527,8 @@
     <string name="hidden_settings">隱藏設定</string>
     <string name="hidden_settings_warning_title">警告：這些設定受結界保護！</string>
     <string name="hidden_settings_warning_message">*永遠* 不要在你清楚這些設定的意義下更改它們，否則它們會：\n * 殺掉你家的貓\n * 發射北韓的核彈\n * 把所有魔法少女變成偽娘\n * 毀滅宇宙</string>
-    <string name="force_using_private_apis">強制使用不公開的 API</string>
-    <string name="status_text_limit">推文字數限制</string>
+
+
     <string name="load_more_from_top">從頂部載入更多</string>
     <string name="load_more_from_top_summary">如果你習慣從底部向上閱讀的話會很有用</string>
     <string name="compose_now">即時撰寫</string>
@@ -561,8 +561,8 @@
     <string name="muted_user">已靜音<xliff:g id="name">%s</xliff:g></string>
     <string name="unmute_user">取消靜音<xliff:g id="name">%s</xliff:g></string>
     <string name="unmuted_user">已取消靜音<xliff:g id="name">%s</xliff:g></string>
-    <string name="mute">靜音</string>
-    <string name="unmute">取消靜音</string>
+    <string name="action_mute">靜音</string>
+    <string name="action_unmute">取消靜音</string>
     <string name="action_muting">靜音</string>
     <string name="action_unmuting">取消靜音</string>
     <string name="mute_user_confirm_message">靜音<xliff:g id="name">%s</xliff:g>？你將在保持關注這個用戶的情況下，在首頁看不到這個用戶的推文。</string>

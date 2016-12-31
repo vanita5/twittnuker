@@ -15,8 +15,8 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Basik</string>
     <string name="advanced">Avanceret</string>
-    <string name="save">Gem</string>
-    <string name="edit">Redigere</string>
+    <string name="action_save">Gem</string>
+    <string name="action_edit">Redigere</string>
     <string name="edit_api">Redigere API</string>
     <string name="home">Hjem</string>
     <string name="mentions">Nævnelser</string>
@@ -31,15 +31,15 @@
     <string name="password">Adgangskode</string>
     <string name="label_refresh_service">Genopfrisk service</string>
     <string name="open_in_browser">Åben i browser</string>
-    <string name="delete">Slet</string>
-    <string name="retweet">Retweet</string>
+    <string name="action_delete">Slet</string>
+    <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweeter</string>
     <string name="cancel_retweet">Annuller retweet</string>
-    <string name="favorite">Favoriser</string>
-    <string name="unfavorite">Slet favorisering</string>
+    <string name="action_favorite">Favoriser</string>
+    <string name="action_unfavorite">Slet favorisering</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="reply">Svar</string>
-    <string name="share">Del</string>
+    <string name="action_reply">Svar</string>
+    <string name="action_share">Del</string>
     <string name="view_map">Kort</string>
     <string name="statuses">Tweets</string>
     <string name="followers">Følgere</string>
@@ -71,33 +71,32 @@
     <string name="quote_user">Citer <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">Filtre</string>
+    <string name="title_filters">Filtre</string>
     <string name="users">Brugere</string>
-    <string name="user">Bruger</string>
+    <string name="title_user">Bruger</string>
     <string name="keywords">Nøgleord</string>
     <string name="sources">Kilder</string>
     <string name="content">Indhold</string>
-    <string name="customize">Tilpas</string>
     <!--<string name="set_nickname">Giv kælenavn</string>-->
-    <string name="set_color">Bestem farve</string>
-    <string name="clear">Ryd</string>
-    <string name="pick_color">Vælg farve</string>
-    <string name="follow">Følg</string>
-    <string name="unfollow">Følg ikke mere</string>
+    <string name="action_set_color">Bestem farve</string>
+    <string name="action_clear">Ryd</string>
+    <string name="action_pick_color">Vælg farve</string>
+    <string name="action_follow">Følg</string>
+    <string name="action_unfollow">Følg ikke mere</string>
     <string name="leftside_compose_button">Komponerknap til venstre</string>
     <string name="leftside_compose_button_summary">Sæt komponerknappen til venstre side.</string>
     <string name="load_item_limit">Element indlæsnings begrænsning</string>
     <string name="load_item_limit_summary">Sæt objektgrænse per indlæsning.</string>
-    <string name="quote">Citat</string>
+    <string name="action_quote">Citat</string>
     <string name="add_rule">Tilføj regel</string>
     <string name="text_size">Tekst størrelse</string>
     <string name="text_size_summary">Tekststørrelse for tweets.</string>
     <string name="cannot_get_location">Kunne ikke finde din placering.</string>
-    <string name="drafts">Udkast</string>
-    <string name="description">Beskrivelse</string>
-    <string name="location">Placering</string>
-    <string name="url">URL</string>
-    <string name="favorites">Favoritter</string>
+    <string name="title_drafts">Udkast</string>
+
+    <string name="user_profile_location">Placering</string>
+    <string name="user_profile_url">URL</string>
+    <string name="title_favorites">Favoritter</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
     <string name="name">Navn</string>
     <string name="refresh">Genopfrisk</string>
@@ -120,8 +119,8 @@
     <string name="proxy">Proxy</string>
     <string name="proxy_host">Proxyvært</string>
     <string name="proxy_port">Proxyport</string>
-    <string name="block">Bloker</string>
-    <string name="unblock">Fjern blokering</string>
+    <string name="action_block">Bloker</string>
+    <string name="action_unblock">Fjern blokering</string>
     <string name="report_for_spam">Rapporter spam</string>
     <string name="twitter_mute_user">Dæmp bruger</string>
     <string name="twitter_muted_users">Dæmpede brugere</string>
@@ -238,8 +237,8 @@
     <string name="text_copied">Tekst kopieret til udklipsholderen.</string>
     <string name="hashtag">Hashtag</string>
     <string name="links">Link</string>
-    <string name="edit_profile">Rediger profil</string>
-    <string name="edit_details">Rediger detaljer</string>
+    <string name="title_edit_profile">Rediger profil</string>
+    <string name="title_edit_details">Rediger detaljer</string>
     <!-- Previous item (tweet, user etc.) -->
     <!-- Next item (tweet, user etc.) -->
     <!-- 'Tweet' here is a verb -->

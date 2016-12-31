@@ -289,7 +289,7 @@
         <activity
             android:name=".activity.ColorPickerDialogActivity"
             android:icon="@drawable/ic_action_twittnuker"
-            android:label="@string/set_color"
+            android:label="@string/action_set_color"
             android:theme="@style/Theme.Twidere.NoDisplay"/>
         <activity
             android:name=".activity.LinkHandlerActivity"

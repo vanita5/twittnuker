@@ -95,14 +95,14 @@
         <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
             android:action="status.reply"
             android:tag="status"
-            android:title="@string/reply"/>
+            android:title="@string/action_reply"/>
         <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
             android:action="status.retweet"
             android:tag="status"
-            android:title="@string/retweet"/>
+            android:title="@string/action_retweet"/>
         <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
             android:action="status.favorite"
             android:tag="status"
-            android:title="@string/favorite"/>
+            android:title="@string/action_favorite"/>
     </PreferenceCategory>
 </PreferenceScreen>

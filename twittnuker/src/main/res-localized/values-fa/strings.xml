@@ -21,8 +21,8 @@
     <string name="basic">پایه</string>
     <string name="twip_o">حالت twip O</string>
     <string name="advanced">پیش‌رفته</string>
-    <string name="save">ذخیره</string>
-    <string name="edit">ویرایش</string>
+    <string name="action_save">ذخیره</string>
+    <string name="action_edit">ویرایش</string>
     <string name="edit_api">ویرایش API</string>
     <string name="home">خانه</string>
     <string name="mentions">اشاره‌ها</string>
@@ -42,17 +42,17 @@
     <string name="label_streaming_service">خدمت جریان</string>
     <string name="label_background_operation_service">خدمت عملیات پس‌زمینه</string>
     <string name="open_in_browser">گشودن در مرورگر</string>
-    <string name="delete">حذف</string>
-    <string name="retweet">بازتوییت</string>
+    <string name="action_delete">حذف</string>
+    <string name="action_retweet">بازتوییت</string>
     <string name="retweets">بازتوییت‌ها</string>
     <string name="cancel_retweet">لغو بازتوییت</string>
-    <string name="favorite">برگزیدن</string>
-    <string name="unfavorite">برنگزیدن</string>
+    <string name="action_favorite">برگزیدن</string>
+    <string name="action_unfavorite">برنگزیدن</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">پسندیدن</string>
-    <string name="undo_like">بازگردانی پسندیدن</string>
-    <string name="reply">پاسخ</string>
-    <string name="share">هم‌رسانی</string>
+    <string name="action_like">پسندیدن</string>
+    <string name="action_undo_like">بازگردانی پسندیدن</string>
+    <string name="action_reply">پاسخ</string>
+    <string name="action_share">هم‌رسانی</string>
     <string name="view_map">نقشه</string>
     <string name="statuses">توئیت‌ها</string>
     <string name="followers">دنبال‌کنندگان</string>
@@ -85,35 +85,34 @@
     <string name="quote_user">نقل قول از <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">پالایه‌ها</string>
+    <string name="title_filters">پالایه‌ها</string>
     <string name="users">کاربران</string>
-    <string name="user">کاربر</string>
+    <string name="title_user">کاربر</string>
     <string name="keywords">کلیدواژگان</string>
     <string name="sources">منابع</string>
     <string name="content">محتوا</string>
-    <string name="customize">شخصی‌سازی</string>
     <!--<string name="set_nickname">تنظیم نام مستعار</string>-->
-    <string name="set_color">تنظیم رنگ</string>
-    <string name="clear">پاک‌سازی</string>
-    <string name="pick_color">انتخاب رنگ</string>
-    <string name="follow">دنبال کردن</string>
-    <string name="unfollow">دنبال نکردن</string>
+    <string name="action_set_color">تنظیم رنگ</string>
+    <string name="action_clear">پاک‌سازی</string>
+    <string name="action_pick_color">انتخاب رنگ</string>
+    <string name="action_follow">دنبال کردن</string>
+    <string name="action_unfollow">دنبال نکردن</string>
     <string name="leftside_compose_button">دکمهٔ ایجاد سمت چپ</string>
     <string name="leftside_compose_button_summary">دکمهٔ ایحاد را در سمت چپ قرار می‌دهد.</string>
     <string name="load_item_limit">کران بار کردن موارد</string>
     <string name="load_item_limit_summary">تنظیم کران موارد در هر بار کردن.</string>
-    <string name="quote">نقل قول</string>
+    <string name="action_quote">نقل قول</string>
     <string name="add_rule">افزودن شرط</string>
     <string name="text_size">اندازهٔ متن</string>
     <string name="text_size_summary">اندازهٔ متن توییت‌ها.</string>
     <string name="cannot_get_location">نمی‌توان موقعیّتتان را گرفت.</string>
-    <string name="drafts">چرک‌نویس‌ها</string>
-    <string name="description">توصیف</string>
-    <string name="location">موقعیت</string>
-    <string name="url">پیوند</string>
-    <string name="favorites">برگزیده‌ها</string>
+    <string name="title_drafts">چرک‌نویس‌ها</string>
+
+    <string name="user_profile_location">موقعیت</string>
+    <string name="user_profile_url">پیوند</string>
+    <string name="title_favorites">برگزیده‌ها</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">پسندها</string>
+    <string name="title_likes">پسندها</string>
     <string name="name">نام</string>
     <string name="refresh">تازه‌سازی</string>
     <string name="retry">سعی دوباره</string>
@@ -140,8 +139,8 @@
     <string name="proxy_port">درگاه پیشکار</string>
     <string name="proxy_username">نام کاربری پیشکار</string>
     <string name="proxy_password">گذرواژهٔ پیشکار</string>
-    <string name="block">مسدود کردن</string>
-    <string name="unblock">مسدود نکردن</string>
+    <string name="action_block">مسدود کردن</string>
+    <string name="action_unblock">مسدود نکردن</string>
     <string name="report_for_spam">گزارش هرزنامه</string>
     <string name="twitter_mute_user">بی‌صدا کردن کاربر</string>
     <string name="twitter_muted_users">کاربران بی‌صدا</string>
@@ -327,8 +326,8 @@
     <string name="text_copied">متن در حافظه رونوشت شد.</string>
     <string name="hashtag">هش‌تگ</string>
     <string name="links">پیوندها</string>
-    <string name="edit_profile">ویرایش نمایه</string>
-    <string name="edit_details">ویرایش جزییات</string>
+    <string name="title_edit_profile">ویرایش نمایه</string>
+    <string name="title_edit_details">ویرایش جزییات</string>
     <string name="display_sensitive_contents">نمایش محتوای حسّاسیت‌برانگیز</string>
     <string name="display_sensitive_contents_summary">نمایش بدون هشدار محتوای حسّاسیت‌برانگیر در خط زمانی</string>
     <string name="sensitive_content_warning">ممکن است این توییت محتوای حسّاسیت برانگیر داشته باشد، ادامه دهیم؟</string>
@@ -380,10 +379,10 @@
     <string name="retweet_cancelled">بازتوئیت لغو شد.</string>
     <string name="direct_message_sent">پیام مستقیم ارسال شد.</string>
     <string name="direct_message_deleted">پیام مستقیم حذف شد.</string>
-    <string name="search_saved">جستجو ذخیره شد.</string>
-    <string name="search_name_saved">جست‌وجوی «<xliff:g id="name">%s</xliff:g>» ذخیره شد.</string>
-    <string name="search_deleted">جست‌وجو حذف شد.</string>
-    <string name="search_name_deleted">جست‌وجوی «<xliff:g id="name">%s</xliff:g>» حذف شد.</string>
+    <string name="message_search_saved">جستجو ذخیره شد.</string>
+    <string name="message_search_name_saved">جست‌وجوی «<xliff:g id="name">%s</xliff:g>» ذخیره شد.</string>
+    <string name="message_search_deleted">جست‌وجو حذف شد.</string>
+    <string name="message_search_name_deleted">جست‌وجوی «<xliff:g id="name">%s</xliff:g>» حذف شد.</string>
     <string name="import_from">وارد کردن از&#8230;</string>
     <string name="link_to_quoted_status">پیوند به توییت نقل‌قول شده</string>
     <string name="quote_original_status">نقل قول توییت اصلی</string>
@@ -467,7 +466,7 @@
     <string name="report_user">گزارش <xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">گزارش <xliff:g id="name">%s</xliff:g> برای هرزنامه؟ هم‌چنین این کاربر را مسدود خواهید کرد.</string>
     <string name="twidere_test">آزمودن تویدر</string>
-    <string name="staggered_home_timeline">حط زمانی خانگی موزاییکی</string>
+
     <string name="unread_count">شمار ناخوانده‌ها</string>
     <string name="developed_by">توسعه‌یافته توسّط</string>
     <string name="project_account">حساب پروژه</string>
@@ -527,8 +526,8 @@
     <string name="hidden_settings">تنظیمات پنهان</string>
     <string name="hidden_settings_warning_title">هشدار: این تنظمیمات ممکن است صدمه بزنند!</string>
     <string name="hidden_settings_warning_message">در صورتی که نمی‌دانید این تنظیمات چیستند، هرگز آن‌ها را تغییر ندهید، وگرنه:\n * گربه‌تان را می‌کشد\n * سلاح‌های هسته‌ای در کرهٔ شمالی را شلّیک مي‌کند\n *‌ تمام ماهوشوجوها را به موجو تبدیل می‌کند\n * جهان را نابود می‌کند</string>
-    <string name="force_using_private_apis">اجبار به استفاده زا API شخصی</string>
-    <string name="status_text_limit">کران متن توییت</string>
+
+
     <string name="load_more_from_top">بار کردن بیش‌تر از بالا</string>
     <string name="load_more_from_top_summary">اگر ترجیح می‌دهید از پایین به بالا بخوانید مفید است</string>
     <string name="compose_now">ایجاد اکنون</string>
@@ -561,8 +560,8 @@
     <string name="muted_user"><xliff:g id="name">%s</xliff:g> بی‌صدا شد‫</string>
     <string name="unmute_user">باصدا کردن <xliff:g id="name">%s</xliff:g></string>
     <string name="unmuted_user">‫<xliff:g id="name">%s</xliff:g> باصدا شد</string>
-    <string name="mute">بی‌صدا</string>
-    <string name="unmute">باصدا</string>
+    <string name="action_mute">بی‌صدا</string>
+    <string name="action_unmute">باصدا</string>
     <string name="action_muting">بی‌صدا کردن</string>
     <string name="action_unmuting">باصدا کردن</string>
     <string name="mute_user_confirm_message">‫<xliff:g id="name">%s</xliff:g> بی‌صدا شود؟ شما در حالی که هم‌چنان این کاربر را دنبال می‌کنید، دیگر توییت‌هایش را نمی‌بینید.</string>

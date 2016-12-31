@@ -17,8 +17,8 @@
     <string name="basic">Grundläggande</string>
     <string name="twip_o">twip O Läge</string>
     <string name="advanced">Avancerad</string>
-    <string name="save">Spara</string>
-    <string name="edit">Redigera</string>
+    <string name="action_save">Spara</string>
+    <string name="action_edit">Redigera</string>
     <string name="edit_api">Redigera API</string>
     <string name="home">Hem</string>
     <string name="mentions">Händelser</string>
@@ -36,17 +36,17 @@
     <string name="label_streaming_service">Strömningstjänst</string>
     <string name="label_background_operation_service">Bakgrunds drifts tjänst</string>
     <string name="open_in_browser">Öppna i webbläsare</string>
-    <string name="delete">Ta bort</string>
-    <string name="retweet">Retweet</string>
+    <string name="action_delete">Ta bort</string>
+    <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweets</string>
     <string name="cancel_retweet">Avbryt retweet</string>
-    <string name="favorite">Favorit</string>
-    <string name="unfavorite">Ta bort favorit</string>
+    <string name="action_favorite">Favorit</string>
+    <string name="action_unfavorite">Ta bort favorit</string>
   <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">Gilla</string>
-    <string name="undo_like">Sluta gilla</string>
-    <string name="reply">Svara</string>
-    <string name="share">Dela</string>
+    <string name="action_like">Gilla</string>
+    <string name="action_undo_like">Sluta gilla</string>
+    <string name="action_reply">Svara</string>
+    <string name="action_share">Dela</string>
     <string name="view_map">Karta</string>
     <string name="statuses">Tweets</string>
     <string name="followers">Följare</string>
@@ -76,32 +76,32 @@
     <string name="quote_user">Citera <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">Filter</string>
+    <string name="title_filters">Filter</string>
     <string name="users">Användare</string>
-    <string name="user">Användare</string>
+    <string name="title_user">Användare</string>
     <string name="keywords">Nyckelord</string>
     <string name="sources">Källor</string>
     <string name="content">Innehåll</string>
-    <string name="customize">Anpassa</string>
+
     <!--<string name="set_nickname">Ange smeknamn</string>-->
-    <string name="set_color">Ange färg</string>
-    <string name="clear">Rensa</string>
-    <string name="pick_color">Välj färg</string>
-    <string name="follow">Följ</string>
-    <string name="unfollow">Sluta följa</string>
+    <string name="action_set_color">Ange färg</string>
+    <string name="action_clear">Rensa</string>
+    <string name="action_pick_color">Välj färg</string>
+    <string name="action_follow">Följ</string>
+    <string name="action_unfollow">Sluta följa</string>
     <string name="load_item_limit_summary">Välj max mängd objekt per laddning.</string>
-    <string name="quote">Citat</string>
+    <string name="action_quote">Citat</string>
     <string name="add_rule">Lägg till ny regel</string>
     <string name="text_size">Text storlek</string>
     <string name="text_size_summary">Text storlek på tweets.</string>
     <string name="cannot_get_location">Kan inte få din plats.</string>
-    <string name="drafts">Utkast</string>
-    <string name="description">Beskrivning</string>
-    <string name="location">Plats</string>
-    <string name="url">URL</string>
-    <string name="favorites">Favoriter</string>
+    <string name="title_drafts">Utkast</string>
+
+    <string name="user_profile_location">Plats</string>
+    <string name="user_profile_url">URL</string>
+    <string name="title_favorites">Favoriter</string>
   <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">Gillningar</string>
+    <string name="title_likes">Gillningar</string>
     <string name="name">Namn</string>
     <string name="refresh">Uppdatera</string>
     <string name="retry">Prova igen</string>
@@ -124,8 +124,8 @@
     <string name="proxy">Proxy</string>
     <string name="proxy_host">Proxy Host</string>
     <string name="proxy_port">Proxy Port</string>
-    <string name="block">Blockera</string>
-    <string name="unblock">Avblockera</string>
+    <string name="action_block">Blockera</string>
+    <string name="action_unblock">Avblockera</string>
     <string name="report_for_spam">Rapportera spam</string>
     <string name="twitter_mute_user">Mutea användare</string>
     <string name="twitter_muted_users">Muteade användare</string>

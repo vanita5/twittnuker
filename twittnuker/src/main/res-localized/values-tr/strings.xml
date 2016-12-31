@@ -21,8 +21,8 @@
     <string name="basic">Temel</string>
     <string name="twip_o">twip O modu</string>
     <string name="advanced">Gelişmiş</string>
-    <string name="save">Kaydet</string>
-    <string name="edit">Düzenle</string>
+    <string name="action_save">Kaydet</string>
+    <string name="action_edit">Düzenle</string>
     <string name="edit_api">API düzenle</string>
     <string name="home">Anasayfa</string>
     <string name="mentions">Bahsedenler</string>
@@ -42,17 +42,17 @@
     <string name="label_streaming_service">Akış servisi</string>
     <string name="label_background_operation_service">Arkaplan çalışma servisi</string>
     <string name="open_in_browser">Tarayıcıda aç</string>
-    <string name="delete">Sil</string>
-    <string name="retweet">Retweet et</string>
+    <string name="action_delete">Sil</string>
+    <string name="action_retweet">Retweet et</string>
     <string name="retweets">Retweetler</string>
     <string name="cancel_retweet">Retweeti iptal et</string>
-    <string name="favorite">Favorilerine ekle</string>
-    <string name="unfavorite">Favorilerinden çıkar</string>
+    <string name="action_favorite">Favorilerine ekle</string>
+    <string name="action_unfavorite">Favorilerinden çıkar</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">Beğen</string>
-    <string name="undo_like">Beğenmekten Vazgeç</string>
-    <string name="reply">Cevapla</string>
-    <string name="share">Paylaş</string>
+    <string name="action_like">Beğen</string>
+    <string name="action_undo_like">Beğenmekten Vazgeç</string>
+    <string name="action_reply">Cevapla</string>
+    <string name="action_share">Paylaş</string>
     <string name="view_map">Harita</string>
     <string name="statuses">Tweetler</string>
     <string name="followers">Takipçiler</string>
@@ -85,35 +85,35 @@
     <string name="quote_user">Alıntı yap <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, <xliff:g id="source">%2$s</xliff:g> kullanılarak</string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">Filtreler</string>
+    <string name="title_filters">Filtreler</string>
     <string name="users">Kullanıcılar</string>
-    <string name="user">Kullanıcı</string>
+    <string name="title_user">Kullanıcı</string>
     <string name="keywords">Anahtar kelimeler</string>
     <string name="sources">Kaynaklar</string>
     <string name="content">İçerik</string>
-    <string name="customize">Özelleştir</string>
+
     <!--<string name="set_nickname">Lakap ayarla</string>-->
-    <string name="set_color">Rengi ayarla</string>
-    <string name="clear">Temizle</string>
-    <string name="pick_color">Renk seç</string>
-    <string name="follow">Takip et</string>
-    <string name="unfollow">Takibi bırak</string>
+    <string name="action_set_color">Rengi ayarla</string>
+    <string name="action_clear">Temizle</string>
+    <string name="action_pick_color">Renk seç</string>
+    <string name="action_follow">Takip et</string>
+    <string name="action_unfollow">Takibi bırak</string>
     <string name="leftside_compose_button">Solda tweet yaz butonu</string>
     <string name="leftside_compose_button_summary">Tweet yaz butonunu sola yerleştirir.</string>
     <string name="load_item_limit">Yeni nesne yükleme limiti</string>
     <string name="load_item_limit_summary">Bir defada yüklenecek en çok nesne sayısını belirler.</string>
-    <string name="quote">Alıntı yap</string>
+    <string name="action_quote">Alıntı yap</string>
     <string name="add_rule">Kural ekle</string>
     <string name="text_size">Yazı Boyutu</string>
     <string name="text_size_summary">Tweeti harf sayısı.</string>
     <string name="cannot_get_location">Konumunuz alınamıyor.</string>
-    <string name="drafts">Taslaklar</string>
-    <string name="description">Açıklama</string>
-    <string name="location">Konum</string>
-    <string name="url">URL</string>
-    <string name="favorites">Favoriler</string>
+    <string name="title_drafts">Taslaklar</string>
+
+    <string name="user_profile_location">Konum</string>
+    <string name="user_profile_url">URL</string>
+    <string name="title_favorites">Favoriler</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">Beğen</string>
+    <string name="title_likes">Beğen</string>
     <string name="name">Ad</string>
     <string name="refresh">Yenile</string>
     <string name="retry">Tekrar Dene</string>
@@ -140,8 +140,8 @@
     <string name="proxy_port">Proxy portu</string>
     <string name="proxy_username">Proxy kullanıcı adı</string>
     <string name="proxy_password">Proxy şifresi</string>
-    <string name="block">Engelle</string>
-    <string name="unblock">Engeli kaldır</string>
+    <string name="action_block">Engelle</string>
+    <string name="action_unblock">Engeli kaldır</string>
     <string name="report_for_spam">Spam bildir</string>
     <string name="twitter_mute_user">Kullanıcının tweetlerini gösterme</string>
     <string name="twitter_muted_users">Tweetleri gösterilmeyen kullanıcılar</string>
@@ -327,8 +327,8 @@
     <string name="text_copied">Metin panoya kopyalandı.</string>
     <string name="hashtag">Etiket</string>
     <string name="links">Kısayollar</string>
-    <string name="edit_profile">Profil düzenle</string>
-    <string name="edit_details">Detayları Düzenle</string>
+    <string name="title_edit_profile">Profil düzenle</string>
+    <string name="title_edit_details">Detayları Düzenle</string>
     <string name="display_sensitive_contents">Hassas içeriği görüntüle</string>
     <string name="display_sensitive_contents_summary">Hassas içeriği uyarmadan zaman akışında görüntüle</string>
     <string name="sensitive_content_warning">Bu tweet hassas içeriğe sahip olabilir, devam edilsin mi?</string>
@@ -380,10 +380,10 @@
     <string name="retweet_cancelled">Retweet iptal edildi.</string>
     <string name="direct_message_sent">Doğrudan mesaj gönderildi.</string>
     <string name="direct_message_deleted">Doğrudan mesaj silindi.</string>
-    <string name="search_saved">Arama kaydedildi.</string>
-    <string name="search_name_saved">Arama \"<xliff:g id="name">%s</xliff:g>\" kaydedildi.</string>
-    <string name="search_deleted">Arama silindi.</string>
-    <string name="search_name_deleted">Arama \"<xliff:g id="name">%s</xliff:g>\" silindi.</string>
+    <string name="message_search_saved">Arama kaydedildi.</string>
+    <string name="message_search_name_saved">Arama \"<xliff:g id="name">%s</xliff:g>\" kaydedildi.</string>
+    <string name="message_search_deleted">Arama silindi.</string>
+    <string name="message_search_name_deleted">Arama \"<xliff:g id="name">%s</xliff:g>\" silindi.</string>
     <string name="import_from">Şuradan import&#8230;</string>
     <string name="link_to_quoted_status">Alıntılanmış tweet\'a link</string>
     <string name="quote_original_status">Özgün tweeti alıntıla</string>
@@ -467,7 +467,7 @@
     <string name="report_user"><xliff:g id="name">%s</xliff:g> Şikayet Et</string>
     <string name="report_user_confirm_message"><xliff:g id="name">%s</xliff:g> spam yaptığı için raporlamak ister misiniz? Ayrıca bu kullanıcı engellenecek.</string>
     <string name="twidere_test">Twittnuker test</string>
-    <string name="staggered_home_timeline">Düzenlenmiş Ana Sayfa Zaman Akışı</string>
+
     <string name="unread_count">Okunmamış sayısı</string>
     <string name="developed_by">Tarafından geliştirildi</string>
     <string name="project_account">Proje şifresi</string>
@@ -527,8 +527,8 @@
     <string name="hidden_settings">Gizli ayarlar</string>
     <string name="hidden_settings_warning_title">UYARI: Bu ayarları değiştirmek uygulamaya zarar verebilir!</string>
     <string name="hidden_settings_warning_message">ASLA bu ayarları bilmiyorsanız değiştirmeyin, veya şunlar olur:\n * Kediniz ölür\n * Kuzey Kore\'nin nükleer silahını ateşlersiniz\n * Fenerbahçe\'yi şampiyon yapabilirsiniz\n * Evreni yok edebilirsiniz</string>
-    <string name="force_using_private_apis">Özel API\'lerin kullanımına zorla</string>
-    <string name="status_text_limit">Tweet metin limiti</string>
+
+
     <string name="load_more_from_top">Üstten daha fazla yükle</string>
     <string name="load_more_from_top_summary">Aşağıdan yukarıya doğru okuyanlar için kullanabilirsiniz</string>
     <string name="compose_now">Şimdi Oluştur</string>
@@ -561,8 +561,8 @@
     <string name="muted_user"><xliff:g id="name">%s</xliff:g> susturuldu</string>
     <string name="unmute_user"><xliff:g id="name">%s</xliff:g> susturmayı kaldır</string>
     <string name="unmuted_user"><xliff:g id="name">%s</xliff:g> susturma kaldırıldı</string>
-    <string name="mute">Sessize al</string>
-    <string name="unmute">Sesini aç</string>
+    <string name="action_mute">Sessize al</string>
+    <string name="action_unmute">Sesini aç</string>
     <string name="action_muting">sessize alınıyor</string>
     <string name="action_unmuting">sesi açılıyor</string>
     <string name="mute_user_confirm_message"><xliff:g id="name">%s</xliff:g>\'i sessize al? Artık zaman akışınızda bu kişinin Tweetlerini görmeyeceksiniz.</string>

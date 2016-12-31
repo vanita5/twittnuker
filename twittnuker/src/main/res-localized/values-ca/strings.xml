@@ -21,8 +21,8 @@
     <string name="basic">Bàsica</string>
     <string name="twip_o">Mode twip O</string>
     <string name="advanced">Avançades</string>
-    <string name="save">Desa</string>
-    <string name="edit">Edita</string>
+    <string name="action_save">Desa</string>
+    <string name="action_edit">Edita</string>
     <string name="edit_api">Edita l\'API</string>
     <string name="home">Inici</string>
     <string name="mentions">Mencions</string>
@@ -42,17 +42,17 @@
     <string name="label_streaming_service">Servei de piulades en temps real</string>
     <string name="label_background_operation_service">Servei d\'execució en rerefons</string>
     <string name="open_in_browser">Obrir al navegador</string>
-    <string name="delete">Esborra</string>
-    <string name="retweet">Retweet</string>
+    <string name="action_delete">Esborra</string>
+    <string name="action_retweet">Retweet</string>
     <string name="retweets">Repiulades</string>
     <string name="cancel_retweet">Cancel·la la repiulada</string>
-    <string name="favorite">Marca com a preferit</string>
-    <string name="unfavorite">Desmarca com a preferit</string>
+    <string name="action_favorite">Marca com a preferit</string>
+    <string name="action_unfavorite">Desmarca com a preferit</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">M\'agrada</string>
-    <string name="undo_like">No m\'agrada</string>
-    <string name="reply">Respon</string>
-    <string name="share">Comparteix</string>
+    <string name="action_like">M\'agrada</string>
+    <string name="action_undo_like">No m\'agrada</string>
+    <string name="action_reply">Respon</string>
+    <string name="action_share">Comparteix</string>
     <string name="view_map">Mapa</string>
     <string name="statuses">Piulades</string>
     <string name="followers">Seguidors</string>
@@ -85,35 +85,34 @@
     <string name="quote_user">Cita a <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">Filtres</string>
+    <string name="title_filters">Filtres</string>
     <string name="users">Usuaris</string>
-    <string name="user">Usuari</string>
+    <string name="title_user">Usuari</string>
     <string name="keywords">Paraules clau</string>
     <string name="sources">Fonts</string>
     <string name="content">Contingut</string>
-    <string name="customize">Personalitza</string>
     <!--<string name="set_nickname">Establiu sobrenom</string>-->
-    <string name="set_color">Estableix un color</string>
-    <string name="clear">Esborra</string>
-    <string name="pick_color">Tria un color</string>
-    <string name="follow">Segueix</string>
-    <string name="unfollow">Deixa de seguir</string>
+    <string name="action_set_color">Estableix un color</string>
+    <string name="action_clear">Esborra</string>
+    <string name="action_pick_color">Tria un color</string>
+    <string name="action_follow">Segueix</string>
+    <string name="action_unfollow">Deixa de seguir</string>
     <string name="leftside_compose_button">Botó de redactar al costat esquerre</string>
     <string name="leftside_compose_button_summary">Mostra el botó de redactar a la part esquerra.</string>
     <string name="load_item_limit">Límit d\'elements per càrrega</string>
     <string name="load_item_limit_summary">Estableix el nombre màxim d\'elements per càrrega.</string>
-    <string name="quote">Cita</string>
+    <string name="action_quote">Cita</string>
     <string name="add_rule">Afegeix una regla</string>
     <string name="text_size">Mida del text</string>
     <string name="text_size_summary">Mida del text de les piulades.</string>
     <string name="cannot_get_location">No es pot obtenir la vostra localització.</string>
-    <string name="drafts">Esborranys</string>
-    <string name="description">Descripció</string>
-    <string name="location">Ubicació</string>
-    <string name="url">URL</string>
-    <string name="favorites">Preferits</string>
+    <string name="title_drafts">Esborranys</string>
+
+    <string name="user_profile_location">Ubicació</string>
+    <string name="user_profile_url">URL</string>
+    <string name="title_favorites">Preferits</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">M\'agrada</string>
+    <string name="title_likes">M\'agrada</string>
     <string name="name">Nom</string>
     <string name="refresh">Actualitza</string>
     <string name="retry">Torna-ho a intentar</string>
@@ -140,8 +139,8 @@
     <string name="proxy_port">Port del servidor intermediari</string>
     <string name="proxy_username">Nom d\'usuari del servidor intermediari</string>
     <string name="proxy_password">Contrasenya del servidor intermediari</string>
-    <string name="block">Bloqueja</string>
-    <string name="unblock">Desbloqueja</string>
+    <string name="action_block">Bloqueja</string>
+    <string name="action_unblock">Desbloqueja</string>
     <string name="report_for_spam">Informa d\'abús</string>
     <string name="twitter_mute_user">Silencia l\'usuari</string>
     <string name="twitter_muted_users">Usuaris silenciats</string>
@@ -325,8 +324,8 @@
     <string name="text_copied">S\'ha copiat text al porta-retalls.</string>
     <string name="hashtag">Etiqueta</string>
     <string name="links">Enllaços</string>
-    <string name="edit_profile">Edita el perfil</string>
-    <string name="edit_details">Edita els detalls</string>
+    <string name="title_edit_profile">Edita el perfil</string>
+    <string name="title_edit_details">Edita els detalls</string>
     <string name="display_sensitive_contents">Mostra continguts sensibles</string>
     <string name="display_sensitive_contents_summary">Mostra continguts sensibles a la cronologia sense previ avís</string>
     <string name="sensitive_content_warning">Aquesta piulada pot contenir continguts sensibles. Voleu continuar?</string>
@@ -376,10 +375,10 @@
     <string name="retweet_cancelled">S\'ha canceŀlat la repiulada.</string>
     <string name="direct_message_sent">S\'ha enviat el missatge directe.</string>
     <string name="direct_message_deleted">S\'ha esborrat el missatge directe.</string>
-    <string name="search_saved">Cerca desada.</string>
-    <string name="search_name_saved">La cerca «<xliff:g id="name">%s</xliff:g>» ha estat desada.</string>
-    <string name="search_deleted">La cerca ha estat esborrada.</string>
-    <string name="search_name_deleted">La cerca «<xliff:g id="name">%s</xliff:g>» ha estat esborrada.</string>
+    <string name="message_search_saved">Cerca desada.</string>
+    <string name="message_search_name_saved">La cerca «<xliff:g id="name">%s</xliff:g>» ha estat desada.</string>
+    <string name="message_search_deleted">La cerca ha estat esborrada.</string>
+    <string name="message_search_name_deleted">La cerca «<xliff:g id="name">%s</xliff:g>» ha estat esborrada.</string>
     <string name="import_from">Importa des de…</string>
     <string name="link_to_quoted_status">Enllaça la piulada citada</string>
     <string name="quote_original_status">Cita la piulada original</string>
@@ -476,7 +475,7 @@
     <string name="report_user">Informa d\'abús l\'usuari <xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">Voleu reportar l\'usuari <xliff:g id="name">%s</xliff:g> per abús? Automàticament, també el bloquejareu.</string>
     <string name="twidere_test">Prova Twittnuker </string>
-    <string name="staggered_home_timeline">Cronologia d\'inici esglaonada</string>
+
     <string name="unread_count">Recompte de piulades sense llegir</string>
     <string name="developed_by">Desenvolupat per</string>
     <string name="project_account">Compte del projecte</string>
@@ -538,8 +537,8 @@
     <string name="hidden_settings">Paràmetres ocults</string>
     <string name="hidden_settings_warning_title">ATENCIÓ: Aquests paràmetres són perillosos!</string>
     <string name="hidden_settings_warning_message">MAI DE LA VIDA canvieu aquests paràmetres si no sabeu què volen dir o sinó el Twittnuker:\n * Convertirà tots els calçots en calçotets\n * Convertirà la Moritz en Mahou\n * I el sincrotró ALBA s\'empassarà el món sencer!</string>
-    <string name="force_using_private_apis">Força lús d\'APIs privades</string>
-    <string name="status_text_limit">Límit de llargària del tuit</string>
+
+
     <string name="load_more_from_top">Carrega piulades amagades per sobre</string>
     <string name="load_more_from_top_summary">Útil si t\'estimes més llegir d\'avall cap amunt</string>
     <string name="compose_now">Redacta ara</string>
@@ -571,8 +570,8 @@
     <string name="muted_user">Silenciar <xliff:g id="name">%s</xliff:g></string>
     <string name="unmute_user">Silenciar <xliff:g id="name">%s</xliff:g></string>
     <string name="unmuted_user">Silenciar <xliff:g id="name">%s</xliff:g></string>
-    <string name="mute">Silencia</string>
-    <string name="unmute">Desimmuta</string>
+    <string name="action_mute">Silencia</string>
+    <string name="action_unmute">Desimmuta</string>
     <string name="action_muting">silenciant</string>
     <string name="action_unmuting">immuta</string>
     <string name="mute_user_confirm_message">Emmudeix <xliff:g id="name">%s</xliff:g>? No veureu pas més piulades d\'aquest usuari mentre continueu de seguir aquest usuari.</string>

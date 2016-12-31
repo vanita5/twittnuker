@@ -19,8 +19,8 @@
     <string name="basic">الأساسي</string>
     <string name="twip_o">نمط twip O</string>
     <string name="advanced">متقدم</string>
-    <string name="save">حفظ</string>
-    <string name="edit">تعديل</string>
+    <string name="action_save">حفظ</string>
+    <string name="action_edit">تعديل</string>
     <string name="edit_api">API تعديل الـ</string>
     <string name="home">الرئيسية</string>
     <string name="mentions">الإشارات</string>
@@ -40,17 +40,17 @@
     <string name="label_streaming_service">خدمة البث المتواصل</string>
     <string name="label_background_operation_service">خدمة التشغيل في الخلفية</string>
     <string name="open_in_browser">فتح بالمستعرض</string>
-    <string name="delete">حذف</string>
-    <string name="retweet">اعادة تغريد</string>
+    <string name="action_delete">حذف</string>
+    <string name="action_retweet">اعادة تغريد</string>
     <string name="retweets">من إعادات التغريد</string>
     <string name="cancel_retweet">إلغاء إعادة التغريد</string>
-    <string name="favorite">تفضيل</string>
-    <string name="unfavorite">إزالة التفضيل</string>
+    <string name="action_favorite">تفضيل</string>
+    <string name="action_unfavorite">إزالة التفضيل</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">اعجاب</string>
-    <string name="undo_like">إلغاء الاعجاب</string>
-    <string name="reply">رد</string>
-    <string name="share">مشاركة</string>
+    <string name="action_like">اعجاب</string>
+    <string name="action_undo_like">إلغاء الاعجاب</string>
+    <string name="action_reply">رد</string>
+    <string name="action_share">مشاركة</string>
     <string name="view_map">خريطة</string>
     <string name="statuses">من التغريدات</string>
     <string name="followers">المتابعون</string>
@@ -83,35 +83,34 @@
     <string name="quote_user">إقتباس <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">قواعد الكتم</string>
+    <string name="title_filters">قواعد الكتم</string>
     <string name="users">المستخدمين</string>
-    <string name="user">مستخدم</string>
+    <string name="title_user">مستخدم</string>
     <string name="keywords">الكلمات الدلالية</string>
     <string name="sources">المصادر</string>
     <string name="content">المحتوى</string>
-    <string name="customize">تخصيص</string>
     <!--<string name="set_nickname">تعيين اللقب</string>-->
-    <string name="set_color">تعيين اللون</string>
-    <string name="clear">محو</string>
-    <string name="pick_color">إختيار لون</string>
-    <string name="follow">متابعه</string>
-    <string name="unfollow">الغاء متابعه</string>
+    <string name="action_set_color">تعيين اللون</string>
+    <string name="action_clear">محو</string>
+    <string name="action_pick_color">إختيار لون</string>
+    <string name="action_follow">متابعه</string>
+    <string name="action_unfollow">الغاء متابعه</string>
     <string name="leftside_compose_button">زر كتابة التغريدة على اليسار</string>
     <string name="leftside_compose_button_summary">وضع زر كتابة التغريدة على اليسار.</string>
     <string name="load_item_limit">الحد الأقصى لعدد التغريدات</string>
     <string name="load_item_limit_summary">الحد الأقصى لعدد التغريدات المحملة في كل مرة.</string>
-    <string name="quote">اقتباس:</string>
+    <string name="action_quote">اقتباس:</string>
     <string name="add_rule">اضافة شرط</string>
     <string name="text_size">حجم النص</string>
     <string name="text_size_summary">حجم نص التغريدة</string>
     <string name="cannot_get_location">لا يمكن تحديد الموقع.</string>
-    <string name="drafts">المسودات</string>
-    <string name="description">الوصف</string>
-    <string name="location">الموقع</string>
-    <string name="url">الموقع</string>
-    <string name="favorites">المفضلة</string>
+    <string name="title_drafts">المسودات</string>
+
+    <string name="user_profile_location">الموقع</string>
+    <string name="user_profile_url">الموقع</string>
+    <string name="title_favorites">المفضلة</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">إعجاب</string>
+    <string name="title_likes">إعجاب</string>
     <string name="name">الإسم</string>
     <string name="refresh">تحديث</string>
     <string name="retry">إعادة المحاولة</string>
@@ -138,8 +137,8 @@
     <string name="proxy_port">منفذ الوسيط</string>
     <string name="proxy_username">اسم المستخدم للوكيل</string>
     <string name="proxy_password">كلمة المرور للوكيل</string>
-    <string name="block">حجب</string>
-    <string name="unblock">رفع الحجب</string>
+    <string name="action_block">حجب</string>
+    <string name="action_unblock">رفع الحجب</string>
     <string name="report_for_spam">بلغ على أنه بريد مزعج ورسائل احتيال</string>
     <string name="twitter_mute_user">كتم الشخص</string>
     <string name="twitter_muted_users">الأشخاص المكتومين</string>
@@ -323,8 +322,8 @@
     <string name="text_copied">نُسخ النص إلى الحافظة.</string>
     <string name="hashtag">وسم</string>
     <string name="links">روابط</string>
-    <string name="edit_profile">تعديل الملف الشخصي</string>
-    <string name="edit_details">تعديل التفاصيل</string>
+    <string name="title_edit_profile">تعديل الملف الشخصي</string>
+    <string name="title_edit_details">تعديل التفاصيل</string>
     <string name="display_sensitive_contents">عرض المحتويات الحساسة</string>
     <string name="display_sensitive_contents_summary">عرض المحتويات الحساسة دون إشعار في الخط الزمني</string>
     <string name="sensitive_content_warning">يحتمل أن تحتوي هذه التغريدة على محتوى حساس, هل أُكمل؟</string>
@@ -376,10 +375,10 @@
     <string name="retweet_cancelled">إعادة التغريد ملغاة.</string>
     <string name="direct_message_sent">أُرسلت الرسالة الخاصة.</string>
     <string name="direct_message_deleted">حُذفت الرسالة الخاصة.</string>
-    <string name="search_saved">حُفظ البحث.</string>
-    <string name="search_name_saved">حُفظ البحث \"<xliff:g id="name">%s</xliff:g>\".</string>
-    <string name="search_deleted">حُذِف البحث.</string>
-    <string name="search_name_deleted">حُذِف البحث \"<xliff:g id="name">%s</xliff:g>\".</string>
+    <string name="message_search_saved">حُفظ البحث.</string>
+    <string name="message_search_name_saved">حُفظ البحث \"<xliff:g id="name">%s</xliff:g>\".</string>
+    <string name="message_search_deleted">حُذِف البحث.</string>
+    <string name="message_search_name_deleted">حُذِف البحث \"<xliff:g id="name">%s</xliff:g>\".</string>
     <string name="import_from">استيراد من &#8230;</string>
     <string name="link_to_quoted_status">ربط لتغريدة مقتبسة</string>
     <string name="quote_original_status">اقتباس التغريدة الأصلية</string>
@@ -466,7 +465,7 @@
   <string name="report_user_confirm_message">الإبلاغ عن المستخدم <xliff:g id="name">%s</xliff:g> لإرساله سبام؟
 سوف تقوم بحظر هذا المستخدم أيضاً.</string>
     <string name="twidere_test">تجريب تويدر</string>
-    <string name="staggered_home_timeline">متداخل الجدول الزمني الرئيسي</string>
+
     <string name="unread_count">عدد غير المقروء</string>
     <string name="developed_by">طوّره</string>
     <string name="project_account">حساب المشروع</string>
@@ -527,8 +526,8 @@
     <string name="hidden_settings">إعدادات مخفية</string>
     <string name="hidden_settings_warning_title">تحذير: هذه الإعدادات قد تسبب ضررا!</string>
     <string name="hidden_settings_warning_message">لا تغير هذه الاعدادات اذا كنت لا تعرف ما هي، أو ماذا تفعل: \n * قتل قطتك \n * إطلاق الأسلحة النووية في كوريا الشمالية \n * \"تشغيل الكل\" Mahou Shoujo في Majo\n * تدمير الكون</string>
-    <string name="force_using_private_apis">القوة باستخدام واجهات برمجة التطبيقات الخاصة</string>
-    <string name="status_text_limit">حد نص التغريدة</string>
+
+
     <string name="load_more_from_top">تحميل أكثر من الأعلى</string>
     <string name="load_more_from_top_summary">مفيدة إذا كنت تفضل القراءة من أسفل إلى أعلى</string>
     <string name="compose_now">اكتب الان</string>

@@ -27,8 +27,6 @@ import android.os.Bundle
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.fragment.AbsToolbarTabPagesFragment
-import de.vanita5.twittnuker.fragment.filter.BaseFiltersFragment.*
-import de.vanita5.twittnuker.fragment.filter.FilterSettingsFragment
 
 class FiltersFragment : AbsToolbarTabPagesFragment() {
 
@@ -38,10 +36,10 @@ class FiltersFragment : AbsToolbarTabPagesFragment() {
     }
 
     override fun addTabs(adapter: SupportTabsAdapter) {
-        adapter.addTab(cls = FilteredUsersFragment::class.java, name = getString(R.string.users))
-        adapter.addTab(cls = FilteredKeywordsFragment::class.java, name = getString(R.string.keywords))
-        adapter.addTab(cls = FilteredSourcesFragment::class.java, name = getString(R.string.sources))
-        adapter.addTab(cls = FilteredLinksFragment::class.java, name = getString(R.string.links))
+        adapter.addTab(cls = FilteredUsersFragment::class.java, name = getString(R.string.filter_type_users))
+        adapter.addTab(cls = FilteredKeywordsFragment::class.java, name = getString(R.string.filter_type_keywords))
+        adapter.addTab(cls = FilteredSourcesFragment::class.java, name = getString(R.string.filter_type_sources))
+        adapter.addTab(cls = FilteredLinksFragment::class.java, name = getString(R.string.filter_type_links))
         adapter.addTab(cls = FilterSettingsFragment::class.java, name = getString(R.string.settings))
     }
 

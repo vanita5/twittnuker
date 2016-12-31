@@ -21,8 +21,8 @@
     <string name="basic">Básico</string>
     <string name="twip_o">twip o modo</string>
     <string name="advanced">Avanzado</string>
-    <string name="save">Guardar</string>
-    <string name="edit">Editar</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_edit">Editar</string>
     <string name="edit_api">Editar API</string>
     <string name="home">Inicio</string>
     <string name="mentions">Menciones</string>
@@ -42,17 +42,17 @@
     <string name="label_streaming_service">Servicio en directo</string>
     <string name="label_background_operation_service">Servicio en segundo plano</string>
     <string name="open_in_browser">Abrir en el navegador</string>
-    <string name="delete">Eliminar</string>
-    <string name="retweet">Retweet</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweets</string>
     <string name="cancel_retweet">Cancelar retweet</string>
-    <string name="favorite">Añadir a Favoritos</string>
-    <string name="unfavorite">Quitar de Favoritos</string>
+    <string name="action_favorite">Añadir a Favoritos</string>
+    <string name="action_unfavorite">Quitar de Favoritos</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">Me gusta</string>
-    <string name="undo_like">Quitar me gusta</string>
-    <string name="reply">Respuesta</string>
-    <string name="share">Compartir</string>
+    <string name="action_like">Me gusta</string>
+    <string name="action_undo_like">Quitar me gusta</string>
+    <string name="action_reply">Respuesta</string>
+    <string name="action_share">Compartir</string>
     <string name="view_map">Mapa</string>
     <string name="statuses">Tweets</string>
     <string name="followers">Seguidores</string>
@@ -85,35 +85,34 @@
     <string name="quote_user">Cita <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">Filtros</string>
+    <string name="title_filters">Filtros</string>
     <string name="users">Usuarios</string>
-    <string name="user">Usuario</string>
+    <string name="title_user">Usuario</string>
     <string name="keywords">Palabras clave</string>
     <string name="sources">Fuentes</string>
     <string name="content">Contenido</string>
-    <string name="customize">Personalizar</string>
     <!--<string name="set_nickname">Definir apodo</string>-->
-    <string name="set_color">Establecer color</string>
-    <string name="clear">Borrar</string>
-    <string name="pick_color">Elegir color</string>
-    <string name="follow">Seguir</string>
-    <string name="unfollow">Dejar de Seguir</string>
+    <string name="action_set_color">Establecer color</string>
+    <string name="action_clear">Borrar</string>
+    <string name="action_pick_color">Elegir color</string>
+    <string name="action_follow">Seguir</string>
+    <string name="action_unfollow">Dejar de Seguir</string>
     <string name="leftside_compose_button">Botón «redactar» en el lado izquierdo</string>
     <string name="leftside_compose_button_summary">Colocar el botón de escribir en la izquierda.</string>
     <string name="load_item_limit">Límite de carga de elemento</string>
     <string name="load_item_limit_summary">Establecer el límite por carga.</string>
-    <string name="quote">Cita</string>
+    <string name="action_quote">Cita</string>
     <string name="add_rule">Agregar regla</string>
     <string name="text_size">Tamaño del texto</string>
     <string name="text_size_summary">Tamaño del texto de los tweets.</string>
     <string name="cannot_get_location">No puede obtener su ubicación.</string>
-    <string name="drafts">Borradores</string>
-    <string name="description">Descripción</string>
-    <string name="location">Ubicación</string>
-    <string name="url">URL</string>
-    <string name="favorites">Favoritos</string>
+    <string name="title_drafts">Borradores</string>
+
+    <string name="user_profile_location">Ubicación</string>
+    <string name="user_profile_url">URL</string>
+    <string name="title_favorites">Favoritos</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">Me gusta</string>
+    <string name="title_likes">Me gusta</string>
     <string name="name">Nombre</string>
     <string name="refresh">Actualizar</string>
     <string name="retry">Reintentar</string>
@@ -140,8 +139,8 @@
     <string name="proxy_port">Puerto Proxy</string>
     <string name="proxy_username">Nombre de usuario</string>
     <string name="proxy_password">Contraseña</string>
-    <string name="block">Bloquear</string>
-    <string name="unblock">Desbloquear</string>
+    <string name="action_block">Bloquear</string>
+    <string name="action_unblock">Desbloquear</string>
     <string name="report_for_spam">Reportar por spam</string>
     <string name="twitter_mute_user">Silenciar usuario</string>
     <string name="twitter_muted_users">Usuarios silenciados</string>
@@ -327,8 +326,8 @@
     <string name="text_copied">Texto copiado al portapapeles.</string>
     <string name="hashtag">Hashtag</string>
     <string name="links">Enlaces</string>
-    <string name="edit_profile">Editar perfil</string>
-    <string name="edit_details">Editar detalles</string>
+    <string name="title_edit_profile">Editar perfil</string>
+    <string name="title_edit_details">Editar detalles</string>
     <string name="display_sensitive_contents">Mostrar contenido sensible</string>
     <string name="display_sensitive_contents_summary">Mostrar contenidos sensibles en la cronología sin aviso</string>
     <string name="sensitive_content_warning">Este tweet puede tener contenido sensible, ¿continuar?</string>
@@ -380,10 +379,10 @@
     <string name="retweet_cancelled">Retweet cancelado.</string>
     <string name="direct_message_sent">Mensaje directo enviado.</string>
     <string name="direct_message_deleted">Mensaje directo eliminado.</string>
-    <string name="search_saved">Búsqueda guardada.</string>
-    <string name="search_name_saved">Búsqueda \"<xliff:g id="name">%s</xliff:g>\" salvada.</string>
-    <string name="search_deleted">Búsqueda borrada.</string>
-    <string name="search_name_deleted">Búsqueda \"<xliff:g id="name">%s</xliff:g>\" borrada.</string>
+    <string name="message_search_saved">Búsqueda guardada.</string>
+    <string name="message_search_name_saved">Búsqueda \"<xliff:g id="name">%s</xliff:g>\" salvada.</string>
+    <string name="message_search_deleted">Búsqueda borrada.</string>
+    <string name="message_search_name_deleted">Búsqueda \"<xliff:g id="name">%s</xliff:g>\" borrada.</string>
     <string name="import_from">Importar desde...</string>
     <string name="link_to_quoted_status">Enlace al tuit citado</string>
     <string name="quote_original_status">Citar tweet original</string>
@@ -467,7 +466,7 @@
     <string name="report_user">Reportar a <xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">¿Reportar a <xliff:g id="name">%s</xliff:g> por spam? Esto bloqueará al usuario.</string>
     <string name="twidere_test">Test de Twittnuker</string>
-    <string name="staggered_home_timeline">Cronología escalonada</string>
+
     <string name="unread_count">Contador de No leídos</string>
     <string name="developed_by">Desarrollado por</string>
     <string name="project_account">Cuenta del proyecto</string>
@@ -527,8 +526,8 @@
     <string name="hidden_settings">Configuraciones ocultas</string>
     <string name="hidden_settings_warning_title">PRECAUCIÓN: ¡Estos ajustes pueden ser perjudiciales!</string>
     <string name="hidden_settings_warning_message">NUNCA cambies estas configuraciones si no sabes lo que estás haciendo, podrías:\n * Matar a tu gato\n * Lanzar armas nucleares a Corea del Norte\n * Destruir el Universo</string>
-    <string name="force_using_private_apis">Forzar el uso de APIs privadas</string>
-    <string name="status_text_limit">Límite de caracteres del tweet</string>
+
+
     <string name="load_more_from_top">Cargar más desde arriba</string>
     <string name="load_more_from_top_summary">Útil si prefieres leer desde abajo hacia arriba</string>
     <string name="compose_now">Redactar ahora</string>
@@ -561,8 +560,8 @@
     <string name="muted_user">Silenciado <xliff:g id="name">%s</xliff:g></string>
     <string name="unmute_user">Quitar silencio <xliff:g id="name">%s</xliff:g></string>
     <string name="unmuted_user">Quitar silencio <xliff:g id="name">%s</xliff:g></string>
-    <string name="mute">Silenciar</string>
-    <string name="unmute">Quitar silencio</string>
+    <string name="action_mute">Silenciar</string>
+    <string name="action_unmute">Quitar silencio</string>
     <string name="action_muting">silenciando</string>
     <string name="action_unmuting">quitando silencio</string>
     <string name="mute_user_confirm_message">Silenciar <xliff:g id="name">%s</xliff:g>? Ya no verás los tweets de este usuario, mientras lo estés siguiendo.</string>

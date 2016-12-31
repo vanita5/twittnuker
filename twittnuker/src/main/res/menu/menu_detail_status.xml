@@ -29,17 +29,17 @@
     <item
         android:id="@id/reply"
         android:icon="@drawable/ic_action_reply"
-        android:title="@string/reply"
+        android:title="@string/action_reply"
         app:showAsAction="always" />
     <item
         android:id="@id/retweet"
         android:icon="@drawable/ic_action_retweet"
-        android:title="@string/retweet"
+        android:title="@string/action_retweet"
         app:showAsAction="always" />
     <item
         android:id="@id/favorite"
         android:icon="@drawable/ic_action_heart"
-        android:title="@string/like"
+        android:title="@string/action_like"
         app:actionProviderClass="de.vanita5.twittnuker.menu.FavoriteItemProvider"
         app:showAsAction="always" />
     <item
@@ -50,7 +50,7 @@
     <item
         android:id="@id/share"
         android:icon="@drawable/ic_action_share"
-        android:title="@string/share"
+        android:title="@string/action_share"
         app:showAsAction="always" />
     <item
         android:id="@id/copy"
@@ -63,11 +63,11 @@
     <item
         android:id="@id/set_color"
         android:icon="@drawable/ic_action_color_palette"
-        android:title="@string/set_color" />
+        android:title="@string/action_set_color" />
     <item
         android:id="@id/delete"
         android:icon="@drawable/ic_action_delete"
-        android:title="@string/delete"
+        android:title="@string/action_delete"
         android:visible="false" />
     <item
         android:id="@id/open_in_browser"

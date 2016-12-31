@@ -259,19 +259,19 @@ public class NotificationHelper implements Constants {
                             notification.getAccountKey().getId()));
                     replyIntent.putExtra(EXTRA_STATUS, status);
                     replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    builder.addAction(R.drawable.ic_action_reply, mContext.getString(R.string.reply),
+                    builder.addAction(R.drawable.ic_action_reply, mContext.getString(R.string.action_reply),
                             PendingIntent.getActivity(mContext, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
                     //Retweet Intent
-                    builder.addAction(R.drawable.ic_action_retweet, mContext.getString(R.string.retweet),
+                    builder.addAction(R.drawable.ic_action_retweet, mContext.getString(R.string.action_retweet),
                             getRetweetIntent(status));
 
                     //Like Intent
                     if (mSharedPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
-                        builder.addAction(R.drawable.ic_action_star, mContext.getString(R.string.favorite),
+                        builder.addAction(R.drawable.ic_action_star, mContext.getString(R.string.action_favorite),
                                 getFavoriteIntent(status));
                     } else {
-                        builder.addAction(R.drawable.ic_action_heart, mContext.getString(R.string.like),
+                        builder.addAction(R.drawable.ic_action_heart, mContext.getString(R.string.action_like),
                                 getFavoriteIntent(status));
                     }
                 }
@@ -345,19 +345,19 @@ public class NotificationHelper implements Constants {
                             notification.getAccountKey().getId()));
                     replyIntent.putExtra(EXTRA_STATUS, status);
                     replyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    builder.addAction(R.drawable.ic_action_reply, mContext.getString(R.string.reply),
+                    builder.addAction(R.drawable.ic_action_reply, mContext.getString(R.string.action_reply),
                             PendingIntent.getActivity(mContext, 0, replyIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
                     //Retweet Intent
-                    builder.addAction(R.drawable.ic_action_retweet, mContext.getString(R.string.retweet),
+                    builder.addAction(R.drawable.ic_action_retweet, mContext.getString(R.string.action_retweet),
                             getRetweetIntent(status));
 
                     //Like Intent
                     if (mSharedPreferences.getBoolean(KEY_I_WANT_MY_STARS_BACK, false)) {
-                        builder.addAction(R.drawable.ic_action_star, mContext.getString(R.string.favorite),
+                        builder.addAction(R.drawable.ic_action_star, mContext.getString(R.string.action_favorite),
                                 getFavoriteIntent(status));
                     } else {
-                        builder.addAction(R.drawable.ic_action_heart, mContext.getString(R.string.like),
+                        builder.addAction(R.drawable.ic_action_heart, mContext.getString(R.string.action_like),
                                 getFavoriteIntent(status));
                     }
                 }

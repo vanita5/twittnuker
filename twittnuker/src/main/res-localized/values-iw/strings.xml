@@ -18,8 +18,8 @@
     <string name="basic">בסיסי</string>
     <string name="twip_o">בסיסי</string>
     <string name="advanced">מתקדם</string>
-    <string name="save">שמור</string>
-    <string name="edit">שמור</string>
+    <string name="action_save">שמור</string>
+    <string name="action_edit">שמור</string>
     <string name="edit_api">ערוך API</string>
     <string name="home">בית</string>
     <string name="mentions">אזכורים</string>
@@ -38,17 +38,17 @@
     <string name="label_streaming_service">שירות הזרמה</string>
     <string name="label_background_operation_service">שירות פעולה ברקע</string>
     <string name="open_in_browser">פתח בדפדפן</string>
-    <string name="delete">מחק</string>
-    <string name="retweet">ציוץ מחדש</string>
+    <string name="action_delete">מחק</string>
+    <string name="action_retweet">ציוץ מחדש</string>
     <string name="retweets">ציוצים מחדש</string>
     <string name="cancel_retweet">בטל ציוץ מחדש</string>
-    <string name="favorite">סמן כמועדף</string>
-    <string name="unfavorite">בטל סימון כמועדף</string>
+    <string name="action_favorite">סמן כמועדף</string>
+    <string name="action_unfavorite">בטל סימון כמועדף</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">אהבתי</string>
-    <string name="undo_like">בטל אהבתי</string>
-    <string name="reply">השב</string>
-    <string name="share">שתף</string>
+    <string name="action_like">אהבתי</string>
+    <string name="action_undo_like">בטל אהבתי</string>
+    <string name="action_reply">השב</string>
+    <string name="action_share">שתף</string>
     <string name="view_map">מפה</string>
     <string name="statuses">ציוצים</string>
     <string name="followers">עוקבים</string>
@@ -73,33 +73,32 @@
     <string name="users_liked_this">משתמשים אהבו את זה</string>
     <string name="reply_to">השב ל<xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">צטט את <xliff:g id="user_name">%s</xliff:g></string>
-    <string name="filters">מסננים</string>
+    <string name="title_filters">מסננים</string>
     <string name="users">משתמשים</string>
-    <string name="user">משתמש</string>
+    <string name="title_user">משתמש</string>
     <string name="keywords">מילות מפתח</string>
     <string name="sources">מקורות</string>
     <string name="content">תוכן</string>
-    <string name="customize">התאם אישית</string>
     <!--<string name="set_nickname">הגדר שם משתמש</string>-->
-    <string name="set_color">הגדר צבע</string>
-    <string name="clear">נקה</string>
-    <string name="pick_color">בחר צבע</string>
-    <string name="follow">עקוב אחרי</string>
-    <string name="unfollow">הפסק לעקוב אחרי</string>
+    <string name="action_set_color">הגדר צבע</string>
+    <string name="action_clear">נקה</string>
+    <string name="action_pick_color">בחר צבע</string>
+    <string name="action_follow">עקוב אחרי</string>
+    <string name="action_unfollow">הפסק לעקוב אחרי</string>
     <string name="leftside_compose_button">כפתור \"כתוב\" בצד שמאל</string>
     <string name="leftside_compose_button_summary">שים את כפתור ה\"כתוב\" בצד שמאל.</string>
     <string name="load_item_limit">הגבלת מספר פריטים בטעינה</string>
     <string name="load_item_limit_summary">הגדר את הגבלת מספר הפריטים בכל טעינה.</string>
-    <string name="quote">צטט</string>
+    <string name="action_quote">צטט</string>
     <string name="add_rule">הוסף כלל</string>
     <string name="text_size">גודל טקסט</string>
     <string name="text_size_summary">גודל הטקסט בציוץ.</string>
     <string name="cannot_get_location">לא ניתן לאתר את מיקומך.</string>
-    <string name="drafts">טיוטות</string>
-    <string name="description">תיאור</string>
-    <string name="location">מיקום</string>
-    <string name="url">כתובת URL</string>
-    <string name="favorites">מועדפים</string>
+    <string name="title_drafts">טיוטות</string>
+
+    <string name="user_profile_location">מיקום</string>
+    <string name="user_profile_url">כתובת URL</string>
+    <string name="title_favorites">מועדפים</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
     <string name="name">שם</string>
     <string name="refresh">רענן</string>
@@ -127,8 +126,8 @@
     <string name="proxy_port">יציאת פרוקסי</string>
     <string name="proxy_username">שם משתמש לפרוקסי</string>
     <string name="proxy_password">סיסמא לפרוקסי</string>
-    <string name="block">חסום</string>
-    <string name="unblock">בטל חסימה</string>
+    <string name="action_block">חסום</string>
+    <string name="action_unblock">בטל חסימה</string>
     <string name="twitter_mute_user">השתק משתמש</string>
     <string name="twitter_muted_users">משתמשים מושתקים</string>
     <string name="other_settings">הגדרות אחרות</string>
@@ -247,8 +246,8 @@
     <string name="action_deleting_search">מחיקת חיפוש</string>
     <string name="text_copied">הטקסט הועתק ללוח.</string>
     <string name="links">קישורים</string>
-    <string name="edit_profile">עריכת פרופיל</string>
-    <string name="edit_details">עריכת פרטים</string>
+    <string name="title_edit_profile">עריכת פרופיל</string>
+    <string name="title_edit_details">עריכת פרטים</string>
     <string name="display_sensitive_contents">הצג תוכן רגיש</string>
     <string name="display_sensitive_contents_summary">הצג תוכן רגיש ללא הודעה מוקדמת בציר הזמן</string>
     <string name="sensitive_content_warning">ציוץ זה עלול להכיל תוכן רגיש, להמשיך?</string>
@@ -282,10 +281,10 @@
     <string name="status_deleted">הציוץ נמחק.</string>
     <string name="direct_message_sent">ההודעה הישירה נשלחה.</string>
     <string name="direct_message_deleted">ההודעה הישירה נמחקה.</string>
-    <string name="search_saved">החיפוש נשמר.</string>
-    <string name="search_name_saved">החיפוש \"<xliff:g id="name">%s</xliff:g>\" נשמר.</string>
-    <string name="search_deleted">החיפוש נמחק.</string>
-    <string name="search_name_deleted">החיפוש \"<xliff:g id="name">%s</xliff:g>\" נמחק.</string>
+    <string name="message_search_saved">החיפוש נשמר.</string>
+    <string name="message_search_name_saved">החיפוש \"<xliff:g id="name">%s</xliff:g>\" נשמר.</string>
+    <string name="message_search_deleted">החיפוש נמחק.</string>
+    <string name="message_search_name_deleted">החיפוש \"<xliff:g id="name">%s</xliff:g>\" נמחק.</string>
     <string name="import_from">ייבא מ&#8230;</string>
     <string name="link_to_quoted_status">קשר לציוץ המצוטט</string>
     <string name="quote_original_status">צטט את הציוץ המקורי</string>
@@ -377,7 +376,7 @@
     <string name="hidden_settings">הגדרות מוסתרות</string>
     <string name="hidden_settings_warning_title">אזהרה: הגדרות אלו עלולות לפגוע!</string>
     <string name="hidden_settings_warning_message">לעולם אל תשנה/י את ההגדרות האלו אם את/ה לא יודע/ת מה הן, אחרת הן:\n * יהרגו את החתול שלך\n * ישגרו טילים גרעיניים מצפון קוריאה\n * יהפכו את כל ה-Mahou Shoujo ל-Majo\n * יהרסו את היקום</string>
-    <string name="force_using_private_apis">כפה שימוש בAPI פרטיים</string>
+
     <string name="quote_protected_status_warning_message">ציוץ זה הינו מוגן.\n\nמשתמשים מוגנים בדרך כלל לא רוצים שהציוצים שלהם ישותפו בפומבי.</string>
     <string name="send_anyway">שלח בכל מקרה</string>
     <string name="new_direct_message">הודעה ישירה חדשה</string>

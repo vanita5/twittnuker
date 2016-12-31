@@ -20,8 +20,8 @@
     <string name="basic">Dasar</string>
     <string name="twip_o">Mode twip O</string>
     <string name="advanced">Lanjutan</string>
-    <string name="save">Simpan</string>
-    <string name="edit">Sunting</string>
+    <string name="action_save">Simpan</string>
+    <string name="action_edit">Sunting</string>
     <string name="edit_api">Sunting API</string>
     <string name="home">Beranda</string>
     <string name="mentions">Menyebutkan</string>
@@ -41,17 +41,17 @@
     <string name="label_streaming_service">Layanan streaming</string>
     <string name="label_background_operation_service">Latar Belakang layanan operasi</string>
     <string name="open_in_browser">Buka di Browser</string>
-    <string name="delete">Hapus</string>
-    <string name="retweet">Retweet</string>
+    <string name="action_delete">Hapus</string>
+    <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweets</string>
     <string name="cancel_retweet">Batalkan retweet</string>
-    <string name="favorite">Favorit</string>
-    <string name="unfavorite">Batalkan favorit</string>
+    <string name="action_favorite">Favorit</string>
+    <string name="action_unfavorite">Batalkan favorit</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">Suka</string>
-    <string name="undo_like">Batalkan suka</string>
-    <string name="reply">Balas</string>
-    <string name="share">Bagikan</string>
+    <string name="action_like">Suka</string>
+    <string name="action_undo_like">Batalkan suka</string>
+    <string name="action_reply">Balas</string>
+    <string name="action_share">Bagikan</string>
     <string name="view_map">Peta</string>
     <string name="statuses">Kicauan</string>
     <string name="followers">Pengikut</string>
@@ -84,35 +84,34 @@
     <string name="quote_user">Mengutip <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">Saring</string>
+    <string name="title_filters">Saring</string>
     <string name="users">Pengguna</string>
-    <string name="user">Pengguna</string>
+    <string name="title_user">Pengguna</string>
     <string name="keywords">Kata kunci</string>
     <string name="sources">Sumber</string>
     <string name="content">Konten</string>
-    <string name="customize">Sesuaikan</string>
     <!--<string name="set_nickname">Tentukan nama panggilan</string>-->
-    <string name="set_color">Tetapkan warna</string>
-    <string name="clear">Bersihkan</string>
-    <string name="pick_color">Pilih warna</string>
-    <string name="follow">Follow</string>
-    <string name="unfollow">Unfollow</string>
+    <string name="action_set_color">Tetapkan warna</string>
+    <string name="action_clear">Bersihkan</string>
+    <string name="action_pick_color">Pilih warna</string>
+    <string name="action_follow">Follow</string>
+    <string name="action_unfollow">Unfollow</string>
     <string name="leftside_compose_button">Tombol susun di kiri</string>
     <string name="leftside_compose_button_summary">Pasang tombol susun di kiri.</string>
     <string name="load_item_limit">Memuat batas item</string>
     <string name="load_item_limit_summary">Tetapkan batas item per pengambilan.</string>
-    <string name="quote">Kutip</string>
+    <string name="action_quote">Kutip</string>
     <string name="add_rule">Tambah aturan</string>
     <string name="text_size">Ukuran teks</string>
     <string name="text_size_summary">Ukuran teks untuk cuit.</string>
     <string name="cannot_get_location">Tidak bisa mendapatkan lokasi anda.</string>
-    <string name="drafts">Konsep</string>
-    <string name="description">Deskripsi</string>
-    <string name="location">Lokasi</string>
-    <string name="url">URL</string>
-    <string name="favorites">Favorit</string>
+    <string name="title_drafts">Konsep</string>
+
+    <string name="user_profile_location">Lokasi</string>
+    <string name="user_profile_url">URL</string>
+    <string name="title_favorites">Favorit</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">Suka</string>
+    <string name="title_likes">Suka</string>
     <string name="name">Nama</string>
     <string name="refresh">Segarkan</string>
     <string name="settings_refresh">Perbaharui</string>
@@ -140,8 +139,8 @@
     <string name="proxy_port">Port Proxy</string>
     <string name="proxy_username">Nama pengguna proxy</string>
     <string name="proxy_password">Kata sandi proxy</string>
-    <string name="block">Blok</string>
-    <string name="unblock">Hilangkan Blokir</string>
+    <string name="action_block">Blok</string>
+    <string name="action_unblock">Hilangkan Blokir</string>
     <string name="report_for_spam">Laporkan sebagai spam</string>
     <string name="twitter_mute_user">Bungkam pengguna</string>
     <string name="twitter_muted_users">Pengguna yang dibungkam</string>
@@ -330,8 +329,8 @@
     <string name="text_copied">Teks telah dikopi ke clipboard.</string>
     <string name="hashtag">tanda pagar</string>
     <string name="links">Tautan</string>
-    <string name="edit_profile">Edit profil</string>
-    <string name="edit_details">Ubah rincian</string>
+    <string name="title_edit_profile">Edit profil</string>
+    <string name="title_edit_details">Ubah rincian</string>
     <string name="display_sensitive_contents">Tampilkan konten yang sensitif.</string>
     <string name="display_sensitive_contents_summary">Tampilkan konten yang sensitif di timeline tanpa pemberitahuan.</string>
     <string name="sensitive_content_warning">Tweet ini mungkin berisi konten yang sensitif, mau melanjutkan?</string>
@@ -385,10 +384,10 @@
     <string name="retweet_cancelled">Retweet dibatalkan.</string>
     <string name="direct_message_sent">Direct meesage terkirim.</string>
     <string name="direct_message_deleted">Direct message dihapus.</string>
-    <string name="search_saved">Pencarian tersimpan.</string>
-    <string name="search_name_saved">Pencarian \"<xliff:g id="name">%s</xliff:g>\" tersimpan.</string>
-    <string name="search_deleted">Pencarian terhapus.</string>
-    <string name="search_name_deleted">Pencarian \"<xliff:g id="name">%s</xliff:g>\" terhapus.</string>
+    <string name="message_search_saved">Pencarian tersimpan.</string>
+    <string name="message_search_name_saved">Pencarian \"<xliff:g id="name">%s</xliff:g>\" tersimpan.</string>
+    <string name="message_search_deleted">Pencarian terhapus.</string>
+    <string name="message_search_name_deleted">Pencarian \"<xliff:g id="name">%s</xliff:g>\" terhapus.</string>
     <string name="import_from">Impor dari&#8230;</string>
     <string name="link_to_quoted_status">Link ke tweet kutipan</string>
     <string name="quote_original_status">Kutip tweet asli</string>
@@ -473,7 +472,7 @@
     <string name="report_user">Laporkan <xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">Laporkan <xliff:g id="name">%s</xliff:g> karena spam? Kamu juga bisa blokir pengguna ini.</string>
     <string name="twidere_test">Uji Twittnuker</string>
-    <string name="staggered_home_timeline">Staggered Home Timeline</string>
+
     <string name="unread_count">Belum terbaca</string>
     <string name="developed_by">Dikelola oleh</string>
     <string name="project_account">Akun proyek</string>
@@ -533,8 +532,8 @@
     <string name="hidden_settings">Pengaturan tersembunyi</string>
     <string name="hidden_settings_warning_title">PERINGATAN: Pengaturan ini dapat merusak!</string>
     <string name="hidden_settings_warning_message">JANGAN PERNAH mengganti Pengaturan ini jika Anda tidak tahu gunanya. Nenek bilang itu berbahaya!</string>
-    <string name="force_using_private_apis">Paksa penggunaan API privat</string>
-    <string name="status_text_limit">Batas teks tweet</string>
+
+
     <string name="load_more_from_top">Muat lebih banyak dari atas</string>
     <string name="load_more_from_top_summary">Berguna jika Anda lebih suka membaca dari bawah ke atas</string>
     <string name="compose_now">Buat Sekarang</string>
@@ -567,8 +566,8 @@
     <string name="muted_user"><xliff:g id="name">%s</xliff:g> disenyapkan</string>
     <string name="unmute_user">Bunyikan <xliff:g id="name">%s</xliff:g></string>
     <string name="unmuted_user"><xliff:g id="name">%s</xliff:g> dibunyikan</string>
-    <string name="mute">Senyapkan</string>
-    <string name="unmute">Bunyikan</string>
+    <string name="action_mute">Senyapkan</string>
+    <string name="action_unmute">Bunyikan</string>
     <string name="action_muting">menyenyapkan</string>
     <string name="action_unmuting">membunyikan</string>
     <string name="mute_user_confirm_message">Mute <xliff:g id="name">%s</xliff:g>? Anda tidak akan lagi melihat tweet dari pengguna ini selama anda mengikuti pengguna ini.</string>
@@ -800,7 +799,7 @@
     <!--<string name="no_extension_installed">Tidak ada ekstensi terpasang</string>-->
     <string name="pinned_status">Tweet Disematkan</string>
     <string name="add_or_remove_from_list">Tambah atau hapus dari daftar</string>
-    <string name="title_extra_features">Fitur lain</string>
+
     <string name="filter_everywhere">Saring segalanya</string>
     <string name="filter_everywhere_description">Hal berikut akan disaring pada Twittnuker: ·Cuitan pengguna. ·Cuitan yang menyebut akun pengguna ini. Cuitan ulang/Kutipan dari pengguna ini</string>
     <string name="message_toast_added_to_filter">Tambahkan ke penyaringan.</string>

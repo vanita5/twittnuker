@@ -21,8 +21,8 @@
     <string name="basic">พื้นฐาน</string>
     <string name="twip_o">twip O Mode</string>
     <string name="advanced">ขั้นสูง</string>
-    <string name="save">บันทึก</string>
-    <string name="edit">แก้ไข</string>
+    <string name="action_save">บันทึก</string>
+    <string name="action_edit">แก้ไข</string>
     <string name="edit_api">แก้ไข API</string>
     <string name="home">หน้าหลัก</string>
     <string name="mentions">การกล่าวถึง</string>
@@ -42,17 +42,17 @@
     <string name="label_streaming_service">บริการการสตรีม</string>
     <string name="label_background_operation_service">การดำเนินการเบื้องหลัง</string>
     <string name="open_in_browser">เปิดในเบราว์เซอร์</string>
-    <string name="delete">ลบ</string>
-    <string name="retweet">รีทวีต</string>
+    <string name="action_delete">ลบ</string>
+    <string name="action_retweet">รีทวีต</string>
     <string name="retweets">รีทวีต</string>
     <string name="cancel_retweet">ยกเลิกทวีต</string>
-    <string name="favorite">ถูกใจ</string>
-    <string name="unfavorite">เลิกถูกใจ</string>
+    <string name="action_favorite">ถูกใจ</string>
+    <string name="action_unfavorite">เลิกถูกใจ</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">ถูกใจ</string>
-    <string name="undo_like">เลิกถูกใจ</string>
-    <string name="reply">ตอบ</string>
-    <string name="share">แบ่งปัน</string>
+    <string name="action_like">ถูกใจ</string>
+    <string name="action_undo_like">เลิกถูกใจ</string>
+    <string name="action_reply">ตอบ</string>
+    <string name="action_share">แบ่งปัน</string>
     <string name="view_map">แผนที่</string>
     <string name="statuses">ทวีต</string>
     <string name="followers">ผู้ติดตาม</string>
@@ -85,35 +85,35 @@
     <string name="quote_user">อ้างอิง <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">ตัวกรอง</string>
+    <string name="title_filters">ตัวกรอง</string>
     <string name="users">ผู้ใช้</string>
-    <string name="user">ผู้ใช้</string>
+    <string name="title_user">ผู้ใช้</string>
     <string name="keywords">คำค้น</string>
     <string name="sources">ที่มา</string>
     <string name="content">เนื้อหา</string>
-    <string name="customize">ปรับค่า</string>
+
     <!--<string name="set_nickname">ตั้งชื่อเล่น</string>-->
-    <string name="set_color">ตั้งค่าสี</string>
-    <string name="clear">ล้าง</string>
-    <string name="pick_color">เลือกสี</string>
-    <string name="follow">ติดตาม</string>
-    <string name="unfollow">เลิกติดตาม</string>
+    <string name="action_set_color">ตั้งค่าสี</string>
+    <string name="action_clear">ล้าง</string>
+    <string name="action_pick_color">เลือกสี</string>
+    <string name="action_follow">ติดตาม</string>
+    <string name="action_unfollow">เลิกติดตาม</string>
     <string name="leftside_compose_button">ปุ่มทวีตอยู่ด้านซ็าย</string>
     <string name="leftside_compose_button_summary">วางปุ่มทวีตไว้ด้านซ้าย</string>
     <string name="load_item_limit">จำกัดทวีตต่อโหลด</string>
     <string name="load_item_limit_summary">จำกัดจำนวนทวีตที่โหลดต่อการรีเฟรชหนึ่งครั้ง</string>
-    <string name="quote">อ้างอิง</string>
+    <string name="action_quote">อ้างอิง</string>
     <string name="add_rule">เพิ่มกฎ</string>
     <string name="text_size">ขนาดข้อความ</string>
     <string name="text_size_summary">ขนาดอักษรของทวีต</string>
     <string name="cannot_get_location">ไม่สามารถรับที่อยู่ได้</string>
-    <string name="drafts">ข้อความร่าง</string>
-    <string name="description">คำอธิบาย</string>
-    <string name="location">ที่อยู่</string>
-    <string name="url">URL</string>
-    <string name="favorites">ถูกใจ</string>
+    <string name="title_drafts">ข้อความร่าง</string>
+
+    <string name="user_profile_location">ที่อยู่</string>
+    <string name="user_profile_url">URL</string>
+    <string name="title_favorites">ถูกใจ</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">ถูกใจ</string>
+    <string name="title_likes">ถูกใจ</string>
     <string name="name">ชื่อ</string>
     <string name="refresh">โหลดใหม่</string>
     <string name="retry">ลองอีกครั้ง</string>
@@ -140,8 +140,8 @@
     <string name="proxy_port">Proxy Port</string>
     <string name="proxy_username">Proxy username</string>
     <string name="proxy_password">Proxy password</string>
-    <string name="block">บล็อค</string>
-    <string name="unblock">เลิกบล็อค</string>
+    <string name="action_block">บล็อค</string>
+    <string name="action_unblock">เลิกบล็อค</string>
     <string name="report_for_spam">รายงานสแปม</string>
     <string name="twitter_mute_user">ซ่อนทวีตจากผู้ใช้นี้</string>
     <string name="twitter_muted_users">ผู้ใช้ที่ถูกซ่อนทวีต</string>
@@ -327,8 +327,8 @@
     <string name="text_copied">ข้อความถูกคัดลอกไปยังคลิปบอร์ดแล้ว</string>
     <string name="hashtag">แฮชแท็ก</string>
     <string name="links">ลิงค์</string>
-    <string name="edit_profile">แก้ไขข้อมูลส่วนตัว</string>
-    <string name="edit_details">แก้ไขข้อมูล</string>
+    <string name="title_edit_profile">แก้ไขข้อมูลส่วนตัว</string>
+    <string name="title_edit_details">แก้ไขข้อมูล</string>
     <string name="display_sensitive_contents">แสดงเนื้อหาที่อ่อนไหว</string>
     <string name="display_sensitive_contents_summary">แสดงเนื้อหาล่อแหลมโดยไม่ต้องแจ้งเตือนบนไทม์ไลน์</string>
     <string name="sensitive_content_warning">ทวิตนี้อาจมีเนื้อหาล่อแหลม อยากดูหรือไม่</string>
@@ -380,10 +380,10 @@
     <string name="retweet_cancelled">ยกเลิกรีทวีตแล้ว</string>
     <string name="direct_message_sent">ส่งข้อความส่วนตัวแล้ว</string>
     <string name="direct_message_deleted">ลบข้อความส่วนตัวแล้ว</string>
-    <string name="search_saved">บันทึกการค้นหาแล้ว</string>
-    <string name="search_name_saved">บันทึกการค้นหา \"<xliff:g id="name">%s</xliff:g>\" แล้ว</string>
-    <string name="search_deleted">ลบการค้นหาแล้ว</string>
-    <string name="search_name_deleted">ลบการค้นหา \"<xliff:g id="name">%s</xliff:g>\" แล้ว</string>
+    <string name="message_search_saved">บันทึกการค้นหาแล้ว</string>
+    <string name="message_search_name_saved">บันทึกการค้นหา \"<xliff:g id="name">%s</xliff:g>\" แล้ว</string>
+    <string name="message_search_deleted">ลบการค้นหาแล้ว</string>
+    <string name="message_search_name_deleted">ลบการค้นหา \"<xliff:g id="name">%s</xliff:g>\" แล้ว</string>
     <string name="import_from">นำเข้าจาก&#8230;</string>
     <string name="link_to_quoted_status">ลิงค์ไปยังทวีตที่อ้างอิง</string>
     <string name="quote_original_status">อ้างอิงทวีตปัจจุบัน</string>
@@ -467,7 +467,7 @@
     <string name="report_user">รายงาน <xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">รายงาน <xliff:g id="name">%s</xliff:g> ว่าเป็นสแปมหรือไม่ คุณจะบล็อคผู้ใช้รายนี้ด้วย</string>
     <string name="twidere_test">ทดสอบ Twittnuker</string>
-    <string name="staggered_home_timeline">หน้าหลักแบบกระจัดกระจาย</string>
+
     <string name="unread_count">จำนวนที่ยังไม่ได้อ่าน</string>
     <string name="developed_by">พัฒนาโดย</string>
     <string name="project_account">บัญชีทางการของโปรเจค</string>
@@ -527,8 +527,8 @@
     <string name="hidden_settings">การตั้งค่าเพิ่มเติม</string>
     <string name="hidden_settings_warning_title">คำเตือน: การตั้งค่าเหล่านี้อาจทำมือถือคุณระเบิดได้</string>
     <string name="hidden_settings_warning_message">\"ห้าม\" เปลี่ยนแปลงการตั้งค่าเหล่านี้ ถ้าคุณทำไม่เป็น มิฉะนั้นแอพสามารถ\n * ฆ่าแมวของคุณได้\n * สั่งยิงขีปนาวุธจากเกาหลีเหนือได้\n * เรียกทหารมายังหน้าบ้านคุณได้\n * ทำลายล้างจักรวาลได้</string>
-    <string name="force_using_private_apis">บังคับใช้ API ส่วนตัว</string>
-    <string name="status_text_limit">จำกัดจำนวนอักษร</string>
+
+
     <string name="load_more_from_top">โหลดจากด้านบน</string>
     <string name="load_more_from_top_summary">มีประโยชน์แก่ผู้ที่ชอบอ่านทวีตจากล่างขึ้นบน</string>
     <string name="compose_now">ประพันธ์ทวีต</string>
@@ -561,8 +561,8 @@
     <string name="muted_user">มิ้ว <xliff:g id="name">%s</xliff:g> แล้ว</string>
     <string name="unmute_user">เลิกมิ้ว <xliff:g id="name">%s</xliff:g></string>
     <string name="unmuted_user">เลิกมิ้ว <xliff:g id="name">%s</xliff:g> แล้ว</string>
-    <string name="mute">มิ้ว</string>
-    <string name="unmute">เลิกมิ้ว</string>
+    <string name="action_mute">มิ้ว</string>
+    <string name="action_unmute">เลิกมิ้ว</string>
     <string name="action_muting">กำลังมิ้ว</string>
     <string name="action_unmuting">กำลังเลิกมิ้ว</string>
     <string name="mute_user_confirm_message">มิ้ว <xliff:g id="name">%s</xliff:g> หรือไม่ คุณจะไม่ได้เห็นทวีตจากผู้ใช้รายนี้ในขณะที่คุณยังติดตามผู้ใช้รายนี้อยู่</string>

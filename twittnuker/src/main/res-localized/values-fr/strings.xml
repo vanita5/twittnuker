@@ -21,8 +21,8 @@
     <string name="basic">Basique</string>
     <string name="twip_o">twip\'O\'Mode</string>
     <string name="advanced">Avancé</string>
-    <string name="save">Enregistrer</string>
-    <string name="edit">Modifier</string>
+    <string name="action_save">Enregistrer</string>
+    <string name="action_edit">Modifier</string>
     <string name="edit_api">Modifier l\'API</string>
     <string name="home">Accueil</string>
     <string name="mentions">Mentions</string>
@@ -42,17 +42,17 @@
     <string name="label_streaming_service">Service de streaming</string>
     <string name="label_background_operation_service">Service en arrière-plan</string>
     <string name="open_in_browser">Ouvrir dans un navigateur</string>
-    <string name="delete">Supprimer</string>
-    <string name="retweet">Retweeter</string>
+    <string name="action_delete">Supprimer</string>
+    <string name="action_retweet">Retweeter</string>
     <string name="retweets">Retweets</string>
     <string name="cancel_retweet">Annuler le retweet</string>
-    <string name="favorite">Ajouter aux favoris</string>
-    <string name="unfavorite">Supprimer des favoris</string>
+    <string name="action_favorite">Ajouter aux favoris</string>
+    <string name="action_unfavorite">Supprimer des favoris</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">J\'aime</string>
-    <string name="undo_like">Ne plus aimer</string>
-    <string name="reply">Répondre</string>
-    <string name="share">Partager</string>
+    <string name="action_like">J\'aime</string>
+    <string name="action_undo_like">Ne plus aimer</string>
+    <string name="action_reply">Répondre</string>
+    <string name="action_share">Partager</string>
     <string name="view_map">Carte</string>
     <string name="statuses">Tweets</string>
     <string name="followers">Abonnés</string>
@@ -85,35 +85,34 @@
     <string name="quote_user">Citer <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">Filtres</string>
+    <string name="title_filters">Filtres</string>
     <string name="users">Utilisateurs</string>
-    <string name="user">Utilisateur</string>
+    <string name="title_user">Utilisateur</string>
     <string name="keywords">Mots-clés</string>
     <string name="sources">Sources</string>
     <string name="content">Contenu</string>
-    <string name="customize">Personnaliser</string>
     <!--<string name="set_nickname">Définir le pseudo</string>-->
-    <string name="set_color">Définir la couleur</string>
-    <string name="clear">Effacer</string>
-    <string name="pick_color">Choisir une couleur</string>
-    <string name="follow">Suivre</string>
-    <string name="unfollow">Ne plus suivre</string>
+    <string name="action_set_color">Définir la couleur</string>
+    <string name="action_clear">Effacer</string>
+    <string name="action_pick_color">Choisir une couleur</string>
+    <string name="action_follow">Suivre</string>
+    <string name="action_unfollow">Ne plus suivre</string>
     <string name="leftside_compose_button">Bouton « Écrire » à gauche</string>
     <string name="leftside_compose_button_summary">Placer le bouton « Écrire » à gauche.</string>
     <string name="load_item_limit">Limite de chargement</string>
     <string name="load_item_limit_summary">Nombre de tweets par chargement.</string>
-    <string name="quote">Citer</string>
+    <string name="action_quote">Citer</string>
     <string name="add_rule">Ajouter une règle</string>
     <string name="text_size">Taille du texte</string>
     <string name="text_size_summary">Taille du texte pour les tweets.</string>
     <string name="cannot_get_location">Impossible d\'acquérir votre position.</string>
-    <string name="drafts">Brouillons</string>
-    <string name="description">Description</string>
-    <string name="location">Emplacement</string>
-    <string name="url">URL</string>
-    <string name="favorites">Favoris</string>
+    <string name="title_drafts">Brouillons</string>
+
+    <string name="user_profile_location">Emplacement</string>
+    <string name="user_profile_url">URL</string>
+    <string name="title_favorites">Favoris</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">J\'aime</string>
+    <string name="title_likes">J\'aime</string>
     <string name="name">Nom</string>
     <string name="refresh">Rafraîchir</string>
     <string name="settings_refresh">Rafraîchir</string>
@@ -141,8 +140,8 @@
     <string name="proxy_port">Port du Proxy</string>
     <string name="proxy_username">Nom d\'utilisateur pour le proxy</string>
     <string name="proxy_password">Mot de passe du proxy</string>
-    <string name="block">Bloquer</string>
-    <string name="unblock">Débloquer</string>
+    <string name="action_block">Bloquer</string>
+    <string name="action_unblock">Débloquer</string>
     <string name="report_for_spam">Signaler comme spam</string>
     <string name="twitter_mute_user">Masquer l\'utilisateur</string>
     <string name="twitter_muted_users">Utilisateurs masqués</string>
@@ -331,8 +330,8 @@
     <string name="text_copied">Le texte est copié dans le presse-papiers.</string>
     <string name="hashtag">Hashtag</string>
     <string name="links">Liens</string>
-    <string name="edit_profile">Modifier le profil</string>
-    <string name="edit_details">Editer les détails</string>
+    <string name="title_edit_profile">Modifier le profil</string>
+    <string name="title_edit_details">Editer les détails</string>
     <string name="display_sensitive_contents">Afficher le contenu qui peut être sensible</string>
     <string name="display_sensitive_contents_summary">Afficher le contenu qui peut être sensible sans avertissement dans votre fil d\'actualité</string>
     <string name="sensitive_content_warning">Ce tweet a peut-être un contenu sensible, continuer ?</string>
@@ -386,10 +385,10 @@
     <string name="retweet_cancelled">Retweet annulé.</string>
     <string name="direct_message_sent">Message envoyé.</string>
     <string name="direct_message_deleted">Message supprimé.</string>
-    <string name="search_saved">Recherche sauvegardée.</string>
-    <string name="search_name_saved">Recherche \"<xliff:g id="name">%s</xliff:g>\" sauvegardée.</string>
-    <string name="search_deleted">Recherche supprimée.</string>
-    <string name="search_name_deleted">Recherche \"<xliff:g id="name">%s</xliff:g>\" supprimée.</string>
+    <string name="message_search_saved">Recherche sauvegardée.</string>
+    <string name="message_search_name_saved">Recherche \"<xliff:g id="name">%s</xliff:g>\" sauvegardée.</string>
+    <string name="message_search_deleted">Recherche supprimée.</string>
+    <string name="message_search_name_deleted">Recherche \"<xliff:g id="name">%s</xliff:g>\" supprimée.</string>
     <string name="import_from">Importer depuis&#8230;</string>
     <string name="link_to_quoted_status">Lien vers le tweet cité</string>
     <string name="quote_original_status">Citer le tweet original</string>
@@ -473,7 +472,7 @@
     <string name="report_user">Signaler <xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">Signaler <xliff:g id="name">%s</xliff:g>comme spam ? Vous bloquerez aussi cet utilisateur.</string>
     <string name="twidere_test">Test de Twittnuker</string>
-    <string name="staggered_home_timeline">Fil d\'actualité décalé</string>
+
     <string name="unread_count">Messages non-lus</string>
     <string name="developed_by">Développé par</string>
     <string name="project_account">Compte du projet</string>
@@ -533,8 +532,8 @@
     <string name="hidden_settings">Paramètres cachés</string>
     <string name="hidden_settings_warning_title">ATTENTION : Ces paramètres peuvent faire mal !</string>
     <string name="hidden_settings_warning_message">Ne changez JAMAIS ces paramètres si vous ne savez pas ce que c\'est, où ils :\n * Tueront votre chat\n * Lanceront des bombes atomiques en Corée du Nord\n * Transformeront TOUTES les Mahou Shoujo en Majo\n * Détruiront l\'univers</string>
-    <string name="force_using_private_apis">Forcer l\'utilisation d\'API privées</string>
-    <string name="status_text_limit">Limite de caractères du Tweet</string>
+
+
     <string name="load_more_from_top">Chargement par le haut</string>
     <string name="load_more_from_top_summary">Pratique si vous préférez lire de bas en haut</string>
     <string name="compose_now">Écrire maintenant</string>
@@ -567,8 +566,8 @@
     <string name="muted_user"><xliff:g id="name">%s</xliff:g> masqué</string>
     <string name="unmute_user">Ne plus masquer <xliff:g id="name">%s</xliff:g></string>
     <string name="unmuted_user"><xliff:g id="name">%s</xliff:g> plus masqué</string>
-    <string name="mute">Masquer</string>
-    <string name="unmute">Ne plus masquer</string>
+    <string name="action_mute">Masquer</string>
+    <string name="action_unmute">Ne plus masquer</string>
     <string name="action_muting">mettre en sourdine</string>
     <string name="action_unmuting">enlevez la sourdine</string>
     <string name="mute_user_confirm_message">Mettre en sourdine <xliff:g id="name">%s</xliff:g>? Vous ne verrez plus les tweets de cet utilisateur tout en continuant de le suivre.</string>
@@ -800,7 +799,7 @@
     <!--<string name="no_extension_installed">Aucune extension installée</string>-->
     <string name="pinned_status">Tweet épinglé</string>
     <string name="add_or_remove_from_list">Ajouter ou supprimer de la liste</string>
-    <string name="title_extra_features">Fonctionnalités supplémentaires</string>
+
     <string name="filter_everywhere">Filtrer partout</string>
     <string name="filter_everywhere_description">Le filtre va s\'appliquer dans Twittnuker sur :\n  ·Les tweets de l\'utilisateur\n  ·Les tweets mentionnant l\'utilisateur\n  ·Les retweets/citation de cet utilisateur</string>
     <!-- Verb. Used for skip some settings -->

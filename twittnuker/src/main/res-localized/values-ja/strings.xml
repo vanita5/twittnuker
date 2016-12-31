@@ -21,8 +21,8 @@
     <string name="basic">Basic</string>
     <string name="twip_o">twip O モード</string>
     <string name="advanced">詳細設定</string>
-    <string name="save">保存</string>
-    <string name="edit">編集</string>
+    <string name="action_save">保存</string>
+    <string name="action_edit">編集</string>
     <string name="edit_api">APIを編集</string>
     <string name="home">ホーム</string>
     <string name="mentions">つながり</string>
@@ -42,17 +42,17 @@
     <string name="label_streaming_service">ストリーミングサービス</string>
     <string name="label_background_operation_service">バックグラウンド操作サービス</string>
     <string name="open_in_browser">ブラウザで開く</string>
-    <string name="delete">削除</string>
-    <string name="retweet">リツイート</string>
+    <string name="action_delete">削除</string>
+    <string name="action_retweet">リツイート</string>
     <string name="retweets">リツイート</string>
     <string name="cancel_retweet">リツイートの取り消し</string>
-    <string name="favorite">お気に入り</string>
-    <string name="unfavorite">お気に入りから削除</string>
+    <string name="action_favorite">お気に入り</string>
+    <string name="action_unfavorite">お気に入りから削除</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
-    <string name="like">いいね</string>
-    <string name="undo_like">いいねを取り消し</string>
-    <string name="reply">返信</string>
-    <string name="share">共有</string>
+    <string name="action_like">いいね</string>
+    <string name="action_undo_like">いいねを取り消し</string>
+    <string name="action_reply">返信</string>
+    <string name="action_share">共有</string>
     <string name="view_map">地図</string>
     <string name="statuses">ツイート</string>
     <string name="followers">フォロワー</string>
@@ -85,35 +85,34 @@
     <string name="quote_user"><xliff:g id="user_name">%s</xliff:g>さんのツイートを引用</string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
     <string name="source"><xliff:g id="source">%s</xliff:g></string>
-    <string name="filters">フィルタ</string>
+    <string name="title_filters">フィルタ</string>
     <string name="users">ユーザー</string>
-    <string name="user">ユーザー</string>
+    <string name="title_user">ユーザー</string>
     <string name="keywords">キーワード</string>
     <string name="sources">クライアント</string>
     <string name="content">ツイート</string>
-    <string name="customize">カスタマイズ</string>
     <!--<string name="set_nickname">ニックネームの設定</string>-->
-    <string name="set_color">色を設定</string>
-    <string name="clear">クリア</string>
-    <string name="pick_color">色を選択</string>
-    <string name="follow">フォロー</string>
-    <string name="unfollow">フォローを解除</string>
+    <string name="action_set_color">色を設定</string>
+    <string name="action_clear">クリア</string>
+    <string name="action_pick_color">色を選択</string>
+    <string name="action_follow">フォロー</string>
+    <string name="action_unfollow">フォローを解除</string>
     <string name="leftside_compose_button">ツイートボタンを左に配置</string>
     <string name="leftside_compose_button_summary">ツイートボタンを左に配置します。</string>
     <string name="load_item_limit">ツイートの読み込み上限</string>
     <string name="load_item_limit_summary">一度に読み込むツイートの数を制限します。</string>
-    <string name="quote">引用</string>
+    <string name="action_quote">引用</string>
     <string name="add_rule">ルールを追加</string>
     <string name="text_size">フォントサイズ</string>
     <string name="text_size_summary">ツイートの文字サイズ</string>
     <string name="cannot_get_location">位置情報が取得できません。</string>
-    <string name="drafts">下書き</string>
-    <string name="description">自己紹介</string>
-    <string name="location">現在地</string>
-    <string name="url">URL</string>
-    <string name="favorites">お気に入り</string>
+    <string name="title_drafts">下書き</string>
+
+    <string name="user_profile_location">現在地</string>
+    <string name="user_profile_url">URL</string>
+    <string name="title_favorites">お気に入り</string>
     <!-- n. formerly Twitter's favorite, in the plural -->
-    <string name="likes">いいね</string>
+    <string name="title_likes">いいね</string>
     <string name="name">名前</string>
     <string name="refresh">更新</string>
     <string name="retry">再試行</string>
@@ -140,8 +139,8 @@
     <string name="proxy_port">ポート番号</string>
     <string name="proxy_username">プロキシのユーザー名</string>
     <string name="proxy_password">プロキシのパスワード</string>
-    <string name="block">ブロック</string>
-    <string name="unblock">ブロックを解除</string>
+    <string name="action_block">ブロック</string>
+    <string name="action_unblock">ブロックを解除</string>
     <string name="report_for_spam">スパム報告</string>
     <string name="twitter_mute_user">ミュートする</string>
     <string name="twitter_muted_users">ミュートしたユーザー</string>
@@ -328,8 +327,8 @@
     <string name="text_copied">テキストがクリップボードにコピーされました。</string>
     <string name="hashtag">ハッシュタグ</string>
     <string name="links">リンク</string>
-    <string name="edit_profile">プロフィール編集</string>
-    <string name="edit_details">詳細の編集</string>
+    <string name="title_edit_profile">プロフィール編集</string>
+    <string name="title_edit_details">詳細の編集</string>
     <string name="display_sensitive_contents">不適切な内容を表示</string>
     <string name="display_sensitive_contents_summary">プロンプトを表示せずに不適切な可能性のある内容を表示します。</string>
     <string name="sensitive_content_warning">このツイートには不適切な内容が含まれている可能性があります。続行しますか？</string>
@@ -382,10 +381,10 @@
     <string name="retweet_cancelled">リツイートをキャンセルしました。</string>
     <string name="direct_message_sent">DMを送信しました。</string>
     <string name="direct_message_deleted">DMを削除しました。</string>
-    <string name="search_saved">検索を保存しました。</string>
-    <string name="search_name_saved">検索 \"<xliff:g id="name">%s</xliff:g>\"を保存しました。</string>
-    <string name="search_deleted">検索を削除しました。</string>
-    <string name="search_name_deleted">検索 \"<xliff:g id="name">%s</xliff:g>\"を削除しました。</string>
+    <string name="message_search_saved">検索を保存しました。</string>
+    <string name="message_search_name_saved">検索 \"<xliff:g id="name">%s</xliff:g>\"を保存しました。</string>
+    <string name="message_search_deleted">検索を削除しました。</string>
+    <string name="message_search_name_deleted">検索 \"<xliff:g id="name">%s</xliff:g>\"を削除しました。</string>
     <string name="import_from">インポート</string>
     <string name="link_to_quoted_status">引用ツイートへのリンク</string>
     <string name="quote_original_status">ツイートを引用</string>
@@ -469,7 +468,7 @@
     <string name="report_user"><xliff:g id="name">%s</xliff:g>をスパム報告する</string>
     <string name="report_user_confirm_message"><xliff:g id="name">%s</xliff:g>をスパム報告しますか? 同時にブロックもします。</string>
     <string name="twidere_test">Twittnukerテスト</string>
-    <string name="staggered_home_timeline">二列ホームTL</string>
+
     <string name="unread_count">未読数の表示</string>
     <string name="developed_by">開発者</string>
     <string name="project_account">プロジェクトアカウント</string>
@@ -529,8 +528,8 @@
     <string name="hidden_settings">隠し設定</string>
     <string name="hidden_settings_warning_title">警告: これらの設定は危なっかしいかも！</string>
     <string name="hidden_settings_warning_message">よくわからない場合この設定を変えないでください。もしかしたら\n * 藪から出てきた蛇に噛まれたり\n * 北朝鮮の核兵器が発射されたり\n * すべての魔法少女が魔女化したり\n * 宇宙が再構築されたり\nするかもしれません…</string>
-    <string name="force_using_private_apis">非公開APIの使用を強制する</string>
-    <string name="status_text_limit">ツイート文字数制限</string>
+
+
     <string name="load_more_from_top">上からさらに読み込む</string>
     <string name="load_more_from_top_summary">下から上に読みたい場合に便利です。</string>
     <string name="compose_now">Tweet Now</string>
@@ -563,8 +562,8 @@
     <string name="muted_user"><xliff:g id="name">%s</xliff:g>さんをミュートしました</string>
     <string name="unmute_user"><xliff:g id="name">%s</xliff:g>さんのミュートを解除</string>
     <string name="unmuted_user"><xliff:g id="name">%s</xliff:g>さんのミュートを解除しました</string>
-    <string name="mute">ミュート</string>
-    <string name="unmute">ミュートの解除</string>
+    <string name="action_mute">ミュート</string>
+    <string name="action_unmute">ミュートの解除</string>
     <string name="action_muting">ミュート中</string>
     <string name="action_unmuting">ミュート解除中</string>
     <string name="mute_user_confirm_message"><xliff:g id="name">%s</xliff:g>さんをミュートしますか? フォローしたままで、このユーザーのツイートは表示されなくなります。</string>
