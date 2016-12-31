@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">Seu próprio app de Twitter</string>-->
-    <string name="compose">Escrever</string>
+
     <string name="add_account">Adicionar uma conta</string>
     <string name="settings">Configurações</string>
     <string name="send">Enviar</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">Responder</string>
     <string name="action_share">Compartilhar</string>
     <string name="view_map">Mapa</string>
-    <string name="statuses">Tweets</string>
+    <string name="title_statuses">Tweets</string>
     <string name="followers">Seguidores</string>
     <string name="following">Seguindo</string>
     <string name="about">Sobre</string>
@@ -180,10 +180,10 @@
     <string name="account">Conta</string>
     <string name="mention_this_user">Mencionar este usuário</string>
     <string name="mention_user_name">Mencionar <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">Conectividade</string>
+
     <string name="add_member">Adicionar membro</string>
     <string name="new_user_list">Nova lista</string>
-    <string name="is_public">Público</string>
+
     <string name="send_direct_message">Enviar MD</string>
     <!--<string name="extensions">Extensões</string>-->
     <string name="uninstall">Desinstalar</string>
@@ -278,7 +278,7 @@
     <string name="incoming_friendships">Solicitações pendentes</string>
     <string name="send_follow_request">Enviar solicitação para seguir</string>
     <string name="follow_request_sent">Solicitação enviada</string>
-    <string name="status">Tweetar</string>
+    <string name="title_status">Tweetar</string>
     <string name="preview">Visualizar</string>
     <string name="connection_timeout">Tempo de espera da conexão</string>
     <string name="both">Ambos</string>

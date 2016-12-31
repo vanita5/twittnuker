@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
   ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
@@ -27,15 +26,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?selectableItemBackground"
-        android:duplicateParentState="true"/>
+        android:duplicateParentState="true" />
 
-	<ImageView
+    <ImageView
         android:id="@android:id/icon"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_gravity="center"
-		android:layout_margin="@dimen/element_spacing_normal"
-		android:contentDescription="@string/compose"
-		android:scaleType="centerInside"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/element_spacing_normal"
+        android:contentDescription="@string/action_compose"
+        android:scaleType="centerInside" />
 
 </merge>

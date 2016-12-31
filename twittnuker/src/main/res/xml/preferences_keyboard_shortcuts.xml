@@ -91,7 +91,7 @@
 
     <PreferenceCategory
         android:key="cat_statuses"
-        android:title="@string/statuses">
+        android:title="@string/title_statuses">
         <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
             android:action="status.reply"
             android:tag="status"

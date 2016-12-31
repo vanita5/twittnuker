@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">Oma Twitter-sovelluksesi</string>-->
-    <string name="compose">Kirjoita</string>
+
     <string name="add_account">Lisää tili</string>
     <string name="settings">Asetukset</string>
     <string name="send">Lähetä</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">Vastaa</string>
     <string name="action_share">Jaa</string>
     <string name="view_map">Kartta</string>
-    <string name="statuses">Twiitit</string>
+    <string name="title_statuses">Twiitit</string>
     <string name="followers">Seuraajaa</string>
     <string name="following">Seurattua</string>
     <string name="about">Tietoja</string>
@@ -181,10 +181,10 @@
     <string name="account">Tili</string>
     <string name="mention_this_user">Mainitse tämä käyttäjä</string>
     <string name="mention_user_name">Mainitse <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">Yhteydet</string>
+
     <string name="add_member">Lisää jäsen</string>
     <string name="new_user_list">Uusi lista</string>
-    <string name="is_public">Julkinen</string>
+
     <string name="send_direct_message">Lähetä YV</string>
     <!--<string name="extensions">Laajennukset</string>-->
     <string name="uninstall">Poista</string>
@@ -279,7 +279,7 @@
     <string name="incoming_friendships">Käsiteltävät seurauspyynnöt</string>
     <string name="send_follow_request">Lähetä seurauspyyntö</string>
     <string name="follow_request_sent">Seurauspyyntö lähetetty</string>
-    <string name="status">Twiitti</string>
+    <string name="title_status">Twiitti</string>
     <string name="preview">Esikatselu</string>
     <string name="connection_timeout">Yhteyden aikakatkaisu</string>
     <string name="both">Molemmat</string>

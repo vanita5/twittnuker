@@ -3,7 +3,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">Vaše vlastní Twitter aplikace</string>-->
-    <string name="compose">Napsat</string>
+
     <string name="add_account">Přidat účet</string>
     <string name="settings">Nastavení</string>
     <string name="send">Poslat</string>
@@ -53,7 +53,7 @@
     <string name="action_reply">Odpovědět</string>
     <string name="action_share">Sdílet</string>
     <string name="view_map">Mapa</string>
-    <string name="statuses">Tweety</string>
+    <string name="title_statuses">Tweety</string>
     <string name="followers">Sledující</string>
     <string name="following">Sledovaní</string>
     <string name="about">O</string>
@@ -150,10 +150,10 @@
     <string name="trends">Trendy</string>
     <string name="accounts">Účty</string>
     <string name="account">Účet</string>
-    <string name="connectivity">Možnosti připojení</string>
+
     <string name="add_member">Přidat člena</string>
     <string name="new_user_list">Nový seznam</string>
-    <string name="is_public">Veřejné</string>
+
     <string name="send_direct_message">Poslat DM</string>
     <!--<string name="extensions">Rozšíření</string>-->
     <string name="uninstall">Odinstalovat</string>
@@ -177,7 +177,7 @@
     <string name="dns_server">DNS Server</string>
     <string name="dns_server_summary">Nastavit DNS Server pro síťové požadavky.</string>
     <string name="status_not_updated">Tweet nebyl odeslán.</string>
-    <string name="status">Tweet</string>
+    <string name="title_status">Tweet</string>
     <string name="preview">Náhled</string>
     <string name="connection_timeout">Časový limit připojení vypršel</string>
     <string name="both">Oba</string>

@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">Ваш собственный Твиттер-клиент</string>-->
-    <string name="compose">Написать</string>
+
     <string name="add_account">Добавить учетную запись</string>
     <string name="settings">Настройки</string>
     <string name="send">Отправить</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">Ответить</string>
     <string name="action_share">Поделиться</string>
     <string name="view_map">Карта</string>
-    <string name="statuses">Твиты</string>
+    <string name="title_statuses">Твиты</string>
     <string name="followers">Читатели</string>
     <string name="following">Читаемые</string>
     <string name="about">О программе</string>
@@ -180,10 +180,10 @@
     <string name="account">Аккаунт</string>
     <string name="mention_this_user">Упомянуть этого пользователя</string>
     <string name="mention_user_name">Ответ <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">Соединение</string>
+
     <string name="add_member">Добавить пользователя</string>
     <string name="new_user_list">Новый список</string>
-    <string name="is_public">Общедоступный</string>
+
     <string name="send_direct_message">Послать ЛС</string>
     <!--<string name="extensions">Расширения</string>-->
     <string name="uninstall">Удалить</string>
@@ -278,7 +278,7 @@
     <string name="incoming_friendships">Ожидание запросов на подписку</string>
     <string name="send_follow_request">Послать запрос на подписку</string>
     <string name="follow_request_sent">Запрос на подписку послан</string>
-    <string name="status">Твит</string>
+    <string name="title_status">Твит</string>
     <string name="preview">Предпросмотр</string>
     <string name="connection_timeout">Таймаут соединения</string>
     <string name="both">Оба</string>

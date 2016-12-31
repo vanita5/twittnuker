@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">您的 Twitter 應用程式</string>-->
-    <string name="compose">撰寫</string>
+
     <string name="add_account">新增帳號</string>
     <string name="settings">設定</string>
     <string name="send">發送</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">回覆</string>
     <string name="action_share">分享</string>
     <string name="view_map">地圖</string>
-    <string name="statuses">推文</string>
+    <string name="title_statuses">推文</string>
     <string name="followers">關注者</string>
     <string name="following">關注</string>
     <string name="about">關於</string>
@@ -180,10 +180,10 @@
     <string name="account">帳號</string>
     <string name="mention_this_user">提及這個用戶</string>
     <string name="mention_user_name">提及<xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">連接性</string>
+
     <string name="add_member">新增成員</string>
     <string name="new_user_list">建立列表</string>
-    <string name="is_public">公開</string>
+
     <string name="send_direct_message">發送私信</string>
     <!--<string name="extensions">擴展</string>-->
     <string name="uninstall">移除</string>
@@ -278,7 +278,7 @@
     <string name="incoming_friendships">等待中的關注請求</string>
     <string name="send_follow_request">發送關注請求</string>
     <string name="follow_request_sent">已發送關注請求</string>
-    <string name="status">推文</string>
+    <string name="title_status">推文</string>
     <string name="preview">預覽</string>
     <string name="connection_timeout">連線逾時</string>
     <string name="both">兩者兼有</string>

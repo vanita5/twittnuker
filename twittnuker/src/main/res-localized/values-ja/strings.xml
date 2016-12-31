@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">あなた自身の Twitter アプリ</string>-->
-    <string name="compose">ツイートする</string>
+
     <string name="add_account">アカウントを追加</string>
     <string name="settings">設定</string>
     <string name="send">送信</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">返信</string>
     <string name="action_share">共有</string>
     <string name="view_map">地図</string>
-    <string name="statuses">ツイート</string>
+    <string name="title_statuses">ツイート</string>
     <string name="followers">フォロワー</string>
     <string name="following">フォロー中</string>
     <string name="about">バージョン情報</string>
@@ -179,10 +179,10 @@
     <string name="account">アカウント</string>
     <string name="mention_this_user">この人へツイート</string>
     <string name="mention_user_name"><xliff:g id="name">%1$s</xliff:g>さん宛にツイート</string>
-    <string name="connectivity">接続</string>
+
     <string name="add_member">ユーザーを追加</string>
     <string name="new_user_list">新しいリスト</string>
-    <string name="is_public">公開</string>
+
     <string name="send_direct_message">DMを送信</string>
     <!--<string name="extensions">拡張機能</string>-->
     <string name="uninstall">アンインストール</string>
@@ -277,7 +277,7 @@
     <string name="incoming_friendships">保留中のフォローリクエスト</string>
     <string name="send_follow_request">フォローリクエストを送信</string>
     <string name="follow_request_sent">フォローリクエストを送信しました。</string>
-    <string name="status">ツイート</string>
+    <string name="title_status">ツイート</string>
     <string name="preview">プレビュー</string>
     <string name="connection_timeout">接続タイムアウト</string>
     <string name="both">両方</string>

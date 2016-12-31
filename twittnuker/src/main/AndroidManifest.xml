@@ -183,12 +183,12 @@
         <activity
             android:name=".activity.ComposeActivity"
             android:excludeFromRecents="true"
-            android:label="@string/compose"
+            android:label="@string/title_compose"
             android:launchMode="singleTop"
             android:parentActivityName=".activity.HomeActivity"
             android:theme="@style/Theme.Twidere.Compose"
             android:windowSoftInputMode="adjustResize">
-            <intent-filter android:label="@string/compose">
+            <intent-filter android:label="@string/title_compose">
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="de.vanita5.twittnuker.COMPOSE"/>
                 <action android:name="de.vanita5.twittnuker.COMPOSE_TAKE_PHOTO"/>
@@ -364,7 +364,7 @@
         <activity
             android:name=".activity.CreateComposeShortcutActivity"
             android:icon="@drawable/ic_action_twittnuker"
-            android:label="@string/compose"
+            android:label="@string/title_compose"
             android:theme="@style/Theme.Twidere.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT"/>

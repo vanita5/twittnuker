@@ -4,7 +4,8 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">Deine eigene Twitter-App</string>-->
-    <string name="compose">Neuer Tweet</string>
+    <string name="action_compose">Neuer Tweet</string>
+    <string name="title_compose">Neuer Tweet</string>
     <string name="add_account">Account hinzufügen</string>
     <string name="settings">Einstellungen</string>
     <string name="send">Senden</string>
@@ -57,7 +58,7 @@
     <string name="action_share">Teilen</string>
     <string name="view_map">Karte</string>
     <string name="view_user_profile">Benutzerprofil</string>
-    <string name="statuses">Tweets</string>
+    <string name="title_statuses">Tweets</string>
     <string name="followers">Follower</string>
     <string name="following">Folgen</string>
     <string name="about">Über</string>
@@ -115,6 +116,7 @@
     <string name="title_drafts">Entwürfe</string>
     <string name="user_list_details_name">Name</string>
     <string name="user_list_details_description">Beschreibung</string>
+    <string name="user_list_details_is_public">Öffentlich</string>
     <string name="user_profile_description">Bio</string>
     <string name="user_profile_location">Ort</string>
     <string name="user_profile_url">Website</string>
@@ -193,10 +195,10 @@
     <string name="account">Account</string>
     <string name="mention_this_user">Erwähne diesen Benutzer</string>
     <string name="mention_user_name">Mention an <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">Konnektivität</string>
+
     <string name="add_member">Mitglied hinzufügen</string>
     <string name="new_user_list">Neue Liste</string>
-    <string name="is_public">Öffentlich</string>
+
     <string name="send_direct_message">Direktnachricht senden</string>
     <!--<string name="extensions">Erweiterungen</string>-->
     <string name="uninstall">Deinstallieren</string>
@@ -290,7 +292,7 @@
     <string name="incoming_friendships">Ausstehende Folgen-Anfragen</string>
     <string name="send_follow_request">Folgen-Anfrage senden</string>
     <string name="follow_request_sent">Folgen-Anfrage gesendet</string>
-    <string name="status">Tweet</string>
+    <string name="title_status">Tweet</string>
     <string name="preview">Vorschau</string>
     <string name="connection_timeout">Zeitüberschreitung der Verbindung</string>
     <string name="both">Beide</string>

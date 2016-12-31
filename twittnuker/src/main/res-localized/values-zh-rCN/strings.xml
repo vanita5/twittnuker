@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">属于你的 Twitter 应用</string>-->
-    <string name="compose">撰写</string>
+
     <string name="add_account">添加帐号</string>
     <string name="settings">设定</string>
     <string name="send">发送</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">回复</string>
     <string name="action_share">分享</string>
     <string name="view_map">地图</string>
-    <string name="statuses">推文</string>
+    <string name="title_statuses">推文</string>
     <string name="followers">关注者</string>
     <string name="following">正在关注</string>
     <string name="about">关于</string>
@@ -182,10 +182,10 @@
     <string name="account">帐号</string>
     <string name="mention_this_user">提及这个用户</string>
     <string name="mention_user_name">提及<xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">连接性</string>
+
     <string name="add_member">添加成员</string>
     <string name="new_user_list">新建列表</string>
-    <string name="is_public">公开</string>
+
     <string name="send_direct_message">发送私信</string>
     <!--<string name="extensions">扩展</string>-->
     <string name="uninstall">卸载</string>
@@ -280,7 +280,7 @@
     <string name="incoming_friendships">待定的关注请求</string>
     <string name="send_follow_request">发送关注请求</string>
     <string name="follow_request_sent">已发送关注请求</string>
-    <string name="status">推文</string>
+    <string name="title_status">推文</string>
     <string name="preview">预览</string>
     <string name="connection_timeout">连接超时</string>
     <string name="both">两者兼有</string>

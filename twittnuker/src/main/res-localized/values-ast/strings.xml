@@ -3,7 +3,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
-    <string name="compose">Componer</string>
+
     <string name="add_account">Amestar cuenta</string>
     <string name="settings">Axustes</string>
     <string name="send">Univar</string>
@@ -53,7 +53,7 @@
     <string name="action_reply">Responder</string>
     <string name="action_share">Compartir</string>
     <string name="view_map">Mapa</string>
-    <string name="statuses">Tuits</string>
+    <string name="title_statuses">Tuits</string>
     <string name="followers">Siguidores</string>
     <string name="following">Siguiendo</string>
     <string name="about">Tocante a</string>
@@ -180,10 +180,10 @@
     <string name="account">Cuenta</string>
     <string name="mention_this_user">Mentar a esti usuariu</string>
     <string name="mention_user_name">Mentar <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">Conectividá</string>
+
     <string name="add_member">Amestar miembros</string>
     <string name="new_user_list">Llistáu nuevu</string>
-    <string name="is_public">Públicu</string>
+
     <string name="send_direct_message">Unviar MD</string>
     <!--<string name="extensions">Estensiones</string>-->
     <string name="uninstall">Desinstalar</string>
@@ -278,7 +278,7 @@
     <string name="incoming_friendships">Solicitúes de siguimientu pendientes</string>
     <string name="send_follow_request">Unviar solicitú de siguimientu</string>
     <string name="follow_request_sent">Unvióse la solicitú de siguimientu</string>
-    <string name="status">Tuit</string>
+    <string name="title_status">Tuit</string>
     <string name="preview">Previsualización</string>
     <string name="connection_timeout">Tiempu escosao de conexón</string>
     <string name="both">Dambos</string>

@@ -3,7 +3,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">Aplikasi Twitter anda</string>-->
-    <string name="compose">Susun</string>
+
     <string name="add_account">Tambah akun</string>
     <string name="settings">Pengaturan</string>
     <string name="send">Kirim</string>
@@ -53,7 +53,7 @@
     <string name="action_reply">Balas</string>
     <string name="action_share">Bagikan</string>
     <string name="view_map">Peta</string>
-    <string name="statuses">Kicauan</string>
+    <string name="title_statuses">Kicauan</string>
     <string name="followers">Pengikut</string>
     <string name="following">Mengikuti</string>
     <string name="about">Tentang</string>
@@ -180,10 +180,10 @@
     <string name="account">Akun</string>
     <string name="mention_this_user">Mention pengguna ini</string>
     <string name="mention_user_name">Sebut <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">Konektifitas</string>
+
     <string name="add_member">Tambah Anggota</string>
     <string name="new_user_list">Daftar baru</string>
-    <string name="is_public">Publik</string>
+
     <string name="send_direct_message">Kirim DM</string>
     <!--<string name="extensions">Ekstensi</string>-->
     <string name="uninstall">Hapus</string>
@@ -278,7 +278,7 @@
     <string name="incoming_friendships">Permintaan mengikuti ditahan</string>
     <string name="send_follow_request">Kirim permintaan mengikuti</string>
     <string name="follow_request_sent">Permintaan mengikuti terkirim</string>
-    <string name="status">Tweet</string>
+    <string name="title_status">Tweet</string>
     <string name="preview">Pratinjau</string>
     <string name="connection_timeout">Waktu koneksi habis</string>
     <string name="both">Keduanya</string>

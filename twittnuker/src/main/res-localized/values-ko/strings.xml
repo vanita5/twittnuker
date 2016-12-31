@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">당신만의 트위터 앱</string>-->
-    <string name="compose">작성</string>
+
     <string name="add_account">계정 추가</string>
     <string name="settings">설정</string>
     <string name="send">보내기</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">답변</string>
     <string name="action_share">공유</string>
     <string name="view_map">지도</string>
-    <string name="statuses">트윗</string>
+    <string name="title_statuses">트윗</string>
     <string name="followers">팔로워</string>
     <string name="following">팔로잉</string>
     <string name="about">정보</string>
@@ -179,10 +179,10 @@
     <string name="account">계정</string>
     <string name="mention_this_user">이 사용자에게 멘션</string>
     <string name="mention_user_name"><xliff:g id="name">%1$s</xliff:g> 님에게 답글하기</string>
-    <string name="connectivity">연결</string>
+
     <string name="add_member">멤버 추가</string>
     <string name="new_user_list">새로운 리스트</string>
-    <string name="is_public">공공의</string>
+
     <string name="send_direct_message">쪽지 보내기</string>
     <!--<string name="extensions">플러그인</string>-->
     <string name="uninstall">제거</string>
@@ -277,7 +277,7 @@
     <string name="incoming_friendships">보류한 팔로우 요청</string>
     <string name="send_follow_request">팔로우 요청 보내기</string>
     <string name="follow_request_sent">팔로우 요청을 보냄</string>
-    <string name="status">트윗</string>
+    <string name="title_status">트윗</string>
     <string name="preview">미리보기</string>
     <string name="connection_timeout">연결시간 초과</string>
     <string name="both">모두</string>

@@ -3,7 +3,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Normally you don't need to translate app name -->
     <!--<string name="app_description">Din egen Twitter-app</string>-->
-    <string name="compose">Skriv</string>
+
     <string name="add_account">Legg til konto</string>
     <string name="settings">Innstillinger</string>
     <string name="send">Send</string>
@@ -53,7 +53,7 @@
     <string name="action_reply">Svar</string>
     <string name="action_share">Del</string>
     <string name="view_map">Kart</string>
-    <string name="statuses">Tweets</string>
+    <string name="title_statuses">Tweets</string>
     <string name="followers">Følgere</string>
     <string name="following">Følger</string>
     <string name="about">Om</string>
@@ -175,10 +175,10 @@
     <string name="account">Konto</string>
     <string name="mention_this_user">Omtal denne brukeren</string>
     <string name="mention_user_name">Omtal <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">Tilkobling</string>
+
     <string name="add_member">Legg til medlem</string>
     <string name="new_user_list">Ny liste</string>
-    <string name="is_public">Offentlig</string>
+
     <string name="send_direct_message">Send direktemelding</string>
     <!--<string name="extensions">Utvidelser</string>-->
     <string name="uninstall">Avinstaller</string>
@@ -258,7 +258,7 @@
     <string name="incoming_friendships">Avventer følgeforespørsel</string>
     <string name="send_follow_request">Send følgeforespørsel</string>
     <string name="follow_request_sent">Følgeforespørsel sendt</string>
-    <string name="status">Tweet</string>
+    <string name="title_status">Tweet</string>
     <string name="preview">Forhåndsvisning</string>
     <string name="connection_timeout">Tilkobling ble tidsavbrutt</string>
     <string name="both">Begge</string>

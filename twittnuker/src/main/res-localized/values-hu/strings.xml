@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">A te Twitter alkalmazásod</string>-->
-    <string name="compose">Létrehoz</string>
+
     <string name="add_account">Fiók hozzáadása</string>
     <string name="settings">Beállítások</string>
     <string name="send">Elküld</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">Válasz</string>
     <string name="action_share">Megosztás</string>
     <string name="view_map">Térkép</string>
-    <string name="statuses">Tweet</string>
+    <string name="title_statuses">Tweet</string>
     <string name="followers">Követők</string>
     <string name="following">Követve</string>
     <string name="about">Általános infó</string>
@@ -181,10 +181,10 @@
     <string name="account">Felhasználói fiók</string>
     <string name="mention_this_user">Felhasználó megemlítése</string>
     <string name="mention_user_name"><xliff:g id="name">%1$s</xliff:g> megemlítése</string>
-    <string name="connectivity">Kapcsolat</string>
+
     <string name="add_member">Tag hozzáadása</string>
     <string name="new_user_list">Új lista</string>
-    <string name="is_public">Nyilvános</string>
+
     <string name="send_direct_message">DM küldése</string>
     <!--<string name="extensions">Kiterjesztések</string>-->
     <string name="uninstall">Eltávolít</string>
@@ -276,7 +276,7 @@
     <string name="incoming_friendships">Követési kérelem függőben</string>
     <string name="send_follow_request">Követési kérelem küldése</string>
     <string name="follow_request_sent">Követési kérelem elküldve</string>
-    <string name="status">Tweet</string>
+    <string name="title_status">Tweet</string>
     <string name="preview">Előnézet</string>
     <string name="connection_timeout">Időtúllépés kapcsolódáskor</string>
     <string name="both">Mindkettő</string>

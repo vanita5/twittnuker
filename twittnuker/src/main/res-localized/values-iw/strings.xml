@@ -3,7 +3,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Normally you don't need to translate app name -->
     <!--<string name="app_description">אפליקציית טוויטר משלך</string>-->
-    <string name="compose">צור</string>
+
     <string name="add_account">הוסף חשבון</string>
     <string name="settings">הגדרות</string>
     <string name="send">שלח</string>
@@ -50,7 +50,7 @@
     <string name="action_reply">השב</string>
     <string name="action_share">שתף</string>
     <string name="view_map">מפה</string>
-    <string name="statuses">ציוצים</string>
+    <string name="title_statuses">ציוצים</string>
     <string name="followers">עוקבים</string>
     <string name="following">נעקבים</string>
     <string name="about">אודות</string>
@@ -147,10 +147,10 @@
     <string name="user_lists">רשימות</string>
     <string name="accounts">חשבונות</string>
     <string name="account">חשבון</string>
-    <string name="connectivity">קישוריות</string>
+
     <string name="add_member">הוסף משתמש</string>
     <string name="new_user_list">רשימה חדשה</string>
-    <string name="is_public">ציבורי</string>
+
     <!--<string name="extensions">הרחבות</string>-->
     <string name="uninstall">הסר התקנה</string>
     <string name="saved_searches">חיפושים שמורים</string>
@@ -210,7 +210,7 @@
     <string name="status_not_updated">ציוץ לא נשלח.</string>
     <string name="status_not_updated_summary">הציוץ לא נשלח, ונשמר לטיוטות.</string>
     <string name="send_follow_request">שלח בקשה לעקוב</string>
-    <string name="status">צייץ</string>
+    <string name="title_status">צייץ</string>
     <string name="preview">תצוגה מקדימה</string>
     <string name="both">שניהם</string>
     <string name="browser_sign_in">כניסה בדפדפן</string>

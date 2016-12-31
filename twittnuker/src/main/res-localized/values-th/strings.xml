@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">แอพทวิตเตอร์ของคุณเอง</string>-->
-    <string name="compose">เขียน</string>
+
     <string name="add_account">เพิ่มบัญชี</string>
     <string name="settings">ตั้งค่า</string>
     <string name="send">ส่ง</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">ตอบ</string>
     <string name="action_share">แบ่งปัน</string>
     <string name="view_map">แผนที่</string>
-    <string name="statuses">ทวีต</string>
+    <string name="title_statuses">ทวีต</string>
     <string name="followers">ผู้ติดตาม</string>
     <string name="following">กำลังติดตาม</string>
     <string name="about">เกี่ยวกับ</string>
@@ -180,10 +180,10 @@
     <string name="account">บัญชีผู้ใช้</string>
     <string name="mention_this_user">กล่าวถึงผู้ใช้นี้</string>
     <string name="mention_user_name">เมนชั่น <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">การเชื่อมต่อ</string>
+
     <string name="add_member">เพิ่มสมาชิก</string>
     <string name="new_user_list">รายการใหม่</string>
-    <string name="is_public">สาธารณะ</string>
+
     <string name="send_direct_message">ส่งข้อความส่วนตัว</string>
     <!--<string name="extensions">ส่วนขยาย</string>-->
     <string name="uninstall">ถอนการติดตั้ง</string>
@@ -278,7 +278,7 @@
     <string name="incoming_friendships">คำขอติดตามทที่รอตรวจสอบ</string>
     <string name="send_follow_request">ส่งคำขอติดตาม</string>
     <string name="follow_request_sent">ส่งคำขอติดตามแล้ว</string>
-    <string name="status">ข้อความ</string>
+    <string name="title_status">ข้อความ</string>
     <string name="preview">ตัวอย่าง</string>
     <string name="connection_timeout">หมดเวลาเชื่อมต่อ</string>
     <string name="both">ทั้งสองอย่าง</string>

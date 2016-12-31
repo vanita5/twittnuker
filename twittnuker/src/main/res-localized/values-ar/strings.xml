@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Normally you don't need to translate app name -->
     <!--<string name="app_description">برنامجك الخاص لتويتر</string>-->
-    <string name="compose">كتابة</string>
+
     <string name="add_account">اضافة حساب</string>
     <string name="settings">الاعدادات</string>
     <string name="send">إرسال</string>
@@ -52,7 +52,7 @@
     <string name="action_reply">رد</string>
     <string name="action_share">مشاركة</string>
     <string name="view_map">خريطة</string>
-    <string name="statuses">من التغريدات</string>
+    <string name="title_statuses">من التغريدات</string>
     <string name="followers">المتابعون</string>
     <string name="following">متابَعون</string>
     <string name="about">حول</string>
@@ -177,10 +177,10 @@
     <string name="account">حساب</string>
     <string name="mention_this_user">الإشارة لهذا المستخدم</string>
     <string name="mention_user_name">إذكر <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">الإتصال</string>
+
     <string name="add_member">إضافة عضو</string>
     <string name="new_user_list">قائمة جديدة</string>
-    <string name="is_public">عام</string>
+
     <string name="send_direct_message">إرسال رسالة مباشرة</string>
     <!--<string name="extensions">الملحقات</string>-->
     <string name="uninstall">إلغاء التنصيب</string>
@@ -275,7 +275,7 @@
     <string name="incoming_friendships">في انتظار طلب المتابعة</string>
     <string name="send_follow_request">إبعث طلب المتابعة</string>
     <string name="follow_request_sent">تم بعث طلب المتابعة</string>
-    <string name="status">تغريدة</string>
+    <string name="title_status">تغريدة</string>
     <string name="preview">معاينة</string>
     <string name="connection_timeout">مهلة الاتصال</string>
     <string name="both">كِلاهما</string>

@@ -29,8 +29,8 @@
         android:enabled="true"
         android:icon="@drawable/ic_app_shortcut_compose"
         android:shortcutId="compose"
-        android:shortcutLongLabel="@string/compose"
-        android:shortcutShortLabel="@string/compose">
+        android:shortcutLongLabel="@string/action_compose"
+        android:shortcutShortLabel="@string/action_compose">
         <intent
             android:action="de.vanita5.twittnuker.COMPOSE"
             android:targetClass="de.vanita5.twittnuker.activity.ComposeActivity"

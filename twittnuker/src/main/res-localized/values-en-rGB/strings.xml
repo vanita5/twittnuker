@@ -3,7 +3,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">Your own Twitter app</string>-->
-    <string name="compose">Compose</string>
+
     <string name="add_account">Add account</string>
     <string name="settings">Settings</string>
     <string name="send">Send</string>
@@ -53,7 +53,7 @@
     <string name="action_reply">Reply</string>
     <string name="action_share">Share</string>
     <string name="view_map">Map</string>
-    <string name="statuses">Tweets</string>
+    <string name="title_statuses">Tweets</string>
     <string name="followers">Followers</string>
     <string name="users_favorited_this">Users favourited this</string>
     <string name="action_set_color">Set colour</string>

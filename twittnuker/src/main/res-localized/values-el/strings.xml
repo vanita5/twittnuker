@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">Η δική σου Twitter εφαρμογή</string>-->
-    <string name="compose">Σύνθεση</string>
+
     <string name="add_account">Προσθήκη λογαριασμού</string>
     <string name="settings">Ρυθμίσεις</string>
     <string name="send">Αποστολή</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">Απάντηση</string>
     <string name="action_share">Κοινή χρήση</string>
     <string name="view_map">Χάρτης</string>
-    <string name="statuses">Tweets</string>
+    <string name="title_statuses">Tweets</string>
     <string name="followers">Ακόλουθοι</string>
     <string name="following">Ακολουθεί</string>
     <string name="about">Πληροφορίες</string>

@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">La vostra app de Twitter</string>-->
-    <string name="compose">Redacta</string>
+
     <string name="add_account">Afegeix un compte</string>
     <string name="settings">Paràmetres</string>
     <string name="send">Envia</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">Respon</string>
     <string name="action_share">Comparteix</string>
     <string name="view_map">Mapa</string>
-    <string name="statuses">Piulades</string>
+    <string name="title_statuses">Piulades</string>
     <string name="followers">Seguidors</string>
     <string name="following">Seguint</string>
     <string name="about">Quant a</string>
@@ -179,10 +179,10 @@
     <string name="account">Compte</string>
     <string name="mention_this_user">Menciona aquest usuari</string>
     <string name="mention_user_name">Menciona <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">Conectivitat</string>
+
     <string name="add_member">Afegeix un membre</string>
     <string name="new_user_list">Nova llista</string>
-    <string name="is_public">Públic</string>
+
     <string name="send_direct_message">Envia un missatge directe</string>
     <!--<string name="extensions">Extensions</string>-->
     <string name="uninstall">Desinstaŀla</string>
@@ -277,7 +277,7 @@
     <string name="incoming_friendships">Peticions de seguiment pendents</string>
     <string name="send_follow_request">Envia una petició de seguiment</string>
     <string name="follow_request_sent">S\'ha enviat la petició de seguiment</string>
-    <string name="status">Piulada</string>
+    <string name="title_status">Piulada</string>
     <string name="preview">Previsualització</string>
     <string name="connection_timeout">Temps màxim de connexió exhaurit</string>
     <string name="both">Ambdós</string>

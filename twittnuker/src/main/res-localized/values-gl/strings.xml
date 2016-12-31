@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">A túa propia aplicación Twitter</string>-->
-    <string name="compose">Escribir chío</string>
+
     <string name="add_account">Engadir conta</string>
     <string name="settings">Configuración</string>
     <string name="send">Chiar</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">Responder</string>
     <string name="action_share">Compartir</string>
     <string name="view_map">Mapa</string>
-    <string name="statuses">Chíos</string>
+    <string name="title_statuses">Chíos</string>
     <string name="followers">Seguidores</string>
     <string name="following">Seguindo</string>
     <string name="about">Acerca de</string>
@@ -179,10 +179,10 @@
     <string name="account">Conta</string>
     <string name="mention_this_user">Menciona este usuario</string>
     <string name="mention_user_name">Menciona <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">Conexión</string>
+
     <string name="add_member">Engadir membro</string>
     <string name="new_user_list">Nova lista</string>
-    <string name="is_public">Público</string>
+
     <string name="send_direct_message">Enviar MD</string>
     <!--<string name="extensions">Extensións</string>-->
     <string name="uninstall">Desinstalar</string>
@@ -277,7 +277,7 @@
     <string name="incoming_friendships">Peticións de seguimento pendentes</string>
     <string name="send_follow_request">Enviar petición de seguimento</string>
     <string name="follow_request_sent">Petición de seguimento enviada</string>
-    <string name="status">Chío</string>
+    <string name="title_status">Chío</string>
     <string name="preview">Vista previa</string>
     <string name="connection_timeout">Esgotouse o tempo de conexión</string>
     <string name="both">Ambos</string>

@@ -296,7 +296,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="@string/statuses"
+                        android:text="@string/title_statuses"
                         android:textAppearance="?android:textAppearanceSmall"
                         android:textColor="?android:textColorSecondary"/>
                 </LinearLayout>

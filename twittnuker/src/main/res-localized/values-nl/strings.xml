@@ -4,7 +4,7 @@
     <!-- Normally you don't need to translate app name -->
     <string name="app_name">Twittnuker</string>
     <!--<string name="app_description">Je eigen Twitter-app</string>-->
-    <string name="compose">Opstellen</string>
+
     <string name="add_account">Account toevoegen</string>
     <string name="settings">Instellingen</string>
     <string name="send">Verzenden</string>
@@ -54,7 +54,7 @@
     <string name="action_reply">Antwoord</string>
     <string name="action_share">Delen</string>
     <string name="view_map">Kaart</string>
-    <string name="statuses">Tweets</string>
+    <string name="title_statuses">Tweets</string>
     <string name="followers">Volgers</string>
     <string name="following">Volgend</string>
     <string name="about">Over</string>
@@ -180,10 +180,10 @@
     <string name="account">Account</string>
     <string name="mention_this_user">Vermeld deze gebruiker</string>
     <string name="mention_user_name">Vermelding <xliff:g id="name">%1$s</xliff:g></string>
-    <string name="connectivity">Connectiviteit</string>
+
     <string name="add_member">Voeg lid toe</string>
     <string name="new_user_list">Nieuwe lijst</string>
-    <string name="is_public">Openbaar</string>
+
     <string name="send_direct_message">Stuur DM</string>
     <!--<string name="extensions">Uitbreidingen</string>-->
     <string name="uninstall">Verwijder</string>
@@ -278,7 +278,7 @@
     <string name="incoming_friendships">Openstaande volgverzoeken</string>
     <string name="send_follow_request">Verstuur verzoek om te volgen</string>
     <string name="follow_request_sent">Volgverzoek verstuurd</string>
-    <string name="status">Tweet</string>
+    <string name="title_status">Tweet</string>
     <string name="preview">Voorbeeld</string>
     <string name="connection_timeout">Connectie timeout</string>
     <string name="both">Beide</string>
