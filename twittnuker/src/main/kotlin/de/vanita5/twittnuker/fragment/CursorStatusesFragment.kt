@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.ErrorInfoStore
 import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.buildStatusFilterWhereClause
 
 abstract class CursorStatusesFragment : AbsStatusesFragment() {
 
@@ -222,7 +223,7 @@ abstract class CursorStatusesFragment : AbsStatusesFragment() {
 
     protected fun getFiltersWhere(table: String): Expression? {
         if (!isFilterEnabled) return null
-        return DataStoreUtils.buildStatusFilterWhereClause(preferences, table, null)
+        return buildStatusFilterWhereClause(preferences, table, null)
     }
 
     protected fun getNewestStatusIds(accountKeys: Array<UserKey>): Array<String?>? {

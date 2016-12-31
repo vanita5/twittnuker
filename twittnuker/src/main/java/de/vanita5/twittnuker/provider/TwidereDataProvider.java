@@ -119,6 +119,7 @@ import de.vanita5.twittnuker.receiver.NotificationReceiver;
 import de.vanita5.twittnuker.service.BackgroundOperationService;
 import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
+import de.vanita5.twittnuker.util.DataStoreFunctionsKt;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.ImagePreloader;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
@@ -1155,7 +1156,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final NotificationManagerWrapper nm = mNotificationManager;
         final Expression selection = Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_KEY),
                 Expression.greaterThan(Statuses.POSITION_KEY, position));
-        final String filteredSelection = DataStoreUtils.buildStatusFilterWhereClause(preferences,
+        final String filteredSelection = DataStoreFunctionsKt.buildStatusFilterWhereClause(preferences,
                 Statuses.TABLE_NAME, selection).getSQL();
         final String[] selectionArgs = {accountKey.toString()};
         final String[] userProjection = {Statuses.USER_KEY, Statuses.USER_NAME, Statuses.USER_SCREEN_NAME};

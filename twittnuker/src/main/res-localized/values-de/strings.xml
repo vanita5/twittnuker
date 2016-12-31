@@ -808,8 +808,9 @@
     <string name="action_block">Block</string>
     <string name="status_format_time_source"><xliff:g example="0:00, Jan 1 2017" id="time">%1$s</xliff:g> · <xliff:g example="Twidere for Android" id="source">%2$s</xliff:g></string>
     <string name="status_format_source"><xliff:g example="Twidere for Android" id="source">%s</xliff:g></string>
-    <string name="preference_filter_unavailable_quote_statuses">Nicht verfügbare Zitate filtern
-    </string>
+    <string name="preference_filter_unavailable_quote_statuses">Nicht verfügbare Zitate filtern</string>
+    <string name="action_filter_import_from_blocked_users">Importiere aus geblockten Benutzern</string>
+    <string name="action_filter_import_from_muted_users">Importiere aus gemuteten Benutzern</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
