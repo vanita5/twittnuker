@@ -32,7 +32,8 @@ import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 
-abstract class AbsContentListRecyclerViewFragment<A : LoadMoreSupportAdapter<RecyclerView.ViewHolder>> : AbsContentRecyclerViewFragment<A, LinearLayoutManager>() {
+abstract class AbsContentListRecyclerViewFragment<A : LoadMoreSupportAdapter<RecyclerView.ViewHolder>>
+    : AbsContentRecyclerViewFragment<A, LinearLayoutManager>() {
 
     override fun createItemDecoration(context: Context,
                                       recyclerView: RecyclerView,

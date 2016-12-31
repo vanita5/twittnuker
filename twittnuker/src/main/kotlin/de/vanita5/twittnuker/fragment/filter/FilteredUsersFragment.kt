@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
-import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.support.v4.widget.SimpleCursorAdapter
 import android.view.Menu
@@ -16,12 +15,10 @@ import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_SELECT_USER
+import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.activity.UserListSelectorActivity
-import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.nameFirstKey
-import de.vanita5.twittnuker.fragment.BaseFiltersFragment
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.`FiltersData$UserItemCursorIndices`

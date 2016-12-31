@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.fragment
 
 import android.content.Context
 import android.os.Bundle
-
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.MutesUsersLoader
@@ -33,7 +32,7 @@ import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
 
 class MutesUsersListFragment : CursorSupportUsersListFragment() {
 
-    public override fun onCreateUsersLoader(context: Context,
+    override fun onCreateUsersLoader(context: Context,
                                             args: Bundle,
                                             fromUser: Boolean): CursorSupportUsersLoader {
         val accountKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
@@ -52,5 +51,4 @@ class MutesUsersListFragment : CursorSupportUsersListFragment() {
         }
         return false
     }
-
 }

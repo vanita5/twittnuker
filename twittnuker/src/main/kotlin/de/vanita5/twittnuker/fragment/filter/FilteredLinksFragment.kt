@@ -1,7 +1,7 @@
 package de.vanita5.twittnuker.fragment.filter
 
 import android.net.Uri
-import de.vanita5.twittnuker.fragment.BaseFiltersFragment
+import de.vanita5.twittnuker.fragment.filter.BaseFiltersFragment
 import de.vanita5.twittnuker.provider.TwidereDataStore
 
 class FilteredLinksFragment : BaseFiltersFragment() {

@@ -26,16 +26,18 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.Companion.ITEM_VIEW_TYPE_LOAD_INDICATOR
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants
+import de.vanita5.twittnuker.constant.displayProfileImageKey
+import de.vanita5.twittnuker.constant.profileImageStyleKey
+import de.vanita5.twittnuker.constant.showAbsoluteTimeKey
+import de.vanita5.twittnuker.constant.textSizeKey
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 
@@ -50,15 +52,15 @@ class ParcelableUsersAdapter(context: Context) : LoadMoreSupportAdapter<Recycler
     override val isShowAbsoluteTime: Boolean
     override var userClickListener: IUsersAdapter.UserClickListener? = null
     override var requestClickListener: IUsersAdapter.RequestClickListener? = null
-    override var followClickListener: IUsersAdapter.FriendshipClickListener? = null
+    override var friendshipClickListener: IUsersAdapter.FriendshipClickListener? = null
     override var simpleLayout: Boolean = false
 
     init {
         inflater = LayoutInflater.from(context)
-        textSize = preferences.getInt(SharedPreferenceConstants.KEY_TEXT_SIZE, context.resources.getInteger(R.integer.default_text_size)).toFloat()
-        profileImageStyle = Utils.getProfileImageStyle(preferences.getString(SharedPreferenceConstants.KEY_PROFILE_IMAGE_STYLE, null))
-        profileImageEnabled = preferences.getBoolean(SharedPreferenceConstants.KEY_DISPLAY_PROFILE_IMAGE)
-        isShowAbsoluteTime = preferences.getBoolean(SharedPreferenceConstants.KEY_SHOW_ABSOLUTE_TIME)
+        textSize = preferences[textSizeKey].toFloat()
+        profileImageStyle = preferences[profileImageStyleKey]
+        profileImageEnabled = preferences[displayProfileImageKey]
+        isShowAbsoluteTime = preferences[showAbsoluteTimeKey]
     }
 
     fun getData(): List<ParcelableUser>? {

@@ -27,7 +27,7 @@ import android.os.Bundle
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.fragment.AbsToolbarTabPagesFragment
-import de.vanita5.twittnuker.fragment.BaseFiltersFragment.*
+import de.vanita5.twittnuker.fragment.filter.BaseFiltersFragment.*
 import de.vanita5.twittnuker.fragment.filter.FilterSettingsFragment
 
 class FiltersFragment : AbsToolbarTabPagesFragment() {

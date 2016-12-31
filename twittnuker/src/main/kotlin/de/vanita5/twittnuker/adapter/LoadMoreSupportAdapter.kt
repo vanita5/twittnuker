@@ -28,7 +28,8 @@ import android.support.v7.widget.RecyclerView.ViewHolder
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 
-abstract class LoadMoreSupportAdapter<VH : ViewHolder>(context: Context) : BaseRecyclerViewAdapter<VH>(context), ILoadMoreSupportAdapter {
+abstract class LoadMoreSupportAdapter<VH : ViewHolder>(context: Context) :
+        BaseRecyclerViewAdapter<VH>(context), ILoadMoreSupportAdapter {
 
     @IndicatorPosition
     override var loadMoreSupportedPosition: Long = 0

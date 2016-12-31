@@ -677,19 +677,6 @@ public final class Utils implements Constants {
     }
 
     @ShapeStyle
-    public static int getProfileImageStyle(Context context) {
-        final SharedPreferences prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        final String style = prefs.getString(KEY_PROFILE_IMAGE_STYLE, null);
-        return getProfileImageStyle(style);
-    }
-
-    @ShapeStyle
-    public static int getProfileImageStyle(@NonNull SharedPreferences prefs) {
-        final String style = prefs.getString(KEY_PROFILE_IMAGE_STYLE, null);
-        return getProfileImageStyle(style);
-    }
-
-    @ShapeStyle
     public static int getProfileImageStyle(String style) {
         if (VALUE_PROFILE_IMAGE_STYLE_ROUND.equalsIgnoreCase(style)) {
             return ShapedImageView.SHAPE_CIRCLE;

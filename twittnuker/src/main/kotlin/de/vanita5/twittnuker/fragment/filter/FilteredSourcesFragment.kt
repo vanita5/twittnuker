@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_URI
-import de.vanita5.twittnuker.fragment.BaseFiltersFragment
+import de.vanita5.twittnuker.fragment.filter.BaseFiltersFragment
 import de.vanita5.twittnuker.provider.TwidereDataStore
 
 class FilteredSourcesFragment : BaseFiltersFragment() {

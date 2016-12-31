@@ -233,7 +233,7 @@ class UserViewHolder(
 
     fun setOnClickListeners() {
         setUserClickListener(adapter.userClickListener)
-        setActionClickListeners(adapter.requestClickListener, adapter.followClickListener)
+        setActionClickListeners(adapter.requestClickListener, adapter.friendshipClickListener)
     }
 
     private fun setActionClickListeners(requestClickListener: RequestClickListener?,
@@ -277,11 +277,11 @@ class UserViewHolder(
         setTextSize(adapter.textSize)
     }
 
-}
-
-private fun RelativeLayout.LayoutParams.clearVerticalRules() {
-    intArrayOf(RelativeLayout.ABOVE, RelativeLayout.BELOW, RelativeLayout.ALIGN_BASELINE,
-            RelativeLayout.ALIGN_TOP, RelativeLayout.ALIGN_BOTTOM).forEach { verb ->
-        removeRule(verb)
+    private fun RelativeLayout.LayoutParams.clearVerticalRules() {
+        intArrayOf(RelativeLayout.ABOVE, RelativeLayout.BELOW, RelativeLayout.ALIGN_BASELINE,
+                RelativeLayout.ALIGN_TOP, RelativeLayout.ALIGN_BOTTOM).forEach { verb ->
+            removeRule(verb)
+        }
     }
+
 }

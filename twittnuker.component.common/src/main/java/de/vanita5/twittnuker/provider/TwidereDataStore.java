@@ -27,6 +27,8 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 import de.vanita5.twittnuker.model.DraftTableInfo;
+import de.vanita5.twittnuker.model.FiltersData$BaseItemTableInfo;
+import de.vanita5.twittnuker.model.FiltersData$UserItemTableInfo;
 import de.vanita5.twittnuker.model.ParcelableActivityTableInfo;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageTableInfo;
 import de.vanita5.twittnuker.model.ParcelableStatusTableInfo;
@@ -568,15 +570,17 @@ public interface TwidereDataStore {
 
         String VALUE = "value";
 
+        String SOURCE = "source";
+
         String ENABLE_IN_HOME_TIMELINE = "enable_in_home_timeline";
 
         String ENABLE_IN_MENTIONS = "enable_in_mentions";
 
         String ENABLE_FOR_RETWEETS = "enable_for_retweets";
 
-        String[] COLUMNS = {_ID, VALUE};
+        String[] COLUMNS = FiltersData$BaseItemTableInfo.COLUMNS;
 
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL_UNIQUE};
+        String[] TYPES = FiltersData$BaseItemTableInfo.TYPES;
 
         interface Keywords extends Filters {
 
@@ -612,11 +616,11 @@ public interface TwidereDataStore {
             String USER_KEY = "user_id";
             String NAME = "name";
             String SCREEN_NAME = "screen_name";
+            String SOURCE = "source";
 
-            String[] COLUMNS = {_ID, USER_KEY, NAME, SCREEN_NAME};
+            String[] COLUMNS = FiltersData$UserItemTableInfo.COLUMNS;
 
-            String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT_NOT_NULL, TYPE_TEXT_NOT_NULL,
-                    TYPE_TEXT_NOT_NULL};
+            String[] TYPES = FiltersData$UserItemTableInfo.TYPES;
         }
     }
 

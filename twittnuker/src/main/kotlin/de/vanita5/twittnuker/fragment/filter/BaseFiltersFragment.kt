@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.filter
 
 import android.app.Dialog
 import android.content.ContentValues
@@ -54,6 +54,8 @@ import de.vanita5.twittnuker.TwittnukerConstants.EXTRA_URI
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter
+import de.vanita5.twittnuker.fragment.AbsContentListViewFragment
+import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.util.ParseUtils
 import de.vanita5.twittnuker.util.Utils
@@ -266,7 +268,7 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
     private class FilterListAdapter(
             context: Context
     ) : SimpleCursorAdapter(context, R.layout.simple_list_item_activated_1, null,
-            BaseFiltersFragment.FilterListAdapter.from, BaseFiltersFragment.FilterListAdapter.to, 0) {
+            from, to, 0) {
         companion object {
 
             private val from = arrayOf(Filters.VALUE)
