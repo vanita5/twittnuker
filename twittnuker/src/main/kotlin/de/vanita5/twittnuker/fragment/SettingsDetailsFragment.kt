@@ -32,7 +32,6 @@ import de.vanita5.twittnuker.util.Utils
 
 class SettingsDetailsFragment : BasePreferenceFragment(), OnSharedPreferenceChangeListener {
 
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         val preferenceManager = preferenceManager
         preferenceManager.sharedPreferencesName = SHARED_PREFERENCES_NAME
@@ -63,13 +62,11 @@ class SettingsDetailsFragment : BasePreferenceFragment(), OnSharedPreferenceChan
 
     override fun onStart() {
         super.onStart()
-        val preferences = preferenceManager.sharedPreferences
-        preferences.registerOnSharedPreferenceChangeListener(this)
+        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
     override fun onStop() {
-        val preferences = preferenceManager.sharedPreferences
-        preferences.unregisterOnSharedPreferenceChangeListener(this)
+        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
         super.onStop()
     }
 
@@ -77,7 +74,6 @@ class SettingsDetailsFragment : BasePreferenceFragment(), OnSharedPreferenceChan
         val preference = findPreference(key) ?: return
         val extras = preference.extras
         if (extras != null) {
-            val activity = activity
             if (extras.containsKey(EXTRA_SHOULD_RESTART)) {
                 SettingsActivity.setShouldRestart(activity)
             } else if (extras.containsKey(EXTRA_SHOULD_RECREATE)) {

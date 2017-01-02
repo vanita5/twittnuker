@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.apiLastChangeKey
 import de.vanita5.twittnuker.constant.bugReportsKey
 import de.vanita5.twittnuker.constant.defaultFeatureLastUpdated
+import de.vanita5.twittnuker.constant.nightModeKey
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
@@ -214,17 +215,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     }
 
     private fun resetTheme(preferences: SharedPreferences) {
-        when (ThemeUtils.getLocalNightMode(preferences)) {
-            AppCompatDelegate.MODE_NIGHT_AUTO -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
-            }
-            AppCompatDelegate.MODE_NIGHT_YES -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            }
-            else -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-        }
+        AppCompatDelegate.setDefaultNightMode(preferences[nightModeKey])
     }
 
     private fun reloadDnsSettings() {

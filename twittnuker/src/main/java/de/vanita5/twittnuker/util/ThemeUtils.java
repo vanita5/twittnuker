@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.util;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -38,8 +37,6 @@ import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.ColorUtils;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
@@ -55,6 +52,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.mariotaku.chameleon.ChameleonUtils;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.graphic.ActionIconDrawable;
@@ -545,18 +544,6 @@ public class ThemeUtils implements Constants {
         }
     }
 
-    public static int getLocalNightMode(SharedPreferences preferences) {
-        switch (Utils.getNonEmptyString(preferences, KEY_THEME, VALUE_THEME_NAME_AUTO)) {
-            case VALUE_THEME_NAME_DARK: {
-                return AppCompatDelegate.MODE_NIGHT_YES;
-            }
-            case VALUE_THEME_NAME_AUTO: {
-                return AppCompatDelegate.MODE_NIGHT_AUTO;
-            }
-        }
-        return AppCompatDelegate.MODE_NIGHT_NO;
-    }
-
     public static void fixNightMode(Resources resources, Configuration newConfig) {
         int currentNightMode = resources.getConfiguration().uiMode
                 & Configuration.UI_MODE_NIGHT_MASK;
@@ -567,13 +554,12 @@ public class ThemeUtils implements Constants {
     }
 
     public static int getColorDependent(int color) {
-        final boolean isDark = !isLightColor(color);
-        return isDark ? Color.WHITE : Color.BLACK;
+        return ChameleonUtils.getColorDependent(color);
     }
 
 
     public static boolean isLightColor(int color) {
-        return ColorUtils.calculateLuminance(color) * 0xFF > ACCENT_COLOR_THRESHOLD;
+        return ChameleonUtils.isColorLight(color);
     }
 
     public static int getOptimalAccentColor(int themeColor) {
