@@ -107,7 +107,6 @@ dependencies {
     compile "com.google.android.gms:play-services-gcm:$play_services_version"
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') { transitive = true; }
     compile "com.dropbox.core:dropbox-core-sdk:2.1.2"
-    compile ":YouTubeAndroidPlayerApi:1.2.2@jar"
     // END Non-FOSS component
 
     compile "org.osmdroid:osmdroid-android:5.5:release@aar"
@@ -180,11 +179,13 @@ dependencies {
     compile "nl.komponents.kovenant:kovenant-functional:3.3.0"
     compile "nl.komponents.kovenant:kovenant-combine:3.3.0"
 
-    compile "org.sufficientlysecure:donations:2.4"
+    compile "org.sufficientlysecure:donations:2.5"
     compile "com.squareup.retrofit2:retrofit:2.1.0"
     compile "com.squareup.retrofit2:converter-gson:2.1.0"
 
     compile "com.klinkerapps:giphy:1.0.2"
+
+    compile fileTree(dir: 'lib', include: ['*.jar'])
 }
 
 task svgToDrawable(type: SvgDrawableTask) {

@@ -48,16 +48,6 @@
             android:name="should_recreate"
             android:value="true" />
     </de.vanita5.twittnuker.preference.SeekBarDialogPreference>
-    <de.vanita5.twittnuker.preference.ThemeFontFamilyPreference
-        android:defaultValue="sans-serif-light"
-        android:enabled="@bool/has_font_family"
-        android:key="theme_font_family"
-        android:order="22"
-        android:title="@string/font_family">
-        <extra
-            android:name="should_recreate"
-            android:value="true" />
-    </de.vanita5.twittnuker.preference.ThemeFontFamilyPreference>
     <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="name_first"

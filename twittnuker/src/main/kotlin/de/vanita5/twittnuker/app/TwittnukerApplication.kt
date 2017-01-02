@@ -203,8 +203,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             }
             KEY_PROFILE_IMAGE_STYLE -> {
             }
-            KEY_THEME_FONT_FAMILY -> {
-            }
             KEY_THEME_COLOR -> {
             }
         }

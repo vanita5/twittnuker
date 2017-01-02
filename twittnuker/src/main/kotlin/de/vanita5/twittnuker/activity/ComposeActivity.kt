@@ -75,7 +75,7 @@ import de.vanita5.twittnuker.SecretConstants
 import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.constant.*
-import de.vanita5.twittnuker.extension.getAccountUser
+import de.vanita5.twittnuker.extension.model.getAccountUser
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.PermissionRequestDialog
 import de.vanita5.twittnuker.fragment.PermissionRequestDialog.PermissionRequestCancelCallback

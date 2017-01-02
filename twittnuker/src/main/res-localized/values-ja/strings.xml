@@ -780,11 +780,11 @@
     <string name="error_message_device_incompatible">このデバイスには、Twittnukerとの互換性がありません。最新のAndroid OSへのアップグレードが推奨されます。\nデバイスの製造元にこの問題を報告するために、以下の情報を送信できます。</string>
     <string name="password_sign_in_twitter_only">パスワードでログイン (Twitterのみ)</string>
     <string name="direct_messages_next">DM next</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
-   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
-   <!-- <string name="sign_in_service_email">メールアドレス</string-->>
-   <!-- <string name="sign_in_with_ellip">ログイン方法</string-->>
+    <string name="plus_service_name">Twittnuker</string>
+    <string name="sign_in_service_google_id">Google ID</string>
+    <string name="sign_in_service_twitter">Twitter</string>
+    <string name="sign_in_service_email">メールアドレス</string>
+    <string name="sign_in_with_ellip">ログイン方法</string>
     <string name="edit_description">説明を編集</string>
     <string name="no_status_content_text">コンテンツがありません</string>
     <string name="status_not_available_text">このツイートは利用できません</string>

@@ -812,11 +812,11 @@
     <string name="error_message_device_incompatible">This device is not compatible with Twittnuker. Upgrading to the latest Android OS is recommended.\nYou can send the information below to help me to report this issue to the device manufacturer.</string>
     <string name="password_sign_in_twitter_only">Password sign in (Twitter only)</string>
     <string name="direct_messages_next">DM next</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <!--<string name="sign_in_service_google_id">Google ID</string>-->
-    <!--<string name="sign_in_service_twitter">Twitter</string>-->
-    <!--<string name="sign_in_service_email">Email</string>-->
-    <!--<string name="sign_in_with_ellip">Sign in with…</string>-->
+    <string name="plus_service_name">Twittnuker</string>
+    <string name="sign_in_service_google_id">Google ID</string>
+    <string name="sign_in_service_twitter">Twitter</string>
+    <string name="sign_in_service_email">Email</string>
+    <string name="sign_in_with_ellip">Sign in with…</string>
     <string name="edit_description">Edit description</string>
     <string name="no_status_content_text">No content</string>
     <string name="status_not_available_text">Tweet not available</string>
@@ -827,6 +827,8 @@
     <!--<string name="no_extension_installed">No extension installed</string>-->
     <string name="pinned_status">Pinned tweet</string>
     <string name="add_or_remove_from_list">Add or remove from list</string>
+    <!-- Enhanced (paid) features title -->
+    <string name="title_extra_features">Enhanced features</string>
     <!--<string name="title_extra_features">Extra features</string>-->
     <string name="filter_everywhere">Filter everywhere</string>
     <string name="filter_everywhere_description">These will be filtered in Twittnuker:\n  &#xb7;User\'s tweets\n  &#xb7;Tweets mentioning this user\n  &#xb7;Retweets/Quotes of this user</string>
@@ -851,7 +853,18 @@
     <string name="status_format_time_source"><xliff:g example="0:00, Jan 1 2017" id="time">%1$s</xliff:g> · <xliff:g example="Twidere for Android" id="source">%2$s</xliff:g></string>
     <string name="status_format_source"><xliff:g example="Twidere for Android" id="source">%s</xliff:g></string>
     <string name="preference_filter_unavailable_quote_statuses">Filter unavailable quotes</string>
+    <string name="action_filter_import_from_blocked_users">Import from blocked users</string>
+    <string name="action_filter_import_from_muted_users">Import from muted users</string>
     <string name="title_select_users">Select users</string>
+    <string name="action_purchase">Purchase</string>
+    <!-- [verb] Restore purchase -->
+    <string name="action_restore_purchase">Restore</string>
+    <!-- Enhanced (paid) features description -->
+    <string name="extra_features_description">Support Twittnuker and get enhanced features</string>
+    <!-- Enhanced (paid) features title -->
+    <string name="extra_features_restore_purchase_hint">If you\'ve already purchased enhanced features, you can use \'Restore\' to restore purchase.</string>
+    <string name="extra_features_name_sync_data">Sync data like filters and drafts</string>
+    <string name="extra_features_name_import_filter_list">Import filter list from blocks/mutes</string>
     <string name="title_error_invalid_account">Invalid account</string>
     <string name="message_error_invalid_account">Some account data is corrupted, Twittnuker will remove those accounts to prevent crashes. Please add them again manually.</string>
     <!-- [verb] Perform import action -->

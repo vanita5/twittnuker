@@ -793,6 +793,8 @@
     <string name="hide_replies">Mentions ausblenden</string>
     <string name="pinned_status">Angehefteter Tweet</string>
     <string name="add_or_remove_from_list">Zur Liste hinzufügen oder entfernen</string>
+    <!-- Enhanced (paid) features title -->
+    <string name="title_extra_features">Erweiterte Funktionen</string>
     <string name="filter_everywhere">Überall filtern</string>
     <string name="filter_everywhere_description">Das wird gefiltert:\n  &#xb7;Die Tweets des Benutzers\n  &#xb7;Tweets mit Erwähnungen des Benutzers\n  &#xb7;Retweets und Zitate dieses Benutzers</string>
     <string name="message_toast_added_to_filter">Zum Filter hinzugefügt.</string>
@@ -815,7 +817,18 @@
     <string name="status_format_time_source"><xliff:g example="0:00, Jan 1 2017" id="time">%1$s</xliff:g> · <xliff:g example="Twidere for Android" id="source">%2$s</xliff:g></string>
     <string name="status_format_source"><xliff:g example="Twidere for Android" id="source">%s</xliff:g></string>
     <string name="preference_filter_unavailable_quote_statuses">Nicht verfügbare Zitate filtern</string>
+    <string name="action_filter_import_from_blocked_users">Importiere geblockte Benutzer</string>
+    <string name="action_filter_import_from_muted_users">Importiere gemutete Benutzer</string>
     <string name="title_select_users">Benutzer auswählen</string>
+    <string name="action_purchase">Kaufen</string>
+    <!-- [verb] Restore purchase -->
+    <string name="action_restore_purchase">Wiederherstellen</string>
+    <!-- Enhanced (paid) features description -->
+    <string name="extra_features_description">Unterstütze Twittnuker und schalte erweiterte Funktionen frei</string>
+    <!-- Enhanced (paid) features title -->
+    <string name="extra_features_restore_purchase_hint">Schon gekauft? Schalte die Funktionen mit \"Wiederherstellen\" erneut frei.</string>
+    <string name="extra_features_name_sync_data">Synchroniere Daten wie Filter und Entwürfe</string>
+    <string name="extra_features_name_import_filter_list">Importe Filterliste aus Blocks und Mutes</string>
     <string name="title_error_invalid_account">Ungültiger Account</string>
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>
     <!-- [verb] Perform import action -->

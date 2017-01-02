@@ -774,11 +774,11 @@
     <string name="error_title_device_incompatible">不相容的裝置</string>
     <string name="password_sign_in_twitter_only">密碼登入 (僅限於 Twitter )</string>
     <string name="direct_messages_next">下一則私訊</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
-   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
-   <!-- <string name="sign_in_service_email">Email</string-->>
-   <!-- <string name="sign_in_with_ellip">登入方式&#8230;</string-->>
+    <string name="plus_service_name">Twittnuker</string>
+    <string name="sign_in_service_google_id">Google ID</string>
+    <string name="sign_in_service_twitter">Twitter</string>
+    <string name="sign_in_service_email">Email</string>
+    <string name="sign_in_with_ellip">登入方式&#8230;</string>
     <string name="edit_description">編輯簡介</string>
     <string name="no_status_content_text">沒有內容</string>
     <string name="status_not_available_text">推文不可用</string>

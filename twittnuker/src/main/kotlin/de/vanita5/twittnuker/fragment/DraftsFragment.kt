@@ -60,7 +60,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity
 import de.vanita5.twittnuker.adapter.DraftsAdapter
 import de.vanita5.twittnuker.constant.IntentConstants
-import de.vanita5.twittnuker.extension.writeMimeMessageTo
+import de.vanita5.twittnuker.extension.model.writeMimeMessageTo
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableMediaUpdate
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras

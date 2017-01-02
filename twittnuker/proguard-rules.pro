@@ -236,3 +236,6 @@
 
 # Dropbox
 -dontwarn javax.servlet.**
+
+-keep class com.android.vending.billing.**
+-dontwarn com.anjlab.android.iab.v3.BillingProcessor

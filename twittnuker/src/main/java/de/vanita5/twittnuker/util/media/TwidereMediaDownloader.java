@@ -43,7 +43,7 @@ import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.restfu.oauth.OAuthAuthorization;
 import org.mariotaku.restfu.oauth.OAuthEndpoint;
 import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.extension.CredentialsExtensionsKt;
+import de.vanita5.twittnuker.extension.model.CredentialsExtensionsKt;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.CacheMetadata;
 import de.vanita5.twittnuker.model.ParcelableMedia;

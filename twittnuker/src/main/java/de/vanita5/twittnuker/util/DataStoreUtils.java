@@ -45,6 +45,8 @@ import com.bluelinelabs.logansquare.LoganSquare;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import de.vanita5.twittnuker.extension.model.AccountExtensionsKt;
 import de.vanita5.twittnuker.library.twitter.model.Activity;
 import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns;
@@ -58,7 +60,6 @@ import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.extension.AccountExtensionsKt;
 import de.vanita5.twittnuker.model.FiltersData;
 import de.vanita5.twittnuker.model.FiltersData$BaseItemValuesCreator;
 import de.vanita5.twittnuker.model.FiltersData$UserItemValuesCreator;

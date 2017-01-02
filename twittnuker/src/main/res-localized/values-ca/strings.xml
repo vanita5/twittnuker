@@ -784,11 +784,11 @@
     <string name="error_message_device_incompatible">Aquest dispositiu no és compatible amb Twittnuker, recomanem actualitzar a l\'última versió d\'Android OS. \nPodeu enviar-me informació a continuació per ajudar-me a informar d\'aquest problema al fabricant del dispositiu.</string>
     <string name="password_sign_in_twitter_only">Identificació per contrasenya (només Twitter)</string>
     <string name="direct_messages_next">Següent missatge directe</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-   <!-- <string name="sign_in_service_google_id">Compte de Google</string-->>
-   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
-   <!-- <string name="sign_in_service_email">Correu electrònic</string-->>
-   <!-- <string name="sign_in_with_ellip">Inicia la sessió amb&#8230;</string-->>
+    <string name="plus_service_name">Twittnuker</string>
+    <string name="sign_in_service_google_id">Compte de Google</string>
+    <string name="sign_in_service_twitter">Twitter</string>
+    <string name="sign_in_service_email">Correu electrònic</string>
+    <string name="sign_in_with_ellip">Inicia la sessió amb&#8230;</string>
     <string name="edit_description">Edita la descripció</string>
     <!-- Verb. Used for skip some settings -->
     <!-- Used for decide something later, like permission request -->

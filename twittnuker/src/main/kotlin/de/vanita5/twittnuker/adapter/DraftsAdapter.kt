@@ -32,7 +32,7 @@ import android.view.ViewGroup
 
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_MEDIA_PREVIEW_STYLE
-import de.vanita5.twittnuker.extension.getActionName
+import de.vanita5.twittnuker.extension.model.getActionName
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.DraftCursorIndices
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils

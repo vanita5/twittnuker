@@ -784,11 +784,11 @@
     <string name="error_message_device_incompatible">Perangkat ini tidak kompatibel dengan Twittnuker, dianjurkan melakukan pembaruan ke OS Android terbaru.\nAnda dapat mengirim informasi di bawah untuk membantu kami melaporkan masalah ini kepada perakit perangkat.</string>
     <string name="password_sign_in_twitter_only">Kata sandi masuk (hanya Twitter)</string>
     <string name="direct_messages_next">DM selanjutnya</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <!-- <string name="sign_in_service_google_id">ID Google</string-->>
-    <!-- <string name="sign_in_service_twitter">Twitter</string-->>
-    <!-- <string name="sign_in_service_email">Surel</string-->>
-    <!-- <string name="sign_in_with_ellip">Masuk menggunakan&#8230;</string-->>
+    <string name="plus_service_name">Twidere ∞</string>
+     <string name="sign_in_service_google_id">ID Google</string>
+     <string name="sign_in_service_twitter">Twitter</string>
+     <string name="sign_in_service_email">Surel</string>
+     <string name="sign_in_with_ellip">Masuk menggunakan&#8230;</string>
     <string name="edit_description">Mengubah deskripsi</string>
     <string name="no_status_content_text">Tanpa konten</string>
     <string name="status_not_available_text">Tweet tidak tersedia</string>

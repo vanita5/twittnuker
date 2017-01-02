@@ -78,9 +78,9 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_API_CONFIG
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CREDENTIALS_TYPE
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.constant.randomizeAccountNameKey
-import de.vanita5.twittnuker.extension.getColor
+import de.vanita5.twittnuker.extension.model.getColor
 import de.vanita5.twittnuker.extension.model.official
-import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.model.CustomAPIConfig
@@ -163,6 +163,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_sign_in, menu)
         return true
     }

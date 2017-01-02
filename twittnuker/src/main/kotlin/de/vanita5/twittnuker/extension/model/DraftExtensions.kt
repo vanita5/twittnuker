@@ -20,14 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension
+package de.vanita5.twittnuker.extension.model
 
 import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nostra13.universalimageloader.utils.IoUtils
-import de.vanita5.twittnuker.R
 import org.apache.james.mime4j.dom.Header
 import org.apache.james.mime4j.dom.MessageServiceFactory
 import org.apache.james.mime4j.dom.address.Mailbox
@@ -42,7 +41,7 @@ import org.apache.james.mime4j.util.MimeUtil
 import org.mariotaku.ktextension.convert
 import org.mariotaku.ktextension.toInt
 import org.mariotaku.ktextension.toString
-import de.vanita5.twittnuker.extension.model.getMimeType
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.Draft.Action
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras

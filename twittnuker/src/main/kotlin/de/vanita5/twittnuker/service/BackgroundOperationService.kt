@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.service
 
 import android.accounts.AccountManager
-import android.app.IntentService
 import android.app.Notification
 import android.app.Service
 import android.content.ContentValues
@@ -42,11 +41,11 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.Pair
 import android.widget.Toast
-import com.twitter.Extractor
 import org.mariotaku.abstask.library.ManualTaskStarter
 import org.mariotaku.ktextension.configure
 import org.mariotaku.ktextension.toLong
 import org.mariotaku.ktextension.toTypedArray
+import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterUpload
 import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse
@@ -55,12 +54,10 @@ import org.mariotaku.restfu.http.ContentType
 import org.mariotaku.restfu.http.mime.Body
 import org.mariotaku.restfu.http.mime.SimpleBody
 import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -69,40 +66,17 @@ import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
-import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.ContentValuesCreator
+import de.vanita5.twittnuker.util.NotificationManagerWrapper
+import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-class BackgroundOperationService : IntentService("background_operation"), Constants {
-
+class BackgroundOperationService : BaseIntentService("background_operation") {
 
     private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
-    @Inject
-    lateinit var preferences: SharedPreferencesWrapper
-    @Inject
-    lateinit var twitterWrapper: AsyncTwitterWrapper
-    @Inject
-    lateinit var notificationManager: NotificationManagerWrapper
-    @Inject
-    lateinit var validator: TwidereValidator
-    @Inject
-    lateinit var extractor: Extractor
-    @Inject
-    lateinit var mediaLoader: MediaLoaderWrapper
-
-
-    override fun onCreate() {
-        super.onCreate()
-        GeneralComponentHelper.build(this).inject(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)

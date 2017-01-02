@@ -32,8 +32,8 @@ import android.text.TextUtils
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_TYPE
-import de.vanita5.twittnuker.extension.setAccountKey
-import de.vanita5.twittnuker.extension.setAccountUser
+import de.vanita5.twittnuker.extension.model.setAccountKey
+import de.vanita5.twittnuker.extension.model.setAccountUser
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import java.io.IOException

@@ -92,7 +92,7 @@
     <string name="sources">Джерела</string>
     <string name="content">Вміст</string>
 
-   <!-- <string name="set_nickname">Задати псевдо</string-->>
+   <!-- <string name="set_nickname">Задати псевдо</string>-->
     <string name="action_set_color">Задати колір</string>
     <string name="action_clear">Очистити</string>
     <string name="action_pick_color">Вибрати колір</string>
@@ -751,8 +751,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Переклад з <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Переклад</string>
-   <!-- <string name="shortener_version_incompatible">Несумісний скорочувач твітів</string-->>
-   <!-- <string name="uploader_version_incompatible">Несумісний завантажувач медіафайлів</string-->>
+   <!-- <string name="shortener_version_incompatible">Несумісний скорочувач твітів</string>-->
+   <!-- <string name="uploader_version_incompatible">Несумісний завантажувач медіафайлів</string>-->
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Групи</string>
     <string name="public_timeline">Публічна стрічка</string>
@@ -779,11 +779,11 @@
     <string name="error_message_device_incompatible">Цей пристрій несумісний з Twittnuker#, рекомендуємо оновлення до крайньої ОС Android.\nМожна надіслати інформацію нижче, щоб допомогти мені звернутися до виробника пристрою з цією проблемою.</string>
     <string name="password_sign_in_twitter_only">Парольний вхід (тільки Twitter)</string>
     <string name="direct_messages_next">наступне ПП</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
-   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
-   <!-- <string name="sign_in_service_email">Email</string-->>
-   <!-- <string name="sign_in_with_ellip">Увійти через&#8230;</string-->>
+    <string name="plus_service_name">Twittnuker</string>
+    <string name="sign_in_service_google_id">Google ID</string>
+    <string name="sign_in_service_twitter">Twitter</string>
+    <string name="sign_in_service_email">Email</string>
+    <string name="sign_in_with_ellip">Увійти через&#8230;</string>
     <string name="edit_description">Редагувати опис</string>
     <string name="no_status_content_text">Немає вмісту</string>
     <string name="status_not_available_text">Твіт недоступний</string>

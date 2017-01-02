@@ -352,11 +352,11 @@
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="group">Skupina</string>
     <string name="error_title_device_incompatible">Nekompatibilní zařízení</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-    <!-- <string name="sign_in_service_google_id">Google ID</string-->>
-    <!-- <string name="sign_in_service_twitter">Twitter</string-->>
-    <!-- <string name="sign_in_service_email">E-mail</string-->>
-    <!-- <string name="sign_in_with_ellip">Přihlásit se pomocí&#8230;</string-->>
+    <string name="plus_service_name">Twittnuker</string>
+     <string name="sign_in_service_google_id">Google ID</string>
+     <string name="sign_in_service_twitter">Twitter</string>
+     <string name="sign_in_service_email">E-mail</string>
+     <string name="sign_in_with_ellip">Přihlásit se pomocí&#8230;</string>
     <string name="edit_description">Upravit popis</string>
     <string name="no_status_content_text">Žádný obsah</string>
     <string name="status_not_available_text">Tweet není k dispozici</string>

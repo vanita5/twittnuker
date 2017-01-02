@@ -786,11 +786,11 @@
     <string name="error_message_device_incompatible">这个设备与 Twittnuker 不兼容，建议升级到最新的系统版本。\n你可以把下面的信息发送给我，帮助我把这个问题报告给设备制造商。</string>
     <string name="password_sign_in_twitter_only">密码登录（仅 Twitter）</string>
     <string name="direct_messages_next">DM next</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
-   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
-   <!-- <string name="sign_in_service_email">电子邮件</string-->>
-   <!-- <string name="sign_in_with_ellip">登录方式&#8230;</string-->>
+    <string name="plus_service_name">Twittnuker</string>
+    <string name="sign_in_service_google_id">Google ID</string>
+    <string name="sign_in_service_twitter">Twitter</string>
+    <string name="sign_in_service_email">电子邮件</string>
+    <string name="sign_in_with_ellip">登录方式&#8230;</string>
     <string name="edit_description">编辑描述</string>
     <string name="no_status_content_text">没有内容</string>
     <string name="status_not_available_text">推文不可用</string>

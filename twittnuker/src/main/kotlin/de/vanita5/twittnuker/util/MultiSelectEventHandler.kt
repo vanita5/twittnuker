@@ -35,7 +35,7 @@ import com.twitter.Extractor
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.extension.getAccountUser
+import de.vanita5.twittnuker.extension.model.getAccountUser
 import de.vanita5.twittnuker.menu.AccountActionProvider
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus

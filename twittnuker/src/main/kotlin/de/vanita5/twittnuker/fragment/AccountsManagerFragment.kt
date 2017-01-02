@@ -51,10 +51,10 @@ import de.vanita5.twittnuker.adapter.AccountDetailsAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
-import de.vanita5.twittnuker.extension.getAccountKey
-import de.vanita5.twittnuker.extension.setActivated
-import de.vanita5.twittnuker.extension.setColor
-import de.vanita5.twittnuker.extension.setPosition
+import de.vanita5.twittnuker.extension.model.getAccountKey
+import de.vanita5.twittnuker.extension.model.setActivated
+import de.vanita5.twittnuker.extension.model.setColor
+import de.vanita5.twittnuker.extension.model.setPosition
 import de.vanita5.twittnuker.loader.AccountDetailsLoader
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey

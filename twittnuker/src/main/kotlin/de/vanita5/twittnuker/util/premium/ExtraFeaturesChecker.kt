@@ -20,34 +20,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model;
+package de.vanita5.twittnuker.util.premium
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.content.Context
+import android.content.Intent
+import android.support.annotation.CallSuper
+import java.util.*
 
-import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+abstract class ExtraFeaturesChecker {
+    protected lateinit var context: Context
 
-@ParcelablePlease
-public class SyncAuthInfo implements Parcelable {
-    @Override
-    public int describeContents() {
-        return 0;
+    abstract val introductionLayout: Int
+    abstract val statusLayout: Int
+
+    @CallSuper
+    protected open fun init(context: Context) {
+        this.context = context
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        SyncAuthInfoParcelablePlease.writeToParcel(this, dest, flags);
+    open fun release() {
     }
 
-    public static final Creator<SyncAuthInfo> CREATOR = new Creator<SyncAuthInfo>() {
-        public SyncAuthInfo createFromParcel(Parcel source) {
-            SyncAuthInfo target = new SyncAuthInfo();
-            SyncAuthInfoParcelablePlease.readFromParcel(target, source);
-            return target;
+    abstract fun isSupported(): Boolean
+
+    abstract fun isEnabled(): Boolean
+
+    abstract fun createPurchaseIntent(context: Context): Intent
+
+    abstract fun createRestorePurchaseIntent(context: Context): Intent?
+
+
+    companion object {
+
+        fun newInstance(context: Context): ExtraFeaturesChecker {
+            val instance = ServiceLoader.load(ExtraFeaturesChecker::class.java).first()
+            instance.init(context)
+            return instance
         }
 
-        public SyncAuthInfo[] newArray(int size) {
-            return new SyncAuthInfo[size];
-        }
-    };
+    }
 }

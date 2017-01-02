@@ -751,8 +751,8 @@
     <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="translate_from_language">Переведено с <xliff:g id="language">%s</xliff:g></string>
     <string name="translation">Перевод</string>
-   <!-- <string name="shortener_version_incompatible">Несовместимый сервис сокращения твитов</string-->>
-   <!-- <string name="uploader_version_incompatible">Несовместимый загрузчик медиа-файлов</string-->>
+   <!-- <string name="shortener_version_incompatible">Несовместимый сервис сокращения твитов</string>-->
+   <!-- <string name="uploader_version_incompatible">Несовместимый загрузчик медиа-файлов</string>-->
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="groups">Группы</string>
     <string name="public_timeline">Публичная лента</string>
@@ -779,11 +779,11 @@
     <string name="error_message_device_incompatible">Это устройство не совместимо с Twittnuker, рекомендуется обновление до последней версии Android.\nВы можете отправить информацию ниже, чтобы помочь мне сообщить изготовителю устройства об этой проблеме.</string>
     <string name="password_sign_in_twitter_only">Пароль входа в (только Твиттер)</string>
     <string name="direct_messages_next">Следующая DM</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
-   <!-- <string name="sign_in_service_twitter">Твиттер</string-->>
-   <!-- <string name="sign_in_service_email">Email</string-->>
-   <!-- <string name="sign_in_with_ellip">Вход с помощью...</string-->>
+    <string name="plus_service_name">Twittnuker</string>
+    <string name="sign_in_service_google_id">Google ID</string>
+    <string name="sign_in_service_twitter">Твиттер</string>
+    <string name="sign_in_service_email">Email</string>
+    <string name="sign_in_with_ellip">Вход с помощью...</string>
     <string name="edit_description">Изменить описание</string>
     <string name="no_status_content_text">Нет содержимого</string>
     <string name="status_not_available_text">Твит недоступен</string>

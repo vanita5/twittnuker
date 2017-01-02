@@ -779,11 +779,11 @@
     <string name="error_message_device_incompatible">Bu cihaz Twittnuker ile uyumlu değildir, en son Android işletim sistemi yükseltme önerilir.\nYardımcı olabilmek için aşağıdaki bilgileri gönderebilirsiniz.</string>
     <string name="password_sign_in_twitter_only">Parola oturum açma (yalnızca Twitter)</string>
     <string name="direct_messages_next">sonraki DM</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-   <!-- <string name="sign_in_service_google_id">Google Kimliği</string-->>
-   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
-   <!-- <string name="sign_in_service_email">E-posta</string-->>
-   <!-- <string name="sign_in_with_ellip">Şununla giriş yap&#8230;</string-->>
+    <string name="plus_service_name">Twittnuker</string>
+    <string name="sign_in_service_google_id">Google Kimliği</string>
+    <string name="sign_in_service_twitter">Twitter</string>
+    <string name="sign_in_service_email">E-posta</string>
+    <string name="sign_in_with_ellip">Şununla giriş yap&#8230;</string>
     <string name="edit_description">Açıklama düzenle</string>
     <string name="no_status_content_text">İçerik yok</string>
     <string name="status_not_available_text">Tweet mevcut değil</string>

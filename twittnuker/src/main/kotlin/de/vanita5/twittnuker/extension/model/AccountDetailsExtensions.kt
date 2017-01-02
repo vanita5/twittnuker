@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.extension.model
 
 import android.content.Context
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.extension.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.account.AccountExtras
 import de.vanita5.twittnuker.model.account.TwitterAccountExtras

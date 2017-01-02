@@ -778,11 +778,11 @@
     <string name="error_message_device_incompatible">این افزاره با توییدر سازگار نیست. توصیه می‌شود به جدیدترین نگارش سیستم‌عامل اندروید ارتقا دهید.\nبرای یاری در گزارش این مشکل به سازندهٔ افزاره، می‌توانید اطّلاعات زیر را ارسال کنید.</string>
     <string name="password_sign_in_twitter_only">ورود با گذرواژه (فقط توییتر)</string>
     <string name="direct_messages_next">پیام مستقیم بعدی</string>
-    <!--<string name="plus_service_name">توییدر ∞</string>-->
-   <!-- <string name="sign_in_service_google_id">شناسهٔ گوگل</string-->>
-   <!-- <string name="sign_in_service_twitter">توییتر</string-->>
-   <!-- <string name="sign_in_service_email">رایانامه</string-->>
-   <!-- <string name="sign_in_with_ellip">ورود با&#8230;</string-->>
+    <string name="plus_service_name">توییدر ∞</string>
+    <string name="sign_in_service_google_id">شناسهٔ گوگل</string>
+    <string name="sign_in_service_twitter">توییتر</string>
+    <string name="sign_in_service_email">رایانامه</string>
+    <string name="sign_in_with_ellip">ورود با&#8230;</string>
     <string name="edit_description">ویرایش توضیح</string>
     <string name="no_status_content_text">بدون محتوا</string>
     <string name="status_not_available_text">توییت موجود نیست</string>

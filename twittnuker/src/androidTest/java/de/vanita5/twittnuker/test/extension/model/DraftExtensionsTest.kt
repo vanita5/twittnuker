@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.test.extension
+package de.vanita5.twittnuker.test.extension.model
 
 import android.net.Uri
 import android.support.test.InstrumentationRegistry
@@ -29,8 +29,8 @@ import org.apache.commons.io.IOUtils
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
-import de.vanita5.twittnuker.extension.readMimeMessageFrom
-import de.vanita5.twittnuker.extension.writeMimeMessageTo
+import de.vanita5.twittnuker.extension.model.readMimeMessageFrom
+import de.vanita5.twittnuker.extension.model.writeMimeMessageTo
 import de.vanita5.twittnuker.model.*
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream

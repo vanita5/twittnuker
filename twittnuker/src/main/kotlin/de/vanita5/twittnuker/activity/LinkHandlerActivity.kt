@@ -268,19 +268,6 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         return actionBarHeight
     }
 
-    override fun getThemeResource(theme: String, themeColor: Int, nightMode: Int): Int {
-        when (theme) {
-            SharedPreferenceConstants.VALUE_THEME_NAME_LIGHT -> {
-                if (ChameleonUtils.isColorLight(themeColor)) {
-                    return R.style.Theme_Twidere_Light
-                } else {
-                    return R.style.Theme_Twidere_Light_DarkActionBar
-                }
-            }
-        }
-        return R.style.Theme_Twidere
-    }
-
     private fun setTitle(linkId: Int, uri: Uri): Boolean {
         setSubtitle(null)
         when (linkId) {

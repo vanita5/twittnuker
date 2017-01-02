@@ -783,11 +783,11 @@
     <string name="error_message_device_incompatible">Dit apparaat is niet compatibel met Twittnuker, upgraden naar de nieuwste Android OS wordt aanbevolen. \nJe kunt de onderstaande informatie verzenden om mij te helpen dit probleem te melden bij de fabrikant van je toestel.</string>
     <string name="password_sign_in_twitter_only">Inloggen met wachtwoord (alleen Twitter)</string>
     <string name="direct_messages_next">Volgende DM</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
-   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
-   <!-- <string name="sign_in_service_email">E-mail</string-->>
-   <!-- <string name="sign_in_with_ellip">Inloggen met&#8230;</string-->>
+    <string name="plus_service_name">Twittnuker</string>
+    <string name="sign_in_service_google_id">Google ID</string>
+    <string name="sign_in_service_twitter">Twitter</string>
+    <string name="sign_in_service_email">E-mail</string>
+    <string name="sign_in_with_ellip">Inloggen met&#8230;</string>
     <string name="edit_description">Bewerk omschrijving</string>
     <string name="no_status_content_text">Geen inhoud</string>
     <string name="status_not_available_text">Tweet niet beschikbaar</string>

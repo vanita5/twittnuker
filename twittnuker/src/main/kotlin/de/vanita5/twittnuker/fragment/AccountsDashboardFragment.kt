@@ -68,7 +68,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
-import de.vanita5.twittnuker.extension.setActivated
+import de.vanita5.twittnuker.extension.model.setActivated
 import de.vanita5.twittnuker.fragment.AccountsDashboardFragment.AccountsInfo
 import de.vanita5.twittnuker.menu.AccountToggleProvider
 import de.vanita5.twittnuker.model.AccountDetails

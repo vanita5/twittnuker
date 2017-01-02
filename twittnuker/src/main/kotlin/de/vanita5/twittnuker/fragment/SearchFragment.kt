@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.activity.ComposeActivity
 import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarOffsetListener
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
-import de.vanita5.twittnuker.extension.getAccountType
+import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback

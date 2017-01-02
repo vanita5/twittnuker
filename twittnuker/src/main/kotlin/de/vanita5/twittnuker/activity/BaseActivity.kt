@@ -27,6 +27,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Rect
 import android.nfc.NfcAdapter
@@ -188,7 +189,6 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity, IThemedActivit
         GeneralComponentHelper.build(this).inject(this)
     }
 
-
     override fun onResume() {
         super.onResume()
         val adapter = NfcAdapter.getDefaultAdapter(this)
@@ -229,6 +229,11 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity, IThemedActivit
         }
         actionHelper.dispatchOnPause()
         super.onPause()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        ThemeUtils.fixNightMode(resources, newConfig)
     }
 
     override fun setControlBarOffset(offset: Float) {

@@ -37,6 +37,8 @@ import android.webkit.URLUtil;
 import com.fasterxml.jackson.core.JsonParseException;
 
 import de.vanita5.twittnuker.annotation.AccountType;
+import de.vanita5.twittnuker.extension.model.AccountExtensionsKt;
+import de.vanita5.twittnuker.extension.model.CredentialsExtensionsKt;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.util.TwitterConverterFactory;
@@ -60,8 +62,6 @@ import org.mariotaku.restfu.oauth.OAuthEndpoint;
 import org.mariotaku.restfu.oauth.OAuthToken;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.TwittnukerConstants;
-import de.vanita5.twittnuker.extension.AccountExtensionsKt;
-import de.vanita5.twittnuker.extension.CredentialsExtensionsKt;
 import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.account.cred.Credentials;

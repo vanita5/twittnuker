@@ -35,8 +35,8 @@ import android.util.AttributeSet
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.extension.getAccountKey
-import de.vanita5.twittnuker.extension.getAccountUser
+import de.vanita5.twittnuker.extension.model.getAccountKey
+import de.vanita5.twittnuker.extension.model.getAccountUser
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.preference.iface.IDialogPreference
 import de.vanita5.twittnuker.util.generateAccountName

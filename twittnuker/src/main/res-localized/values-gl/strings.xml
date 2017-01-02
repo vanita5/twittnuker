@@ -776,11 +776,11 @@
     <string name="error_message_device_incompatible">Este dispositivo non é compatible con Twittnuker, recoméndase actualizar á última versión de Android OS.\nAbaixo podes enviar información para axudarme a informar desde problema ao fabricante.</string>
     <string name="password_sign_in_twitter_only">Entrada de contrasinal (só Twitter)</string>
     <string name="direct_messages_next">DM next</string>
-    <!--<string name="plus_service_name">Twidere ∞</string>-->
-   <!-- <string name="sign_in_service_google_id">Google ID</string-->>
-   <!-- <string name="sign_in_service_twitter">Twitter</string-->>
-   <!-- <string name="sign_in_service_email">Email</string-->>
-   <!-- <string name="sign_in_with_ellip">Entrar con&#8230;</string-->>
+    <string name="plus_service_name">Twittnuker</string>
+    <string name="sign_in_service_google_id">Google ID</string>
+    <string name="sign_in_service_twitter">Twitter</string>
+    <string name="sign_in_service_email">Email</string>
+    <string name="sign_in_with_ellip">Entrar con&#8230;</string>
     <string name="edit_description">Editar descrición</string>
     <!-- Verb. Used for skip some settings -->
     <!-- Used for decide something later, like permission request -->

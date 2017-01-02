@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.preference.AccountsListPreference
 import de.vanita5.twittnuker.preference.KeyboardShortcutPreference
 import de.vanita5.twittnuker.provider.CacheProvider
 import de.vanita5.twittnuker.provider.TwidereDataProvider
-import de.vanita5.twittnuker.service.BackgroundOperationService
+import de.vanita5.twittnuker.service.BaseIntentService
 import de.vanita5.twittnuker.service.JobRefreshService
 import de.vanita5.twittnuker.service.RefreshService
 import de.vanita5.twittnuker.task.*
@@ -72,8 +72,6 @@ interface GeneralComponent {
     fun inject(obj: BaseListFragment)
 
     fun inject(obj: BaseActivity)
-
-    fun inject(obj: BackgroundOperationService)
 
     fun inject(obj: BaseRecyclerViewAdapter<RecyclerView.ViewHolder>)
 
@@ -144,4 +142,6 @@ interface GeneralComponent {
     fun inject(application: TwittnukerApplication)
 
     fun inject(fragment: ThemedPreferenceDialogFragmentCompat)
+
+    fun inject(service: BaseIntentService)
 }
