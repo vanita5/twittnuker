@@ -7,7 +7,7 @@
 
     <string name="add_account">افزودن حساب</string>
     <string name="settings">تنظیمات</string>
-    <string name="send">ارسال</string>
+    <string name="action_send">ارسال</string>
     <string name="add_image">افزودن تصویر</string>
     <string name="take_photo">عکس گرفتن</string>
     <string name="status_hint">چه خبر؟</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">پایه</string>
     <string name="twip_o">حالت twip O</string>
-    <string name="advanced">پیش‌رفته</string>
+
     <string name="action_save">ذخیره</string>
     <string name="action_edit">ویرایش</string>
     <string name="edit_api">ویرایش API</string>
-    <string name="home">خانه</string>
-    <string name="mentions">اشاره‌ها</string>
+    <string name="title_home">خانه</string>
+    <string name="title_mentions">اشاره‌ها</string>
     <string name="error_occurred">مشکلی پیش آمد، لطفاً دوباره امتحان کنید.</string>
     <string name="error_already_logged_in">هم‌اکنون وارد شده‌اید.</string>
     <string name="no_account_selected">هیچ حسابی گزینش نشده است.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">تازه‌سازی خدمت</string>
     <string name="label_streaming_service">خدمت جریان</string>
     <string name="label_background_operation_service">خدمت عملیات پس‌زمینه</string>
-    <string name="open_in_browser">گشودن در مرورگر</string>
+    <string name="action_open_in_browser">گشودن در مرورگر</string>
     <string name="action_delete">حذف</string>
     <string name="action_retweet">بازتوییت</string>
     <string name="retweets">بازتوییت‌ها</string>
-    <string name="cancel_retweet">لغو بازتوییت</string>
+    <string name="action_cancel_retweet">لغو بازتوییت</string>
     <string name="action_favorite">برگزیدن</string>
     <string name="action_unfavorite">برنگزیدن</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">بازگردانی پسندیدن</string>
     <string name="action_reply">پاسخ</string>
     <string name="action_share">هم‌رسانی</string>
-    <string name="view_map">نقشه</string>
+    <string name="action_view_map">نقشه</string>
     <string name="title_statuses">توئیت‌ها</string>
-    <string name="followers">دنبال‌کنندگان</string>
-    <string name="following">دنبال می‌کنید</string>
-    <string name="about">درباره</string>
-    <string name="open_source_license">مجوز متن‌باز</string>
-    <string name="api">API</string>
+    <string name="title_followers">دنبال‌کنندگان</string>
+    <string name="title_following">دنبال می‌کنید</string>
+    <string name="title_about">درباره</string>
+    <string name="title_open_source_license">مجوز متن‌باز</string>
+
     <string name="default_api_settings">تنظیمات پیش‌فرض API</string>
     <string name="default_api_settings_summary">این تنظیمات فقط به حساب‌هایی که به تازگی وارد شده‌اید اعمال می‌شوند</string>
     <string name="consumer_key">کلید مصرف کننده</string>
     <string name="consumer_secret">رمز مصرف کننده</string>
-    <string name="storage">ذخیره‌سازی</string>
-    <string name="database_item_limit">کران اندازهٔ پایگاه داده</string>
-    <string name="database_item_limit_summary">کران بالای موارد ذخیره شده در پایگاه‌های داده برای هر حساب. برای ذخیرهٔ فضا و افزایش سرعت بار کردن، مقدار کم‌تری تنظیم کنید.</string>
+    <string name="preference_title_storage">ذخیره‌سازی</string>
+    <string name="preference_title_database_item_limit">کران اندازهٔ پایگاه داده</string>
+    <string name="preference_summary_database_item_limit">کران بالای موارد ذخیره شده در پایگاه‌های داده برای هر حساب. برای ذخیرهٔ فضا و افزایش سرعت بار کردن، مقدار کم‌تری تنظیم کنید.</string>
     <string name="clear_cache">پاک‌سازی انباره</string>
     <string name="clear_cache_summary">پاک‌سازی انبارهٔٔ تصویر نمایهٔ ذخیره‌شده.</string>
     <string name="clear_databases">پاک‌سازی پایگاه‌داده‌ها</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">بازتوییت شده توسّط <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">بازتوییت شده توسّط <xliff:g id="user_name">%1$s</xliff:g> و <xliff:g id="retweet_count">%2$d</xliff:g> نفر دیگر</string>
     <string name="retweeted_by_count">بازتوییت شده توسّط <xliff:g id="retweet_count">%d</xliff:g> کاربر</string>
-    <string name="users_retweeted_this">کاربرانی که این را بازتوییت کردند</string>
-    <string name="users_favorited_this">کاربرانی که این را برگزیدند</string>
-    <string name="users_liked_this">کاربرانی که این را پسندیدند</string>
+    <string name="title_users_retweeted_this">کاربرانی که این را بازتوییت کردند</string>
+    <string name="title_users_favorited_this">کاربرانی که این را برگزیدند</string>
+    <string name="title_users_liked_this">کاربرانی که این را پسندیدند</string>
     <string name="reply_to">پاسخ به <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">نقل قول از <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -102,7 +102,7 @@
     <string name="load_item_limit">کران بار کردن موارد</string>
     <string name="load_item_limit_summary">تنظیم کران موارد در هر بار کردن.</string>
     <string name="action_quote">نقل قول</string>
-    <string name="add_rule">افزودن شرط</string>
+    <string name="action_add_filter_rule">افزودن شرط</string>
     <string name="text_size">اندازهٔ متن</string>
     <string name="text_size_summary">اندازهٔ متن توییت‌ها.</string>
     <string name="cannot_get_location">نمی‌توان موقعیّتتان را گرفت.</string>

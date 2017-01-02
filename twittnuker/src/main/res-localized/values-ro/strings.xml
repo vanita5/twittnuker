@@ -6,7 +6,7 @@
 
     <string name="add_account">Adauga cont</string>
     <string name="settings">Setari</string>
-    <string name="send">Trimite</string>
+    <string name="action_send">Trimite</string>
     <string name="add_image">Adauga imagine</string>
     <string name="take_photo">Faceti o fotografie</string>
     <string name="status_hint">Ce se intampla?</string>

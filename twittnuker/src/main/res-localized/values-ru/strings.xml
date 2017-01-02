@@ -7,7 +7,7 @@
 
     <string name="add_account">Добавить учетную запись</string>
     <string name="settings">Настройки</string>
-    <string name="send">Отправить</string>
+    <string name="action_send">Отправить</string>
     <string name="add_image">Добавить изображение</string>
     <string name="take_photo">Сделать фото</string>
     <string name="status_hint">Что происходит?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Простая</string>
     <string name="twip_o">twip O Mode</string>
-    <string name="advanced">Расширенный</string>
+
     <string name="action_save">Сохранить</string>
     <string name="action_edit">Редактировать</string>
     <string name="edit_api">Редактировать API</string>
-    <string name="home">Лента</string>
-    <string name="mentions">Упоминания</string>
+    <string name="title_home">Лента</string>
+    <string name="title_mentions">Упоминания</string>
     <string name="error_occurred">Произошла ошибка, пожалуйста, попробуйте еще раз.</string>
     <string name="error_already_logged_in">Вы уже вошли.</string>
     <string name="no_account_selected">Аккаунт не выбран.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">Сервис обновления</string>
     <string name="label_streaming_service">Сервис стриминга</string>
     <string name="label_background_operation_service">Служба фоновой деятельности</string>
-    <string name="open_in_browser">Открыть в браузере</string>
+    <string name="action_open_in_browser">Открыть в браузере</string>
     <string name="action_delete">Удалить</string>
     <string name="action_retweet">Ретвит</string>
     <string name="retweets">Ретвиты</string>
-    <string name="cancel_retweet">Отменить ретвит</string>
+    <string name="action_cancel_retweet">Отменить ретвит</string>
     <string name="action_favorite">В избранное</string>
     <string name="action_unfavorite">Удалить из избранного</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">Отменить Мне нравится</string>
     <string name="action_reply">Ответить</string>
     <string name="action_share">Поделиться</string>
-    <string name="view_map">Карта</string>
+    <string name="action_view_map">Карта</string>
     <string name="title_statuses">Твиты</string>
-    <string name="followers">Читатели</string>
-    <string name="following">Читаемые</string>
-    <string name="about">О программе</string>
-    <string name="open_source_license">Лицензия открытого исходного кода</string>
-    <string name="api">API</string>
+    <string name="title_followers">Читатели</string>
+    <string name="title_following">Читаемые</string>
+    <string name="title_about">О программе</string>
+    <string name="title_open_source_license">Лицензия открытого исходного кода</string>
+
     <string name="default_api_settings">Настройки API по умолчанию</string>
     <string name="default_api_settings_summary">Эти настройки будут применены только к новым аккаунтам (уже созданные затронуты не будут)</string>
     <string name="consumer_key">Пользовательский ключ</string>
     <string name="consumer_secret">Consumer secret</string>
-    <string name="storage">Хранилище</string>
-    <string name="database_item_limit">Ограничение размера базы данных</string>
-    <string name="database_item_limit_summary">Уменьшить лимит записей для каждого аккаунта, чтобы сохранить больше места и увеличить скорость загрузки.</string>
+    <string name="preference_title_storage">Хранилище</string>
+    <string name="preference_title_database_item_limit">Ограничение размера базы данных</string>
+    <string name="preference_summary_database_item_limit">Уменьшить лимит записей для каждого аккаунта, чтобы сохранить больше места и увеличить скорость загрузки.</string>
     <string name="clear_cache">Очистить кэш</string>
     <string name="clear_cache_summary">Очистит хранящийся кэш изображений профиля.</string>
     <string name="clear_databases">Очистить базы данных</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">Ретвитнуто <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Ретвитнул <xliff:g id="user_name">%1$s</xliff:g> и <xliff:g id="retweet_count">%2$d</xliff:g> других</string>
     <string name="retweeted_by_count">Ретвитнули <xliff:g id="retweet_count">%d</xliff:g> пользователей</string>
-    <string name="users_retweeted_this">Пользователей ретвитнули это</string>
-    <string name="users_favorited_this">Пользователи добавившие в избранное</string>
-    <string name="users_liked_this">Пользователям понравилось это</string>
+    <string name="title_users_retweeted_this">Пользователей ретвитнули это</string>
+    <string name="title_users_favorited_this">Пользователи добавившие в избранное</string>
+    <string name="title_users_liked_this">Пользователям понравилось это</string>
     <string name="reply_to">Ответ на <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Цитата <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, через <xliff:g id="source">%2$s</xliff:g></string>
@@ -103,7 +103,7 @@
     <string name="load_item_limit">Предел загружаемых элементов</string>
     <string name="load_item_limit_summary">Установить ограничение кол-ва элементов для загрузки.</string>
     <string name="action_quote">Цитировать</string>
-    <string name="add_rule">Добавить правило</string>
+    <string name="action_add_filter_rule">Добавить правило</string>
     <string name="text_size">Размер текста</string>
     <string name="text_size_summary">Размер текста твитов.</string>
     <string name="cannot_get_location">Не удается получить ваше местоположение.</string>

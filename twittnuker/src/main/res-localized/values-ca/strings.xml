@@ -7,7 +7,7 @@
 
     <string name="add_account">Afegeix un compte</string>
     <string name="settings">Paràmetres</string>
-    <string name="send">Envia</string>
+    <string name="action_send">Envia</string>
     <string name="add_image">Afegeix una imatge</string>
     <string name="take_photo">Fes una foto</string>
     <string name="status_hint">Què està passant?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Bàsica</string>
     <string name="twip_o">Mode twip O</string>
-    <string name="advanced">Avançades</string>
+
     <string name="action_save">Desa</string>
     <string name="action_edit">Edita</string>
     <string name="edit_api">Edita l\'API</string>
-    <string name="home">Inici</string>
-    <string name="mentions">Mencions</string>
+    <string name="title_home">Inici</string>
+    <string name="title_mentions">Mencions</string>
     <string name="error_occurred">S\'ha produit un error, intenta-ho de nou.</string>
     <string name="error_already_logged_in">Ja esteu identificat.</string>
     <string name="no_account_selected">Cap compte seleccionada.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">Actualitza el servei</string>
     <string name="label_streaming_service">Servei de piulades en temps real</string>
     <string name="label_background_operation_service">Servei d\'execució en rerefons</string>
-    <string name="open_in_browser">Obrir al navegador</string>
+    <string name="action_open_in_browser">Obrir al navegador</string>
     <string name="action_delete">Esborra</string>
     <string name="action_retweet">Retweet</string>
     <string name="retweets">Repiulades</string>
-    <string name="cancel_retweet">Cancel·la la repiulada</string>
+    <string name="action_cancel_retweet">Cancel·la la repiulada</string>
     <string name="action_favorite">Marca com a preferit</string>
     <string name="action_unfavorite">Desmarca com a preferit</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">No m\'agrada</string>
     <string name="action_reply">Respon</string>
     <string name="action_share">Comparteix</string>
-    <string name="view_map">Mapa</string>
+    <string name="action_view_map">Mapa</string>
     <string name="title_statuses">Piulades</string>
-    <string name="followers">Seguidors</string>
-    <string name="following">Seguint</string>
-    <string name="about">Quant a</string>
-    <string name="open_source_license">Llicència de codi obert</string>
-    <string name="api">API</string>
+    <string name="title_followers">Seguidors</string>
+    <string name="title_following">Seguint</string>
+    <string name="title_about">Quant a</string>
+    <string name="title_open_source_license">Llicència de codi obert</string>
+
     <string name="default_api_settings">Paràmetres per defecte de l\'API</string>
     <string name="default_api_settings_summary">Aquests paràmetres només s\'apliquen a nous comptes connectats</string>
     <string name="consumer_key">Clau del consumidor</string>
     <string name="consumer_secret">Clau secreta de consumidor</string>
-    <string name="storage">Emmagatzematge</string>
-    <string name="database_item_limit">Mida límit de la base de dades</string>
-    <string name="database_item_limit_summary">Límit màxim d\'elements desats a les bases de dades per cada compta, establir un valor més baix per utilitzar menys espai i incrementar la velocitat de carrega.</string>
+    <string name="preference_title_storage">Emmagatzematge</string>
+    <string name="preference_title_database_item_limit">Mida límit de la base de dades</string>
+    <string name="preference_summary_database_item_limit">Límit màxim d\'elements desats a les bases de dades per cada compta, establir un valor més baix per utilitzar menys espai i incrementar la velocitat de carrega.</string>
     <string name="clear_cache">Buida la memòria cau</string>
     <string name="clear_cache_summary">Buida la memòria cau d\'imatges de perfil.</string>
     <string name="clear_databases">Buida les bases de dades</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">Repiulat per <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Repiulat per <xliff:g id="user_name">%1$s</xliff:g> i <xliff:g id="retweet_count">%2$d</xliff:g> més</string>
     <string name="retweeted_by_count">Repiulat per <xliff:g id="retweet_count">%d</xliff:g> usuaris</string>
-    <string name="users_retweeted_this">Usuaris que han repiulat</string>
-    <string name="users_favorited_this">Usuaris que ho han marcat com a preferit</string>
-    <string name="users_liked_this">Als usuaris els ha agradat això</string>
+    <string name="title_users_retweeted_this">Usuaris que han repiulat</string>
+    <string name="title_users_favorited_this">Usuaris que ho han marcat com a preferit</string>
+    <string name="title_users_liked_this">Als usuaris els ha agradat això</string>
     <string name="reply_to">Respon a <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Cita a <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -102,7 +102,7 @@
     <string name="load_item_limit">Límit d\'elements per càrrega</string>
     <string name="load_item_limit_summary">Estableix el nombre màxim d\'elements per càrrega.</string>
     <string name="action_quote">Cita</string>
-    <string name="add_rule">Afegeix una regla</string>
+    <string name="action_add_filter_rule">Afegeix una regla</string>
     <string name="text_size">Mida del text</string>
     <string name="text_size_summary">Mida del text de les piulades.</string>
     <string name="cannot_get_location">No es pot obtenir la vostra localització.</string>

@@ -7,7 +7,7 @@
 
     <string name="add_account">Ajouter un compte</string>
     <string name="settings">Paramètres</string>
-    <string name="send">Envoyer</string>
+    <string name="action_send">Envoyer</string>
     <string name="add_image">Ajouter une image</string>
     <string name="take_photo">Prendre une photo</string>
     <string name="status_hint">Quoi de neuf?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Basique</string>
     <string name="twip_o">twip\'O\'Mode</string>
-    <string name="advanced">Avancé</string>
+
     <string name="action_save">Enregistrer</string>
     <string name="action_edit">Modifier</string>
     <string name="edit_api">Modifier l\'API</string>
-    <string name="home">Accueil</string>
-    <string name="mentions">Mentions</string>
+    <string name="title_home">Accueil</string>
+    <string name="title_mentions">Mentions</string>
     <string name="error_occurred">Une erreur s\'est produite, veuillez réessayer.</string>
     <string name="error_already_logged_in">Vous êtes déjà connecté.</string>
     <string name="no_account_selected">Aucun compte sélectionné.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">Refraîcher le service</string>
     <string name="label_streaming_service">Service de streaming</string>
     <string name="label_background_operation_service">Service en arrière-plan</string>
-    <string name="open_in_browser">Ouvrir dans un navigateur</string>
+    <string name="action_open_in_browser">Ouvrir dans un navigateur</string>
     <string name="action_delete">Supprimer</string>
     <string name="action_retweet">Retweeter</string>
     <string name="retweets">Retweets</string>
-    <string name="cancel_retweet">Annuler le retweet</string>
+    <string name="action_cancel_retweet">Annuler le retweet</string>
     <string name="action_favorite">Ajouter aux favoris</string>
     <string name="action_unfavorite">Supprimer des favoris</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">Ne plus aimer</string>
     <string name="action_reply">Répondre</string>
     <string name="action_share">Partager</string>
-    <string name="view_map">Carte</string>
+    <string name="action_view_map">Carte</string>
     <string name="title_statuses">Tweets</string>
-    <string name="followers">Abonnés</string>
-    <string name="following">Abonnements</string>
-    <string name="about">À propos</string>
-    <string name="open_source_license">Licence open source</string>
-    <string name="api">API</string>
+    <string name="title_followers">Abonnés</string>
+    <string name="title_following">Abonnements</string>
+    <string name="title_about">À propos</string>
+    <string name="title_open_source_license">Licence open source</string>
+
     <string name="default_api_settings">Paramètres API par défaut</string>
     <string name="default_api_settings_summary">Ces paramètres s\'appliquent uniquement aux nouveaux comptes connectés</string>
     <string name="consumer_key">Clé client</string>
     <string name="consumer_secret">Mot de passe client</string>
-    <string name="storage">Stockage</string>
-    <string name="database_item_limit">Limite de la taille de la base de données</string>
-    <string name="database_item_limit_summary">Limite supérieure des articles stockés dans des bases de données pour chaque compte, mettre une petite valeur vous fera gagner de la place et augmentera la vitesse de chargement.</string>
+    <string name="preference_title_storage">Stockage</string>
+    <string name="preference_title_database_item_limit">Limite de la taille de la base de données</string>
+    <string name="preference_summary_database_item_limit">Limite supérieure des articles stockés dans des bases de données pour chaque compte, mettre une petite valeur vous fera gagner de la place et augmentera la vitesse de chargement.</string>
     <string name="clear_cache">Vider le cache</string>
     <string name="clear_cache_summary">Supprimer les images en cache.</string>
     <string name="clear_databases">Vider les bases de données</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">Retweeté par <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Retweeté par <xliff:g id="user_name">%1$s</xliff:g> et <xliff:g id="retweet_count">%2$d</xliff:g> autres</string>
     <string name="retweeted_by_count">Retweeté par <xliff:g id="retweet_count">%d</xliff:g> utilisateurs</string>
-    <string name="users_retweeted_this">Utilisateurs ont retweeté ceci</string>
-    <string name="users_favorited_this">Utilisateurs ayant ajouté ceci à leur favoris</string>
-    <string name="users_liked_this">Des utilisateurs ont aimé ça</string>
+    <string name="title_users_retweeted_this">Utilisateurs ont retweeté ceci</string>
+    <string name="title_users_favorited_this">Utilisateurs ayant ajouté ceci à leur favoris</string>
+    <string name="title_users_liked_this">Des utilisateurs ont aimé ça</string>
     <string name="reply_to">Répondre à <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Citer <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -102,7 +102,7 @@
     <string name="load_item_limit">Limite de chargement</string>
     <string name="load_item_limit_summary">Nombre de tweets par chargement.</string>
     <string name="action_quote">Citer</string>
-    <string name="add_rule">Ajouter une règle</string>
+    <string name="action_add_filter_rule">Ajouter une règle</string>
     <string name="text_size">Taille du texte</string>
     <string name="text_size_summary">Taille du texte pour les tweets.</string>
     <string name="cannot_get_location">Impossible d\'acquérir votre position.</string>

@@ -5,7 +5,7 @@
 
     <string name="add_account">Dodaj račun</string>
     <string name="settings">Postavke</string>
-    <string name="send">Pošalji</string>
+    <string name="action_send">Pošalji</string>
     <string name="add_image">Dodaj sliku</string>
     <string name="take_photo">Uslikaj fotografiju</string>
     <string name="status_hint">Što se događa?</string>
@@ -18,12 +18,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Temeljno</string>
     <string name="twip_o">twip O Modus</string>
-    <string name="advanced">Napredno</string>
+
     <string name="action_save">Spremi</string>
     <string name="action_edit">Uredi</string>
     <string name="edit_api">Uredi API</string>
-    <string name="home">Polazno</string>
-    <string name="mentions">Spominjanja</string>
+    <string name="title_home">Polazno</string>
+    <string name="title_mentions">Spominjanja</string>
     <string name="error_occurred">Došlo je do greške, pokušajte ponovno.</string>
     <string name="error_already_logged_in">Već ste prijavljeni.</string>
     <string name="no_account_selected">Račun nije odabran.</string>
@@ -39,30 +39,30 @@
     <string name="label_refresh_service">Osvježi uslugu</string>
     <string name="label_streaming_service">Streaming servis</string>
     <string name="label_background_operation_service">Servis za pozadinske radnje</string>
-    <string name="open_in_browser">Otvori u pregledniku</string>
+    <string name="action_open_in_browser">Otvori u pregledniku</string>
     <string name="action_delete">Obriši</string>
     <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweetovi</string>
-    <string name="cancel_retweet">Poništi retweet</string>
+    <string name="action_cancel_retweet">Poništi retweet</string>
     <string name="action_favorite">Spremi u favorite</string>
     <string name="action_unfavorite">Ukloni iz favorita</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
     <string name="action_reply">Odgovori</string>
     <string name="action_share">Podijeli</string>
-    <string name="view_map">Mapa</string>
+    <string name="action_view_map">Mapa</string>
     <string name="title_statuses">Tweetovi</string>
-    <string name="followers">Sljedbenici</string>
-    <string name="following">Slijedite</string>
-    <string name="about">Više o</string>
-    <string name="open_source_license">Licence Otvorenog Koda</string>
-    <string name="api">API</string>
+    <string name="title_followers">Sljedbenici</string>
+    <string name="title_following">Slijedite</string>
+    <string name="title_about">Više o</string>
+    <string name="title_open_source_license">Licence Otvorenog Koda</string>
+
     <string name="default_api_settings">Zadane API postavke</string>
     <string name="default_api_settings_summary">Ove se postavke primjenjuju samo na novopečene prijavljene račune</string>
     <string name="consumer_key">Korisnički ključ</string>
     <string name="consumer_secret">Korisnička tajna</string>
-    <string name="storage">Pohrana</string>
-    <string name="database_item_limit">Limit veličine baze podataka</string>
-    <string name="database_item_limit_summary">Gornja granica stavaka spremljenih u bazama podataka za svaki račun je postavljena na manju vrijednost kako bi se sačuvao prostor i povećala brzina učitavanja.</string>
+    <string name="preference_title_storage">Pohrana</string>
+    <string name="preference_title_database_item_limit">Limit veličine baze podataka</string>
+    <string name="preference_summary_database_item_limit">Gornja granica stavaka spremljenih u bazama podataka za svaki račun je postavljena na manju vrijednost kako bi se sačuvao prostor i povećala brzina učitavanja.</string>
     <string name="clear_cache">Očisti predmemoriju</string>
     <string name="clear_cache_summary">Očisti predmemoriju za spremljene slike profila.</string>
     <string name="clear_databases">Očisti baze podataka</string>
@@ -74,8 +74,8 @@
     <string name="retweeted_by_name">Retweetao/-la <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Retweetao/-la <xliff:g id="user_name">%1$s</xliff:g> i još <xliff:g id="retweet_count">%2$d</xliff:g> drugih</string>
     <string name="retweeted_by_count">Retweetali <xliff:g id="retweet_count">%d</xliff:g> korisnika</string>
-    <string name="users_retweeted_this">Korisnici su retweetali ovo</string>
-    <string name="users_favorited_this">Korisnici su ovo stavili u favorite</string>
+    <string name="title_users_retweeted_this">Korisnici su retweetali ovo</string>
+    <string name="title_users_favorited_this">Korisnici su ovo stavili u favorite</string>
     <string name="reply_to">Odgovori <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Citiraj <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -97,7 +97,7 @@
     <string name="load_item_limit">Limit učitanih stavki</string>
     <string name="load_item_limit_summary">Postavi limit stavki kod učitavanja.</string>
     <string name="action_quote">Citat</string>
-    <string name="add_rule">Dodaj pravilo</string>
+    <string name="action_add_filter_rule">Dodaj pravilo</string>
     <string name="text_size">Veličina teksta</string>
     <string name="text_size_summary">Veličina teksta tweetova.</string>
     <string name="cannot_get_location">Nije moguće dobiti lokaciju.</string>

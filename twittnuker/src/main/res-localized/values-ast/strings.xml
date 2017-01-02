@@ -6,7 +6,7 @@
 
     <string name="add_account">Amestar cuenta</string>
     <string name="settings">Axustes</string>
-    <string name="send">Univar</string>
+    <string name="action_send">Univar</string>
     <string name="add_image">Amestar imaxe</string>
     <string name="take_photo">Facer semeya</string>
     <string name="status_hint">¿Qué ta asocediendo?</string>
@@ -19,12 +19,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Básica</string>
     <string name="twip_o">Mou twip O</string>
-    <string name="advanced">Avanzáu</string>
+
     <string name="action_save">Guardar</string>
     <string name="action_edit">Editar</string>
     <string name="edit_api">Editar API</string>
-    <string name="home">Aniciu</string>
-    <string name="mentions">Menciones</string>
+    <string name="title_home">Aniciu</string>
+    <string name="title_mentions">Menciones</string>
     <string name="error_occurred">Asocedió un fallu. Téntalo de nueves, por favor.</string>
     <string name="error_already_logged_in">Yá aniciesti sesión.</string>
     <string name="no_account_selected">Nun s\'esbilló cuenta dala.</string>
@@ -40,11 +40,11 @@
     <string name="label_refresh_service">Refrescar serviciu</string>
     <string name="label_streaming_service">Serviciu de tuits en tiempu real</string>
     <string name="label_background_operation_service">Serviciu d\'operación de fondu</string>
-    <string name="open_in_browser">Abrir nel restolador</string>
+    <string name="action_open_in_browser">Abrir nel restolador</string>
     <string name="action_delete">Desaniciar</string>
     <string name="action_retweet">Retuitiar</string>
     <string name="retweets">Retuits</string>
-    <string name="cancel_retweet">Encaboxar retuit</string>
+    <string name="action_cancel_retweet">Encaboxar retuit</string>
     <string name="action_favorite">Marcar como favoritu</string>
     <string name="action_unfavorite">Desmarcar como favoritu</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -52,20 +52,20 @@
     <string name="action_undo_like">Desfacer Préstame</string>
     <string name="action_reply">Responder</string>
     <string name="action_share">Compartir</string>
-    <string name="view_map">Mapa</string>
+    <string name="action_view_map">Mapa</string>
     <string name="title_statuses">Tuits</string>
-    <string name="followers">Siguidores</string>
-    <string name="following">Siguiendo</string>
-    <string name="about">Tocante a</string>
-    <string name="open_source_license">Llicencia</string>
-    <string name="api">API</string>
+    <string name="title_followers">Siguidores</string>
+    <string name="title_following">Siguiendo</string>
+    <string name="title_about">Tocante a</string>
+    <string name="title_open_source_license">Llicencia</string>
+
     <string name="default_api_settings">Axustes d\'API por defeutu</string>
     <string name="default_api_settings_summary">Estos axustes namái s\'apliquen a cuentes cola sesión aniciada de nueves</string>
     <string name="consumer_key">Clave de consumidor</string>
     <string name="consumer_secret">Secretu de consumidor</string>
-    <string name="storage">Almacenamientu</string>
-    <string name="database_item_limit">Llímite de tamañu de base de datos</string>
-    <string name="database_item_limit_summary">Llímite cimeru d\'elementos atroxaos nes bases de datos pa cada cuenta, afitar a un valor más pequeñu p\'aforrar espaciu y aumentar la velocidá de carga.</string>
+    <string name="preference_title_storage">Almacenamientu</string>
+    <string name="preference_title_database_item_limit">Llímite de tamañu de base de datos</string>
+    <string name="preference_summary_database_item_limit">Llímite cimeru d\'elementos atroxaos nes bases de datos pa cada cuenta, afitar a un valor más pequeñu p\'aforrar espaciu y aumentar la velocidá de carga.</string>
     <string name="clear_cache">Llimpiar caché</string>
     <string name="clear_cache_summary">Llimpia la caché atroxada d\'imáxenes de perfiles.</string>
     <string name="clear_databases">Llimpiar bases de datos</string>
@@ -77,9 +77,9 @@
     <string name="retweeted_by_name">Retuitiáu por <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Retuitiáu por <xliff:g id="user_name">%1$s</xliff:g> y <xliff:g id="retweet_count">%2$d</xliff:g> más</string>
     <string name="retweeted_by_count">Retuitiáu por <xliff:g id="retweet_count">%d</xliff:g> usuarios</string>
-    <string name="users_retweeted_this">Usuarios que retuitiaron esto</string>
-    <string name="users_favorited_this">Usuarios que marcaron esto como favoritu</string>
-    <string name="users_liked_this">Usuarios que-yos prestó esto</string>
+    <string name="title_users_retweeted_this">Usuarios que retuitiaron esto</string>
+    <string name="title_users_favorited_this">Usuarios que marcaron esto como favoritu</string>
+    <string name="title_users_liked_this">Usuarios que-yos prestó esto</string>
     <string name="reply_to">Rempuesta a <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Citar a <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -101,7 +101,7 @@
     <string name="load_item_limit">Llímite de tiempu de carga</string>
     <string name="load_item_limit_summary">Afitala llende d\'elementos per carga.</string>
     <string name="action_quote">Citar</string>
-    <string name="add_rule">Amestar regla</string>
+    <string name="action_add_filter_rule">Amestar regla</string>
     <string name="text_size">Tamañu del testu</string>
     <string name="text_size_summary">Tamañu\'l testu de tuits.</string>
     <string name="cannot_get_location">Nun pue consiguise\'l to allugamientu.</string>

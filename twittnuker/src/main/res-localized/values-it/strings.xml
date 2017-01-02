@@ -7,7 +7,7 @@
 
     <string name="add_account">Aggiungi account</string>
     <string name="settings">Impostazioni</string>
-    <string name="send">Invia</string>
+    <string name="action_send">Invia</string>
     <string name="add_image">Aggiungi immagine</string>
     <string name="take_photo">Scatta una foto</string>
     <string name="status_hint">Che sta succedendo?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Basic</string>
     <string name="twip_o">Modalità twip O</string>
-    <string name="advanced">Avanzate</string>
+
     <string name="action_save">Salva</string>
     <string name="action_edit">Edita</string>
     <string name="edit_api">Edit API</string>
-    <string name="home">Home</string>
-    <string name="mentions">Menzioni</string>
+    <string name="title_home">Home</string>
+    <string name="title_mentions">Menzioni</string>
     <string name="error_occurred">Si è verificato un errore, riprova.</string>
     <string name="error_already_logged_in">Hai già effettuato il login.</string>
     <string name="no_account_selected">Nessun account selezionato.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">Aggiorna servizio</string>
     <string name="label_streaming_service">Servizio di streaming</string>
     <string name="label_background_operation_service">Background operation service</string>
-    <string name="open_in_browser">Apri nel browser</string>
+    <string name="action_open_in_browser">Apri nel browser</string>
     <string name="action_delete">Elimina</string>
     <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweet</string>
-    <string name="cancel_retweet">﻿Annulla retweet</string>
+    <string name="action_cancel_retweet">﻿Annulla retweet</string>
     <string name="action_favorite">Aggiungi ai preferiti</string>
     <string name="action_unfavorite">Togli dai preferiti</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">Annulla like</string>
     <string name="action_reply">Rispondi</string>
     <string name="action_share">Condividi</string>
-    <string name="view_map">Mappa</string>
+    <string name="action_view_map">Mappa</string>
     <string name="title_statuses">Tweet</string>
-    <string name="followers">Followers</string>
-    <string name="following">Following</string>
-    <string name="about">Informazioni</string>
-    <string name="open_source_license">Licenza open source</string>
-    <string name="api">API</string>
+    <string name="title_followers">Followers</string>
+    <string name="title_following">Following</string>
+    <string name="title_about">Informazioni</string>
+    <string name="title_open_source_license">Licenza open source</string>
+
     <string name="default_api_settings">Impostazioni di default API</string>
     <string name="default_api_settings_summary">Queste impostazioni veranno applicate al prossimo login</string>
     <string name="consumer_key">Consumer Key</string>
     <string name="consumer_secret">Consumer secret</string>
-    <string name="storage">Archivio</string>
-    <string name="database_item_limit">Limite dimensione database</string>
-    <string name="database_item_limit_summary">Limite massimo degli elementi memorizzati nel database per ogni account, impostare su un valore inferiore per risparmiare spazio e aumentare la velocità di caricamento.</string>
+    <string name="preference_title_storage">Archivio</string>
+    <string name="preference_title_database_item_limit">Limite dimensione database</string>
+    <string name="preference_summary_database_item_limit">Limite massimo degli elementi memorizzati nel database per ogni account, impostare su un valore inferiore per risparmiare spazio e aumentare la velocità di caricamento.</string>
     <string name="clear_cache">Cancella cache</string>
     <string name="clear_cache_summary">Cancella cache delle immagini profilo memorizzate.</string>
     <string name="clear_databases">Cancella i database</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">ReTweettato da <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">ReTweettato da <xliff:g id="user_name">%1$s</xliff:g> e altri <xliff:g id="retweet_count">%2$d</xliff:g></string>
     <string name="retweeted_by_count">ReTweettato da <xliff:g id="retweet_count">%d</xliff:g> utenti</string>
-    <string name="users_retweeted_this">Utenti che hanno retwittato questo</string>
-    <string name="users_favorited_this">Users che hanno inserito tra i preferiti</string>
-    <string name="users_liked_this">Utenti a cui piace</string>
+    <string name="title_users_retweeted_this">Utenti che hanno retwittato questo</string>
+    <string name="title_users_favorited_this">Users che hanno inserito tra i preferiti</string>
+    <string name="title_users_liked_this">Utenti a cui piace</string>
     <string name="reply_to">Risposta a <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">﻿Citazione di <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -102,7 +102,7 @@
     <string name="load_item_limit">Limite oggetti caricati</string>
     <string name="load_item_limit_summary">Imposta il limite oggetti per update.</string>
     <string name="action_quote">Cita</string>
-    <string name="add_rule">Aggiungi regola</string>
+    <string name="action_add_filter_rule">Aggiungi regola</string>
     <string name="text_size">Dimensione del testo</string>
     <string name="text_size_summary">Dimensione carattere dei tweet.</string>
     <string name="cannot_get_location">Non è possibile ottenere la tua posizione.</string>

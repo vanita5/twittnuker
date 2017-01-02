@@ -4,7 +4,7 @@
 
     <string name="add_account">Lägg till konto</string>
     <string name="settings">Inställningar</string>
-    <string name="send">Skicka</string>
+    <string name="action_send">Skicka</string>
     <string name="add_image">Lägg till bild</string>
     <string name="take_photo">Ta ett foto</string>
     <string name="status_hint">Vad händer?</string>
@@ -16,12 +16,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Grundläggande</string>
     <string name="twip_o">twip O Läge</string>
-    <string name="advanced">Avancerad</string>
+
     <string name="action_save">Spara</string>
     <string name="action_edit">Redigera</string>
     <string name="edit_api">Redigera API</string>
-    <string name="home">Hem</string>
-    <string name="mentions">Händelser</string>
+    <string name="title_home">Hem</string>
+    <string name="title_mentions">Händelser</string>
     <string name="error_occurred">Ett fel inträffade, försök igen.</string>
     <string name="error_already_logged_in">Du har redan loggat in.</string>
     <string name="no_account_selected">Inget konto valt.</string>
@@ -35,11 +35,11 @@
     <string name="label_refresh_service">Uppdatera tjänst</string>
     <string name="label_streaming_service">Strömningstjänst</string>
     <string name="label_background_operation_service">Bakgrunds drifts tjänst</string>
-    <string name="open_in_browser">Öppna i webbläsare</string>
+    <string name="action_open_in_browser">Öppna i webbläsare</string>
     <string name="action_delete">Ta bort</string>
     <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweets</string>
-    <string name="cancel_retweet">Avbryt retweet</string>
+    <string name="action_cancel_retweet">Avbryt retweet</string>
     <string name="action_favorite">Favorit</string>
     <string name="action_unfavorite">Ta bort favorit</string>
   <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -47,17 +47,17 @@
     <string name="action_undo_like">Sluta gilla</string>
     <string name="action_reply">Svara</string>
     <string name="action_share">Dela</string>
-    <string name="view_map">Karta</string>
+    <string name="action_view_map">Karta</string>
     <string name="title_statuses">Tweets</string>
-    <string name="followers">Följare</string>
-    <string name="following">Följer</string>
-    <string name="about">Om</string>
-    <string name="open_source_license">Open source-licenser</string>
-    <string name="api">API</string>
+    <string name="title_followers">Följare</string>
+    <string name="title_following">Följer</string>
+    <string name="title_about">Om</string>
+    <string name="title_open_source_license">Open source-licenser</string>
+
     <string name="default_api_settings">API-inställningar</string>
     <string name="default_api_settings_summary">Dessa inställningar gäller endast för nya inloggningar</string>
-    <string name="storage">Lagring</string>
-    <string name="database_item_limit">Maxstorleken på databasen</string>
+    <string name="preference_title_storage">Lagring</string>
+    <string name="preference_title_database_item_limit">Maxstorleken på databasen</string>
     <string name="clear_cache">Rensa cache</string>
     <string name="clear_cache_summary">Rensa lagrad profilbild cache.</string>
     <string name="clear_databases">Rensa databaserna</string>
@@ -69,9 +69,9 @@
     <string name="retweeted_by_name">Retweeted av <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Retweeted av <xliff:g id="user_name">%1$s</xliff:g> och <xliff:g id="retweet_count">%2$d</xliff:g> andra</string>
     <string name="retweeted_by_count">Retweeted av <xliff:g id="retweet_count">%d</xliff:g> användare</string>
-    <string name="users_retweeted_this">Användare retweetade det här</string>
-    <string name="users_favorited_this">Användare favoriserade det här</string>
-    <string name="users_liked_this">Användare gillade det här</string>
+    <string name="title_users_retweeted_this">Användare retweetade det här</string>
+    <string name="title_users_favorited_this">Användare favoriserade det här</string>
+    <string name="title_users_liked_this">Användare gillade det här</string>
     <string name="reply_to">Svara på <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Citera <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -91,7 +91,7 @@
     <string name="action_unfollow">Sluta följa</string>
     <string name="load_item_limit_summary">Välj max mängd objekt per laddning.</string>
     <string name="action_quote">Citat</string>
-    <string name="add_rule">Lägg till ny regel</string>
+    <string name="action_add_filter_rule">Lägg till ny regel</string>
     <string name="text_size">Text storlek</string>
     <string name="text_size_summary">Text storlek på tweets.</string>
     <string name="cannot_get_location">Kan inte få din plats.</string>

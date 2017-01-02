@@ -22,7 +22,7 @@ public class HomeTabConfiguration extends TabConfiguration {
     @NonNull
     @Override
     public StringHolder getName() {
-        return StringHolder.resource(R.string.home);
+        return StringHolder.resource(R.string.title_home);
     }
 
     @NonNull

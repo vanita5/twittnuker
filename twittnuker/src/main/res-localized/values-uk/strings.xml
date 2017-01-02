@@ -7,7 +7,7 @@
 
     <string name="add_account">Додати профіль</string>
     <string name="settings">Параметри</string>
-    <string name="send">Надіслати</string>
+    <string name="action_send">Надіслати</string>
     <string name="add_image">Додати зображення</string>
     <string name="take_photo">Зробити світлину</string>
     <string name="status_hint">Що трапилося?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Basic</string>
     <string name="twip_o">twip O Mode</string>
-    <string name="advanced">Додатково</string>
+
     <string name="action_save">Зберегти</string>
     <string name="action_edit">Редагувати</string>
     <string name="edit_api">Редагувати АРІ</string>
-    <string name="home">Головна</string>
-    <string name="mentions">Згадки</string>
+    <string name="title_home">Головна</string>
+    <string name="title_mentions">Згадки</string>
     <string name="error_occurred">Трапилася помилка, спробуйте ще раз.</string>
     <string name="error_already_logged_in">Ви вже увійшли.</string>
     <string name="no_account_selected">Не вибрано жодного профілю.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">Сервіс оновлення</string>
     <string name="label_streaming_service">Сервіс стримінгу</string>
     <string name="label_background_operation_service">Сервіс фонових операцій</string>
-    <string name="open_in_browser">Відкрити у переглядачі</string>
+    <string name="action_open_in_browser">Відкрити у переглядачі</string>
     <string name="action_delete">Видалити</string>
     <string name="action_retweet">Ретвіт</string>
     <string name="retweets">Ретвіти</string>
-    <string name="cancel_retweet">Скасувати ретвіт</string>
+    <string name="action_cancel_retweet">Скасувати ретвіт</string>
     <string name="action_favorite">До обраного</string>
     <string name="action_unfavorite">Видалити з обраного</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">Відмінити вподобання</string>
     <string name="action_reply">Відповісти</string>
     <string name="action_share">Поділитися</string>
-    <string name="view_map">Карта</string>
+    <string name="action_view_map">Карта</string>
     <string name="title_statuses">Твіти</string>
-    <string name="followers">Читачі</string>
-    <string name="following">Читає</string>
-    <string name="about">Про</string>
-    <string name="open_source_license">Ліцензія відкритого вихідного коду</string>
-    <string name="api">API</string>
+    <string name="title_followers">Читачі</string>
+    <string name="title_following">Читає</string>
+    <string name="title_about">Про</string>
+    <string name="title_open_source_license">Ліцензія відкритого вихідного коду</string>
+
     <string name="default_api_settings">Усталені параметри API</string>
     <string name="default_api_settings_summary">Ці параметри застосовуються лише до нових профілів</string>
     <string name="consumer_key">Ключ авторизації користувача</string>
     <string name="consumer_secret">Секретний ключ користувача</string>
-    <string name="storage">Пам\'ять</string>
-    <string name="database_item_limit">Обмеження розміру бази даних</string>
-    <string name="database_item_limit_summary">Кількість записів, що зберігаються в базі даних для кожного профілю, можна зменшити, щоб зберегти місце і підвищити швидкість завантаження.</string>
+    <string name="preference_title_storage">Пам\'ять</string>
+    <string name="preference_title_database_item_limit">Обмеження розміру бази даних</string>
+    <string name="preference_summary_database_item_limit">Кількість записів, що зберігаються в базі даних для кожного профілю, можна зменшити, щоб зберегти місце і підвищити швидкість завантаження.</string>
     <string name="clear_cache">Очистити кеш</string>
     <string name="clear_cache_summary">Очистити кеш зображень профілю.</string>
     <string name="clear_databases">Очистити бази даних</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">Ретвітнув(ла) <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Ретвітнув(ла) <xliff:g id="user_name">%1$s</xliff:g> і ще <xliff:g id="retweet_count">%2$d</xliff:g> інших</string>
     <string name="retweeted_by_count">Ретвітнули <xliff:g id="retweet_count">%d</xliff:g> користувачі</string>
-    <string name="users_retweeted_this">Користувачі, які ретвітнули це</string>
-    <string name="users_favorited_this">Додали до обраного</string>
-    <string name="users_liked_this">Вподобали</string>
+    <string name="title_users_retweeted_this">Користувачі, які ретвітнули це</string>
+    <string name="title_users_favorited_this">Додали до обраного</string>
+    <string name="title_users_liked_this">Вподобали</string>
     <string name="reply_to">Відповідь до <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Цитата <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -103,7 +103,7 @@
     <string name="load_item_limit">Кількість завантажених елементів</string>
     <string name="load_item_limit_summary">Встановити обмеження кількості елементів для завантаження.</string>
     <string name="action_quote">Цитата</string>
-    <string name="add_rule">Додати правило</string>
+    <string name="action_add_filter_rule">Додати правило</string>
     <string name="text_size">Розмір тексту</string>
     <string name="text_size_summary">Розмір тексту твітів.</string>
     <string name="cannot_get_location">Не вдається отримати ваше розташування.</string>

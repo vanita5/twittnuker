@@ -7,7 +7,7 @@
 
     <string name="add_account">เพิ่มบัญชี</string>
     <string name="settings">ตั้งค่า</string>
-    <string name="send">ส่ง</string>
+    <string name="action_send">ส่ง</string>
     <string name="add_image">เพิ่มรูปภาพ</string>
     <string name="take_photo">ถ่ายรูป</string>
     <string name="status_hint">มีอะไรเกิดขึ้นบ้าง?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">พื้นฐาน</string>
     <string name="twip_o">twip O Mode</string>
-    <string name="advanced">ขั้นสูง</string>
+
     <string name="action_save">บันทึก</string>
     <string name="action_edit">แก้ไข</string>
     <string name="edit_api">แก้ไข API</string>
-    <string name="home">หน้าหลัก</string>
-    <string name="mentions">การกล่าวถึง</string>
+    <string name="title_home">หน้าหลัก</string>
+    <string name="title_mentions">การกล่าวถึง</string>
     <string name="error_occurred">มีข้อผิดพลาดเกิดขึ้น กรุณาลองอีกครั้ง</string>
     <string name="error_already_logged_in">คุณเข้าสู่ระบบอยู่แล้ว</string>
     <string name="no_account_selected">ไม่มีบัญชีผู้ใช้ที่เลือกไว้</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">เรียกบริการอีกครั้ง</string>
     <string name="label_streaming_service">บริการการสตรีม</string>
     <string name="label_background_operation_service">การดำเนินการเบื้องหลัง</string>
-    <string name="open_in_browser">เปิดในเบราว์เซอร์</string>
+    <string name="action_open_in_browser">เปิดในเบราว์เซอร์</string>
     <string name="action_delete">ลบ</string>
     <string name="action_retweet">รีทวีต</string>
     <string name="retweets">รีทวีต</string>
-    <string name="cancel_retweet">ยกเลิกทวีต</string>
+    <string name="action_cancel_retweet">ยกเลิกทวีต</string>
     <string name="action_favorite">ถูกใจ</string>
     <string name="action_unfavorite">เลิกถูกใจ</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">เลิกถูกใจ</string>
     <string name="action_reply">ตอบ</string>
     <string name="action_share">แบ่งปัน</string>
-    <string name="view_map">แผนที่</string>
+    <string name="action_view_map">แผนที่</string>
     <string name="title_statuses">ทวีต</string>
-    <string name="followers">ผู้ติดตาม</string>
-    <string name="following">กำลังติดตาม</string>
-    <string name="about">เกี่ยวกับ</string>
-    <string name="open_source_license">ลิขสิทธิ์ซอฟต์แวร์เปิด</string>
-    <string name="api">API</string>
+    <string name="title_followers">ผู้ติดตาม</string>
+    <string name="title_following">กำลังติดตาม</string>
+    <string name="title_about">เกี่ยวกับ</string>
+    <string name="title_open_source_license">ลิขสิทธิ์ซอฟต์แวร์เปิด</string>
+
     <string name="default_api_settings">ค่าเริ่มต้นของ API</string>
     <string name="default_api_settings_summary">การตั้งค่าเหล่านี้จะถูกใช้กับบัญชีที่ลงชื่อเข้าใช้ใหม่เท่านั้น</string>
     <string name="consumer_key">Consumer key</string>
     <string name="consumer_secret">Consumer secret</string>
-    <string name="storage">พื้นที่จัดเก็บ</string>
-    <string name="database_item_limit">จำกัดขนาดฐานข้อมูล</string>
-    <string name="database_item_limit_summary">จำนวนสูงสุดของรายการที่จะเก็บในฐานข้อมูลของแต่ละบัญชี  ตั้งเป็นค่าที่ต่ำเพื่อประหยัดเนื้อที่และเพิ่มความเร็วการโหลด</string>
+    <string name="preference_title_storage">พื้นที่จัดเก็บ</string>
+    <string name="preference_title_database_item_limit">จำกัดขนาดฐานข้อมูล</string>
+    <string name="preference_summary_database_item_limit">จำนวนสูงสุดของรายการที่จะเก็บในฐานข้อมูลของแต่ละบัญชี  ตั้งเป็นค่าที่ต่ำเพื่อประหยัดเนื้อที่และเพิ่มความเร็วการโหลด</string>
     <string name="clear_cache">ล้างไฟล์ชั่วคราว</string>
     <string name="clear_cache_summary">ล้างรูปภาพโปรไฟล์ที่บันทึกไว้</string>
     <string name="clear_databases">ล้างฐานข้อมูล</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">รีทวีตโดย <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">รีทวีตโดย <xliff:g id="user_name">%1$s</xliff:g> และอีก <xliff:g id="retweet_count">%2$d</xliff:g> คน</string>
     <string name="retweeted_by_count">รีทวีตโดยผู้ใช้ <xliff:g id="retweet_count">%d</xliff:g> คน</string>
-    <string name="users_retweeted_this">ผู้ใช้ที่รีทวีตข้อความนี้</string>
-    <string name="users_favorited_this">ผู้ใช้ถูกใจสิ่งนี้</string>
-    <string name="users_liked_this">ผู้ใช้ถูกใจสิ่งนี้</string>
+    <string name="title_users_retweeted_this">ผู้ใช้ที่รีทวีตข้อความนี้</string>
+    <string name="title_users_favorited_this">ผู้ใช้ถูกใจสิ่งนี้</string>
+    <string name="title_users_liked_this">ผู้ใช้ถูกใจสิ่งนี้</string>
     <string name="reply_to">ตอบกลับหา <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">อ้างอิง <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -103,7 +103,7 @@
     <string name="load_item_limit">จำกัดทวีตต่อโหลด</string>
     <string name="load_item_limit_summary">จำกัดจำนวนทวีตที่โหลดต่อการรีเฟรชหนึ่งครั้ง</string>
     <string name="action_quote">อ้างอิง</string>
-    <string name="add_rule">เพิ่มกฎ</string>
+    <string name="action_add_filter_rule">เพิ่มกฎ</string>
     <string name="text_size">ขนาดข้อความ</string>
     <string name="text_size_summary">ขนาดอักษรของทวีต</string>
     <string name="cannot_get_location">ไม่สามารถรับที่อยู่ได้</string>

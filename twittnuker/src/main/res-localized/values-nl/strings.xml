@@ -7,7 +7,7 @@
 
     <string name="add_account">Account toevoegen</string>
     <string name="settings">Instellingen</string>
-    <string name="send">Verzenden</string>
+    <string name="action_send">Verzenden</string>
     <string name="add_image">Afbeelding toevoegen</string>
     <string name="take_photo">Maak een foto</string>
     <string name="status_hint">Wat gebeurt er?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Basis</string>
     <string name="twip_o">twip O modus</string>
-    <string name="advanced">Geavanceerd</string>
+
     <string name="action_save">Bewaar</string>
     <string name="action_edit">Bewerk</string>
     <string name="edit_api">Bewerk API</string>
-    <string name="home">Thuis</string>
-    <string name="mentions">Vermeldingen</string>
+    <string name="title_home">Thuis</string>
+    <string name="title_mentions">Vermeldingen</string>
     <string name="error_occurred">Er is iets misgegaan, probeer opnieuw.</string>
     <string name="error_already_logged_in">U bent al ingelogd.</string>
     <string name="no_account_selected">Geen account geselecteerd.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">Vernieuw dienst</string>
     <string name="label_streaming_service">Streaming-dienst</string>
     <string name="label_background_operation_service">Achtergrond activiteiten service.</string>
-    <string name="open_in_browser">In browser openen</string>
+    <string name="action_open_in_browser">In browser openen</string>
     <string name="action_delete">Verwijderen</string>
     <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweets</string>
-    <string name="cancel_retweet">Annuleer retweet</string>
+    <string name="action_cancel_retweet">Annuleer retweet</string>
     <string name="action_favorite">Favoriet</string>
     <string name="action_unfavorite">Defavoriet</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">Like ongedaan maken</string>
     <string name="action_reply">Antwoord</string>
     <string name="action_share">Delen</string>
-    <string name="view_map">Kaart</string>
+    <string name="action_view_map">Kaart</string>
     <string name="title_statuses">Tweets</string>
-    <string name="followers">Volgers</string>
-    <string name="following">Volgend</string>
-    <string name="about">Over</string>
-    <string name="open_source_license">Open source licentie</string>
-    <string name="api">API</string>
+    <string name="title_followers">Volgers</string>
+    <string name="title_following">Volgend</string>
+    <string name="title_about">Over</string>
+    <string name="title_open_source_license">Open source licentie</string>
+
     <string name="default_api_settings">Standaard API instellingen</string>
     <string name="default_api_settings_summary">Deze instellingen worden alleen toegepast op nieuwe ingelogde accounts</string>
     <string name="consumer_key">Consumenten sleutel</string>
     <string name="consumer_secret">Consumenten geheim</string>
-    <string name="storage">Opslag</string>
-    <string name="database_item_limit">Maximale database-grootte</string>
-    <string name="database_item_limit_summary">Limiet van de items die zijn opgeslagen in databases voor elke account, stel in op een lagere waarde om ruimte te besparen en de laad snelheid te verhogen.</string>
+    <string name="preference_title_storage">Opslag</string>
+    <string name="preference_title_database_item_limit">Maximale database-grootte</string>
+    <string name="preference_summary_database_item_limit">Limiet van de items die zijn opgeslagen in databases voor elke account, stel in op een lagere waarde om ruimte te besparen en de laad snelheid te verhogen.</string>
     <string name="clear_cache">Cache leegmaken</string>
     <string name="clear_cache_summary">Wis cache opgeslagen profielfoto.</string>
     <string name="clear_databases">Leeg databases</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">Geretweet door <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Geretweet door <xliff:g id="user_name">%1$s</xliff:g> en <xliff:g id="retweet_count">%2$d</xliff:g> anderen</string>
     <string name="retweeted_by_count">Geretweet door <xliff:g id="retweet_count">%d</xliff:g> gebruikers</string>
-    <string name="users_retweeted_this">Gebruikers retweet dit</string>
-    <string name="users_favorited_this">Gebruikers hebben dit toegevoegd als favoriet</string>
-    <string name="users_liked_this">Gebruikers vonden dit leuk</string>
+    <string name="title_users_retweeted_this">Gebruikers retweet dit</string>
+    <string name="title_users_favorited_this">Gebruikers hebben dit toegevoegd als favoriet</string>
+    <string name="title_users_liked_this">Gebruikers vonden dit leuk</string>
     <string name="reply_to">Antwoord aan <xliff:g id="user_name">%s</xliff:g>;</string>
     <string name="quote_user">Quote <xliff:g id="user_name">%s</xliff:g>;</string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -103,7 +103,7 @@
     <string name="load_item_limit">Tweetlijst limiet</string>
     <string name="load_item_limit_summary">Lengte tweetlijst bij laden.</string>
     <string name="action_quote">Citeer</string>
-    <string name="add_rule">Regel toevoegen</string>
+    <string name="action_add_filter_rule">Regel toevoegen</string>
     <string name="text_size">lettergrootte</string>
     <string name="text_size_summary">Textgrootte van tweets.</string>
     <string name="cannot_get_location">Kan uw locatie niet verkrijgen.</string>

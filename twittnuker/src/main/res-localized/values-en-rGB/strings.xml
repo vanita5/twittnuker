@@ -6,7 +6,7 @@
 
     <string name="add_account">Add account</string>
     <string name="settings">Settings</string>
-    <string name="send">Send</string>
+    <string name="action_send">Send</string>
     <string name="add_image">Add image</string>
     <string name="take_photo">Take photo</string>
     <string name="status_hint">What\'s happening?</string>
@@ -19,12 +19,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Basic</string>
     <string name="twip_o">twip O Mode</string>
-    <string name="advanced">Advanced</string>
+
     <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
     <string name="edit_api">Edit API</string>
-    <string name="home">Home</string>
-    <string name="mentions">Mentions</string>
+    <string name="title_home">Home</string>
+    <string name="title_mentions">Mentions</string>
     <string name="error_occurred">An error occurred, please try again.</string>
     <string name="error_already_logged_in">You have already logged in.</string>
     <string name="no_account_selected">No account selected.</string>
@@ -40,11 +40,11 @@
     <string name="label_refresh_service">Refresh service</string>
     <string name="label_streaming_service">Streaming service</string>
     <string name="label_background_operation_service">Background operation service</string>
-    <string name="open_in_browser">Open in browser</string>
+    <string name="action_open_in_browser">Open in browser</string>
     <string name="action_delete">Delete</string>
     <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweets</string>
-    <string name="cancel_retweet">Cancel retweet</string>
+    <string name="action_cancel_retweet">Cancel retweet</string>
     <string name="action_favorite">Favourite</string>
     <string name="action_unfavorite">Unfavourite</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -52,10 +52,10 @@
     <string name="action_undo_like">Undo like</string>
     <string name="action_reply">Reply</string>
     <string name="action_share">Share</string>
-    <string name="view_map">Map</string>
+    <string name="action_view_map">Map</string>
     <string name="title_statuses">Tweets</string>
-    <string name="followers">Followers</string>
-    <string name="users_favorited_this">Users favourited this</string>
+    <string name="title_followers">Followers</string>
+    <string name="title_users_favorited_this">Users favourited this</string>
     <string name="action_set_color">Set colour</string>
     <string name="action_pick_color">Pick colour</string>
     <string name="user_profile_location">Location</string>

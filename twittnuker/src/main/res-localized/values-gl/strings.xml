@@ -7,7 +7,7 @@
 
     <string name="add_account">Engadir conta</string>
     <string name="settings">Configuración</string>
-    <string name="send">Chiar</string>
+    <string name="action_send">Chiar</string>
     <string name="add_image">Engadir imaxe</string>
     <string name="take_photo">Tirar foto</string>
     <string name="status_hint">O que acontece?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Básico</string>
     <string name="twip_o">Modo twip O</string>
-    <string name="advanced">Avanzado</string>
+
     <string name="action_save">Gardar</string>
     <string name="action_edit">Editar</string>
     <string name="edit_api">Editar API</string>
-    <string name="home">LT</string>
-    <string name="mentions">Mencións</string>
+    <string name="title_home">LT</string>
+    <string name="title_mentions">Mencións</string>
     <string name="error_occurred">Ocorreu un erro, por favor, téntao de novo.</string>
     <string name="error_already_logged_in">Xa tes iniciada sesión.</string>
     <string name="no_account_selected">Sen conta seleccionada.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">Recargar servizo</string>
     <string name="label_streaming_service">Servizo streaming</string>
     <string name="label_background_operation_service">Servizo segundo plano</string>
-    <string name="open_in_browser">Abrir en navegador</string>
+    <string name="action_open_in_browser">Abrir en navegador</string>
     <string name="action_delete">Borrar</string>
     <string name="action_retweet">Rechouchiar</string>
     <string name="retweets">Rechouchíos</string>
-    <string name="cancel_retweet">Cancelar rechouchío</string>
+    <string name="action_cancel_retweet">Cancelar rechouchío</string>
     <string name="action_favorite">Favorito</string>
     <string name="action_unfavorite">Desfacer favorito</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">Desfacer gústame</string>
     <string name="action_reply">Responder</string>
     <string name="action_share">Compartir</string>
-    <string name="view_map">Mapa</string>
+    <string name="action_view_map">Mapa</string>
     <string name="title_statuses">Chíos</string>
-    <string name="followers">Seguidores</string>
-    <string name="following">Seguindo</string>
-    <string name="about">Acerca de</string>
-    <string name="open_source_license">Licenza Open source</string>
-    <string name="api">API</string>
+    <string name="title_followers">Seguidores</string>
+    <string name="title_following">Seguindo</string>
+    <string name="title_about">Acerca de</string>
+    <string name="title_open_source_license">Licenza Open source</string>
+
     <string name="default_api_settings">Valores API por defecto</string>
     <string name="default_api_settings_summary">Valores só aplicables a contas novamente rexistradas</string>
     <string name="consumer_key">Clave cliente</string>
     <string name="consumer_secret">Consumer secret</string>
-    <string name="storage">Almacenamento</string>
-    <string name="database_item_limit">Límite da base de datos</string>
-    <string name="database_item_limit_summary">Límite máximo de elementos gardados para cada conta, insire un valor menor para salvar espazo e incrementar a velocidade de carga.</string>
+    <string name="preference_title_storage">Almacenamento</string>
+    <string name="preference_title_database_item_limit">Límite da base de datos</string>
+    <string name="preference_summary_database_item_limit">Límite máximo de elementos gardados para cada conta, insire un valor menor para salvar espazo e incrementar a velocidade de carga.</string>
     <string name="clear_cache">Borrar caché</string>
     <string name="clear_cache_summary">Limpar a caché de imaxes de perfil.</string>
     <string name="clear_databases">Baleirar bases de datos</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">Rechouchiado por <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Rechouchiado por <xliff:g id="user_name">%1$s</xliff:g> e outros <xliff:g id="retweet_count">%2$d</xliff:g></string>
     <string name="retweeted_by_count">Rechouchiado por <xliff:g id="retweet_count">%d</xliff:g> usuarios</string>
-    <string name="users_retweeted_this">Usuarios que rechouchiaron isto</string>
-    <string name="users_favorited_this">Usuarios marcaron isto favorito</string>
-    <string name="users_liked_this">Usuarios gustaron disto</string>
+    <string name="title_users_retweeted_this">Usuarios que rechouchiaron isto</string>
+    <string name="title_users_favorited_this">Usuarios marcaron isto favorito</string>
+    <string name="title_users_liked_this">Usuarios gustaron disto</string>
     <string name="reply_to">Responder a <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Citar <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -102,7 +102,7 @@
     <string name="load_item_limit">Límite de chíos a cargar</string>
     <string name="load_item_limit_summary">Selecciona o límite de chíos por carga.</string>
     <string name="action_quote">Citar</string>
-    <string name="add_rule">Engadir regra</string>
+    <string name="action_add_filter_rule">Engadir regra</string>
     <string name="text_size">Tamaño do texto</string>
     <string name="text_size_summary">Tamaño do texto dos chíos.</string>
     <string name="cannot_get_location">Non se conseguiu acadar a túa localización.</string>

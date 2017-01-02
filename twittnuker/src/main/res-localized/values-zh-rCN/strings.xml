@@ -7,7 +7,7 @@
 
     <string name="add_account">添加帐号</string>
     <string name="settings">设定</string>
-    <string name="send">发送</string>
+    <string name="action_send">发送</string>
     <string name="add_image">添加图片</string>
     <string name="take_photo">拍照</string>
     <string name="status_hint">你在做什么？</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Basic</string>
     <string name="twip_o">twip O 模式</string>
-    <string name="advanced">高级</string>
+
     <string name="action_save">保存</string>
     <string name="action_edit">编辑</string>
     <string name="edit_api">编辑 API</string>
-    <string name="home">主页</string>
-    <string name="mentions">提及</string>
+    <string name="title_home">主页</string>
+    <string name="title_mentions">提及</string>
     <string name="error_occurred">发生错误，请重试</string>
     <string name="error_already_logged_in">你已经登录</string>
     <string name="no_account_selected">没有选择帐号</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">刷新服务</string>
     <string name="label_streaming_service">实时流服务</string>
     <string name="label_background_operation_service">后台操作服务</string>
-    <string name="open_in_browser">在浏览器中打开</string>
+    <string name="action_open_in_browser">在浏览器中打开</string>
     <string name="action_delete">删除</string>
     <string name="action_retweet">转推</string>
     <string name="retweets">转推</string>
-    <string name="cancel_retweet">取消转推</string>
+    <string name="action_cancel_retweet">取消转推</string>
     <string name="action_favorite">收藏</string>
     <string name="action_unfavorite">取消收藏</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">取消喜欢</string>
     <string name="action_reply">回复</string>
     <string name="action_share">分享</string>
-    <string name="view_map">地图</string>
+    <string name="action_view_map">地图</string>
     <string name="title_statuses">推文</string>
-    <string name="followers">关注者</string>
-    <string name="following">正在关注</string>
-    <string name="about">关于</string>
-    <string name="open_source_license">开源许可</string>
-    <string name="api">API</string>
+    <string name="title_followers">关注者</string>
+    <string name="title_following">正在关注</string>
+    <string name="title_about">关于</string>
+    <string name="title_open_source_license">开源许可</string>
+
     <string name="default_api_settings">默认API设定</string>
     <string name="default_api_settings_summary">这些设定只会应用到新登录的帐号</string>
     <string name="consumer_key">Consumer key</string>
     <string name="consumer_secret">Consumer secret</string>
-    <string name="storage">存储</string>
-    <string name="database_item_limit">数据库条目上限</string>
-    <string name="database_item_limit_summary">每个帐号在数据库中保存的推文/信息条目上限，降低数值可以节省更多存储空间以及加快载入的速度</string>
+    <string name="preference_title_storage">存储</string>
+    <string name="preference_title_database_item_limit">数据库条目上限</string>
+    <string name="preference_summary_database_item_limit">每个帐号在数据库中保存的推文/信息条目上限，降低数值可以节省更多存储空间以及加快载入的速度</string>
     <string name="clear_cache">清除缓存</string>
     <string name="clear_cache_summary">清除储存的个人资料图片缓存</string>
     <string name="clear_databases">清除数据库</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">由<xliff:g id="user_name">%s</xliff:g>转推</string>
     <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g>和其他<xliff:g id="retweet_count">%2$d</xliff:g>人已转推</string>
     <string name="retweeted_by_count">由<xliff:g id="retweet_count">%d</xliff:g>人转推</string>
-    <string name="users_retweeted_this">转推了这条推文的用户</string>
-    <string name="users_favorited_this">收藏这条推文的用户</string>
-    <string name="users_liked_this">喜欢这个的用户</string>
+    <string name="title_users_retweeted_this">转推了这条推文的用户</string>
+    <string name="title_users_favorited_this">收藏这条推文的用户</string>
+    <string name="title_users_liked_this">喜欢这个的用户</string>
     <string name="reply_to">回复<xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">引用<xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -103,7 +103,7 @@
     <string name="load_item_limit">载入条目上限</string>
     <string name="load_item_limit_summary">设定一次载入条目的数量上限</string>
     <string name="action_quote">引用</string>
-    <string name="add_rule">添加规则</string>
+    <string name="action_add_filter_rule">添加规则</string>
     <string name="text_size">文字尺寸</string>
     <string name="text_size_summary">推文的字号</string>
     <string name="cannot_get_location">不能获得你的位置</string>

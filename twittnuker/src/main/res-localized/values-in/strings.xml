@@ -6,7 +6,7 @@
 
     <string name="add_account">Tambah akun</string>
     <string name="settings">Pengaturan</string>
-    <string name="send">Kirim</string>
+    <string name="action_send">Kirim</string>
     <string name="add_image">Tambahkan gambar</string>
     <string name="take_photo">Ambil gambar</string>
     <string name="status_hint">Apa yang terjadi ?</string>
@@ -19,12 +19,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Dasar</string>
     <string name="twip_o">Mode twip O</string>
-    <string name="advanced">Lanjutan</string>
+
     <string name="action_save">Simpan</string>
     <string name="action_edit">Sunting</string>
     <string name="edit_api">Sunting API</string>
-    <string name="home">Beranda</string>
-    <string name="mentions">Menyebutkan</string>
+    <string name="title_home">Beranda</string>
+    <string name="title_mentions">Menyebutkan</string>
     <string name="error_occurred">Terjadi kesalahan, silahkan coba lagi.</string>
     <string name="error_already_logged_in">Anda sudah login.</string>
     <string name="no_account_selected">Tidak ada akun yang dipilih.</string>
@@ -40,11 +40,11 @@
     <string name="label_refresh_service">Segarkan layanan</string>
     <string name="label_streaming_service">Layanan streaming</string>
     <string name="label_background_operation_service">Latar Belakang layanan operasi</string>
-    <string name="open_in_browser">Buka di Browser</string>
+    <string name="action_open_in_browser">Buka di Browser</string>
     <string name="action_delete">Hapus</string>
     <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweets</string>
-    <string name="cancel_retweet">Batalkan retweet</string>
+    <string name="action_cancel_retweet">Batalkan retweet</string>
     <string name="action_favorite">Favorit</string>
     <string name="action_unfavorite">Batalkan favorit</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -52,20 +52,20 @@
     <string name="action_undo_like">Batalkan suka</string>
     <string name="action_reply">Balas</string>
     <string name="action_share">Bagikan</string>
-    <string name="view_map">Peta</string>
+    <string name="action_view_map">Peta</string>
     <string name="title_statuses">Kicauan</string>
-    <string name="followers">Pengikut</string>
-    <string name="following">Mengikuti</string>
-    <string name="about">Tentang</string>
-    <string name="open_source_license">Lisensi Open Source</string>
-    <string name="api">API</string>
+    <string name="title_followers">Pengikut</string>
+    <string name="title_following">Mengikuti</string>
+    <string name="title_about">Tentang</string>
+    <string name="title_open_source_license">Lisensi Open Source</string>
+
     <string name="default_api_settings">Pengaturan API default</string>
     <string name="default_api_settings_summary">Pengaturan ini hanya berlaku untuk akun yang baru masuk</string>
     <string name="consumer_key">Kode Consumer Key</string>
     <string name="consumer_secret">Kode Consumer Secret</string>
-    <string name="storage">Penyimpanan</string>
-    <string name="database_item_limit">Batas ukuran database</string>
-    <string name="database_item_limit_summary">Batas atas item yang disimpan pada database untuk tiap akun, berikan nilai kecil untuk menghemat ruang dan meningkatkan kecepatan muat.</string>
+    <string name="preference_title_storage">Penyimpanan</string>
+    <string name="preference_title_database_item_limit">Batas ukuran database</string>
+    <string name="preference_summary_database_item_limit">Batas atas item yang disimpan pada database untuk tiap akun, berikan nilai kecil untuk menghemat ruang dan meningkatkan kecepatan muat.</string>
     <string name="clear_cache">Bersihkan tembolok</string>
     <string name="clear_cache_summary">Bersihkan tembolok gambar profil.</string>
     <string name="clear_databases">Bersihkan database</string>
@@ -77,9 +77,9 @@
     <string name="retweeted_by_name">Di-retweet oleh <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Di-retweet oleh <xliff:g id="user_name">%1$s</xliff:g> dan <xliff:g id="retweet_count">%2$d</xliff:g> lainnya</string>
     <string name="retweeted_by_count">Di-retweet oleh <xliff:g id="retweet_count">%d</xliff:g> pengguna</string>
-    <string name="users_retweeted_this">Pengguna yang me-retweet ini</string>
-    <string name="users_favorited_this">Disukai para pengguna</string>
-    <string name="users_liked_this">Pengguna menyukai ini</string>
+    <string name="title_users_retweeted_this">Pengguna yang me-retweet ini</string>
+    <string name="title_users_favorited_this">Disukai para pengguna</string>
+    <string name="title_users_liked_this">Pengguna menyukai ini</string>
     <string name="reply_to">Balasan untuk <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Mengutip <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -101,7 +101,7 @@
     <string name="load_item_limit">Memuat batas item</string>
     <string name="load_item_limit_summary">Tetapkan batas item per pengambilan.</string>
     <string name="action_quote">Kutip</string>
-    <string name="add_rule">Tambah aturan</string>
+    <string name="action_add_filter_rule">Tambah aturan</string>
     <string name="text_size">Ukuran teks</string>
     <string name="text_size_summary">Ukuran teks untuk cuit.</string>
     <string name="cannot_get_location">Tidak bisa mendapatkan lokasi anda.</string>

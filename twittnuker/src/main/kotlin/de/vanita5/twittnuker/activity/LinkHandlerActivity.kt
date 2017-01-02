@@ -37,6 +37,7 @@ import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.Window
 import org.mariotaku.chameleon.ChameleonUtils
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.convert
 import org.mariotaku.ktextension.set
 import org.mariotaku.ktextension.toDoubleOrNull
@@ -49,6 +50,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_SIMPLE_LAYOUT
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER_KEY
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
+import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.filter.FiltersFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
@@ -299,10 +301,10 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                 }
             }
             LINK_ID_USER_FOLLOWERS -> {
-                setTitle(R.string.followers)
+                setTitle(R.string.title_followers)
             }
             LINK_ID_USER_FRIENDS -> {
-                setTitle(R.string.following)
+                setTitle(R.string.title_following)
             }
             LINK_ID_USER_BLOCKS -> {
                 setTitle(R.string.blocked_users)
@@ -352,10 +354,14 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                 setTitle(R.string.media)
             }
             LINK_ID_STATUS_RETWEETERS -> {
-                setTitle(R.string.users_retweeted_this)
+                setTitle(R.string.title_users_retweeted_this)
             }
             LINK_ID_STATUS_FAVORITERS -> {
-                setTitle(R.string.users_favorited_this)
+                if (preferences[iWantMyStarsBackKey]) {
+                    setTitle(R.string.title_users_favorited_this)
+                } else {
+                    setTitle(R.string.title_users_liked_this)
+                }
             }
             LINK_ID_SEARCH -> {
                 setTitle(android.R.string.search_go)
@@ -371,7 +377,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                 setTitle(R.string.title_filters)
             }
             LINK_ID_MAP -> {
-                setTitle(R.string.view_map)
+                setTitle(R.string.action_view_map)
             }
             LINK_ID_PROFILE_EDITOR -> {
                 setTitle(R.string.title_edit_profile)

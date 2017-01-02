@@ -7,7 +7,7 @@
 
     <string name="add_account">アカウントを追加</string>
     <string name="settings">設定</string>
-    <string name="send">送信</string>
+    <string name="action_send">送信</string>
     <string name="add_image">画像を追加</string>
     <string name="take_photo">写真を撮る</string>
     <string name="status_hint">いまどうしてる？</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Basic</string>
     <string name="twip_o">twip O モード</string>
-    <string name="advanced">詳細設定</string>
+
     <string name="action_save">保存</string>
     <string name="action_edit">編集</string>
     <string name="edit_api">APIを編集</string>
-    <string name="home">ホーム</string>
-    <string name="mentions">つながり</string>
+    <string name="title_home">ホーム</string>
+    <string name="title_mentions">つながり</string>
     <string name="error_occurred">エラーが発生しました。もう一度お試しください。</string>
     <string name="error_already_logged_in">あなたはすでにログインしています</string>
     <string name="no_account_selected">アカウントが選択されていません。</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">サービスをリフレッシュ</string>
     <string name="label_streaming_service">ストリーミングサービス</string>
     <string name="label_background_operation_service">バックグラウンド操作サービス</string>
-    <string name="open_in_browser">ブラウザで開く</string>
+    <string name="action_open_in_browser">ブラウザで開く</string>
     <string name="action_delete">削除</string>
     <string name="action_retweet">リツイート</string>
     <string name="retweets">リツイート</string>
-    <string name="cancel_retweet">リツイートの取り消し</string>
+    <string name="action_cancel_retweet">リツイートの取り消し</string>
     <string name="action_favorite">お気に入り</string>
     <string name="action_unfavorite">お気に入りから削除</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">いいねを取り消し</string>
     <string name="action_reply">返信</string>
     <string name="action_share">共有</string>
-    <string name="view_map">地図</string>
+    <string name="action_view_map">地図</string>
     <string name="title_statuses">ツイート</string>
-    <string name="followers">フォロワー</string>
-    <string name="following">フォロー中</string>
-    <string name="about">バージョン情報</string>
-    <string name="open_source_license">オープンソースライセンス</string>
-    <string name="api">API</string>
+    <string name="title_followers">フォロワー</string>
+    <string name="title_following">フォロー中</string>
+    <string name="title_about">バージョン情報</string>
+    <string name="title_open_source_license">オープンソースライセンス</string>
+
     <string name="default_api_settings">デフォルトAPI設定</string>
     <string name="default_api_settings_summary">この設定はログインし直さないと反映されません。</string>
     <string name="consumer_key">Consumer key</string>
     <string name="consumer_secret">Consumer secret</string>
-    <string name="storage">ストレージ</string>
-    <string name="database_item_limit">アイテム上限数</string>
-    <string name="database_item_limit_summary">各アカウントのデータベースに格納するアイテムの上限数です。\n小さな値に設定すると読み込み速度を速くできます。</string>
+    <string name="preference_title_storage">ストレージ</string>
+    <string name="preference_title_database_item_limit">アイテム上限数</string>
+    <string name="preference_summary_database_item_limit">各アカウントのデータベースに格納するアイテムの上限数です。\n小さな値に設定すると読み込み速度を速くできます。</string>
     <string name="clear_cache">キャッシュを消去</string>
     <string name="clear_cache_summary">プロフィール画像のキャッシュを消去します。</string>
     <string name="clear_databases">データベースを消去</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g>さんのリツイート</string>
     <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g>さんと他<xliff:g id="retweet_count">%2$d</xliff:g>人のリツイート</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g>人のリツイート</string>
-    <string name="users_retweeted_this">リツイートしたユーザーを表示</string>
-    <string name="users_favorited_this">お気に入りに登録したユーザーを表示</string>
-    <string name="users_liked_this">いいねしたユーザーを表示</string>
+    <string name="title_users_retweeted_this">リツイートしたユーザーを表示</string>
+    <string name="title_users_favorited_this">お気に入りに登録したユーザーを表示</string>
+    <string name="title_users_liked_this">いいねしたユーザーを表示</string>
     <string name="reply_to"><xliff:g id="user_name">%s</xliff:g>さんへの返信</string>
     <string name="quote_user"><xliff:g id="user_name">%s</xliff:g>さんのツイートを引用</string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -102,7 +102,7 @@
     <string name="load_item_limit">ツイートの読み込み上限</string>
     <string name="load_item_limit_summary">一度に読み込むツイートの数を制限します。</string>
     <string name="action_quote">引用</string>
-    <string name="add_rule">ルールを追加</string>
+    <string name="action_add_filter_rule">ルールを追加</string>
     <string name="text_size">フォントサイズ</string>
     <string name="text_size_summary">ツイートの文字サイズ</string>
     <string name="cannot_get_location">位置情報が取得できません。</string>

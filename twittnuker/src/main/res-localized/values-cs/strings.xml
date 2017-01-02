@@ -6,7 +6,7 @@
 
     <string name="add_account">Přidat účet</string>
     <string name="settings">Nastavení</string>
-    <string name="send">Poslat</string>
+    <string name="action_send">Poslat</string>
     <string name="add_image">Přidat obrázek</string>
     <string name="take_photo">Vyfotit</string>
     <string name="status_hint">Co se děje?</string>
@@ -19,12 +19,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Základní</string>
     <string name="twip_o">Mód twip O</string>
-    <string name="advanced">Pokročilé</string>
+
     <string name="action_save">Uložit</string>
     <string name="action_edit">Editovat</string>
     <string name="edit_api">Upravit API</string>
-    <string name="home">Domů</string>
-    <string name="mentions">Zmínky</string>
+    <string name="title_home">Domů</string>
+    <string name="title_mentions">Zmínky</string>
     <string name="error_occurred">Stala se chyba, zkuste to, prosím, znovu.</string>
     <string name="error_already_logged_in">Jste již přihlášeni.</string>
     <string name="no_account_selected">Nevybrán žádný účet.</string>
@@ -40,11 +40,11 @@
     <string name="label_refresh_service">Obnovit službu</string>
     <string name="label_streaming_service">Služby datových proudů</string>
     <string name="label_background_operation_service">Služba na pozadí</string>
-    <string name="open_in_browser">Otevřít v prohlížeči</string>
+    <string name="action_open_in_browser">Otevřít v prohlížeči</string>
     <string name="action_delete">Smazat</string>
     <string name="action_retweet">Retweetovat</string>
     <string name="retweets">Retweetovat</string>
-    <string name="cancel_retweet">Zrušit retweet</string>
+    <string name="action_cancel_retweet">Zrušit retweet</string>
     <string name="action_favorite">Favorizovat</string>
     <string name="action_unfavorite">Odstranit z favorizovaných</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -52,19 +52,19 @@
     <string name="action_undo_like">To se mi nelíbí</string>
     <string name="action_reply">Odpovědět</string>
     <string name="action_share">Sdílet</string>
-    <string name="view_map">Mapa</string>
+    <string name="action_view_map">Mapa</string>
     <string name="title_statuses">Tweety</string>
-    <string name="followers">Sledující</string>
-    <string name="following">Sledovaní</string>
-    <string name="about">O</string>
-    <string name="open_source_license">Licence otevřeného kódu</string>
-    <string name="api">API</string>
+    <string name="title_followers">Sledující</string>
+    <string name="title_following">Sledovaní</string>
+    <string name="title_about">O</string>
+    <string name="title_open_source_license">Licence otevřeného kódu</string>
+
     <string name="default_api_settings">Výchozí nastavení API</string>
     <string name="default_api_settings_summary">Tyto nastavení platí pouze pro nově přihlášené účty</string>
     <string name="consumer_key">Zákaznický kód</string>
     <string name="consumer_secret">Tajný zákaznický kód</string>
-    <string name="storage">Úložiště</string>
-    <string name="database_item_limit">Limit velikosti databáze</string>
+    <string name="preference_title_storage">Úložiště</string>
+    <string name="preference_title_database_item_limit">Limit velikosti databáze</string>
     <string name="clear_cache">Vymazat mezipaměť</string>
     <string name="clear_cache_summary">Vyčistit mezipaměť uložených profilových obrázků.</string>
     <string name="clear_databases">Vymazat databázi</string>
@@ -72,7 +72,7 @@
     <string name="retweeted_by_name">Retweetováno uživatelem <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Retweetováno uživatelem <xliff:g id="user_name">%1$s</xliff:g> a <xliff:g id="retweet_count">%2$d</xliff:g> dalšími</string>
     <string name="retweeted_by_count">Retweetováno <xliff:g id="retweet_count">%d</xliff:g> uživateli</string>
-    <string name="users_retweeted_this">Uživatelů retweetovalo</string>
+    <string name="title_users_retweeted_this">Uživatelů retweetovalo</string>
     <string name="reply_to">Odpovědět uživateli <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Citovat uživatele <xliff:g id="user_name">%s</xliff:g></string>
     <string name="title_filters">Filtry</string>
@@ -92,7 +92,7 @@
     <string name="load_item_limit">Limit zobrazených položek</string>
     <string name="load_item_limit_summary">Zadejte limit položek k zobrazení.</string>
     <string name="action_quote">Poznámka</string>
-    <string name="add_rule">Přidat pravidlo</string>
+    <string name="action_add_filter_rule">Přidat pravidlo</string>
     <string name="text_size">Velikost textu</string>
     <string name="text_size_summary">Velikost textu tweetů.</string>
     <string name="cannot_get_location">Nelze získat vaši polohu.</string>

@@ -6,7 +6,7 @@
 
     <string name="add_account">Legg til konto</string>
     <string name="settings">Innstillinger</string>
-    <string name="send">Send</string>
+    <string name="action_send">Send</string>
     <string name="add_image">Legg til bilde</string>
     <string name="take_photo">Ta bilde</string>
     <string name="status_hint">Hva skjer ?</string>
@@ -19,12 +19,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Basic</string>
     <string name="twip_o">twip O-modus</string>
-    <string name="advanced">Avansert</string>
+
     <string name="action_save">Lagre</string>
     <string name="action_edit">Rediger</string>
     <string name="edit_api">Endre API</string>
-    <string name="home">Hjem</string>
-    <string name="mentions">Omtalelser</string>
+    <string name="title_home">Hjem</string>
+    <string name="title_mentions">Omtalelser</string>
     <string name="error_occurred">Det oppstod en feil, prøv igjen.</string>
     <string name="error_already_logged_in">Du er allerede logget inn.</string>
     <string name="no_account_selected">Ingen konto valgt.</string>
@@ -40,11 +40,11 @@
     <string name="label_refresh_service">Oppdateringstjeneste</string>
     <string name="label_streaming_service">Strømmetjeneste</string>
     <string name="label_background_operation_service">Bakgrunnstjeneste</string>
-    <string name="open_in_browser">Åpne i nettleser</string>
+    <string name="action_open_in_browser">Åpne i nettleser</string>
     <string name="action_delete">Slett</string>
     <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweets</string>
-    <string name="cancel_retweet">Avbryt retweet</string>
+    <string name="action_cancel_retweet">Avbryt retweet</string>
     <string name="action_favorite">Favorittmarker</string>
     <string name="action_unfavorite">Fjern favorittmarkering</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -52,20 +52,20 @@
     <string name="action_undo_like">Liker ikke</string>
     <string name="action_reply">Svar</string>
     <string name="action_share">Del</string>
-    <string name="view_map">Kart</string>
+    <string name="action_view_map">Kart</string>
     <string name="title_statuses">Tweets</string>
-    <string name="followers">Følgere</string>
-    <string name="following">Følger</string>
-    <string name="about">Om</string>
-    <string name="open_source_license">Åpen kildekode-lisens</string>
-    <string name="api">API</string>
+    <string name="title_followers">Følgere</string>
+    <string name="title_following">Følger</string>
+    <string name="title_about">Om</string>
+    <string name="title_open_source_license">Åpen kildekode-lisens</string>
+
     <string name="default_api_settings">Standard API-innstillinger</string>
     <string name="default_api_settings_summary">Disse innstillingene gjelder kun for nyinnloggede kontoer</string>
     <string name="consumer_key">Bruker nøkkel</string>
     <string name="consumer_secret">Brukerpassord</string>
-    <string name="storage">Lagring</string>
-    <string name="database_item_limit">Database størrelsesgrense</string>
-    <string name="database_item_limit_summary">Øvre grense for elementer som lagres i databaser for hver konto. Velg en lavere verdi for å spare plass og øke lastingshastigheten.</string>
+    <string name="preference_title_storage">Lagring</string>
+    <string name="preference_title_database_item_limit">Database størrelsesgrense</string>
+    <string name="preference_summary_database_item_limit">Øvre grense for elementer som lagres i databaser for hver konto. Velg en lavere verdi for å spare plass og øke lastingshastigheten.</string>
     <string name="clear_cache">Tøm hurtiglager</string>
     <string name="clear_cache_summary">Tøm hurtiglageret for profilbilder.</string>
     <string name="clear_databases">Tøm databaser</string>
@@ -77,9 +77,9 @@
     <string name="retweeted_by_name">Retweetet av <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Retweetet av <xliff:g id="user_name">%1$s</xliff:g> og <xliff:g id="retweet_count">%2$d</xliff:g> andre</string>
     <string name="retweeted_by_count">Retweetet av <xliff:g id="retweet_count">%d</xliff:g> brukere</string>
-    <string name="users_retweeted_this">Brukere retweetet dette</string>
-    <string name="users_favorited_this">Brukere favorittmarkerte dette</string>
-    <string name="users_liked_this">Brukere likte dette</string>
+    <string name="title_users_retweeted_this">Brukere retweetet dette</string>
+    <string name="title_users_favorited_this">Brukere favorittmarkerte dette</string>
+    <string name="title_users_liked_this">Brukere likte dette</string>
     <string name="reply_to">Svar til <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Sitat <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, via <xliff:g id="source">%2$s</xliff:g></string>
@@ -102,7 +102,7 @@
     <string name="load_item_limit">Lastegrense</string>
     <string name="load_item_limit_summary">Sett elementgrensen per innlasting.</string>
     <string name="action_quote">Siter</string>
-    <string name="add_rule">Legg til regel</string>
+    <string name="action_add_filter_rule">Legg til regel</string>
     <string name="text_size">Tekststørrelse</string>
     <string name="text_size_summary">Tekststørrelse for tweets.</string>
     <string name="cannot_get_location">Kan ikke finne din posisjon.</string>

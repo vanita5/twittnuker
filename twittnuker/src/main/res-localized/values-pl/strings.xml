@@ -5,7 +5,7 @@
 
     <string name="add_account">Dodaj konto</string>
     <string name="settings">Ustawienia</string>
-    <string name="send">Wyślij</string>
+    <string name="action_send">Wyślij</string>
     <string name="add_image">Dodaj obraz</string>
     <string name="take_photo">Zrób zdjęcie</string>
     <string name="status_hint">Co się dzieje?</string>
@@ -18,12 +18,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Podstawowe</string>
     <string name="twip_o">twip O Mode</string>
-    <string name="advanced">Zaawansowane</string>
+
     <string name="action_save">Zapisz</string>
     <string name="action_edit">Edytuj</string>
     <string name="edit_api">Edytuj API</string>
-    <string name="home">Strona główna</string>
-    <string name="mentions">Wzmianki</string>
+    <string name="title_home">Strona główna</string>
+    <string name="title_mentions">Wzmianki</string>
     <string name="error_occurred">Wystąpił błąd, spróbuj ponownie.</string>
     <string name="error_already_logged_in">Już jesteś zalogowany.</string>
     <string name="no_account_selected">Nie wybrano żadnego konta.</string>
@@ -37,30 +37,30 @@
     <string name="password">Hasło</string>
     <string name="label_refresh_service">Odświeżanie</string>
     <string name="label_background_operation_service">Usługa operacji w tle</string>
-    <string name="open_in_browser">Otwórz w przeglądarce</string>
+    <string name="action_open_in_browser">Otwórz w przeglądarce</string>
     <string name="action_delete">Usuń</string>
     <string name="action_retweet">Prześlij dalej</string>
     <string name="retweets">Przesłane dalej</string>
-    <string name="cancel_retweet">Cofnij prześlij dalej</string>
+    <string name="action_cancel_retweet">Cofnij prześlij dalej</string>
     <string name="action_favorite">Dodaj do ulubionych</string>
     <string name="action_unfavorite">Usuń z ulubionych</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
     <string name="action_reply">Odpowiedz</string>
     <string name="action_share">Udostępnij</string>
-    <string name="view_map">Mapa</string>
+    <string name="action_view_map">Mapa</string>
     <string name="title_statuses">Tweety</string>
-    <string name="followers">Obserwujący</string>
-    <string name="following">Obserwuje</string>
-    <string name="about">O...</string>
-    <string name="open_source_license">Licencja open source</string>
-    <string name="api">API</string>
+    <string name="title_followers">Obserwujący</string>
+    <string name="title_following">Obserwuje</string>
+    <string name="title_about">O...</string>
+    <string name="title_open_source_license">Licencja open source</string>
+
     <string name="default_api_settings">Ustawienia domyślnego API</string>
     <string name="default_api_settings_summary">Te ustawienia mają zastosowanie do nowo zalogowanych kont</string>
     <string name="consumer_key">Klucz klienta</string>
     <string name="consumer_secret">Consumer secret</string>
-    <string name="storage">Przechowywanie</string>
-    <string name="database_item_limit">Limit rozmiaru bazy danych</string>
-    <string name="database_item_limit_summary">Limit elementów przechowywanych w bazie danych dla każdego konta, ustaw mniejszą wartość, aby oszczędzać miejsce i zwiększyć szybkość ładowania.</string>
+    <string name="preference_title_storage">Przechowywanie</string>
+    <string name="preference_title_database_item_limit">Limit rozmiaru bazy danych</string>
+    <string name="preference_summary_database_item_limit">Limit elementów przechowywanych w bazie danych dla każdego konta, ustaw mniejszą wartość, aby oszczędzać miejsce i zwiększyć szybkość ładowania.</string>
     <string name="clear_cache">Wyczyść zapis podręczny</string>
     <string name="clear_cache_summary">Wyczyść zapisane obrazki profilów.</string>
     <string name="clear_databases">Wyczyść bazy danych</string>
@@ -72,8 +72,8 @@
     <string name="retweeted_by_name">Użytkownik <xliff:g id="user_name">%s</xliff:g> podał dalej</string>
     <string name="retweeted_by_name_with_count">Podano dalej przez <xliff:g id="user_name">%1$s</xliff:g> oraz <xliff:g id="retweet_count">%2$d</xliff:g> innych</string>
     <string name="retweeted_by_count">Podano dalej przez <xliff:g id="retweet_count">%d</xliff:g> użytkowników</string>
-    <string name="users_retweeted_this">Użytkownicy którzy to przesłali dalej</string>
-    <string name="users_favorited_this">Użytkownicy polubili to</string>
+    <string name="title_users_retweeted_this">Użytkownicy którzy to przesłali dalej</string>
+    <string name="title_users_favorited_this">Użytkownicy polubili to</string>
     <string name="reply_to">Odpowiedz do <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Cytuj <xliff:g id="user_name">%s</xliff:g></string>
     <string name="title_filters">Filtry</string>
@@ -94,7 +94,7 @@
     <string name="load_item_limit">Limit ładowania</string>
     <string name="load_item_limit_summary">Ustaw ilość wpisów ładowanych jednorazowo.</string>
     <string name="action_quote">Cytuj</string>
-    <string name="add_rule">Dodaj regułę</string>
+    <string name="action_add_filter_rule">Dodaj regułę</string>
     <string name="text_size">Rozmiar tekstu</string>
     <string name="text_size_summary">Rozmiar tekstu tweetów.</string>
     <string name="cannot_get_location">Nie można wyszukać lokalizacji.</string>

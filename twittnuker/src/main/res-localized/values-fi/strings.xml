@@ -7,7 +7,7 @@
 
     <string name="add_account">Lisää tili</string>
     <string name="settings">Asetukset</string>
-    <string name="send">Lähetä</string>
+    <string name="action_send">Lähetä</string>
     <string name="add_image">Lisää kuva</string>
     <string name="take_photo">Ota valokuva</string>
     <string name="status_hint">Mitä tapahtuu?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Perus</string>
     <string name="twip_o">twip O -tila</string>
-    <string name="advanced">Lisäasetukset</string>
+
     <string name="action_save">Tallenna</string>
     <string name="action_edit">Muokkaa</string>
     <string name="edit_api">Muokkaa API:a</string>
-    <string name="home">Koti</string>
-    <string name="mentions">Maininnat</string>
+    <string name="title_home">Koti</string>
+    <string name="title_mentions">Maininnat</string>
     <string name="error_occurred">Tapahtui virhe, yritä uudelleen.</string>
     <string name="error_already_logged_in">Olet jo kirjautunut sisään.</string>
     <string name="no_account_selected">Tiliä ei ole valittu.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">Päivitä palvelu</string>
     <string name="label_streaming_service">Streamaus palvelu</string>
     <string name="label_background_operation_service">Taustatoimintojen palvelu</string>
-    <string name="open_in_browser">Avaa selaimessa</string>
+    <string name="action_open_in_browser">Avaa selaimessa</string>
     <string name="action_delete">Poista</string>
     <string name="action_retweet">Uudelleentwiittaa</string>
     <string name="retweets">Uudelleentwiittaukset</string>
-    <string name="cancel_retweet">Peru uudelleentwiittaus</string>
+    <string name="action_cancel_retweet">Peru uudelleentwiittaus</string>
     <string name="action_favorite">Suosikki</string>
     <string name="action_unfavorite">Poista suosikeista</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">Älä tykkää</string>
     <string name="action_reply">Vastaa</string>
     <string name="action_share">Jaa</string>
-    <string name="view_map">Kartta</string>
+    <string name="action_view_map">Kartta</string>
     <string name="title_statuses">Twiitit</string>
-    <string name="followers">Seuraajaa</string>
-    <string name="following">Seurattua</string>
-    <string name="about">Tietoja</string>
-    <string name="open_source_license">Avoimen lähdekoodin lisenssi</string>
-    <string name="api">API</string>
+    <string name="title_followers">Seuraajaa</string>
+    <string name="title_following">Seurattua</string>
+    <string name="title_about">Tietoja</string>
+    <string name="title_open_source_license">Avoimen lähdekoodin lisenssi</string>
+
     <string name="default_api_settings">API:n oletusasetukset</string>
     <string name="default_api_settings_summary">Nämä asetukset ovat voimassa vain uuden kirjautumisen jälkeen</string>
     <string name="consumer_key">Kuluttaja-avain</string>
     <string name="consumer_secret">Kuluttajasalaus</string>
-    <string name="storage">Säilytys</string>
-    <string name="database_item_limit">Tietokannan kokorajoitus</string>
-    <string name="database_item_limit_summary">Käyttäjätilien tietokantamerkintöjen yläraja. Aseta pieni arvo, jotta tilaa säästyisi ja latausaika pienenisi.</string>
+    <string name="preference_title_storage">Säilytys</string>
+    <string name="preference_title_database_item_limit">Tietokannan kokorajoitus</string>
+    <string name="preference_summary_database_item_limit">Käyttäjätilien tietokantamerkintöjen yläraja. Aseta pieni arvo, jotta tilaa säästyisi ja latausaika pienenisi.</string>
     <string name="clear_cache">Tyhjennä välimuisti</string>
     <string name="clear_cache_summary">Tyhjennä profiilikuvien säilytetty välimuisti.</string>
     <string name="clear_databases">Tyhjennä tietokannat</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> uudelleentwiittasi</string>
     <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> ja <xliff:g id="retweet_count">%2$d</xliff:g> muuta uudelleentwiittasivat</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> käyttäjää uudelleentwiittasivat</string>
-    <string name="users_retweeted_this">Uudelleentwiitanneet käyttäjät</string>
-    <string name="users_favorited_this">Käyttäjä lisäsi tämän suosikkeihinsa</string>
-    <string name="users_liked_this">Käyttäjät tykkäsivät tästä</string>
+    <string name="title_users_retweeted_this">Uudelleentwiitanneet käyttäjät</string>
+    <string name="title_users_favorited_this">Käyttäjä lisäsi tämän suosikkeihinsa</string>
+    <string name="title_users_liked_this">Käyttäjät tykkäsivät tästä</string>
     <string name="reply_to">Vastaa käyttäjälle <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Lainaa käyttäjää <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, via <xliff:g id="source">%2$s</xliff:g></string>
@@ -102,7 +102,7 @@
     <string name="load_item_limit">Kohteiden latausrajoitus</string>
     <string name="load_item_limit_summary">Aseta rajoitus kohteiden latausmäärälle.</string>
     <string name="action_quote">Lainaus</string>
-    <string name="add_rule">Lisää sääntö</string>
+    <string name="action_add_filter_rule">Lisää sääntö</string>
     <string name="text_size">Tekstin koko</string>
     <string name="text_size_summary">Twiittien tekstikoko.</string>
     <string name="cannot_get_location">Sijaintiasi ei voida määrittää.</string>

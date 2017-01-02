@@ -5,7 +5,7 @@
 
     <string name="add_account">اضافة حساب</string>
     <string name="settings">الاعدادات</string>
-    <string name="send">إرسال</string>
+    <string name="action_send">إرسال</string>
     <string name="add_image">إضافة صورة</string>
     <string name="take_photo">أخذ صورة</string>
     <string name="status_hint">ما الذي يحدث ؟</string>
@@ -18,12 +18,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">الأساسي</string>
     <string name="twip_o">نمط twip O</string>
-    <string name="advanced">متقدم</string>
+
     <string name="action_save">حفظ</string>
     <string name="action_edit">تعديل</string>
     <string name="edit_api">API تعديل الـ</string>
-    <string name="home">الرئيسية</string>
-    <string name="mentions">الإشارات</string>
+    <string name="title_home">الرئيسية</string>
+    <string name="title_mentions">الإشارات</string>
     <string name="error_occurred">حدث خطأ، يرجى إعادة المحاولة لاحقاً</string>
     <string name="error_already_logged_in">انت بالفعل قمت بتسجيل الدخول مسبقاً.</string>
     <string name="no_account_selected">لم تختر حسابًا.</string>
@@ -39,11 +39,11 @@
     <string name="label_refresh_service">تحديث الخدمة</string>
     <string name="label_streaming_service">خدمة البث المتواصل</string>
     <string name="label_background_operation_service">خدمة التشغيل في الخلفية</string>
-    <string name="open_in_browser">فتح بالمستعرض</string>
+    <string name="action_open_in_browser">فتح بالمستعرض</string>
     <string name="action_delete">حذف</string>
     <string name="action_retweet">اعادة تغريد</string>
     <string name="retweets">من إعادات التغريد</string>
-    <string name="cancel_retweet">إلغاء إعادة التغريد</string>
+    <string name="action_cancel_retweet">إلغاء إعادة التغريد</string>
     <string name="action_favorite">تفضيل</string>
     <string name="action_unfavorite">إزالة التفضيل</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -51,20 +51,20 @@
     <string name="action_undo_like">إلغاء الاعجاب</string>
     <string name="action_reply">رد</string>
     <string name="action_share">مشاركة</string>
-    <string name="view_map">خريطة</string>
+    <string name="action_view_map">خريطة</string>
     <string name="title_statuses">من التغريدات</string>
-    <string name="followers">المتابعون</string>
-    <string name="following">متابَعون</string>
-    <string name="about">حول</string>
-    <string name="open_source_license">رخصة المصدر المفتوح</string>
-    <string name="api">API</string>
+    <string name="title_followers">المتابعون</string>
+    <string name="title_following">متابَعون</string>
+    <string name="title_about">حول</string>
+    <string name="title_open_source_license">رخصة المصدر المفتوح</string>
+
     <string name="default_api_settings">إعدادات API الإفتراضية</string>
     <string name="default_api_settings_summary">هذه الإعدادات تنطبق فقط على الحسابات المسجلة جديدا</string>
     <string name="consumer_key">شفرة الـConsumer key</string>
     <string name="consumer_secret">شفرة الـConsumer secret</string>
-    <string name="storage">المساحة</string>
-    <string name="database_item_limit">حد حجم قاعدة البيانات</string>
-    <string name="database_item_limit_summary">أقصى عدد من التغريدات المخزنة في قاعدة البيانات لكل حساب, قم بوضع عدد صغير لتوفير مساحة أكبر وزيادة في سرعة التحميل.</string>
+    <string name="preference_title_storage">المساحة</string>
+    <string name="preference_title_database_item_limit">حد حجم قاعدة البيانات</string>
+    <string name="preference_summary_database_item_limit">أقصى عدد من التغريدات المخزنة في قاعدة البيانات لكل حساب, قم بوضع عدد صغير لتوفير مساحة أكبر وزيادة في سرعة التحميل.</string>
     <string name="clear_cache">حذف الكاش</string>
     <string name="clear_cache_summary">إزالة صور الملفات الشخصية المخزنة مؤقتاً في الذاكرة.</string>
     <string name="clear_databases">حذف قاعدة البيانات</string>
@@ -76,9 +76,9 @@
     <string name="retweeted_by_name">أعادها <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">أعادها <xliff:g id="user_name">%1$s</xliff:g> و<xliff:g id="retweet_count">%2$d</xliff:g> وآخرين</string>
     <string name="retweeted_by_count">أعاد تغريدها <xliff:g id="retweet_count">%d</xliff:g> شخصًا</string>
-    <string name="users_retweeted_this">المستخدمين الذين قاموا بإعادة التغريد</string>
-    <string name="users_favorited_this">المستخدمون الذين فضلوا التغريدة</string>
-    <string name="users_liked_this">اعجب المستخدمون</string>
+    <string name="title_users_retweeted_this">المستخدمين الذين قاموا بإعادة التغريد</string>
+    <string name="title_users_favorited_this">المستخدمون الذين فضلوا التغريدة</string>
+    <string name="title_users_liked_this">اعجب المستخدمون</string>
     <string name="reply_to">الرد على <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">إقتباس <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -100,7 +100,7 @@
     <string name="load_item_limit">الحد الأقصى لعدد التغريدات</string>
     <string name="load_item_limit_summary">الحد الأقصى لعدد التغريدات المحملة في كل مرة.</string>
     <string name="action_quote">اقتباس:</string>
-    <string name="add_rule">اضافة شرط</string>
+    <string name="action_add_filter_rule">اضافة شرط</string>
     <string name="text_size">حجم النص</string>
     <string name="text_size_summary">حجم نص التغريدة</string>
     <string name="cannot_get_location">لا يمكن تحديد الموقع.</string>

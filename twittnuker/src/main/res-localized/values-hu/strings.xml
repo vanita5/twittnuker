@@ -7,7 +7,7 @@
 
     <string name="add_account">Fiók hozzáadása</string>
     <string name="settings">Beállítások</string>
-    <string name="send">Elküld</string>
+    <string name="action_send">Elküld</string>
     <string name="add_image">Kép hozzáadása</string>
     <string name="take_photo">Fotó készítése</string>
     <string name="status_hint">Mi történik?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Alap</string>
     <string name="twip_o">twip O mód</string>
-    <string name="advanced">Fejlett</string>
+
     <string name="action_save">Ment</string>
     <string name="action_edit">Szerkesztés</string>
     <string name="edit_api">API szerkesztése</string>
-    <string name="home">Haza</string>
-    <string name="mentions">Említések</string>
+    <string name="title_home">Haza</string>
+    <string name="title_mentions">Említések</string>
     <string name="error_occurred">Hiba lépett fel, kérem próbálja újra.</string>
     <string name="error_already_logged_in">Ön már be van jelentkezve.</string>
     <string name="no_account_selected">Nincs fiók kiválasztva.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">Frissítő szolgáltatás</string>
     <string name="label_streaming_service">Közvetítő szolgáltatás</string>
     <string name="label_background_operation_service">Háttér szolgáltatás</string>
-    <string name="open_in_browser">Megnyitás böngészőben</string>
+    <string name="action_open_in_browser">Megnyitás böngészőben</string>
     <string name="action_delete">Törlés</string>
     <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweet</string>
-    <string name="cancel_retweet">Retweet visszavonása</string>
+    <string name="action_cancel_retweet">Retweet visszavonása</string>
     <string name="action_favorite">Kedvencnek jelöl</string>
     <string name="action_unfavorite">Mégsem kedvenc</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">Mégsem tetszik</string>
     <string name="action_reply">Válasz</string>
     <string name="action_share">Megosztás</string>
-    <string name="view_map">Térkép</string>
+    <string name="action_view_map">Térkép</string>
     <string name="title_statuses">Tweet</string>
-    <string name="followers">Követők</string>
-    <string name="following">Követve</string>
-    <string name="about">Általános infó</string>
-    <string name="open_source_license">Nyílt forrású licenc</string>
-    <string name="api">API</string>
+    <string name="title_followers">Követők</string>
+    <string name="title_following">Követve</string>
+    <string name="title_about">Általános infó</string>
+    <string name="title_open_source_license">Nyílt forrású licenc</string>
+
     <string name="default_api_settings">Alapértelmezett API beállítások</string>
     <string name="default_api_settings_summary">Újra be kell jelentkezni a beállítások érvénybelépéséhez</string>
     <string name="consumer_key">Felhasználói kulcs</string>
     <string name="consumer_secret">Felhasználói kulcs</string>
-    <string name="storage">Tárhely</string>
-    <string name="database_item_limit">Adatbázis méretkorlát</string>
-    <string name="database_item_limit_summary">Az adatbázisokban tárolt elemek számának felső határa kisebb értékre állítva fiókonként a helymegtakarításhoz és a betöltési sebesség növeléséhez.</string>
+    <string name="preference_title_storage">Tárhely</string>
+    <string name="preference_title_database_item_limit">Adatbázis méretkorlát</string>
+    <string name="preference_summary_database_item_limit">Az adatbázisokban tárolt elemek számának felső határa kisebb értékre állítva fiókonként a helymegtakarításhoz és a betöltési sebesség növeléséhez.</string>
     <string name="clear_cache">Gyorsítótár ürítése</string>
     <string name="clear_cache_summary">Profilkép cache ürítése.</string>
     <string name="clear_databases">Adatbázisok ürítése</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">Retweetelte <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Retweetelte <xliff:g id="user_name">%1$s</xliff:g> és még <xliff:g id="retweet_count">%2$d</xliff:g> felhasználó</string>
     <string name="retweeted_by_count">Retweetelte <xliff:g id="retweet_count">%d</xliff:g> felhasználó</string>
-    <string name="users_retweeted_this">Következő felhasználók által retweetelve</string>
-    <string name="users_favorited_this">Kedvencnek jelölő felhasználók</string>
-    <string name="users_liked_this">Felhasználó kedveli</string>
+    <string name="title_users_retweeted_this">Következő felhasználók által retweetelve</string>
+    <string name="title_users_favorited_this">Kedvencnek jelölő felhasználók</string>
+    <string name="title_users_liked_this">Felhasználó kedveli</string>
     <string name="reply_to">Válasz neki: <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Idézet: <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -102,7 +102,7 @@
     <string name="load_item_limit">Betöltendő elemek maximális száma</string>
     <string name="load_item_limit_summary">Töltésenkénti elemszám korlát beállítása.</string>
     <string name="action_quote">Idézet</string>
-    <string name="add_rule">Szabály hozzáadása</string>
+    <string name="action_add_filter_rule">Szabály hozzáadása</string>
     <string name="text_size">Szövegméret</string>
     <string name="text_size_summary">A tweetek betűmérete.</string>
     <string name="cannot_get_location">Helyzet meghatározása sikertelen.</string>

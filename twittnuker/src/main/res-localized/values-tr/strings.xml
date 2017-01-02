@@ -7,7 +7,7 @@
 
     <string name="add_account">Hesap ekle</string>
     <string name="settings">Ayarlar</string>
-    <string name="send">Gönder</string>
+    <string name="action_send">Gönder</string>
     <string name="add_image">Resim ekle</string>
     <string name="take_photo">Fotoğraf çek</string>
     <string name="status_hint">Neler oluyor?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Temel</string>
     <string name="twip_o">twip O modu</string>
-    <string name="advanced">Gelişmiş</string>
+
     <string name="action_save">Kaydet</string>
     <string name="action_edit">Düzenle</string>
     <string name="edit_api">API düzenle</string>
-    <string name="home">Anasayfa</string>
-    <string name="mentions">Bahsedenler</string>
+    <string name="title_home">Anasayfa</string>
+    <string name="title_mentions">Bahsedenler</string>
     <string name="error_occurred">Bir hata oluştu, lütfen daha sonra deneyin.</string>
     <string name="error_already_logged_in">Zaten giriş yaptınız</string>
     <string name="no_account_selected">Hesap seçilmedi.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">Servisi yenile</string>
     <string name="label_streaming_service">Akış servisi</string>
     <string name="label_background_operation_service">Arkaplan çalışma servisi</string>
-    <string name="open_in_browser">Tarayıcıda aç</string>
+    <string name="action_open_in_browser">Tarayıcıda aç</string>
     <string name="action_delete">Sil</string>
     <string name="action_retweet">Retweet et</string>
     <string name="retweets">Retweetler</string>
-    <string name="cancel_retweet">Retweeti iptal et</string>
+    <string name="action_cancel_retweet">Retweeti iptal et</string>
     <string name="action_favorite">Favorilerine ekle</string>
     <string name="action_unfavorite">Favorilerinden çıkar</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">Beğenmekten Vazgeç</string>
     <string name="action_reply">Cevapla</string>
     <string name="action_share">Paylaş</string>
-    <string name="view_map">Harita</string>
+    <string name="action_view_map">Harita</string>
     <string name="title_statuses">Tweetler</string>
-    <string name="followers">Takipçiler</string>
-    <string name="following">takip edilenler</string>
-    <string name="about">Hakkında</string>
-    <string name="open_source_license">Açık kaynak kod lisansı</string>
-    <string name="api">API</string>
+    <string name="title_followers">Takipçiler</string>
+    <string name="title_following">takip edilenler</string>
+    <string name="title_about">Hakkında</string>
+    <string name="title_open_source_license">Açık kaynak kod lisansı</string>
+
     <string name="default_api_settings">Varsayılan API ayarları</string>
     <string name="default_api_settings_summary">Bu ayarlar sadece yeni giriş yapılmış hesaplara uygulanır</string>
     <string name="consumer_key">Müşteri anahtarı</string>
     <string name="consumer_secret">Müşteri gizli</string>
-    <string name="storage">Depolama</string>
-    <string name="database_item_limit">Veritabanı boyutu limiti</string>
-    <string name="database_item_limit_summary">Her hesap için veritabanında tutulan nesne sayısının üst limiti, depolama alanından tasarruf ve yükleme hızında artış için daha düşük değer seçiniz.</string>
+    <string name="preference_title_storage">Depolama</string>
+    <string name="preference_title_database_item_limit">Veritabanı boyutu limiti</string>
+    <string name="preference_summary_database_item_limit">Her hesap için veritabanında tutulan nesne sayısının üst limiti, depolama alanından tasarruf ve yükleme hızında artış için daha düşük değer seçiniz.</string>
     <string name="clear_cache">Önbelleği temizle</string>
     <string name="clear_cache_summary">Depolanan profil resmi önbelleğini temizle.</string>
     <string name="clear_databases">Veritabanlarını temizle</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> bunu retweet etti</string>
     <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> ve <xliff:g id="retweet_count">%2$d</xliff:g> kişi daha bunu retweet etti</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g> kullanıcı bunu retweet etti</string>
-    <string name="users_retweeted_this">Kullanıcılar bunu retweetledi</string>
-    <string name="users_favorited_this">Kullanıcılar bunu beğendi</string>
-    <string name="users_liked_this">Kullanıcılar bunu beğendi</string>
+    <string name="title_users_retweeted_this">Kullanıcılar bunu retweetledi</string>
+    <string name="title_users_favorited_this">Kullanıcılar bunu beğendi</string>
+    <string name="title_users_liked_this">Kullanıcılar bunu beğendi</string>
     <string name="reply_to"><xliff:g id="user_name">%s</xliff:g> adlı kişiye cevap ver</string>
     <string name="quote_user">Alıntı yap <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g>, <xliff:g id="source">%2$s</xliff:g> kullanılarak</string>
@@ -103,7 +103,7 @@
     <string name="load_item_limit">Yeni nesne yükleme limiti</string>
     <string name="load_item_limit_summary">Bir defada yüklenecek en çok nesne sayısını belirler.</string>
     <string name="action_quote">Alıntı yap</string>
-    <string name="add_rule">Kural ekle</string>
+    <string name="action_add_filter_rule">Kural ekle</string>
     <string name="text_size">Yazı Boyutu</string>
     <string name="text_size_summary">Tweeti harf sayısı.</string>
     <string name="cannot_get_location">Konumunuz alınamıyor.</string>

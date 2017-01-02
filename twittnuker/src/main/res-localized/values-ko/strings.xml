@@ -7,7 +7,7 @@
 
     <string name="add_account">계정 추가</string>
     <string name="settings">설정</string>
-    <string name="send">보내기</string>
+    <string name="action_send">보내기</string>
     <string name="add_image">이미지 추가</string>
     <string name="take_photo">사진 촬영</string>
     <string name="status_hint">무슨 일이 일어나고 있나요?</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">기본</string>
     <string name="twip_o">twip O 모드</string>
-    <string name="advanced">고급</string>
+
     <string name="action_save">저장</string>
     <string name="action_edit">수정</string>
     <string name="edit_api">API 수정</string>
-    <string name="home">홈</string>
-    <string name="mentions">멘션</string>
+    <string name="title_home">홈</string>
+    <string name="title_mentions">멘션</string>
     <string name="error_occurred">오류가 발생했습니다. 다시 시도해 주십시오.</string>
     <string name="error_already_logged_in">이미 로그인되어 있습니다.</string>
     <string name="no_account_selected">계정이 선택되지 않았습니다.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">서비스 새로고침</string>
     <string name="label_streaming_service">스트리밍 서비스</string>
     <string name="label_background_operation_service">백그라운드 동작 서비스</string>
-    <string name="open_in_browser">브라우저에서 열기</string>
+    <string name="action_open_in_browser">브라우저에서 열기</string>
     <string name="action_delete">삭제</string>
     <string name="action_retweet">리트윗</string>
     <string name="retweets">리트윗</string>
-    <string name="cancel_retweet">리트윗 취소</string>
+    <string name="action_cancel_retweet">리트윗 취소</string>
     <string name="action_favorite">관심글</string>
     <string name="action_unfavorite">관심글 해제</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">마음 해제하기</string>
     <string name="action_reply">답변</string>
     <string name="action_share">공유</string>
-    <string name="view_map">지도</string>
+    <string name="action_view_map">지도</string>
     <string name="title_statuses">트윗</string>
-    <string name="followers">팔로워</string>
-    <string name="following">팔로잉</string>
-    <string name="about">정보</string>
-    <string name="open_source_license">오픈 소스 라이센스</string>
-    <string name="api">API</string>
+    <string name="title_followers">팔로워</string>
+    <string name="title_following">팔로잉</string>
+    <string name="title_about">정보</string>
+    <string name="title_open_source_license">오픈 소스 라이센스</string>
+
     <string name="default_api_settings">기본 API 설정</string>
     <string name="default_api_settings_summary">이 설정은 다시 로그인해야만 적용됩니다.</string>
     <string name="consumer_key">컨슈머 키</string>
     <string name="consumer_secret">컨슈머 시크릿</string>
-    <string name="storage">저장소</string>
-    <string name="database_item_limit">데이터베이스 크기 제한</string>
-    <string name="database_item_limit_summary">각 계정의 데이터 베이스에 저장하는 항목의 제한 제한 개수입니다. 작은 값으로 설정하면 불러오는 속도를 빠르게 합니다.</string>
+    <string name="preference_title_storage">저장소</string>
+    <string name="preference_title_database_item_limit">데이터베이스 크기 제한</string>
+    <string name="preference_summary_database_item_limit">각 계정의 데이터 베이스에 저장하는 항목의 제한 제한 개수입니다. 작은 값으로 설정하면 불러오는 속도를 빠르게 합니다.</string>
     <string name="clear_cache">캐시 지우기</string>
     <string name="clear_cache_summary">저장된 프로필 이미지 캐시를 지웁니다.</string>
     <string name="clear_databases">데이터베이스 지우기</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name"><xliff:g id="user_name">%s</xliff:g> 님이 리트윗했습니다</string>
     <string name="retweeted_by_name_with_count"><xliff:g id="user_name">%1$s</xliff:g> 님과 다른 <xliff:g id="retweet_count">%2$d</xliff:g>명이 리트윗했습니다</string>
     <string name="retweeted_by_count"><xliff:g id="retweet_count">%d</xliff:g>명이 리트윗했습니다</string>
-    <string name="users_retweeted_this">리트윗한 사용자</string>
-    <string name="users_favorited_this">이 트윗을 마음에 들어하는 사용자</string>
-    <string name="users_liked_this">이 트윗을 마음에 들어하는 사용자들</string>
+    <string name="title_users_retweeted_this">리트윗한 사용자</string>
+    <string name="title_users_favorited_this">이 트윗을 마음에 들어하는 사용자</string>
+    <string name="title_users_liked_this">이 트윗을 마음에 들어하는 사용자들</string>
     <string name="reply_to"><xliff:g id="user_name">%s</xliff:g>님에게 답하기</string>
     <string name="quote_user"><xliff:g id="user_name">%s</xliff:g>님을 인용하기</string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -102,7 +102,7 @@
     <string name="load_item_limit">불러들일 항목 제한</string>
     <string name="load_item_limit_summary">불러들일 개수를 설정합니다.</string>
     <string name="action_quote">인용</string>
-    <string name="add_rule">규칙 추가</string>
+    <string name="action_add_filter_rule">규칙 추가</string>
     <string name="text_size">글자 크기</string>
     <string name="text_size_summary">트윗의 글자 크기</string>
     <string name="cannot_get_location">위치를 찾을 수 없습니다.</string>

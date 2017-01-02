@@ -8,7 +8,7 @@
     <string name="title_compose">Neuer Tweet</string>
     <string name="add_account">Account hinzufügen</string>
     <string name="settings">Einstellungen</string>
-    <string name="send">Senden</string>
+    <string name="action_send">Senden</string>
     <string name="add_image">Bild hinzufügen</string>
     <string name="take_photo">Foto aufnehmen</string>
     <string name="add_gif">Gif hinzufügen</string>
@@ -22,12 +22,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Einfach</string>
     <string name="twip_o">twip O Modus</string>
-    <string name="advanced">Erweitert</string>
+
     <string name="action_save">Speichern</string>
     <string name="action_edit">Bearbeiten</string>
     <string name="edit_api">API bearbeiten</string>
-    <string name="home">Startseite</string>
-    <string name="mentions">Erwähnungen</string>
+    <string name="title_home">Startseite</string>
+    <string name="title_mentions">Erwähnungen</string>
     <string name="error_occurred">Ein Fehler ist aufgetreten, versuche es erneut.</string>
     <string name="error_already_logged_in">Du bist schon eingeloggt.</string>
     <string name="no_account_selected">Kein Account ausgewählt.</string>
@@ -43,12 +43,12 @@
     <string name="label_refresh_service">Dienst aktualisieren</string>
     <string name="label_streaming_service">Streaming Service</string>
     <string name="label_background_operation_service">Hintergrunddienst</string>
-    <string name="open_in_browser">Im Browser öffnen</string>
+    <string name="action_open_in_browser">Im Browser öffnen</string>
     <string name="action_delete">Löschen</string>
     <string name="action_retweet">Retweet</string>
     <string name="status_type_retweet">Retweet</string>
     <string name="retweets">Retweets</string>
-    <string name="cancel_retweet">Retweet löschen</string>
+    <string name="action_cancel_retweet">Retweet löschen</string>
     <string name="action_favorite">Favorisieren</string>
     <string name="action_unfavorite">Favorit löschen</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -56,21 +56,21 @@
     <string name="action_undo_like">Unlike</string>
     <string name="action_reply">Antworten</string>
     <string name="action_share">Teilen</string>
-    <string name="view_map">Karte</string>
+    <string name="action_view_map">Karte</string>
     <string name="view_user_profile">Benutzerprofil</string>
     <string name="title_statuses">Tweets</string>
-    <string name="followers">Follower</string>
-    <string name="following">Folgen</string>
-    <string name="about">Über</string>
-    <string name="open_source_license">Open-Source-Lizenz</string>
-    <string name="api">API</string>
+    <string name="title_followers">Follower</string>
+    <string name="title_following">Folgen</string>
+    <string name="title_about">Über</string>
+    <string name="title_open_source_license">Open-Source-Lizenz</string>
+
     <string name="default_api_settings">Standard API Einstellungen</string>
     <string name="default_api_settings_summary">Diese Einstellungen wirken sich nur auf neu eingeloggte Accounts aus</string>
     <string name="consumer_key">Benutzerschlüssel</string>
     <string name="consumer_secret">Benutzergeheimnis</string>
-    <string name="storage">Speicher</string>
-    <string name="database_item_limit">Maximale Größe der Datenbank</string>
-    <string name="database_item_limit_summary">Anzahl der Objekte, die maximal pro Account gespeichert werden. Ein niedrigerer Wert spart Speicherplatz und erhöht die Ladegeschwindigkeit.</string>
+    <string name="preference_title_storage">Speicher</string>
+    <string name="preference_title_database_item_limit">Maximale Größe der Datenbank</string>
+    <string name="preference_summary_database_item_limit">Anzahl der Objekte, die maximal pro Account gespeichert werden. Ein niedrigerer Wert spart Speicherplatz und erhöht die Ladegeschwindigkeit.</string>
     <string name="clear_cache">Cache löschen</string>
     <string name="clear_cache_summary">Lösche Profilbild-Cache.</string>
     <string name="clear_databases">Lösche Datenbank</string>
@@ -82,9 +82,9 @@
     <string name="retweeted_by_name">Retweetet von <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> anderen</string>
     <string name="retweeted_by_count">Retweetet von <xliff:g id="retweet_count">%d</xliff:g> Benutzern</string>
-    <string name="users_retweeted_this">Benutzer retweeteten das</string>
-    <string name="users_favorited_this">Benutzer favorisierten das</string>
-    <string name="users_liked_this">Benutzer gefällt das</string>
+    <string name="title_users_retweeted_this">Benutzer retweeteten das</string>
+    <string name="title_users_favorited_this">Benutzer favorisierten das</string>
+    <string name="title_users_liked_this">Benutzer gefällt das</string>
     <string name="reply_to">Antworten <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Zitat <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -109,7 +109,7 @@
     <string name="load_item_limit">Limitierung zu ladender Elemente</string>
     <string name="load_item_limit_summary">Element-Limitierung pro Ladevorgang festlegen</string>
     <string name="action_quote">Zitat</string>
-    <string name="add_rule">Regel hinzufügen</string>
+    <string name="action_add_filter_rule">Regel hinzufügen</string>
     <string name="text_size">Textgröße</string>
     <string name="text_size_summary">Textgröße von Tweets.</string>
     <string name="cannot_get_location">Ort konnte nicht gefunden werden.</string>
@@ -824,6 +824,7 @@
     <string name="action_select_none">Nichts</string>
     <string name="action_invert_selection">Invertieren</string>
     <string name="message_no_user_selected">Kein Benutzer ausgewählt</string>
+    <string name="preference_title_advanced">Erweitert</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

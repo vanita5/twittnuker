@@ -7,7 +7,7 @@
 
     <string name="add_account">Προσθήκη λογαριασμού</string>
     <string name="settings">Ρυθμίσεις</string>
-    <string name="send">Αποστολή</string>
+    <string name="action_send">Αποστολή</string>
     <string name="add_image">Προσθήκη εικόνας</string>
     <string name="take_photo">Τραβήξτε φωτογραφία</string>
     <string name="status_hint">Τι συμβαίνει;</string>
@@ -20,12 +20,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">Βασικός</string>
     <string name="twip_o">Λειτουργία twip O</string>
-    <string name="advanced">Για προχωρημένους</string>
+
     <string name="action_save">Αποθήκευση</string>
     <string name="action_edit">Επεξεργασία</string>
     <string name="edit_api">Επεξεργασία API</string>
-    <string name="home">Αρχική σελίδα</string>
-    <string name="mentions">Αναφορές</string>
+    <string name="title_home">Αρχική σελίδα</string>
+    <string name="title_mentions">Αναφορές</string>
     <string name="error_occurred">Παρουσιάστηκε ένα σφάλμα, παρακαλώ προσπαθήστε ξανά.</string>
     <string name="error_already_logged_in">Είσαι ήδη συνδεδεμένος.</string>
     <string name="no_account_selected">Δεν έχει επιλεγεί λογαριασμός.</string>
@@ -41,11 +41,11 @@
     <string name="label_refresh_service">Ανανέωση υπηρεσίας</string>
     <string name="label_streaming_service">Υπηρεσία streaming</string>
     <string name="label_background_operation_service">Υπηρεσία λειτουργίας υποβάθρου</string>
-    <string name="open_in_browser">Άνοιγμα στον περιηγητή</string>
+    <string name="action_open_in_browser">Άνοιγμα στον περιηγητή</string>
     <string name="action_delete">Διαγραφή</string>
     <string name="action_retweet">Ρετουϊτ</string>
     <string name="retweets">Ρετουϊτς</string>
-    <string name="cancel_retweet">Ακύρωση ρετουϊτ</string>
+    <string name="action_cancel_retweet">Ακύρωση ρετουϊτ</string>
     <string name="action_favorite">Αγαπημένο</string>
     <string name="action_unfavorite">Μη αγαπημένο</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
@@ -53,20 +53,20 @@
     <string name="action_undo_like">Ακύρωση μου αρέσει</string>
     <string name="action_reply">Απάντηση</string>
     <string name="action_share">Κοινή χρήση</string>
-    <string name="view_map">Χάρτης</string>
+    <string name="action_view_map">Χάρτης</string>
     <string name="title_statuses">Tweets</string>
-    <string name="followers">Ακόλουθοι</string>
-    <string name="following">Ακολουθεί</string>
-    <string name="about">Πληροφορίες</string>
-    <string name="open_source_license">Άδεια ελεύθερου λογισμικού</string>
-    <string name="api">API</string>
+    <string name="title_followers">Ακόλουθοι</string>
+    <string name="title_following">Ακολουθεί</string>
+    <string name="title_about">Πληροφορίες</string>
+    <string name="title_open_source_license">Άδεια ελεύθερου λογισμικού</string>
+
     <string name="default_api_settings">Προεπιλεγμένες ρυθμίσεις API</string>
     <string name="default_api_settings_summary">Αυτές οι ρυθμίσεις ισχύουν μόνο για νεοεισηχθέντες λογαριασμούς</string>
     <string name="consumer_key">Κλειδί καταναλωτή</string>
     <string name="consumer_secret">Μυστικό καταναλωτή</string>
-    <string name="storage">Αποθήκευση</string>
-    <string name="database_item_limit">Όριο μεγέθους βάσης δεδομένων</string>
-    <string name="database_item_limit_summary">Ανώτατο όριο αντικειμένων αποθηκευμένων στις βάσεις δεδομένων για κάθε λογαριασμό, επιλέξτε μικρότερη τιμή για εξοικονόμηση χώρου και αύξηση της ταχύτητας φόρτωσης.</string>
+    <string name="preference_title_storage">Αποθήκευση</string>
+    <string name="preference_title_database_item_limit">Όριο μεγέθους βάσης δεδομένων</string>
+    <string name="preference_summary_database_item_limit">Ανώτατο όριο αντικειμένων αποθηκευμένων στις βάσεις δεδομένων για κάθε λογαριασμό, επιλέξτε μικρότερη τιμή για εξοικονόμηση χώρου και αύξηση της ταχύτητας φόρτωσης.</string>
     <string name="clear_cache">Καθαρισμός κρυφής μνήμης</string>
     <string name="clear_cache_summary">Καθαρισμός αποθηκευμένων εικόνων προφίλ στην κρυφή μνήμη.</string>
     <string name="clear_databases">Καθαρισμός βάσεων δεδομένων</string>
@@ -78,9 +78,9 @@
     <string name="retweeted_by_name">Έγινε ρετουϊτ από <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Έγινε ρετουϊτ από <xliff:g id="user_name">%1$s</xliff:g> και <xliff:g id="retweet_count">%2$d</xliff:g> άλλους</string>
     <string name="retweeted_by_count">Έγινε ρετουϊτ από <xliff:g id="retweet_count">%d</xliff:g> χρήστες</string>
-    <string name="users_retweeted_this">Χρήστες το έκαναν ρετουϊτ</string>
-    <string name="users_favorited_this">Χρήστες το πρόσθεσαν στα αγαπημένα</string>
-    <string name="users_liked_this">Χρήστες δήλωσαν ότι τους άρεσε</string>
+    <string name="title_users_retweeted_this">Χρήστες το έκαναν ρετουϊτ</string>
+    <string name="title_users_favorited_this">Χρήστες το πρόσθεσαν στα αγαπημένα</string>
+    <string name="title_users_liked_this">Χρήστες δήλωσαν ότι τους άρεσε</string>
     <string name="reply_to">Σε απάντηση του <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Παράθεση <xliff:g id="user_name">%s</xliff:g></string>
     <string name="title_filters">Φίλτρα</string>

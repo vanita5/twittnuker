@@ -4,7 +4,7 @@
 
     <string name="add_account">Tilføj konto</string>
     <string name="settings">Indstillinger</string>
-    <string name="send">Send</string>
+    <string name="action_send">Send</string>
     <string name="add_image">Tilføj billede</string>
     <string name="take_photo">Tag billede</string>
     <string name="status_hint">Hvad sker der?</string>
@@ -14,12 +14,12 @@
     <string name="oauth">OAuth</string>
     <string name="xauth">xAuth</string>
     <string name="basic">Basik</string>
-    <string name="advanced">Avanceret</string>
+
     <string name="action_save">Gem</string>
     <string name="action_edit">Redigere</string>
     <string name="edit_api">Redigere API</string>
-    <string name="home">Hjem</string>
-    <string name="mentions">Nævnelser</string>
+    <string name="title_home">Hjem</string>
+    <string name="title_mentions">Nævnelser</string>
     <string name="error_occurred">En fejl opstod, prøv igen.</string>
     <string name="error_already_logged_in">Du har allerede logget ud.</string>
     <string name="no_account_selected">Ingen konto valgt.</string>
@@ -30,30 +30,30 @@
     <string name="username">Brugernavn</string>
     <string name="password">Adgangskode</string>
     <string name="label_refresh_service">Genopfrisk service</string>
-    <string name="open_in_browser">Åben i browser</string>
+    <string name="action_open_in_browser">Åben i browser</string>
     <string name="action_delete">Slet</string>
     <string name="action_retweet">Retweet</string>
     <string name="retweets">Retweeter</string>
-    <string name="cancel_retweet">Annuller retweet</string>
+    <string name="action_cancel_retweet">Annuller retweet</string>
     <string name="action_favorite">Favoriser</string>
     <string name="action_unfavorite">Slet favorisering</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
     <string name="action_reply">Svar</string>
     <string name="action_share">Del</string>
-    <string name="view_map">Kort</string>
+    <string name="action_view_map">Kort</string>
     <string name="title_statuses">Tweets</string>
-    <string name="followers">Følgere</string>
-    <string name="following">Følger</string>
-    <string name="about">Om</string>
-    <string name="open_source_license">Open source licens</string>
-    <string name="api">API</string>
+    <string name="title_followers">Følgere</string>
+    <string name="title_following">Følger</string>
+    <string name="title_about">Om</string>
+    <string name="title_open_source_license">Open source licens</string>
+
     <string name="default_api_settings">Standard API indstillinger</string>
     <string name="default_api_settings_summary">Disse indstillinger gælder kun for brugere der er logget ind fornyeligt</string>
     <string name="consumer_key">Forbruger nøgle</string>
     <string name="consumer_secret">Forbruger hemmelighed</string>
-    <string name="storage">Opbevaring</string>
-    <string name="database_item_limit">Database størrelsesbegrænsning</string>
-    <string name="database_item_limit_summary">Øvre grænse for objekter gemt i databaser for hver bruger, giv en mindre værdi for at spare plads og øge indlæsningstiden.</string>
+    <string name="preference_title_storage">Opbevaring</string>
+    <string name="preference_title_database_item_limit">Database størrelsesbegrænsning</string>
+    <string name="preference_summary_database_item_limit">Øvre grænse for objekter gemt i databaser for hver bruger, giv en mindre værdi for at spare plads og øge indlæsningstiden.</string>
     <string name="clear_cache">Ryd cache</string>
     <string name="clear_cache_summary">Ryd profile billedes cache.</string>
     <string name="clear_databases">Ryd database</string>
@@ -65,8 +65,8 @@
     <string name="retweeted_by_name">Retweetet af <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Retweetet af <xliff:g id="user_name">%1$s</xliff:g> og <xliff:g id="retweet_count">%2$d</xliff:g> andre</string>
     <string name="retweeted_by_count">Retweetet af <xliff:g id="retweet_count">%d</xliff:g> brugere</string>
-    <string name="users_retweeted_this">Brugere retweetede dette</string>
-    <string name="users_favorited_this">Brugere retweetede dette</string>
+    <string name="title_users_retweeted_this">Brugere retweetede dette</string>
+    <string name="title_users_favorited_this">Brugere retweetede dette</string>
     <string name="reply_to">Som svar på <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">Citer <xliff:g id="user_name">%s</xliff:g></string>
     <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
@@ -88,7 +88,7 @@
     <string name="load_item_limit">Element indlæsnings begrænsning</string>
     <string name="load_item_limit_summary">Sæt objektgrænse per indlæsning.</string>
     <string name="action_quote">Citat</string>
-    <string name="add_rule">Tilføj regel</string>
+    <string name="action_add_filter_rule">Tilføj regel</string>
     <string name="text_size">Tekst størrelse</string>
     <string name="text_size_summary">Tekststørrelse for tweets.</string>
     <string name="cannot_get_location">Kunne ikke finde din placering.</string>

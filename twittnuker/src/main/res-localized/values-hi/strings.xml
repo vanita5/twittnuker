@@ -5,7 +5,7 @@
 
     <string name="add_account">खाता जोड़ें</string>
     <string name="settings">सेटिंग्स</string>
-    <string name="send">भेजें</string>
+    <string name="action_send">भेजें</string>
     <string name="add_image">छवि जोड़ें</string>
     <string name="take_photo">तस्वीर लो</string>
     <string name="status_hint">क्या हो रहा है</string>
@@ -18,12 +18,12 @@
     <string name="xauth">xAuth</string>
     <string name="basic">बुनियादी</string>
     <string name="twip_o">twip O मोड</string>
-    <string name="advanced">उन्नत</string>
+
     <string name="action_save">सेव</string>
     <string name="action_edit">एडिट</string>
     <string name="edit_api">API एडिट करे</string>
-    <string name="home">घर</string>
-    <string name="mentions">ज़िक्र</string>
+    <string name="title_home">घर</string>
+    <string name="title_mentions">ज़िक्र</string>
     <string name="error_occurred">एक एर्रोर हुई है, फिर कोशिश करें |</string>
     <string name="error_already_logged_in">आप पहले से ही अंदर लॉग इन हैं |</string>
     <string name="no_account_selected">कोई खाता चयन नहीं किया गया.</string>
@@ -39,31 +39,31 @@
     <string name="label_refresh_service">रिफ्रेश सर्विस</string>
     <string name="label_streaming_service">स्ट्रीमिंग सर्विस</string>
     <string name="label_background_operation_service">बैकग्राउंड आपरेशन सेवा</string>
-    <string name="open_in_browser">ब्राउज़र में खोलें</string>
+    <string name="action_open_in_browser">ब्राउज़र में खोलें</string>
     <string name="action_delete">मिटायें</string>
     <string name="action_retweet">रीट्वीट</string>
     <string name="retweets">रीट्वीट</string>
-    <string name="cancel_retweet">रीट्वीट कैंसल करे</string>
+    <string name="action_cancel_retweet">रीट्वीट कैंसल करे</string>
     <string name="action_favorite">पसंदीदा</string>
     <string name="action_unfavorite">पसंदीदा से हटा दें</string>
     <!-- v. e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
     <string name="action_like">पसंद करें</string>
     <string name="action_reply">जवाब</string>
     <string name="action_share">शेयर</string>
-    <string name="view_map">नक्शा</string>
+    <string name="action_view_map">नक्शा</string>
     <string name="title_statuses">ट्वीट्स</string>
-    <string name="followers">फ़ॉलोअर</string>
-    <string name="following">फोल्लोविंग</string>
-    <string name="about">विवरण</string>
-    <string name="open_source_license">खुला स्रोत लाइसेंस</string>
-    <string name="api">API</string>
+    <string name="title_followers">फ़ॉलोअर</string>
+    <string name="title_following">फोल्लोविंग</string>
+    <string name="title_about">विवरण</string>
+    <string name="title_open_source_license">खुला स्रोत लाइसेंस</string>
+
     <string name="consumer_key">उपभोक्ता कुंजी</string>
     <string name="consumer_secret">उपभोक्ता रहस्य</string>
-    <string name="storage">भंडारण</string>
+    <string name="preference_title_storage">भंडारण</string>
     <string name="clear_cache">कैश खाली किजीये</string>
     <string name="clear_cache_summary">संग्रहीत प्रोफाइल छवि को मिटाए|</string>
     <string name="clear_databases">डेटाबेस साफ़ करे</string>
-    <string name="users_retweeted_this">उपयोगकर्ताओं ने यह रीट्वीट किया</string>
+    <string name="title_users_retweeted_this">उपयोगकर्ताओं ने यह रीट्वीट किया</string>
     <string name="reply_to">को उत्तर दें <xliff:g id="user_name">%s</xliff:g></string>
     <string name="quote_user">उद्धरण <xliff:g id="user_name">%s</xliff:g></string>
     <string name="users">उपयोगकर्ता</string>
@@ -78,7 +78,7 @@
     <string name="load_item_limit">लोड आइटम सीमा</string>
     <string name="load_item_limit_summary">सेट आइटम लोड प्रति सीमा|</string>
     <string name="action_quote">उद्धरण</string>
-    <string name="add_rule">नियम जोड़ें</string>
+    <string name="action_add_filter_rule">नियम जोड़ें</string>
     <string name="text_size">टेक्स्ट का माप</string>
     <string name="cannot_get_location">आपके स्थान को प्राप्त नहीं कर सकते.</string>
     <string name="title_drafts">ड्राफ्ट्स</string>
