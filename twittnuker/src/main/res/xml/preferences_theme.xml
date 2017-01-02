@@ -36,7 +36,7 @@
         android:title="@string/theme">
         <extra
             android:name="recreate_activity"
-            android:value="false"/>
+            android:value="true"/>
     </de.vanita5.twittnuker.preference.EntrySummaryListPreference>
 
     <de.vanita5.twittnuker.preference.ThemeBackgroundPreference

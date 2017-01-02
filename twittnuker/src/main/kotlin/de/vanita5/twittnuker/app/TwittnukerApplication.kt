@@ -30,7 +30,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.AsyncTask
 import android.support.multidex.MultiDex
-import android.support.v7.app.AppCompatDelegate
 import android.util.Log
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
@@ -47,7 +46,6 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.apiLastChangeKey
 import de.vanita5.twittnuker.constant.bugReportsKey
 import de.vanita5.twittnuker.constant.defaultFeatureLastUpdated
-import de.vanita5.twittnuker.constant.nightModeKey
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
@@ -96,8 +94,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         if (BuildConfig.DEBUG) {
             StrictModeUtils.detectAllVmPolicy()
         }
-        val preferences = sharedPreferences
-        resetTheme(preferences)
         super.onCreate()
         startKovenant()
         initializeAsyncTask()
@@ -197,25 +193,12 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             KEY_EMOJI_SUPPORT -> {
                 externalThemeManager.reloadEmojiPreferences()
             }
-            KEY_THEME -> {
-                resetTheme(preferences)
-            }
-            KEY_THEME_BACKGROUND -> {
-            }
-            KEY_PROFILE_IMAGE_STYLE -> {
-            }
-            KEY_THEME_COLOR -> {
-            }
         }
     }
 
     override fun onTerminate() {
         super.onTerminate()
         stopKovenant()
-    }
-
-    private fun resetTheme(preferences: SharedPreferences) {
-        AppCompatDelegate.setDefaultNightMode(preferences[nightModeKey])
     }
 
     private fun reloadDnsSettings() {

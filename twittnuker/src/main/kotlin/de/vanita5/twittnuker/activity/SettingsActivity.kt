@@ -47,6 +47,8 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.ACTION_NAVIGATION_BACK
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_THEME_NAME_DARK
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_THEME_NAME_LIGHT
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.ThemeUtils
@@ -211,6 +213,18 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
         openDetails(position)
     }
 
+    override fun getThemeResource(theme: String, themeColor: Int, nightMode: Int): Int {
+        when (theme) {
+            VALUE_THEME_NAME_LIGHT -> {
+                return R.style.Theme_Twidere_Light
+            }
+            VALUE_THEME_NAME_DARK -> {
+                return R.style.Theme_Twidere_Dark
+            }
+        }
+        return super.getThemeResource(theme, themeColor, nightMode)
+    }
+
     private fun openDetails(position: Int) {
         if (isFinishing) return
         val entry = entriesAdapter.getItem(position) as? PreferenceEntry ?: return
@@ -247,13 +261,8 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
     }
 
     internal class EntriesAdapter(context: Context) : BaseAdapter() {
-        private val inflater: LayoutInflater
-        private val entries: MutableList<Entry>
-
-        init {
-            inflater = LayoutInflater.from(context)
-            entries = ArrayList<Entry>()
-        }
+        private val inflater: LayoutInflater = LayoutInflater.from(context)
+        private val entries: MutableList<Entry> = ArrayList()
 
         fun addPreference(tag: String, @DrawableRes icon: Int, title: String, @XmlRes preference: Int) {
             entries.add(PreferenceEntry(tag, icon, title, preference, null, null))
