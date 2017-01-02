@@ -555,7 +555,7 @@
     <string name="exclude_this_host">このホストを除外する</string>
     <string name="api_url_format_help">[DOMAIN]: Twitter APIのドメイン\n例: https://[DOMAIN].twitter.com/ は https://api.twitter.com/ のように置き換えられます。</string>
     <string name="no_version_suffix">バージョンサフィックスなし</string>
-    <string name="inverse_selection">選択を反転</string>
+
     <!--<string name="edit_media">メディアの編集</string>-->
     <string name="media">メディア</string>
     <string name="mute_user"><xliff:g id="name">%s</xliff:g>さんをミュート</string>

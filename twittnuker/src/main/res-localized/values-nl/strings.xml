@@ -558,7 +558,7 @@
     <string name="exclude_this_host">Deze host uitsluiten</string>
     <string name="api_url_format_help">[DOMAIN]: Twitter API domein.\nVoorbeeld: https://[DOMAIN].twitter.com/ zal vervangen worden door door https://api.twitter.com/.</string>
     <string name="no_version_suffix">Geen versie-achtervoegsel</string>
-    <string name="inverse_selection">Selectie omkeren</string>
+
     <!--<string name="edit_media">Bewerk media</string>-->
     <string name="media">Media</string>
     <string name="mute_user">Demp <xliff:g id="name">%s</xliff:g></string>

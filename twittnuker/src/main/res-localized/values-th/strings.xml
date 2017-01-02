@@ -554,7 +554,7 @@
     <string name="exclude_this_host">ไม่รวมโฮสต์นี้</string>
     <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nตัวอย่าง: https://[DOMAIN].twitter.com/ จะแทนที่ด้วย https://api.twitter.com/.</string>
     <string name="no_version_suffix">ไม่มีเลขเวอร์ชั่นต่อท้าย</string>
-    <string name="inverse_selection">เลือกย้อนกลับ</string>
+
     <!--<string name="edit_media">แก้ไขรูปภาพ</string>-->
     <string name="media">รูปภาพ</string>
     <string name="mute_user">มิ้ว <xliff:g id="name">%s</xliff:g></string>

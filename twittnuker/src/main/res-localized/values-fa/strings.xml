@@ -553,7 +553,7 @@
     <string name="exclude_this_host">مستثنا کردن این دامنه</string>
     <string name="api_url_format_help">[DOMAIN]: دامنهٔ API توییتر.\nمثال: https://[DOMAIN].twitter.com با https://api.twitter.com جایگزین می‌شود.</string>
     <string name="no_version_suffix">بدون پسوند نگارش</string>
-    <string name="inverse_selection">وارون انتخاب‌ها</string>
+
     <!--<string name="edit_media">ویرایش رسانه</string>-->
     <string name="media">رسانه</string>
     <string name="mute_user">بی‌صدا کردن <xliff:g id="name">%s</xliff:g></string>

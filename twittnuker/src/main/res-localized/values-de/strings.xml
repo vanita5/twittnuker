@@ -574,7 +574,6 @@
     <string name="exclude_this_host">Diesen Host ausschließen</string>
     <string name="api_url_format_help">[DOMAIN]: API Domain.\nBeispiel: https://[DOMAIN].twitter.com/ wird ersetzt durch https://api.twitter.com/.</string>
     <string name="no_version_suffix">Kein Versionszusatz</string>
-    <string name="inverse_selection">Auswahl invertieren</string>
     <!--<string name="edit_media">Editiere Medien</string>-->
     <string name="media">Medien</string>
     <string name="mute_user"><xliff:g id="name">%s</xliff:g> stummschalten</string>
@@ -819,6 +818,12 @@
     <string name="title_select_users">Benutzer auswählen</string>
     <string name="title_error_invalid_account">Ungültiger Account</string>
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>
+    <!-- [verb] Perform import action -->
+    <string name="action_import">Importieren</string>
+    <string name="action_select_all">Alle</string>
+    <string name="action_select_none">Nichts</string>
+    <string name="action_invert_selection">Invertieren</string>
+    <string name="message_no_user_selected">Kein Benutzer ausgewählt</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

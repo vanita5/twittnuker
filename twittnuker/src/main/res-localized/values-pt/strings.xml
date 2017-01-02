@@ -553,7 +553,7 @@
     <string name="exclude_this_host">Excluir este host</string>
     <string name="api_url_format_help">[DOMAIN]: Domínio da API do Twitter.\nExemplo: https://[DOMAIN].twitter.com/ será substituído por https://api.twitter.com/.</string>
     <string name="no_version_suffix">Sem sufixo de versão</string>
-    <string name="inverse_selection">Seleção inversa</string>
+
     <!--<string name="edit_media">Editar mídia</string>-->
     <string name="media">Mídia</string>
     <string name="mute_user">Silenciar <xliff:g id="name">%s</xliff:g></string>

@@ -555,7 +555,6 @@
     <string name="exclude_this_host">Escluyir esti agospiu</string>
     <string name="api_url_format_help">[DOMINIU]: Dominiu d\'API Twitter.\nExemplu: https://[DOMINIU].twitter.com/ trocaráse por https://api.twitter.com/.</string>
     <string name="no_version_suffix">Ensin sufixu de versión</string>
-    <string name="inverse_selection">Esbilla inversa</string>
     <!--<string name="edit_media">Editar multimedia</string>-->
     <string name="media">Multimedia</string>
     <string name="mute_user">Silenciar <xliff:g id="name">%s</xliff:g></string>

@@ -500,7 +500,7 @@
     <string name="exclude_this_host">Wyklucz tego hosta</string>
     <string name="api_url_format_help">[DOMAIN]: Domena Twitter API.\nPrzykład: https://[DOMAIN].twitter.com/ zostanie zastąpione przez https://api.twitter.com/.</string>
     <string name="no_version_suffix">Brak przyrostka wersji</string>
-    <string name="inverse_selection">Odwróć zaznaczenie</string>
+
     <string name="mute_user">Wycisz <xliff:g id="name">%s</xliff:g></string>
     <string name="muted_user">Wyciszono <xliff:g id="name">%s</xliff:g></string>
     <string name="unmute_user">Wyłącz wyciszenie <xliff:g id="name">%s</xliff:g></string>

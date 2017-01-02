@@ -554,7 +554,7 @@
     <string name="exclude_this_host">Исключить этот хост</string>
     <string name="api_url_format_help">[DOMAIN]: Twitter API домен.\nПример: https://[DOMAIN].twitter.com/ будет заменен на https://api.twitter.com/.</string>
     <string name="no_version_suffix">Нет суффикса версии</string>
-    <string name="inverse_selection">Обратить выделение</string>
+
     <!--<string name="edit_media">Редактировать медиа</string>-->
     <string name="media">Медиа</string>
     <string name="mute_user">Заблокировать <xliff:g id="name">%s</xliff:g></string>

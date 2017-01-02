@@ -561,7 +561,7 @@
     <string name="exclude_this_host">排除这个主机</string>
     <string name="api_url_format_help">[DOMAIN]：Twitter API 域名\n举例： https://[DOMAIN].twitter.com/ 会被替换成 https://api.twitter.com/ 。</string>
     <string name="no_version_suffix">没有版本后缀</string>
-    <string name="inverse_selection">反选</string>
+
     <!--<string name="edit_media">编辑媒体</string>-->
     <string name="media">媒体</string>
     <string name="mute_user">静音<xliff:g id="name">%s</xliff:g></string>

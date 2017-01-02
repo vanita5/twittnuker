@@ -559,7 +559,7 @@
     <string name="exclude_this_host">Jätä pois tämä palvelin</string>
     <string name="api_url_format_help">[DOMAIN]: Twitter-API:n verkkoalue.\nEsimerkki: https://[DOMAIN].twitter.com/ korvataan osoitteella https://api.twitter.com/.</string>
     <string name="no_version_suffix">Ei versiojälkiliitettä</string>
-    <string name="inverse_selection">Käänteinen valinta</string>
+
     <!--<string name="edit_media">Muokkaa mediaa</string>-->
     <string name="media">Media</string>
     <string name="mute_user">Hiljennä <xliff:g id="name">%s</xliff:g></string>

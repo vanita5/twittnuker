@@ -554,7 +554,7 @@
     <string name="exclude_this_host">Bu host hariç</string>
     <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nExample: https://[DOMAIN].twitter.com/ adı https://api.twitter.com/ için değiştirilecek.</string>
     <string name="no_version_suffix">Düzeltme yok</string>
-    <string name="inverse_selection">Seçimi ters çevir</string>
+
     <!--<string name="edit_media">Medya düzenle</string>-->
     <string name="media">Medya</string>
     <string name="mute_user">Sustur <xliff:g id="name">%s</xliff:g></string>

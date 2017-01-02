@@ -557,7 +557,7 @@
     <string name="exclude_this_host">이 호스트 제외</string>
     <string name="api_url_format_help">[DOMAIN]: 트위터 API 도메인.\n예: https://[DOMAIN].twitter.com/ 은 https://api.twitter.com/. 으로 교체됩니다.</string>
     <string name="no_version_suffix">버전 접미사 없음</string>
-    <string name="inverse_selection">선택 반전</string>
+
     <!--<string name="edit_media">미디어 편집</string>-->
     <string name="media">미디어</string>
     <string name="mute_user"><xliff:g id="name">%s</xliff:g> 뮤트하기</string>

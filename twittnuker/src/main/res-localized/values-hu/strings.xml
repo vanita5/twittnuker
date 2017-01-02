@@ -548,7 +548,7 @@
     <string name="exclude_this_host">Host kizárása</string>
     <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nPélda: https://[DOMAIN].twitter.com/ cserélve lesz erre: https://api.twitter.com/.</string>
     <string name="no_version_suffix">Nincs verzió utótag</string>
-    <string name="inverse_selection">Kijelölés megfordítása</string>
+
     <!--<string name="edit_media">Média szerkesztése</string>-->
     <string name="media">Média</string>
     <string name="mute_user"><xliff:g id="name">%s</xliff:g> némítása</string>

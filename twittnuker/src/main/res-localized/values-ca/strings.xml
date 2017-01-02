@@ -563,7 +563,6 @@
     <string name="exclude_this_host">Exclou aquest servidor</string>
     <string name="api_url_format_help">[DOMAIN]: Twitter API domain.\nExample: https://[DOMAIN].twitter.com/ serà reempalçat a https://api.twitter.com/.</string>
     <string name="no_version_suffix">Versió sense sufix</string>
-    <string name="inverse_selection">Inverteix sel·lecció</string>
     <!--<string name="edit_media">Edita els mèdies</string>-->
     <string name="media">Mèdies</string>
     <string name="mute_user">Silenciar <xliff:g id="name">%s</xliff:g></string>

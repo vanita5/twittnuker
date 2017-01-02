@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.util.DataStoreUtils
 
 class MutesUsersLoader(
         context: Context,
@@ -39,9 +40,19 @@ class MutesUsersLoader(
         fromUser: Boolean
 ) : CursorSupportUsersLoader(context, accountKey, data, fromUser) {
 
+    private var filteredUsers: Array<UserKey>? = null
+
     @Throws(MicroBlogException::class)
     override fun getCursoredUsers(twitter: MicroBlog, details: AccountDetails, paging: Paging): PageableResponseList<User> {
         return twitter.getMutesUsersList(paging)
     }
 
+    override fun onLoadInBackground(): List<ParcelableUser> {
+        filteredUsers = DataStoreUtils.getFilteredUserIds(context)
+        return super.onLoadInBackground()
+    }
+
+    override fun processUser(user: ParcelableUser) {
+        user.is_filtered = filteredUsers?.contains(user.key) ?: false
+    }
 }

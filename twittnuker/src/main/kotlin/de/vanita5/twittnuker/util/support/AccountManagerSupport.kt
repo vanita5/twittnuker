@@ -42,6 +42,7 @@ fun AccountManager.removeAccountSupport(
         return AccountManagerSupportL.removeAccount(this, account, activity, callback, handler)
     }
 
+    @Suppress("DEPRECATION")
     val future = this.removeAccount(account, { future ->
         callback?.run(BooleanToBundleAccountManagerFuture(future))
     }, handler)

@@ -559,7 +559,7 @@
     <string name="exclude_this_host">Kecualikan host ini</string>
     <string name="api_url_format_help">[DOMAIN]: Domain Twitter API.\nContoh: https://[DOMAIN].twitter.com/ akan diganti dengan https://api.twitter.com/.</string>
     <string name="no_version_suffix">Tidak ada akhiran versi</string>
-    <string name="inverse_selection">Membalikkan pilihan</string>
+
     <!--<string name="edit_media">Sunting media</string>-->
     <string name="media">Media</string>
     <string name="mute_user">Senyapkan <xliff:g id="name">%s</xliff:g></string>

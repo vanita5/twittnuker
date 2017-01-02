@@ -96,9 +96,11 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Suggestions;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
 import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
+import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1023,20 +1025,23 @@ public class DataStoreUtils implements Constants {
                 since, sinceColumn, followingOnly, accountIds);
     }
 
-    public static void addToFilter(Context context, ParcelableUser user, boolean filterAnywhere) {
+    public static void addToFilter(Context context, Collection<ParcelableUser> users, boolean filterAnywhere) {
         final ContentResolver cr = context.getContentResolver();
-        final FiltersData.UserItem userItem = new FiltersData.UserItem();
-        userItem.setUserKey(user.key);
-        userItem.setScreenName(user.screen_name);
-        userItem.setName(user.name);
+
         try {
-            // Insert to filtered users
-            cr.insert(Filters.Users.CONTENT_URI, FiltersData$UserItemValuesCreator.create(userItem));
-            if (filterAnywhere) {
-                // Insert user mention to keywords
+            List<ContentValues> userValues = new ArrayList<>();
+            List<ContentValues> keywordValues = new ArrayList<>();
+            List<ContentValues> linkValues = new ArrayList<>();
+            for (ParcelableUser user : users) {
+                final FiltersData.UserItem userItem = new FiltersData.UserItem();
+                userItem.setUserKey(user.key);
+                userItem.setScreenName(user.screen_name);
+                userItem.setName(user.name);
+                userValues.add(FiltersData$UserItemValuesCreator.create(userItem));
+
                 final FiltersData.BaseItem keywordItem = new FiltersData.BaseItem();
                 keywordItem.setValue("@" + user.screen_name);
-                cr.insert(Filters.Keywords.CONTENT_URI, FiltersData$BaseItemValuesCreator.create(keywordItem));
+                keywordValues.add(FiltersData$BaseItemValuesCreator.create(keywordItem));
 
                 // Insert user link (without scheme) to links
                 final FiltersData.BaseItem linkItem = new FiltersData.BaseItem();
@@ -1047,7 +1052,15 @@ public class DataStoreUtils implements Constants {
                     linkWithoutScheme = linkWithoutScheme.substring(idx + 3);
                 }
                 linkItem.setValue(linkWithoutScheme);
-                cr.insert(Filters.Links.CONTENT_URI, FiltersData$BaseItemValuesCreator.create(linkItem));
+                linkValues.add(FiltersData$BaseItemValuesCreator.create(linkItem));
+            }
+
+            ContentResolverUtils.bulkInsert(cr, Filters.Users.CONTENT_URI, userValues);
+            if (filterAnywhere) {
+                // Insert to filtered users
+                ContentResolverUtils.bulkInsert(cr, Filters.Keywords.CONTENT_URI, keywordValues);
+                // Insert user mention to keywords
+                ContentResolverUtils.bulkInsert(cr, Filters.Links.CONTENT_URI, linkValues);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

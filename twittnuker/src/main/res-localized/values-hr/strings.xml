@@ -507,7 +507,7 @@
     <string name="exclude_this_host">Isključi ovog domaćina</string>
     <string name="api_url_format_help">[DOMAIN]: Twitter API domena.\nPrimjer: https://[DOMAIN].twitter.com/ bit će zamijeno s https://api.twitter.com/.</string>
     <string name="no_version_suffix">Nema sufiksa verzije</string>
-    <string name="inverse_selection">Obrnuti odabir</string>
+
     <!--<string name="edit_media">Uredi medijsku datoteku</string>-->
     <string name="media">Medijska datoteka</string>
     <string name="mute_user">Utišaj <xliff:g id="name">%s</xliff:g></string>
