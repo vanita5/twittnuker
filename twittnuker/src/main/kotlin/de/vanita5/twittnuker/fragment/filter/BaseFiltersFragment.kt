@@ -306,5 +306,7 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
         internal const val EXTRA_AUTO_COMPLETE_TYPE = "auto_complete_type"
         internal const val AUTO_COMPLETE_TYPE_SOURCES = 2
         internal const val REQUEST_ADD_USER_SELECT_ACCOUNT = 201
+        internal const val REQUEST_IMPORT_BLOCKS_SELECT_ACCOUNT = 202
+        internal const val REQUEST_IMPORT_MUTES_SELECT_ACCOUNT = 203
     }
 }

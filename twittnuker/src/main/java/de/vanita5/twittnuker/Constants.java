@@ -31,7 +31,7 @@ package de.vanita5.twittnuker;
 public interface Constants extends TwittnukerConstants {
 
     String DATABASES_NAME = "twittnuker.sqlite";
-    int DATABASES_VERSION = 156;
+    int DATABASES_VERSION = 157;
 
     int MENU_GROUP_STATUS_SHARE = 20;
 
@@ -68,6 +68,9 @@ public interface Constants extends TwittnukerConstants {
     int LINK_ID_ACCOUNTS = 101;
     int LINK_ID_DRAFTS = 102;
     int LINK_ID_FILTERS = 110;
+    int LINK_ID_FILTERS_IMPORT_BLOCKS = 111;
+    int LINK_ID_FILTERS_IMPORT_MUTES = 112;
+    int LINK_ID_FILTERS_SUBSCRIPTIONS = 113;
     int LINK_ID_PROFILE_EDITOR = 121;
 
     String TWITTNUKER_PREVIEW_NAME = "Twittnuker Project";

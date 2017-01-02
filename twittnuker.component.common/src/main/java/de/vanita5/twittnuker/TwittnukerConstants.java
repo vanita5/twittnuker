@@ -125,6 +125,10 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_PROFILE_EDITOR = "profile_editor";
     String AUTHORITY_QUOTE = "quote";
 
+    String PATH_FILTERS_IMPORT_BLOCKS = "import/blocks";
+    String PATH_FILTERS_IMPORT_MUTES = "import/mutes";
+    String PATH_FILTERS_SUBSCRIPTIONS = "subscriptions";
+
     String QUERY_PARAM_ACCOUNT_KEY = "account_key";
     String QUERY_PARAM_ACCOUNT_HOST = "account_host";
     String QUERY_PARAM_ACCOUNT_NAME = "account_name";

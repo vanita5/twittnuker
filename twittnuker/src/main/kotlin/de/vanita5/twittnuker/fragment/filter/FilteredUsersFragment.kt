@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
+import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.support.v4.widget.SimpleCursorAdapter
 import android.view.Menu
@@ -17,8 +18,10 @@ import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
+import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.UserListSelectorActivity
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.`FiltersData$UserItemCursorIndices`
@@ -26,15 +29,28 @@ import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.util.ContentValuesCreator
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesChecker
 import javax.inject.Inject
 
 class FilteredUsersFragment : BaseFiltersFragment() {
+
+    private lateinit var extraFeaturesChecker: ExtraFeaturesChecker
 
     public override val contentColumns: Array<String>
         get() = TwidereDataStore.Filters.Users.COLUMNS
 
     override val contentUri: Uri
         get() = TwidereDataStore.Filters.Users.CONTENT_URI
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        extraFeaturesChecker = ExtraFeaturesChecker.newInstance(context)
+    }
+
+    override fun onDestroy() {
+        extraFeaturesChecker.release()
+        super.onDestroy()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
@@ -47,6 +63,20 @@ class FilteredUsersFragment : BaseFiltersFragment() {
                 val whereArgs = arrayOf(user.key.toString())
                 resolver.delete(TwidereDataStore.Filters.Users.CONTENT_URI, where, whereArgs)
                 resolver.insert(TwidereDataStore.Filters.Users.CONTENT_URI, values)
+            }
+            REQUEST_IMPORT_BLOCKS_SELECT_ACCOUNT -> {
+                if (resultCode != FragmentActivity.RESULT_OK) return
+                val intent = Intent(context, LinkHandlerActivity::class.java)
+                intent.data = Uri.Builder().scheme(SCHEME_TWITTNUKER).authority(AUTHORITY_FILTERS).path(PATH_FILTERS_IMPORT_BLOCKS).build()
+                intent.putExtra(EXTRA_ACCOUNT_KEY, data!!.getParcelableExtra<UserKey>(EXTRA_ACCOUNT_KEY))
+                startActivity(intent)
+            }
+            REQUEST_IMPORT_MUTES_SELECT_ACCOUNT -> {
+                if (resultCode != FragmentActivity.RESULT_OK) return
+                val intent = Intent(context, LinkHandlerActivity::class.java)
+                intent.data = Uri.Builder().scheme(SCHEME_TWITTNUKER).authority(AUTHORITY_FILTERS).path(PATH_FILTERS_IMPORT_MUTES).build()
+                intent.putExtra(EXTRA_ACCOUNT_KEY, data!!.getParcelableExtra<UserKey>(EXTRA_ACCOUNT_KEY))
+                startActivity(intent)
             }
             REQUEST_ADD_USER_SELECT_ACCOUNT -> {
                 if (resultCode != FragmentActivity.RESULT_OK) return
@@ -64,18 +94,36 @@ class FilteredUsersFragment : BaseFiltersFragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu.setItemAvailability(R.id.add_user_single, true)
+        val isFeaturesSupported = extraFeaturesChecker.isSupported()
+        menu.setItemAvailability(R.id.add_user_single, !isFeaturesSupported)
+        menu.setItemAvailability(R.id.add_user_submenu, isFeaturesSupported)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        var isExtraFeatures: Boolean = false
         val intent = Intent(context, AccountSelectorActivity::class.java)
         intent.putExtra(EXTRA_SINGLE_SELECTION, true)
         intent.putExtra(EXTRA_SELECT_ONLY_ITEM_AUTOMATICALLY, true)
         val requestCode = when (item.itemId) {
-            R.id.add_user_single -> REQUEST_ADD_USER_SELECT_ACCOUNT
+            R.id.add_user_single, R.id.add_user -> REQUEST_ADD_USER_SELECT_ACCOUNT
+            R.id.import_from_blocked_users -> {
+                isExtraFeatures = true
+                REQUEST_IMPORT_BLOCKS_SELECT_ACCOUNT
+            }
+            R.id.import_from_muted_users -> {
+                isExtraFeatures = true
+                intent.putExtra(EXTRA_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
+                REQUEST_IMPORT_MUTES_SELECT_ACCOUNT
+            }
             else -> return false
         }
-        startActivityForResult(intent, requestCode)
+
+        if (!isExtraFeatures || extraFeaturesChecker.isEnabled()) {
+            startActivityForResult(intent, requestCode)
+        } else {
+            val df = ExtraFeaturesIntroductionDialogFragment()
+            df.show(childFragmentManager, "extra_features_introduction")
+        }
         return true
     }
 

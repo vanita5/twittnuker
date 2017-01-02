@@ -839,8 +839,9 @@
     <string name="message_no_user_selected">Kein Benutzer ausgewählt</string>
     <string name="preference_title_advanced">Erweitert</string>
     <string name="preference_filter_possibility_sensitive_statuses">Sensitive Tweets (NSFW) filtern</string>
-    <string name="preference_title_filter_subscription">Filter Abonnement</string>
+    <string name="preference_title_filter_subscriptions">Filter Abonnements</string>
     <string name="preference_title_filter_manage_subscriptions">Bearbeiten</string>
+    <string name="title_manage_filter_subscriptions">Filter Abonnements</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

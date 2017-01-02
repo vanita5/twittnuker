@@ -31,6 +31,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
 import org.mariotaku.commons.objectcursor.LoganSquareCursorFieldConverter;
+import org.mariotaku.library.objectcursor.annotation.AfterCursorObjectCreated;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
 import de.vanita5.twittnuker.model.draft.ActionExtras;
@@ -41,6 +42,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.UUID;
 
 @ParcelablePlease
 @CursorObject(valuesCreator = true, tableInfo = true)
@@ -73,7 +75,10 @@ public class Draft implements Parcelable {
     @ParcelableThisPlease
     @CursorField(value = Drafts.ACTION_EXTRAS, converter = DraftExtrasConverter.class)
     public ActionExtras action_extras;
-
+    @Nullable
+    @ParcelableThisPlease
+    @CursorField(value = Drafts.UNIQUE_ID)
+    public String unique_id;
 
     public Draft() {
 
@@ -87,6 +92,13 @@ public class Draft implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         DraftParcelablePlease.writeToParcel(this, dest, flags);
+    }
+
+    @AfterCursorObjectCreated
+    void afterCursorObjectCreated() {
+        if (unique_id == null) {
+            unique_id = UUID.nameUUIDFromBytes((_id + ":" + timestamp).getBytes()).toString();
+        }
     }
 
     public static final Creator<Draft> CREATOR = new Creator<Draft>() {

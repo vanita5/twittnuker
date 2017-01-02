@@ -36,7 +36,6 @@ import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.Window
-import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.convert
 import org.mariotaku.ktextension.set
@@ -53,6 +52,9 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.filter.FiltersFragment
+import de.vanita5.twittnuker.fragment.filter.FiltersImportBlocksFragment
+import de.vanita5.twittnuker.fragment.filter.FiltersImportMutesFragment
+import de.vanita5.twittnuker.fragment.filter.FiltersSubscriptionsFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment
@@ -380,6 +382,15 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             }
             LINK_ID_PUBLIC_TIMELINE -> {
                 title = getString(R.string.public_timeline)
+            }
+            LINK_ID_FILTERS_IMPORT_BLOCKS -> {
+                title = getString(R.string.title_select_users)
+            }
+            LINK_ID_FILTERS_IMPORT_MUTES -> {
+                title = getString(R.string.title_select_users)
+            }
+            LINK_ID_FILTERS_SUBSCRIPTIONS -> {
+                title = getString(R.string.title_manage_filter_subscriptions)
             }
             else -> {
                 title = getString(R.string.app_name)
@@ -715,6 +726,16 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                     return null
                 }
                 fragment = SearchFragment()
+            }
+            LINK_ID_FILTERS_IMPORT_BLOCKS -> {
+                fragment = FiltersImportBlocksFragment()
+            }
+            LINK_ID_FILTERS_IMPORT_MUTES -> {
+                fragment = FiltersImportMutesFragment()
+            }
+            LINK_ID_FILTERS_SUBSCRIPTIONS -> {
+                fragment = FiltersSubscriptionsFragment()
+                isAccountIdRequired = false
             }
             else -> {
                 return null

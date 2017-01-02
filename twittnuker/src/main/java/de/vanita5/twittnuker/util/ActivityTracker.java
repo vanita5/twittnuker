@@ -29,7 +29,6 @@ import android.os.Bundle;
 
 import org.apache.commons.collections.primitives.ArrayIntList;
 import org.apache.commons.collections.primitives.IntList;
-
 import de.vanita5.twittnuker.activity.HomeActivity;
 
 public class ActivityTracker implements Application.ActivityLifecycleCallbacks {

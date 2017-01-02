@@ -556,6 +556,8 @@ public interface TwidereDataStore {
 
         String ACTION_EXTRAS = "action_extras";
 
+        String UNIQUE_ID = "unique_id";
+
         String[] COLUMNS = DraftTableInfo.COLUMNS;
 
         String[] TYPES = DraftTableInfo.TYPES;
