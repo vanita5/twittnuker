@@ -22,9 +22,10 @@
 
 package de.vanita5.twittnuker.util
 
-import org.junit.Test
-
+import okhttp3.HttpUrl
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Test
 
 class MicroBlogAPIFactoryTest {
 
@@ -46,5 +47,6 @@ class MicroBlogAPIFactoryTest {
     @Test
     fun testGetApiBaseUrl() {
         assertEquals("https://media.twitter.com", MicroBlogAPIFactory.getApiBaseUrl("https://api.twitter.com", "media"))
+        assertNotNull(HttpUrl.parse(MicroBlogAPIFactory.getApiBaseUrl("https://[invalid]twitter.com/", "api")))
     }
 }
