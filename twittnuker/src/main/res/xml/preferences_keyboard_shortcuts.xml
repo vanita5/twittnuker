@@ -30,7 +30,7 @@
         android:title="@string/general">
         <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
             android:action="compose"
-            android:title="@string/compose"/>
+            android:title="@string/title_compose"/>
         <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
             android:action="search"
             android:title="@string/search"/>
