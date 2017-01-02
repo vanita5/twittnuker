@@ -24,6 +24,8 @@ package de.vanita5.twittnuker.fragment.iface
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.support.v4.app.Fragment
 import de.vanita5.twittnuker.constant.IntentConstants
 import java.util.*
@@ -65,12 +67,18 @@ interface IBaseFragment {
         fun getSystemWindowsInsets(insets: Rect): Boolean
     }
 
-    fun executeAfterFragmentResumed(action: (IBaseFragment) -> Unit)
+    fun executeAfterFragmentResumed(useHandler: Boolean = false, action: (IBaseFragment) -> Unit)
 
     class ActionHelper(private val fragment: IBaseFragment) {
 
+        private val handler: Handler
+
+        init {
+            handler = Handler(Looper.getMainLooper())
+        }
+
         private var fragmentResumed: Boolean = false
-        private val actionQueue = LinkedList<(IBaseFragment) -> Unit>()
+        private val actionQueue = LinkedList<ExecuteInfo>()
 
         fun dispatchOnPause() {
             fragmentResumed = false
@@ -84,16 +92,22 @@ interface IBaseFragment {
 
         private fun executePending() {
             if (!fragmentResumed) return
-            var action: ((IBaseFragment) -> Unit)?
-            do {
-                action = actionQueue.poll()
-                action?.invoke(fragment)
-            } while (action != null)
+            var info: ExecuteInfo
+            while (true) {
+                info = actionQueue.poll() ?: break
+                if (info.useHandler) {
+                    handler.post { info.action(fragment) }
+                } else {
+                    info.action(fragment)
+                }
+            }
         }
 
-        fun executeAfterFragmentResumed(action: (IBaseFragment) -> Unit) {
-            actionQueue.add(action)
+        fun executeAfterFragmentResumed(useHandler: Boolean = false, action: (IBaseFragment) -> Unit) {
+            actionQueue.add(ExecuteInfo(action, useHandler))
             executePending()
         }
+
+        private data class ExecuteInfo(val action: (IBaseFragment) -> Unit, val useHandler: Boolean)
     }
 }
