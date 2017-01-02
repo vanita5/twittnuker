@@ -838,6 +838,7 @@
     <string name="action_invert_selection">Invertieren</string>
     <string name="message_no_user_selected">Kein Benutzer ausgewählt</string>
     <string name="preference_title_advanced">Erweitert</string>
+    <string name="preference_filter_possibility_sensitive_statuses">Sensitive Tweets (NSFW) filtern</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

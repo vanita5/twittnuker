@@ -25,9 +25,7 @@ package de.vanita5.twittnuker.adapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-
+import kotlinx.android.synthetic.main.list_item_simple_user.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
@@ -75,9 +73,9 @@ class AccountsSpinnerAdapter(
     }
 
     private fun bindView(view: View, item: AccountDetails) {
-        val text1 = view.findViewById(android.R.id.text1) as TextView?
-        val text2 = view.findViewById(android.R.id.text2) as TextView?
-        val icon = view.findViewById(android.R.id.icon) as ImageView?
+        val text1 = view.name
+        val text2 = view.screenName
+        val icon = view.profileImage
         if (!item.dummy) {
             if (text1 != null) {
                 text1.visibility = View.VISIBLE

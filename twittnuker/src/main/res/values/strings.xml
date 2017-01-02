@@ -874,6 +874,7 @@
     <string name="action_invert_selection">Invert selection</string>
     <string name="message_no_user_selected">No user selected</string>
     <string name="preference_title_advanced">Advanced</string>
+    <string name="preference_filter_possibility_sensitive_statuses">Filter sensitive tweets</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

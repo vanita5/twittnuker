@@ -70,6 +70,7 @@ val fabVisibleKey = KBooleanKey(KEY_FAB_VISIBLE, true)
 val themeKey = KStringKey(KEY_THEME, VALUE_THEME_NAME_AUTO)
 val themeColorKey = KIntKey(KEY_THEME_COLOR, 0)
 val filterUnavailableQuoteStatusesKey = KBooleanKey("filter_unavailable_quote_statuses", false)
+val filterPossibilitySensitiveStatusesKey = KBooleanKey("filter_possibility_sensitive_statuses", false)
 
 object profileImageStyleKey : KSimpleKey<Int>(KEY_PROFILE_IMAGE_STYLE, ProfileImageView.SHAPE_RECTANGLE) {
     override fun read(preferences: SharedPreferences): Int {

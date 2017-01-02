@@ -1,6 +1,7 @@
 package de.vanita5.twittnuker.model.tab.impl;
 
 import android.content.Context;
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,14 +15,37 @@ import de.vanita5.twittnuker.model.tab.StringHolder;
 import de.vanita5.twittnuker.model.tab.TabConfiguration;
 import de.vanita5.twittnuker.model.tab.argument.UserArguments;
 import de.vanita5.twittnuker.model.tab.conf.UserExtraConfiguration;
+import de.vanita5.twittnuker.util.dagger.DependencyHolder;
 
 import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_I_WANT_MY_STARS_BACK;
 
 public class FavoriteTimelineTabConfiguration extends TabConfiguration {
+    final static StringHolder TAB_NAME = new StringHolder() {
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+
+        }
+
+        @Override
+        public String createString(Context context) {
+            if (DependencyHolder.Companion.get(context).preferences.getBoolean(KEY_I_WANT_MY_STARS_BACK)) {
+                return context.getString(R.string.title_favorites);
+            }
+            return context.getString(R.string.title_likes);
+        }
+    };
+
     @NonNull
     @Override
     public StringHolder getName() {
-        return StringHolder.resource(R.string.title_favorites);
+        return TAB_NAME;
     }
 
     @NonNull

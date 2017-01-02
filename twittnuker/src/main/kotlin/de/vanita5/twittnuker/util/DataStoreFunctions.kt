@@ -1,6 +1,7 @@
 package de.vanita5.twittnuker.util
 
 import android.content.SharedPreferences
+import de.vanita5.twittnuker.constant.filterPossibilitySensitiveStatusesKey
 import org.mariotaku.kpreferences.get
 import org.mariotaku.sqliteqb.library.*
 import de.vanita5.twittnuker.constant.filterUnavailableQuoteStatusesKey
@@ -54,6 +55,9 @@ fun buildStatusFilterWhereClause(preferences: SharedPreferences,
     var filterFlags: Long = 0
     if (preferences[filterUnavailableQuoteStatusesKey]) {
         filterFlags = filterFlags or FilterFlags.QUOTE_NOT_AVAILABLE
+    }
+    if (preferences[filterPossibilitySensitiveStatusesKey]) {
+        filterFlags = filterFlags or FilterFlags.POSSIBILITY_SENSITIVE
     }
 
     val filterExpression = Expression.or(
