@@ -878,6 +878,7 @@
     <string name="preference_title_filter_subscriptions">Filter subscriptions</string>
     <string name="preference_title_filter_manage_subscriptions">Manage</string>
     <string name="title_manage_filter_subscriptions">Filter subscriptions</string>
+    <string name="title_premium_features_name">Twittnuker</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
