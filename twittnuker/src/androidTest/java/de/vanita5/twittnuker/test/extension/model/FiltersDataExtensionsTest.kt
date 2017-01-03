@@ -24,6 +24,8 @@ package de.vanita5.twittnuker.test.extension.model
 
 import android.support.test.runner.AndroidJUnit4
 import android.util.Xml
+import de.vanita5.twittnuker.extension.model.parse
+import de.vanita5.twittnuker.extension.model.serialize
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
