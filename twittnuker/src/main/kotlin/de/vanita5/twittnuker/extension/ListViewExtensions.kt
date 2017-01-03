@@ -20,17 +20,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.sync
+package de.vanita5.twittnuker.extension
 
-import android.content.Context
-import java.io.File
+import android.view.Menu
+import android.widget.ListView
+import org.mariotaku.ktextension.setItemAvailability
+import de.vanita5.twittnuker.R
 
-const val LOGTAG_SYNC = "Twittnuker.Sync"
+fun ListView.selectAll() {
+    for (i in 0 until count) {
+        setItemChecked(i, true)
+    }
+}
 
-internal val Context.syncDataDir: File
-    get() = File(filesDir, "sync_data")
+fun ListView.selectNone() {
+    for (i in 0 until count) {
+        setItemChecked(i, false)
+    }
+}
 
-internal fun File.mkdirIfNotExists(): File? {
-    if (exists() || mkdirs()) return this
-    return null
+fun ListView.invertSelection() {
+    val positions = checkedItemPositions
+    for (i in 0 until count) {
+        setItemChecked(i, !positions.get(i))
+    }
+}
+
+fun ListView.updateSelectionItems(menu: Menu) {
+    val checkedCount = checkedItemCount
+    val listCount = count
+    menu.setItemAvailability(R.id.select_none, checkedCount > 0)
+    menu.setItemAvailability(R.id.select_all, checkedCount < listCount)
+    menu.setItemAvailability(R.id.invert_selection, checkedCount > 0 && checkedCount < listCount)
 }

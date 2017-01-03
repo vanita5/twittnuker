@@ -59,12 +59,6 @@
         android:key="compose_now_action"
         android:title="@string/compose_now_action"/>
 
-    <!--<de.vanita5.twittnuker.preference.StatusShortenerPreference
-        android:defaultValue=""
-        android:key="status_shortener"
-        android:summary="%s"
-        android:title="@string/status_shortener"/>-->
-
     <de.vanita5.twittnuker.preference.ThemedEditTextPreference
         android:defaultValue="RT @[NAME]: [TEXT]"
         android:dialogTitle="@string/quote_format"
