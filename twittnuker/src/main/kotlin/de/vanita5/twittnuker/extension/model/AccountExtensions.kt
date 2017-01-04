@@ -22,24 +22,10 @@
 
 package de.vanita5.twittnuker.extension.model
 
-import android.accounts.Account
-import android.accounts.AccountManager
-import android.support.annotation.ColorInt
-import com.bluelinelabs.logansquare.LoganSquare
+import org.mariotaku.ktextension.HexColorFormat
+import org.mariotaku.ktextension.toHexColor
 import org.mariotaku.ktextension.toInt
 import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.account.AccountExtras
-import de.vanita5.twittnuker.model.account.StatusNetAccountExtras
-import de.vanita5.twittnuker.model.account.TwitterAccountExtras
-import de.vanita5.twittnuker.model.account.cred.BasicCredentials
-import de.vanita5.twittnuker.model.account.cred.Credentials
-import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
-import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
-import de.vanita5.twittnuker.util.ParseUtils
-import de.vanita5.twittnuker.util.toHexColor
 
 
 fun android.accounts.Account.getCredentials(am: android.accounts.AccountManager): de.vanita5.twittnuker.model.account.cred.Credentials {
@@ -111,7 +97,7 @@ fun android.accounts.Account.setActivated(am: android.accounts.AccountManager, a
 }
 
 fun android.accounts.Account.setColor(am: android.accounts.AccountManager, color: Int) {
-    am.setUserData(this, ACCOUNT_USER_DATA_COLOR, de.vanita5.twittnuker.util.toHexColor(color))
+    am.setUserData(this, ACCOUNT_USER_DATA_COLOR, toHexColor(color, format = HexColorFormat.RGB))
 }
 
 fun android.accounts.Account.setPosition(am: android.accounts.AccountManager, position: Int) {

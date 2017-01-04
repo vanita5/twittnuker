@@ -56,9 +56,7 @@ import com.bluelinelabs.logansquare.LoganSquare
 import com.rengwuxian.materialedittext.MaterialEditText
 import kotlinx.android.synthetic.main.activity_sign_in.*
 import org.mariotaku.kpreferences.get
-import org.mariotaku.ktextension.Bundle
-import org.mariotaku.ktextension.convert
-import org.mariotaku.ktextension.set
+import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterOAuth
@@ -79,8 +77,8 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CREDENTIALS_
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.constant.randomizeAccountNameKey
 import de.vanita5.twittnuker.extension.model.getColor
-import de.vanita5.twittnuker.extension.model.official
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.official
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.model.CustomAPIConfig
@@ -753,7 +751,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
             action(ACCOUNT_USER_DATA_CREDS_TYPE, credsType)
 
             action(ACCOUNT_USER_DATA_ACTIVATED, true.toString())
-            action(ACCOUNT_USER_DATA_COLOR, toHexColor(color))
+            action(ACCOUNT_USER_DATA_COLOR, toHexColor(color, format = HexColorFormat.RGB))
 
             action(ACCOUNT_USER_DATA_USER, LoganSquare.serialize(user))
             action(ACCOUNT_USER_DATA_EXTRAS, accountType.second?.convert { LoganSquare.serialize(it) })

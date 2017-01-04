@@ -25,8 +25,9 @@ package de.vanita5.twittnuker.util
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.database.sqlite.SQLiteDatabase
-import android.support.annotation.ColorInt
 import com.bluelinelabs.logansquare.LoganSquare
+import org.mariotaku.ktextension.HexColorFormat
+import org.mariotaku.ktextension.toHexColor
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AuthTypeInt
 import de.vanita5.twittnuker.model.ParcelableCredentials
@@ -39,7 +40,6 @@ import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Accounts
-import java.util.*
 
 /**
  * Migrate legacy credentials to system account framework
@@ -59,7 +59,7 @@ fun migrateAccounts(am: AccountManager, db: SQLiteDatabase) {
             am.setUserData(account, ACCOUNT_USER_DATA_TYPE, credentials.account_type)
             am.setUserData(account, ACCOUNT_USER_DATA_ACTIVATED, credentials.is_activated.toString())
             am.setUserData(account, ACCOUNT_USER_DATA_CREDS_TYPE, credentials.getCredentialsType())
-            am.setUserData(account, ACCOUNT_USER_DATA_COLOR, toHexColor(credentials.color))
+            am.setUserData(account, ACCOUNT_USER_DATA_COLOR, toHexColor(credentials.color, format = HexColorFormat.RGB))
             am.setUserData(account, ACCOUNT_USER_DATA_POSITION, credentials.sort_position)
             am.setUserData(account, ACCOUNT_USER_DATA_USER, LoganSquare.serialize(credentials.account_user ?: run {
                 val user = ParcelableUser()
@@ -80,8 +80,6 @@ fun migrateAccounts(am: AccountManager, db: SQLiteDatabase) {
         cur.close()
     }
 }
-
-fun toHexColor(@ColorInt color: Int) = String.format(Locale.ROOT, "#%06X", color)
 
 @Suppress("deprecation")
 private fun ParcelableCredentials.toCredentials(): Credentials {

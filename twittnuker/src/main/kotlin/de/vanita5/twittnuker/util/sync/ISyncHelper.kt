@@ -20,33 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.service
+package de.vanita5.twittnuker.util.sync
 
-import android.app.IntentService
-import com.twitter.Extractor
-import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
-import javax.inject.Inject
+import java.io.IOException
 
-abstract class BaseIntentService(tag: String) : IntentService(tag) {
-
-    @Inject
-    lateinit var preferences: SharedPreferencesWrapper
-    @Inject
-    lateinit var twitterWrapper: AsyncTwitterWrapper
-    @Inject
-    lateinit var notificationManager: NotificationManagerWrapper
-    @Inject
-    lateinit var validator: TwidereValidator
-    @Inject
-    lateinit var extractor: Extractor
-    @Inject
-    lateinit var mediaLoader: MediaLoaderWrapper
-    @Inject
-    lateinit var userColorNameManager: UserColorNameManager
-
-    override fun onCreate() {
-        super.onCreate()
-        GeneralComponentHelper.build(this).inject(this)
-    }
+interface ISyncHelper {
+    @Throws(IOException::class)
+    fun performSync(): Boolean
 }

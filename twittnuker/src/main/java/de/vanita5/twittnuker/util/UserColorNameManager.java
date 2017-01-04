@@ -30,6 +30,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import de.vanita5.twittnuker.library.twitter.model.User;
 import org.mariotaku.sqliteqb.library.Expression;
@@ -42,29 +43,37 @@ import de.vanita5.twittnuker.model.util.UserKeyUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 
+import java.util.Map;
+import java.util.Set;
+
 import static android.text.TextUtils.isEmpty;
 
 public class UserColorNameManager implements TwittnukerConstants {
 
-    private final SharedPreferences mColorPreferences;
-    private final Context mContext;
+    private final SharedPreferences colorPreferences;
+    private final Context context;
 
     public UserColorNameManager(Context context) {
-        mContext = context;
-        mColorPreferences = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        this.context = context;
+        colorPreferences = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
-    public static String decideDisplayName(final String name, final String screenName, final boolean nameFirst) {
+    public SharedPreferences getColorPreferences() {
+        return colorPreferences;
+    }
+
+    public static String decideDisplayName(final String name,
+                                           final String screenName, final boolean nameFirst) {
         return nameFirst && !isEmpty(name) ? name : "@" + screenName;
     }
 
     public void registerColorChangedListener(final UserColorChangedListener listener) {
 
-        mColorPreferences.registerOnSharedPreferenceChangeListener(new OnColorPreferenceChangeListener(listener));
+        colorPreferences.registerOnSharedPreferenceChangeListener(new OnColorPreferenceChangeListener(listener));
     }
 
     public void clearUserColor(@NonNull final UserKey userKey) {
-        final SharedPreferences.Editor editor = mColorPreferences.edit();
+        final SharedPreferences.Editor editor = colorPreferences.edit();
         final String userKeyString = userKey.toString();
         updateColor(userKeyString, 0);
         editor.remove(userKeyString);
@@ -72,7 +81,7 @@ public class UserColorNameManager implements TwittnukerConstants {
     }
 
     public void setUserColor(@NonNull final UserKey userKey, final int color) {
-        final SharedPreferences.Editor editor = mColorPreferences.edit();
+        final SharedPreferences.Editor editor = colorPreferences.edit();
         final String userKeyString = userKey.toString();
         updateColor(userKeyString, color);
         editor.putInt(userKeyString, color);
@@ -80,7 +89,7 @@ public class UserColorNameManager implements TwittnukerConstants {
     }
 
     private void updateColor(String userKey, int color) {
-        final ContentResolver cr = mContext.getContentResolver();
+        final ContentResolver cr = context.getContentResolver();
         ContentValues cv = new ContentValues();
         updateColumn(cr, Statuses.CONTENT_URI, userKey, Statuses.USER_COLOR, Statuses.USER_KEY,
                 color, cv);
@@ -145,7 +154,7 @@ public class UserColorNameManager implements TwittnukerConstants {
     }
 
     public int getUserColor(@NonNull final String userId) {
-        return mColorPreferences.getInt(userId, Color.TRANSPARENT);
+        return colorPreferences.getInt(userId, Color.TRANSPARENT);
     }
 
     public interface UserColorChangedListener {

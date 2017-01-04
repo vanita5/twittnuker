@@ -32,7 +32,6 @@ import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
 
-import java.util.Collection;
 import java.util.List;
 
 @JsonObject
@@ -87,44 +86,6 @@ public class FiltersData {
                 ", sources=" + sources +
                 ", links=" + links +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        FiltersData that = (FiltersData) o;
-
-        if (!contentEquals(users, that.users)) return false;
-        if (!contentEquals(keywords, that.keywords))
-            return false;
-        if (!contentEquals(sources, that.sources)) return false;
-        if (!contentEquals(links, that.links)) return false;
-        return true;
-
-    }
-
-    private static <E> boolean contentEquals(Collection<E> collection1, Collection<E> collection2) {
-        if (collection1 == collection2) return true;
-        if (collection1 == null || collection2 == null) return false;
-        if (collection1.size() != collection2.size()) return false;
-        for (E item1 : collection1) {
-            if (!collection2.contains(item1)) return false;
-        }
-        for (E item2 : collection2) {
-            if (!collection1.contains(item2)) return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = users != null ? users.hashCode() : 0;
-        result = 31 * result + (keywords != null ? keywords.hashCode() : 0);
-        result = 31 * result + (sources != null ? sources.hashCode() : 0);
-        result = 31 * result + (links != null ? links.hashCode() : 0);
-        return result;
     }
 
     @JsonObject
