@@ -284,6 +284,11 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity, IThemedActivit
     override val themeBackgroundOption: String
         get() = ThemeUtils.getThemeBackgroundOption(this)
 
+    protected val shouldApplyWindowBackground: Boolean
+        get() {
+            return true
+        }
+
     override fun onApplyThemeResource(theme: Resources.Theme, resId: Int, first: Boolean) {
         super.onApplyThemeResource(theme, resId, first)
         if (window != null && shouldApplyWindowBackground) {
@@ -291,11 +296,6 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity, IThemedActivit
                     themeBackgroundAlpha)
         }
     }
-
-    protected val shouldApplyWindowBackground: Boolean
-        get() {
-            return true
-        }
 
     override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {
         // Fix for https://github.com/afollestad/app-theme-engine/issues/109
