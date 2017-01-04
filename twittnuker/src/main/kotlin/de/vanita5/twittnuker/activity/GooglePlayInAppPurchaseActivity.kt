@@ -35,6 +35,7 @@ import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.constant.IntentConstants.INTENT_PACKAGE_PREFIX
+import de.vanita5.twittnuker.constant.PURCHASE_RESPONSE_NOT_PURCHASED
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import java.lang.ref.WeakReference
 
@@ -156,6 +157,7 @@ class GooglePlayInAppPurchaseActivity : BaseActivity(), BillingProcessor.IBillin
         val resultCode = when (billingResponse) {
             BILLING_RESPONSE_RESULT_OK -> Activity.RESULT_OK
             BILLING_RESPONSE_RESULT_USER_CANCELED -> Activity.RESULT_CANCELED
+            BILLING_RESPONSE_RESULT_ITEM_NOT_OWNED -> PURCHASE_RESPONSE_NOT_PURCHASED
             else -> billingResponse
         }
         return resultCode
