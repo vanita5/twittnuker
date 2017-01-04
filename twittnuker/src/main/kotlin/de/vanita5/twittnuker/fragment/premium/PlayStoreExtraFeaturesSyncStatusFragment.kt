@@ -33,10 +33,10 @@ import de.vanita5.twittnuker.activity.DropboxAuthStarterActivity
 import de.vanita5.twittnuker.dropboxAuthTokenKey
 import de.vanita5.twittnuker.fragment.BaseSupportFragment
 import de.vanita5.twittnuker.service.DropboxDataSyncService
-import kotlinx.android.synthetic.main.fragment_extra_features_status_play_store.*
+import kotlinx.android.synthetic.main.fragment_extra_features_sync_status_play_store.*
 
 
-class PlayStoreExtraFeaturesStatusFragment : BaseSupportFragment() {
+class PlayStoreExtraFeaturesSyncStatusFragment : BaseSupportFragment() {
     private val REQUEST_DROPBOX_AUTH: Int = 201
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -70,6 +70,6 @@ class PlayStoreExtraFeaturesStatusFragment : BaseSupportFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_extra_features_status_play_store, container, false)
+        return inflater.inflate(R.layout.fragment_extra_features_sync_status_play_store, container, false)
     }
 }

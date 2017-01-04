@@ -34,11 +34,11 @@ import kotlinx.android.synthetic.main.layout_extra_features_introduction.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.PURCHASE_RESPONSE_NOT_PURCHASED
 import de.vanita5.twittnuker.fragment.BaseSupportFragment
-import de.vanita5.twittnuker.util.premium.ExtraFeaturesChecker
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 
 class ExtraFeaturesIntroductionCardFragment : BaseSupportFragment() {
 
-    lateinit var extraFeaturesChecker: ExtraFeaturesChecker
+    lateinit var extraFeaturesService: ExtraFeaturesService
 
     private val REQUEST_PURCHASE: Int = 301
     private val REQUEST_RESTORE_PURCHASE: Int = 302
@@ -46,11 +46,11 @@ class ExtraFeaturesIntroductionCardFragment : BaseSupportFragment() {
     // MARK: Fragment lifecycle
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        extraFeaturesChecker = ExtraFeaturesChecker.newInstance(context)
+        extraFeaturesService = ExtraFeaturesService.newInstance(context)
         purchaseButton.setOnClickListener {
-            startActivityForResult(extraFeaturesChecker.createPurchaseIntent(context), REQUEST_PURCHASE)
+            startActivityForResult(extraFeaturesService.createPurchaseIntent(context), REQUEST_PURCHASE)
         }
-        val restorePurchaseIntent = extraFeaturesChecker.createRestorePurchaseIntent(context)
+        val restorePurchaseIntent = extraFeaturesService.createRestorePurchaseIntent(context)
         if (restorePurchaseIntent != null) {
             restorePurchaseHint.visibility = View.VISIBLE
             restorePurchaseButton.visibility = View.VISIBLE

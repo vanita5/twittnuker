@@ -154,6 +154,7 @@
 -keep class * extends de.vanita5.twittnuker.util.OSMMapFragmentFactory
 -keep class * extends de.vanita5.twittnuker.util.TwitterCardFragmentFactory
 -keep class * extends de.vanita5.twittnuker.util.Analyzer
+-keep class * extends de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 
 #jackson fasterxml
 -keepnames class org.codehaus.jackson.** { *; }

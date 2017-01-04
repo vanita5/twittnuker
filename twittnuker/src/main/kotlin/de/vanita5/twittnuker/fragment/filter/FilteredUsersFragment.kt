@@ -29,12 +29,12 @@ import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.util.ContentValuesCreator
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
-import de.vanita5.twittnuker.util.premium.ExtraFeaturesChecker
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import javax.inject.Inject
 
 class FilteredUsersFragment : BaseFiltersFragment() {
 
-    private lateinit var extraFeaturesChecker: ExtraFeaturesChecker
+    private lateinit var extraFeaturesService: ExtraFeaturesService
 
     public override val contentColumns: Array<String>
         get() = TwidereDataStore.Filters.Users.COLUMNS
@@ -44,11 +44,11 @@ class FilteredUsersFragment : BaseFiltersFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        extraFeaturesChecker = ExtraFeaturesChecker.newInstance(context)
+        extraFeaturesService = ExtraFeaturesService.newInstance(context)
     }
 
     override fun onDestroy() {
-        extraFeaturesChecker.release()
+        extraFeaturesService.release()
         super.onDestroy()
     }
 
@@ -94,7 +94,7 @@ class FilteredUsersFragment : BaseFiltersFragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        val isFeaturesSupported = extraFeaturesChecker.isSupported()
+        val isFeaturesSupported = extraFeaturesService.isSupported()
         menu.setItemAvailability(R.id.add_user_single, !isFeaturesSupported)
         menu.setItemAvailability(R.id.add_user_submenu, isFeaturesSupported)
     }
@@ -118,7 +118,7 @@ class FilteredUsersFragment : BaseFiltersFragment() {
             else -> return false
         }
 
-        if (!isExtraFeatures || extraFeaturesChecker.isEnabled()) {
+        if (!isExtraFeatures || extraFeaturesService.isEnabled()) {
             startActivityForResult(intent, requestCode)
         } else {
             val df = ExtraFeaturesIntroductionDialogFragment()

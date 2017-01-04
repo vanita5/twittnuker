@@ -29,12 +29,14 @@ import de.vanita5.twittnuker.Constants.GOOGLE_PLAY_LICENCING_PUBKEY
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.GooglePlayInAppPurchaseActivity
 
-class GooglePlayExtraFeaturesChecker() : ExtraFeaturesChecker() {
-    override val statusLayout: Int = R.layout.card_item_extra_features_status
-    override val introductionLayout: Int = R.layout.card_item_extra_features_purchase_introduction
+class GooglePlayExtraFeaturesService() : ExtraFeaturesService() {
     private val EXTRA_FEATURE_PRODUCT_ID = "twittnuker.extra.features"
 
     private lateinit var bp: BillingProcessor
+
+    override val dashboardLayouts: IntArray = intArrayOf(R.layout.card_item_extra_features_sync_status)
+
+    override val introductionLayout: Int = R.layout.card_item_extra_features_purchase_introduction
 
     override fun init(context: Context) {
         super.init(context)
