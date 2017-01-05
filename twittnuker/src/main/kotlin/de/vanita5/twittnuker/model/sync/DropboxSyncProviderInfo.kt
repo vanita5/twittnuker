@@ -20,8 +20,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker
+package de.vanita5.twittnuker.model.sync
 
-import org.mariotaku.kpreferences.KNullableStringKey
+import android.content.SharedPreferences
 
-val dropboxAuthTokenKey = KNullableStringKey("dropbox_auth_token", null)
+class DropboxSyncProviderInfo(val authToken: String) : SyncProviderInfo(DropboxSyncProviderInfo.TYPE) {
+
+    override fun writeToPreferences(editor: SharedPreferences.Editor) {
+        editor.putString(KEY_DROPBOX_AUTH_TOKEN, authToken)
+    }
+
+    companion object {
+        const val TYPE = "dropbox"
+
+        private const val KEY_DROPBOX_AUTH_TOKEN = "dropbox_auth_token"
+        fun newInstance(preferences: SharedPreferences): DropboxSyncProviderInfo? {
+            val authToken = preferences.getString(KEY_DROPBOX_AUTH_TOKEN, null) ?: return null
+            return DropboxSyncProviderInfo(authToken)
+        }
+    }
+
+}

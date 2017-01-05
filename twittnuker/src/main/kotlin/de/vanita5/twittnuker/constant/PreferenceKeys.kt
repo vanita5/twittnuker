@@ -34,6 +34,8 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.account.cred.Credentials
+import de.vanita5.twittnuker.model.sync.SyncProviderInfo
+import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
 import de.vanita5.twittnuker.view.ProfileImageView
 
 
@@ -146,6 +148,30 @@ object defaultAPIConfigKey : KPreferenceKey<CustomAPIConfig> {
         editor.putString(KEY_CREDENTIALS_TYPE, value.credentialsType)
         editor.putBoolean(KEY_SAME_OAUTH_SIGNING_URL, value.isSameOAuthUrl)
         editor.putBoolean(KEY_NO_VERSION_SUFFIX, value.isNoVersionSuffix)
+        return true
+    }
+
+}
+
+object dataSyncProviderInfoKey : KPreferenceKey<SyncProviderInfo?> {
+    private const val PROVIDER_TYPE_KEY = "sync_provider_type"
+
+    override fun contains(preferences: SharedPreferences): Boolean {
+        return read(preferences) != null
+    }
+
+    override fun read(preferences: SharedPreferences): SyncProviderInfo? {
+        val type = preferences.getString(PROVIDER_TYPE_KEY, null) ?: return null
+        return SyncProviderInfoFactory.getInfoForType(type, preferences)
+    }
+
+    override fun write(editor: SharedPreferences.Editor, value: SyncProviderInfo?): Boolean {
+        if (value == null) {
+            editor.remove(PROVIDER_TYPE_KEY)
+        } else {
+            editor.putString(PROVIDER_TYPE_KEY, value.type)
+            value.writeToPreferences(editor)
+        }
         return true
     }
 

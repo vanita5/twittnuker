@@ -21,18 +21,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardBackgroundColor="?cardItemBackgroundColor">
-
-    <fragment
-        android:id="@+id/extra_features_sync_status"
-        class="de.vanita5.twittnuker.fragment.premium.ExtraFeaturesSyncStatusFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout="@layout/fragment_extra_features_sync_status"/>
-</android.support.v7.widget.CardView>
+<!--suppress AndroidElementNotAllowed -->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreferenceCompat android:title="@string/title_drafts"/>
+    <SwitchPreferenceCompat android:title="@string/title_filters"/>
+    <SwitchPreferenceCompat android:title="@string/title_user_colors"/>
+</PreferenceScreen>

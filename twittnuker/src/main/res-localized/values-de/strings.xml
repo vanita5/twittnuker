@@ -553,7 +553,7 @@
     <string name="export_settings_type_dialog_title">Einstellungen exportieren&#8230;</string>
     <string name="import_settings_type_dialog_title">Einstellungen importieren&#8230;</string>
     <!--<string name="nicknames">Spitznamen</string>-->
-    <string name="user_colors">Benutzer-Farbschema</string>
+    <string name="title_user_colors">Benutzer-Farbschema</string>
     <string name="progress">Fortschritt</string>
     <string name="hidden_settings">Versteckte Einstellungen</string>
     <string name="hidden_settings_warning_title">WARNUNG: Gefährliche Einstellungen!</string>
@@ -853,6 +853,17 @@
     <string name="title_manage_filter_subscriptions">Filter Abonnements</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_extra_features_not_purchased">Erweiterte Funktionen nicht freigeschaltet</string>
+    <!-- [verb] Connect to network storage like Dropbox and Google Drive etc -->
+    <string name="action_sync_connect_to_storage">Verbinden</string>
+    <string name="title_dialog_sync_connect_to">Verbinden…</string>
+    <string name="action_sync_settings">Einstellungen</string>
+    <string name="message_sync_data_connect_hint">Twittnuker mit Onlinedienst verbinden, um Daten zu synchronisieren</string>
+    <string name="message_sync_data_synced_with_name">Daten wurden mit <xliff:g example="ownCloud" id="name">%s</xliff:g> synchronisiert</string>
+    <string name="title_sync">Synchronisieren</string>
+    <string name="sync_provider_name_dropbox">Dropbox</string>
+    <!-- [verb] Disconnect from network storage -->
+    <string name="action_sync_disconnect">Trennen</string>
+    <string name="title_sync_settings">Sync. Einstellungen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

@@ -37,10 +37,11 @@ import com.dropbox.core.v2.files.*
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.dropboxAuthTokenKey
+import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
 import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.FiltersData
+import de.vanita5.twittnuker.model.sync.DropboxSyncProviderInfo
 import de.vanita5.twittnuker.util.sync.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlSerializer
@@ -51,7 +52,7 @@ class DropboxDataSyncService : BaseIntentService("dropbox_data_sync") {
     private val NOTIFICATION_ID_SYNC_DATA = 302
 
     override fun onHandleIntent(intent: Intent?) {
-        val authToken = preferences[dropboxAuthTokenKey] ?: return
+        val syncInfo = preferences[dataSyncProviderInfoKey] as? DropboxSyncProviderInfo ?: return
         val nb = NotificationCompat.Builder(this)
         nb.setSmallIcon(R.drawable.ic_stat_refresh)
         nb.setOngoing(true)
@@ -61,7 +62,7 @@ class DropboxDataSyncService : BaseIntentService("dropbox_data_sync") {
         nm.notify(NOTIFICATION_ID_SYNC_DATA, nb.build())
         val requestConfig = DbxRequestConfig.newBuilder("twittnuker-android/${BuildConfig.VERSION_NAME}")
                 .build()
-        val client = DbxClientV2(requestConfig, authToken)
+        val client = DbxClientV2(requestConfig, syncInfo.authToken)
         arrayOf(
                 DropboxDraftsSyncHelper(this, client),
                 DropboxFiltersDataSyncHelper(this, client),

@@ -79,7 +79,7 @@
         <item>@string/settings</item>
         <item>@string/tabs</item>
         <item>@string/title_filters</item>
-        <item>@string/user_colors</item>
+        <item>@string/title_user_colors</item>
         <item>@string/custom_host_mapping</item>
     </string-array>
     <string-array name="entries_compose_now_action">

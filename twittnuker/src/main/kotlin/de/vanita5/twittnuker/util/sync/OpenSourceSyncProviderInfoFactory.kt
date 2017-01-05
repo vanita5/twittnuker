@@ -20,33 +20,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference;
+package de.vanita5.twittnuker.util.sync
 
-import android.content.Context;
-import android.util.AttributeSet;
+import android.content.Context
+import android.content.SharedPreferences
+import de.vanita5.twittnuker.model.sync.SyncProviderEntry
+import de.vanita5.twittnuker.model.sync.SyncProviderInfo
 
-import de.vanita5.twittnuker.R;
-
-import static de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_EXTENSION_SYNC_TIMELINE;
-
-public class TimelineSyncPreference extends ServicePickerPreference {
-
-    public TimelineSyncPreference(final Context context) {
-        this(context, null);
+class OpenSourceSyncProviderInfoFactory : SyncProviderInfoFactory() {
+    override fun getInfoForType(type: String, preferences: SharedPreferences): SyncProviderInfo? {
+        return null
     }
 
-    public TimelineSyncPreference(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    @Override
-    protected String getIntentAction() {
-		return INTENT_ACTION_EXTENSION_SYNC_TIMELINE;
-    }
-
-    @Override
-    protected String getNoneEntry() {
-        return getContext().getString(R.string.none);
+    override fun getSupportedProviders(context: Context): List<SyncProviderEntry> {
+        return emptyList()
     }
 
 }

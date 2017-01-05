@@ -24,24 +24,34 @@ package de.vanita5.twittnuker.activity
 
 import android.os.Bundle
 import com.dropbox.core.android.Auth
-import de.vanita5.twittnuker.Constants.DROPBOX_APP_KEY
-import de.vanita5.twittnuker.dropboxAuthTokenKey
 import org.mariotaku.kpreferences.set
+import de.vanita5.twittnuker.Constants.DROPBOX_APP_KEY
+import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
+import de.vanita5.twittnuker.model.sync.DropboxSyncProviderInfo
 
 class DropboxAuthStarterActivity : BaseActivity() {
+
+    private var shouldGetAuthResult: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Auth.startOAuth2Authentication(this, DROPBOX_APP_KEY)
-
     }
 
     override fun onResume() {
         super.onResume()
-        val oauthToken = Auth.getOAuth2Token()
-        if (oauthToken != null) {
-            preferences[dropboxAuthTokenKey] = oauthToken
+        if (shouldGetAuthResult) {
+            val oauthToken = Auth.getOAuth2Token()
+            if (oauthToken != null) {
+                preferences[dataSyncProviderInfoKey] = DropboxSyncProviderInfo(oauthToken)
+            }
+            finish()
+            shouldGetAuthResult = false
         }
-        finish()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shouldGetAuthResult = true
     }
 }

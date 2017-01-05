@@ -103,12 +103,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Twidere.NoActionBar"
-        tools:ignore="UnusedAttribute|GoogleAppIndexingWarning"
-        tools:replace="allowBackup">
+        tools:ignore="UnusedAttribute">
         <uses-library
             android:name="com.sec.android.app.multiwindow"
             android:required="false"/>
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="b955b719fb7fabaa53d4e614c3975c88bc556ab4"/>
         <meta-data
             android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIKbKATV1AGbLB4kem3w8QaPVJSPVVumbMHxkfwA"/>
@@ -317,7 +319,6 @@
             android:label="@string/media"
             android:theme="@style/Theme.Twidere.Viewer"
             android:windowSoftInputMode="adjustPan">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.HomeActivity"/>
@@ -401,7 +402,6 @@
             <intent-filter>
                 <data android:scheme="http"/>
                 <data android:scheme="https"/>
-
                 <data android:host="twitter.com"/>
                 <data android:host="www.twitter.com"/>
                 <data android:host="mobile.twitter.com"/>
@@ -453,6 +453,22 @@
         <activity
             android:name=".activity.InvalidAccountAlertActivity"
             android:theme="@style/Theme.Twidere.NoDisplay" />
+        <activity
+            android:name=".activity.FragmentContentActivity"
+            android:theme="@style/Theme.Twidere">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.HomeActivity"/>
+        </activity>
+        <activity
+            android:name=".activity.PremiumDashboardActivity"
+            android:label="@string/title_premium_features_name"
+            android:theme="@style/Theme.Twidere">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.HomeActivity"/>
+        </activity>
         <activity
             android:name=".activity.DonationsActivity"
             android:label="@string/donation"
@@ -519,6 +535,7 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/sync_adapter"/>
         </service>
+
         <service
             android:name=".service.TwittnukerGcmListenerService"
             android:exported="false">
@@ -605,10 +622,6 @@
                 <action android:name="de.vanita5.twittnuker.PUSHNOTIFICATION_CLEARED"/>
             </intent-filter>
         </receiver>
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="b955b719fb7fabaa53d4e614c3975c88bc556ab4"/>
     </application>
 
 </manifest>

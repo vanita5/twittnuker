@@ -540,7 +540,7 @@
     <string name="export_settings_type_dialog_title">Exportar configuración&#8230;</string>
     <string name="import_settings_type_dialog_title">Importar configuración&#8230;</string>
     <!--<string name="nicknames">Alcumes</string>-->
-    <string name="user_colors">Cores do usuario</string>
+    <string name="title_user_colors">Cores do usuario</string>
     <string name="progress">Progreso</string>
     <string name="hidden_settings">Agochar configuración</string>
     <string name="hidden_settings_warning_title">AVISO: Esta configuración pode producir danos!</string>

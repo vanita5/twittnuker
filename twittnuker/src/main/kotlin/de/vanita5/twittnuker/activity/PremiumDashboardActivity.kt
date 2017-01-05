@@ -50,8 +50,7 @@ class PremiumDashboardActivity : BaseActivity() {
         setContentView(R.layout.activity_premium_dashboard)
         if (extraFeaturesService.isSupported()) {
             if (extraFeaturesService.isEnabled()) {
-                extraFeaturesService.dashboardLayouts.forEach {
-                    layout ->
+                extraFeaturesService.dashboardLayouts.forEach { layout ->
                     View.inflate(this, layout, cardsContainer)
                 }
             } else {
