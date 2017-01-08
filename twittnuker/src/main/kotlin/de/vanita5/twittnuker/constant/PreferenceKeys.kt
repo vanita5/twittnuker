@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.sync.SyncProviderInfo
+import de.vanita5.twittnuker.preference.ThemeBackgroundPreference
 import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
 import de.vanita5.twittnuker.view.ProfileImageView
 
@@ -90,6 +91,19 @@ object nightModeKey : KSimpleKey<Int>(KEY_THEME, AppCompatDelegate.MODE_NIGHT_NO
             AppCompatDelegate.MODE_NIGHT_YES -> VALUE_THEME_NAME_DARK
             else -> VALUE_THEME_NAME_AUTO
         })
+        return true
+    }
+}
+
+object themeBackgroundAlphaKey : KSimpleKey<Int>(KEY_THEME_BACKGROUND_ALPHA, 0xFF) {
+    override fun read(preferences: SharedPreferences): Int {
+        return preferences.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA)
+                .coerceIn(ThemeBackgroundPreference.MIN_ALPHA, ThemeBackgroundPreference.MAX_ALPHA)
+    }
+
+    override fun write(editor: SharedPreferences.Editor, value: Int): Boolean {
+        editor.putInt(key, value.coerceIn(ThemeBackgroundPreference.MIN_ALPHA,
+                ThemeBackgroundPreference.MAX_ALPHA))
         return true
     }
 }

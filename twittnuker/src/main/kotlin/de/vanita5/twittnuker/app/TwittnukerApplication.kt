@@ -30,7 +30,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.AsyncTask
 import android.support.multidex.MultiDex
-import android.support.v7.app.AppCompatDelegate
 import android.util.Log
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
@@ -47,7 +46,6 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.constant.apiLastChangeKey
 import de.vanita5.twittnuker.constant.bugReportsKey
 import de.vanita5.twittnuker.constant.defaultFeatureLastUpdated
-import de.vanita5.twittnuker.constant.nightModeKey
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
@@ -97,7 +95,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             StrictModeUtils.detectAllVmPolicy()
         }
         super.onCreate()
-        AppCompatDelegate.setDefaultNightMode(sharedPreferences[nightModeKey])
         startKovenant()
         initializeAsyncTask()
         initDebugMode()
@@ -192,9 +189,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             KEY_CONSUMER_KEY, KEY_CONSUMER_SECRET, KEY_API_URL_FORMAT, KEY_CREDENTIALS_TYPE,
             KEY_SAME_OAUTH_SIGNING_URL -> {
                 preferences[apiLastChangeKey] = System.currentTimeMillis()
-            }
-            KEY_THEME -> {
-                AppCompatDelegate.setDefaultNightMode(preferences[nightModeKey])
             }
             KEY_EMOJI_SUPPORT -> {
                 externalThemeManager.reloadEmojiPreferences()
