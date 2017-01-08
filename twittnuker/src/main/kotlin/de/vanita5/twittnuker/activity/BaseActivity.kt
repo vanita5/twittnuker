@@ -62,6 +62,8 @@ import de.vanita5.twittnuker.preference.iface.IDialogPreference
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.support.ActivitySupport
+import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat
 import de.vanita5.twittnuker.util.theme.TwidereAppearanceCreator
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnFitSystemWindowsListener
 import java.lang.reflect.InvocationTargetException
@@ -185,6 +187,8 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity, IThemedActivit
         }
         delegate.setLocalNightMode(nightMode)
         super.onCreate(savedInstanceState)
+        ActivitySupport.setTaskDescription(this, TaskDescriptionCompat(title.toString(), null,
+                ColorUtils.setAlphaComponent(overrideTheme.colorToolbar, 0xFF)))
         GeneralComponentHelper.build(this).inject(this)
     }
 

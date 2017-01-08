@@ -1,6 +1,7 @@
 [
   {
     "name": "Twittnuker",
+    "type": "twitter",
     "localized_name": "@string/provider_default",
     "api_url_format": "https://[DOMAIN.]twitter.com/",
     "auth_type": "oauth",
@@ -11,6 +12,7 @@
   },
   {
     "name": "Quitter.se",
+    "type": "statusnet",
     "localized_name": "@string/provider_quitter_se",
     "api_url_format": "https://quitter.se/api/",
     "auth_type": "oauth",
@@ -21,6 +23,7 @@
   },
   {
     "name": "GNUSocial.net",
+    "type": "statusnet",
     "localized_name": "@string/provider_gnusocial_net",
     "api_url_format": "https://gnusocial.net/api/",
     "auth_type": "oauth",
@@ -31,6 +34,7 @@
   },
   {
     "name": "GNU Social.de",
+    "type": "statusnet",
     "localized_name": "@string/provider_gnusocial_de",
     "api_url_format": "https://gnusocial.de/api/",
     "auth_type": "oauth",
@@ -41,6 +45,7 @@
   },
   {
     "name": "Fanfou",
+    "type": "fanfou",
     "localized_name": "@string/provider_fanfou",
     "api_url_format": "http://api.fanfou.com/",
     "auth_type": "oauth",
@@ -51,6 +56,7 @@
   },
   {
     "name": "Twitter for Android",
+    "type": "twitter",
     "localized_name": "@string/provider_android",
     "api_url_format": "https://[DOMAIN.]twitter.com/",
     "auth_type": "oauth",
@@ -61,6 +67,7 @@
   },
   {
     "name": "TweetDeck",
+    "type": "twitter",
     "localized_name": "@string/provider_tweetdeck",
     "api_url_format": "https://[DOMAIN.]twitter.com/",
     "auth_type": "oauth",

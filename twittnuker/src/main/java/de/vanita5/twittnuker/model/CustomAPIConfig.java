@@ -28,12 +28,14 @@ import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.Utils;
@@ -53,6 +55,10 @@ public final class CustomAPIConfig implements Parcelable {
 
     @JsonField(name = "name")
     String name;
+    @AccountType
+    @JsonField(name = "type")
+    @Nullable
+    String type;
     @JsonField(name = "localized_name")
     String localizedName;
     @JsonField(name = "api_url_format")
@@ -72,15 +78,22 @@ public final class CustomAPIConfig implements Parcelable {
     public CustomAPIConfig() {
     }
 
-    public CustomAPIConfig(String name, String apiUrlFormat, String credentialsType, boolean sameOAuthUrl,
-                           boolean noVersionSuffix, String consumerKey, String consumerSecret) {
+    public CustomAPIConfig(String name, @Nullable String type, String apiUrlFormat,
+                           String credentialsType, boolean sameOAuthUrl, boolean noVersionSuffix,
+                           String consumerKey, String consumerSecret) {
         this.name = name;
+        this.type = type;
         this.apiUrlFormat = apiUrlFormat;
         this.credentialsType = credentialsType;
         this.sameOAuthUrl = sameOAuthUrl;
         this.noVersionSuffix = noVersionSuffix;
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
+    }
+
+    @Nullable
+    public String getType() {
+        return type;
     }
 
     public String getName() {
@@ -184,7 +197,7 @@ public final class CustomAPIConfig implements Parcelable {
     }
 
     public static CustomAPIConfig builtin(@NonNull Context context) {
-        return new CustomAPIConfig(context.getString(R.string.provider_default),
+        return new CustomAPIConfig(context.getString(R.string.provider_default), AccountType.TWITTER,
                 DEFAULT_TWITTER_API_URL_FORMAT, Credentials.Type.OAUTH, true, false,
                 TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET);
     }

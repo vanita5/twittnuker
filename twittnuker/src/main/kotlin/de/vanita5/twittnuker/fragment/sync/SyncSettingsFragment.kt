@@ -22,16 +22,31 @@
 
 package de.vanita5.twittnuker.fragment.sync
 
+import android.app.Dialog
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import de.vanita5.twittnuker.Constants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
+import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment
+import de.vanita5.twittnuker.model.sync.SyncProviderInfo
+import de.vanita5.twittnuker.util.sync.SyncController
+import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
 
 class SyncSettingsFragment : BasePreferenceFragment() {
+
+    private var providerInfo: SyncProviderInfo? = null
+    private var syncController: SyncController? = null
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        providerInfo = kPreferences[dataSyncProviderInfoKey]
+        syncController = providerInfo?.newSyncController(context)
         setHasOptionsMenu(true)
     }
 
@@ -42,5 +57,42 @@ class SyncSettingsFragment : BasePreferenceFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_sync_settings, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.disconnect -> {
+                val df = DisconnectSyncConfirmDialogFragment()
+                df.show(childFragmentManager, "disconnect_confirm")
+            }
+            R.id.sync_now -> {
+                syncController?.performSync()
+            }
+            else -> {
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun cleanupAndDisconnect() {
+        syncController?.cleanupSyncCache()
+        kPreferences[dataSyncProviderInfoKey] = null
+        activity?.finish()
+    }
+
+    class DisconnectSyncConfirmDialogFragment : BaseDialogFragment() {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val builder = AlertDialog.Builder(context)
+            val providerInfo = kPreferences[dataSyncProviderInfoKey]!!
+            val entry = SyncProviderInfoFactory.getProviderEntry(context, providerInfo.type)!!
+            builder.setMessage(getString(R.string.message_sync_disconnect_from_name_confirm, entry.name))
+            builder.setPositiveButton(R.string.action_sync_disconnect) { dialog, which ->
+                (parentFragment as SyncSettingsFragment).cleanupAndDisconnect()
+            }
+            builder.setNegativeButton(android.R.string.cancel, null)
+            return builder.create()
+        }
+
     }
 }

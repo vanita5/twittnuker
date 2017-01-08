@@ -22,12 +22,19 @@
 
 package de.vanita5.twittnuker.model.sync
 
+import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import de.vanita5.twittnuker.service.DropboxDataSyncService
+import de.vanita5.twittnuker.util.sync.SyncController
 
 class DropboxSyncProviderInfo(val authToken: String) : SyncProviderInfo(DropboxSyncProviderInfo.TYPE) {
-
     override fun writeToPreferences(editor: SharedPreferences.Editor) {
         editor.putString(KEY_DROPBOX_AUTH_TOKEN, authToken)
+    }
+
+    override fun newSyncController(context: Context): SyncController {
+        return DropboxSyncController(context)
     }
 
     companion object {
@@ -38,6 +45,17 @@ class DropboxSyncProviderInfo(val authToken: String) : SyncProviderInfo(DropboxS
             val authToken = preferences.getString(KEY_DROPBOX_AUTH_TOKEN, null) ?: return null
             return DropboxSyncProviderInfo(authToken)
         }
+    }
+
+    class DropboxSyncController(val context: Context) : SyncController() {
+        override fun cleanupSyncCache() {
+
+        }
+
+        override fun performSync() {
+            context.startService(Intent(context, DropboxDataSyncService::class.java))
+        }
+
     }
 
 }

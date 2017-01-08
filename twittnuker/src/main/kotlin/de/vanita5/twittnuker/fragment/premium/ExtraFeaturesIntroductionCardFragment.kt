@@ -32,7 +32,8 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_extra_features_introduction.*
 import kotlinx.android.synthetic.main.layout_extra_features_introduction.*
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.constant.PURCHASE_RESPONSE_NOT_PURCHASED
+import de.vanita5.twittnuker.constant.RESULT_NOT_PURCHASED
+import de.vanita5.twittnuker.constant.RESULT_SERVICE_UNAVAILABLE
 import de.vanita5.twittnuker.fragment.BaseSupportFragment
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 
@@ -72,8 +73,13 @@ class ExtraFeaturesIntroductionCardFragment : BaseSupportFragment() {
             REQUEST_RESTORE_PURCHASE -> {
                 if (requestCode == Activity.RESULT_OK) {
                     activity?.recreate()
-                } else if (resultCode == PURCHASE_RESPONSE_NOT_PURCHASED) {
-                    Toast.makeText(context, R.string.message_extra_features_not_purchased, Toast.LENGTH_SHORT).show()
+                } else when (resultCode) {
+                    RESULT_NOT_PURCHASED -> {
+                        Toast.makeText(context, R.string.message_extra_features_not_purchased, Toast.LENGTH_SHORT).show()
+                    }
+                    RESULT_SERVICE_UNAVAILABLE -> {
+                        Toast.makeText(context, R.string.message_network_error, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

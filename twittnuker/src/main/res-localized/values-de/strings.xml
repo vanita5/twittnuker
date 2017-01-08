@@ -392,9 +392,10 @@
     <string name="mention_user">Erwähnung <xliff:g id="user">%s</xliff:g></string>
     <string name="theme_color">Theme Farbe</string>
     <string name="wrong_url_format">Falsches URL-Format.</string>
-    <string name="wrong_username_password">Falscher Benutzername/Passwort.</string>
-    <string name="network_error">Netzwerkfehler</string>
-    <string name="api_data_corrupted">API Daten beschädigt.</string>
+    <string name="wrong_username_password">Falscher Benutzername/Passwort</string>
+    <!-- Toast message for network errors -->
+    <string name="message_network_error">Netzwerkfehler</string>
+    <string name="api_data_corrupted">API Daten beschädigt</string>
     <string name="ssl_error">SSL-Fehler, aktivieren von \"SSL-Fehler ignorieren\" könnte helfen.</string>
     <string name="wrong_api_key">Falsche API URL oder Consumer Key/Secret. Bitte überprüfe deine Einstellungen.</string>
     <string name="status_updated">Tweet gesendet.</string>
@@ -863,7 +864,9 @@
     <string name="sync_provider_name_dropbox">Dropbox</string>
     <!-- [verb] Disconnect from network storage -->
     <string name="action_sync_disconnect">Trennen</string>
+    <string name="action_sync_sync_now">Jetzt synchronisieren</string>
     <string name="title_sync_settings">Sync. Einstellungen</string>
+    <string name="message_sync_disconnect_from_name_confirm">Von <xliff:g example="ownCloud" id="name">%s</xliff:g> trennen?</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

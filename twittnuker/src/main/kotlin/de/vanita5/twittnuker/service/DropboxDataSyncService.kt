@@ -30,8 +30,8 @@ import android.support.v7.app.NotificationCompat
 import android.util.Log
 import android.util.Xml
 import com.dropbox.core.DbxDownloader
+import com.dropbox.core.DbxException
 import com.dropbox.core.DbxRequestConfig
-import com.dropbox.core.NetworkIOException
 import com.dropbox.core.v2.DbxClientV2
 import com.dropbox.core.v2.files.*
 import org.mariotaku.kpreferences.get
@@ -73,6 +73,8 @@ class DropboxDataSyncService : BaseIntentService("dropbox_data_sync") {
                 helper.performSync()
             } catch (e: IOException) {
                 Log.w(LOGTAG_SYNC, e)
+            } catch (e: Exception) {
+                Log.wtf(LOGTAG_SYNC, e)
             }
         }
         nm.cancel(NOTIFICATION_ID_SYNC_DATA)
@@ -86,7 +88,7 @@ class DropboxDataSyncService : BaseIntentService("dropbox_data_sync") {
                     this.writeMimeMessageTo(context, it.outputStream)
                     return it.finish()
                 }
-            } catch (e: NetworkIOException) {
+            } catch (e: DbxException) {
                 throw IOException(e)
             }
         }
@@ -102,31 +104,46 @@ class DropboxDataSyncService : BaseIntentService("dropbox_data_sync") {
                     }
                     return parsed
                 }
-            } catch (e: NetworkIOException) {
+            } catch (e: DbxException) {
                 throw IOException(e)
             }
         }
 
+        @Throws(IOException::class)
         override fun removeDrafts(list: List<FileMetadata>): Boolean {
-            return client.files().deleteBatch(list.map { DeleteArg(it.pathLower) }) != null
+            try {
+                return client.files().deleteBatch(list.map { DeleteArg(it.pathLower) }) != null
+            } catch (e: DbxException) {
+                throw IOException(e)
+            }
         }
 
+        @Throws(IOException::class)
         override fun removeDraft(info: FileMetadata): Boolean {
-            return client.files().delete(info.pathLower) != null
+            try {
+                return client.files().delete(info.pathLower) != null
+            } catch (e: DbxException) {
+                throw IOException(e)
+            }
         }
 
         override val FileMetadata.draftTimestamp: Long get() = this.clientModified.time
 
         override val FileMetadata.draftFileName: String get() = this.name
 
+        @Throws(IOException::class)
         override fun listRemoteDrafts(): List<FileMetadata> {
             val result = ArrayList<FileMetadata>()
-            var listResult: ListFolderResult = client.files().listFolder("/Drafts/")
-            while (true) {
-                // Do something with files
-                listResult.entries.mapNotNullTo(result) { it as? FileMetadata }
-                if (!listResult.hasMore) break
-                listResult = client.files().listFolderContinue(listResult.cursor)
+            try {
+                var listResult: ListFolderResult = client.files().listFolder("/Drafts/")
+                while (true) {
+                    // Do something with files
+                    listResult.entries.mapNotNullTo(result) { it as? FileMetadata }
+                    if (!listResult.hasMore) break
+                    listResult = client.files().listFolderContinue(listResult.cursor)
+                }
+            } catch (e: DbxException) {
+                throw IOException(e)
             }
             return result
         }
@@ -221,6 +238,7 @@ class DropboxDataSyncService : BaseIntentService("dropbox_data_sync") {
             uploader?.close()
         }
 
+        @Throws(IOException::class)
         abstract fun performUpload(uploader: UploadUploader, data: Data)
 
         fun uploadData(data: Data): Boolean {
@@ -235,12 +253,14 @@ class DropboxDataSyncService : BaseIntentService("dropbox_data_sync") {
 
     companion object {
 
+        @Throws(IOException::class)
         private fun InputStream.newPullParser(): XmlPullParser {
             val parser = Xml.newPullParser()
             parser.setInput(this, "UTF-8")
             return parser
         }
 
+        @Throws(IOException::class)
         private fun OutputStream.newSerializer(indent: Boolean = true): XmlSerializer {
             val serializer = Xml.newSerializer()
             serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", indent)
@@ -248,9 +268,17 @@ class DropboxDataSyncService : BaseIntentService("dropbox_data_sync") {
             return serializer
         }
 
-        private fun DbxClientV2.newUploader(path: String, clientModified: Long) = files().uploadBuilder(path)
-                .withMode(WriteMode.OVERWRITE).withMute(true).withClientModified(Date(clientModified)).start()
+        @Throws(IOException::class)
+        private fun DbxClientV2.newUploader(path: String, clientModified: Long): UploadUploader {
+            try {
+                return files().uploadBuilder(path).withMode(WriteMode.OVERWRITE).withMute(true)
+                        .withClientModified(Date(clientModified)).start()
+            } catch (e: DbxException) {
+                throw IOException(e)
+            }
+        }
 
+        @Throws(IOException::class)
         private fun DbxClientV2.newDownloader(path: String): DbxDownloader<FileMetadata> {
             try {
                 return files().downloadBuilder(path).start()
@@ -258,6 +286,8 @@ class DropboxDataSyncService : BaseIntentService("dropbox_data_sync") {
                 if (e.errorValue?.pathValue?.isNotFound ?: false) {
                     throw FileNotFoundException(path)
                 }
+                throw IOException(e)
+            } catch (e: DbxException) {
                 throw IOException(e)
             }
         }

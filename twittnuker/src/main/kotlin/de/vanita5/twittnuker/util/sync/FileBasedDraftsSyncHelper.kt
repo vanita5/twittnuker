@@ -42,6 +42,8 @@ import java.io.IOException
 import java.util.*
 
 abstract class FileBasedDraftsSyncHelper<RemoteFileInfo>(val context: Context) : ISyncHelper {
+
+    @Throws(IOException::class)
     override fun performSync(): Boolean {
         if (BuildConfig.DEBUG) {
             Log.d(LOGTAG_SYNC, "Begin syncing drafts")

@@ -20,7 +20,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.constant
+package de.vanita5.twittnuker.util.sync
 
-const val RESULT_SERVICE_UNAVAILABLE = 1
-const val RESULT_NOT_PURCHASED = 8
+abstract class SyncController {
+    abstract fun performSync()
+    abstract fun cleanupSyncCache()
+}
