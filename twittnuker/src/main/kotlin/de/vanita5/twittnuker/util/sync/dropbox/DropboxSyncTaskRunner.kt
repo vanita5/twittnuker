@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.util.sync.dropbox
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Xml
 import com.dropbox.core.DbxDownloader
 import com.dropbox.core.DbxException
 import com.dropbox.core.DbxRequestConfig
@@ -35,13 +34,15 @@ import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.extension.model.*
+import de.vanita5.twittnuker.extension.newPullParser
+import de.vanita5.twittnuker.extension.newSerializer
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.FiltersData
 import de.vanita5.twittnuker.util.TaskServiceRunner
 import de.vanita5.twittnuker.util.sync.*
-import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlSerializer
-import java.io.*
+import java.io.Closeable
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.util.*
 
 
@@ -156,7 +157,7 @@ class DropboxSyncTaskRunner(context: Context, val authToken: String) : SyncTaskR
 
         override fun DbxDownloader<FileMetadata>.loadFromRemote(): FiltersData {
             val data = FiltersData()
-            data.parse(inputStream.newPullParser())
+            data.parse(inputStream.newPullParser(charset = Charsets.UTF_8))
             data.initFields()
             return data
         }
@@ -172,7 +173,7 @@ class DropboxSyncTaskRunner(context: Context, val authToken: String) : SyncTaskR
         override fun newSaveToRemoteSession(): DropboxUploadSession<FiltersData> {
             return object : DropboxUploadSession<FiltersData>(filePath, client) {
                 override fun performUpload(uploader: UploadUploader, data: FiltersData) {
-                    data.serialize(uploader.outputStream.newSerializer(true))
+                    data.serialize(uploader.outputStream.newSerializer(charset = Charsets.UTF_8, indent = true))
                 }
             }
         }
@@ -205,7 +206,8 @@ class DropboxSyncTaskRunner(context: Context, val authToken: String) : SyncTaskR
         override fun newSaveToRemoteSession(): DropboxUploadSession<Map<String, String>> {
             return object : DropboxUploadSession<Map<String, String>>(filePath, client) {
                 override fun performUpload(uploader: UploadUploader, data: Map<String, String>) {
-                    data.serialize(uploader.outputStream.newSerializer(true))
+                    data.serialize(uploader.outputStream.newSerializer(charset = Charsets.UTF_8,
+                            indent = true))
                 }
             }
         }
@@ -243,20 +245,6 @@ class DropboxSyncTaskRunner(context: Context, val authToken: String) : SyncTaskR
 
     companion object {
 
-        @Throws(IOException::class)
-        private fun InputStream.newPullParser(): XmlPullParser {
-            val parser = Xml.newPullParser()
-            parser.setInput(this, "UTF-8")
-            return parser
-        }
-
-        @Throws(IOException::class)
-        private fun OutputStream.newSerializer(indent: Boolean = true): XmlSerializer {
-            val serializer = Xml.newSerializer()
-            serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", indent)
-            serializer.setOutput(this, "UTF-8")
-            return serializer
-        }
 
         @Throws(IOException::class)
         private fun DbxClientV2.newUploader(path: String, clientModified: Long): UploadUploader {

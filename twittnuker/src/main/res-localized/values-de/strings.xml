@@ -42,6 +42,7 @@
     <string name="password">Passwort</string>
     <string name="label_data_provider">Twittnuker Datenbank-Anbieter</string>
     <string name="label_refresh_service">Dienst aktualisieren</string>
+    <string name="label_refresh_and_sync_service">Refresh &amp; Sync Service</string>
     <string name="label_streaming_service">Streaming Service</string>
     <string name="label_background_operation_service">Hintergrunddienst</string>
     <string name="action_open_in_browser">Im Browser öffnen</string>
