@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.test.extension.model
+package de.vanita5.twittnuker.extension.model
 
 import android.support.test.runner.AndroidJUnit4
 import android.util.Xml
