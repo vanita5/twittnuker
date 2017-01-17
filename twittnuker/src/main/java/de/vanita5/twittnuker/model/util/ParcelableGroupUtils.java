@@ -38,7 +38,6 @@ public class ParcelableGroupUtils {
         obj.member = member;
         obj.position = position;
         obj.id = group.getId();
-        obj.nickname = group.getNickname();
         obj.homepage = group.getHomepage();
         obj.fullname = group.getFullname();
         obj.url = group.getUrl();

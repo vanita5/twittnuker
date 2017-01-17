@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.loader.ParcelableStatusLoader
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.preference.AccountsListPreference
 import de.vanita5.twittnuker.preference.KeyboardShortcutPreference
+import de.vanita5.twittnuker.preference.sync.SyncItemPreference
 import de.vanita5.twittnuker.provider.CacheProvider
 import de.vanita5.twittnuker.provider.TwidereDataProvider
 import de.vanita5.twittnuker.service.BaseIntentService
@@ -50,6 +51,7 @@ import de.vanita5.twittnuker.text.util.EmojiEditableFactory
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory
 import de.vanita5.twittnuker.util.MultiSelectEventHandler
 import de.vanita5.twittnuker.util.NotificationHelper
+import de.vanita5.twittnuker.util.sync.SyncTaskRunner
 import javax.inject.Singleton
 
 @Singleton
@@ -144,4 +146,7 @@ interface GeneralComponent {
     fun inject(fragment: ThemedPreferenceDialogFragmentCompat)
 
     fun inject(service: BaseIntentService)
+
+    fun inject(runner: SyncTaskRunner)
+    fun inject(preference: SyncItemPreference)
 }

@@ -41,10 +41,10 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.*
 
-abstract class FileBasedDraftsSyncHelper<RemoteFileInfo>(val context: Context) : ISyncHelper {
+abstract class FileBasedDraftsSyncAction<RemoteFileInfo>(val context: Context) : ISyncAction {
 
     @Throws(IOException::class)
-    override fun performSync(): Boolean {
+    override fun execute(): Boolean {
         if (BuildConfig.DEBUG) {
             Log.d(LOGTAG_SYNC, "Begin syncing drafts")
         }

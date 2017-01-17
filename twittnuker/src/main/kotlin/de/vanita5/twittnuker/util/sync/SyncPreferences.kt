@@ -23,16 +23,35 @@
 package de.vanita5.twittnuker.util.sync
 
 import android.content.Context
-import de.vanita5.twittnuker.model.sync.SyncProviderInfo
+import de.vanita5.twittnuker.TwittnukerConstants.SYNC_PREFERENCES_NAME
 
-abstract class SyncController(val context: Context) {
-    abstract fun appStarted()
 
-    fun performSync(providerInfo: SyncProviderInfo) {
-        providerInfo.newSyncTaskRunner(context).performSync()
+class SyncPreferences(val context: Context) {
+    private val preferences = context.getSharedPreferences(SYNC_PREFERENCES_NAME, Context.MODE_PRIVATE)
+
+    fun setLastSynced(type: String, timestamp: Long) {
+        preferences.edit().putLong(getLastSyncedKey(type), timestamp).apply()
     }
 
-    fun cleanupSyncCache(providerInfo: SyncProviderInfo) {
-        providerInfo.newSyncTaskRunner(context).cleanupSyncCache()
+    fun setSyncEnabled(type: String, enabled: Boolean) {
+        preferences.edit().putBoolean(getSyncEnabledKey(type), enabled).apply()
+    }
+
+    fun getLastSynced(syncType: String): Long {
+        return preferences.getLong(getLastSyncedKey(syncType), -1)
+    }
+
+    fun isSyncEnabled(syncType: String): Boolean {
+        return preferences.getBoolean(getSyncEnabledKey(syncType), true)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun getSyncEnabledKey(type: String) = "sync_enabled_$type"
+
+        @JvmStatic
+        fun getLastSyncedKey(type: String) = "last_synced_$type"
+
     }
 }

@@ -45,7 +45,6 @@ import org.mariotaku.mediaviewer.library.MediaDownloader
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
-import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
@@ -58,6 +57,10 @@ import de.vanita5.twittnuker.util.net.TwidereDns
 import de.vanita5.twittnuker.util.refresh.AutoRefreshController
 import de.vanita5.twittnuker.util.refresh.JobSchedulerAutoRefreshController
 import de.vanita5.twittnuker.util.refresh.LegacyAutoRefreshController
+import de.vanita5.twittnuker.util.sync.JobSchedulerSyncController
+import de.vanita5.twittnuker.util.sync.LegacySyncController
+import de.vanita5.twittnuker.util.sync.SyncController
+import de.vanita5.twittnuker.util.sync.SyncPreferences
 import java.io.IOException
 import javax.inject.Singleton
 
@@ -227,12 +230,33 @@ class ApplicationModule(private val application: Application) {
     }
 
     @Provides
+    @Singleton
     fun autoRefreshController(kPreferences: KPreferences): AutoRefreshController {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-                application.resources.getBoolean(R.bool.use_job_refresh_service)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return JobSchedulerAutoRefreshController(application, kPreferences)
         }
         return LegacyAutoRefreshController(application, kPreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun syncController(kPreferences: KPreferences): SyncController {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return JobSchedulerSyncController(application)
+        }
+        return LegacySyncController(application)
+    }
+
+    @Provides
+    @Singleton
+    fun syncPreferences(): SyncPreferences {
+        return SyncPreferences(application)
+    }
+
+    @Provides
+    @Singleton
+    fun taskCreator(kPreferences: KPreferences, syncPreferences: SyncPreferences, bus: Bus): TaskServiceRunner {
+        return TaskServiceRunner(application, kPreferences, bus)
     }
 
     @Provides

@@ -27,7 +27,7 @@ import android.graphics.Color
 import org.mariotaku.ktextension.HexColorFormat
 import org.mariotaku.ktextension.toHexColor
 
-object UserColorsSyncProcessor : FileBasedPreferencesValuesSyncHelper.Processor {
+object UserColorsSyncProcessor : FileBasedPreferencesValuesSyncAction.Processor {
     override fun loadValue(map: MutableMap<String, String>, key: String, value: Any?) {
         if (value is Int) {
             map.put(key, toHexColor(value, format = HexColorFormat.RGB))

@@ -58,6 +58,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String HOST_MAPPING_PREFERENCES_NAME = "host_mapping";
     String MESSAGE_DRAFTS_PREFERENCES_NAME = "message_drafts";
     String SHARED_PREFERENCES_NAME = "preferences";
+    String SYNC_PREFERENCES_NAME = "sync_preferences";
     String TIMELINE_POSITIONS_PREFERENCES_NAME = "timeline_positions";
     String ACCOUNT_PREFERENCES_NAME_PREFIX = "account_preferences_";
     String KEYBOARD_SHORTCUTS_PREFERENCES_NAME = "keyboard_shortcuts_preferences";

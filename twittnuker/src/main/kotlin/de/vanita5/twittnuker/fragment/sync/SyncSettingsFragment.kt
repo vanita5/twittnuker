@@ -28,30 +28,39 @@ import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import de.vanita5.twittnuker.Constants.SHARED_PREFERENCES_NAME
+import com.squareup.otto.Subscribe
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.TwittnukerConstants.SYNC_PREFERENCES_NAME
 import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment
 import de.vanita5.twittnuker.model.sync.SyncProviderInfo
-import de.vanita5.twittnuker.util.sync.SyncController
+import de.vanita5.twittnuker.util.TaskServiceRunner
 import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
 
 class SyncSettingsFragment : BasePreferenceFragment() {
 
     private var providerInfo: SyncProviderInfo? = null
-    private var syncController: SyncController? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         providerInfo = kPreferences[dataSyncProviderInfoKey]
-        syncController = providerInfo?.newSyncController(context)
         setHasOptionsMenu(true)
     }
 
+    override fun onStart() {
+        super.onStart()
+        bus.register(this)
+    }
+
+    override fun onStop() {
+        bus.unregister(this)
+        super.onStop()
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        preferenceManager.sharedPreferencesName = SHARED_PREFERENCES_NAME
+        preferenceManager.sharedPreferencesName = SYNC_PREFERENCES_NAME
         addPreferencesFromResource(R.xml.preferences_sync)
     }
 
@@ -66,7 +75,8 @@ class SyncSettingsFragment : BasePreferenceFragment() {
                 df.show(childFragmentManager, "disconnect_confirm")
             }
             R.id.sync_now -> {
-                syncController?.performSync()
+                val providerInfo = kPreferences[dataSyncProviderInfoKey]!!
+                syncController.performSync(providerInfo)
             }
             else -> {
                 return false
@@ -75,8 +85,14 @@ class SyncSettingsFragment : BasePreferenceFragment() {
         return true
     }
 
+    @Subscribe
+    fun onSyncFinishedEvent(event: TaskServiceRunner.SyncFinishedEvent) {
+        listView?.adapter?.notifyDataSetChanged()
+    }
+
     private fun cleanupAndDisconnect() {
-        syncController?.cleanupSyncCache()
+        val providerInfo = kPreferences[dataSyncProviderInfoKey]!!
+        syncController.cleanupSyncCache(providerInfo)
         kPreferences[dataSyncProviderInfoKey] = null
         activity?.finish()
     }

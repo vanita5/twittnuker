@@ -32,12 +32,14 @@ import android.os.Bundle
 import android.provider.Settings
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
-import de.vanita5.twittnuker.fragment.iface.IBaseFragment
+import com.squareup.otto.Bus
 import org.mariotaku.kpreferences.KPreferences
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.preference.RingtonePreference
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.sync.SyncController
 
 import javax.inject.Inject
 
@@ -50,6 +52,10 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat(), IBaseFragmen
     lateinit var userColorNameManager: UserColorNameManager
     @Inject
     lateinit var kPreferences: KPreferences
+    @Inject
+    lateinit var syncController: SyncController
+    @Inject
+    lateinit var bus: Bus
 
     private val actionHelper = IBaseFragment.ActionHelper(this)
 

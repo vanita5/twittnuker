@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.refresh
+package de.vanita5.twittnuker.util.sync
 
 import android.annotation.TargetApi
 import android.app.job.JobInfo
@@ -28,47 +28,27 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.os.Build
-import org.mariotaku.kpreferences.KPreferences
-import de.vanita5.twittnuker.annotation.AutoRefreshType
-import de.vanita5.twittnuker.constant.refreshIntervalKey
 import de.vanita5.twittnuker.service.JobTaskService
 import java.util.concurrent.TimeUnit
-import android.Manifest.permission as AndroidPermissions
-
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-class JobSchedulerAutoRefreshController(
-        context: Context,
-        kPreferences: KPreferences
-) : AutoRefreshController(context, kPreferences) {
+class JobSchedulerSyncController(context: Context) : SyncController(context) {
     val scheduler: JobScheduler = context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
     override fun appStarted() {
         val allJobs = scheduler.allPendingJobs
-        AutoRefreshType.ALL.forEach { type ->
-            val jobId = JobTaskService.getRefreshJobId(type)
+        JobTaskService.JOB_IDS_SYNC.forEach { jobId ->
             if (allJobs.none { job -> job.id == jobId }) {
                 // Start non existing job
-                schedule(type)
+                scheduleJob(jobId, true)
             }
         }
-    }
-
-    override fun schedule(@AutoRefreshType type: String) {
-        val jobId = JobTaskService.getRefreshJobId(type)
-        scheduler.cancel(jobId)
-        scheduleJob(jobId)
-    }
-
-    override fun unschedule(type: String) {
-        val jobId = JobTaskService.getRefreshJobId(type)
-        scheduler.cancel(jobId)
     }
 
     fun scheduleJob(jobId: Int, persisted: Boolean = true) {
         val builder = JobInfo.Builder(jobId, ComponentName(context, JobTaskService::class.java))
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-        builder.setPeriodic(TimeUnit.MINUTES.toMillis(kPreferences[refreshIntervalKey]))
+        builder.setPeriodic(TimeUnit.HOURS.toMillis(4))
         builder.setPersisted(persisted)
         try {
             scheduler.schedule(builder.build())
@@ -78,6 +58,5 @@ class JobSchedulerAutoRefreshController(
             }
         }
     }
-
 
 }

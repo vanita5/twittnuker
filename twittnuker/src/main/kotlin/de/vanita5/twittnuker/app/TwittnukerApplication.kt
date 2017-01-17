@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.net.TwidereDns
 import de.vanita5.twittnuker.util.refresh.AutoRefreshController
+import de.vanita5.twittnuker.util.sync.SyncController
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -74,6 +75,8 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     lateinit internal var kPreferences: KPreferences
     @Inject
     lateinit internal var autoRefreshController: AutoRefreshController
+    @Inject
+    lateinit internal var syncController: SyncController
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
@@ -104,6 +107,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
         GeneralComponentHelper.build(this).inject(this)
 
         autoRefreshController.appStarted()
+        syncController.appStarted()
 
         registerActivityLifecycleCallbacks(activityTracker)
 

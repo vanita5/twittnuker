@@ -22,19 +22,11 @@
 
 package de.vanita5.twittnuker.util.sync
 
-import android.content.Context
-import android.content.Intent
-import de.vanita5.twittnuker.service.DropboxDataSyncService
+import android.support.annotation.WorkerThread
+import java.io.IOException
 
-class DropboxSyncController(val context: Context) : SyncController() {
-    override fun cleanupSyncCache() {
-        context.syncDataDir.listFiles { file, name -> file.isFile }.forEach { file ->
-            file.delete()
-        }
-    }
-
-    override fun performSync() {
-        context.startService(Intent(context, DropboxDataSyncService::class.java))
-    }
-
+interface ISyncAction {
+    @Throws(IOException::class)
+    @WorkerThread
+    fun execute(): Boolean
 }
