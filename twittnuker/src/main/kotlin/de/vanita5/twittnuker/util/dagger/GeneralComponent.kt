@@ -40,8 +40,8 @@ import de.vanita5.twittnuker.preference.KeyboardShortcutPreference
 import de.vanita5.twittnuker.provider.CacheProvider
 import de.vanita5.twittnuker.provider.TwidereDataProvider
 import de.vanita5.twittnuker.service.BaseIntentService
-import de.vanita5.twittnuker.service.JobRefreshService
-import de.vanita5.twittnuker.service.RefreshService
+import de.vanita5.twittnuker.service.JobTaskService
+import de.vanita5.twittnuker.service.LegacyTaskService
 import de.vanita5.twittnuker.task.*
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask
 import de.vanita5.twittnuker.task.twitter.GetStatusesTask
@@ -63,7 +63,7 @@ interface GeneralComponent {
 
     fun inject(obj: BaseDialogFragment)
 
-    fun inject(obj: RefreshService)
+    fun inject(obj: LegacyTaskService)
 
     fun inject(obj: ComposeActivity)
 
@@ -111,7 +111,7 @@ interface GeneralComponent {
 
     fun inject(task: GetStatusesTask)
 
-    fun inject(service: JobRefreshService)
+    fun inject(service: JobTaskService)
 
     fun inject(task: GetActivitiesTask)
 

@@ -88,7 +88,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.preference.ServicePickerPreference
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
-import de.vanita5.twittnuker.service.BackgroundOperationService
+import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.text.MarkForDeleteSpan
 import de.vanita5.twittnuker.text.style.EmojiSpan
 import de.vanita5.twittnuker.util.*
@@ -1264,7 +1264,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         update.in_reply_to_status = inReplyToStatus
         update.is_possibly_sensitive = isPossiblySensitive
         update.attachment_url = (draft?.action_extras as? UpdateStatusActionExtras)?.attachmentUrl
-        BackgroundOperationService.updateStatusesAsync(this, action, update)
+        LengthyOperationsService.updateStatusesAsync(this, action, update)
         if (preferences[noCloseAfterTweetSentKey] && inReplyToStatus == null) {
             possiblySensitive = false
             shouldSaveAccounts = true

@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.net.TwidereDns
+import de.vanita5.twittnuker.util.refresh.AutoRefreshController
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -163,7 +164,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     private val sharedPreferences: SharedPreferences by lazy {
         val prefs = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         prefs.registerOnSharedPreferenceChangeListener(this)
-        prefs
+        return@lazy prefs
     }
 
     override fun onTrimMemory(level: Int) {

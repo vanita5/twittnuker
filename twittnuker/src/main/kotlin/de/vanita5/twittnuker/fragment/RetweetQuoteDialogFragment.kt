@@ -49,7 +49,7 @@ import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.service.BackgroundOperationService
+import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.EditTextEnterHandler
 import de.vanita5.twittnuker.util.LinkCreator
@@ -252,7 +252,7 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
             }
             update.text = commentText
             update.is_possibly_sensitive = status.is_possibly_sensitive
-            BackgroundOperationService.updateStatusesAsync(context, Draft.Action.QUOTE, update)
+            LengthyOperationsService.updateStatusesAsync(context, Draft.Action.QUOTE, update)
         } else {
             twitter.retweetStatusAsync(status.account_key, status.id)
         }

@@ -95,7 +95,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-import de.vanita5.twittnuker.service.BackgroundOperationService;
+import de.vanita5.twittnuker.service.LengthyOperationsService;
 import de.vanita5.twittnuker.task.AcceptFriendshipTask;
 import de.vanita5.twittnuker.task.AddUserListMembersTask;
 import de.vanita5.twittnuker.task.CreateFriendshipTask;
@@ -482,7 +482,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
     public int sendDirectMessageAsync(final UserKey accountKey, final String recipientId, final String text,
                                       final String imageUri) {
-        final Intent intent = new Intent(context, BackgroundOperationService.class);
+        final Intent intent = new Intent(context, LengthyOperationsService.class);
         intent.setAction(INTENT_ACTION_SEND_DIRECT_MESSAGE);
         intent.putExtra(EXTRA_ACCOUNT_KEY, accountKey);
         intent.putExtra(EXTRA_RECIPIENT_ID, recipientId);

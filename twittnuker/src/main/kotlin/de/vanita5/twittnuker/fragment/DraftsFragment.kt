@@ -64,7 +64,7 @@ import de.vanita5.twittnuker.model.ParcelableMediaUpdate
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
-import de.vanita5.twittnuker.service.BackgroundOperationService
+import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.AsyncTaskUtils
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.Utils.getDefaultTextSize
@@ -217,7 +217,7 @@ class DraftsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnItemCl
             }
             when (item.action_type) {
                 Draft.Action.UPDATE_STATUS_COMPAT_1, Draft.Action.UPDATE_STATUS_COMPAT_2, Draft.Action.UPDATE_STATUS, Draft.Action.REPLY, Draft.Action.QUOTE -> {
-                    BackgroundOperationService.updateStatusesAsync(context, item.action_type,
+                    LengthyOperationsService.updateStatusesAsync(context, item.action_type,
                             ParcelableStatusUpdateUtils.fromDraftItem(activity, item))
                 }
                 Draft.Action.SEND_DIRECT_MESSAGE_COMPAT, Draft.Action.SEND_DIRECT_MESSAGE -> {

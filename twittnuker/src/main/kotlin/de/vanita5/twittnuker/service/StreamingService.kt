@@ -432,7 +432,8 @@ class StreamingService : Service() {
             resolver.delete(Activities.AboutMe.CONTENT_URI, where, whereArgs)
             resolver.insert(Statuses.CONTENT_URI, values)
             val rt = status.retweetedStatus
-            if (rt != null && rt.extendedText.contains("@" + account.user.screen_name) || rt == null && status.extendedText.contains("@" + account.user.screen_name)) {
+            if (rt != null && rt.extendedText.contains("@" + account.user.screen_name) ||
+                    rt == null && status.extendedText.contains("@" + account.user.screen_name)) {
 
                 val activity = Activity.fromMention(account.key.id, status)
                 val parcelableActivity = ParcelableActivityUtils.fromActivity(activity,

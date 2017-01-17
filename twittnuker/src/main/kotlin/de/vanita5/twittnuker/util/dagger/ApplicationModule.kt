@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.util.dagger
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import android.os.Looper
 import android.support.v4.text.BidiFormatter
 import com.nostra13.universalimageloader.cache.disc.DiskCache
@@ -54,6 +55,9 @@ import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
 import de.vanita5.twittnuker.util.media.UILFileCache
 import de.vanita5.twittnuker.util.net.TwidereDns
+import de.vanita5.twittnuker.util.refresh.AutoRefreshController
+import de.vanita5.twittnuker.util.refresh.JobSchedulerAutoRefreshController
+import de.vanita5.twittnuker.util.refresh.LegacyAutoRefreshController
 import java.io.IOException
 import javax.inject.Singleton
 
@@ -224,7 +228,8 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     fun autoRefreshController(kPreferences: KPreferences): AutoRefreshController {
-        if (application.resources.getBoolean(R.bool.use_job_refresh_service)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+                application.resources.getBoolean(R.bool.use_job_refresh_service)) {
             return JobSchedulerAutoRefreshController(application, kPreferences)
         }
         return LegacyAutoRefreshController(application, kPreferences)

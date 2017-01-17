@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.service
 
 import android.accounts.AccountManager
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.Service
 import android.content.ContentValues
@@ -70,37 +71,18 @@ import de.vanita5.twittnuker.util.ContentValuesCreator
 import de.vanita5.twittnuker.util.NotificationManagerWrapper
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener
+import org.mariotaku.ktextension.useCursor
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-class BackgroundOperationService : BaseIntentService("background_operation") {
+class LengthyOperationsService : BaseIntentService("lengthy_operations") {
 
     private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         return Service.START_STICKY
-    }
-
-    fun showErrorMessage(message: CharSequence, longMessage: Boolean) {
-        handler.post { Utils.showErrorMessage(this@BackgroundOperationService, message, longMessage) }
-    }
-
-    fun showErrorMessage(actionRes: Int, e: Exception?, longMessage: Boolean) {
-        handler.post { Utils.showErrorMessage(this@BackgroundOperationService, actionRes, e, longMessage) }
-    }
-
-    fun showErrorMessage(actionRes: Int, message: String, longMessage: Boolean) {
-        handler.post { Utils.showErrorMessage(this@BackgroundOperationService, actionRes, message, longMessage) }
-    }
-
-    fun showOkMessage(messageRes: Int, longMessage: Boolean) {
-        showToast(getString(messageRes), longMessage)
-    }
-
-    private fun showToast(message: CharSequence, longMessage: Boolean) {
-        handler.post { Toast.makeText(this@BackgroundOperationService, message, if (longMessage) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show() }
     }
 
     override fun onHandleIntent(intent: Intent?) {
@@ -122,23 +104,28 @@ class BackgroundOperationService : BaseIntentService("background_operation") {
         }
     }
 
+    private fun showErrorMessage(actionRes: Int, e: Exception?, longMessage: Boolean) {
+        handler.post { Utils.showErrorMessage(this@LengthyOperationsService, actionRes, e, longMessage) }
+    }
+
+    private fun showOkMessage(message: Int, longMessage: Boolean) {
+        handler.post { Toast.makeText(this@LengthyOperationsService, message, if (longMessage) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show() }
+    }
+
     private fun handleSendDraftIntent(intent: Intent) {
         val uri = intent.data ?: return
         notificationManager.cancel(uri.toString(), NOTIFICATION_ID_DRAFTS)
         val draftId = uri.lastPathSegment.toLong(-1)
         if (draftId == -1L) return
         val where = Expression.equals(Drafts._ID, draftId)
-        val cr = contentResolver
-        val c = cr.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql, null, null) ?: return
-        @Suppress("ConvertTryFinallyToUseCall")
-        val item: Draft = try {
-            val i = DraftCursorIndices(c)
-            if (!c.moveToFirst()) return
-            i.newObject(c)
-        } finally {
-            c.close()
-        }
-        cr.delete(Drafts.CONTENT_URI, where.sql, null)
+        @SuppressLint("Recycle")
+        val item: Draft = contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql, null, null)?.useCursor {
+            val i = DraftCursorIndices(it)
+            if (!it.moveToFirst()) return@useCursor null
+            return@useCursor i.newObject(it)
+        } ?: return
+
+        contentResolver.delete(Drafts.CONTENT_URI, where.sql, null)
         if (TextUtils.isEmpty(item.action_type)) {
             item.action_type = Draft.Action.UPDATE_STATUS
         }
@@ -475,7 +462,7 @@ class BackgroundOperationService : BaseIntentService("background_operation") {
 
         fun updateStatusesAsync(context: Context, @Draft.Action action: String,
                                 vararg statuses: ParcelableStatusUpdate) {
-            val intent = Intent(context, BackgroundOperationService::class.java)
+            val intent = Intent(context, LengthyOperationsService::class.java)
             intent.action = INTENT_ACTION_UPDATE_STATUS
             intent.putExtra(EXTRA_STATUSES, statuses)
             intent.putExtra(EXTRA_ACTION, action)
