@@ -20,29 +20,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.sync
+package de.vanita5.twittnuker.preference
 
 import android.content.Context
-import android.content.SharedPreferences
-import de.vanita5.twittnuker.util.sync.DropboxSyncController
-import de.vanita5.twittnuker.util.sync.SyncController
+import android.util.AttributeSet
+import de.vanita5.twittnuker.R
 
-class DropboxSyncProviderInfo(val authToken: String) : SyncProviderInfo(DropboxSyncProviderInfo.TYPE) {
-    override fun writeToPreferences(editor: SharedPreferences.Editor) {
-        editor.putString(KEY_DROPBOX_AUTH_TOKEN, authToken)
-    }
+class ClearCachePreference @JvmOverloads constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyle: Int = R.attr.preferenceStyle
+) : AsyncTaskPreference(context, attrs, defStyle) {
 
-    override fun newSyncController(context: Context): SyncController {
-        return DropboxSyncController(context)
-    }
-
-    companion object {
-        const val TYPE = "dropbox"
-
-        private const val KEY_DROPBOX_AUTH_TOKEN = "dropbox_auth_token"
-        fun newInstance(preferences: SharedPreferences): DropboxSyncProviderInfo? {
-            val authToken = preferences.getString(KEY_DROPBOX_AUTH_TOKEN, null) ?: return null
-            return DropboxSyncProviderInfo(authToken)
+    override fun doInBackground() {
+        val context = context ?: return
+        val externalCacheDir = context.externalCacheDir
+        if (externalCacheDir != null) {
+            externalCacheDir.listFiles()?.forEach { file ->
+                file.deleteRecursively()
+            }
+        }
+        val internalCacheDir = context.cacheDir
+        if (internalCacheDir != null) {
+            internalCacheDir.listFiles()?.forEach { file ->
+                file.deleteRecursively()
+            }
         }
     }
 
