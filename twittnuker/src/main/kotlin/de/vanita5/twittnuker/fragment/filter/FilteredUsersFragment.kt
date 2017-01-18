@@ -13,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import org.mariotaku.kpreferences.KPreferences
+import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
@@ -25,7 +26,9 @@ import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.`FiltersData$UserItemCursorIndices`
+import de.vanita5.twittnuker.model.analyzer.Purchase
 import de.vanita5.twittnuker.provider.TwidereDataStore
+import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.ContentValuesCreator
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -85,6 +88,9 @@ class FilteredUsersFragment : BaseFiltersFragment() {
                 intent.putExtra(EXTRA_ACCOUNT_KEY, data!!.getParcelableExtra<UserKey>(EXTRA_ACCOUNT_KEY))
                 startActivityForResult(intent, REQUEST_ADD_USER_SELECT_ACCOUNT)
             }
+            REQUEST_PURCHASE_EXTRA_FEATURES -> {
+                Analyzer.log(Purchase.fromActivityResult(Purchase.NAME_EXTRA_FEATURES, resultCode, data))
+            }
         }
     }
 
@@ -122,6 +128,9 @@ class FilteredUsersFragment : BaseFiltersFragment() {
             startActivityForResult(intent, requestCode)
         } else {
             val df = ExtraFeaturesIntroductionDialogFragment()
+            df.arguments = Bundle {
+                putInt(EXTRA_REQUEST_CODE, REQUEST_PURCHASE_EXTRA_FEATURES)
+            }
             df.show(childFragmentManager, "extra_features_introduction")
         }
         return true

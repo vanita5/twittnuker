@@ -47,7 +47,6 @@ import android.widget.AutoCompleteTextView
 import android.widget.ListView
 import kotlinx.android.synthetic.main.fragment_content_listview.*
 import org.mariotaku.ktextension.setGroupAvailability
-import org.mariotaku.ktextension.setItemAvailability
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
@@ -301,5 +300,6 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
         internal const val REQUEST_ADD_USER_SELECT_ACCOUNT = 201
         internal const val REQUEST_IMPORT_BLOCKS_SELECT_ACCOUNT = 202
         internal const val REQUEST_IMPORT_MUTES_SELECT_ACCOUNT = 203
+        internal const val REQUEST_PURCHASE_EXTRA_FEATURES = 211
     }
 }

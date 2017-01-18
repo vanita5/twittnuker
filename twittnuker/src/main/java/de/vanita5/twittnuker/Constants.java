@@ -80,6 +80,8 @@ public interface Constants extends TwittnukerConstants {
     String TWITTNUKER_PREVIEW_SOURCE = "Twittnuker";
     String TWITTNUKER_PREVIEW_LOCATION = "Freiburg, Germany";
 
+    String EXTRA_PRODUCT_TYPE = "product_type";
+
     int MATERIAL_DARK = 0xff212121;
     int MATERIAL_LIGHT = 0xffbdbdbd;
 

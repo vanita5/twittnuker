@@ -35,6 +35,8 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.RESULT_NOT_PURCHASED
 import de.vanita5.twittnuker.constant.RESULT_SERVICE_UNAVAILABLE
 import de.vanita5.twittnuker.fragment.BaseSupportFragment
+import de.vanita5.twittnuker.model.analyzer.Purchase
+import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 
 class ExtraFeaturesIntroductionCardFragment : BaseSupportFragment() {
@@ -68,7 +70,12 @@ class ExtraFeaturesIntroductionCardFragment : BaseSupportFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_PURCHASE -> {
-                activity?.recreate()
+                Analyzer.log(Purchase.fromActivityResult(Purchase.NAME_EXTRA_FEATURES, resultCode, data))
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        activity?.recreate()
+                    }
+                }
             }
             REQUEST_RESTORE_PURCHASE -> {
                 when (resultCode) {

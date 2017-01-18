@@ -201,7 +201,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         }
     }
 
-    private val mStatusActivityLoaderCallback = object : LoaderCallbacks<StatusActivity?> {
+    private val statusActivityLoaderCallback = object : LoaderCallbacks<StatusActivity?> {
         override fun onCreateLoader(id: Int, args: Bundle): Loader<StatusActivity?> {
             val accountKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
             val statusId = args.getString(EXTRA_STATUS_ID)
@@ -512,10 +512,10 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         args.putParcelable(EXTRA_ACCOUNT_KEY, status.account_key)
         args.putString(EXTRA_STATUS_ID, if (status.is_retweet) status.retweet_id else status.id)
         if (mActivityLoaderInitialized) {
-            loaderManager.restartLoader(LOADER_ID_STATUS_ACTIVITY, args, mStatusActivityLoaderCallback)
+            loaderManager.restartLoader(LOADER_ID_STATUS_ACTIVITY, args, statusActivityLoaderCallback)
             return
         }
-        loaderManager.initLoader(LOADER_ID_STATUS_ACTIVITY, args, mStatusActivityLoaderCallback)
+        loaderManager.initLoader(LOADER_ID_STATUS_ACTIVITY, args, statusActivityLoaderCallback)
         mActivityLoaderInitialized = true
     }
 

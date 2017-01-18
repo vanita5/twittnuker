@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.accounts.OnAccountsUpdateListener
+import android.app.Activity
 import android.app.Application
 import android.os.Build
 import com.crashlytics.android.Crashlytics
@@ -35,9 +36,12 @@ import org.mariotaku.ktextension.configure
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_TYPE
+import de.vanita5.twittnuker.model.analyzer.Purchase
 import de.vanita5.twittnuker.model.analyzer.Search
 import de.vanita5.twittnuker.model.analyzer.Share
 import de.vanita5.twittnuker.model.analyzer.SignIn
+import java.math.BigDecimal
+import java.util.*
 
 class FabricAnalyzer : Analyzer(), Constants {
 
@@ -78,6 +82,20 @@ class FabricAnalyzer : Analyzer(), Constants {
                 answers.logShare(configure(ShareEvent()) {
                     putContentType(event.type)
                     putContentId(event.id)
+                    putAttributes(event)
+                })
+            }
+            is Purchase -> {
+                answers.logPurchase(configure(PurchaseEvent()) {
+                    putItemName(event.productName)
+                    putSuccess(event.resultCode == Activity.RESULT_OK)
+                    if (!event.price.isNaN() && event.currency != null) {
+                        putCurrency(Currency.getInstance(event.currency) ?: Currency.getInstance(Locale.getDefault()))
+                        putItemPrice(BigDecimal(event.price))
+                    }
+                    event.forEachValues { name, value ->
+                        putCustomAttribute(name, value)
+                    }
                     putAttributes(event)
                 })
             }

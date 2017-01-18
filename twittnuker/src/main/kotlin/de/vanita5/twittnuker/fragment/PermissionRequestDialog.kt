@@ -30,8 +30,7 @@ import android.support.v7.app.AlertDialog
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_MESSAGE
-import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_PERMISSIONS
+import de.vanita5.twittnuker.constant.IntentConstants.*
 
 class PermissionRequestDialog : BaseDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -55,7 +54,7 @@ class PermissionRequestDialog : BaseDialogFragment() {
     }
 
     companion object {
-        const val EXTRA_REQUEST_CODE = "request_code"
+
         fun show(fragmentManager: FragmentManager, message: String, permissions: Array<String>, requestCode: Int): PermissionRequestDialog {
             val df = PermissionRequestDialog()
             df.arguments = Bundle {

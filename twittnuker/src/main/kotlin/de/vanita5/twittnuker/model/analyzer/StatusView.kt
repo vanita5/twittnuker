@@ -23,38 +23,19 @@
 package de.vanita5.twittnuker.model.analyzer
 
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.extension.model.draftActionTypeString
 import de.vanita5.twittnuker.extension.model.parcelableMediaTypeString
-import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.util.Analyzer
 
 
-data class UpdateStatus(
+data class StatusView(
         @AccountType override val accountType: String? = null,
-        @Draft.Action val actionType: String?,
-        @ParcelableMedia.Type val mediaType: Int,
-        val hasLocation: Boolean,
-        val preciseLocation: Boolean,
-        val success: Boolean
+        @ParcelableMedia.Type val mediaType: Int
 ) : Analyzer.Event {
 
-    private val locationType: String get() = if (!hasLocation) {
-        "none"
-    } else if (preciseLocation) {
-        "coordinate"
-    } else {
-        "place"
-    }
-
-    override val name: String
-        get() = "Tweet"
+    override val name: String = "Status View"
 
     override fun forEachValues(action: (String, String?) -> Unit) {
-        action("Status Type", draftActionTypeString(actionType))
         action("Media Type", parcelableMediaTypeString(mediaType))
-        action("Location Type", locationType)
-        action("Success", success.toString())
     }
-
 }

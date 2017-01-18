@@ -208,6 +208,8 @@ public interface IntentConstants {
     String EXTRA_API_CONFIG = "api_config";
     String EXTRA_COUNT = "count";
 
+    String EXTRA_REQUEST_CODE = "request_code";I
+
     /* Twittnuker */
     String EXTRA_HOTOTIN_EXPANDED_TEXT = "hototin_expanded_text";
     String EXTRA_TWITLONGER_EXPANDED_TEXT = "twitlonger_expanded_text";
