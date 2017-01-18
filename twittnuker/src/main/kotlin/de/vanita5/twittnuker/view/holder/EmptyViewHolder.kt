@@ -20,13 +20,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.holder;
+package de.vanita5.twittnuker.view.holder
 
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import android.support.v7.widget.RecyclerView
+import android.view.View
 
-public class EmptyViewHolder extends RecyclerView.ViewHolder {
-    public EmptyViewHolder(View view) {
-        super(view);
-    }
-}
+class EmptyViewHolder(view: View) : RecyclerView.ViewHolder(view)

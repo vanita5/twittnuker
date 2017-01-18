@@ -23,18 +23,21 @@
 package de.vanita5.twittnuker.view.holder;
 
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class TwoLineWithIconViewHolder extends ViewListHolder {
 
-	public final ImageView icon;
-	public final TextView text1, text2;
+    public final ImageView icon;
+    public final TextView text1, text2;
+    public final CheckBox checkbox;
 
-	public TwoLineWithIconViewHolder(final View view) {
-		super(view);
-		icon = (ImageView) findViewById(android.R.id.icon);
-		text1 = (TextView) findViewById(android.R.id.text1);
-		text2 = (TextView) findViewById(android.R.id.text2);
-	}
+    public TwoLineWithIconViewHolder(final View view) {
+        super(view);
+        icon = (ImageView) findViewById(android.R.id.icon);
+        text1 = (TextView) findViewById(android.R.id.text1);
+        text2 = (TextView) findViewById(android.R.id.text2);
+        checkbox = (CheckBox) findViewById(android.R.id.checkbox);
+    }
 }
