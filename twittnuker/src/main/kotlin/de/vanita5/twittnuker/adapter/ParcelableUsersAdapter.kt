@@ -26,16 +26,11 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.Companion.ITEM_VIEW_TYPE_LOAD_INDICATOR
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
-import de.vanita5.twittnuker.constant.displayProfileImageKey
-import de.vanita5.twittnuker.constant.profileImageStyleKey
-import de.vanita5.twittnuker.constant.showAbsoluteTimeKey
-import de.vanita5.twittnuker.constant.textSizeKey
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
@@ -46,10 +41,6 @@ class ParcelableUsersAdapter(context: Context) : LoadMoreSupportAdapter<Recycler
     private var data: List<ParcelableUser>? = null
 
     override val showAccountsColor: Boolean = false
-    override val profileImageStyle: Int
-    override val textSize: Float
-    override val profileImageEnabled: Boolean
-    override val isShowAbsoluteTime: Boolean
     override var userClickListener: IUsersAdapter.UserClickListener? = null
     override var requestClickListener: IUsersAdapter.RequestClickListener? = null
     override var friendshipClickListener: IUsersAdapter.FriendshipClickListener? = null
@@ -57,10 +48,6 @@ class ParcelableUsersAdapter(context: Context) : LoadMoreSupportAdapter<Recycler
 
     init {
         inflater = LayoutInflater.from(context)
-        textSize = preferences[textSizeKey].toFloat()
-        profileImageStyle = preferences[profileImageStyleKey]
-        profileImageEnabled = preferences[displayProfileImageKey]
-        isShowAbsoluteTime = preferences[showAbsoluteTimeKey]
     }
 
     fun getData(): List<ParcelableUser>? {

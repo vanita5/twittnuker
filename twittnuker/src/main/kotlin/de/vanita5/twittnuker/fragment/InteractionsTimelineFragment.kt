@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.fragment
 
 import android.content.Context
 import android.net.Uri
-import org.apache.commons.lang3.ArrayUtils
 import de.vanita5.twittnuker.library.twitter.model.Activity
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_INTERACTIONS_TIMELINE
@@ -81,7 +80,7 @@ class InteractionsTimelineFragment : CursorActivitiesFragment() {
     }
 
     override fun onCreateAdapter(context: Context): ParcelableActivitiesAdapter {
-        val adapter = ParcelableActivitiesAdapter(context, false)
+        val adapter = ParcelableActivitiesAdapter(context)
         val arguments = arguments
         if (arguments != null) {
             val extras = arguments.getParcelable<InteractionsTabExtras>(EXTRA_EXTRAS)

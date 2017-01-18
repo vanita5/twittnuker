@@ -27,9 +27,10 @@ import android.support.v4.text.BidiFormatter
 import android.support.v7.widget.RecyclerView
 
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants
-import de.vanita5.twittnuker.adapter.iface.*
-import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
+import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
+import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
+import de.vanita5.twittnuker.adapter.iface.IUserListsAdapter
+import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.getActivityStatus
@@ -40,13 +41,13 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import javax.inject.Inject
 
 class DummyItemAdapter @JvmOverloads constructor(
-        override val context: Context,
+        val context: Context,
         override val twidereLinkify: TwidereLinkify = TwidereLinkify(null),
         private val adapter: RecyclerView.Adapter<out RecyclerView.ViewHolder>? = null
-) : IStatusesAdapter<Any>, IUsersAdapter<Any>, IUserListsAdapter<Any>, SharedPreferenceConstants {
+) : IStatusesAdapter<Any>, IUsersAdapter<Any>, IUserListsAdapter<Any> {
 
-    private val preferences: SharedPreferencesWrapper
-    override val mediaLoadingHandler: MediaLoadingHandler
+    @Inject
+    lateinit var preferences: SharedPreferencesWrapper
     @Inject
     override lateinit var mediaLoader: MediaLoaderWrapper
     @Inject
@@ -55,6 +56,7 @@ class DummyItemAdapter @JvmOverloads constructor(
     override lateinit var userColorNameManager: UserColorNameManager
     @Inject
     override lateinit var bidiFormatter: BidiFormatter
+    override val mediaLoadingHandler: MediaLoadingHandler = MediaLoadingHandler(R.id.media_preview_progress)
 
     override var profileImageStyle: Int = 0
     override var mediaPreviewStyle: Int = 0
@@ -78,8 +80,6 @@ class DummyItemAdapter @JvmOverloads constructor(
 
     init {
         GeneralComponentHelper.build(context).inject(this)
-        preferences = SharedPreferencesWrapper.getInstance(context, TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-        mediaLoadingHandler = MediaLoadingHandler(R.id.media_preview_progress)
         updateOptions()
     }
 
@@ -90,20 +90,6 @@ class DummyItemAdapter @JvmOverloads constructor(
 
     override fun getItemCount(): Int {
         return 0
-    }
-
-    override var loadMoreIndicatorPosition: Long
-        @IndicatorPosition
-        get() = ILoadMoreSupportAdapter.NONE
-        set(@IndicatorPosition position) {
-
-    }
-
-    override var loadMoreSupportedPosition: Long
-        @IndicatorPosition
-        get() = ILoadMoreSupportAdapter.NONE
-        set(@IndicatorPosition supported) {
-
     }
 
     override fun getStatus(position: Int): ParcelableStatus? {

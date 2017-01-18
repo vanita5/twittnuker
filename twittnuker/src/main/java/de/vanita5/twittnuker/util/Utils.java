@@ -106,7 +106,6 @@ import org.mariotaku.sqliteqb.library.Selectable;
 import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.adapter.iface.IBaseAdapter;
 import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
 import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
@@ -276,16 +275,6 @@ public final class Utils implements Constants {
             return false;
         }
         return true;
-    }
-
-    public static void configBaseAdapter(final Context context, final IBaseAdapter adapter) {
-        if (context == null) return;
-        final SharedPreferences pref = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        adapter.setProfileImageDisplayed(pref.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true));
-        adapter.setDisplayNameFirst(pref.getBoolean(KEY_NAME_FIRST, true));
-        adapter.setLinkHighlightOption(pref.getString(KEY_LINK_HIGHLIGHT_OPTION, VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT));
-        adapter.setTextSize(pref.getInt(KEY_TEXT_SIZE, getDefaultTextSize(context)));
-        adapter.notifyDataSetChanged();
     }
 
     public static int[] getAccountColors(@Nullable final AccountDetails[] accounts) {

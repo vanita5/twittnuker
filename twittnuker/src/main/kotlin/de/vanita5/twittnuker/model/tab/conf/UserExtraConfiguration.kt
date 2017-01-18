@@ -32,19 +32,19 @@ import kotlinx.android.synthetic.main.layout_extra_config_user.view.*
 import kotlinx.android.synthetic.main.list_item_simple_user.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.UserListSelectorActivity
+import de.vanita5.twittnuker.adapter.DummyItemAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.fragment.CustomTabsFragment.TabEditorDialogFragment
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.tab.TabConfiguration
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
-import de.vanita5.twittnuker.util.display
-import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder
+import de.vanita5.twittnuker.view.holder.SimpleUserViewHolder
 
 class UserExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(key) {
     var value: ParcelableUser? = null
         private set
 
-    private lateinit var viewHolder: TwoLineWithIconViewHolder
+    private lateinit var viewHolder: SimpleUserViewHolder
     private lateinit var dependencyHolder: DependencyHolder
     private lateinit var hintView: View
 
@@ -67,9 +67,11 @@ class UserExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(
             fragment.startExtraConfigurationActivityForResult(this@UserExtraConfiguration, intent, 1)
         }
         hintView = view.selectUserHint
-        viewHolder = TwoLineWithIconViewHolder(view.listItem)
+        val adapter = DummyItemAdapter(context)
+        adapter.updateOptions()
+        viewHolder = SimpleUserViewHolder(view.listItem, adapter)
 
-        viewHolder.view.visibility = View.GONE
+        viewHolder.itemView.visibility = View.GONE
         hintView.visibility = View.VISIBLE
     }
 
@@ -78,8 +80,8 @@ class UserExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(
             1 -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val user: ParcelableUser = data!!.getParcelableExtra(EXTRA_USER)
-                    viewHolder.display(user, dependencyHolder.mediaLoader, dependencyHolder.userColorNameManager, true)
-                    viewHolder.view.visibility = View.VISIBLE
+                    viewHolder.displayUser(user)
+                    viewHolder.itemView.visibility = View.VISIBLE
                     hintView.visibility = View.GONE
 
                     this.value = user

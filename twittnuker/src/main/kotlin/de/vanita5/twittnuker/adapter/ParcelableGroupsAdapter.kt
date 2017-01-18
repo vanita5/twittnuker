@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IGroupsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.Companion.ITEM_VIEW_TYPE_LOAD_INDICATOR
-import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.ParcelableGroup
 import de.vanita5.twittnuker.view.holder.GroupViewHolder
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
@@ -41,10 +41,6 @@ import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 class ParcelableGroupsAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), Constants, IGroupsAdapter<List<ParcelableGroup>> {
     override val showAccountsColor: Boolean
         get() = false
-    override val profileImageStyle: Int
-    override val textSize: Float
-    override val profileImageEnabled: Boolean
-    override val isShowAbsoluteTime: Boolean
     override val nameFirst: Boolean
     override var groupAdapterListener: IGroupsAdapter.GroupAdapterListener? = null
 
@@ -56,11 +52,7 @@ class ParcelableGroupsAdapter(context: Context) : LoadMoreSupportAdapter<Recycle
     init {
         mEventListener = EventListener(this)
         inflater = LayoutInflater.from(context)
-        textSize = preferences[textSizeKey].toFloat()
-        profileImageStyle = preferences[profileImageStyleKey]
-        profileImageEnabled = preferences[displayProfileImageKey]
         nameFirst = preferences[nameFirstKey]
-        isShowAbsoluteTime = preferences[showAbsoluteTimeKey]
     }
 
     fun getData(): List<ParcelableGroup>? {

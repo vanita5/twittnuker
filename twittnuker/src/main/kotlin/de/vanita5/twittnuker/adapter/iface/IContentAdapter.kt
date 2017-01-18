@@ -22,25 +22,30 @@
 
 package de.vanita5.twittnuker.adapter.iface
 
-import android.widget.ListAdapter
-
+import android.support.v4.text.BidiFormatter
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.MediaLoaderWrapper
+import de.vanita5.twittnuker.util.UserColorNameManager
+import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle
 
-interface IBaseAdapter : ListAdapter {
+interface IContentAdapter {
+
+    val userColorNameManager: UserColorNameManager
+
+    fun getItemCount(): Int
+
+    @ShapeStyle
+    val profileImageStyle: Int
+
+    val profileImageEnabled: Boolean
+
+    val textSize: Float
+
+    val twitterWrapper: AsyncTwitterWrapper
 
     val mediaLoader: MediaLoaderWrapper
 
-    val linkHighlightOption: Int
+    val bidiFormatter: BidiFormatter
 
-    var textSize: Float
-
-    var isDisplayNameFirst: Boolean
-
-    var isProfileImageDisplayed: Boolean
-
-    var isShowAccountColor: Boolean
-
-    fun notifyDataSetChanged()
-
-    fun setLinkHighlightOption(option: String)
+    val isShowAbsoluteTime: Boolean
 }

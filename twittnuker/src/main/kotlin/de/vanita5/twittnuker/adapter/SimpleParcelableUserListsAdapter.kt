@@ -26,18 +26,12 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.adapter.iface.IBaseAdapter
 import de.vanita5.twittnuker.model.ParcelableUserList
-import de.vanita5.twittnuker.util.Utils.configBaseAdapter
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder
 
 class SimpleParcelableUserListsAdapter(
         context: Context
-) : BaseArrayAdapter<ParcelableUserList>(context, R.layout.list_item_two_line), IBaseAdapter {
-
-    init {
-        configBaseAdapter(context, this)
-    }
+) : BaseArrayAdapter<ParcelableUserList>(context, R.layout.list_item_two_line) {
 
     fun appendData(data: List<ParcelableUserList>) {
         setData(data, false)
@@ -61,13 +55,13 @@ class SimpleParcelableUserListsAdapter(
         // Clear images in order to prevent images in recycled view shown.
         holder.icon.setImageDrawable(null)
 
-        val user_list = getItem(position)
-        val display_name = userColorNameManager.getDisplayName(user_list, isDisplayNameFirst)
-        holder.text1.text = user_list.name
+        val userList = getItem(position)
+        val display_name = userColorNameManager.getDisplayName(userList, nameFirst)
+        holder.text1.text = userList.name
         holder.text2.text = context.getString(R.string.created_by, display_name)
-        holder.icon.visibility = if (isProfileImageDisplayed) View.VISIBLE else View.GONE
-        if (isProfileImageDisplayed) {
-            mediaLoader.displayProfileImage(holder.icon, user_list.user_profile_image_url)
+        holder.icon.visibility = if (profileImageEnabled) View.VISIBLE else View.GONE
+        if (profileImageEnabled) {
+            mediaLoader.displayProfileImage(holder.icon, userList.user_profile_image_url)
         } else {
             mediaLoader.cancelDisplayTask(holder.icon)
         }

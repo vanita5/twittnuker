@@ -28,6 +28,7 @@ import android.support.v4.widget.Space
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.findPositionByItemId
 import org.mariotaku.ktextension.rangeOfSize
 import org.mariotaku.ktextension.safeMoveToPosition
@@ -40,6 +41,10 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.Companion.ITEM_VIEW_TYPE_LOAD_INDICATOR
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
+import de.vanita5.twittnuker.constant.hideCardActionsKey
+import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
+import de.vanita5.twittnuker.constant.mediaPreviewStyleKey
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.ObjectId
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices
@@ -49,7 +54,6 @@ import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler
 import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.view.CardMediaContainer
-import de.vanita5.twittnuker.view.ShapedImageView
 import de.vanita5.twittnuker.view.holder.EmptyViewHolder
 import de.vanita5.twittnuker.view.holder.GapViewHolder
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
@@ -61,24 +65,19 @@ abstract class ParcelableStatusesAdapter(
 ) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), IStatusesAdapter<List<ParcelableStatus>>,
         IItemCountsAdapter {
 
-    protected val inflater: LayoutInflater
+    protected val inflater: LayoutInflater = LayoutInflater.from(context)
 
     override final val mediaLoadingHandler: MediaLoadingHandler
     final override val twidereLinkify: TwidereLinkify
-    final override val textSize: Float
-    @ShapedImageView.ShapeStyle final
-    override val profileImageStyle: Int
-    @CardMediaContainer.PreviewStyle final
-    override val mediaPreviewStyle: Int
-    @TwidereLinkify.HighlightStyle final
-    override val linkHighlightingStyle: Int
-    final override val nameFirst: Boolean
+    @CardMediaContainer.PreviewStyle
+    final override val mediaPreviewStyle: Int = preferences[mediaPreviewStyleKey]
+    final override val nameFirst: Boolean = preferences[nameFirstKey]
+    final override val useStarsForLikes: Boolean = preferences[iWantMyStarsBackKey]
+    @TwidereLinkify.HighlightStyle
+    final override val linkHighlightingStyle: Int
     final override val mediaPreviewEnabled: Boolean
-    final override val profileImageEnabled: Boolean
     final override val sensitiveContentEnabled: Boolean
-    final override val useStarsForLikes: Boolean
-    final override val isShowAbsoluteTime: Boolean
-    private val showCardActions: Boolean
+    private val showCardActions: Boolean = !preferences[hideCardActionsKey]
 
     private val gapLoadingIds: MutableSet<ObjectId> = HashSet()
 
@@ -120,19 +119,10 @@ abstract class ParcelableStatusesAdapter(
     protected abstract val progressViewIds: IntArray
 
     init {
-        inflater = LayoutInflater.from(context)
         mediaLoadingHandler = MediaLoadingHandler(*progressViewIds)
-        textSize = preferences.getInt(KEY_TEXT_SIZE, context.resources.getInteger(R.integer.default_text_size)).toFloat()
-        profileImageStyle = Utils.getProfileImageStyle(preferences.getString(KEY_PROFILE_IMAGE_STYLE, null))
-        mediaPreviewStyle = Utils.getMediaPreviewStyle(preferences.getString(KEY_MEDIA_PREVIEW_STYLE, null))
         linkHighlightingStyle = Utils.getLinkHighlightingStyleInt(preferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null))
-        nameFirst = preferences.getBoolean(KEY_NAME_FIRST, true)
-        profileImageEnabled = preferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)
         mediaPreviewEnabled = Utils.isMediaPreviewEnabled(context, preferences)
         sensitiveContentEnabled = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, false)
-        showCardActions = !preferences.getBoolean(KEY_HIDE_CARD_ACTIONS, false)
-        useStarsForLikes = preferences.getBoolean(KEY_I_WANT_MY_STARS_BACK)
-        isShowAbsoluteTime = preferences.getBoolean(KEY_SHOW_ABSOLUTE_TIME, false)
         val handler = StatusAdapterLinkClickHandler<List<ParcelableStatus>>(context, preferences)
         twidereLinkify = TwidereLinkify(handler)
         handler.setAdapter(this)

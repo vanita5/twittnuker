@@ -138,11 +138,11 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
     override fun displayStatus(status: ParcelableStatus, displayInReplyTo: Boolean,
                                shouldDisplayExtraType: Boolean) {
 
+        val context = itemView.context
         val loader = adapter.mediaLoader
         val twitter = adapter.twitterWrapper
         val linkify = adapter.twidereLinkify
         val formatter = adapter.bidiFormatter
-        val context = adapter.context
         val nameFirst = adapter.nameFirst
         val showCardActions = isCardActionsShown
 
@@ -487,7 +487,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         val favIcon: Int
         val favStyle: Int
         val favColor: Int
-        val context = adapter.context
+        val context = itemView.context
         if (adapter.useStarsForLikes) {
             favIcon = R.drawable.ic_action_star
             favStyle = LikeAnimationDrawable.Style.FAVORITE

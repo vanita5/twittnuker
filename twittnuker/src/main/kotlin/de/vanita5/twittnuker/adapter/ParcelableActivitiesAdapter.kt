@@ -56,8 +56,7 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 class ParcelableActivitiesAdapter(
-        context: Context,
-        private val byFriends: Boolean
+        context: Context
 ) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), IActivitiesAdapter<List<ParcelableActivity>> {
 
     private val inflater: LayoutInflater
@@ -182,23 +181,11 @@ class ParcelableActivitiesAdapter(
     override val gapClickListener: IGapSupportedAdapter.GapClickListener?
         get() = eventListener
 
-    override val profileImageStyle: Int
-        get() = statusAdapterDelegate.profileImageStyle
-
     override val mediaPreviewStyle: Int
         get() = statusAdapterDelegate.mediaPreviewStyle
 
-    override val textSize: Float
-        get() = statusAdapterDelegate.textSize
-
     val isNameFirst: Boolean
         get() = statusAdapterDelegate.nameFirst
-
-    override val profileImageEnabled: Boolean
-        get() = statusAdapterDelegate.profileImageEnabled
-
-    override val isShowAbsoluteTime: Boolean
-        get() = statusAdapterDelegate.isShowAbsoluteTime
 
     override val useStarsForLikes: Boolean
         get() = statusAdapterDelegate.useStarsForLikes

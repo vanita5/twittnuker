@@ -23,58 +23,53 @@
 package de.vanita5.twittnuker.adapter
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
-import de.vanita5.twittnuker.Constants
-import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.adapter.iface.IBaseAdapter
+import android.support.v4.text.BidiFormatter
+import org.mariotaku.kpreferences.get
+import de.vanita5.twittnuker.adapter.iface.IContentAdapter
+import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 
 import javax.inject.Inject
 
-open class BaseArrayAdapter<T> @JvmOverloads constructor(context: Context, layoutRes: Int, collection: Collection<T>? = null) : ArrayAdapter<T>(context, layoutRes, collection), Constants, IBaseAdapter, OnSharedPreferenceChangeListener {
-
+open class BaseArrayAdapter<T>(
+        context: Context,
+        layoutRes: Int,
+        collection: Collection<T>? = null
+) : ArrayAdapter<T>(context, layoutRes, collection), IContentAdapter {
     val linkify: TwidereLinkify
+
     @Inject
-    lateinit var userColorNameManager: UserColorNameManager
+    override lateinit var userColorNameManager: UserColorNameManager
     @Inject
-    lateinit override var mediaLoader: MediaLoaderWrapper
+    override lateinit var mediaLoader: MediaLoaderWrapper
+    @Inject
+    override lateinit var bidiFormatter: BidiFormatter
+    @Inject
+    override lateinit var twitterWrapper: AsyncTwitterWrapper
     @Inject
     lateinit var multiSelectManager: MultiSelectManager
     @Inject
     lateinit var preferences: SharedPreferencesWrapper
 
-    private val colorPrefs: SharedPreferences
-
-    override var textSize: Float = 0f
-    override var linkHighlightOption: Int = 0
-
-    override var isProfileImageDisplayed: Boolean = false
-    override var isDisplayNameFirst: Boolean = false
-    override var isShowAccountColor: Boolean = false
+    override val profileImageStyle: Int
+    override val textSize: Float
+    override val profileImageEnabled: Boolean
+    override val isShowAbsoluteTime: Boolean
+    val nameFirst: Boolean
 
     init {
         @Suppress("UNCHECKED_CAST")
         GeneralComponentHelper.build(context).inject(this as BaseArrayAdapter<Any>)
         linkify = TwidereLinkify(OnLinkClickHandler(context, multiSelectManager, preferences))
-        colorPrefs = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE)
-        colorPrefs.registerOnSharedPreferenceChangeListener(this)
+        profileImageStyle = preferences[profileImageStyleKey]
+        textSize = preferences[textSizeKey].toFloat()
+        profileImageEnabled = preferences[displayProfileImageKey]
+        isShowAbsoluteTime = preferences[showAbsoluteTimeKey]
+        nameFirst = preferences[nameFirstKey]
     }
 
-    override fun onSharedPreferenceChanged(preferences: SharedPreferences, key: String) {
-        when (key) {
-            KEY_DISPLAY_PROFILE_IMAGE, KEY_MEDIA_PREVIEW_STYLE, KEY_DISPLAY_SENSITIVE_CONTENTS -> {
-                notifyDataSetChanged()
-            }
-        }
-    }
+    override fun getItemCount(): Int = count
 
-    override fun setLinkHighlightOption(option: String) {
-        val optionInt = Utils.getLinkHighlightingStyleInt(option)
-        linkify.setHighlightOption(optionInt)
-        if (optionInt == linkHighlightOption) return
-        linkHighlightOption = optionInt
-    }
 
 }

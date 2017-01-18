@@ -26,21 +26,14 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.adapter.iface.IBaseAdapter
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.util.Utils.configBaseAdapter
-import de.vanita5.twittnuker.util.display
-import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder
+import de.vanita5.twittnuker.view.holder.SimpleUserViewHolder
 
 class SimpleParcelableUsersAdapter @JvmOverloads constructor(
         context: Context,
         layoutRes: Int = R.layout.list_item_simple_user
-) : BaseArrayAdapter<ParcelableUser>(context, layoutRes), IBaseAdapter {
-
-    init {
-        configBaseAdapter(context, this)
-    }
+) : BaseArrayAdapter<ParcelableUser>(context, layoutRes) {
 
     override fun getItemId(position: Int): Long {
         val item = getItem(position)
@@ -53,18 +46,14 @@ class SimpleParcelableUsersAdapter @JvmOverloads constructor(
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = super.getView(position, convertView, parent)
-        val tag = view.tag
-        val holder: TwoLineWithIconViewHolder
-        if (tag is TwoLineWithIconViewHolder) {
-            holder = tag
-        } else {
-            holder = TwoLineWithIconViewHolder(view)
-            view.tag = holder
+        val holder = view.tag as? SimpleUserViewHolder ?: run {
+            val h = SimpleUserViewHolder(view, this)
+            view.tag = h
+            return@run h
         }
-
         val user = getItem(position)
 
-        holder.display(user, mediaLoader, userColorNameManager, isProfileImageDisplayed)
+        holder.displayUser(user)
         return view
     }
 

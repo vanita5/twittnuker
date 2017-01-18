@@ -27,31 +27,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.adapter.iface.IBaseAdapter
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.view.holder.AccountViewHolder
 
-import javax.inject.Inject
+class AccountDetailsAdapter(context: Context) : BaseArrayAdapter<AccountDetails>(context, R.layout.list_item_account) {
 
-class AccountDetailsAdapter(context: Context) : ArrayAdapter<AccountDetails>(context, R.layout.list_item_account), IBaseAdapter {
-
-    @Inject
-    lateinit override var mediaLoader: MediaLoaderWrapper
-
-    override val linkHighlightOption: Int
-        get() = 0
-
-    override var textSize: Float = 0f
-
-    override var isDisplayNameFirst: Boolean = true
-
-    override var isShowAccountColor: Boolean = true
-
-    override var isProfileImageDisplayed: Boolean = false
     private var sortEnabled: Boolean = false
     private var switchEnabled: Boolean = false
     var accountToggleListener: ((Int, Boolean) -> Unit)? = null
@@ -76,7 +59,7 @@ class AccountDetailsAdapter(context: Context) : ArrayAdapter<AccountDetails>(con
         holder.name.text = details.user.name
         holder.screenName.text = String.format("@%s", details.user.screen_name)
         holder.setAccountColor(details.color)
-        if (isProfileImageDisplayed) {
+        if (profileImageEnabled) {
             mediaLoader.displayProfileImage(holder.profileImage, details.user)
         } else {
             mediaLoader.cancelDisplayTask(holder.profileImage)
@@ -90,11 +73,6 @@ class AccountDetailsAdapter(context: Context) : ArrayAdapter<AccountDetails>(con
         holder.setSortEnabled(sortEnabled)
         return view
     }
-
-    override fun setLinkHighlightOption(option: String) {
-
-    }
-
 
     override fun hasStableIds(): Boolean {
         return true

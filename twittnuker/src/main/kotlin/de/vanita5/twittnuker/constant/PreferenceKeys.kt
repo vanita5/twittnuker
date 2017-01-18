@@ -41,7 +41,6 @@ import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
 import de.vanita5.twittnuker.view.ProfileImageView
 
 
-val mediaPreviewStyleKey = KStringKey(KEY_MEDIA_PREVIEW_STYLE, VALUE_MEDIA_PREVIEW_STYLE_CROP)
 val textSizeKey = KIntKey(KEY_TEXT_SIZE, 15)
 val nameFirstKey = KBooleanKey(KEY_NAME_FIRST, true)
 val displayProfileImageKey = KBooleanKey(KEY_DISPLAY_PROFILE_IMAGE, true)
@@ -117,6 +116,19 @@ object profileImageStyleKey : KSimpleKey<Int>(KEY_PROFILE_IMAGE_STYLE, ProfileIm
 
     override fun write(editor: SharedPreferences.Editor, value: Int): Boolean {
         editor.putString(key, if (value == ProfileImageView.SHAPE_CIRCLE) VALUE_PROFILE_IMAGE_STYLE_ROUND else VALUE_PROFILE_IMAGE_STYLE_SQUARE)
+        return true
+    }
+
+}
+
+object mediaPreviewStyleKey : KSimpleKey<Int>(KEY_MEDIA_PREVIEW_STYLE, VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP) {
+    override fun read(preferences: SharedPreferences): Int {
+        if (preferences.getString(key, null) == VALUE_MEDIA_PREVIEW_STYLE_SCALE) return VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE
+        return VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP
+    }
+
+    override fun write(editor: SharedPreferences.Editor, value: Int): Boolean {
+        editor.putString(key, if (value == VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE) VALUE_MEDIA_PREVIEW_STYLE_SCALE else VALUE_MEDIA_PREVIEW_STYLE_CROP)
         return true
     }
 

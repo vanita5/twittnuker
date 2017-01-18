@@ -44,7 +44,7 @@ import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter
-import de.vanita5.twittnuker.adapter.iface.IContentCardAdapter
+import de.vanita5.twittnuker.adapter.iface.IContentAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.constant.*
@@ -256,16 +256,12 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Ba
     }
 
 
-    class SelectableUsersAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), IContentCardAdapter {
-        override val isShowAbsoluteTime: Boolean
-        override val profileImageEnabled: Boolean
-        override val profileImageStyle: Int
-        override val textSize: Float
+    class SelectableUsersAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), IContentAdapter {
 
         val ITEM_VIEW_TYPE_USER = 2
 
-        private val inflater: LayoutInflater
-        private val itemStates: MutableMap<UserKey, Boolean>
+        private val inflater: LayoutInflater = LayoutInflater.from(context)
+        private val itemStates: MutableMap<UserKey, Boolean> = ArrayMap()
         var itemCheckedListener: ((Int, Boolean) -> Unit)? = null
 
         var data: List<ParcelableUser>? = null
@@ -278,15 +274,6 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Ba
                 }
                 notifyDataSetChanged()
             }
-
-        init {
-            inflater = LayoutInflater.from(context)
-            itemStates = ArrayMap<UserKey, Boolean>()
-            isShowAbsoluteTime = preferences[showAbsoluteTimeKey]
-            profileImageEnabled = preferences[displayProfileImageKey]
-            profileImageStyle = preferences[profileImageStyleKey]
-            textSize = preferences[textSizeKey].toFloat()
-        }
 
         private fun bindUser(holder: SelectableUserViewHolder, position: Int) {
             holder.displayUser(getUser(position)!!)
