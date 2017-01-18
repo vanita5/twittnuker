@@ -1,5 +1,6 @@
 package de.vanita5.twittnuker.fragment.filter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
@@ -26,7 +27,7 @@ import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.`FiltersData$UserItemCursorIndices`
-import de.vanita5.twittnuker.model.analyzer.Purchase
+import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.ContentValuesCreator
@@ -89,7 +90,9 @@ class FilteredUsersFragment : BaseFiltersFragment() {
                 startActivityForResult(intent, REQUEST_ADD_USER_SELECT_ACCOUNT)
             }
             REQUEST_PURCHASE_EXTRA_FEATURES -> {
-                Analyzer.log(Purchase.fromActivityResult(Purchase.NAME_EXTRA_FEATURES, resultCode, data))
+                if (resultCode == Activity.RESULT_OK) {
+                    Analyzer.log(PurchaseFinished.create(PurchaseFinished.NAME_EXTRA_FEATURES, data))
+                }
             }
         }
     }

@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.model.analyzer
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.parcelableMediaTypeString
 import de.vanita5.twittnuker.model.ParcelableMedia
+import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.util.Analyzer
 
 
@@ -34,8 +35,31 @@ data class StatusView(
 ) : Analyzer.Event {
 
     override val name: String = "Status View"
+    var type: String? = null
+    var source: String? = null
 
     override fun forEachValues(action: (String, String?) -> Unit) {
-        action("Media Type", parcelableMediaTypeString(mediaType))
+        val mediaType = parcelableMediaTypeString(mediaType)
+        if (mediaType != null) {
+            action("Media Type", mediaType)
+        }
+        if (type != null) {
+            action("Type", type)
+        }
+        if (source != null) {
+            action("Source", source)
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun getStatusType(status: ParcelableStatus): String {
+            if (status.is_retweet) {
+                return "retweet"
+            } else if (status.is_quote) {
+                return "quote"
+            }
+            return "tweet"
+        }
     }
 }

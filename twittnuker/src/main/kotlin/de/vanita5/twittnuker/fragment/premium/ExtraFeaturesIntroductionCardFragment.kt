@@ -35,7 +35,9 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.RESULT_NOT_PURCHASED
 import de.vanita5.twittnuker.constant.RESULT_SERVICE_UNAVAILABLE
 import de.vanita5.twittnuker.fragment.BaseSupportFragment
-import de.vanita5.twittnuker.model.analyzer.Purchase
+import de.vanita5.twittnuker.model.analyzer.PurchaseConfirm
+import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
+import de.vanita5.twittnuker.model.analyzer.PurchaseIntroduction
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 
@@ -51,6 +53,7 @@ class ExtraFeaturesIntroductionCardFragment : BaseSupportFragment() {
         super.onActivityCreated(savedInstanceState)
         extraFeaturesService = ExtraFeaturesService.newInstance(context)
         purchaseButton.setOnClickListener {
+            Analyzer.log(PurchaseConfirm(PurchaseFinished.NAME_EXTRA_FEATURES))
             startActivityForResult(extraFeaturesService.createPurchaseIntent(context), REQUEST_PURCHASE)
         }
         val restorePurchaseIntent = extraFeaturesService.createRestorePurchaseIntent(context)
@@ -65,14 +68,17 @@ class ExtraFeaturesIntroductionCardFragment : BaseSupportFragment() {
             restorePurchaseButton.visibility = View.GONE
             restorePurchaseButton.setOnClickListener(null)
         }
+        if (savedInstanceState == null) {
+            Analyzer.log(PurchaseIntroduction(PurchaseFinished.NAME_EXTRA_FEATURES, "enhanced features dashboard"))
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_PURCHASE -> {
-                Analyzer.log(Purchase.fromActivityResult(Purchase.NAME_EXTRA_FEATURES, resultCode, data))
                 when (resultCode) {
                     Activity.RESULT_OK -> {
+                        Analyzer.log(PurchaseFinished.create(PurchaseFinished.NAME_EXTRA_FEATURES, data))
                         activity?.recreate()
                     }
                 }

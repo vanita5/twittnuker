@@ -20,9 +20,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension.model
+package de.vanita5.twittnuker.model.analyzer
 
-import de.vanita5.twittnuker.model.ParcelableStatus
+import de.vanita5.twittnuker.util.Analyzer
 
-val ParcelableStatus.media_type: Int
-    get() = media?.firstOrNull()?.type ?: 0
+data class PurchaseConfirm(val productName: String) : Analyzer.Event {
+    override val name: String = "PurchaseFinished Confirm"
+    override val accountType: String? = null
+    override fun forEachValues(action: (String, String?) -> Unit) {
+        action("Product Name", productName)
+    }
+}

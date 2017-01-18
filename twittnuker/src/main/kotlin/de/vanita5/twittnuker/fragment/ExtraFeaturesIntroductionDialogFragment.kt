@@ -28,6 +28,10 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_REQUEST_CODE
+import de.vanita5.twittnuker.model.analyzer.PurchaseConfirm
+import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
+import de.vanita5.twittnuker.model.analyzer.PurchaseIntroduction
+import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 
 class ExtraFeaturesIntroductionDialogFragment : BaseDialogFragment() {
@@ -54,6 +58,7 @@ class ExtraFeaturesIntroductionDialogFragment : BaseDialogFragment() {
             } else {
                 activity.startActivityForResult(purchaseIntent, requestCode)
             }
+            Analyzer.log(PurchaseConfirm(PurchaseFinished.NAME_EXTRA_FEATURES))
         }
         builder.setNegativeButton(R.string.action_later) { dialog, which ->
 
@@ -72,6 +77,9 @@ class ExtraFeaturesIntroductionDialogFragment : BaseDialogFragment() {
             } else {
                 View.GONE
             }
+        }
+        if (savedInstanceState == null) {
+            Analyzer.log(PurchaseIntroduction(PurchaseFinished.NAME_EXTRA_FEATURES, "introduction dialog"))
         }
         return dialog
     }

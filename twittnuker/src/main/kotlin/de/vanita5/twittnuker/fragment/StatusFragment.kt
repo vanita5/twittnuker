@@ -89,11 +89,13 @@ import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.extension.model.getAccountType
+import de.vanita5.twittnuker.extension.model.media_type
 import de.vanita5.twittnuker.loader.ConversationLoader
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader
 import de.vanita5.twittnuker.menu.FavoriteItemProvider
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
+import de.vanita5.twittnuker.model.analyzer.StatusView
 import de.vanita5.twittnuker.model.message.FavoriteTaskEvent
 import de.vanita5.twittnuker.model.message.StatusListChangedEvent
 import de.vanita5.twittnuker.model.util.*
@@ -412,6 +414,10 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
                     layoutManager.scrollToPositionWithOffset(position, 0)
                 }
 
+                Analyzer.log(StatusView(details?.type, status.media_type).apply {
+                    this.type = StatusView.getStatusType(status)
+                    this.source = HtmlEscapeHelper.toPlainText(status.source)
+                })
             } else if (readPosition != null) {
                 restoreReadPosition(readPosition)
             }

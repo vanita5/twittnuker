@@ -24,9 +24,7 @@ package de.vanita5.twittnuker.extension.model
 
 import de.vanita5.twittnuker.model.ParcelableMedia
 
-
-fun parcelableMediaTypeString(@ParcelableMedia.Type type: Int): String {
-    if (type <= 0) return "none"
+fun parcelableMediaTypeString(@ParcelableMedia.Type type: Int): String? {
     return when (type) {
         ParcelableMedia.Type.IMAGE -> "image"
         ParcelableMedia.Type.VIDEO -> "video"
@@ -34,6 +32,6 @@ fun parcelableMediaTypeString(@ParcelableMedia.Type type: Int): String {
         ParcelableMedia.Type.CARD_ANIMATED_GIF -> "gif"
         ParcelableMedia.Type.EXTERNAL_PLAYER -> "external"
         ParcelableMedia.Type.VARIABLE_TYPE -> "variable"
-        else -> "unknown"
+        else -> null
     }
 }
