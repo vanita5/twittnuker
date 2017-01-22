@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.model.util.UserKeyUtils
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.Utils.getUserTypeIconRes
 import de.vanita5.twittnuker.view.NameView
+import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.iface.IColorLabelView
 import java.util.*
 
@@ -47,7 +48,7 @@ class UserViewHolder(
 ) : ViewHolder(itemView), OnClickListener, OnLongClickListener {
 
     private val itemContent: IColorLabelView
-    val profileImageView: ImageView
+    val profileImageView: ProfileImageView
     val profileTypeView: ImageView
     private val nameView: NameView
     private val externalIndicator: TextView
@@ -273,6 +274,7 @@ class UserViewHolder(
     }
 
     fun setupViewOptions() {
+        profileImageView.style = adapter.profileImageStyle
         setTextSize(adapter.textSize)
     }
 

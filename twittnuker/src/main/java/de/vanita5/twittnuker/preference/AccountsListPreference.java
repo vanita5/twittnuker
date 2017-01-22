@@ -27,8 +27,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.internal.widget.PreferenceImageView;
@@ -38,19 +36,14 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.PreferenceViewHolder;
 import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.util.AccountUtils;
-import de.vanita5.twittnuker.util.BitmapUtils;
 import de.vanita5.twittnuker.util.MediaLoaderWrapper;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
@@ -104,8 +97,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
         return mSwitchDefault;
     }
 
-    public static final class AccountItemPreference extends Preference implements ImageLoadingListener,
-            OnSharedPreferenceChangeListener {
+    public static final class AccountItemPreference extends Preference implements OnSharedPreferenceChangeListener {
 
         private final AccountDetails mAccount;
         @Nullable
@@ -128,31 +120,7 @@ public abstract class AccountsListPreference extends PreferenceCategory implemen
             mSwitchPreference.registerOnSharedPreferenceChangeListener(this);
             setTitle(mAccount.user.name);
             setSummary(String.format("@%s", mAccount.user.screen_name));
-            mImageLoader.loadProfileImage(mAccount, this);
             setWidgetLayoutResource(R.layout.layout_preference_switch_indicator);
-        }
-
-        @Override
-        public void onLoadingCancelled(final String imageUri, final View view) {
-//            setIcon(R.drawable.ic_profile_image_default);
-        }
-
-        @Override
-        public void onLoadingComplete(final String imageUri, final View view, final Bitmap loadedImage) {
-            final Bitmap roundedBitmap = BitmapUtils.getCircleBitmap(loadedImage);
-            final BitmapDrawable icon = new BitmapDrawable(getContext().getResources(), roundedBitmap);
-            icon.setGravity(Gravity.FILL);
-            setIcon(icon);
-        }
-
-        @Override
-        public void onLoadingFailed(final String imageUri, final View view, final FailReason failReason) {
-//            setIcon(R.drawable.ic_profile_image_default);
-        }
-
-        @Override
-        public void onLoadingStarted(final String imageUri, final View view) {
-//            setIcon(R.drawable.ic_profile_image_default);
         }
 
         @Override

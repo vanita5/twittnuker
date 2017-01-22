@@ -46,12 +46,13 @@ import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText
 import de.vanita5.twittnuker.util.Utils.getUserTypeIconRes
+import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import java.lang.ref.WeakReference
 
 class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View) : ViewHolder(itemView), Constants, IStatusViewHolder {
 
-    override val profileImageView: ImageView by lazy { itemView.profileImage }
+    override val profileImageView: ProfileImageView by lazy { itemView.profileImage }
     override val profileTypeView: ImageView by lazy { itemView.profileType }
 
     private val itemContent by lazy { itemView.itemContent }
@@ -476,6 +477,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
 
     fun setupViewOptions() {
         setTextSize(adapter.textSize)
+        profileImageView.style = adapter.profileImageStyle
+
         mediaPreview.setStyle(adapter.mediaPreviewStyle)
         quotedMediaPreview.setStyle(adapter.mediaPreviewStyle)
         //        profileImageView.setStyle(adapter.getProfileImageStyle());

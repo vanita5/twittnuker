@@ -27,7 +27,6 @@ import android.support.v4.view.MarginLayoutParamsCompat
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter
@@ -38,10 +37,14 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.view.BadgeView
 import de.vanita5.twittnuker.view.IconActionView
+import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.ShortTimeView
 import de.vanita5.twittnuker.view.iface.IColorLabelView
 
-class ActivityTitleSummaryViewHolder(private val adapter: ParcelableActivitiesAdapter, itemView: View) : ViewHolder(itemView), View.OnClickListener {
+class ActivityTitleSummaryViewHolder(
+        itemView: View,
+        private val adapter: ParcelableActivitiesAdapter
+) : ViewHolder(itemView), View.OnClickListener {
 
     private val itemContent: IColorLabelView
     private val activityTypeView: IconActionView
@@ -50,7 +53,7 @@ class ActivityTitleSummaryViewHolder(private val adapter: ParcelableActivitiesAd
     private val timeView: ShortTimeView
     private val profileImagesContainer: ViewGroup
     private val profileImageMoreNumber: BadgeView
-    private val profileImageViews: Array<ImageView>
+    private val profileImageViews: Array<ProfileImageView>
     private val profileImageSpace: View
 
     private var mActivityEventListener: IActivitiesAdapter.ActivityEventListener? = null
@@ -66,11 +69,11 @@ class ActivityTitleSummaryViewHolder(private val adapter: ParcelableActivitiesAd
 
         profileImagesContainer = itemView.findViewById(R.id.profile_images_container) as ViewGroup
         profileImageViews = arrayOf(
-                itemView.findViewById(R.id.activity_profile_image_0) as ImageView,
-                itemView.findViewById(R.id.activity_profile_image_1) as ImageView,
-                itemView.findViewById(R.id.activity_profile_image_2) as ImageView,
-                itemView.findViewById(R.id.activity_profile_image_3) as ImageView,
-                itemView.findViewById(R.id.activity_profile_image_4) as ImageView
+                itemView.findViewById(R.id.activity_profile_image_0) as ProfileImageView,
+                itemView.findViewById(R.id.activity_profile_image_1) as ProfileImageView,
+                itemView.findViewById(R.id.activity_profile_image_2) as ProfileImageView,
+                itemView.findViewById(R.id.activity_profile_image_3) as ProfileImageView,
+                itemView.findViewById(R.id.activity_profile_image_4) as ProfileImageView
         )
         profileImageMoreNumber = itemView.findViewById(R.id.activity_profile_image_more_number) as BadgeView
 
@@ -110,10 +113,15 @@ class ActivityTitleSummaryViewHolder(private val adapter: ParcelableActivitiesAd
 
     }
 
-    fun setTextSize(textSize: Float) {
+    fun setupViewOptions() {
+        val textSize = adapter.textSize
         titleView.textSize = textSize
         summaryView.textSize = textSize * 0.85f
         timeView.textSize = textSize * 0.80f
+
+        profileImageViews.forEach {
+            it.style = adapter.profileImageStyle
+        }
     }
 
     private fun displayUserProfileImages(statuses: Array<ParcelableUser>?) {

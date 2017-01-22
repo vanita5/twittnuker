@@ -66,7 +66,7 @@ class ParcelableGroupsAdapter(context: Context) : LoadMoreSupportAdapter<Recycle
     }
 
     private fun bindGroup(holder: GroupViewHolder, position: Int) {
-        holder.displayGroup(getGroup(position))
+        holder.displayGroup(getGroup(position)!!)
     }
 
     override fun getItemCount(): Int {

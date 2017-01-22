@@ -22,19 +22,22 @@
 
 package de.vanita5.twittnuker.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.support.v4.widget.SimpleCursorAdapter
 import android.text.TextUtils
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
+import org.mariotaku.kpreferences.get
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_DISPLAY_PROFILE_IMAGE
+import de.vanita5.twittnuker.constant.displayProfileImageKey
+import de.vanita5.twittnuker.constant.profileImageStyleKey
+import de.vanita5.twittnuker.model.ParcelableUserCursorIndices
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.util.MediaLoaderWrapper
@@ -42,50 +45,54 @@ import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.view.ProfileImageView
 
 import javax.inject.Inject
 
 
-class UserAutoCompleteAdapter(context: Context) : SimpleCursorAdapter(context, R.layout.list_item_auto_complete, null, UserAutoCompleteAdapter.FROM, UserAutoCompleteAdapter.TO, 0) {
+class UserAutoCompleteAdapter(val context: Context) : SimpleCursorAdapter(context,
+        R.layout.list_item_auto_complete, null, emptyArray(),
+        intArrayOf(), 0) {
 
     @Inject
     lateinit var profileImageLoader: MediaLoaderWrapper
     @Inject
-    lateinit var mPreferences: SharedPreferencesWrapper
+    lateinit var preferences: SharedPreferencesWrapper
     @Inject
-    lateinit var mUserColorNameManager: UserColorNameManager
+    lateinit var userColorNameManager: UserColorNameManager
 
-    private val mDisplayProfileImage: Boolean
+    private val displayProfileImage: Boolean
+    private var profileImageStyle: Int
 
-    private var mIdIdx: Int = 0
-    private var mNameIdx: Int = 0
-    private var mScreenNameIdx: Int = 0
-    private var mProfileImageIdx: Int = 0
-    private var mAccountKey: UserKey? = null
+    private var indices: ParcelableUserCursorIndices? = null
+
+    private var accountKey: UserKey? = null
 
     init {
         GeneralComponentHelper.build(context).inject(this)
-        mDisplayProfileImage = mPreferences.getBoolean(KEY_DISPLAY_PROFILE_IMAGE, true)
+        displayProfileImage = preferences[displayProfileImageKey]
+        profileImageStyle = preferences[profileImageStyleKey]
     }
 
     override fun bindView(view: View, context: Context?, cursor: Cursor) {
+        val indices = this.indices!!
         val text1 = view.findViewById(android.R.id.text1) as TextView
         val text2 = view.findViewById(android.R.id.text2) as TextView
-        val icon = view.findViewById(android.R.id.icon) as ImageView
+        val icon = view.findViewById(android.R.id.icon) as ProfileImageView
 
-        // Clear images in order to prevent images in recycled view shown.
-        icon.setImageDrawable(null)
+        icon.style = profileImageStyle
 
-        text1.text = cursor.getString(mNameIdx)
-        text2.text = String.format("@%s", cursor.getString(mScreenNameIdx))
-        if (mDisplayProfileImage) {
-            val profileImageUrl = cursor.getString(mProfileImageIdx)
+        text1.text = cursor.getString(indices.name)
+        @SuppressLint("SetTextI18n")
+        text2.text = "@${cursor.getString(indices.screen_name)}"
+        if (displayProfileImage) {
+            val profileImageUrl = cursor.getString(indices.profile_image_url)
             profileImageLoader.displayProfileImage(icon, profileImageUrl)
         } else {
             profileImageLoader.cancelDisplayTask(icon)
         }
 
-        icon.visibility = if (mDisplayProfileImage) View.VISIBLE else View.GONE
+        icon.visibility = if (displayProfileImage) View.VISIBLE else View.GONE
         super.bindView(view, context, cursor)
     }
 
@@ -97,7 +104,7 @@ class UserAutoCompleteAdapter(context: Context) : SimpleCursorAdapter(context, R
     }
 
     override fun convertToString(cursor: Cursor?): CharSequence {
-        return cursor!!.getString(mScreenNameIdx)
+        return cursor!!.getString(indices!!.screen_name)
     }
 
     override fun runQueryOnBackgroundThread(constraint: CharSequence): Cursor? {
@@ -113,31 +120,23 @@ class UserAutoCompleteAdapter(context: Context) : SimpleCursorAdapter(context, R
         val order = arrayOf(CachedUsers.LAST_SEEN, CachedUsers.SCORE, CachedUsers.SCREEN_NAME, CachedUsers.NAME)
         val ascending = booleanArrayOf(false, false, true, true)
         val orderBy = OrderBy(order, ascending)
-        val uri = Uri.withAppendedPath(CachedUsers.CONTENT_URI_WITH_SCORE, mAccountKey.toString())
-        return mContext.contentResolver.query(uri, CachedUsers.COLUMNS, usersSelection.sql,
+        val uri = Uri.withAppendedPath(CachedUsers.CONTENT_URI_WITH_SCORE, accountKey.toString())
+        @SuppressLint("Recycle")
+        val cursor = context.contentResolver.query(uri, CachedUsers.COLUMNS, usersSelection.sql,
                 selectionArgs, orderBy.sql)
+        return cursor
     }
 
 
     fun setAccountKey(accountKey: UserKey) {
-        mAccountKey = accountKey
+        this.accountKey = accountKey
     }
 
     override fun swapCursor(cursor: Cursor?): Cursor? {
         if (cursor != null) {
-            mIdIdx = cursor.getColumnIndex(CachedUsers.USER_KEY)
-            mNameIdx = cursor.getColumnIndex(CachedUsers.NAME)
-            mScreenNameIdx = cursor.getColumnIndex(CachedUsers.SCREEN_NAME)
-            mProfileImageIdx = cursor.getColumnIndex(CachedUsers.PROFILE_IMAGE_URL)
+            indices = ParcelableUserCursorIndices(cursor)
         }
         return super.swapCursor(cursor)
     }
-
-    companion object {
-
-        private val FROM = arrayOfNulls<String>(0)
-        private val TO = IntArray(0)
-    }
-
 
 }

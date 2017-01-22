@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.adapter
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
@@ -40,18 +39,13 @@ import de.vanita5.twittnuker.view.holder.UserListViewHolder
 class ParcelableUserListsAdapter(
         context: Context
 ) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), IUserListsAdapter<List<ParcelableUserList>> {
-    override val showAccountsColor: Boolean
-        get() = false
-    override val nameFirst: Boolean
+    override val showAccountsColor: Boolean = false
+    override val nameFirst: Boolean = preferences[nameFirstKey]
     override var userListClickListener: IUserListsAdapter.UserListClickListener? = null
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var data: List<ParcelableUserList>? = null
 
-
-    init {
-        nameFirst = preferences[nameFirstKey]
-    }
 
     fun getData(): List<ParcelableUserList>? {
         return data
@@ -65,7 +59,7 @@ class ParcelableUserListsAdapter(
     }
 
     private fun bindUserList(holder: UserListViewHolder, position: Int) {
-        holder.displayUserList(getUserList(position))
+        holder.displayUserList(getUserList(position)!!)
     }
 
     override fun getItemCount(): Int {
@@ -134,9 +128,8 @@ class ParcelableUserListsAdapter(
         fun createUserListViewHolder(adapter: IUserListsAdapter<*>,
                                      inflater: LayoutInflater,
                                      parent: ViewGroup): UserListViewHolder {
-            val view: View
-            view = inflater.inflate(R.layout.list_item_user_list, parent, false)
-            val holder = UserListViewHolder(adapter, view)
+            val view = inflater.inflate(R.layout.list_item_user_list, parent, false)
+            val holder = UserListViewHolder(view, adapter)
             holder.setOnClickListeners()
             holder.setupViewOptions()
             return holder

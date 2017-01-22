@@ -82,6 +82,7 @@ import nl.komponents.kovenant.ui.successUi
 import org.apache.commons.lang3.ObjectUtils
 import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonUtils
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.empty
 import org.mariotaku.ktextension.set
@@ -100,6 +101,7 @@ import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
+import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
 import de.vanita5.twittnuker.fragment.UserTimelineFragment.UserTimelineFragmentDelegate
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
@@ -704,10 +706,12 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
         ViewCompat.setElevation(toolbarTabs, actionBarElevation)
 
         setupBaseActionBar()
+        setupViewStyle()
         setupUserPages()
 
         getUserInfo(accountId, userId, screenName, false)
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -1296,6 +1300,11 @@ class UserFragment : BaseSupportFragment(), OnClickListener, OnLinkClickListener
             profileBanner.alpha = activity.currentThemeBackgroundAlpha / 255f
         }
         actionBar.setBackgroundDrawable(actionBarBackground)
+    }
+
+
+    private fun setupViewStyle() {
+        profileImage.style = preferences[profileImageStyleKey]
     }
 
     private fun setupUserPages() {

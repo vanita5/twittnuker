@@ -36,7 +36,7 @@
     app:ignorePadding="true"
     tools:context=".adapter.MessageEntriesAdapter">
 
-    <de.vanita5.twittnuker.view.ShapedImageView
+    <de.vanita5.twittnuker.view.ProfileImageView
         android:id="@+id/profileImage"
         style="?profileImageStyle"
         android:layout_width="@dimen/icon_size_card_list_item"
@@ -89,9 +89,9 @@
             android:layout_alignParentRight="true"
             android:drawablePadding="4dp"
             android:gravity="center"
+            android:maxLines="1"
             android:textColor="?android:attr/textColorSecondary"
-            tools:text="12:00"
-            android:maxLines="1"/>
+            tools:text="12:00"/>
 
         <TextView
             android:id="@+id/text"
@@ -101,9 +101,9 @@
             android:layout_alignStart="@+id/name"
             android:layout_below="@+id/name"
             android:layout_marginTop="@dimen/element_spacing_xsmall"
+            android:maxLines="1"
             android:textColor="?android:attr/textColorSecondary"
-            tools:text="@string/sample_status_text"
-            android:maxLines="1"/>
+            tools:text="@string/sample_status_text"/>
     </RelativeLayout>
 
 </de.vanita5.twittnuker.view.ColorLabelRelativeLayout>

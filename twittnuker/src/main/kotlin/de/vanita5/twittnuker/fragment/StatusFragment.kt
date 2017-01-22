@@ -291,10 +291,10 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
 
     }
 
-
     override fun onGapClick(holder: GapViewHolder, position: Int) {
 
     }
+
 
     override fun onItemActionClick(holder: ViewHolder, id: Int, position: Int) {
         val status = adapter.getStatus(position)
@@ -383,13 +383,13 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
                 repeatCount, event, metaState)
     }
 
-
     override fun onCreateLoader(id: Int, args: Bundle): Loader<SingleResponse<ParcelableStatus>> {
         val fragmentArgs = arguments
         val accountKey = fragmentArgs.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
         val statusId = fragmentArgs.getString(EXTRA_STATUS_ID)
         return ParcelableStatusLoader(activity, false, fragmentArgs, accountKey, statusId)
     }
+
 
     override fun onLoadFinished(loader: Loader<SingleResponse<ParcelableStatus>>,
                                 data: SingleResponse<ParcelableStatus>) {
@@ -713,7 +713,10 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
         }
     }
 
-    private class DetailStatusViewHolder(private val adapter: StatusAdapter, itemView: View) : ViewHolder(itemView), OnClickListener, ActionMenuView.OnMenuItemClickListener {
+    private class DetailStatusViewHolder(
+            private val adapter: StatusAdapter,
+            itemView: View
+    ) : ViewHolder(itemView), OnClickListener, ActionMenuView.OnMenuItemClickListener {
 
         private val linkClickHandler: StatusLinkClickHandler
         private val linkify: TwidereLinkify
@@ -1111,6 +1114,7 @@ class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<Par
             itemView.quotedMediaPreview.setStyle(adapter.mediaPreviewStyle)
 
             itemView.text.customSelectionActionModeCallback = StatusActionModeCallback(itemView.text, activity)
+            itemView.profileImage.style = adapter.profileImageStyle
 
             val layoutManager = LinearLayoutManager(adapter.context)
             layoutManager.orientation = LinearLayoutManager.HORIZONTAL

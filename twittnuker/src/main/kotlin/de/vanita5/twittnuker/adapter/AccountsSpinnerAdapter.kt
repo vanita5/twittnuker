@@ -22,35 +22,21 @@
 
 package de.vanita5.twittnuker.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.list_item_simple_user.view.*
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.util.MediaLoaderWrapper
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
-
-import javax.inject.Inject
 
 class AccountsSpinnerAdapter(
         context: Context,
         itemViewResource: Int = R.layout.list_item_simple_user
-) : ArrayAdapter<AccountDetails>(context, itemViewResource) {
+) : BaseArrayAdapter<AccountDetails>(context, itemViewResource) {
 
-    @Inject
-    lateinit var mediaLoader: MediaLoaderWrapper
-    private val displayProfileImage: Boolean
     private var dummyItemText: String? = null
-
-    init {
-        GeneralComponentHelper.build(context).inject(this)
-        displayProfileImage = context.getSharedPreferences(TwittnukerConstants.SHARED_PREFERENCES_NAME,
-                Context.MODE_PRIVATE).getBoolean(SharedPreferenceConstants.KEY_DISPLAY_PROFILE_IMAGE, true)
-    }
 
     constructor(context: Context, accounts: Collection<AccountDetails>) : this(context) {
         addAll(accounts)
@@ -77,34 +63,26 @@ class AccountsSpinnerAdapter(
         val text2 = view.screenName
         val icon = view.profileImage
         if (!item.dummy) {
-            if (text1 != null) {
-                text1.visibility = View.VISIBLE
-                text1.text = item.user.name
-            }
-            if (text2 != null) {
-                text2.visibility = View.VISIBLE
-                text2.text = String.format("@%s", item.user.screen_name)
-            }
+            text1?.visibility = View.VISIBLE
+            text1?.text = item.user.name
+            text2?.visibility = View.VISIBLE
+            @SuppressLint("SetTextI18n")
+            text2?.text = "@${item.user.screen_name}"
             if (icon != null) {
-                icon.visibility = View.VISIBLE
-                if (displayProfileImage) {
+                if (profileImageEnabled) {
+                    icon.visibility = View.VISIBLE
+                    icon.style = profileImageStyle
                     mediaLoader.displayProfileImage(icon, item.user)
                 } else {
+                    icon.visibility = View.GONE
                     mediaLoader.cancelDisplayTask(icon)
-                    //                    icon.setImageResource(R.drawable.ic_profile_image_default);
                 }
             }
         } else {
-            if (text1 != null) {
-                text1.visibility = View.VISIBLE
-                text1.text = dummyItemText
-            }
-            if (text2 != null) {
-                text2.visibility = View.GONE
-            }
-            if (icon != null) {
-                icon.visibility = View.GONE
-            }
+            text1?.visibility = View.VISIBLE
+            text1?.text = dummyItemText
+            text2?.visibility = View.GONE
+            icon?.visibility = View.GONE
         }
     }
 

@@ -211,12 +211,6 @@ public interface IntentConstants {
     String EXTRA_REQUEST_CODE = "request_code";
 
     /* Twittnuker */
-    String EXTRA_HOTOTIN_EXPANDED_TEXT = "hototin_expanded_text";
-    String EXTRA_TWITLONGER_EXPANDED_TEXT = "twitlonger_expanded_text";
-
-    String INTENT_ACTION_SYNC_TIMELINE = INTENT_PACKAGE_PREFIX + "SYNC_TIMELINE";
-
-    //GCM
     String GCM_REGISTRATION_COMPLETE = INTENT_PACKAGE_PREFIX + "GCM_REGISTRATION_COMPLETE";
 
 }

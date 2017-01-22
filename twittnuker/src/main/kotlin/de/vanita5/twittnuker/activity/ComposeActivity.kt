@@ -575,6 +575,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
         updateStatus.setOnClickListener(this)
         updateStatus.setOnLongClickListener(this)
+        updateViewStyle()
         setMenu()
         updateLocationState()
         notifyAccountSelectionChanged()
@@ -582,6 +583,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         textChanged = false
 
         updateAttachedMediaView()
+    }
+
+    private fun updateViewStyle() {
+        accountProfileImage.style = preferences[profileImageStyleKey]
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
