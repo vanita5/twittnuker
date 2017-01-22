@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import javax.inject.Inject
 
-open class BaseSupportFragment : Fragment(), IBaseFragment {
+open class BaseSupportFragment : Fragment(), IBaseFragment<BaseSupportFragment> {
 
     // Utility classes
     @Inject
@@ -72,7 +72,7 @@ open class BaseSupportFragment : Fragment(), IBaseFragment {
         GeneralComponentHelper.build(context!!).inject(this)
     }
 
-    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (IBaseFragment) -> Unit) {
+    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (BaseSupportFragment) -> Unit) {
         actionHelper.executeAfterFragmentResumed(useHandler, action)
     }
 

@@ -303,8 +303,7 @@ class DraftsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnItemCl
 
         override fun onPreExecute() {
             super.onPreExecute()
-            (activity as IExtendedActivity).executeAfterFragmentResumed {
-                val activity = it as FragmentActivity
+            (activity as IExtendedActivity<*>).executeAfterFragmentResumed { activity ->
                 val f = ProgressDialogFragment.show(activity.supportFragmentManager, FRAGMENT_TAG_DELETING_DRAFTS)
                 f.isCancelable = false
             }
@@ -312,8 +311,7 @@ class DraftsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnItemCl
 
         override fun onPostExecute(result: Unit) {
             super.onPostExecute(result)
-            (activity as IExtendedActivity).executeAfterFragmentResumed {
-                val activity = it as FragmentActivity
+            (activity as IExtendedActivity<*>).executeAfterFragmentResumed { activity ->
                 val fm = activity.supportFragmentManager
                 val f = fm.findFragmentByTag(FRAGMENT_TAG_DELETING_DRAFTS)
                 if (f is DialogFragment) {

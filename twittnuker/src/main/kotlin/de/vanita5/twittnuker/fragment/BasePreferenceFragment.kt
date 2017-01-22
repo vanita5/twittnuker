@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.util.sync.SyncController
 
 import javax.inject.Inject
 
-abstract class BasePreferenceFragment : PreferenceFragmentCompat(), IBaseFragment {
+abstract class BasePreferenceFragment : PreferenceFragmentCompat(), IBaseFragment<BasePreferenceFragment> {
     private var ringtonePreferenceKey: String? = null
 
     @Inject
@@ -126,7 +126,7 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat(), IBaseFragmen
         return super.onPreferenceTreeClick(preference)
     }
 
-    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (IBaseFragment) -> Unit) {
+    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (BasePreferenceFragment) -> Unit) {
         actionHelper.executeAfterFragmentResumed(useHandler, action)
     }
 

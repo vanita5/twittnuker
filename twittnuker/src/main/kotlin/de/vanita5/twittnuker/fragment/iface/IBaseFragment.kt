@@ -30,7 +30,7 @@ import android.support.v4.app.Fragment
 import de.vanita5.twittnuker.constant.IntentConstants
 import java.util.*
 
-interface IBaseFragment {
+interface IBaseFragment<out F : Fragment> {
     val extraConfiguration: Bundle?
         get() = null
 
@@ -67,18 +67,14 @@ interface IBaseFragment {
         fun getSystemWindowsInsets(insets: Rect): Boolean
     }
 
-    fun executeAfterFragmentResumed(useHandler: Boolean = false, action: (IBaseFragment) -> Unit)
+    fun executeAfterFragmentResumed(useHandler: Boolean = false, action: (F) -> Unit)
 
-    class ActionHelper(private val fragment: IBaseFragment) {
+    class ActionHelper<out F : Fragment>(private val fragment: F) {
 
-        private val handler: Handler
-
-        init {
-            handler = Handler(Looper.getMainLooper())
-        }
+        private val handler: Handler = Handler(Looper.getMainLooper())
 
         private var fragmentResumed: Boolean = false
-        private val actionQueue = LinkedList<ExecuteInfo>()
+        private val actionQueue = LinkedList<ExecuteInfo<F>>()
 
         fun dispatchOnPause() {
             fragmentResumed = false
@@ -89,10 +85,9 @@ interface IBaseFragment {
             executePending()
         }
 
-
         private fun executePending() {
             if (!fragmentResumed) return
-            var info: ExecuteInfo
+            var info: ExecuteInfo<F>
             while (true) {
                 info = actionQueue.poll() ?: break
                 if (info.useHandler) {
@@ -103,11 +98,11 @@ interface IBaseFragment {
             }
         }
 
-        fun executeAfterFragmentResumed(useHandler: Boolean = false, action: (IBaseFragment) -> Unit) {
+        fun executeAfterFragmentResumed(useHandler: Boolean = false, action: (F) -> Unit) {
             actionQueue.add(ExecuteInfo(action, useHandler))
             executePending()
         }
 
-        private data class ExecuteInfo(val action: (IBaseFragment) -> Unit, val useHandler: Boolean)
+        private data class ExecuteInfo<in F : Fragment>(val action: (F) -> Unit, val useHandler: Boolean)
     }
 }
