@@ -30,6 +30,7 @@ import com.squareup.otto.Bus
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import javax.inject.Inject
 
 open class BaseSupportFragment : Fragment(), IBaseFragment<BaseSupportFragment> {
@@ -59,6 +60,8 @@ open class BaseSupportFragment : Fragment(), IBaseFragment<BaseSupportFragment> 
     lateinit var errorInfoStore: ErrorInfoStore
     @Inject
     lateinit var validator: TwidereValidator
+    @Inject
+    lateinit var extraFeaturesService: ExtraFeaturesService
 
     private val actionHelper = IBaseFragment.ActionHelper(this)
 
@@ -87,6 +90,7 @@ open class BaseSupportFragment : Fragment(), IBaseFragment<BaseSupportFragment> 
     }
 
     override fun onDestroy() {
+        extraFeaturesService.release()
         super.onDestroy()
         DebugModeUtils.watchReferenceLeak(this)
     }

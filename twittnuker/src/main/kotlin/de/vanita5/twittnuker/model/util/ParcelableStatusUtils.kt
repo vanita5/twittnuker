@@ -144,7 +144,7 @@ object ParcelableStatusUtils {
         result.in_reply_to_name = getInReplyToName(status)
         result.in_reply_to_screen_name = status.inReplyToScreenName
         result.in_reply_to_status_id = status.inReplyToStatusId
-        result.in_reply_to_user_id = getInReplyToUserId(status, accountKey)
+        result.in_reply_to_user_key = getInReplyToUserId(status, accountKey)
 
         val user = status.user
         result.user_key = UserKeyUtils.fromUser(user)
@@ -294,9 +294,6 @@ object ParcelableStatusUtils {
         }
         if (status.retweeted_by_user_key != null) {
             status.retweet_user_color = manager.getUserColor(status.retweeted_by_user_key!!)
-        }
-
-        if (status.in_reply_to_user_id != null) {
         }
     }
 

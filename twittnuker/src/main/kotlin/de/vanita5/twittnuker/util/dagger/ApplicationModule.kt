@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.util.imageloader.URLFileNameGenerator
 import de.vanita5.twittnuker.util.media.TwidereMediaDownloader
 import de.vanita5.twittnuker.util.media.UILFileCache
 import de.vanita5.twittnuker.util.net.TwidereDns
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.refresh.AutoRefreshController
 import de.vanita5.twittnuker.util.refresh.JobSchedulerAutoRefreshController
 import de.vanita5.twittnuker.util.refresh.LegacyAutoRefreshController
@@ -240,7 +241,7 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun syncController(kPreferences: KPreferences): SyncController {
+    fun syncController(): SyncController {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return JobSchedulerSyncController(application)
         }
@@ -255,7 +256,7 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun taskCreator(kPreferences: KPreferences, syncPreferences: SyncPreferences, bus: Bus): TaskServiceRunner {
+    fun taskCreator(kPreferences: KPreferences, bus: Bus): TaskServiceRunner {
         return TaskServiceRunner(application, kPreferences, bus)
     }
 
@@ -265,6 +266,12 @@ class ApplicationModule(private val application: Application) {
         val features = DefaultFeatures()
         features.load(preferences)
         return features
+    }
+
+    @Provides
+    @Singleton
+    fun extraFeaturesService(): ExtraFeaturesService {
+        return ExtraFeaturesService.newInstance(application)
     }
 
     private fun createDiskCache(dirName: String, preferences: SharedPreferencesWrapper): DiskCache {

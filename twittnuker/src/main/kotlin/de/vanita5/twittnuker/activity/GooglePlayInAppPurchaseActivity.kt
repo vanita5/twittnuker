@@ -35,20 +35,18 @@ import nl.komponents.kovenant.ui.alwaysUi
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import de.vanita5.twittnuker.Constants
-import de.vanita5.twittnuker.constant.EXTRA_CURRENCY
-import de.vanita5.twittnuker.constant.EXTRA_PRICE
-import de.vanita5.twittnuker.constant.IntentConstants.INTENT_PACKAGE_PREFIX
-import de.vanita5.twittnuker.constant.RESULT_NOT_PURCHASED
-import de.vanita5.twittnuker.constant.RESULT_SERVICE_UNAVAILABLE
+import de.vanita5.twittnuker.activity.premium.AbsExtraFeaturePurchaseActivity
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
+import de.vanita5.twittnuker.util.premium.GooglePlayExtraFeaturesService
 import java.lang.ref.WeakReference
 
 
-class GooglePlayInAppPurchaseActivity : BaseActivity(), BillingProcessor.IBillingHandler {
+class GooglePlayInAppPurchaseActivity : AbsExtraFeaturePurchaseActivity(),
+        BillingProcessor.IBillingHandler {
 
     private lateinit var billingProcessor: BillingProcessor
 
-    private val productId: String get() = intent.getStringExtra(EXTRA_PRODUCT_ID)
+    private val productId: String get() = GooglePlayExtraFeaturesService.getProductId(requestingFeature)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,16 +96,14 @@ class GooglePlayInAppPurchaseActivity : BaseActivity(), BillingProcessor.IBillin
                 getProductDetailsAndFinish()
             }
             else -> {
-                setResult(getResultCode(billingResponse))
-                finish()
+                finishWithError(getResultCode(billingResponse))
             }
         }
     }
 
     private fun handlePurchased(sku: SkuDetails, transaction: TransactionDetails) {
-        val data = Intent().putExtra(EXTRA_PRICE, sku.priceValue).putExtra(EXTRA_CURRENCY, sku.currency)
-        setResult(RESULT_OK, data)
-        finish()
+        val result = PurchaseResult(requestingFeature, sku.priceValue, sku.currency)
+        finishWithResult(result)
     }
 
 
@@ -162,6 +158,5 @@ class GooglePlayInAppPurchaseActivity : BaseActivity(), BillingProcessor.IBillin
         private const val TAG_PURCHASE_PROCESS = "get_purchase_process"
 
         const val EXTRA_PRODUCT_ID = "product_id"
-        const val ACTION_RESTORE_PURCHASE = "${INTENT_PACKAGE_PREFIX}RESTORE_PURCHASE"
     }
 }

@@ -836,10 +836,13 @@
     <string name="action_restore_purchase">Wiederherstellen</string>
     <!-- Enhanced (paid) features description -->
     <string name="extra_features_description">Unterstütze Twittnuker und schalte erweiterte Funktionen frei</string>
+    <string name="extra_features_pack_description">oder kaufe dir das Feature Pack und erhalte alle aktuellen und zukünftigen Funktionen</string>
     <!-- Enhanced (paid) features title -->
     <string name="extra_features_restore_purchase_hint">Schon gekauft? Schalte die Funktionen mit \"Wiederherstellen\" erneut frei.</string>
-    <string name="extra_features_name_sync_data">Synchroniere Daten wie Filter und Entwürfe</string>
-    <string name="extra_features_name_import_filter_list">Importe Filterliste aus Blocks und Mutes</string>
+    <string name="extra_feature_description_sync_data">Synchroniere Daten wie Filter und Entwürfe</string>
+    <string name="extra_feature_description_filters_import">Importe Filterliste aus Blocks und Mutes</string>
+    <string name="extra_feature_description_filters_subscription">Filterlisten Abonements</string>
+    <string name="extra_feature_description_schedule_status">Schedule Tweets (zu bestimmtem Zeitpunkt automatisch posten)</string>
     <string name="title_error_invalid_account">Ungültiger Account</string>
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>
     <!-- [verb] Perform import action -->
@@ -868,6 +871,7 @@
     <string name="action_sync_sync_now">Jetzt synchronisieren</string>
     <string name="title_sync_settings">Sync. Einstellungen</string>
     <string name="message_sync_disconnect_from_name_confirm">Von <xliff:g example="ownCloud" id="name">%s</xliff:g> trennen?</string>
+    <string name="action_purchase_features_pack">Feature Pack kaufen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

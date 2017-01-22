@@ -28,15 +28,14 @@ import com.anjlab.android.iab.v3.BillingProcessor
 import de.vanita5.twittnuker.Constants.GOOGLE_PLAY_LICENCING_PUBKEY
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.GooglePlayInAppPurchaseActivity
+import de.vanita5.twittnuker.activity.premium.AbsExtraFeaturePurchaseActivity
 
 class GooglePlayExtraFeaturesService() : ExtraFeaturesService() {
-    private val EXTRA_FEATURE_PRODUCT_ID = "twittnuker.extra.features"
+    private val PRODUCT_ID_EXTRA_FEATURES_PACK = "twittnuker.extra.features"
 
     private lateinit var bp: BillingProcessor
 
-    override val dashboardLayouts: IntArray = intArrayOf(R.layout.card_item_extra_features_sync_status)
-
-    override val introductionLayout: Int = R.layout.card_item_extra_features_purchase_introduction
+    override fun getDashboardLayouts() = intArrayOf(R.layout.card_item_extra_features_sync_status)
 
     override fun init(context: Context) {
         super.init(context)
@@ -49,26 +48,42 @@ class GooglePlayExtraFeaturesService() : ExtraFeaturesService() {
 
     override fun isSupported(): Boolean = true
 
-    override fun isEnabled(): Boolean {
-        val details = bp.getPurchaseTransactionDetails(EXTRA_FEATURE_PRODUCT_ID) ?: return false
-        return bp.isValidTransactionDetails(details)
+    override fun isEnabled(feature: String): Boolean {
+        if (bp.hasValidTransaction(PRODUCT_ID_EXTRA_FEATURES_PACK)) return true
+        val productId = getProductId(feature) ?: return false
+        return bp.hasValidTransaction(productId)
     }
 
     override fun destroyPurchase(): Boolean {
-        return bp.consumePurchase(EXTRA_FEATURE_PRODUCT_ID)
+        return bp.consumePurchase(PRODUCT_ID_EXTRA_FEATURES_PACK)
     }
 
-    override fun createPurchaseIntent(context: Context): Intent {
-        return Intent(context, GooglePlayInAppPurchaseActivity::class.java).apply {
-            putExtra(GooglePlayInAppPurchaseActivity.EXTRA_PRODUCT_ID, EXTRA_FEATURE_PRODUCT_ID)
+    override fun createPurchaseIntent(context: Context, feature: String): Intent? {
+        return AbsExtraFeaturePurchaseActivity.purchaseIntent(context,
+                GooglePlayInAppPurchaseActivity::class.java, feature)
+    }
+
+    override fun createRestorePurchaseIntent(context: Context, feature: String): Intent? {
+        return AbsExtraFeaturePurchaseActivity.restorePurchaseIntent(context,
+                GooglePlayInAppPurchaseActivity::class.java, feature)
+    }
+
+    private fun BillingProcessor.hasValidTransaction(productId: String): Boolean {
+        val details = getPurchaseTransactionDetails(productId) ?: return false
+        return isValidTransactionDetails(details)
+    }
+
+    companion object {
+        @JvmStatic
+        fun getProductId(feature: String): String {
+            return when (feature) {
+                FEATURE_FEATURES_PACK -> "twittnuker.extra.features"
+                FEATURE_SYNC_DATA -> "twittnuker.extra.feature.data_sync"
+                FEATURE_FILTERS_IMPORT -> "twittnuker.extra.feature.filter_import"
+                FEATURE_FILTERS_SUBSCRIPTION -> "twittnuker.extra.feature.filter_subscription"
+                FEATURE_SCHEDULE_STATUS -> "twittnuker.extra.feature.schedule_status"
+                else -> throw UnsupportedOperationException(feature)
+            }
         }
     }
-
-    override fun createRestorePurchaseIntent(context: Context): Intent? {
-        return Intent(context, GooglePlayInAppPurchaseActivity::class.java).apply {
-            action = GooglePlayInAppPurchaseActivity.ACTION_RESTORE_PURCHASE
-            putExtra(GooglePlayInAppPurchaseActivity.EXTRA_PRODUCT_ID, EXTRA_FEATURE_PRODUCT_ID)
-        }
-    }
-
 }

@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment.premium
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
@@ -32,23 +33,36 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_extra_features_sync_status.*
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PURCHASE_EXTRA_FEATURES
 import de.vanita5.twittnuker.activity.FragmentContentActivity
 import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BaseSupportFragment
+import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.fragment.sync.SyncSettingsFragment
+import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
+import de.vanita5.twittnuker.util.Analyzer
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
 
-class ExtraFeaturesSyncStatusFragment : BaseSupportFragment() {
+class SyncStatusFragment : BaseSupportFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         updateSyncSettingActions()
         connectButton.setOnClickListener {
+            if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_SYNC_DATA)) {
+                showExtraFeaturesIntroduction()
+                return@setOnClickListener
+            }
             val df = ConnectNetworkStorageSelectionDialogFragment()
             df.show(childFragmentManager, "connect_to_storage")
         }
         settingsButton.setOnClickListener {
+            if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_SYNC_DATA)) {
+                showExtraFeaturesIntroduction()
+                return@setOnClickListener
+            }
             val intent = Intent(context, FragmentContentActivity::class.java)
             intent.putExtra(FragmentContentActivity.EXTRA_FRAGMENT, SyncSettingsFragment::class.java.name)
             intent.putExtra(FragmentContentActivity.EXTRA_TITLE, getString(R.string.title_sync_settings))
@@ -61,12 +75,23 @@ class ExtraFeaturesSyncStatusFragment : BaseSupportFragment() {
             REQUEST_CONNECT_NETWORK_STORAGE -> {
                 updateSyncSettingActions()
             }
+            REQUEST_PURCHASE_EXTRA_FEATURES -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Analyzer.log(PurchaseFinished.create(data!!))
+                }
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
         updateSyncSettingActions()
+    }
+
+    private fun showExtraFeaturesIntroduction() {
+        ExtraFeaturesIntroductionDialogFragment.show(childFragmentManager,
+                feature = ExtraFeaturesService.FEATURE_SYNC_DATA,
+                requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
     }
 
     private fun updateSyncSettingActions() {

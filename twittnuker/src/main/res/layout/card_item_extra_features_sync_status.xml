@@ -31,7 +31,7 @@
 
     <fragment
         android:id="@+id/extra_features_sync_status"
-        class="de.vanita5.twittnuker.fragment.premium.ExtraFeaturesSyncStatusFragment"
+        class="de.vanita5.twittnuker.fragment.premium.SyncStatusFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout="@layout/fragment_extra_features_sync_status"/>
