@@ -30,7 +30,7 @@
     tools:layout_width="48dp">
 
     <de.vanita5.twittnuker.view.ProfileImageView
-        android:id="@android:id/icon"
+        android:id="@+id/profileImage"
         style="?profileImageStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
