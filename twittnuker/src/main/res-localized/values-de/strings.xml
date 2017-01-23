@@ -818,7 +818,7 @@
     <string name="message_permission_request_share_media">Twittnuker benötigt Berechtigungen, um Medien mit anderen Apps teilen zu können.</string>
     <string name="hint_accounts_dashboard_title">Account Dashboard</string>
     <string name="hint_accounts_dashboard_message">Am Rand ziehen um das Account Dashboard zu öffnen.</string>
-    <string name="preference_randomize_account_name">Zufälliger Account Name</string>
+    <string name="preference_randomize_account_name">Account Name verstecken</string>
     <string name="preference_randomize_account_name_summary">Verhindert, dass andere Apps deine echten Accountnamen auslesen können.</string>
     <string name="preference_randomize_account_rename_accounts_confirm">Accounts umbenennen?</string>
     <string name="message_auto_refresh_confirm">Soll die Timeline im Hintergrund automatisch aktualisiert werden?</string>
@@ -872,6 +872,8 @@
     <string name="title_sync_settings">Sync. Einstellungen</string>
     <string name="message_sync_disconnect_from_name_confirm">Von <xliff:g example="ownCloud" id="name">%s</xliff:g> trennen?</string>
     <string name="action_purchase_features_pack">Feature Pack kaufen</string>
+    <string name="preference_title_chrome_custom_tab">Chrome Tab</string>
+    <string name="preference_summary_chrome_custom_tab">Links in der App öffnen, ohne sie zu verlassen</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

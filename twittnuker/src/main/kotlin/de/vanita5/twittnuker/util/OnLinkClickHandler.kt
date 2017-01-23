@@ -32,16 +32,17 @@ import android.support.customtabs.CustomTabsIntent
 import org.apache.commons.lang3.StringUtils
 import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonUtils
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.activity.WebLinkHandlerActivity
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
+import de.vanita5.twittnuker.constant.chromeCustomTabKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor
-import org.mariotaku.kpreferences.get
 
 open class OnLinkClickHandler(
         protected val context: Context,
@@ -153,15 +154,26 @@ open class OnLinkClickHandler(
 
     protected open fun openLink(link: String) {
         if (manager != null && manager.isActive) return
+        val uri = Uri.parse(link)
+        if (!preferences[chromeCustomTabKey]) {
+            val viewIntent = Intent(Intent.ACTION_VIEW, uri)
+            viewIntent.addCategory(Intent.CATEGORY_BROWSABLE)
+            try {
+                return context.startActivity(viewIntent)
+            } catch (e: ActivityNotFoundException) {
+                // Ignore
+            }
+            return
+        }
         val builder = CustomTabsIntent.Builder()
         (ChameleonUtils.getActivity(context) as? Chameleon.Themeable)?.overrideTheme?.let { theme ->
             builder.setToolbarColor(theme.colorToolbar)
         }
         val intent = builder.build()
         try {
-            intent.launchUrl(context, Uri.parse(link))
+            intent.launchUrl(context, uri)
         } catch (e: ActivityNotFoundException) {
-            // TODO
+            // Ignore
         }
 
     }

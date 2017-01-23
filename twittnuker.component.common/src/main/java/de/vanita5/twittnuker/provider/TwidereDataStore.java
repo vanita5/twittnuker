@@ -29,6 +29,7 @@ import android.provider.BaseColumns;
 import de.vanita5.twittnuker.model.DraftTableInfo;
 import de.vanita5.twittnuker.model.FiltersData$BaseItemTableInfo;
 import de.vanita5.twittnuker.model.FiltersData$UserItemTableInfo;
+import de.vanita5.twittnuker.model.FiltersSubscriptionTableInfo;
 import de.vanita5.twittnuker.model.ParcelableActivityTableInfo;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageTableInfo;
 import de.vanita5.twittnuker.model.ParcelableStatusTableInfo;
@@ -624,6 +625,21 @@ public interface TwidereDataStore {
 
             String[] TYPES = FiltersData$UserItemTableInfo.TYPES;
         }
+
+        interface Subscriptions extends BaseColumns {
+            String TABLE_NAME = "filters_subscriptions";
+            String CONTENT_PATH_SEGMENT = "subscriptions";
+            String CONTENT_PATH = Filters.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
+            Uri CONTENT_URI = Uri.withAppendedPath(Filters.CONTENT_URI, CONTENT_PATH_SEGMENT);
+
+            String COMPONENT = "component";
+            String ARGUMENTS = "arguments";
+
+
+            String[] COLUMNS = FiltersSubscriptionTableInfo.COLUMNS;
+
+            String[] TYPES = FiltersSubscriptionTableInfo.TYPES;
+        }
     }
 
     interface Mentions extends Statuses {
@@ -941,6 +957,7 @@ public interface TwidereDataStore {
 
         String DEFAULT_SORT_ORDER = POSITION + " ASC";
     }
+
 
     interface CachedRelationships extends BaseColumns, AccountSupportColumns {
 
