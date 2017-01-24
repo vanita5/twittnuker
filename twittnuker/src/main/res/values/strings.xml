@@ -909,6 +909,7 @@
     <string name="title_subscription_url">URL</string>
     <string name="title_filters_subscription_invalid">Invalid subscription</string>
     <string name="title_filters_subscription_url">URL</string>
+    <string name="label_filters_subscription">Subscription</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>
