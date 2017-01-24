@@ -56,7 +56,6 @@ class LegacyTaskService : Service() {
 
     companion object {
 
-
         fun getRefreshAction(@AutoRefreshType type: String): String? = when (type) {
             AutoRefreshType.HOME_TIMELINE -> ACTION_REFRESH_HOME_TIMELINE
             AutoRefreshType.INTERACTIONS_TIMELINE -> ACTION_REFRESH_NOTIFICATIONS

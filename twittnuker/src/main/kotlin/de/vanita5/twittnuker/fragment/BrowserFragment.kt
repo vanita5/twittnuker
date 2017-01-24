@@ -26,7 +26,7 @@ import android.os.Bundle
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_URI
 import de.vanita5.twittnuker.util.ParseUtils
 
-open class SupportBrowserFragment : BaseSupportWebViewFragment() {
+open class BrowserFragment : BaseWebViewFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

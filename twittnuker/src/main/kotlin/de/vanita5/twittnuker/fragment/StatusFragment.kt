@@ -113,7 +113,7 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder.StatusClickListener
 import java.util.*
 
-class StatusFragment : BaseSupportFragment(), LoaderCallbacks<SingleResponse<ParcelableStatus>>,
+class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<ParcelableStatus>>,
         OnMediaClickListener, StatusClickListener, KeyboardShortcutCallback, ContentListSupport {
     private var mItemDecoration: DividerItemDecoration? = null
 

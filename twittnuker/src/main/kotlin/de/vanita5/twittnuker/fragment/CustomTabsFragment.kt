@@ -73,7 +73,7 @@ import de.vanita5.twittnuker.util.ThemeUtils
 import de.vanita5.twittnuker.view.holder.TwoLineWithIconViewHolder
 import java.lang.ref.WeakReference
 
-class CustomTabsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, MultiChoiceModeListener {
+class CustomTabsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, MultiChoiceModeListener {
 
     private lateinit var adapter: CustomTabsAdapter
 

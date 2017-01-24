@@ -84,7 +84,7 @@ import de.vanita5.twittnuker.view.ShapedImageView
 
 import java.util.*
 
-class AccountsDashboardFragment : BaseSupportFragment(), LoaderCallbacks<AccountsInfo>,
+class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
         OnSharedPreferenceChangeListener, OnClickListener, KeyboardShortcutCallback,
         NavigationView.OnNavigationItemSelectedListener {
 

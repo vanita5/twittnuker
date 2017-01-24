@@ -44,7 +44,7 @@ import de.vanita5.twittnuker.view.HeaderDrawerLayout
 import de.vanita5.twittnuker.view.iface.IExtendedView
 
 abstract class AbsContentRecyclerViewFragment<A : LoadMoreSupportAdapter<RecyclerView.ViewHolder>,
-        L : RecyclerView.LayoutManager> : BaseSupportFragment(), SwipeRefreshLayout.OnRefreshListener,
+        L : RecyclerView.LayoutManager> : BaseFragment(), SwipeRefreshLayout.OnRefreshListener,
         HeaderDrawerLayout.DrawerCallback, RefreshScrollTopInterface, IControlBarActivity.ControlBarOffsetListener,
         ContentScrollHandler.ContentListSupport, ControlBarShowHideHelper.ControlBarAnimationListener {
 

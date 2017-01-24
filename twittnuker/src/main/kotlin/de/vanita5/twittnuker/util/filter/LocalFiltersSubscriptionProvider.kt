@@ -23,14 +23,18 @@
 package de.vanita5.twittnuker.util.filter
 
 import android.content.Context
+import de.vanita5.twittnuker.util.JsonSerializer
 
 
 abstract class LocalFiltersSubscriptionProvider(val context: Context) : FiltersSubscriptionProvider {
     companion object {
-        fun forName(context: Context, name: String): FiltersSubscriptionProvider? {
+        fun forName(context: Context, name: String, arguments: String?): FiltersSubscriptionProvider? {
             when (name) {
                 "url" -> {
-                    return UrlFiltersSubscriptionProvider(context)
+                    if (arguments == null) return null
+                    val argsObj = JsonSerializer.parse(arguments,
+                            UrlFiltersSubscriptionProvider.Arguments::class.java) ?: return null
+                    return UrlFiltersSubscriptionProvider(context, argsObj)
                 }
             }
             return null

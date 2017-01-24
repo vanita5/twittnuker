@@ -24,15 +24,25 @@ package de.vanita5.twittnuker.extension.model
 
 import android.content.Context
 import de.vanita5.twittnuker.model.FiltersSubscription
+import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.filter.FiltersSubscriptionProvider
 import de.vanita5.twittnuker.util.filter.LocalFiltersSubscriptionProvider
+import de.vanita5.twittnuker.util.filter.UrlFiltersSubscriptionProvider
 
 
 fun FiltersSubscription.instantiateComponent(context: Context): FiltersSubscriptionProvider? {
     val component = this.component ?: return null
     if (component.startsWith(":")) {
         // Load builtin service
-        return LocalFiltersSubscriptionProvider.forName(context, component.substringAfter(":"))
+        return LocalFiltersSubscriptionProvider.forName(context, component.substringAfter(":"), arguments)
     }
     return null
+}
+
+
+fun FiltersSubscription.setupUrl(url: String) {
+    this.component = ":url"
+    this.arguments = JsonSerializer.serialize(UrlFiltersSubscriptionProvider.Arguments().apply {
+        this.url = url
+    })
 }

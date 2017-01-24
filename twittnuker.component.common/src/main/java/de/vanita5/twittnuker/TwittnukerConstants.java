@@ -62,6 +62,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String TIMELINE_POSITIONS_PREFERENCES_NAME = "timeline_positions";
     String ACCOUNT_PREFERENCES_NAME_PREFIX = "account_preferences_";
     String KEYBOARD_SHORTCUTS_PREFERENCES_NAME = "keyboard_shortcuts_preferences";
+    String ETAG_CACHE_PREFERENCES_NAME = "etag_cache";
 
     String DEFAULT_TWITTER_API_URL_FORMAT = "https://[DOMAIN.]twitter.com/";
 
@@ -201,6 +202,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int TABLE_ID_FILTERED_KEYWORDS = 32;
     int TABLE_ID_FILTERED_SOURCES = 33;
     int TABLE_ID_FILTERED_LINKS = 34;
+    int TABLE_ID_FILTERS_SUBSCRIPTIONS = 39;
     int TABLE_ID_TRENDS_LOCAL = 41;
     int TABLE_ID_SAVED_SEARCHES = 42;
     int TABLE_ID_SEARCH_HISTORY = 43;

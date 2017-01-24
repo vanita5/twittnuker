@@ -36,7 +36,7 @@ import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 
-class IncomingFriendshipsFragment : CursorSupportUsersListFragment(), IUsersAdapter.RequestClickListener {
+class IncomingFriendshipsFragment : CursorUsersListFragment(), IUsersAdapter.RequestClickListener {
 
     public override fun onCreateUsersLoader(context: Context, args: Bundle,
                                             fromUser: Boolean): CursorSupportUsersLoader {

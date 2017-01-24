@@ -67,7 +67,7 @@ import de.vanita5.twittnuker.task.UpdateProfileImageTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.view.iface.IExtendedView.OnSizeChangedListener
 
-class UserProfileEditorFragment : BaseSupportFragment(), OnSizeChangedListener, TextWatcher,
+class UserProfileEditorFragment : BaseFragment(), OnSizeChangedListener, TextWatcher,
         OnClickListener, LoaderCallbacks<SingleResponse<ParcelableUser>>,
         KeyboardShortcutsHandler.TakeAllKeyboardShortcut {
 

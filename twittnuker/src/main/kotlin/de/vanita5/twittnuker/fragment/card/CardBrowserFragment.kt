@@ -24,9 +24,9 @@ package de.vanita5.twittnuker.fragment.card
 
 import android.os.Bundle
 import de.vanita5.twittnuker.Constants.EXTRA_URI
-import de.vanita5.twittnuker.fragment.SupportBrowserFragment
+import de.vanita5.twittnuker.fragment.BrowserFragment
 
-class CardBrowserFragment : SupportBrowserFragment() {
+class CardBrowserFragment : BrowserFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val settings = webView!!.settings

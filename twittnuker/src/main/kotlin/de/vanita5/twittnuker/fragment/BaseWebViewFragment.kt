@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.util.support.WebSettingsSupport
 import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient
 
 @SuppressLint("SetJavaScriptEnabled")
-open class BaseSupportWebViewFragment : BaseSupportFragment() {
+open class BaseWebViewFragment : BaseFragment() {
 
     private var internalWebView: WebView? = null
     private var webViewAvailable: Boolean = false

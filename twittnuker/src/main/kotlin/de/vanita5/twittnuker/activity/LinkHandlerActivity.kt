@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
@@ -61,6 +62,7 @@ import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.graphic.EmptyDrawable
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.Utils.matchLinkId
@@ -79,6 +81,77 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         get() {
             return supportFragmentManager.findFragmentById(android.R.id.content)
         }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        multiSelectHandler = MultiSelectEventHandler(this)
+        controlBarShowHideHelper = ControlBarShowHideHelper(this)
+        multiSelectHandler.dispatchOnCreate()
+        val uri = intent.data
+        val linkId = matchLinkId(uri)
+        intent.setExtrasClassLoader(classLoader)
+        val fragment: Fragment
+        try {
+            fragment = createFragmentForIntent(this, linkId, intent) ?: run {
+                finish()
+                return
+            }
+        } catch (e: Utils.NoAccountException) {
+            val selectIntent = Intent(this, AccountSelectorActivity::class.java)
+            val accountHost: String? = intent.getStringExtra(EXTRA_ACCOUNT_HOST) ?:
+                    uri.getQueryParameter(QUERY_PARAM_ACCOUNT_HOST) ?: e.accountHost
+            selectIntent.putExtra(EXTRA_SINGLE_SELECTION, true)
+            selectIntent.putExtra(EXTRA_SELECT_ONLY_ITEM_AUTOMATICALLY, true)
+            selectIntent.putExtra(EXTRA_ACCOUNT_HOST, accountHost)
+            selectIntent.putExtra(EXTRA_START_INTENT, intent)
+            startActivity(selectIntent)
+            finish()
+            return
+        }
+
+        if (fragment is IToolBarSupportFragment) {
+            if (!fragment.setupWindow(this)) {
+                supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
+                supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY)
+            }
+        }
+
+        setupActionBarOption()
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(android.R.id.content, fragment)
+        ft.commit()
+        setTitle(linkId, uri)
+        finishOnly = java.lang.Boolean.parseBoolean(uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY))
+
+        if (fragment is IToolBarSupportFragment) {
+            ThemeUtils.setCompatContentViewOverlay(window, EmptyDrawable())
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        multiSelectHandler.dispatchOnStart()
+    }
+
+
+    override fun onStop() {
+        multiSelectHandler.dispatchOnStop()
+        super.onStop()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_PURCHASE_EXTRA_FEATURES -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    Analyzer.log(PurchaseFinished.create(data!!))
+                }
+            }
+            else -> {
+                super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
+
+    }
 
     override fun triggerRefresh(position: Int): Boolean {
         return false
@@ -148,63 +221,6 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             return fragment.isKeyboardShortcutHandled(handler, keyCode, event, metaState)
         }
         return false
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        multiSelectHandler = MultiSelectEventHandler(this)
-        controlBarShowHideHelper = ControlBarShowHideHelper(this)
-        multiSelectHandler.dispatchOnCreate()
-        val uri = intent.data
-        val linkId = matchLinkId(uri)
-        intent.setExtrasClassLoader(classLoader)
-        val fragment: Fragment
-        try {
-            fragment = createFragmentForIntent(this, linkId, intent) ?: run {
-                finish()
-                return
-            }
-        } catch (e: Utils.NoAccountException) {
-            val selectIntent = Intent(this, AccountSelectorActivity::class.java)
-            val accountHost: String? = intent.getStringExtra(EXTRA_ACCOUNT_HOST) ?:
-                    uri.getQueryParameter(QUERY_PARAM_ACCOUNT_HOST) ?: e.accountHost
-            selectIntent.putExtra(EXTRA_SINGLE_SELECTION, true)
-            selectIntent.putExtra(EXTRA_SELECT_ONLY_ITEM_AUTOMATICALLY, true)
-            selectIntent.putExtra(EXTRA_ACCOUNT_HOST, accountHost)
-            selectIntent.putExtra(EXTRA_START_INTENT, intent)
-            startActivity(selectIntent)
-            finish()
-            return
-        }
-
-        if (fragment is IToolBarSupportFragment) {
-            if (!fragment.setupWindow(this)) {
-                supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
-                supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY)
-            }
-        }
-
-        setupActionBarOption()
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(android.R.id.content, fragment)
-        ft.commit()
-        setTitle(linkId, uri)
-        finishOnly = java.lang.Boolean.parseBoolean(uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY))
-
-        if (fragment is IToolBarSupportFragment) {
-            ThemeUtils.setCompatContentViewOverlay(window, EmptyDrawable())
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        multiSelectHandler.dispatchOnStart()
-    }
-
-
-    override fun onStop() {
-        multiSelectHandler.dispatchOnStop()
-        super.onStop()
     }
 
     override fun setSupportActionBar(toolbar: Toolbar?) {

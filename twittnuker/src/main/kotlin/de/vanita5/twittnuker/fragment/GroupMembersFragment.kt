@@ -29,7 +29,7 @@ import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.GroupMembersLoader
 import de.vanita5.twittnuker.model.UserKey
 
-class GroupMembersFragment : CursorSupportUsersListFragment() {
+class GroupMembersFragment : CursorUsersListFragment() {
 
     public override fun onCreateUsersLoader(context: Context,
                                             args: Bundle, fromUser: Boolean): CursorSupportUsersLoader {

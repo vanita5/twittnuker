@@ -66,7 +66,7 @@ import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.support.removeAccountSupport
 
-class AccountsManagerFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<List<AccountDetails>>,
+class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<List<AccountDetails>>,
         AdapterView.OnItemClickListener {
 
     private lateinit var adapter: AccountDetailsAdapter

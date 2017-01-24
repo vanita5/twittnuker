@@ -22,5 +22,26 @@
 
 package de.vanita5.twittnuker.util.filter;
 
+import android.support.annotation.Nullable;
+
+import de.vanita5.twittnuker.model.FiltersData;
+
+import java.io.IOException;
+import java.util.List;
+
+
 public interface FiltersSubscriptionProvider {
+    boolean fetchFilters() throws IOException;
+
+    @Nullable
+    List<FiltersData.UserItem> getUsers();
+
+    @Nullable
+    List<FiltersData.BaseItem> getKeywords();
+
+    @Nullable
+    List<FiltersData.BaseItem> getSources();
+
+    @Nullable
+    List<FiltersData.BaseItem> getLinks();
 }

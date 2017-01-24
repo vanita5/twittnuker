@@ -87,7 +87,7 @@ import static de.vanita5.twittnuker.Constants.KEY_TCP_DNS_QUERY;
 /**
  * Network diagnostics
  */
-public class NetworkDiagnosticsFragment extends BaseSupportFragment {
+public class NetworkDiagnosticsFragment extends BaseFragment {
 
     private TextView mLogTextView;
     private Button mStartDiagnosticsButton;

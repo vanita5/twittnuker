@@ -41,7 +41,7 @@ import de.vanita5.twittnuker.util.ListViewScrollHandler
 import de.vanita5.twittnuker.util.ThemeUtils
 import de.vanita5.twittnuker.util.TwidereColorUtils
 
-abstract class AbsContentListViewFragment<A : ListAdapter> : BaseSupportFragment(),
+abstract class AbsContentListViewFragment<A : ListAdapter> : BaseFragment(),
         OnRefreshListener, RefreshScrollTopInterface, ControlBarOffsetListener, ContentListSupport,
         AbsListView.OnScrollListener {
     private lateinit var scrollHandler: ListViewScrollHandler

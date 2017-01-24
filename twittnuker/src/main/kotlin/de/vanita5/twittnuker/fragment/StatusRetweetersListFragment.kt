@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.StatusRetweetersLoader
 import de.vanita5.twittnuker.model.UserKey
 
-class StatusRetweetersListFragment : CursorSupportUsersListFragment() {
+class StatusRetweetersListFragment : CursorUsersListFragment() {
 
     public override fun onCreateUsersLoader(context: Context,
                                             args: Bundle,

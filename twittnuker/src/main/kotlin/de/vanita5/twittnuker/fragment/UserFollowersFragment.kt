@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.loader.UserFollowersLoader
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
 
-class UserFollowersFragment : CursorSupportUsersListFragment() {
+class UserFollowersFragment : CursorUsersListFragment() {
 
     public override fun onCreateUsersLoader(context: Context,
                                             args: Bundle,

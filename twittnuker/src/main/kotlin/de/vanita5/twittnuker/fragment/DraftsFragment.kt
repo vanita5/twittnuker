@@ -71,7 +71,7 @@ import de.vanita5.twittnuker.util.Utils.getDefaultTextSize
 import java.io.File
 import java.util.*
 
-class DraftsFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnItemClickListener, MultiChoiceModeListener {
+class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickListener, MultiChoiceModeListener {
 
     private lateinit var adapter: DraftsAdapter
 

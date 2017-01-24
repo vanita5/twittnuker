@@ -29,7 +29,7 @@ import android.view.ViewGroup
 
 import de.vanita5.twittnuker.R
 
-class InvalidTabFragment : BaseSupportFragment() {
+class InvalidTabFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_invalid_tab, container, false)

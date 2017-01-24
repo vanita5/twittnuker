@@ -118,6 +118,7 @@
     <string name="action_quote">Zitat</string>
     <!-- [verb] Add mute filter rule -->
     <string name="action_add_filter_rule">Regel hinzufügen</string>
+    <string name="action_add_filters_subscription">Abonnement hinzufügen</string>
     <string name="text_size">Textgröße</string>
     <string name="text_size_summary">Textgröße von Tweets.</string>
     <string name="cannot_get_location">Ort konnte nicht gefunden werden.</string>
@@ -874,6 +875,9 @@
     <string name="action_purchase_features_pack">Feature Pack kaufen</string>
     <string name="preference_title_chrome_custom_tab">Chrome Tab</string>
     <string name="preference_summary_chrome_custom_tab">Links in der App öffnen, ohne sie zu verlassen</string>
+    <string name="hint_empty_filters_subscriptions">Keine Abonnements</string>
+    <string name="title_subscription_name">Name</string>
+    <string name="title_subscription_url">URL</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

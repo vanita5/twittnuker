@@ -51,7 +51,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUS
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.fragment.BaseSupportFragment
+import de.vanita5.twittnuker.fragment.BaseFragment
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableCardEntity
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -63,7 +63,7 @@ import de.vanita5.twittnuker.util.support.ViewSupport
 
 import java.util.*
 
-class CardPollFragment : BaseSupportFragment(), LoaderManager.LoaderCallbacks<ParcelableCardEntity?>, View.OnClickListener {
+class CardPollFragment : BaseFragment(), LoaderManager.LoaderCallbacks<ParcelableCardEntity?>, View.OnClickListener {
     private var fetchedCard: ParcelableCardEntity? = null
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -89,7 +89,7 @@ import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import java.util.*
 import javax.inject.Inject
 
-class MessagesConversationFragment : BaseSupportFragment(), LoaderCallbacks<Cursor?>, OnClickListener,
+class MessagesConversationFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnClickListener,
         OnItemSelectedListener, KeyboardShortcutCallback, TakeAllKeyboardShortcut {
 
     // Callbacks and listeners

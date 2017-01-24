@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PURCHASE_EXTRA_FEATURES
 import de.vanita5.twittnuker.activity.FragmentContentActivity
 import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
-import de.vanita5.twittnuker.fragment.BaseSupportFragment
+import de.vanita5.twittnuker.fragment.BaseFragment
 import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.fragment.sync.SyncSettingsFragment
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
@@ -45,7 +45,7 @@ import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.sync.SyncProviderInfoFactory
 
-class SyncStatusFragment : BaseSupportFragment() {
+class SyncStatusFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

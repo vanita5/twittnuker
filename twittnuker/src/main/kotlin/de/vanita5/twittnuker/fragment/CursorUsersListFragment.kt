@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.model.ParcelableUser
 
-abstract class CursorSupportUsersListFragment : ParcelableUsersFragment() {
+abstract class CursorUsersListFragment : ParcelableUsersFragment() {
 
     protected var nextCursor: Long = -1
         private set

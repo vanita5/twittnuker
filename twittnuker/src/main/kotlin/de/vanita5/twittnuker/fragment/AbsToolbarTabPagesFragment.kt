@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.view.TabPagerIndicator
 
-abstract class AbsToolbarTabPagesFragment : BaseSupportFragment(), RefreshScrollTopInterface,
+abstract class AbsToolbarTabPagesFragment : BaseFragment(), RefreshScrollTopInterface,
         SupportFragmentCallback, IBaseFragment.SystemWindowsInsetsCallback, ControlBarOffsetListener,
         HideUiOnScroll, OnPageChangeListener, IToolBarSupportFragment, KeyboardShortcutCallback {
 

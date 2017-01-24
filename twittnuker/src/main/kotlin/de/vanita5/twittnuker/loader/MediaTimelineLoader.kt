@@ -25,13 +25,12 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
-import android.text.TextUtils
-import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.extension.model.isOfficial
-import org.apache.commons.lang3.StringUtils
+import org.mariotaku.ktextension.isNullOrEmpty
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.*
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -87,11 +86,13 @@ class MediaTimelineLoader(
                     val query = SearchQuery("from:$screenName filter:media exclude:retweets")
                     query.paging(paging)
                     val result = ResponseList<Status>()
-                    for (status in microBlog.search(query)) {
+                    microBlog.search(query).filterTo(result) { status ->
                         val user = status.user
-                        if (userKey != null && TextUtils.equals(user.id, userKey.id) || StringUtils.endsWithIgnoreCase(user.screenName, this.screenName)) {
-                            result.add(status)
+                        if (status.mediaEntities.isNullOrEmpty()) {
+                            return@filterTo false
                         }
+                        return@filterTo user.id == userKey?.id
+                                || user.screenName.equals(this.screenName, ignoreCase = true)
                     }
                     return result
                 }

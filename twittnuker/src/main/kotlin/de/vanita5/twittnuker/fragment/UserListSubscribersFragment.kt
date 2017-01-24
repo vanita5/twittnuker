@@ -29,7 +29,7 @@ import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.UserListSubscribersLoader
 import de.vanita5.twittnuker.model.UserKey
 
-class UserListSubscribersFragment : CursorSupportUsersListFragment() {
+class UserListSubscribersFragment : CursorUsersListFragment() {
 
     public override fun onCreateUsersLoader(context: Context, args: Bundle, fromUser: Boolean): CursorSupportUsersLoader {
         val listId = args.getString(EXTRA_LIST_ID)

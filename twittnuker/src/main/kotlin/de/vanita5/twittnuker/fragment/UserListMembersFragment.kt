@@ -43,7 +43,7 @@ import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 import java.util.*
 
-class UserListMembersFragment : CursorSupportUsersListFragment() {
+class UserListMembersFragment : CursorUsersListFragment() {
 
     public override fun onCreateUsersLoader(context: Context,
                                             args: Bundle, fromUser: Boolean): CursorSupportUsersLoader {

@@ -32,6 +32,7 @@ import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.annotation.AutoRefreshType
 import de.vanita5.twittnuker.constant.refreshIntervalKey
 import de.vanita5.twittnuker.service.JobTaskService
+import de.vanita5.twittnuker.service.JobTaskService.Companion.JOB_ID_REFRESH_FILTERS_SUBSCRIPTIONS
 import java.util.concurrent.TimeUnit
 import android.Manifest.permission as AndroidPermissions
 
@@ -52,6 +53,9 @@ class JobSchedulerAutoRefreshController(
                 schedule(type)
             }
         }
+        if (allJobs.none { job -> job.id == JOB_ID_REFRESH_FILTERS_SUBSCRIPTIONS }) {
+            scheduleJob(JOB_ID_REFRESH_FILTERS_SUBSCRIPTIONS, TimeUnit.HOURS.toMillis(4))
+        }
     }
 
     override fun schedule(@AutoRefreshType type: String) {
@@ -65,16 +69,16 @@ class JobSchedulerAutoRefreshController(
         scheduler.cancel(jobId)
     }
 
-    fun scheduleJob(jobId: Int, persisted: Boolean = true) {
+    fun scheduleJob(jobId: Int, periodMillis: Long = TimeUnit.MINUTES.toMillis(kPreferences[refreshIntervalKey]), persisted: Boolean = true) {
         val builder = JobInfo.Builder(jobId, ComponentName(context, JobTaskService::class.java))
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-        builder.setPeriodic(TimeUnit.MINUTES.toMillis(kPreferences[refreshIntervalKey]))
+        builder.setPeriodic(periodMillis)
         builder.setPersisted(persisted)
         try {
             scheduler.schedule(builder.build())
         } catch (e: IllegalArgumentException) {
             if (persisted) {
-                scheduleJob(jobId, false)
+                scheduleJob(jobId, periodMillis, false)
             }
         }
     }
