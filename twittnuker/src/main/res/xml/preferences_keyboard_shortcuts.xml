@@ -78,7 +78,7 @@
         <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
             android:action="navigation.refresh"
             android:tag="navigation"
-            android:title="@string/refresh"/>
+            android:title="@string/action_refresh"/>
         <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
             android:action="navigation.back"
             android:tag="navigation"
