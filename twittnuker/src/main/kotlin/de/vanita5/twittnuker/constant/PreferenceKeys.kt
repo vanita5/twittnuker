@@ -49,7 +49,6 @@ val displaySensitiveContentsKey = KBooleanKey(KEY_DISPLAY_SENSITIVE_CONTENTS, tr
 val hideCardActionsKey = KBooleanKey(KEY_HIDE_CARD_ACTIONS, false)
 val iWantMyStarsBackKey = KBooleanKey(KEY_I_WANT_MY_STARS_BACK, false)
 val showAbsoluteTimeKey = KBooleanKey(KEY_SHOW_ABSOLUTE_TIME, false)
-val linkHighlightOptionKey = KStringKey(KEY_LINK_HIGHLIGHT_OPTION, VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT)
 val statusShortenerKey = KNullableStringKey(KEY_STATUS_SHORTENER, null)
 val mediaUploaderKey = KNullableStringKey(KEY_MEDIA_UPLOADER, null)
 val newDocumentApiKey = KBooleanKey(KEY_NEW_DOCUMENT_API, Build.VERSION.SDK_INT == Build.VERSION_CODES.M)
@@ -74,8 +73,8 @@ val themeKey = KStringKey(KEY_THEME, VALUE_THEME_NAME_AUTO)
 val themeColorKey = KIntKey(KEY_THEME_COLOR, 0)
 val filterUnavailableQuoteStatusesKey = KBooleanKey("filter_unavailable_quote_statuses", false)
 val filterPossibilitySensitiveStatusesKey = KBooleanKey("filter_possibility_sensitive_statuses", false)
-
 val chromeCustomTabKey = KBooleanKey("chrome_custom_tab", true)
+
 object themeBackgroundAlphaKey : KSimpleKey<Int>(KEY_THEME_BACKGROUND_ALPHA, 0xFF) {
     override fun read(preferences: SharedPreferences): Int {
         return preferences.getInt(KEY_THEME_BACKGROUND_ALPHA, DEFAULT_THEME_BACKGROUND_ALPHA)
@@ -110,6 +109,26 @@ object mediaPreviewStyleKey : KSimpleKey<Int>(KEY_MEDIA_PREVIEW_STYLE, VALUE_MED
 
     override fun write(editor: SharedPreferences.Editor, value: Int): Boolean {
         editor.putString(key, if (value == VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE) VALUE_MEDIA_PREVIEW_STYLE_SCALE else VALUE_MEDIA_PREVIEW_STYLE_CROP)
+        return true
+    }
+
+}
+
+object linkHighlightOptionKey : KSimpleKey<Int>(KEY_LINK_HIGHLIGHT_OPTION, VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT) {
+    override fun read(preferences: SharedPreferences): Int = when (preferences.getString(key, null)) {
+        VALUE_LINK_HIGHLIGHT_OPTION_BOTH -> VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH
+        VALUE_LINK_HIGHLIGHT_OPTION_UNDERLINE -> VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE
+        VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT -> VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT
+        else -> VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT
+    }
+
+    override fun write(editor: SharedPreferences.Editor, value: Int): Boolean {
+        editor.putString(key, when (value) {
+            VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH -> VALUE_LINK_HIGHLIGHT_OPTION_BOTH
+            VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE -> VALUE_LINK_HIGHLIGHT_OPTION_UNDERLINE
+            VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT -> VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT
+            else -> VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT
+        })
         return true
     }
 

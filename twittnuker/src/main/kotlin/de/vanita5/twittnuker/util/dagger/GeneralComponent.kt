@@ -73,8 +73,6 @@ interface GeneralComponent {
 
     fun inject(obj: TwidereDataProvider)
 
-    fun inject(obj: BaseListFragment)
-
     fun inject(obj: BaseActivity)
 
     fun inject(obj: BaseRecyclerViewAdapter<RecyclerView.ViewHolder>)

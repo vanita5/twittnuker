@@ -46,6 +46,7 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
 import kotlinx.android.synthetic.main.fragment_drafts.*
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.toStringArray
 import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.Expression
@@ -55,6 +56,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity
 import de.vanita5.twittnuker.adapter.DraftsAdapter
 import de.vanita5.twittnuker.constant.IntentConstants
+import de.vanita5.twittnuker.constant.textSizeKey
 import de.vanita5.twittnuker.extension.invertSelection
 import de.vanita5.twittnuker.extension.selectAll
 import de.vanita5.twittnuker.extension.selectNone
@@ -67,7 +69,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.AsyncTaskUtils
 import de.vanita5.twittnuker.util.JsonSerializer
-import de.vanita5.twittnuker.util.Utils.getDefaultTextSize
 import java.io.File
 import java.util.*
 
@@ -78,7 +79,7 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         adapter = DraftsAdapter(activity).apply {
-            textSize = preferences.getInt(KEY_TEXT_SIZE, getDefaultTextSize(activity)).toFloat()
+            textSize = preferences[textSizeKey].toFloat()
         }
 
         listView.adapter = adapter
