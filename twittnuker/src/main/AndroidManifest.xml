@@ -21,9 +21,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="de.vanita5.twittnuker"
-    android:installLocation="internalOnly">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="de.vanita5.twittnuker"
+          android:installLocation="internalOnly">
 
     <uses-sdk tools:overrideLibrary="android.support.customtabs"/>
 
@@ -407,7 +407,7 @@
                 <data android:host="fanfou.com"/>
                 <data
                     android:host="twittnuker.org"
-                    android:pathPrefix="/external" />
+                    android:pathPrefix="/external"/>
 
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
@@ -465,6 +465,7 @@
         <activity
             android:name=".activity.PremiumDashboardActivity"
             android:label="@string/title_premium_features_name"
+            android:parentActivityName=".activity.HomeActivity"
             android:theme="@style/Theme.Twidere">
 
             <meta-data
@@ -482,7 +483,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="de.vanita5.twittnuker.activity.DropboxAuthStarterActivity"
+            android:name=".activity.sync.DropboxAuthStarterActivity"
+            android:theme="@style/Theme.Twidere.NoDisplay"/>
+        <activity
+            android:name=".activity.sync.GoogleDriveAuthActivity"
             android:theme="@style/Theme.Twidere.NoDisplay"/>
         <activity
             android:name="com.dropbox.core.android.AuthActivity"

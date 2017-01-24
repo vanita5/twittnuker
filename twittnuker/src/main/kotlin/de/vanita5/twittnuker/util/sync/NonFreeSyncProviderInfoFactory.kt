@@ -26,7 +26,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.activity.DropboxAuthStarterActivity
+import de.vanita5.twittnuker.activity.sync.DropboxAuthStarterActivity
+import de.vanita5.twittnuker.activity.sync.GoogleDriveAuthActivity
+import de.vanita5.twittnuker.model.sync.GoogleDriveSyncProviderInfo
 import de.vanita5.twittnuker.model.sync.DropboxSyncProviderInfo
 import de.vanita5.twittnuker.model.sync.SyncProviderEntry
 import de.vanita5.twittnuker.model.sync.SyncProviderInfo
@@ -35,6 +37,7 @@ class NonFreeSyncProviderInfoFactory : SyncProviderInfoFactory() {
     override fun getInfoForType(type: String, preferences: SharedPreferences): SyncProviderInfo? {
         return when (type) {
             DropboxSyncProviderInfo.TYPE -> DropboxSyncProviderInfo.newInstance(preferences)
+            GoogleDriveSyncProviderInfo.TYPE -> GoogleDriveSyncProviderInfo.newInstance(preferences)
             else -> null
         }
     }
@@ -43,7 +46,10 @@ class NonFreeSyncProviderInfoFactory : SyncProviderInfoFactory() {
         return listOf(
                 SyncProviderEntry(DropboxSyncProviderInfo.TYPE,
                         context.getString(R.string.sync_provider_name_dropbox),
-                        Intent(context, DropboxAuthStarterActivity::class.java))
+                        Intent(context, DropboxAuthStarterActivity::class.java)),
+                SyncProviderEntry(GoogleDriveSyncProviderInfo.TYPE,
+                        context.getString(R.string.sync_provider_name_google_drive),
+                        Intent(context, GoogleDriveAuthActivity::class.java))
         )
     }
 }

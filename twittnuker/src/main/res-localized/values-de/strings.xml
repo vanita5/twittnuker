@@ -867,6 +867,7 @@
     <string name="message_sync_data_synced_with_name">Daten wurden mit <xliff:g example="ownCloud" id="name">%s</xliff:g> synchronisiert</string>
     <string name="title_sync">Synchronisieren</string>
     <string name="sync_provider_name_dropbox">Dropbox</string>
+    <string name="sync_provider_name_google_drive">Google Drive</string>
     <!-- [verb] Disconnect from network storage -->
     <string name="action_sync_disconnect">Trennen</string>
     <string name="action_sync_sync_now">Jetzt synchronisieren</string>
@@ -882,6 +883,7 @@
     <string name="title_filters_subscription_url">URL</string>
     <string name="label_filters_subscription">Abonnement</string>
     <string name="summary_interactions_not_available">Nur mit offiziellen API Keys verfügbar</string>
+    <string name="label_password_sign_in">Passwort Login</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

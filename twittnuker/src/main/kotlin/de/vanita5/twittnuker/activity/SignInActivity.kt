@@ -27,6 +27,7 @@ import android.accounts.AccountAuthenticatorResponse
 import android.accounts.AccountManager
 import android.app.Activity
 import android.app.Dialog
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -34,6 +35,7 @@ import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.customtabs.CustomTabsIntent
 import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.util.ArraySet
@@ -55,6 +57,8 @@ import android.widget.Toast
 import com.bluelinelabs.logansquare.LoganSquare
 import com.rengwuxian.materialedittext.MaterialEditText
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import org.mariotaku.chameleon.Chameleon
+import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.library.MicroBlog
@@ -74,6 +78,7 @@ import de.vanita5.twittnuker.activity.iface.APIEditorActivity
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_API_CONFIG
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CREDENTIALS_TYPE
+import de.vanita5.twittnuker.constant.chromeCustomTabKey
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.constant.randomizeAccountNameKey
 import de.vanita5.twittnuker.extension.model.getColor
@@ -128,7 +133,6 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
 
         val isTwipOMode = apiConfig.credentialsType == Credentials.Type.EMPTY
         usernamePasswordContainer.visibility = if (isTwipOMode) View.GONE else View.VISIBLE
-        signInSignUpContainer.orientation = if (isTwipOMode) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
 
         editUsername.addTextChangedListener(this)
         editPassword.addTextChangedListener(this)
@@ -211,15 +215,12 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
         when (apiConfig.credentialsType) {
             Credentials.Type.XAUTH, Credentials.Type.BASIC -> {
                 usernamePasswordContainer.visibility = View.VISIBLE
-                signInSignUpContainer.orientation = LinearLayout.HORIZONTAL
             }
             Credentials.Type.EMPTY -> {
                 usernamePasswordContainer.visibility = View.GONE
-                signInSignUpContainer.orientation = LinearLayout.VERTICAL
             }
             else -> {
                 usernamePasswordContainer.visibility = View.GONE
-                signInSignUpContainer.orientation = LinearLayout.VERTICAL
             }
         }
     }
@@ -227,8 +228,25 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
     override fun onClick(v: View) {
         when (v) {
             signUp -> {
-                val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(TWITTER_SIGNUP_URL))
-                startActivity(intent)
+                val signUpUrl = apiConfig.signUpUrl ?: return
+                val uri = Uri.parse(signUpUrl)
+                if (preferences[chromeCustomTabKey]) {
+                    val builder = CustomTabsIntent.Builder()
+                    builder.setToolbarColor(overrideTheme.colorToolbar)
+                    val intent = builder.build()
+                    try {
+                        intent.launchUrl(this, uri)
+                    } catch (e: ActivityNotFoundException) {
+                        // Ignore
+                    }
+                } else {
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    try {
+                        startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        // Ignore
+                    }
+                }
             }
             signIn -> {
                 if (usernamePasswordContainer.visibility != View.VISIBLE) {
@@ -238,11 +256,9 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
                 doLogin()
             }
             passwordSignIn -> {
-                executeAfterFragmentResumed {
-                    val fm = supportFragmentManager
+                executeAfterFragmentResumed { fragment ->
                     val df = PasswordSignInDialogFragment()
-                    df.show(fm.beginTransaction(), "password_sign_in")
-                    Unit
+                    df.show(fragment.supportFragmentManager, "password_sign_in")
                 }
             }
         }
@@ -379,6 +395,16 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher {
                 passwordSignIn.visibility = View.GONE
                 signIn.isEnabled = true
             }
+        }
+        signUp.visibility = if (apiConfig.signUpUrl != null) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+        passwordSignIn.visibility = if (apiConfig.type == null || apiConfig.type == AccountType.TWITTER) {
+            View.VISIBLE
+        } else {
+            View.GONE
         }
     }
 

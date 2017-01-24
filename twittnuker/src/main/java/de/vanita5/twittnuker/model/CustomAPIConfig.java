@@ -74,6 +74,9 @@ public final class CustomAPIConfig implements Parcelable {
     String consumerKey;
     @JsonField(name = "consumer_secret")
     String consumerSecret;
+    @Nullable
+    @JsonField(name = "sign_up_url")
+    String signUpUrl;
 
     public CustomAPIConfig() {
     }
@@ -156,6 +159,11 @@ public final class CustomAPIConfig implements Parcelable {
 
     public void setNoVersionSuffix(boolean noVersionSuffix) {
         this.noVersionSuffix = noVersionSuffix;
+    }
+
+    @Nullable
+    public String getSignUpUrl() {
+        return signUpUrl;
     }
 
     @Override

@@ -106,6 +106,7 @@ dependencies {
 
     // START Non-FOSS component
     compile "com.google.android.gms:play-services-gcm:$play_services_version"
+    compile "com.google.android.gms:play-services-drive:$play_services_version"
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') { transitive = true; }
     compile "com.dropbox.core:dropbox-core-sdk:2.1.2"
     // END Non-FOSS component

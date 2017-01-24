@@ -8,7 +8,8 @@
     "same_oauth_url": true,
     "no_version_suffix": false,
     "consumer_key": "K4KihyAG8rUOi9ysqDc5fw",
-    "consumer_secret": "TP9kXNAvNpdH2KcKCuH2DHAbtzzaZ04KIwzOGiOKB0"
+    "consumer_secret": "TP9kXNAvNpdH2KcKCuH2DHAbtzzaZ04KIwzOGiOKB0",
+    "sign_up_url": "https://twitter.com/signup"
   },
   {
     "name": "Quitter.se",
@@ -52,7 +53,8 @@
     "same_oauth_url": true,
     "no_version_suffix": true,
     "consumer_key": "a51624a67585267ab72086984869fb9b",
-    "consumer_secret": "d4f0ad96bae1e5104ae34f5ff9690fb7"
+    "consumer_secret": "d4f0ad96bae1e5104ae34f5ff9690fb7",
+    "sign_up_url": "http://fanfou.com/register"
   },
   {
     "name": "Twitter for Android",
@@ -63,7 +65,8 @@
     "same_oauth_url": true,
     "no_version_suffix": false,
     "consumer_key": "3nVuSoBZnx6U4vzUxf5w",
-    "consumer_secret": "Bcs59EFbbsdF6Sl9Ng71smgStWEGwXXKSjYvPVt7qys"
+    "consumer_secret": "Bcs59EFbbsdF6Sl9Ng71smgStWEGwXXKSjYvPVt7qys",
+    "sign_up_url": "https://twitter.com/signup"
   },
   {
     "name": "TweetDeck",
@@ -74,6 +77,7 @@
     "same_oauth_url": true,
     "no_version_suffix": false,
     "consumer_key": "yT577ApRtZw51q4NPMPPOQ",
-    "consumer_secret": "3neq3XqN5fO3obqwZoajavGFCUrC42ZfbrLXy5sCv8"
+    "consumer_secret": "3neq3XqN5fO3obqwZoajavGFCUrC42ZfbrLXy5sCv8",
+    "sign_up_url": "https://twitter.com/signup"
   }
 ]

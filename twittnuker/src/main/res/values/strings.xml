@@ -895,6 +895,7 @@
     <string name="message_sync_data_synced_with_name">Twittnuker is now synced with <xliff:g example="ownCloud" id="name">%s</xliff:g></string>
     <string name="title_sync">Data sync</string>
     <string name="sync_provider_name_dropbox">Dropbox</string>
+    <string name="sync_provider_name_google_drive">Google Drive</string>
     <!-- [verb] Disconnect from network storage -->
     <string name="action_sync_disconnect">Disconnect</string>
     <string name="action_sync_sync_now">Sync now</string>
@@ -911,6 +912,7 @@
     <string name="title_filters_subscription_url">URL</string>
     <string name="label_filters_subscription">Subscription</string>
     <string name="summary_interactions_not_available">Only available with official API keys</string>
+    <string name="label_password_sign_in">Password sign in</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

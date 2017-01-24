@@ -20,12 +20,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.activity
+package de.vanita5.twittnuker.activity.sync
 
 import android.os.Bundle
 import com.dropbox.core.android.Auth
 import org.mariotaku.kpreferences.set
 import de.vanita5.twittnuker.Constants.DROPBOX_APP_KEY
+import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
 import de.vanita5.twittnuker.model.sync.DropboxSyncProviderInfo
 
