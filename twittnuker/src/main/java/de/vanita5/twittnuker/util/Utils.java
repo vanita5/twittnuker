@@ -91,7 +91,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
-
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.library.MicroBlog;
 import de.vanita5.twittnuker.library.MicroBlogException;
@@ -710,13 +709,13 @@ public final class Utils implements Constants {
 
     public static String getShareStatus(final Context context, final CharSequence title, final CharSequence text) {
         if (context == null) return null;
-        String share_format = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).getString(
+        String shareFormat = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE).getString(
                 KEY_SHARE_FORMAT, DEFAULT_SHARE_FORMAT);
-        if (TextUtils.isEmpty(share_format)) {
-            share_format = DEFAULT_SHARE_FORMAT;
+        if (TextUtils.isEmpty(shareFormat)) {
+            shareFormat = DEFAULT_SHARE_FORMAT;
         }
         if (TextUtils.isEmpty(title)) return ParseUtils.parseString(text);
-        return share_format.replace(FORMAT_PATTERN_TITLE, title).replace(FORMAT_PATTERN_TEXT, text != null ? text : "");
+        return shareFormat.replace(FORMAT_PATTERN_TITLE, title).replace(FORMAT_PATTERN_TEXT, text != null ? text : "");
     }
 
     public static String getTabDisplayOption(final Context context) {
