@@ -22,10 +22,8 @@
 
 package de.vanita5.twittnuker.util
 
+import org.junit.Assert
 import org.junit.Test
-
-import junit.framework.Assert.assertEquals
-import org.junit.Assert.assertArrayEquals
 
 class TwidereArrayUtilsTest {
 
@@ -41,7 +39,7 @@ class TwidereArrayUtilsTest {
         //noinspection ConstantConditions
         TwidereArrayUtils.mergeArray(merged, array1, array2, array3)
         val expected = arrayOf("1", "2", "1", "2")
-        assertArrayEquals(expected, merged)
+        Assert.assertArrayEquals(expected, merged)
     }
 
     @Test
@@ -51,7 +49,7 @@ class TwidereArrayUtilsTest {
         val array2 = arrayOf("1", "2")
         val array3: Array<String>? = null
         //noinspection ConstantConditions
-        assertEquals(4, TwidereArrayUtils.arraysLength(array1, array2, array3))
-        assertEquals(6, TwidereArrayUtils.arraysLength(array1, array2, array2))
+        Assert.assertEquals(4, TwidereArrayUtils.arraysLength(array1, array2, array3))
+        Assert.assertEquals(6, TwidereArrayUtils.arraysLength(array1, array2, array2))
     }
 }
