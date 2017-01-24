@@ -881,6 +881,7 @@
     <string name="title_filters_subscription_invalid">Abonnement nicht verfügbar</string>
     <string name="title_filters_subscription_url">URL</string>
     <string name="label_filters_subscription">Abonnement</string>
+    <string name="summary_interactions_not_available">Nur mit offiziellen API Keys verfügbar</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

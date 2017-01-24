@@ -37,6 +37,7 @@ import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.Window
+import kotlinx.android.synthetic.main.activity_link_handler.*
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.convert
 import org.mariotaku.ktextension.set
@@ -67,7 +68,8 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.Utils.matchLinkId
 
-class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IControlBarActivity, SupportFragmentCallback {
+class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IControlBarActivity,
+        SupportFragmentCallback {
 
     private lateinit var multiSelectHandler: MultiSelectEventHandler
     private lateinit var controlBarShowHideHelper: ControlBarShowHideHelper
@@ -76,17 +78,15 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
     private var subtitle: CharSequence? = null
     private var hideOffsetNotSupported: Boolean = false
 
-
     override val currentVisibleFragment: Fragment?
-        get() {
-            return supportFragmentManager.findFragmentById(android.R.id.content)
-        }
+        get() = supportFragmentManager.findFragmentByTag("content_fragment")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         multiSelectHandler = MultiSelectEventHandler(this)
         controlBarShowHideHelper = ControlBarShowHideHelper(this)
         multiSelectHandler.dispatchOnCreate()
+
         val uri = intent.data
         val linkId = matchLinkId(uri)
         intent.setExtrasClassLoader(classLoader)
@@ -109,16 +109,25 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             return
         }
 
+        val contentFragmentId: Int
+
         if (fragment is IToolBarSupportFragment) {
             if (!fragment.setupWindow(this)) {
                 supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
                 supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_MODE_OVERLAY)
             }
+            contentFragmentId = android.R.id.content
+        } else {
+            setContentView(R.layout.activity_link_handler)
+            toolbar?.let { toolbar ->
+                setSupportActionBar(toolbar)
+            }
+            contentFragmentId = R.id.contentFragment
         }
 
         setupActionBarOption()
         val ft = supportFragmentManager.beginTransaction()
-        ft.replace(android.R.id.content, fragment)
+        ft.replace(contentFragmentId, fragment, "content_fragment")
         ft.commit()
         setTitle(linkId, uri)
         finishOnly = java.lang.Boolean.parseBoolean(uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY))

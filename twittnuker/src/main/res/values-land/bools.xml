@@ -24,6 +24,5 @@
 <resources>
 
     <bool name="default_display_tab_label">true</bool>
-    <bool name="home_display_icon">true</bool>
 
 </resources>

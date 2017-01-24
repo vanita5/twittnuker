@@ -23,7 +23,8 @@
 package de.vanita5.twittnuker.model.analyzer
 
 import android.content.Intent
-import de.vanita5.twittnuker.activity.premium.AbsExtraFeaturePurchaseActivity
+import de.vanita5.twittnuker.activity.premium.AbsExtraFeaturePurchaseActivity.Companion.EXTRA_PURCHASE_RESULT
+import de.vanita5.twittnuker.model.premium.PurchaseResult
 import de.vanita5.twittnuker.util.Analyzer
 
 
@@ -37,8 +38,7 @@ data class PurchaseFinished(val productName: String) : Analyzer.Event {
         const val NAME_EXTRA_FEATURES = "Enhanced Features"
 
         fun create(data: Intent): PurchaseFinished {
-            val purchaseResult: AbsExtraFeaturePurchaseActivity.PurchaseResult
-                    = data.getParcelableExtra(AbsExtraFeaturePurchaseActivity.EXTRA_PURCHASE_RESULT)
+            val purchaseResult: PurchaseResult = data.getParcelableExtra(EXTRA_PURCHASE_RESULT)
             val result = PurchaseFinished(purchaseResult.feature)
             result.price = purchaseResult.price
             result.currency = purchaseResult.currency

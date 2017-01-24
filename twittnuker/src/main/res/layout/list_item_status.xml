@@ -86,7 +86,7 @@
         android:layout_marginRight="@dimen/element_spacing_normal"
         android:contentDescription="@string/profile_image"
         android:scaleType="centerCrop"
-        tools:src="@mipmap/ic_launcher"
+        tools:src="@drawable/ic_account_logo_twitter"
         tools:visibility="visible"/>
 
     <de.vanita5.twittnuker.view.BoundsImageView
@@ -227,6 +227,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/mediaPreview"
             android:layout_marginTop="@dimen/element_spacing_small"
+            android:background="?selectableItemBackground"
+            android:clickable="true"
             android:paddingBottom="@dimen/element_spacing_small"
             android:paddingEnd="@dimen/element_spacing_small"
             android:paddingLeft="@dimen/element_spacing_normal"

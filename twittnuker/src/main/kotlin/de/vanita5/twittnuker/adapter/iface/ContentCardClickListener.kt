@@ -26,7 +26,7 @@ import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.View
 
 interface ContentCardClickListener {
-    fun onItemActionClick(holder: ViewHolder, id: Int, position: Int)
+    fun onItemActionClick(holder: ViewHolder, id: Int, position: Int) {}
 
-    fun onItemMenuClick(holder: ViewHolder, menuView: View, position: Int)
+    fun onItemMenuClick(holder: ViewHolder, menuView: View, position: Int) {}
 }

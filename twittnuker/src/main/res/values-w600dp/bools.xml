@@ -22,5 +22,10 @@
   -->
 
 <resources>
-    <dimen name="settings_panel_margin_start_details">@dimen/settings_panel_width_entries</dimen>
+
+    <bool name="default_display_tab_label">true</bool>
+
+    <!-- Config for home screen -->
+    <bool name="home_tab_has_multiple_columns">true</bool>
+
 </resources>

@@ -37,6 +37,7 @@ import nl.komponents.kovenant.ui.successUi
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.activity.premium.AbsExtraFeaturePurchaseActivity
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
+import de.vanita5.twittnuker.model.premium.PurchaseResult
 import de.vanita5.twittnuker.util.premium.GooglePlayExtraFeaturesService
 import java.lang.ref.WeakReference
 
@@ -101,7 +102,10 @@ class GooglePlayInAppPurchaseActivity : AbsExtraFeaturePurchaseActivity(),
     }
 
     private fun handlePurchased(sku: SkuDetails, transaction: TransactionDetails) {
-        val result = PurchaseResult(requestingFeature, sku.priceValue, sku.currency)
+        val result = PurchaseResult()
+        result.feature = requestingFeature
+        result.price = sku.priceValue
+        result.currency = sku.currency
         finishWithResult(result)
     }
 

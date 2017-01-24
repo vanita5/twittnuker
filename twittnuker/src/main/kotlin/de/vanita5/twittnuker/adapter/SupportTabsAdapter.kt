@@ -44,8 +44,7 @@ import java.util.*
 class SupportTabsAdapter @JvmOverloads constructor(
         private val context: Context,
         fm: FragmentManager,
-        private val indicator: PagerIndicator? = null,
-        private val columns: Int = 1
+        private val indicator: PagerIndicator? = null
 ) : SupportFixedFragmentStatePagerAdapter(fm), TabProvider, TabListener {
 
     private val tab = ArrayList<SupportTabSpec>()
@@ -95,7 +94,7 @@ class SupportTabsAdapter @JvmOverloads constructor(
     }
 
     override fun getPageWidth(position: Int): Float {
-        return 1.0f / columns
+        return pageWidth
     }
 
     override fun getItem(position: Int): Fragment {
@@ -156,4 +155,6 @@ class SupportTabsAdapter @JvmOverloads constructor(
 
         private val EXTRA_ADAPTER_POSITION = "adapter_position"
     }
+
+    var pageWidth: Float = 1f
 }

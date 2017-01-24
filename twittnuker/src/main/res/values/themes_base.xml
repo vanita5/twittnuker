@@ -22,6 +22,7 @@
   -->
 
 <resources>
+    <style name="Animation.Base.Dialog" parent="android:Animation.Dialog"/>
 
     <style name="Theme.AppCompat.TranslucentDecor"/>
 

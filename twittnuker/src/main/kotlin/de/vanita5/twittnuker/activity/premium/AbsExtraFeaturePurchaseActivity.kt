@@ -24,11 +24,9 @@ package de.vanita5.twittnuker.activity.premium
 
 import android.content.Context
 import android.content.Intent
-import android.os.Parcel
-import android.os.Parcelable
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.constant.IntentConstants
-import paperparcel.PaperParcel
+import de.vanita5.twittnuker.model.premium.PurchaseResult
 
 
 abstract class AbsExtraFeaturePurchaseActivity : BaseActivity() {
@@ -42,19 +40,6 @@ abstract class AbsExtraFeaturePurchaseActivity : BaseActivity() {
     protected fun finishWithResult(result: PurchaseResult) {
         setResult(RESULT_OK, Intent().putExtra(EXTRA_PURCHASE_RESULT, result))
         finish()
-    }
-
-    @PaperParcel
-    data class PurchaseResult(val feature: String, val price: Double, val currency: String) : Parcelable {
-        companion object {
-            @JvmField val CREATOR = PaperParcelAbsExtraFeaturePurchaseActivity_PurchaseResult.CREATOR
-        }
-
-        override fun describeContents() = 0
-
-        override fun writeToParcel(dest: Parcel, flags: Int) {
-            PaperParcelAbsExtraFeaturePurchaseActivity_PurchaseResult.writeToParcel(this, dest, flags)
-        }
     }
 
     companion object {
