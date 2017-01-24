@@ -27,20 +27,22 @@ import android.content.SharedPreferences
 import de.vanita5.twittnuker.util.sync.SyncTaskRunner
 import de.vanita5.twittnuker.util.sync.google.GoogleDriveSyncTaskRunner
 
-class GoogleDriveSyncProviderInfo : SyncProviderInfo(TYPE) {
+class GoogleDriveSyncProviderInfo(val accessToken: String) : SyncProviderInfo(GoogleDriveSyncProviderInfo.TYPE) {
     override fun writeToPreferences(editor: SharedPreferences.Editor) {
-
+        editor.putString(KEY_GOOGLE_DRIVE_AUTH_TOKEN, accessToken)
     }
 
     override fun newSyncTaskRunner(context: Context): SyncTaskRunner {
-        return GoogleDriveSyncTaskRunner(context)
+        return GoogleDriveSyncTaskRunner(context, accessToken)
     }
 
     companion object {
         const val TYPE = "google_drive"
+        private const val KEY_GOOGLE_DRIVE_AUTH_TOKEN = "google_drive_auth_token"
 
         fun newInstance(preferences: SharedPreferences): GoogleDriveSyncProviderInfo? {
-            return GoogleDriveSyncProviderInfo()
+            val accessToken = preferences.getString(KEY_GOOGLE_DRIVE_AUTH_TOKEN, null) ?: return null
+            return GoogleDriveSyncProviderInfo(accessToken)
         }
     }
 }

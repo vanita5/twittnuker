@@ -105,10 +105,11 @@ dependencies {
     compile project(':twittnuker.component.common')
 
     // START Non-FOSS component
+    compile "com.google.android.gms:play-services-auth:$play_services_version"
     compile "com.google.android.gms:play-services-gcm:$play_services_version"
-    compile "com.google.android.gms:play-services-drive:$play_services_version"
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') { transitive = true; }
     compile "com.dropbox.core:dropbox-core-sdk:2.1.2"
+    compile 'com.google.apis:google-api-services-drive:v3-rev55-1.22.0'
     // END Non-FOSS component
 
     compile "org.osmdroid:osmdroid-android:5.5:release@aar"
