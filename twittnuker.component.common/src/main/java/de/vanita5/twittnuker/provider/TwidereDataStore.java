@@ -854,10 +854,6 @@ public interface TwidereDataStore {
 
         String ACCOUNT_COLOR = "account_color";
 
-        String USER_COLOR = "user_color";
-        String QUOTED_USER_COLOR = "quoted_user_color";
-        String RETWEET_USER_COLOR = "retweet_user_color";
-
         String FILTER_FLAGS = "filter_flags";
 
         String DEFAULT_SORT_ORDER = STATUS_TIMESTAMP + " DESC, " + SORT_ID + " DESC, " + STATUS_ID

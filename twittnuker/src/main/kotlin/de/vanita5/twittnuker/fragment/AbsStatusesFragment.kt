@@ -463,7 +463,8 @@ abstract class AbsStatusesFragment protected constructor() :
         val contextMenuInfo = menuInfo as ExtendedRecyclerView.ContextMenuInfo?
         val status = adapter.getStatus(contextMenuInfo!!.position)
         inflater.inflate(R.menu.action_status, menu)
-        MenuUtils.setupForStatus(context, preferences, menu, status!!, twitterWrapper)
+        MenuUtils.setupForStatus(context, preferences, menu, status!!, twitterWrapper,
+                userColorNameManager)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {

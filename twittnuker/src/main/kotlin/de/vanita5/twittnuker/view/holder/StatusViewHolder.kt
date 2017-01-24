@@ -106,7 +106,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         profileImageView.visibility = if (profileImageEnabled) View.VISIBLE else View.GONE
         statusContentUpperSpace.visibility = View.VISIBLE
 
-        profileImageView.setImageResource(R.mipmap.ic_launcher)
+        profileImageView.setImageResource(R.drawable.ic_account_logo_twitter)
         nameView.setName(Constants.TWITTNUKER_PREVIEW_NAME)
         nameView.setScreenName("@" + Constants.TWITTNUKER_PREVIEW_SCREEN_NAME)
         nameView.updateText(adapter.bidiFormatter)
@@ -132,7 +132,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         statusContentLowerSpace.visibility = if (showCardActions) View.GONE else View.VISIBLE
         quotedMediaPreview.visibility = View.GONE
         quotedMediaLabel.visibility = View.GONE
-        mediaPreview.displayMedia(R.drawable.nyan_stars_background)
+        mediaPreview.displayMedia(R.drawable.twittnuker_feature_graphic)
         extraTypeView.setImageResource(R.drawable.ic_action_gallery)
     }
 
@@ -284,13 +284,14 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                 quotedView.drawStart(ThemeUtils.getColorFromAttribute(context, R.attr.quoteIndicatorBackgroundColor, 0))
             }
 
-            itemContent.drawStart(status.user_color)
+            itemContent.drawStart(colorNameManager.getUserColor(status.user_key))
         } else {
             quotedView.visibility = View.GONE
 
+            val userColor = colorNameManager.getUserColor(status.user_key)
+
             if (status.is_retweet) {
-                val retweetUserColor = status.retweet_user_color
-                val userColor = status.user_color
+                val retweetUserColor = colorNameManager.getUserColor(status.retweeted_by_user_key!!)
                 if (retweetUserColor == 0) {
                     itemContent.drawStart(userColor)
                 } else if (userColor == 0) {
@@ -299,7 +300,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                     itemContent.drawStart(retweetUserColor, userColor)
                 }
             } else {
-                itemContent.drawStart(status.user_color)
+                itemContent.drawStart(userColor)
             }
         }
 

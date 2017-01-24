@@ -22,26 +22,21 @@
 
 package de.vanita5.twittnuker.util;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Color;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.LruCache;
 
 import de.vanita5.twittnuker.library.twitter.model.User;
-import org.mariotaku.sqliteqb.library.Expression;
 import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.UserKeyUtils;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 
 import java.util.Map;
 import java.util.Set;
@@ -51,11 +46,13 @@ import static android.text.TextUtils.isEmpty;
 public class UserColorNameManager implements TwittnukerConstants {
 
     private final SharedPreferences colorPreferences;
+    private final LruCache<String, Integer> colorCache;
     private final Context context;
 
     public UserColorNameManager(Context context) {
         this.context = context;
         colorPreferences = context.getSharedPreferences(USER_COLOR_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        colorCache = new LruCache<>(512);
     }
 
     public SharedPreferences getColorPreferences() {
@@ -75,7 +72,7 @@ public class UserColorNameManager implements TwittnukerConstants {
     public void clearUserColor(@NonNull final UserKey userKey) {
         final SharedPreferences.Editor editor = colorPreferences.edit();
         final String userKeyString = userKey.toString();
-        updateColor(userKeyString, 0);
+        colorCache.remove(userKeyString);
         editor.remove(userKeyString);
         editor.apply();
     }
@@ -83,44 +80,9 @@ public class UserColorNameManager implements TwittnukerConstants {
     public void setUserColor(@NonNull final UserKey userKey, final int color) {
         final SharedPreferences.Editor editor = colorPreferences.edit();
         final String userKeyString = userKey.toString();
-        updateColor(userKeyString, color);
+        colorCache.put(userKeyString, color);
         editor.putInt(userKeyString, color);
         editor.apply();
-    }
-
-    private void updateColor(String userKey, int color) {
-        final ContentResolver cr = context.getContentResolver();
-        ContentValues cv = new ContentValues();
-        updateColumn(cr, Statuses.CONTENT_URI, userKey, Statuses.USER_COLOR, Statuses.USER_KEY,
-                color, cv);
-        updateColumn(cr, Statuses.CONTENT_URI, userKey, Statuses.QUOTED_USER_COLOR,
-                Statuses.QUOTED_USER_KEY, color, cv);
-        updateColumn(cr, Statuses.CONTENT_URI, userKey, Statuses.RETWEET_USER_COLOR,
-                Statuses.RETWEETED_BY_USER_KEY, color, cv);
-
-        updateColumn(cr, Activities.AboutMe.CONTENT_URI, userKey, Activities.STATUS_USER_COLOR,
-                Activities.STATUS_USER_KEY, color, cv);
-        updateColumn(cr, Activities.AboutMe.CONTENT_URI, userKey, Activities.STATUS_RETWEET_USER_COLOR,
-                Activities.STATUS_RETWEETED_BY_USER_KEY, color, cv);
-        updateColumn(cr, Activities.AboutMe.CONTENT_URI, userKey, Activities.STATUS_QUOTED_USER_COLOR,
-                Activities.STATUS_QUOTED_USER_KEY, color, cv);
-    }
-
-    private static void updateColumn(ContentResolver cr, Uri uri, String userKey, String valueColumn,
-                                     String whereColumn, int value, ContentValues temp) {
-        temp.clear();
-        temp.put(valueColumn, value);
-        cr.update(uri, temp, Expression.equalsArgs(whereColumn).getSQL(),
-                new String[]{userKey});
-    }
-
-
-    private static void updateColumn(ContentResolver cr, Uri uri, String userKey, String valueColumn,
-                                     String whereColumn, String value, ContentValues temp) {
-        temp.clear();
-        temp.put(valueColumn, value);
-        cr.update(uri, temp, Expression.equalsArgs(whereColumn).getSQL(),
-                new String[]{userKey});
     }
 
     public String getDisplayName(final ParcelableUser user, final boolean nameFirst) {
@@ -154,7 +116,11 @@ public class UserColorNameManager implements TwittnukerConstants {
     }
 
     public int getUserColor(@NonNull final String userId) {
-        return colorPreferences.getInt(userId, Color.TRANSPARENT);
+        final Integer cached = colorCache.get(userId);
+        if (cached != null) return cached;
+        final int color = colorPreferences.getInt(userId, Color.TRANSPARENT);
+        colorCache.put(userId, color);
+        return color;
     }
 
     public interface UserColorChangedListener {

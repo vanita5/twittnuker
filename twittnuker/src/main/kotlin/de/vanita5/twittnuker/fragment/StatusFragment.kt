@@ -229,10 +229,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     if (data == null) return
                     val color = data.getIntExtra(EXTRA_COLOR, Color.TRANSPARENT)
                     userColorNameManager.setUserColor(status.user_key, color)
-                    status.user_color = color
                 } else if (resultCode == ColorPickerDialogActivity.RESULT_CLEARED) {
                     userColorNameManager.clearUserColor(status.user_key)
-                    status.user_color = 0
                 }
                 val args = arguments
                 if (args.containsKey(EXTRA_STATUS)) {
@@ -596,7 +594,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         val status = adapter.getStatus(contextMenuInfo.position) ?: return
         val inflater = MenuInflater(context)
         inflater.inflate(R.menu.action_status, menu)
-        MenuUtils.setupForStatus(context, preferences, menu, status, twitterWrapper)
+        MenuUtils.setupForStatus(context, preferences, menu, status, twitterWrapper,
+                userColorNameManager)
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
@@ -747,11 +746,12 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             val formatter = adapter.bidiFormatter
             val twitter = adapter.twitterWrapper
             val nameFirst = adapter.nameFirst
+            val colorNameManager = adapter.userColorNameManager
 
             linkClickHandler.status = status
 
             if (status.retweet_id != null) {
-                val retweetedBy = UserColorNameManager.decideDisplayName(
+                val retweetedBy = colorNameManager.getDisplayName(status.retweeted_by_user_key!!,
                         status.retweeted_by_user_name, status.retweeted_by_user_screen_name, nameFirst)
                 retweetedByView.text = context.getString(R.string.name_retweeted, retweetedBy)
                 retweetedByView.visibility = View.VISIBLE
@@ -802,7 +802,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                         itemView.quotedText.visibility = View.VISIBLE
                     }
 
-                    itemView.quoteIndicator.color = status.quoted_user_color
+                    itemView.quoteIndicator.color = colorNameManager.getUserColor(status.quoted_user_key!!)
 
                     val quotedMedia = status.quoted_media
 
@@ -839,7 +839,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 itemView.quotedView.visibility = View.GONE
             }
 
-            itemView.profileContainer.drawStart(status.user_color)
+            itemView.profileContainer.drawStart(colorNameManager.getUserColor(status.user_key))
 
             val timestamp: Long
 
@@ -975,7 +975,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             }
 
             MenuUtils.setupForStatus(context, fragment.preferences, itemView.menuBar.menu, status,
-                    adapter.statusAccount!!, twitter)
+                    adapter.statusAccount!!, twitter, colorNameManager)
 
 
             val lang = status.lang
