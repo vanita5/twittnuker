@@ -55,7 +55,7 @@ open class BaseArrayAdapter<T>(
     final override val profileImageStyle: Int
     final override val textSize: Float
     final override val profileImageEnabled: Boolean
-    final override val isShowAbsoluteTime: Boolean
+    final override val showAbsoluteTime: Boolean
     val nameFirst: Boolean
 
     init {
@@ -65,7 +65,7 @@ open class BaseArrayAdapter<T>(
         profileImageStyle = preferences[profileImageStyleKey]
         textSize = preferences[textSizeKey].toFloat()
         profileImageEnabled = preferences[displayProfileImageKey]
-        isShowAbsoluteTime = preferences[showAbsoluteTimeKey]
+        showAbsoluteTime = preferences[showAbsoluteTimeKey]
         nameFirst = preferences[nameFirstKey]
     }
 
