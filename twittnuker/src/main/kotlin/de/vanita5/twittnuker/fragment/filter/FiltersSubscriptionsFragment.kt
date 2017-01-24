@@ -90,7 +90,7 @@ class FiltersSubscriptionsFragment : BaseFragment(), LoaderManager.LoaderCallbac
         if (savedInstanceState == null) {
             when (arguments?.getString(EXTRA_ACTION)) {
                 ACTION_ADD_URL_SUBSCRIPTION -> {
-                    if (extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FILTERS_SUBSCRIPTION).not()) {
+                    if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FILTERS_SUBSCRIPTION)) {
                         val df = ExtraFeaturesIntroductionDialogFragment.show(childFragmentManager,
                                 ExtraFeaturesService.FEATURE_FILTERS_SUBSCRIPTION)
                         df.setTargetFragment(this, REQUEST_ADD_URL_SUBSCRIPTION_PURCHASE)
@@ -99,9 +99,11 @@ class FiltersSubscriptionsFragment : BaseFragment(), LoaderManager.LoaderCallbac
                     }
                 }
                 else -> {
-                    val df = ExtraFeaturesIntroductionDialogFragment.show(childFragmentManager,
-                            ExtraFeaturesService.FEATURE_FILTERS_SUBSCRIPTION)
-                    df.setTargetFragment(this, REQUEST_PURCHASE_EXTRA_FEATURES)
+                    if (!extraFeaturesService.isEnabled(ExtraFeaturesService.FEATURE_FILTERS_SUBSCRIPTION)) {
+                        val df = ExtraFeaturesIntroductionDialogFragment.show(childFragmentManager,
+                                ExtraFeaturesService.FEATURE_FILTERS_SUBSCRIPTION)
+                        df.setTargetFragment(this, REQUEST_PURCHASE_EXTRA_FEATURES)
+                    }
                 }
             }
         }
