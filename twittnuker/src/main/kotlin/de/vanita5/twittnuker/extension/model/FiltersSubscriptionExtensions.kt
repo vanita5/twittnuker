@@ -22,7 +22,9 @@
 
 package de.vanita5.twittnuker.extension.model
 
+import android.content.ComponentName
 import android.content.Context
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.FiltersSubscription
 import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.filter.FiltersSubscriptionProvider
@@ -39,6 +41,19 @@ fun FiltersSubscription.instantiateComponent(context: Context): FiltersSubscript
     return null
 }
 
+fun FiltersSubscription.getComponentLabel(context: Context): CharSequence {
+    val component = this.component ?: return context.getString(R.string.title_filters_subscription_invalid)
+    if (component.startsWith(":")) {
+        when (component.substringAfter(":")) {
+            "url" -> return context.getString(R.string.title_filters_subscription_url)
+        }
+        return context.getString(R.string.title_filters_subscription_invalid)
+    }
+    val cn = ComponentName.unflattenFromString(component) ?:
+            return context.getString(R.string.title_filters_subscription_invalid)
+    val pm = context.packageManager
+    return pm.getServiceInfo(cn, 0).loadLabel(pm)
+}
 
 fun FiltersSubscription.setupUrl(url: String) {
     this.component = ":url"

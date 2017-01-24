@@ -878,6 +878,8 @@
     <string name="hint_empty_filters_subscriptions">Keine Abonnements</string>
     <string name="title_subscription_name">Name</string>
     <string name="title_subscription_url">URL</string>
+    <string name="title_filters_subscription_invalid">Abonnement nicht verfügbar</string>
+    <string name="title_filters_subscription_url">URL</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

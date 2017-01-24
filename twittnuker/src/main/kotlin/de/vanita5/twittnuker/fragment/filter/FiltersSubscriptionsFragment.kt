@@ -33,6 +33,7 @@ import android.support.v4.content.Loader
 import android.support.v4.widget.SimpleCursorAdapter
 import android.support.v7.app.AlertDialog
 import android.view.*
+import android.widget.TextView
 import com.rengwuxian.materialedittext.MaterialEditText
 import kotlinx.android.synthetic.main.layout_list_with_empty_view.*
 import okhttp3.HttpUrl
@@ -40,11 +41,13 @@ import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.ktextension.empty
 import org.mariotaku.ktextension.isEmpty
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.extension.model.getComponentLabel
 import de.vanita5.twittnuker.extension.model.setupUrl
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BaseFragment
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.model.FiltersSubscription
+import de.vanita5.twittnuker.model.FiltersSubscriptionCursorIndices
 import de.vanita5.twittnuker.model.FiltersSubscriptionValuesCreator
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.task.filter.RefreshFiltersSubscriptionsTask
@@ -122,12 +125,26 @@ class FiltersSubscriptionsFragment : BaseFragment(), LoaderManager.LoaderCallbac
     }
 
     class FilterSubscriptionsAdapter(context: Context) : SimpleCursorAdapter(context,
-            R.layout.list_item_two_line_small, null, arrayOf(Filters.Subscriptions.NAME),
+            R.layout.list_item_two_line, null, arrayOf(Filters.Subscriptions.NAME),
             intArrayOf(android.R.id.text1), 0) {
+        private var indices: FiltersSubscriptionCursorIndices? = null
+        private var tempObject: FiltersSubscription = FiltersSubscription()
+
+        override fun swapCursor(c: Cursor?): Cursor? {
+            indices = if (c != null) FiltersSubscriptionCursorIndices(c) else null
+            return super.swapCursor(c)
+        }
+
         override fun bindView(view: View, context: Context, cursor: Cursor) {
             super.bindView(view, context, cursor)
+            val indices = this.indices!!
             val iconView = view.findViewById(android.R.id.icon)
+            val summaryView = view.findViewById(android.R.id.text2) as TextView
+
+            indices.parseFields(tempObject, cursor)
+
             iconView.visibility = View.GONE
+            summaryView.text = tempObject.getComponentLabel(context)
         }
     }
 
@@ -171,3 +188,4 @@ class FiltersSubscriptionsFragment : BaseFragment(), LoaderManager.LoaderCallbac
         }
     }
 }
+

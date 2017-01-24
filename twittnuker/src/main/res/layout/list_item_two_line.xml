@@ -22,15 +22,18 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
+    android:background="?android:activatedBackgroundIndicator"
     android:descendantFocusability="blocksDescendants"
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
     android:padding="@dimen/element_spacing_normal"
+    app:backgroundTint="?colorControlActivated"
     tools:layout_gravity="center">
 
     <ImageView
@@ -40,7 +43,7 @@
         android:layout_weight="0"
         android:contentDescription="@string/icon"
         android:scaleType="fitCenter"
-        tools:src="@android:drawable/sym_def_app_icon" />
+        tools:src="@drawable/ic_account_logo_twitter"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -58,9 +61,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?textAppearanceListItem"
             android:textColor="?android:textColorPrimary"
-            android:textStyle="bold"
+            android:textStyle="normal"
             tools:text="Title"/>
 
         <TextView
@@ -70,6 +73,7 @@
             android:maxLines="1"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:textColorSecondary"
+            android:textStyle="normal"
             tools:text="summary"/>
     </LinearLayout>
 
