@@ -24,10 +24,10 @@ package de.vanita5.twittnuker.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.content.UriMatcher
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Pair
 import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.ktextension.toLong
 import de.vanita5.twittnuker.Constants
@@ -44,30 +44,24 @@ class WebLinkHandlerActivity : Activity(), Constants {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val packageManager = packageManager
-        val intent = intent
         intent.setExtrasClassLoader(TwittnukerApplication::class.java.classLoader)
         val uri = intent.data
         if (uri == null || uri.host == null) {
             finish()
             return
         }
-        val handled: Pair<Intent, Boolean>
-        when (uri.host) {
-            "twitter.com", "www.twitter.com", "mobile.twitter.com" -> {
-                handled = handleTwitterLink(regulateTwitterUri(uri))
+
+        val (handledIntent, handledSuccessfully) = when (uri.host) {
+            "twitter.com", "www.twitter.com", "mobile.twitter.com" -> handleTwitterLink(regulateTwitterUri(uri))
+            "fanfou.com" -> handleFanfouLink(uri)
+            "twittnuker.org" -> handleTwidereExternalLink(uri)
+            else -> Pair(null, false)
             }
-            "fanfou.com" -> {
-                handled = handleFanfouLink(uri)
-            }
-            else -> {
-                handled = Pair.create<Intent, Boolean>(null, false)
-            }
-        }
-        if (handled.first != null) {
-            handled.first.putExtras(intent)
-            startActivity(handled.first)
+        if (handledIntent != null) {
+            handledIntent.putExtras(intent)
+            startActivity(handledIntent)
         } else {
-            if (!handled.second) {
+            if (!handledSuccessfully) {
                 Analyzer.logException(TwitterLinkException("Unable to handle twitter uri " + uri))
             }
             val fallbackIntent = Intent(Intent.ACTION_VIEW, uri)
@@ -92,7 +86,25 @@ class WebLinkHandlerActivity : Activity(), Constants {
         setVisible(true)
     }
 
-    private fun handleFanfouLink(uri: Uri): Pair<Intent, Boolean> {
+    private fun handleTwidereExternalLink(uri: Uri): Pair<Intent?, Boolean> {
+        val pathSegments = uri.pathSegments
+        if (pathSegments.size < 2 || pathSegments[0] != "external") {
+            return Pair(null, false)
+        }
+        val builder = Uri.Builder()
+        builder.scheme(SCHEME_TWITTNUKER)
+        builder.authority(pathSegments[1])
+        if (pathSegments.size >= 3) {
+            for (segment in pathSegments.slice(2..pathSegments.lastIndex)) {
+                builder.appendPath(segment)
+            }
+        }
+        builder.encodedQuery(uri.encodedQuery)
+        builder.encodedFragment(uri.encodedFragment)
+        return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
+    }
+
+    private fun handleFanfouLink(uri: Uri): Pair<Intent?, Boolean> {
         val pathSegments = uri.pathSegments
         if (pathSegments.size > 0) {
             when (pathSegments[0]) {
@@ -102,7 +114,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
                     builder.authority(AUTHORITY_STATUS)
                     builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_FANFOU_COM)
                     builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, pathSegments[1])
-                    return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                    return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
                 else -> {
                     if (!ArrayUtils.contains(FANFOU_RESERVED_PATHS, pathSegments[0])) {
@@ -113,17 +125,17 @@ class WebLinkHandlerActivity : Activity(), Constants {
                             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_FANFOU_COM)
                             val userKey = UserKey(pathSegments[0], USER_TYPE_FANFOU_COM)
                             builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userKey.toString())
-                            return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                            return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                         }
                     }
-                    return Pair.create<Intent, Boolean>(null, false)
+                    return Pair(null, false)
                 }
             }
         }
-        return Pair.create<Intent, Boolean>(null, false)
+        return Pair(null, false)
     }
 
-    private fun handleTwitterLink(uri: Uri): Pair<Intent, Boolean> {
+    private fun handleTwitterLink(uri: Uri): Pair<Intent?, Boolean> {
         val pathSegments = uri.pathSegments
         if (pathSegments.size > 0) {
             when (pathSegments[0]) {
@@ -139,7 +151,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
                     val text = uri.getQueryParameter("text")
                     val url = uri.getQueryParameter("url")
                     handledIntent.putExtra(Intent.EXTRA_TEXT, Utils.getShareStatus(this, text, url))
-                    return Pair.create(handledIntent, true)
+                    return Pair(handledIntent, true)
                 }
                 "search" -> {
                     val builder = Uri.Builder()
@@ -147,7 +159,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
                     builder.authority(AUTHORITY_SEARCH)
                     builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
                     builder.appendQueryParameter(QUERY_PARAM_QUERY, uri.getQueryParameter("q"))
-                    return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                    return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
                 "hashtag" -> {
                     val builder = Uri.Builder()
@@ -155,41 +167,41 @@ class WebLinkHandlerActivity : Activity(), Constants {
                     builder.authority(AUTHORITY_SEARCH)
                     builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
                     builder.appendQueryParameter(QUERY_PARAM_QUERY, "#${uri.lastPathSegment}")
-                    return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                    return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
                 "following" -> {
                     val builder = Uri.Builder()
                     builder.scheme(SCHEME_TWITTNUKER)
                     builder.authority(AUTHORITY_USER_FRIENDS)
                     builder.appendQueryParameter(QUERY_PARAM_USER_KEY, UserKey.SELF_REFERENCE.toString())
-                    return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                    return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
                 "followers" -> {
                     val builder = Uri.Builder()
                     builder.scheme(SCHEME_TWITTNUKER)
                     builder.authority(AUTHORITY_USER_FOLLOWERS)
                     builder.appendQueryParameter(QUERY_PARAM_USER_KEY, UserKey.SELF_REFERENCE.toString())
-                    return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                    return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
                 "favorites" -> {
                     val builder = Uri.Builder()
                     builder.scheme(SCHEME_TWITTNUKER)
                     builder.authority(AUTHORITY_USER_FAVORITES)
                     builder.appendQueryParameter(QUERY_PARAM_USER_KEY, UserKey.SELF_REFERENCE.toString())
-                    return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                    return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
                 else -> {
                     if (ArrayUtils.contains(TWITTER_RESERVED_PATHS, pathSegments[0])) {
-                        return Pair.create<Intent, Boolean>(null, true)
+                        return Pair(null, true)
                     }
                     return handleUserSpecificPageIntent(uri, pathSegments, pathSegments[0])
                 }
             }
         }
-        return Pair.create<Intent, Boolean>(null, false)
+        return Pair(null, false)
     }
 
-    private fun handleUserSpecificPageIntent(uri: Uri, pathSegments: List<String>, screenName: String): Pair<Intent, Boolean> {
+    private fun handleUserSpecificPageIntent(uri: Uri, pathSegments: List<String>, screenName: String): Pair<Intent?, Boolean> {
         val segsSize = pathSegments.size
         if (segsSize == 1) {
             val builder = Uri.Builder()
@@ -197,7 +209,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
             builder.authority(AUTHORITY_USER)
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
             builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName)
-            return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+            return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
         } else if (segsSize == 2) {
             when (pathSegments[1]) {
                 "following" -> {
@@ -206,7 +218,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
                     builder.authority(AUTHORITY_USER_FRIENDS)
                     builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
                     builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName)
-                    return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                    return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
                 "followers" -> {
                     val builder = Uri.Builder()
@@ -214,7 +226,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
                     builder.authority(AUTHORITY_USER_FOLLOWERS)
                     builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
                     builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName)
-                    return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                    return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
                 "favorites" -> {
                     val builder = Uri.Builder()
@@ -222,7 +234,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
                     builder.authority(AUTHORITY_USER_FAVORITES)
                     builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
                     builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName)
-                    return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                    return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
                 else -> {
                     val builder = Uri.Builder()
@@ -231,7 +243,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
                     builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
                     builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName)
                     builder.appendQueryParameter(QUERY_PARAM_LIST_NAME, pathSegments[1])
-                    return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                    return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
             }
         } else if (segsSize >= 3) {
@@ -241,7 +253,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
                 builder.authority(AUTHORITY_STATUS)
                 builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
                 builder.appendQueryParameter(QUERY_PARAM_STATUS_ID, pathSegments[2])
-                return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
             } else {
                 when (pathSegments[2]) {
                     "members" -> {
@@ -251,7 +263,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
                         builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
                         builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName)
                         builder.appendQueryParameter(QUERY_PARAM_LIST_NAME, pathSegments[1])
-                        return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                        return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                     }
                     "subscribers" -> {
                         val builder = Uri.Builder()
@@ -260,16 +272,16 @@ class WebLinkHandlerActivity : Activity(), Constants {
                         builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_TWITTER_COM)
                         builder.appendQueryParameter(QUERY_PARAM_SCREEN_NAME, screenName)
                         builder.appendQueryParameter(QUERY_PARAM_LIST_NAME, pathSegments[1])
-                        return Pair.create(Intent(Intent.ACTION_VIEW, builder.build()), true)
+                        return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                     }
                 }
             }
         }
-        return Pair.create<Intent, Boolean>(null, false)
+        return Pair(null, false)
     }
 
-    private fun getTwitterIntentUriIntent(uri: Uri, pathSegments: List<String>): Pair<Intent, Boolean> {
-        if (pathSegments.size < 2) return Pair.create<Intent, Boolean>(null, false)
+    private fun getTwitterIntentUriIntent(uri: Uri, pathSegments: List<String>): Pair<Intent?, Boolean> {
+        if (pathSegments.size < 2) return Pair(null, false)
         when (pathSegments[1]) {
             "tweet" -> {
                 val handledIntent = Intent(this, ComposeActivity::class.java)
@@ -287,14 +299,14 @@ class WebLinkHandlerActivity : Activity(), Constants {
                     sb.append(url)
                 }
                 handledIntent.putExtra(Intent.EXTRA_TEXT, sb.toString())
-                return Pair.create(handledIntent, true)
+                return Pair(handledIntent, true)
             }
         }
-        return Pair.create<Intent, Boolean>(null, false)
+        return Pair(null, false)
     }
 
-    private fun getIUriIntent(uri: Uri, pathSegments: List<String>): Pair<Intent, Boolean> {
-        return Pair.create<Intent, Boolean>(null, false)
+    private fun getIUriIntent(uri: Uri, pathSegments: List<String>): Pair<Intent?, Boolean> {
+        return Pair(null, false)
     }
 
     private inner class TwitterLinkException(s: String) : Exception(s)

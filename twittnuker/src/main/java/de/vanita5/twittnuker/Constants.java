@@ -71,6 +71,7 @@ public interface Constants extends TwittnukerConstants {
     int LINK_ID_FILTERS_IMPORT_BLOCKS = 111;
     int LINK_ID_FILTERS_IMPORT_MUTES = 112;
     int LINK_ID_FILTERS_SUBSCRIPTIONS = 113;
+    int LINK_ID_FILTERS_SUBSCRIPTIONS_ADD = 114;
     int LINK_ID_PROFILE_EDITOR = 121;
 
     String TWITTNUKER_PREVIEW_NAME = "Twittnuker Project";

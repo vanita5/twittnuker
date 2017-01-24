@@ -20,10 +20,9 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<manifest
-    package="de.vanita5.twittnuker"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    package="de.vanita5.twittnuker"
     android:installLocation="internalOnly">
 
     <uses-sdk tools:overrideLibrary="android.support.customtabs"/>
@@ -32,8 +31,8 @@
         android:name="android.hardware.camera"
         android:required="false"/>
     <uses-feature
-         android:name="android.hardware.telephony"
-         android:required="false"/>
+        android:name="android.hardware.telephony"
+        android:required="false"/>
     <uses-feature
         android:name="android.hardware.location"
         android:required="false"/>
@@ -67,10 +66,10 @@
     <!-- Used for account management -->
     <uses-permission
         android:name="android.permission.GET_ACCOUNTS"
-        android:maxSdkVersion="22" />
+        android:maxSdkVersion="22"/>
     <uses-permission
         android:name="android.permission.MANAGE_ACCOUNTS"
-        android:maxSdkVersion="22" />
+        android:maxSdkVersion="22"/>
     <uses-permission
         android:name="android.permission.AUTHENTICATE_ACCOUNTS"
         android:maxSdkVersion="22"/>
@@ -406,6 +405,9 @@
                 <data android:host="www.twitter.com"/>
                 <data android:host="mobile.twitter.com"/>
                 <data android:host="fanfou.com"/>
+                <data
+                    android:host="twittnuker.org"
+                    android:pathPrefix="/external" />
 
                 <action android:name="android.intent.action.VIEW"/>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
@@ -452,7 +454,7 @@
             android:theme="@android:style/Theme.DeviceDefault.Dialog"/>
         <activity
             android:name=".activity.InvalidAccountAlertActivity"
-            android:theme="@style/Theme.Twidere.NoDisplay" />
+            android:theme="@style/Theme.Twidere.NoDisplay"/>
         <activity
             android:name=".activity.FragmentContentActivity"
             android:theme="@style/Theme.Twidere">
@@ -487,12 +489,12 @@
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask">
             <intent-filter>
-                <data android:scheme="db-cm68n97voadq7b8" />
+                <data android:scheme="db-cm68n97voadq7b8"/>
 
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 

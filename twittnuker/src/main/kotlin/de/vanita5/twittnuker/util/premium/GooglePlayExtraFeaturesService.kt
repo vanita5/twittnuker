@@ -31,7 +31,6 @@ import de.vanita5.twittnuker.activity.GooglePlayInAppPurchaseActivity
 import de.vanita5.twittnuker.activity.premium.AbsExtraFeaturePurchaseActivity
 
 class GooglePlayExtraFeaturesService() : ExtraFeaturesService() {
-    private val PRODUCT_ID_EXTRA_FEATURES_PACK = "twittnuker.extra.features"
 
     private lateinit var bp: BillingProcessor
 
@@ -55,7 +54,12 @@ class GooglePlayExtraFeaturesService() : ExtraFeaturesService() {
     }
 
     override fun destroyPurchase(): Boolean {
-        return bp.consumePurchase(PRODUCT_ID_EXTRA_FEATURES_PACK)
+        bp.consumePurchase(PRODUCT_ID_EXTRA_FEATURES_PACK)
+        bp.consumePurchase(PRODUCT_ID_DATA_SYNC)
+        bp.consumePurchase(PRODUCT_ID_FILTERS_IMPORT)
+        bp.consumePurchase(PRODUCT_ID_FILTERS_SUBSCRIPTION)
+        bp.consumePurchase(PRODUCT_ID_SCHEDULE_STATUS)
+        return true
     }
 
     override fun createPurchaseIntent(context: Context, feature: String): Intent? {
@@ -74,14 +78,20 @@ class GooglePlayExtraFeaturesService() : ExtraFeaturesService() {
     }
 
     companion object {
+        private const val PRODUCT_ID_EXTRA_FEATURES_PACK = "twittnuker.extra.features"
+        private const val PRODUCT_ID_DATA_SYNC = "twittnuker.extra.feature.data_sync"
+        private const val PRODUCT_ID_FILTERS_IMPORT = "twittnuker.extra.feature.filter_import"
+        private const val PRODUCT_ID_FILTERS_SUBSCRIPTION = "twittnuker.extra.feature.filter_subscription"
+        private const val PRODUCT_ID_SCHEDULE_STATUS = "twittnuker.extra.feature.schedule_status"
+
         @JvmStatic
         fun getProductId(feature: String): String {
             return when (feature) {
-                FEATURE_FEATURES_PACK -> "twittnuker.extra.features"
-                FEATURE_SYNC_DATA -> "twittnuker.extra.feature.data_sync"
-                FEATURE_FILTERS_IMPORT -> "twittnuker.extra.feature.filter_import"
-                FEATURE_FILTERS_SUBSCRIPTION -> "twittnuker.extra.feature.filter_subscription"
-                FEATURE_SCHEDULE_STATUS -> "twittnuker.extra.feature.schedule_status"
+                FEATURE_FEATURES_PACK -> PRODUCT_ID_EXTRA_FEATURES_PACK
+                FEATURE_SYNC_DATA -> PRODUCT_ID_DATA_SYNC
+                FEATURE_FILTERS_IMPORT -> PRODUCT_ID_FILTERS_IMPORT
+                FEATURE_FILTERS_SUBSCRIPTION -> PRODUCT_ID_FILTERS_SUBSCRIPTION
+                FEATURE_SCHEDULE_STATUS -> PRODUCT_ID_SCHEDULE_STATUS
                 else -> throw UnsupportedOperationException(feature)
             }
         }

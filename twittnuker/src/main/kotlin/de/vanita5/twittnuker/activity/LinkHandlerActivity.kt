@@ -46,12 +46,8 @@ import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
-import de.vanita5.twittnuker.constant.CompatibilityConstants
-import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_SIMPLE_LAYOUT
-import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER_KEY
-import de.vanita5.twittnuker.constant.KeyboardShortcutConstants
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants
-import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
+import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.filter.FiltersFragment
 import de.vanita5.twittnuker.fragment.filter.FiltersImportBlocksFragment
@@ -66,7 +62,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
-import de.vanita5.twittnuker.util.Utils.matchLinkId
+import de.vanita5.twittnuker.util.linkhandler.TwidereLinkMatcher
 
 class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IControlBarActivity,
         SupportFragmentCallback {
@@ -87,8 +83,11 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         controlBarShowHideHelper = ControlBarShowHideHelper(this)
         multiSelectHandler.dispatchOnCreate()
 
-        val uri = intent.data
-        val linkId = matchLinkId(uri)
+        val uri = intent.data ?: run {
+            finish()
+            return
+        }
+        val linkId = TwidereLinkMatcher.match(uri)
         intent.setExtrasClassLoader(classLoader)
         val fragment: Fragment
         try {
@@ -414,6 +413,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_FILTERS_IMPORT_MUTES -> {
                 title = getString(R.string.title_select_users)
             }
+            LINK_ID_FILTERS_SUBSCRIPTIONS_ADD,
             LINK_ID_FILTERS_SUBSCRIPTIONS -> {
                 title = getString(R.string.title_manage_filter_subscriptions)
             }
@@ -760,6 +760,15 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             }
             LINK_ID_FILTERS_SUBSCRIPTIONS -> {
                 fragment = FiltersSubscriptionsFragment()
+                isAccountIdRequired = false
+            }
+            LINK_ID_FILTERS_SUBSCRIPTIONS_ADD -> {
+                val url = uri.getQueryParameter("url") ?: return null
+                val name = uri.getQueryParameter("name")
+                fragment = FiltersSubscriptionsFragment()
+                args.putString(IntentConstants.EXTRA_ACTION, FiltersSubscriptionsFragment.ACTION_ADD_URL_SUBSCRIPTION)
+                args.putString(FiltersSubscriptionsFragment.EXTRA_ADD_SUBSCRIPTION_URL, url)
+                args.putString(FiltersSubscriptionsFragment.EXTRA_ADD_SUBSCRIPTION_NAME, name)
                 isAccountIdRequired = false
             }
             else -> {
