@@ -52,10 +52,8 @@ import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.ReadPositionTag
-import de.vanita5.twittnuker.constant.IntentConstants
+import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
-import de.vanita5.twittnuker.constant.readFromBottomKey
-import de.vanita5.twittnuker.constant.rememberPositionKey
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.DefaultOnLikedListener
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
@@ -300,7 +298,8 @@ abstract class AbsActivitiesFragment protected constructor() :
 
     override fun onMediaClick(holder: IStatusViewHolder, view: View, media: ParcelableMedia, position: Int) {
         val status = adapter.getActivity(position)?.getActivityStatus() ?: return
-        IntentUtils.openMedia(activity, status, media, null, preferences.getBoolean(KEY_NEW_DOCUMENT_API))
+        IntentUtils.openMedia(activity, status, media, preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey],
+                null)
     }
 
     override fun onStatusActionClick(holder: IStatusViewHolder, id: Int, position: Int) {

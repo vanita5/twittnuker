@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_SIMPLE_LAYOUT
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -52,6 +53,7 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper
 import de.vanita5.twittnuker.view.holder.UserViewHolder
+import org.mariotaku.kpreferences.get
 
 abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<ParcelableUsersAdapter>(),
         LoaderCallbacks<List<ParcelableUser>?>, UserClickListener, KeyboardShortcutCallback,
@@ -146,8 +148,7 @@ abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<Parc
 
     override fun onUserClick(holder: UserViewHolder, position: Int) {
         val user = adapter.getUser(position) ?: return
-        IntentUtils.openUserProfile(activity, user, null,
-                preferences.getBoolean(SharedPreferenceConstants.KEY_NEW_DOCUMENT_API), userReferral)
+        IntentUtils.openUserProfile(activity, user, preferences[newDocumentApiKey], userReferral)
     }
 
     override fun onFollowClicked(holder: UserViewHolder, position: Int) {

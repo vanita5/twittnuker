@@ -101,6 +101,8 @@ import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
+import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
 import de.vanita5.twittnuker.fragment.UserTimelineFragment.UserTimelineFragmentDelegate
@@ -625,7 +627,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                     @Referral
                     val referral = arguments.getString(EXTRA_REFERRAL)
                     IntentUtils.openUserProfile(activity, accountKey, user.key, user.screen_name,
-                            null, preferences.getBoolean(KEY_NEW_DOCUMENT_API), referral)
+                            preferences.getBoolean(KEY_NEW_DOCUMENT_API), referral, null)
                 }
             }
         }
@@ -1114,8 +1116,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                 val profileImage = ParcelableMediaUtils.image(url)
                 profileImage.type = ParcelableMedia.Type.IMAGE
                 val media = arrayOf(profileImage)
-                IntentUtils.openMedia(activity, user.account_key, false, null, media, null,
-                        preferences.getBoolean(KEY_NEW_DOCUMENT_API))
+                IntentUtils.openMedia(activity, user.account_key, media, null, false,
+                        preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey])
             }
             R.id.profileBanner -> {
                 val bannerUrl = ParcelableUserUtils.getProfileBannerUrl(user) ?: return
@@ -1124,8 +1126,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                 val profileBanner = ParcelableMediaUtils.image(url)
                 profileBanner.type = ParcelableMedia.Type.IMAGE
                 val media = arrayOf(profileBanner)
-                IntentUtils.openMedia(activity, user.account_key, false, null, media, null,
-                        preferences.getBoolean(KEY_NEW_DOCUMENT_API))
+                IntentUtils.openMedia(activity, user.account_key, media, null, false,
+                        preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey])
             }
             R.id.tweetsContainer -> {
                 IntentUtils.openUserTimeline(getActivity(), user.account_key, user.key,
@@ -1162,8 +1164,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         val user = user ?: return false
         when (type) {
             TwidereLinkify.LINK_TYPE_MENTION -> {
-                IntentUtils.openUserProfile(activity, user.account_key, null, link, null,
-                        preferences.getBoolean(KEY_NEW_DOCUMENT_API), Referral.USER_MENTION)
+                IntentUtils.openUserProfile(activity, user.account_key, null, link, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                        Referral.USER_MENTION, null)
                 return true
             }
             TwidereLinkify.LINK_TYPE_HASHTAG -> {

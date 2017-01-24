@@ -55,8 +55,7 @@ class DestroyStatusTask(
         try {
             status = ParcelableStatusUtils.fromStatus(microBlog.destroyStatus(statusId),
                     accountKey, false)
-            ParcelableStatusUtils.updateExtraInformation(status, details,
-                    userColorNameManager)
+            ParcelableStatusUtils.updateExtraInformation(status, details)
             deleteStatus = true
             return SingleResponse(status)
         } catch (e: MicroBlogException) {

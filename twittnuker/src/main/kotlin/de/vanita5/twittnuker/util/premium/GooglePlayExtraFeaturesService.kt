@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.GooglePlayInAppPurchaseActivity
 import de.vanita5.twittnuker.activity.premium.AbsExtraFeaturePurchaseActivity
 
-class GooglePlayExtraFeaturesService() : ExtraFeaturesService() {
+class GooglePlayExtraFeaturesService : ExtraFeaturesService() {
 
     private lateinit var bp: BillingProcessor
 

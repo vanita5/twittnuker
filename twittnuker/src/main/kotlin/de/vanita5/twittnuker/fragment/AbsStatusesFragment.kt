@@ -48,11 +48,9 @@ import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.annotation.Referral
+import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants
-import de.vanita5.twittnuker.constant.readFromBottomKey
-import de.vanita5.twittnuker.constant.rememberPositionKey
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
@@ -350,8 +348,8 @@ abstract class AbsStatusesFragment protected constructor() :
 
     override fun onMediaClick(holder: IStatusViewHolder, view: View, media: ParcelableMedia, statusPosition: Int) {
         val status = adapter.getStatus(statusPosition) ?: return
-        IntentUtils.openMedia(activity, status, media, null,
-                preferences.getBoolean(SharedPreferenceConstants.KEY_NEW_DOCUMENT_API))
+        IntentUtils.openMedia(activity, status, media, preferences[newDocumentApiKey],
+                preferences[displaySensitiveContentsKey])
     }
 
     override fun onItemActionClick(holder: RecyclerView.ViewHolder, id: Int, position: Int) {
@@ -411,11 +409,11 @@ abstract class AbsStatusesFragment protected constructor() :
     }
 
     override fun onUserProfileClick(holder: IStatusViewHolder, position: Int) {
-        val status = adapter.getStatus(position)
-        val intent = IntentUtils.userProfile(status!!.account_key, status.user_key,
+        val status = adapter.getStatus(position)!!
+        val intent = IntentUtils.userProfile(status.account_key, status.user_key,
                 status.user_screen_name, Referral.TIMELINE_STATUS,
                 status.extras.user_statusnet_profile_url)
-        IntentUtils.applyNewDocument(intent, preferences.getBoolean(SharedPreferenceConstants.KEY_NEW_DOCUMENT_API))
+        IntentUtils.applyNewDocument(intent, preferences[newDocumentApiKey])
         startActivity(intent)
     }
 

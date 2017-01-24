@@ -40,6 +40,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
+import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import org.mariotaku.sqliteqb.library.ArgsArray
@@ -58,6 +59,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosi
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.ACTION_NAVIGATION_REFRESH
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.BaseRefreshTaskParam
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
@@ -195,9 +197,8 @@ class DirectMessagesFragment : AbsContentListRecyclerViewFragment<MessageEntries
     }
 
     override fun onUserClick(position: Int, entry: DirectMessageEntry) {
-        IntentUtils.openUserProfile(activity, entry.account_key,
-                UserKey.valueOf(entry.conversation_id), entry.screen_name, null,
-                preferences.getBoolean(KEY_NEW_DOCUMENT_API), null)
+        IntentUtils.openUserProfile(activity, entry.account_key, UserKey.valueOf(entry.conversation_id),
+                entry.screen_name, preferences[newDocumentApiKey])
     }
 
     @Subscribe

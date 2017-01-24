@@ -33,6 +33,7 @@ import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.UserListMembersLoader
 import de.vanita5.twittnuker.model.ParcelableUserList
@@ -41,6 +42,7 @@ import de.vanita5.twittnuker.model.message.UserListMembersChangedEvent
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.UserViewHolder
+import org.mariotaku.kpreferences.get
 import java.util.*
 
 class UserListMembersFragment : CursorUsersListFragment() {
@@ -85,7 +87,6 @@ class UserListMembersFragment : CursorUsersListFragment() {
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
         if (!userVisibleHint || menuInfo == null) return
-        val userList = userList ?: return
         val args = arguments
         val accountId = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
         val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
@@ -94,7 +95,7 @@ class UserListMembersFragment : CursorUsersListFragment() {
         val contextMenuInfo = menuInfo as ExtendedRecyclerView.ContextMenuInfo?
         inflater.inflate(R.menu.action_user_list_member, menu)
         val user = adapter.getUser(contextMenuInfo!!.position)
-        menu.setHeaderTitle(userColorNameManager.getDisplayName(user, preferences.getBoolean(KEY_NAME_FIRST)))
+        menu.setHeaderTitle(userColorNameManager.getDisplayName(user, preferences[nameFirstKey]))
     }
 
     override fun onContextItemSelected(item: MenuItem?): Boolean {

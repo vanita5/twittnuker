@@ -47,9 +47,6 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
 class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridParcelableStatusesAdapter, StaggeredGridLayoutManager>(), LoaderCallbacks<List<ParcelableStatus>>, DrawerCallback, IStatusViewHolder.StatusClickListener {
 
-    override fun scrollToPositionWithOffset(position: Int, offset: Int) {
-        layoutManager.scrollToPositionWithOffset(position, offset)
-    }
 
     override var refreshing: Boolean
         get() {
@@ -60,6 +57,18 @@ class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridPa
             super.refreshing = value
         }
 
+
+    override val reachingEnd: Boolean
+        get() {
+            val lm = layoutManager
+            return ArrayUtils.contains(lm.findLastCompletelyVisibleItemPositions(null), lm.itemCount - 1)
+        }
+
+    override val reachingStart: Boolean
+        get() {
+            val lm = layoutManager
+            return ArrayUtils.contains(lm.findFirstCompletelyVisibleItemPositions(null), 0)
+        }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -78,15 +87,8 @@ class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridPa
         return StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
     }
 
-    fun getStatuses(maxId: String?, sinceId: String?): Int {
-        if (context == null) return -1
-        val args = Bundle(arguments)
-        args.putBoolean(EXTRA_MAKE_GAP, false)
-        args.putString(EXTRA_MAX_ID, maxId)
-        args.putString(EXTRA_SINCE_ID, sinceId)
-        args.putBoolean(EXTRA_FROM_USER, true)
-        loaderManager.restartLoader(0, args, this)
-        return 0
+    override fun scrollToPositionWithOffset(position: Int, offset: Int) {
+        layoutManager.scrollToPositionWithOffset(position, offset)
     }
 
     override fun onCreateAdapter(context: Context): StaggeredGridParcelableStatusesAdapter {
@@ -129,18 +131,6 @@ class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridPa
         adapter.setData(null)
     }
 
-    override val reachingEnd: Boolean
-        get() {
-            val lm = layoutManager
-            return ArrayUtils.contains(lm.findLastCompletelyVisibleItemPositions(null), lm.itemCount - 1)
-        }
-
-    override val reachingStart: Boolean
-        get() {
-            val lm = layoutManager
-            return ArrayUtils.contains(lm.findFirstCompletelyVisibleItemPositions(null), 0)
-        }
-
     override fun onLoadMoreContents(position: Long) {
         // Only supports load from end, skip START flag
         if (position and ILoadMoreSupportAdapter.START != 0L) return
@@ -150,10 +140,6 @@ class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridPa
         getStatuses(maxId, null)
     }
 
-
-    override fun onMediaClick(holder: IStatusViewHolder, view: View, media: ParcelableMedia, statusPosition: Int) {
-
-    }
 
     override fun onStatusClick(holder: IStatusViewHolder, position: Int) {
         val status = adapter.getStatus(position) ?: return
@@ -165,23 +151,15 @@ class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridPa
         IntentUtils.openStatus(context, status.account_key, status.quoted_id)
     }
 
-    override fun onStatusLongClick(holder: IStatusViewHolder, position: Int): Boolean {
-        return false
+    fun getStatuses(maxId: String?, sinceId: String?): Int {
+        if (context == null) return -1
+        val args = Bundle(arguments)
+        args.putBoolean(EXTRA_MAKE_GAP, false)
+        args.putString(EXTRA_MAX_ID, maxId)
+        args.putString(EXTRA_SINCE_ID, sinceId)
+        args.putBoolean(EXTRA_FROM_USER, true)
+        loaderManager.restartLoader(0, args, this)
+        return 0
     }
 
-    override fun onUserProfileClick(holder: IStatusViewHolder, position: Int) {
-
-    }
-
-    override fun onItemActionClick(holder: RecyclerView.ViewHolder, id: Int, position: Int) {
-
-    }
-
-    override fun onItemMenuClick(holder: RecyclerView.ViewHolder, menuView: View, position: Int) {
-
-    }
-
-    override fun onGapClick(holder: GapViewHolder, position: Int) {
-
-    }
 }

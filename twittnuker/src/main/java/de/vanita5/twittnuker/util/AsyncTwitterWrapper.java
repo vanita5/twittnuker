@@ -645,8 +645,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                                 mAccountKey, false);
                     }
                 }
-                ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, details,
-                        getUserColorNameManager());
+                ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, details
+                );
                 Utils.setLastSeen(getContext(), result.mentions, System.currentTimeMillis());
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.IS_FAVORITE, true);
@@ -1358,8 +1358,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             try {
                 final ParcelableStatus result = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.retweetStatus(mStatusId),
                         mAccountKey, false);
-                ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, details,
-                        getUserColorNameManager());
+                ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, details
+                );
                 Utils.setLastSeen(getContext(), result.mentions, System.currentTimeMillis());
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.MY_RETWEET_ID, result.id);

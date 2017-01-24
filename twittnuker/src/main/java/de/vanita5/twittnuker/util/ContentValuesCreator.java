@@ -166,7 +166,7 @@ public final class ContentValuesCreator implements TwittnukerConstants {
         activity.account_color = details.color;
 
         if (status != null) {
-            ParcelableStatusUtils.INSTANCE.updateExtraInformation(status, details, manager);
+            ParcelableStatusUtils.INSTANCE.updateExtraInformation(status, details);
 
             activity.status_id = status.id;
             activity.status_retweet_id = status.retweet_id;

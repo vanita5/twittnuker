@@ -61,6 +61,7 @@ import de.vanita5.twittnuker.preference.iface.IDialogPreference
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.support.ActivitySupport
 import de.vanita5.twittnuker.util.support.ActivitySupport.TaskDescriptionCompat
 import de.vanita5.twittnuker.util.theme.TwidereAppearanceCreator
@@ -93,6 +94,8 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity<BaseActivity>, 
     lateinit var mediaLoader: MediaLoaderWrapper
     @Inject
     lateinit var userColorNameManager: UserColorNameManager
+    @Inject
+    lateinit var extraFeaturesService: ExtraFeaturesService
 
     private val actionHelper = IExtendedActivity.ActionHelper(this)
 

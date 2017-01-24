@@ -26,6 +26,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.Constants
+import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -46,7 +47,8 @@ open class StatusLinkClickHandler(
         if (current == null || current.open_browser) {
             openLink(link)
         } else {
-            IntentUtils.openMedia(context, status, current, null, preferences[newDocumentApiKey])
+            IntentUtils.openMedia(context, status, current, preferences[newDocumentApiKey],
+                    preferences[displaySensitiveContentsKey])
         }
     }
 

@@ -41,6 +41,8 @@ import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ITEMS
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.MenuUtils
@@ -49,6 +51,7 @@ import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
+import org.mariotaku.kpreferences.get
 
 class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter>(), LoaderCallbacks<List<*>> {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -87,24 +90,23 @@ class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter
 
             override fun onMediaClick(holder: IStatusViewHolder, view: View, media: ParcelableMedia, statusPosition: Int) {
                 val status = dummyItemAdapter.getStatus(statusPosition) ?: return
-                IntentUtils.openMedia(activity, status, media, null,
-                        preferences.getBoolean(KEY_NEW_DOCUMENT_API))
+                IntentUtils.openMedia(activity, status, media, preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey],
+                        null)
             }
 
             override fun onUserProfileClick(holder: IStatusViewHolder, position: Int) {
                 val activity = activity
                 val status = dummyItemAdapter.getStatus(position) ?: return
                 IntentUtils.openUserProfile(activity, status.account_key, status.user_key,
-                        status.user_screen_name, null, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                        Referral.TIMELINE_STATUS)
+                        status.user_screen_name, preferences[newDocumentApiKey])
             }
         }
         dummyItemAdapter.userClickListener = object : IUsersAdapter.SimpleUserClickListener() {
             override fun onUserClick(holder: UserViewHolder, position: Int) {
                 val user = dummyItemAdapter.getUser(position) ?: return
-                IntentUtils.openUserProfile(getContext(), user, null,
-                        preferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                        Referral.TIMELINE_STATUS)
+                IntentUtils.openUserProfile(getContext(), user, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
+                        Referral.TIMELINE_STATUS,
+                        null)
             }
         }
         return adapter

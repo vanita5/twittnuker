@@ -27,6 +27,7 @@ import android.support.v7.widget.RecyclerView
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
+import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
@@ -38,14 +39,14 @@ class StatusAdapterLinkClickHandler<D>(context: Context, preferences: SharedPref
     override fun openMedia(accountKey: UserKey, extraId: Long, sensitive: Boolean,
                            link: String, start: Int, end: Int) {
         if (extraId == RecyclerView.NO_POSITION.toLong()) return
-        val status = adapter!!.getStatus(extraId.toInt())
+        val status = adapter!!.getStatus(extraId.toInt())!!
         val media = ParcelableMediaUtils.getAllMedia(status)
         val current = StatusLinkClickHandler.findByLink(media, link)
         if (current != null && current.open_browser) {
             openLink(link)
         } else {
-            val newDocument = preferences[newDocumentApiKey]
-            IntentUtils.openMedia(context, status, current, null, newDocument)
+            IntentUtils.openMedia(context, status, current, preferences[newDocumentApiKey],
+                    preferences[displaySensitiveContentsKey])
         }
     }
 
@@ -54,7 +55,7 @@ class StatusAdapterLinkClickHandler<D>(context: Context, preferences: SharedPref
             val status = adapter!!.getStatus(extraId.toInt())
             val media = ParcelableMediaUtils.getAllMedia(status)
             val current = StatusLinkClickHandler.findByLink(media, link)
-            return current != null && !current.open_browser
+            if (current != null) return !current.open_browser
         }
         return super.isMedia(link, extraId)
     }

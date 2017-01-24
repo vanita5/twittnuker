@@ -44,18 +44,10 @@ import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 
 class ExtraFeaturesIntroductionDialogFragment : BaseDialogFragment() {
 
-    private lateinit var extraFeaturesService: ExtraFeaturesService
-
     val feature: String get() = arguments.getString(EXTRA_FEATURE)
     val requestCode: Int get() = arguments.getInt(EXTRA_REQUEST_CODE, 0)
 
-    override fun onDestroy() {
-        extraFeaturesService.release()
-        super.onDestroy()
-    }
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        extraFeaturesService = ExtraFeaturesService.newInstance(context)
         val builder = AlertDialog.Builder(context)
         builder.setTitle(R.string.title_extra_features)
         builder.setView(R.layout.dialog_extra_features_introduction)
