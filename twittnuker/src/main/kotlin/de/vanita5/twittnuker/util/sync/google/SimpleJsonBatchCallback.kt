@@ -29,14 +29,12 @@ import com.google.api.client.http.HttpHeaders
 import java.io.IOException
 
 
-internal class SimpleJsonBatchCallback<T> : JsonBatchCallback<T>() {
+internal open class SimpleJsonBatchCallback<T> : JsonBatchCallback<T>() {
     @Throws(IOException::class)
     override fun onFailure(error: GoogleJsonError, headers: HttpHeaders) {
-
     }
 
     @Throws(IOException::class)
     override fun onSuccess(result: T, headers: HttpHeaders) {
-
     }
 }

@@ -31,19 +31,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.LruCache;
 
 import de.vanita5.twittnuker.library.twitter.model.User;
-import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserList;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.UserKeyUtils;
 
-import java.util.Map;
-import java.util.Set;
-
 import static android.text.TextUtils.isEmpty;
+import static de.vanita5.twittnuker.TwittnukerConstants.USER_COLOR_PREFERENCES_NAME;
 
-public class UserColorNameManager implements TwittnukerConstants {
+public class UserColorNameManager {
 
     private final SharedPreferences colorPreferences;
     private final LruCache<String, Integer> colorCache;
