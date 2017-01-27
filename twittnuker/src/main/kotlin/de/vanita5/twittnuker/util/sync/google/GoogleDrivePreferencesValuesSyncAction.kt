@@ -49,7 +49,8 @@ internal class GoogleDrivePreferencesValuesSyncAction(
     private val files = drive.files()
 
     override fun newLoadFromRemoteSession(): CloseableAny<File> {
-        val file = drive.getFileOrNull(fileName, xmlMimeType, commonFolderId,
+        val file = drive.getFileOrNull(name = fileName, mimeType = xmlMimeType,
+                parent = commonFolderId, spaces = appDataFolderSpace,
                 conflictResolver = ::resolveFilesConflict) ?: run {
             throw FileNotFoundException()
         }
@@ -86,7 +87,9 @@ internal class GoogleDrivePreferencesValuesSyncAction(
     }
 
     override fun setup(): Boolean {
-        commonFolderId = drive.getFileOrCreate("Common", folderMimeType, conflictResolver = ::resolveFoldersConflict).id
+        commonFolderId = drive.getFileOrCreate(name = commonFolderName, mimeType = folderMimeType,
+                parent = appDataFolderName, spaces = appDataFolderSpace,
+                conflictResolver = ::resolveFoldersConflict).id
         return true
     }
 }

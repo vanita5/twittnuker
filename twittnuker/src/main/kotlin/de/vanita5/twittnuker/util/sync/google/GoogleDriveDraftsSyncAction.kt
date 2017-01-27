@@ -41,7 +41,7 @@ internal class GoogleDriveDraftsSyncAction(
         val drive: Drive
 ) : FileBasedDraftsSyncAction<DriveFileInfo>(context) {
 
-    val draftsDirName = "Drafts"
+    val draftsFolderName = "Drafts"
     val draftMimeType = "message/rfc822"
 
     private lateinit var folderId: String
@@ -59,7 +59,8 @@ internal class GoogleDriveDraftsSyncAction(
         val file = if (driveId != null) {
             drive.files().performUpdate(driveId, filename, draftMimeType, stream = `is`, fileConfig = fileConfig)
         } else {
-            drive.updateOrCreate(filename, draftMimeType, folderId, stream = `is`, fileConfig = fileConfig)
+            drive.updateOrCreate(name = filename, mimeType = draftMimeType, parent = folderId,
+                    spaces = appDataFolderSpace, stream = `is`, fileConfig = fileConfig)
         }
         return DriveFileInfo(file.id, file.name, Date(file.modifiedTime.value))
     }
@@ -106,8 +107,7 @@ internal class GoogleDriveDraftsSyncAction(
         val result = ArrayList<DriveFileInfo>()
         var nextPageToken: String? = null
         do {
-            val listResult = files.list().apply {
-                this.fields = requiredFilesRequestFields
+            val listResult = files.basicList(appDataFolderSpace).apply {
                 this.q = "'$folderId' in parents and mimeType = '$draftMimeType' and trashed = false"
                 if (nextPageToken != null) {
                     this.pageToken = nextPageToken
@@ -124,7 +124,9 @@ internal class GoogleDriveDraftsSyncAction(
     }
 
     override fun setup(): Boolean {
-        folderId = drive.getFileOrCreate(draftsDirName, folderMimeType, conflictResolver = ::resolveFoldersConflict).id
+        folderId = drive.getFileOrCreate(name = draftsFolderName, mimeType = folderMimeType,
+                parent = appDataFolderName, spaces = appDataFolderSpace,
+                conflictResolver = ::resolveFoldersConflict).id
         return true
     }
 
