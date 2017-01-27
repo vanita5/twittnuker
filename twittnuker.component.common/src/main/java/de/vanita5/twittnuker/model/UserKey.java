@@ -179,8 +179,7 @@ public class UserKey implements Comparable<UserKey>, Parcelable {
     }
 
     @Nullable
-    public static UserKey[] arrayOf(@Nullable String str) {
-        if (str == null) return null;
+    public static UserKey[] arrayOf(@NonNull String str) {
         List<String> split = split(str, ",");
         UserKey[] keys = new UserKey[split.size()];
         for (int i = 0, splitLength = split.size(); i < splitLength; i++) {

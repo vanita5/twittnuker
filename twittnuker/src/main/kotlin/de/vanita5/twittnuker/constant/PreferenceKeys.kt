@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.sync.SyncProviderInfo
 import de.vanita5.twittnuker.preference.ThemeBackgroundPreference
@@ -201,6 +202,20 @@ object dataSyncProviderInfoKey : KPreferenceKey<SyncProviderInfo?> {
             editor.putString(PROVIDER_TYPE_KEY, value.type)
             value.writeToPreferences(editor)
         }
+        return true
+    }
+
+}
+
+object composeAccountsKey : KSimpleKey<Array<UserKey>?>(KEY_COMPOSE_ACCOUNTS, null) {
+
+    override fun read(preferences: SharedPreferences): Array<UserKey>? {
+        val string = preferences.getString(key, null) ?: return null
+        return UserKey.arrayOf(string)
+    }
+
+    override fun write(editor: SharedPreferences.Editor, value: Array<UserKey>?): Boolean {
+        editor.putString(key, value?.joinToString(","))
         return true
     }
 
