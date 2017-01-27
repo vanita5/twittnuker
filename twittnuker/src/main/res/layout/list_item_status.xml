@@ -20,11 +20,10 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<de.vanita5.twittnuker.view.ColorLabelRelativeLayout
-    android:id="@+id/itemContent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<de.vanita5.twittnuker.view.ColorLabelRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemContent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
@@ -214,7 +213,7 @@
             android:layout_marginTop="@dimen/element_spacing_xsmall"
             android:horizontalSpacing="@dimen/element_spacing_xsmall"
             android:verticalSpacing="@dimen/element_spacing_xsmall"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <!-- Child views will be inflated if media preview enabled in ViewHolder -->
             <!--<include layout="@layout/layout_card_media_preview"/>-->
@@ -235,23 +234,9 @@
             android:paddingRight="@dimen/element_spacing_small"
             android:paddingStart="@dimen/element_spacing_normal"
             android:paddingTop="@dimen/element_spacing_small"
-            app:ignorePadding="true">
-
-            <de.vanita5.twittnuker.view.CardMediaContainer
-                android:id="@+id/quotedMediaPreview"
-                android:layout_width="112dp"
-                android:layout_height="112dp"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/quoteIndicator"
-                android:layout_toRightOf="@+id/quoteIndicator"
-                android:horizontalSpacing="@dimen/element_spacing_xsmall"
-                android:verticalSpacing="@dimen/element_spacing_xsmall"
-                tools:visibility="visible">
-
-                <!-- Child views will be inflated if media preview enabled in ViewHolder -->
-                <include layout="@layout/layout_card_media_preview"/>
-
-            </de.vanita5.twittnuker.view.CardMediaContainer>
+            android:visibility="gone"
+            app:ignorePadding="true"
+            tools:visibility="visible">
 
 
             <de.vanita5.twittnuker.view.NameView
@@ -259,10 +244,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/quotedMediaPreview"
-                android:layout_toEndOf="@+id/quotedMediaPreview"
-                android:layout_toRightOf="@+id/quotedMediaPreview"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:gravity="center_vertical|start"
                 android:orientation="horizontal"
                 android:paddingBottom="0dp"
@@ -281,10 +266,10 @@
                 android:id="@+id/quotedText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/quotedName"
-                android:layout_alignLeft="@+id/quotedName"
-                android:layout_alignRight="@+id/quotedName"
-                android:layout_alignStart="@+id/quotedName"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/quotedName"
                 android:paddingBottom="@dimen/element_spacing_small"
                 android:paddingEnd="0dp"
@@ -302,14 +287,15 @@
                 android:id="@+id/quotedMediaLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/quotedName"
-                android:layout_alignLeft="@+id/quotedName"
-                android:layout_alignRight="@+id/quotedName"
-                android:layout_alignStart="@+id/quotedName"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/quotedText"
                 android:layout_marginTop="@dimen/element_spacing_xsmall"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                tools:visibility="gone">
 
                 <de.vanita5.twittnuker.view.IconActionView
                     android:layout_width="@dimen/element_size_small"
@@ -330,6 +316,24 @@
                     android:textStyle="bold"/>
 
             </LinearLayout>
+
+            <de.vanita5.twittnuker.view.CardMediaContainer
+                android:id="@+id/quotedMediaPreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/quotedMediaLabel"
+                android:horizontalSpacing="@dimen/element_spacing_xsmall"
+                android:verticalSpacing="@dimen/element_spacing_xsmall"
+                tools:visibility="visible">
+
+                <!-- Child views will be inflated if media preview enabled in ViewHolder -->
+                <include layout="@layout/layout_card_media_preview" />
+
+            </de.vanita5.twittnuker.view.CardMediaContainer>
         </de.vanita5.twittnuker.view.ColorLabelRelativeLayout>
 
     </RelativeLayout>
