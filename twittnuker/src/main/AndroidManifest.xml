@@ -194,6 +194,7 @@
                 <action android:name="de.vanita5.twittnuker.COMPOSE"/>
                 <action android:name="de.vanita5.twittnuker.COMPOSE_TAKE_PHOTO"/>
                 <action android:name="de.vanita5.twittnuker.COMPOSE_PICK_IMAGE"/>
+                <action android:name="de.vanita5.twittnuker.PICK_GIF"/>
                 <action android:name="de.vanita5.twittnuker.REPLY"/>
                 <action android:name="de.vanita5.twittnuker.QUOTE"/>
                 <action android:name="de.vanita5.twittnuker.EDIT_DRAFT"/>

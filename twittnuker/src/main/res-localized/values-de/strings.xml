@@ -10,7 +10,8 @@
     <!-- [verb] Send tweet/message -->
     <string name="action_send">Senden</string>
     <string name="add_image">Bild hinzufügen</string>
-    <string name="take_photo">Foto aufnehmen</string>
+    <string name="action_take_photo">Foto aufnehmen</string>
+    <string name="action_record_video">Video aufnehmen</string>
     <string name="add_gif">Gif hinzufügen</string>
     <string name="status_hint">Schreibe etwas...</string>
     <string name="sign_up">Registrieren</string>
@@ -884,6 +885,7 @@
     <string name="label_filters_subscription">Abonnement</string>
     <string name="summary_interactions_not_available">Nur mit offiziellen API Keys verfügbar</string>
     <string name="label_password_sign_in">Passwort Login</string>
+    <string name="message_compose_write_storage_permission_not_granted">Diese Berechtigung wird benötigt, um aufgenommene Fotos/Videos wieder löschen zu können</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
