@@ -20,12 +20,13 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="de.vanita5.twittnuker"
-          android:installLocation="internalOnly">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="de.vanita5.twittnuker"
+    android:installLocation="internalOnly">
 
-    <uses-sdk tools:overrideLibrary="android.support.customtabs"/>
+    <uses-sdk tools:overrideLibrary="android.support.customtabs,net.ypresto.androidtranscoder"/>
 
     <uses-feature
         android:name="android.hardware.camera"

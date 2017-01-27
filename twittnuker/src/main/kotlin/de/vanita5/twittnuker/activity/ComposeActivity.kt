@@ -1098,6 +1098,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 .videoOnly(false)
                 .allowMultiple(true)
                 .addEntry(getString(R.string.add_gif), INTENT_ACTION_PICK_GIF, Giphy.REQUEST_GIPHY)
+                .videoQuality(0) // Low quality
                 .build()
         startActivityForResult(intent, REQUEST_PICK_MEDIA)
         return true
