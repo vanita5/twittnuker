@@ -31,7 +31,12 @@
         android:title="@string/hashtag"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
-
+    <item
+        android:id="@id/take_photo"
+        android:icon="@drawable/ic_action_camera"
+        android:title="@string/action_take_photo"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction"/>
     <item
         android:id="@id/add_image"
         android:icon="@drawable/ic_action_gallery"
