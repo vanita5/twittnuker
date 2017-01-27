@@ -22,7 +22,7 @@ buildscript {
 
     dependencies {
         // START Non-FOSS component
-        classpath 'io.fabric.tools:gradle:1.22.0'
+        classpath "io.fabric.tools:gradle:$fabric_plugin_version"
         // END Non-FOSS component
 
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -107,9 +107,9 @@ dependencies {
     // START Non-FOSS component
     compile "com.google.android.gms:play-services-auth:$play_services_version"
     compile "com.google.android.gms:play-services-gcm:$play_services_version"
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') { transitive = true; }
-    compile "com.dropbox.core:dropbox-core-sdk:2.1.2"
-    compile 'com.google.apis:google-api-services-drive:v3-rev55-1.22.0'
+    compile("com.crashlytics.sdk.android:crashlytics:$crashlyrics_version@aar") { transitive = true; }
+    compile "com.dropbox.core:dropbox-core-sdk:$dropbox_core_sdk_version"
+    compile "com.google.apis:google-api-services-drive:$google_api_drive_version"
     // END Non-FOSS component
 
     compile "org.osmdroid:osmdroid-android:5.5:release@aar"
