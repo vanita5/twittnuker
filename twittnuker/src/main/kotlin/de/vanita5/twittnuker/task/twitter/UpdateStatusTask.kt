@@ -62,6 +62,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream
+import de.vanita5.twittnuker.util.io.DirectByteArrayOutputStream
 import java.io.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -759,27 +760,7 @@ class UpdateStatusTask(
             return Pair(FileBody(cis, "attachment", cis.length(), contentType), size)
         }
 
-        internal class DirectByteArrayOutputStream : ByteArrayOutputStream {
-            constructor() : super()
-            constructor(size: Int) : super(size)
-
-            fun inputStream(close: Boolean): InputStream {
-                return DirectInputStream(this, close)
-            }
-
-            internal class DirectInputStream(
-                    val os: DirectByteArrayOutputStream,
-                    val close: Boolean
-            ) : ByteArrayInputStream(os.buf, 0, os.count) {
-                override fun close() {
-                    if (close) {
-                        os.close()
-                    }
-                    super.close()
-                }
-            }
-        }
-
 
     }
+
 }

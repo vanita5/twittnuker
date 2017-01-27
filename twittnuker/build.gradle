@@ -107,9 +107,13 @@ dependencies {
     // START Non-FOSS component
     compile "com.google.android.gms:play-services-auth:$play_services_version"
     compile "com.google.android.gms:play-services-gcm:$play_services_version"
-    compile("com.crashlytics.sdk.android:crashlytics:$crashlyrics_version@aar") { transitive = true; }
+    compile("com.crashlytics.sdk.android:crashlytics:$crashlyrics_version@aar") {
+        transitive = true;
+    }
     compile "com.dropbox.core:dropbox-core-sdk:$dropbox_core_sdk_version"
-    compile "com.google.apis:google-api-services-drive:$google_api_drive_version"
+    compile("com.google.apis:google-api-services-drive:$google_api_drive_version") {
+        exclude group: 'org.apache.httpcomponents'
+    }
     // END Non-FOSS component
 
     compile "org.osmdroid:osmdroid-android:5.5:release@aar"

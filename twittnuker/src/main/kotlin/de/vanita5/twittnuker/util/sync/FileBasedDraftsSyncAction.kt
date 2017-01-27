@@ -48,6 +48,11 @@ abstract class FileBasedDraftsSyncAction<RemoteFileInfo>(val context: Context) :
         if (BuildConfig.DEBUG) {
             Log.d(LOGTAG_SYNC, "Begin syncing drafts")
         }
+
+        if (!setup()) {
+            return false
+        }
+
         val syncDataDir: File = context.syncDataDir.mkdirIfNotExists() ?: return false
         val snapshotsListFile = File(syncDataDir, "draft_ids.list")
 
@@ -229,4 +234,7 @@ abstract class FileBasedDraftsSyncAction<RemoteFileInfo>(val context: Context) :
 
     abstract val RemoteFileInfo.draftFileName: String
     abstract val RemoteFileInfo.draftTimestamp: Long
+
+    @Throws(IOException::class)
+    open fun setup(): Boolean = true
 }

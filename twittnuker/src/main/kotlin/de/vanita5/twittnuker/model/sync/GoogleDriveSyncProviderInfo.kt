@@ -27,21 +27,24 @@ import android.content.SharedPreferences
 import de.vanita5.twittnuker.util.sync.SyncTaskRunner
 import de.vanita5.twittnuker.util.sync.google.GoogleDriveSyncTaskRunner
 
-class GoogleDriveSyncProviderInfo(val accessToken: String) : SyncProviderInfo(GoogleDriveSyncProviderInfo.TYPE) {
+class GoogleDriveSyncProviderInfo(val refreshToken: String) : SyncProviderInfo(GoogleDriveSyncProviderInfo.TYPE) {
     override fun writeToPreferences(editor: SharedPreferences.Editor) {
-        editor.putString(KEY_GOOGLE_DRIVE_AUTH_TOKEN, accessToken)
+        editor.putString(KEY_GOOGLE_DRIVE_REFRESH_TOKEN, refreshToken)
     }
 
     override fun newSyncTaskRunner(context: Context): SyncTaskRunner {
-        return GoogleDriveSyncTaskRunner(context, accessToken)
+        return GoogleDriveSyncTaskRunner(context, refreshToken)
     }
 
     companion object {
         const val TYPE = "google_drive"
-        private const val KEY_GOOGLE_DRIVE_AUTH_TOKEN = "google_drive_auth_token"
+        private const val KEY_GOOGLE_DRIVE_REFRESH_TOKEN = "google_drive_refresh_token"
+
+        const val WEB_CLIENT_ID = "842794128644-7trpd51nh34jsu3cl5nij7sq5618htcn.apps.googleusercontent.com"
+        const val WEB_CLIENT_SECRET = "laLBxm31A49CBZAuyJa06mUH"
 
         fun newInstance(preferences: SharedPreferences): GoogleDriveSyncProviderInfo? {
-            val accessToken = preferences.getString(KEY_GOOGLE_DRIVE_AUTH_TOKEN, null) ?: return null
+            val accessToken = preferences.getString(KEY_GOOGLE_DRIVE_REFRESH_TOKEN, null) ?: return null
             return GoogleDriveSyncProviderInfo(accessToken)
         }
     }

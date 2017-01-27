@@ -28,6 +28,7 @@ import nl.komponents.kovenant.task
 import de.vanita5.twittnuker.util.TaskServiceRunner
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import java.util.*
 import javax.inject.Inject
 
 
@@ -73,9 +74,16 @@ abstract class SyncTaskRunner(val context: Context) {
     }
 
     fun performSync() {
-        TaskServiceRunner.ACTIONS_SYNC.forEach { action ->
-            this.runTask(action)
+        val actions = TaskServiceRunner.ACTIONS_SYNC.toCollection(LinkedList())
+        val runnable = object : Runnable {
+            override fun run() {
+                val action = actions.poll() ?: return
+                runTask(action) {
+                    this.run()
+                }
+            }
         }
+        runnable.run()
     }
 
     companion object {

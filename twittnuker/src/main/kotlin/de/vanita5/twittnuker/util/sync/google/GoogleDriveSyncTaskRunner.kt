@@ -30,23 +30,33 @@ import com.google.api.services.drive.Drive
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
+import de.vanita5.twittnuker.model.sync.GoogleDriveSyncProviderInfo
 import de.vanita5.twittnuker.util.TaskServiceRunner
 import de.vanita5.twittnuker.util.sync.ISyncAction
 import de.vanita5.twittnuker.util.sync.SyncTaskRunner
+import de.vanita5.twittnuker.util.sync.UserColorsSyncProcessor
 
 
-class GoogleDriveSyncTaskRunner(context: Context, val accessToken: String) : SyncTaskRunner(context) {
+class GoogleDriveSyncTaskRunner(context: Context, val refreshToken: String) : SyncTaskRunner(context) {
     override fun onRunningTask(action: String, callback: (Boolean) -> Unit): Boolean {
-        val transport = NetHttpTransport.Builder().build()
-        val credential = GoogleCredential().setAccessToken(accessToken)
-        val drive = Drive.Builder(transport, JacksonFactory.getDefaultInstance(), credential).build()
+        val httpTransport = NetHttpTransport.Builder().build()
+        val jsonFactory = JacksonFactory.getDefaultInstance()
+        val credential = GoogleCredential.Builder()
+                .setTransport(httpTransport)
+                .setJsonFactory(jsonFactory)
+                .setClientSecrets(GoogleDriveSyncProviderInfo.WEB_CLIENT_ID, GoogleDriveSyncProviderInfo.WEB_CLIENT_SECRET)
+                .build()
+        credential.refreshToken = refreshToken
+        val drive = Drive.Builder(httpTransport, JacksonFactory.getDefaultInstance(), credential).build()
         val syncAction: ISyncAction = when (action) {
             TaskServiceRunner.ACTION_SYNC_DRAFTS -> GoogleDriveDraftsSyncAction(context, drive)
+            TaskServiceRunner.ACTION_SYNC_FILTERS -> GoogleDriveFiltersDataSyncAction(context, drive)
+            TaskServiceRunner.ACTION_SYNC_USER_COLORS -> GoogleDrivePreferencesValuesSyncAction(context,
+                    drive, userColorNameManager.colorPreferences, UserColorsSyncProcessor,
+                    "user_colors.xml")
             else -> null
         } ?: return false
         task {
-            val about = drive.about().get().execute()
-            println(about)
             syncAction.execute()
         }.successUi {
             callback(true)
