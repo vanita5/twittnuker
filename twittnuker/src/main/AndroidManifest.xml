@@ -348,7 +348,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ThemedImagePickerActivity"
+            android:name=".activity.ThemedMediaPickerActivity"
             android:exported="false"
             android:icon="@drawable/ic_action_twittnuker"
             android:theme="@style/Theme.Twidere.NoDisplay"

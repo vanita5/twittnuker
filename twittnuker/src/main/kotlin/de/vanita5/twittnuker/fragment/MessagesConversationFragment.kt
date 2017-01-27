@@ -62,7 +62,7 @@ import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.BaseActivity
-import de.vanita5.twittnuker.activity.ThemedImagePickerActivity
+import de.vanita5.twittnuker.activity.ThemedMediaPickerActivity
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter
 import de.vanita5.twittnuker.adapter.MessageConversationAdapter
 import de.vanita5.twittnuker.adapter.SimpleParcelableUsersAdapter
@@ -369,7 +369,7 @@ class MessagesConversationFragment : BaseFragment(), LoaderCallbacks<Cursor?>, O
                 sendDirectMessage()
             }
             addImage -> {
-                val intent = ThemedImagePickerActivity.withThemed(activity).build()
+                val intent = ThemedMediaPickerActivity.withThemed(activity).build()
                 startActivityForResult(intent, REQUEST_PICK_IMAGE)
             }
             actionBarCustomView.queryButton -> {

@@ -644,7 +644,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                                 Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                     }
                     if (!imageSources.isEmpty()) {
-                        val intent = ThemedImagePickerActivity.withThemed(this@ComposeActivity).getImage(Uri.parse(imageSources[0])).build()
+                        val intent = ThemedMediaPickerActivity.withThemed(this@ComposeActivity).getImage(Uri.parse(imageSources[0])).build()
                         startActivityForResult(intent, REQUEST_PICK_IMAGE)
                     }
                 }
@@ -1057,7 +1057,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     private fun pickImage(): Boolean {
-        val intent = ThemedImagePickerActivity.withThemed(this).pickImage().build()
+        val intent = ThemedMediaPickerActivity.withThemed(this).pickImage().build()
         startActivityForResult(intent, REQUEST_PICK_IMAGE)
         return true
     }
@@ -1205,7 +1205,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     private fun takePhoto(): Boolean {
-        val intent = ThemedImagePickerActivity.withThemed(this).takePhoto().build()
+        val intent = ThemedMediaPickerActivity.withThemed(this).takePhoto().build()
         startActivityForResult(intent, REQUEST_TAKE_PHOTO)
         return true
     }
