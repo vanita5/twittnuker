@@ -41,13 +41,12 @@ import kotlinx.android.synthetic.main.activity_link_handler.*
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.convert
 import org.mariotaku.ktextension.set
-import org.mariotaku.ktextension.toDoubleOrNull
+import org.mariotaku.ktextension.toDouble
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
 import de.vanita5.twittnuker.constant.*
-import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.filter.FiltersFragment
 import de.vanita5.twittnuker.fragment.filter.FiltersImportBlocksFragment
@@ -495,8 +494,8 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             LINK_ID_MAP -> {
                 isAccountIdRequired = false
                 if (!args.containsKey(EXTRA_LATITUDE) && !args.containsKey(EXTRA_LONGITUDE)) {
-                    val lat = uri.getQueryParameter(QUERY_PARAM_LAT).toDoubleOrNull() ?: return null
-                    val lng = uri.getQueryParameter(QUERY_PARAM_LNG).toDoubleOrNull() ?: return null
+                    val lat = uri.getQueryParameter(QUERY_PARAM_LAT).toDouble(Double.NaN)
+                    val lng = uri.getQueryParameter(QUERY_PARAM_LNG).toDouble(Double.NaN)
                     if (lat.isNaN() || lng.isNaN()) return null
                     args.putDouble(EXTRA_LATITUDE, lat)
                     args.putDouble(EXTRA_LONGITUDE, lng)
