@@ -36,6 +36,13 @@
         android:scaleType="centerCrop"
         tools:src="@drawable/nyan_stars_background_tile"/>
 
+    <ImageView
+        android:id="@+id/videoIndicator"
+        android:layout_width="@dimen/element_size_msmall"
+        android:layout_height="@dimen/element_size_msmall"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_card_media_play" />
+
     <com.lnikkila.extendedtouchview.ExtendedTouchView
         android:id="@+id/remove"
         style="?borderlessButtonStyle"
