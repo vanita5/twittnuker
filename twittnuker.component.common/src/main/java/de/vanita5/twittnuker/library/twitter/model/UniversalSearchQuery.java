@@ -44,7 +44,7 @@ public class UniversalSearchQuery extends SimpleValueMap {
         put("count", count);
     }
 
-    public void setModules(String[] modules) {
+    public void setModules(String... modules) {
         put("modules", InternalArrayUtil.join(modules, ","));
     }
 
@@ -58,6 +58,11 @@ public class UniversalSearchQuery extends SimpleValueMap {
 
     public void setNear(GeoLocation location) {
         put("near", location.getLatitude() + "," + location.getLongitude());
+    }
+
+    public void setPaging(Paging paging) {
+        if (paging == null) return;
+        copyValue(paging, "count");
     }
 
     @StringDef({Filter.IMAGES, Filter.VIDEOS, Filter.PERISCOPE, Filter.NEWS})

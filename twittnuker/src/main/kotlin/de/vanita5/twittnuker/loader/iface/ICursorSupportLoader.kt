@@ -23,9 +23,9 @@
 package de.vanita5.twittnuker.loader.iface
 
 interface ICursorSupportLoader {
-    val cursor: Long
+    val cursor: Long get() = -1
 
-    val nextCursor: Long
+    val nextCursor: Long get() = -1
 
-    val prevCursor: Long
+    val prevCursor: Long get() = -1
 }

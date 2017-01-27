@@ -22,7 +22,7 @@
 
 package de.vanita5.twittnuker.model
 
-class BaseRefreshTaskParam(
+open class BaseRefreshTaskParam(
         override val accountKeys: Array<UserKey>,
         override val maxIds: Array<String?>?,
         override val sinceIds: Array<String?>?,
