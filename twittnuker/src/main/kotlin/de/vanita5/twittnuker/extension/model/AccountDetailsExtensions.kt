@@ -24,12 +24,12 @@ package de.vanita5.twittnuker.extension.model
 
 import android.content.Context
 import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.account.AccountExtras
 import de.vanita5.twittnuker.model.account.TwitterAccountExtras
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
+import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.TwitterContentUtils
 
@@ -65,3 +65,13 @@ fun <T> AccountDetails.newMicroBlogInstance(context: Context, includeEntities: B
 
 val AccountDetails.is_oauth: Boolean
     get() = credentials_type == Credentials.Type.OAUTH || credentials_type == Credentials.Type.XAUTH
+
+val AccountDetails.size_limit: UpdateStatusTask.SizeLimit
+    get() = when (type) {
+        AccountType.TWITTER -> {
+            val imageLimit = AccountExtras.ImageLimit.ofSize(2048, 1536)
+            val videoLimit = AccountExtras.VideoLimit.twitterDefault()
+            UpdateStatusTask.SizeLimit(imageLimit, videoLimit)
+        }
+        else -> UpdateStatusTask.SizeLimit(AccountExtras.ImageLimit(), AccountExtras.VideoLimit.unsupported())
+    }

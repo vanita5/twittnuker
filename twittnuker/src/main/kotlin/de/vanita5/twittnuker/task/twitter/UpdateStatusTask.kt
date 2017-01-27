@@ -42,10 +42,7 @@ import net.ypresto.androidtranscoder.format.MediaFormatStrategyPresets
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.mariotaku.abstask.library.AbstractTask
-import org.mariotaku.ktextension.addAllTo
-import org.mariotaku.ktextension.toDouble
-import org.mariotaku.ktextension.toInt
-import org.mariotaku.ktextension.toLong
+import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.fanfou.model.PhotoStatusUpdate
@@ -62,6 +59,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.size_limit
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.account.AccountExtras
 import de.vanita5.twittnuker.model.analyzer.UpdateStatus
@@ -73,8 +71,10 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream
-import de.vanita5.twittnuker.util.io.DirectByteArrayOutputStream
-import java.io.*
+import java.io.Closeable
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -293,11 +293,10 @@ class UpdateStatusTask(
                                 result.exceptions[i] = MicroBlogException(
                                         context.getString(R.string.error_too_many_photos_fanfou))
                             } else {
-                                val sizeLimit = getSizeLimit(account)
-                                mediaBody = getBodyFromMedia(context, mediaLoader,
-                                        Uri.parse(statusUpdate.media[0].uri),
-                                        sizeLimit, statusUpdate.media[0].type,
-                                        ContentLengthInputStream.ReadListener { length, position ->
+                                val sizeLimit = account.size_limit
+                                val firstMedia = statusUpdate.media.first()
+                                mediaBody = getBodyFromMedia(context, mediaLoader, Uri.parse(firstMedia.uri),
+                                        sizeLimit, firstMedia.type, false, ContentLengthInputStream.ReadListener { length, position ->
                                             stateCallback.onUploadingProgressChanged(-1, position, length)
                                         })
                                 val photoUpdate = PhotoStatusUpdate(mediaBody.body,
@@ -485,7 +484,8 @@ class UpdateStatusTask(
             upload: TwitterUpload,
             account: AccountDetails,
             update: ParcelableStatusUpdate,
-            ownerIds: Array<String>, chucked: Boolean
+            ownerIds: Array<String>,
+            chucked: Boolean
     ): SharedMediaUploadResult {
         val deleteOnSuccess = ArrayList<MediaDeletionItem>()
         val deleteAlways = ArrayList<MediaDeletionItem>()
@@ -494,9 +494,9 @@ class UpdateStatusTask(
             //noinspection TryWithIdenticalCatches
             var body: MediaStreamBody? = null
             try {
-                val sizeLimit = getSizeLimit(account)
+                val sizeLimit = account.size_limit
                 body = getBodyFromMedia(context, mediaLoader, Uri.parse(media.uri), sizeLimit,
-                        media.type, ContentLengthInputStream.ReadListener { length, position ->
+                        media.type, chucked, ContentLengthInputStream.ReadListener { length, position ->
                     stateCallback.onUploadingProgressChanged(index, position, length)
                 })
                 if (chucked) {
@@ -599,12 +599,6 @@ class UpdateStatusTask(
         return NumberUtils.toLong(draftUri.lastPathSegment, -1)
     }
 
-    private fun getSizeLimit(details: AccountDetails): SizeLimit {
-        val imageLimit = AccountExtras.ImageLimit.ofSize(2048, 1536)
-        val videoLimit = AccountExtras.VideoLimit.twitterDefault()
-        return SizeLimit(imageLimit, videoLimit)
-    }
-
     internal class PendingStatusUpdate(val length: Int, defaultText: String) {
 
         constructor(statusUpdate: ParcelableStatusUpdate) : this(statusUpdate.accounts.size,
@@ -634,7 +628,7 @@ class UpdateStatusTask(
         val exception: UpdateStatusException?
         val draftId: Long
 
-        val succeed: Boolean get() = !statuses.contains(null)
+        val succeed: Boolean get() = exception == null && statuses.isNotEmpty() && statuses.none { it == null }
 
         constructor(count: Int, draftId: Long) {
             this.statuses = arrayOfNulls(count)
@@ -784,6 +778,7 @@ class UpdateStatusTask(
                 mediaUri: Uri,
                 sizeLimit: SizeLimit? = null,
                 @ParcelableMedia.Type type: Int,
+                chucked: Boolean,
                 readListener: ContentLengthInputStream.ReadListener
         ): MediaStreamBody {
             val resolver = context.contentResolver
@@ -800,7 +795,7 @@ class UpdateStatusTask(
                 ParcelableMedia.Type.IMAGE -> imageStream(context, resolver, mediaLoader, mediaUri,
                         mediaType, sizeLimit)
                 ParcelableMedia.Type.VIDEO -> videoStream(context, resolver, mediaUri, mediaType,
-                        sizeLimit)
+                        sizeLimit, chucked)
                 else -> null
             } else null
 
@@ -874,13 +869,15 @@ class UpdateStatusTask(
                 resolver: ContentResolver,
                 mediaUri: Uri,
                 defaultType: String?,
-                sizeLimit: SizeLimit
+                sizeLimit: SizeLimit,
+                chucked: Boolean
         ): MediaStreamData? {
             var mediaType = defaultType
             val videoLimit = sizeLimit.video
             val geometry = Point()
             var duration = -1L
             var framerate = -1.0
+            var size = -1L
             // TODO only transcode video if needed, use `MediaMetadataRetriever`
             val retriever = MediaMetadataRetriever()
             try {
@@ -893,27 +890,36 @@ class UpdateStatusTask(
                 geometry.y = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT).toInt(-1)
                 duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toLong(-1)
                 framerate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE).toDouble(-1.0)
+
+                size = resolver.openFileDescriptor(mediaUri, "r").use { it.statSize }
             } catch (e: Exception) {
-                // Ignore
+                DebugLog.w(LOGTAG, "Unable to retrieve video info", e)
             } finally {
-                try {
-                    retriever.release()
-                } catch (e: Exception) {
-                    // Ignore
-                }
+                retriever.releaseSafe()
             }
 
-            if (videoLimit.checkGeometry(geometry.x, geometry.y)
-                    && videoLimit.checkFrameRate(framerate)) {
+            if (videoLimit.checkGeometry(geometry.x, geometry.y) && videoLimit.checkFrameRate(framerate)
+                    && videoLimit.checkSize(size, chucked)) {
                 // Size valid, upload directly
+                DebugLog.d(LOGTAG, "Upload video directly")
                 return null
+            }
+
+            if (!videoLimit.checkMinDuration(duration, chucked)) {
+                throw UploadException(context.getString(R.string.message_video_too_short))
+            }
+
+            if (!videoLimit.checkMaxDuration(duration, chucked)) {
+                throw UploadException(context.getString(R.string.message_video_too_long))
             }
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                // Go get a new phone
                 return null
             }
+            DebugLog.d(LOGTAG, "Transcoding video")
+
             val ext = mediaUri.lastPathSegment.substringAfterLast(".")
-            val pfd = resolver.openFileDescriptor(mediaUri, "r")
             val strategy = MediaFormatStrategyPresets.createAndroid720pStrategy()
             val listener = object : MediaTranscoder.Listener {
                 override fun onTranscodeFailed(exception: Exception?) {
@@ -929,12 +935,14 @@ class UpdateStatusTask(
                 }
 
             }
+            val pfd = resolver.openFileDescriptor(mediaUri, "r")
             val tempFile = File.createTempFile("twittnuker__encoded_video_", ".$ext", context.cacheDir)
             val future = MediaTranscoder.getInstance().transcodeVideo(pfd.fileDescriptor,
                     tempFile.absolutePath, strategy, listener)
             try {
                 future.get()
             } catch (e: Exception) {
+                DebugLog.w(LOGTAG, "Error transcoding video, try upload directly", e)
                 tempFile.delete()
                 return null
             }

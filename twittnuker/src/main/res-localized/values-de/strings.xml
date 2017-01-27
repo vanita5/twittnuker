@@ -438,7 +438,7 @@
     <string name="unsubscribe">Abbestellen</string>
     <string name="background_toast_notification">Hintergrundbenachrichtigung</string>
     <string name="background_toast_notification_summary">Benachrichtigungen einblenden, wenn die App in den Hintergrund geht</string>
-    <string name="original_status">Original-Tweet</string>
+    <string name="label_original_status">Original-Tweet</string>
     <string name="ask">Nachfragen</string>
     <string name="no_close_after_status_updated">Eingabemaske offen lassen</string>
     <string name="no_close_after_status_updated_summary">Lässt die Eingabemaske nach dem Senden eines Tweets geöffnet</string>
@@ -799,7 +799,7 @@
     <string name="edit_description">Beschreibung hinzufügen</string>
     <!--<string name="edit_media">Medien bearbeiten</string>-->
     <string name="no_status_content_text">Kein Inhalt</string>
-    <string name="status_not_available_text">Tweet existiert nicht</string>
+    <string name="label_status_not_available">Tweet existiert nicht</string>
     <string name="share_link">Link teilen</string>
     <string name="hide_retweets">Retweets ausblenden</string>
     <string name="hide_quotes">Zitate ausblenden</string>
@@ -886,6 +886,8 @@
     <string name="summary_interactions_not_available">Nur mit offiziellen API Keys verfügbar</string>
     <string name="label_password_sign_in">Passwort Login</string>
     <string name="message_compose_write_storage_permission_not_granted">Diese Berechtigung wird benötigt, um aufgenommene Fotos/Videos wieder löschen zu können</string>
+    <string name="message_video_too_short">Das Video ist zu kurz</string>
+    <string name="message_video_too_long">Das Video ist zu lang</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>
