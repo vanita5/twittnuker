@@ -124,6 +124,11 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
         return mIndicatorAdapter.getItemContext();
     }
 
+    public int getColumns() {
+        if (mColumns > 0) return mColumns;
+        return 1;
+    }
+
     public void setColumns(int columns) {
         mColumns = columns;
         notifyDataSetChanged();
@@ -324,11 +329,6 @@ public class TabPagerIndicator extends RecyclerView implements PagerIndicator, C
             return position >= count - columns;
         }
         return position >= current && position < current + columns;
-    }
-
-    private int getColumns() {
-        if (mColumns > 0) return mColumns;
-        return 1;
     }
 
     public static class Appearance implements ChameleonView.Appearance {
