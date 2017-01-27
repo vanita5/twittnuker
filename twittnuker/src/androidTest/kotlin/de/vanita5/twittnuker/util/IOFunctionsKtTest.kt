@@ -20,27 +20,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.io
+package de.vanita5.twittnuker.util
 
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
+import android.support.test.InstrumentationRegistry
+import android.support.test.runner.AndroidJUnit4
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.util.*
 
-class DirectByteArrayOutputStream : ByteArrayOutputStream() {
-
-    fun inputStream(close: Boolean): InputStream {
-        return DirectInputStream(this, close)
+@RunWith(AndroidJUnit4::class)
+class IOFunctionsKtTest {
+    @Test
+    fun testTempFileInputStream() {
+        val context = InstrumentationRegistry.getTargetContext()
+        val random = Random()
+        val testData = ByteArray(1024)
+        random.nextBytes(testData)
+        val compareData = tempFileInputStream(context) { os ->
+            os.write(testData)
+        }.readBytes(1024)
+        Assert.assertArrayEquals(testData, compareData)
     }
 
-    internal class DirectInputStream(
-            val os: DirectByteArrayOutputStream,
-            val close: Boolean
-    ) : ByteArrayInputStream(os.buf, 0, os.count) {
-        override fun close() {
-            if (close) {
-                os.close()
-            }
-            super.close()
-        }
-    }
 }

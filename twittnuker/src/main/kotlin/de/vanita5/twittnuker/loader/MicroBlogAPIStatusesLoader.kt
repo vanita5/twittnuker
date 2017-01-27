@@ -46,12 +46,8 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.task.twitter.GetStatusesTask
-import de.vanita5.twittnuker.util.JsonSerializer
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper
-import de.vanita5.twittnuker.util.TwidereArrayUtils
-import de.vanita5.twittnuker.util.UserColorNameManager
+import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
-import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
@@ -240,10 +236,9 @@ abstract class MicroBlogAPIStatusesLoader(
         val databaseItemLimit = preferences[loadItemLimitKey]
         try {
             val statuses = data.subList(0, Math.min(databaseItemLimit, data.size))
-            fileCache.save(key, ByteArrayInputStream(byteArrayOf())) { current, total -> true }
-            fileCache.get(key)?.outputStream()?.use {
-                LoganSquare.serialize(statuses, it, ParcelableStatus::class.java)
-            }
+            fileCache.save(key, tempFileInputStream(context) { os ->
+                LoganSquare.serialize(statuses, os, ParcelableStatus::class.java)
+            }) { current, total -> true }
         } catch (e: Exception) {
             // Ignore
             if (BuildConfig.DEBUG && e !is IOException) {

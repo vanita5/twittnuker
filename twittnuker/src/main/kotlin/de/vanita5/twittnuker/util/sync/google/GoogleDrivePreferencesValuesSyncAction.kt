@@ -28,8 +28,8 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.model.File
 import de.vanita5.twittnuker.extension.newPullParser
 import de.vanita5.twittnuker.extension.newSerializer
-import de.vanita5.twittnuker.util.io.DirectByteArrayOutputStream
 import de.vanita5.twittnuker.util.sync.FileBasedPreferencesValuesSyncAction
+import de.vanita5.twittnuker.util.tempFileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
@@ -70,9 +70,9 @@ internal class GoogleDrivePreferencesValuesSyncAction(
     override fun newSaveToRemoteSession(): GoogleDriveUploadSession<Map<String, String>> {
         return object : GoogleDriveUploadSession<Map<String, String>>(fileName, commonFolderId, xmlMimeType, drive) {
             override fun Map<String, String>.toInputStream(): InputStream {
-                val os = DirectByteArrayOutputStream()
-                this.serialize(os.newSerializer(charset = Charsets.UTF_8, indent = true))
-                return os.inputStream(true)
+                return tempFileInputStream(context) {
+                    this.serialize(it.newSerializer(charset = Charsets.UTF_8, indent = true))
+                }
             }
         }
     }

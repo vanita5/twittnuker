@@ -31,8 +31,8 @@ import de.vanita5.twittnuker.extension.model.serialize
 import de.vanita5.twittnuker.extension.newPullParser
 import de.vanita5.twittnuker.extension.newSerializer
 import de.vanita5.twittnuker.model.FiltersData
-import de.vanita5.twittnuker.util.io.DirectByteArrayOutputStream
 import de.vanita5.twittnuker.util.sync.FileBasedFiltersDataSyncAction
+import de.vanita5.twittnuker.util.tempFileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
@@ -78,9 +78,9 @@ internal class GoogleDriveFiltersDataSyncAction(
     override fun newSaveToRemoteSession(): GoogleDriveUploadSession<FiltersData> {
         return object : GoogleDriveUploadSession<FiltersData>(fileName, commonFolderId, xmlMimeType, drive) {
             override fun FiltersData.toInputStream(): InputStream {
-                val os = DirectByteArrayOutputStream()
-                this.serialize(os.newSerializer(charset = Charsets.UTF_8, indent = true))
-                return os.inputStream(true)
+                return tempFileInputStream(context) {
+                    this.serialize(it.newSerializer(charset = Charsets.UTF_8, indent = true))
+                }
             }
         }
     }
