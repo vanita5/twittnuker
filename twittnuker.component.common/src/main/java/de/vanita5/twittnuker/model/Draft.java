@@ -27,6 +27,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
+import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
@@ -79,6 +80,13 @@ public class Draft implements Parcelable {
     @ParcelableThisPlease
     @CursorField(value = Drafts.UNIQUE_ID)
     public String unique_id;
+
+    /**
+     * For internal use only
+     */
+    @Nullable
+    @ParcelableNoThanks
+    public String remote_extras;
 
     public Draft() {
 

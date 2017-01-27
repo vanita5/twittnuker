@@ -22,35 +22,21 @@
 
 package de.vanita5.twittnuker.util.sync.google
 
-import com.dropbox.core.v2.files.UploadUploader
-import com.google.api.client.util.DateTime
-import com.google.api.services.drive.Drive
-import java.io.Closeable
+import com.google.api.client.googleapis.batch.json.JsonBatchCallback
+import com.google.api.client.googleapis.json.GoogleJsonError
+import com.google.api.client.http.HttpHeaders
+
 import java.io.IOException
-import java.io.InputStream
 
-abstract internal class GoogleDriveUploadSession<in Data>(
-        val name: String,
-        val parentId: String,
-        val mimeType: String,
-        val drive: Drive
-) : Closeable {
-    private var uploader: UploadUploader? = null
 
-    var localModifiedTime: Long = 0
+internal class SimpleJsonBatchCallback<T> : JsonBatchCallback<T>() {
+    @Throws(IOException::class)
+    override fun onFailure(error: GoogleJsonError, headers: HttpHeaders) {
 
-    override fun close() {
-        uploader?.close()
     }
 
     @Throws(IOException::class)
-    abstract fun Data.toInputStream(): InputStream
+    override fun onSuccess(result: T, headers: HttpHeaders) {
 
-    fun uploadData(data: Data): Boolean {
-        drive.updateOrCreate(name, mimeType, parentId, stream = data.toInputStream(), fileConfig = {
-            it.modifiedTime = DateTime(localModifiedTime)
-        })
-        return true
     }
-
 }
