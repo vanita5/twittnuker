@@ -39,7 +39,6 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
 import android.text.TextUtils
-import android.util.Log
 import android.view.*
 import android.widget.AbsListView.MultiChoiceModeListener
 import android.widget.AdapterView
@@ -47,7 +46,6 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
 import kotlinx.android.synthetic.main.fragment_drafts.*
 import org.mariotaku.kpreferences.get
-import org.mariotaku.ktextension.toStringArray
 import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.RawItemArray
@@ -62,14 +60,13 @@ import de.vanita5.twittnuker.extension.selectAll
 import de.vanita5.twittnuker.extension.selectNone
 import de.vanita5.twittnuker.extension.updateSelectionItems
 import de.vanita5.twittnuker.model.Draft
-import de.vanita5.twittnuker.model.ParcelableMediaUpdate
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.AsyncTaskUtils
-import de.vanita5.twittnuker.util.JsonSerializer
-import java.io.File
+import de.vanita5.twittnuker.util.deleteDrafts
+import java.lang.ref.WeakReference
 import java.util.*
 
 class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickListener, MultiChoiceModeListener {
@@ -267,43 +264,19 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
     }
 
     private class DeleteDraftsTask(
-            private val activity: FragmentActivity,
+            activity: FragmentActivity,
             private val ids: LongArray
     ) : AsyncTask<Any, Any, Unit>() {
-        private val notificationManager = activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        private val activityRef = WeakReference(activity)
 
         override fun doInBackground(vararg params: Any) {
-            val resolver = activity.contentResolver
-            val where = Expression.inArgs(Column(Drafts._ID), ids.size)
-            val projection = arrayOf(Drafts.MEDIA)
-            val selection = where.sql
-            val selectionArgs = ids.toStringArray()
-            val c = resolver.query(Drafts.CONTENT_URI, projection, selection, selectionArgs, null) ?: return
-            @Suppress("ConvertTryFinallyToUseCall")
-            try {
-            val idxMedia = c.getColumnIndex(Drafts.MEDIA)
-            c.moveToFirst()
-            while (!c.isAfterLast) {
-                val mediaArray = JsonSerializer.parseArray(c.getString(idxMedia), ParcelableMediaUpdate::class.java)
-                mediaArray?.forEach { media ->
-                    val uri = Uri.parse(media.uri)
-                    if ("file" == uri.scheme) {
-                        val file = File(uri.path)
-                        if (!file.delete()) {
-                            Log.w(LOGTAG, String.format("Unable to delete %s", file))
-                        }
-                    }
-                }
-                c.moveToNext()
-            }
-            } finally {
-                c.close()
-            }
-            resolver.delete(Drafts.CONTENT_URI, selection, selectionArgs)
+            val activity = activityRef.get() ?: return
+            deleteDrafts(activity, ids)
         }
 
         override fun onPreExecute() {
-            super.onPreExecute()
+            val activity = activityRef.get() ?: return
             (activity as IExtendedActivity<*>).executeAfterFragmentResumed { activity ->
                 val f = ProgressDialogFragment.show(activity.supportFragmentManager, FRAGMENT_TAG_DELETING_DRAFTS)
                 f.isCancelable = false
@@ -311,7 +284,7 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
         }
 
         override fun onPostExecute(result: Unit) {
-            super.onPostExecute(result)
+            val activity = activityRef.get() ?: return
             (activity as IExtendedActivity<*>).executeAfterFragmentResumed { activity ->
                 val fm = activity.supportFragmentManager
                 val f = fm.findFragmentByTag(FRAGMENT_TAG_DELETING_DRAFTS)
@@ -319,6 +292,7 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
                     f.dismiss()
                 }
             }
+            val notificationManager = activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             ids.forEach { id ->
                 val tag = Uri.withAppendedPath(Drafts.CONTENT_URI, id.toString()).toString()
                 notificationManager.cancel(tag, NOTIFICATION_ID_DRAFTS)

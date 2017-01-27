@@ -29,7 +29,6 @@ import android.app.Service
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.graphics.Point
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -41,6 +40,8 @@ import android.support.v4.app.NotificationCompat.Builder
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
+import nl.komponents.kovenant.task
+import nl.komponents.kovenant.ui.successUi
 import org.mariotaku.abstask.library.ManualTaskStarter
 import org.mariotaku.ktextension.configure
 import org.mariotaku.ktextension.toLong
@@ -70,11 +71,14 @@ import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.util.ContentValuesCreator
 import de.vanita5.twittnuker.util.NotificationManagerWrapper
 import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.deleteDrafts
 import de.vanita5.twittnuker.util.io.ContentLengthInputStream.ReadListener
-import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
+/**
+ * Intent service for lengthy operations like update status/send DM.
+ */
 class LengthyOperationsService : BaseIntentService("lengthy_operations") {
 
     private val handler: Handler by lazy { Handler(Looper.getMainLooper()) }
@@ -144,12 +148,17 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
         }
     }
 
+    @SuppressLint("Recycle")
     private fun handleDiscardDraftIntent(intent: Intent) {
         val data = intent.data ?: return
-        notificationManager.cancel(data.toString(), NOTIFICATION_ID_DRAFTS)
-        val id = data.lastPathSegment.toLong(-1)
-        val where = Expression.equals(Drafts._ID, id)
-        contentResolver.delete(Drafts.CONTENT_URI, where.sql, null)
+        task {
+            if (deleteDrafts(this, longArrayOf(data.lastPathSegment.toLong(-1))) < 1) {
+                throw IOException()
+            }
+            return@task data
+        }.successUi { uri ->
+            notificationManager.cancel(data.toString(), NOTIFICATION_ID_DRAFTS)
+        }
     }
 
     private fun handleSendDirectMessageIntent(intent: Intent) {

@@ -1,13 +1,18 @@
 package de.vanita5.twittnuker.util
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
-import de.vanita5.twittnuker.constant.filterPossibilitySensitiveStatusesKey
+import android.net.Uri
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.useCursor
+import org.mariotaku.pickncrop.library.PNCUtils
 import org.mariotaku.sqliteqb.library.*
+import de.vanita5.twittnuker.constant.filterPossibilitySensitiveStatusesKey
 import de.vanita5.twittnuker.constant.filterUnavailableQuoteStatusesKey
+import de.vanita5.twittnuker.model.DraftCursorIndices
 import de.vanita5.twittnuker.model.ParcelableStatus.FilterFlags
-import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
-import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
+import de.vanita5.twittnuker.provider.TwidereDataStore.*
 
 fun buildStatusFilterWhereClause(preferences: SharedPreferences,
                                  table: String,
@@ -71,4 +76,28 @@ fun buildStatusFilterWhereClause(preferences: SharedPreferences,
         return Expression.and(filterExpression, extraSelection)
     }
     return filterExpression
+}
+
+@SuppressLint("Recycle")
+fun deleteDrafts(context: Context, draftIds: LongArray): Int {
+    val where = Expression.inArgs(Drafts._ID, draftIds.size).sql
+    val whereArgs = draftIds.map(Long::toString).toTypedArray()
+
+    context.contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where, whereArgs,
+            null).useCursor { cursor ->
+        val indices = DraftCursorIndices(cursor)
+        cursor.moveToFirst()
+        while (!cursor.isAfterLast) {
+            val draft = indices.newObject(cursor)
+            draft.media?.forEach { item ->
+                try {
+                    PNCUtils.deleteMedia(context, Uri.parse(item.uri))
+                } catch (e: SecurityException) {
+                    // Ignore
+                }
+            }
+            cursor.moveToNext()
+        }
+    }
+    return context.contentResolver.delete(Drafts.CONTENT_URI, where, whereArgs)
 }
