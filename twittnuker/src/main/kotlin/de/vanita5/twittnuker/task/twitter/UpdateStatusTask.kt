@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.task.twitter
 
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
@@ -32,6 +33,7 @@ import android.support.annotation.UiThread
 import android.support.annotation.WorkerThread
 import android.text.TextUtils
 import android.util.Pair
+import android.webkit.MimeTypeMap
 import com.nostra13.universalimageloader.core.DisplayImageOptions
 import com.nostra13.universalimageloader.core.assist.ImageSize
 import org.apache.commons.lang3.ArrayUtils
@@ -708,7 +710,14 @@ class UpdateStatusTask(
                              @ParcelableMedia.Type type: Int,
                              readListener: ContentLengthInputStream.ReadListener): Pair<Body, Point> {
             val resolver = context.contentResolver
-            var mediaType = resolver.getType(mediaUri)
+            var mediaType = resolver.getType(mediaUri) ?: run {
+                if (mediaUri.scheme == ContentResolver.SCHEME_FILE) {
+                    mediaUri.lastPathSegment?.substringAfterLast(".")?.let { ext ->
+                        return@run MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)
+                    }
+                }
+                return@run null
+            }
             val size = Point()
             val cis = run {
                 if (type == ParcelableMedia.Type.IMAGE && sizeLimit != null) {
@@ -753,11 +762,10 @@ class UpdateStatusTask(
             }
 
             cis.setReadListener(readListener)
-            val contentType: ContentType
-            if (TextUtils.isEmpty(mediaType)) {
-                contentType = ContentType.parse("application/octet-stream")
+            val contentType = if (mediaType != null) {
+                ContentType.parse(mediaType)
             } else {
-                contentType = ContentType.parse(mediaType!!)
+                ContentType.parse("application/octet-stream")
             }
             return Pair(FileBody(cis, "attachment", cis.length(), contentType), size)
         }
