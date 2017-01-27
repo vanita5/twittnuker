@@ -32,6 +32,10 @@ import java.lang.annotation.RetentionPolicy;
 
 public class UniversalSearchQuery extends SimpleValueMap {
 
+    public UniversalSearchQuery(String query) {
+        setQuery(query);
+    }
+
     public void setCursor(String cursor) {
         put("cursor", cursor);
     }

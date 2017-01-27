@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.loader
 
 import android.content.Context
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.official
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -45,8 +46,11 @@ class UserMentionsLoader(
         tabPosition, fromUser, makeGap, loadingMore) {
 
     override fun processQuery(details: AccountDetails, query: String): String {
-        val screenName = if (query.startsWith("@")) query.substring(1) else query
+        val screenName = query.substringAfter("@")
         if (details.type == AccountType.TWITTER) {
+            if (details.extras?.official ?: false) {
+                return smQuery("to:$screenName")
+            }
             return "to:$screenName exclude:retweets"
         }
         return "@$screenName -RT"
