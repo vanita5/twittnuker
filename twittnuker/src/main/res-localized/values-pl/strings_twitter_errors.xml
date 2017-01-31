@@ -21,7 +21,7 @@
     <string name="error_twitter_136">Zostałeś zablokowany przez tego użytkownika.</string>
     <string name="error_twitter_139">Już dodałeś tego tweeta do ulubionych.</string>
     <!-- 144 No status found with that ID. -->
-    <string name="error_twitter_144">Nie udało się odnaleźć tweeta, prawdopodobnie został usunięty przez autora.</string>
+  <string name="error_twitter_144">Nie udało się odnaleźć tweeta, prawdopodobnie został usunięty przez autora.</string>
     <string name="error_twitter_161">Już wysłałeś prośbę o pozwolenie na obserwowanie tego użytkownika.</string>
     <!-- 172 You have been blocked from following this account at the request of the user. -->
     <string name="error_twitter_162">Zostałeś zablokowany przez tego użytkownika.</string>
