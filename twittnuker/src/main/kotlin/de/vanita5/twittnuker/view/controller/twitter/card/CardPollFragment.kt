@@ -1,58 +1,49 @@
 /*
- * Twittnuker - Twitter client for Android
+ *  Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
- * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  This program incorporates a modified version of Twidere.
+ *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment.card
+package de.vanita5.twittnuker.view.controller.twitter.card
 
 import android.accounts.AccountManager
-import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
-import android.os.Bundle
-import android.support.v4.app.LoaderManager
-import android.support.v4.content.AsyncTaskLoader
 import android.support.v4.content.ContextCompat
-import android.support.v4.content.Loader
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.TextView
-import kotlinx.android.synthetic.main.fragment_card_poll.*
+import kotlinx.android.synthetic.main.layout_twitter_card_poll.view.*
+import nl.komponents.kovenant.task
+import nl.komponents.kovenant.ui.successUi
 import org.apache.commons.lang3.math.NumberUtils
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterCaps
 import de.vanita5.twittnuker.library.twitter.model.CardDataMap
-import de.vanita5.twittnuker.Constants.EXTRA_CARD
 import de.vanita5.twittnuker.Constants.LOGTAG
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.constant.IntentConstants
-import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUS
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.fragment.BaseFragment
-import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableCardEntity
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -60,44 +51,67 @@ import de.vanita5.twittnuker.model.util.ParcelableCardEntityUtils
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.TwitterCardUtils
 import de.vanita5.twittnuker.util.support.ViewSupport
-
+import de.vanita5.twittnuker.view.ContainerView
+import java.lang.ref.WeakReference
 import java.util.*
 
-class CardPollFragment : BaseFragment(), LoaderManager.LoaderCallbacks<ParcelableCardEntity?>, View.OnClickListener {
+class CardPollViewController : ContainerView.ViewController() {
+
+    private lateinit var status: ParcelableStatus
     private var fetchedCard: ParcelableCardEntity? = null
+    private val card: ParcelableCardEntity
+        get() = fetchedCard ?: status.card!!
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        initChoiceView(savedInstanceState)
-
-        loaderManager.initLoader(0, null, this)
+    override fun onCreate() {
+        super.onCreate()
+        initChoiceView()
+        loadCardPoll()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_card_poll, container, false)
+    override fun onCreateView(parent: ContainerView): View {
+        return LayoutInflater.from(context).inflate(R.layout.layout_twitter_card_poll, parent, false)
     }
 
-    override fun fitSystemWindows(insets: Rect) {
-        // No-op
-    }
-
-
-    private fun initChoiceView(savedInstanceState: Bundle?) {
-        val card = card
-        val status = status
+    private fun initChoiceView() {
         val choicesCount = TwitterCardUtils.getChoicesCount(card)
-        val inflater = getLayoutInflater(savedInstanceState)
+        val inflater = LayoutInflater.from(context)
 
         for (i in 0 until choicesCount) {
-            inflater.inflate(R.layout.layout_poll_item, pollContainer, true)
+            inflater.inflate(R.layout.layout_poll_item, view.pollContainer, true)
         }
 
         displayPoll(card, status)
     }
 
+    private fun displayAndReloadPoll(result: ParcelableCardEntity, status: ParcelableStatus) {
+        if (!attached) return
+        displayPoll(result, status)
+        loadCardPoll()
+    }
+
+    private fun loadCardPoll() {
+        val weakThis = WeakReference(this)
+        task {
+            val vc = weakThis.get() ?: throw IllegalStateException()
+            val card = vc.card
+            val details = AccountUtils.getAccountDetails(AccountManager.get(vc.context), card.account_key, true)!!
+            val caps = details.newMicroBlogInstance(vc.context, cls = TwitterCaps::class.java)
+            val params = CardDataMap()
+            params.putString("card_uri", card.url)
+            params.putString("cards_platform", MicroBlogAPIFactory.CARDS_PLATFORM_ANDROID_12)
+            params.putString("response_card_name", card.name)
+            val cardResponse = caps.getPassThrough(params).card
+            if (cardResponse == null || cardResponse.name == null) {
+                throw IllegalStateException()
+            }
+            return@task ParcelableCardEntityUtils.fromCardEntity(cardResponse, details.key)
+        }.successUi { data ->
+            weakThis.get()?.displayPoll(data, status)
+        }
+    }
+
     private fun displayPoll(card: ParcelableCardEntity?, status: ParcelableStatus?) {
-        val context = context
-        if (card == null || status == null || context == null) return
+        if (card == null || status == null) return
         fetchedCard = card
         val choicesCount = TwitterCardUtils.getChoicesCount(card)
         var votesSum = 0
@@ -117,8 +131,8 @@ class CardPollFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Parcelabl
 
             override fun onClick(v: View) {
                 if (hasChoice || clickedChoice) return
-                for (i in 0 until pollContainer.childCount) {
-                    val pollItem = pollContainer.getChildAt(i)
+                for (i in 0 until view.pollContainer.childCount) {
+                    val pollItem = view.pollContainer.getChildAt(i)
                     pollItem.isClickable = false
                     clickedChoice = true
                     val choiceRadioButton = pollItem.findViewById(R.id.choice_button) as RadioButton
@@ -131,9 +145,9 @@ class CardPollFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Parcelabl
                         cardData.putString("cards_platform", MicroBlogAPIFactory.CARDS_PLATFORM_ANDROID_12)
                         cardData.putString("response_card_name", card.name)
                         cardData.putString("selected_choice", (i + 1).toString())
-                        val task = object : AbstractTask<CardDataMap, ParcelableCardEntity, CardPollFragment>() {
+                        val task = object : AbstractTask<CardDataMap, ParcelableCardEntity, CardPollViewController>() {
 
-                            public override fun afterExecute(handler: CardPollFragment?, result: ParcelableCardEntity?) {
+                            public override fun afterExecute(handler: CardPollViewController?, result: ParcelableCardEntity?) {
                                 result ?: return
                                 handler?.displayAndReloadPoll(result, status)
                             }
@@ -153,7 +167,7 @@ class CardPollFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Parcelabl
                                 return null
                             }
                         }
-                        task.callback = this@CardPollFragment
+                        task.callback = this@CardPollViewController
                         task.params = cardData
                         TaskStarter.execute(task)
                     }
@@ -162,9 +176,9 @@ class CardPollFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Parcelabl
         }
 
         val color = ContextCompat.getColor(context, R.color.material_light_blue_a200)
-        val radius = resources.getDimension(R.dimen.element_spacing_small)
+        val radius = context.resources.getDimension(R.dimen.element_spacing_small)
         for (i in 0..choicesCount - 1) {
-            val pollItem = pollContainer.getChildAt(i)
+            val pollItem = view.pollContainer.getChildAt(i)
 
             val choicePercentView = pollItem.findViewById(R.id.choice_percent) as TextView
             val choiceLabelView = pollItem.findViewById(R.id.choice_label) as TextView
@@ -197,48 +211,10 @@ class CardPollFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Parcelabl
 
         }
 
-        val nVotes = resources.getQuantityString(R.plurals.N_votes, votesSum, votesSum)
+        val nVotes = context.resources.getQuantityString(R.plurals.N_votes, votesSum, votesSum)
 
         val timeLeft = DateUtils.getRelativeTimeSpanString(context, endDatetimeUtc.time, true)
-        pollSummary.text = getString(R.string.poll_summary_format, nVotes, timeLeft)
-    }
-
-    private fun displayAndReloadPoll(result: ParcelableCardEntity, status: ParcelableStatus) {
-        if (host == null) return
-        displayPoll(result, status)
-        loaderManager.restartLoader(0, null, this)
-    }
-
-
-    private val card: ParcelableCardEntity
-        get() {
-            val fetched = fetchedCard
-            if (fetched != null) return fetched
-            val card = arguments.getParcelable<ParcelableCardEntity>(EXTRA_CARD)!!
-            assert(card.name != null)
-            return card
-        }
-
-    private val status: ParcelableStatus
-        get() = arguments.getParcelable<ParcelableStatus>(EXTRA_STATUS)
-
-    override fun onClick(v: View) {
-
-    }
-
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<ParcelableCardEntity?> {
-        val card = card
-        val details = AccountUtils.getAccountDetails(AccountManager.get(context), card.account_key, true)!!
-        return ParcelableCardEntityLoader(context, details, card.url, card.name)
-    }
-
-    override fun onLoadFinished(loader: Loader<ParcelableCardEntity?>, data: ParcelableCardEntity?) {
-        if (data == null) return
-        displayPoll(data, status)
-    }
-
-    override fun onLoaderReset(loader: Loader<ParcelableCardEntity?>) {
-
+        view.pollSummary.text = context.getString(R.string.poll_summary_format, nVotes, timeLeft)
     }
 
     private class PercentDrawable internal constructor(
@@ -247,22 +223,18 @@ class CardPollFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Parcelabl
             color: Int
     ) : Drawable() {
 
-        private val mPaint: Paint
-        private val mBounds: RectF
-
-        init {
-            mPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-            mPaint.color = color
-            mBounds = RectF()
+        private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            this.color = color
         }
+        private val boundsF: RectF = RectF()
 
         override fun draw(canvas: Canvas) {
-            canvas.drawRoundRect(mBounds, radius, radius, mPaint)
+            canvas.drawRoundRect(boundsF, radius, radius, paint)
         }
 
         override fun onBoundsChange(bounds: Rect) {
-            mBounds.set(bounds)
-            mBounds.right = mBounds.left + mBounds.width() * percent
+            boundsF.set(bounds)
+            boundsF.right = boundsF.left + boundsF.width() * percent
             super.onBoundsChange(bounds)
         }
 
@@ -279,45 +251,12 @@ class CardPollFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Parcelabl
         }
     }
 
-    class ParcelableCardEntityLoader(
-            context: Context,
-            private val details: AccountDetails,
-            private val cardUri: String,
-            private val cardName: String
-    ) : AsyncTaskLoader<ParcelableCardEntity?>(context) {
-
-        override fun loadInBackground(): ParcelableCardEntity? {
-            val caps = details.newMicroBlogInstance(context, cls = TwitterCaps::class.java)
-            try {
-                val params = CardDataMap()
-                params.putString("card_uri", cardUri)
-                params.putString("cards_platform", MicroBlogAPIFactory.CARDS_PLATFORM_ANDROID_12)
-                params.putString("response_card_name", cardName)
-                val card = caps.getPassThrough(params).card
-                if (card == null || card.name == null) {
-                    return null
-                }
-                return ParcelableCardEntityUtils.fromCardEntity(card, details.key)
-            } catch (e: MicroBlogException) {
-                return null
-            }
-
-        }
-
-        override fun onStartLoading() {
-            forceLoad()
-        }
-    }
-
     companion object {
 
-        fun show(status: ParcelableStatus): CardPollFragment {
-            val fragment = CardPollFragment()
-            val args = Bundle()
-            args.putParcelable(EXTRA_STATUS, status)
-            args.putParcelable(IntentConstants.EXTRA_CARD, status.card)
-            fragment.arguments = args
-            return fragment
+        fun show(status: ParcelableStatus): CardPollViewController {
+            val vc = CardPollViewController()
+            vc.status = status
+            return vc
         }
 
     }

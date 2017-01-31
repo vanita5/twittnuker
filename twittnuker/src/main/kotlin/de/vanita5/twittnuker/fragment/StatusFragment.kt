@@ -34,7 +34,6 @@ import android.nfc.NfcAdapter.CreateNdefMessageCallback
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.annotation.UiThread
-import android.support.v4.app.FragmentManagerAccessor
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.app.hasRunningLoadersSafe
 import android.support.v4.content.AsyncTaskLoader
@@ -104,6 +103,7 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.ContentScrollHandler.ContentListSupport
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.RecyclerViewScrollHandler.RecyclerViewCallback
+import de.vanita5.twittnuker.util.twitter.card.TwitterCardViewFactory
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener
 import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.GapViewHolder
@@ -963,24 +963,25 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 itemView.mediaPreview.displayMedia()
             }
 
+            val fm = fragment.childFragmentManager
             if (TwitterCardUtils.isCardSupported(status)) {
                 val size = TwitterCardUtils.getCardSize(status.card!!)
-                itemView.twitterCard.visibility = View.VISIBLE
+
                 if (size != null) {
                     itemView.twitterCard.setCardSize(size.x, size.y)
                 } else {
                     itemView.twitterCard.setCardSize(0, 0)
                 }
-                val cardFragment = TwitterCardFragmentFactory.createCardFragment(status)
-                val fm = fragment.childFragmentManager
-                if (cardFragment != null && !FragmentManagerAccessor.isStateSaved(fm)) {
-                    val ft = fm.beginTransaction()
-                    ft.replace(R.id.twitterCard, cardFragment)
-                    ft.commit()
+                val vc = TwitterCardViewFactory.from(status)
+                itemView.twitterCard.viewController = vc
+                if (vc != null) {
+                    itemView.twitterCard.visibility = View.VISIBLE
                 } else {
                     itemView.twitterCard.visibility = View.GONE
                 }
+
             } else {
+                itemView.twitterCard.viewController = null
                 itemView.twitterCard.visibility = View.GONE
             }
 
