@@ -28,7 +28,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.support.annotation.UiThread
-import android.util.Log
 import com.squareup.otto.Bus
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.kpreferences.KPreferences
@@ -122,9 +121,7 @@ abstract class GetActivitiesTask(
                 }
                 errorInfoStore.remove(errorInfoKey, accountKey)
             } catch (e: MicroBlogException) {
-                if (BuildConfig.DEBUG) {
-                    Log.w(LOGTAG, e)
-                }
+                DebugLog.w(LOGTAG, tr = e)
                 if (e.errorCode == 220) {
                     errorInfoStore[errorInfoKey, accountKey] = ErrorInfoStore.CODE_NO_ACCESS_FOR_CREDENTIALS
                 } else if (e.isCausedByNetworkIssue) {

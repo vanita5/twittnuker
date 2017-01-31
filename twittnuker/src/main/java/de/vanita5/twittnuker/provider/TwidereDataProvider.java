@@ -122,6 +122,7 @@ import de.vanita5.twittnuker.util.ActivityTracker;
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper;
 import de.vanita5.twittnuker.util.DataStoreFunctionsKt;
 import de.vanita5.twittnuker.util.DataStoreUtils;
+import de.vanita5.twittnuker.util.DebugLog;
 import de.vanita5.twittnuker.util.ImagePreloader;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
@@ -1021,9 +1022,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 c.addRow(new String[]{host, address.getHostAddress()});
             }
         } catch (final IOException ignore) {
-            if (BuildConfig.DEBUG) {
-                Log.w(LOGTAG, ignore);
-            }
+            DebugLog.w(LOGTAG, null, ignore);
         }
         return c;
     }

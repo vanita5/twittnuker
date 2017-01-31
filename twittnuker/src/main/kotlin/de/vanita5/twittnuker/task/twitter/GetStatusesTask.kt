@@ -26,7 +26,6 @@ import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.squareup.otto.Bus
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.math.NumberUtils
@@ -155,9 +154,7 @@ abstract class GetStatusesTask(
                 TaskStarter.execute(cacheTask)
                 errorInfoStore.remove(errorInfoKey, accountKey.id)
             } catch (e: MicroBlogException) {
-                if (BuildConfig.DEBUG) {
-                    Log.w(LOGTAG, e)
-                }
+                DebugLog.w(LOGTAG, tr = e)
                 if (e.isCausedByNetworkIssue) {
                     errorInfoStore[errorInfoKey, accountKey.id] = ErrorInfoStore.CODE_NETWORK_ERROR
                 } else if (e.statusCode == 401) {

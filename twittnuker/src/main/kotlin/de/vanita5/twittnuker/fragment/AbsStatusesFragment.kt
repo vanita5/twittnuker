@@ -339,9 +339,7 @@ abstract class AbsStatusesFragment protected constructor() :
     override fun onGapClick(holder: GapViewHolder, position: Int) {
         val adapter = this.adapter
         val status = adapter.getStatus(position) ?: return
-        if (BuildConfig.DEBUG) {
-            Log.v(TwittnukerConstants.LOGTAG, "Load activity gap " + status)
-        }
+        DebugLog.v(TwittnukerConstants.LOGTAG, "Load activity gap " + status)
         adapter.addGapLoadingId(ObjectId(status.account_key, status.id))
         val accountIds = arrayOf(status.account_key)
         val maxIds = arrayOf<String?>(status.id)

@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches
 import de.vanita5.twittnuker.util.ContentValuesCreator
+import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 
@@ -53,9 +54,7 @@ class GetSavedSearchesTask(
                 cr.delete(SavedSearches.CONTENT_URI, where.sql, whereArgs)
                 ContentResolverUtils.bulkInsert(cr, SavedSearches.CONTENT_URI, values)
             } catch (e: MicroBlogException) {
-                if (BuildConfig.DEBUG) {
-                    Log.w(LOGTAG, e)
-                }
+                DebugLog.w(LOGTAG, tr = e)
             }
         }
         return SingleResponse.getInstance(Unit)

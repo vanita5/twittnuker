@@ -33,6 +33,7 @@ import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.model.sync.GoogleDriveSyncProviderInfo
+import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.TaskServiceRunner
 import de.vanita5.twittnuker.util.sync.*
 import java.io.IOException
@@ -62,9 +63,7 @@ class GoogleDriveSyncTaskRunner(context: Context, val refreshToken: String) : Sy
         }.successUi {
             callback(true)
         }.failUi {
-            if (BuildConfig.DEBUG) {
-                Log.w(LOGTAG_SYNC, "Sync $action failed", it)
-            }
+            DebugLog.w(LOGTAG_SYNC, "Sync $action failed", it)
             callback(false)
         }
         return true

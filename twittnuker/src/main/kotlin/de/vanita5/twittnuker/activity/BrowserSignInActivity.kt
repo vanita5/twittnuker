@@ -44,7 +44,6 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterOAuth
 import org.mariotaku.restfu.oauth.OAuthAuthorization
 import org.mariotaku.restfu.oauth.OAuthToken
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
@@ -53,6 +52,7 @@ import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.util.AsyncTaskUtils
+import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.OAuthPasswordAuthenticator
 import de.vanita5.twittnuker.util.webkit.DefaultWebViewClient
@@ -223,9 +223,7 @@ class BrowserSignInActivity : BaseActivity() {
                 val endpoint = MicroBlogAPIFactory.getOAuthSignInEndpoint(apiConfig.apiUrlFormat, true)
                 activity.loadUrl(endpoint.construct("/oauth/authorize", arrayOf("oauth_token", token.oauthToken)))
             } else {
-                if (BuildConfig.DEBUG && result.hasException()) {
-                    Log.w(LOGTAG, "Exception while browser sign in", result.exception)
-                }
+                DebugLog.w(LOGTAG, "Error while browser sign in", result.exception)
                 if (!activity.isFinishing) {
                     Toast.makeText(activity, R.string.message_toast_error_occurred, Toast.LENGTH_SHORT).show()
                     activity.finish()

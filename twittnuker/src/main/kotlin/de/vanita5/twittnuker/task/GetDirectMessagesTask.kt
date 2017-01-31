@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.task
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.squareup.otto.Bus
 import org.apache.commons.lang3.math.NumberUtils
 import org.mariotaku.abstask.library.AbstractTask
@@ -35,7 +34,6 @@ import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.model.RefreshTaskParam
@@ -109,9 +107,7 @@ abstract class GetDirectMessagesTask(
                 } else if (e.isCausedByNetworkIssue) {
                     errorInfoStore[ErrorInfoStore.KEY_DIRECT_MESSAGES, accountKey] = ErrorInfoStore.CODE_NETWORK_ERROR
                 }
-                if (BuildConfig.DEBUG) {
-                    Log.w(TwittnukerConstants.LOGTAG, e)
-                }
+                DebugLog.w(TwittnukerConstants.LOGTAG, tr = e)
                 result.add(TwitterWrapper.MessageListResponse(accountKey, e))
             }
 

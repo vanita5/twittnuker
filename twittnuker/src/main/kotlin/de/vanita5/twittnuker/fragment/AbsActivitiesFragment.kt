@@ -33,15 +33,12 @@ import android.support.v4.content.Loader
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.OnScrollListener
-import android.util.Log
 import android.view.*
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.isNullOrEmpty
 import org.mariotaku.ktextension.rangeOfSize
-import de.vanita5.twittnuker.BuildConfig
-import de.vanita5.twittnuker.Constants.KEY_NEW_DOCUMENT_API
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter
@@ -287,9 +284,7 @@ abstract class AbsActivitiesFragment protected constructor() :
 
     override fun onGapClick(holder: GapViewHolder, position: Int) {
         val activity = adapter.getActivity(position) ?: return
-        if (BuildConfig.DEBUG) {
-            Log.v(TwittnukerConstants.LOGTAG, "Load activity gap $activity")
-        }
+        DebugLog.v(TwittnukerConstants.LOGTAG, "Load activity gap $activity")
         val accountIds = arrayOf(activity.account_key)
         val maxIds = arrayOf(activity.min_position)
         val maxSortIds = longArrayOf(activity.min_sort_position)

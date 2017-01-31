@@ -58,7 +58,7 @@ import javax.inject.Singleton;
 import okhttp3.Dns;
 
 @Singleton
-public class TwidereDns implements Constants, Dns {
+public class TwidereDns implements Dns, Constants {
 
     private static final String RESOLVER_LOGTAG = "TwittnukerDns";
 
@@ -112,10 +112,8 @@ public class TwidereDns implements Constants, Dns {
         // Return if host is an address
         final List<InetAddress> fromAddressString = fromAddressString(originalHost, host);
         if (fromAddressString != null) {
-            if (BuildConfig.DEBUG) {
-                addLogSplit(logger, host, "valid ip address", depth);
-                dumpLog(logger, fromAddressString);
-            }
+            addLogSplit(logger, host, "valid ip address", depth);
+            dumpLog(logger, fromAddressString);
             return fromAddressString;
         }
         // Load from custom mapping
@@ -123,9 +121,7 @@ public class TwidereDns implements Constants, Dns {
         final List<InetAddress> fromMapping = getFromMapping(host);
         addLogSplit(logger, host, "end custom mapping resolve", depth);
         if (fromMapping != null) {
-            if (BuildConfig.DEBUG) {
-                dumpLog(logger, fromMapping);
-            }
+            dumpLog(logger, fromMapping);
             return fromMapping;
         }
         if (useResolver) {
@@ -134,9 +130,7 @@ public class TwidereDns implements Constants, Dns {
             final List<InetAddress> fromSystemHosts = fromSystemHosts(host);
             addLogSplit(logger, host, "end /etc/hosts resolve", depth);
             if (fromSystemHosts != null) {
-                if (BuildConfig.DEBUG) {
-                    dumpLog(logger, fromSystemHosts);
-                }
+                dumpLog(logger, fromSystemHosts);
                 return fromSystemHosts;
             }
 
@@ -145,28 +139,26 @@ public class TwidereDns implements Constants, Dns {
             final List<InetAddress> fromResolver = fromResolver(originalHost, host);
             addLogSplit(logger, host, "end resolver resolve", depth);
             if (fromResolver != null) {
-            if (BuildConfig.DEBUG) {
-                    dumpLog(logger, fromResolver);
-                }
+                dumpLog(logger, fromResolver);
                 return fromResolver;
             }
         }
         addLogSplit(logger, host, "start system default resolve", depth);
         final List<InetAddress> fromDefault = Arrays.asList(InetAddress.getAllByName(host));
         addLogSplit(logger, host, "end system default resolve", depth);
-        if (BuildConfig.DEBUG) {
-            dumpLog(logger, fromDefault);
-        }
+        dumpLog(logger, fromDefault);
         return fromDefault;
     }
 
     private void dumpLog(final TimingLogger logger, @NonNull List<InetAddress> addresses) {
+        if (BuildConfig.DEBUG) return;
         Log.v(RESOLVER_LOGTAG, "Resolved " + addresses);
         logger.dumpToLog();
     }
 
 
     private void addLogSplit(final TimingLogger logger, String host, String message, int depth) {
+        if (BuildConfig.DEBUG) return;
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < depth; i++) {
             sb.append(">");

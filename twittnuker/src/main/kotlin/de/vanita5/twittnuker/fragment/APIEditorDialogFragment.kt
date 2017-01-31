@@ -37,7 +37,6 @@ import com.bluelinelabs.logansquare.LoganSquare
 import org.mariotaku.restfu.annotation.method.GET
 import org.mariotaku.restfu.http.HttpRequest
 import org.mariotaku.restfu.http.RestHttpClient
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ArrayAdapter
 import de.vanita5.twittnuker.adapter.BaseArrayAdapter
@@ -170,9 +169,7 @@ class APIEditorDialogFragment : BaseDialogFragment() {
             adapter = CustomAPIConfigArrayAdapter(context, configs)
             val builder = AlertDialog.Builder(context)
             builder.setAdapter(adapter, this)
-            if (!BuildConfig.DEBUG) {
-                loaderManager.initLoader(0, null, this)
-            }
+            loaderManager.initLoader(0, null, this)
             return builder.create()
         }
 

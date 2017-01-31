@@ -135,9 +135,7 @@ class StreamingService : Service() {
         clearTwitterInstances()
         unregisterReceiver(mStateReceiver)
         AccountManager.get(this).removeOnAccountsUpdatedListenerSafe(accountChangeObserver)
-        if (BuildConfig.DEBUG) {
-            Log.d(LOGTAG, "Stream service stopped.")
-        }
+        DebugLog.d(LOGTAG, "Stream service stopped.")
         super.onDestroy()
     }
 
@@ -172,9 +170,7 @@ class StreamingService : Service() {
         val accountsList = AccountUtils.getAllAccountDetails(AccountManager.get(this), true).filter { it.credentials is OAuthCredentials }
         val accountKeys = accountsList.map { it.key }.toTypedArray()
         val activatedPreferences = AccountPreferences.getAccountPreferences(this, accountKeys)
-        if (BuildConfig.DEBUG) {
-            Log.d(LOGTAG, "Setting up twitter stream instances")
-        }
+        DebugLog.d(LOGTAG, "Setting up twitter stream instances")
         this.accountKeys = accountKeys
         //        clearTwitterInstances();
         var result = false
@@ -182,7 +178,7 @@ class StreamingService : Service() {
             val twitter = account.newMicroBlogInstance(context = this, cls = TwitterUserStream::class.java)
             val callback = TwidereUserStreamCallback(this, account, preferences!!)
             callbacks.put(account.key, callback)
-            Log.d(LOGTAG, String.format("Stream %s starts...", account.key))
+            DebugLog.d(LOGTAG, String.format("Stream %s starts...", account.key))
             object : Thread() {
                 override fun run() {
                     twitter.getUserStream(callback)

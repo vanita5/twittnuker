@@ -28,7 +28,7 @@ import android.text.TextUtils
 import org.mariotaku.kpreferences.*
 import org.mariotaku.ktextension.toLong
 import de.vanita5.twittnuker.BuildConfig
-import de.vanita5.twittnuker.Constants.KEY_NO_CLOSE_AFTER_TWEET_SENT
+import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.getNonEmptyString

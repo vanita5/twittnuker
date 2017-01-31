@@ -71,8 +71,6 @@ import org.mariotaku.ktextension.checkAnySelfPermissionsGranted
 import org.mariotaku.ktextension.setItemChecked
 import org.mariotaku.ktextension.toTypedArray
 import org.mariotaku.pickncrop.library.MediaPickerActivity
-import org.mariotaku.pickncrop.library.PNCUtils
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.SecretConstants
@@ -1512,17 +1510,11 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                     if (st == null || os == null) throw FileNotFoundException()
                     StreamUtils.copy(st, os, null, null)
                     if (deleteSrc) {
-                        try {
-                            PNCUtils.deleteMedia(activity, source)
-                        } catch (e: SecurityException) {
-                            Log.w(LOGTAG, e)
-                        }
+                        Utils.deleteMedia(activity, source)
                     }
                     return@mapIndexedNotNull ParcelableMediaUpdate(destination.toString(), mediaType)
                 } catch (e: IOException) {
-                    if (BuildConfig.DEBUG) {
-                        Log.w(LOGTAG, e)
-                    }
+                    DebugLog.w(LOGTAG, tr = e)
                     return@mapIndexedNotNull null
                 } finally {
                     Utils.closeSilently(os)
@@ -1599,11 +1591,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
 
         override fun doInBackground(vararg params: Any) {
-            media.map { Uri.parse(it.uri) }.filter { ContentResolver.SCHEME_FILE == it.scheme }.forEach { uri ->
-                val file = File(uri.path)
-                if (!file.delete()) {
-                    Log.d(LOGTAG, String.format("Unable to delete %s", file))
-                }
+            val activity = activityRef.get() ?: return
+            media.map { Uri.parse(it.uri) }.forEach { uri ->
+                Utils.deleteMedia(activity, uri)
             }
         }
 

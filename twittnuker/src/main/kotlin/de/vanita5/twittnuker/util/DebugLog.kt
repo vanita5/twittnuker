@@ -27,6 +27,17 @@ import de.vanita5.twittnuker.BuildConfig
 
 object DebugLog {
 
+    @JvmStatic
+    fun v(tag: String, msg: String, tr: Throwable? = null): Int {
+        if (!BuildConfig.DEBUG) return 0
+        if (tr != null) {
+            return Log.v(tag, msg, tr)
+        } else {
+            return Log.v(tag, msg)
+        }
+    }
+
+    @JvmStatic
     fun d(tag: String, msg: String, tr: Throwable? = null): Int {
         if (!BuildConfig.DEBUG) return 0
         if (tr != null) {
@@ -36,6 +47,7 @@ object DebugLog {
         }
     }
 
+    @JvmStatic
     fun w(tag: String, msg: String? = null, tr: Throwable? = null): Int {
         if (!BuildConfig.DEBUG) return 0
         if (msg != null && tr != null) {
