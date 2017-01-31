@@ -888,6 +888,7 @@
     <string name="message_compose_write_storage_permission_not_granted">Diese Berechtigung wird benötigt, um aufgenommene Fotos/Videos wieder löschen zu können</string>
     <string name="message_video_too_short">Das Video ist zu kurz</string>
     <string name="message_video_too_long">Das Video ist zu lang</string>
+    <string name="message_tab_field_is_required">\"<xliff:g example="Field" id="name">%s</xliff:g>\" darf nicht leer sein</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

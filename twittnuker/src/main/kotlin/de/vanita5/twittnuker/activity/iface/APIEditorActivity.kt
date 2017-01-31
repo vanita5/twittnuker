@@ -46,7 +46,6 @@ import kotlinx.android.synthetic.main.layout_api_editor.*
 import kotlinx.android.synthetic.main.layout_api_editor_advanced_fields.*
 import org.mariotaku.restfu.annotation.method.GET
 import org.mariotaku.restfu.http.HttpRequest
-import org.mariotaku.restfu.http.HttpResponse
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
@@ -57,9 +56,7 @@ import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.account.cred.Credentials
-import de.vanita5.twittnuker.util.JsonSerializer
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
-import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 
 import java.io.IOException
@@ -221,12 +218,13 @@ class APIEditorActivity : BaseActivity(), OnCheckedChangeListener, OnClickListen
                 val request = HttpRequest(GET.METHOD, DEFAULT_API_CONFIGS_URL,
                         null, null, null)
                 try {
-                    return client.newCall(request).execute().use { response ->
-                        if (response.isSuccessful) {
-                            return@use LoganSquare.parseList(response.body.stream(),
-                                    CustomAPIConfig::class.java)
+                    client.newCall(request).execute().use { response ->
+                        // Save to cache
+                        if (!response.isSuccessful) {
+                            return null
                         }
-                        return@use null
+                        // Save to cache
+                        return LoganSquare.parseList(response.body.stream(), CustomAPIConfig::class.java)
                     }
                 } catch (e: IOException) {
                     // Ignore
@@ -239,11 +237,14 @@ class APIEditorActivity : BaseActivity(), OnCheckedChangeListener, OnClickListen
             }
 
             companion object {
-                val DEFAULT_API_CONFIGS_URL = "https://raw.githubusercontent.com/vanita5/twittnuker/master/twittnuker/src/main/assets/data/default_api_configs.json"
+                const val DEFAULT_API_CONFIGS_URL = "https://raw.githubusercontent.com/vanita5/twittnuker/master/twittnuker/src/main/assets/data/default_api_configs.json"
             }
         }
 
-        private inner class CustomAPIConfigArrayAdapter(context: Context, defaultItems: List<CustomAPIConfig>) : ArrayAdapter<CustomAPIConfig>(context, android.R.layout.simple_list_item_1, defaultItems) {
+        private inner class CustomAPIConfigArrayAdapter(
+                context: Context,
+                defaultItems: List<CustomAPIConfig>
+        ) : ArrayAdapter<CustomAPIConfig>(context, android.R.layout.simple_list_item_1, defaultItems) {
 
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view = super.getView(position, convertView, parent)
