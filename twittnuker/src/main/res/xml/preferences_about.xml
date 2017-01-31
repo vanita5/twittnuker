@@ -24,11 +24,11 @@
 <!--suppress AndroidElementNotAllowed -->
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/about">
+    android:title="@string/title_about">
 
     <PreferenceCategory
         android:key="cat_about"
-        android:title="@string/about">
+        android:title="@string/title_about">
         <de.vanita5.twittnuker.preference.AppVersionPreference />
 
         <Preference

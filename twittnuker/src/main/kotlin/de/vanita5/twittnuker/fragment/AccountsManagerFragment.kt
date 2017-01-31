@@ -63,7 +63,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.IntentUtils
-import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.support.removeAccountSupport
 
 class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<List<AccountDetails>>,
@@ -97,7 +96,7 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
         }
         listView.setOnCreateContextMenuListener(this)
         listView.emptyView = emptyView
-        emptyText.setText(R.string.no_account)
+        emptyText.setText(R.string.message_toast_no_account)
         emptyIcon.setImageResource(R.drawable.ic_info_error_generic)
         setListShown(false)
 

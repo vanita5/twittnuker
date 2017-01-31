@@ -1022,7 +1022,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             super.onPostExecute(result);
             if (result == null) return;
             if (result.hasData() || isMessageNotFound(result.getException())) {
-                Utils.showInfoMessage(context, R.string.direct_message_deleted, false);
+                Utils.showInfoMessage(context, R.string.message_direct_message_deleted, false);
             } else {
                 Utils.showErrorMessage(context, R.string.action_deleting, result.getException(), true);
             }
@@ -1084,7 +1084,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             super.onPostExecute(result);
             if (result == null) return;
             if (result.hasData() || isMessageNotFound(result.getException())) {
-                Utils.showInfoMessage(context, R.string.direct_message_deleted, false);
+                Utils.showInfoMessage(context, R.string.message_direct_message_deleted, false);
             } else {
                 Utils.showErrorMessage(context, R.string.action_deleting, result.getException(), true);
             }
@@ -1183,7 +1183,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                 final ParcelableStatus status = result.getData();
                 taskEvent.setStatus(status);
                 taskEvent.setSucceeded(true);
-                Utils.showInfoMessage(context, R.string.status_unfavorited, false);
+                Utils.showInfoMessage(context, R.string.message_status_unfavorited, false);
             } else {
                 taskEvent.setSucceeded(false);
                 Utils.showErrorMessage(context, R.string.action_unfavoriting, result.getException(), true);

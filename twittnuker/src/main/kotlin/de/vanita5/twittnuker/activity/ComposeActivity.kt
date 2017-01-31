@@ -182,7 +182,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         if (currentTask?.status == AsyncTask.Status.RUNNING) return
         if (!shouldSkipDraft && hasComposingStatus()) {
             saveToDrafts()
-            Toast.makeText(this, R.string.status_saved_to_draft, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.message_toast_status_saved_to_draft, Toast.LENGTH_SHORT).show()
             shouldSkipDraft = true
             finish()
         } else {
@@ -194,7 +194,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     override fun onDestroy() {
         if (!shouldSkipDraft && hasComposingStatus() && isFinishing) {
             saveToDrafts()
-            Toast.makeText(this, R.string.status_saved_to_draft, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.message_toast_status_saved_to_draft, Toast.LENGTH_SHORT).show()
         }
         super.onDestroy()
     }
@@ -454,7 +454,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         val am = AccountManager.get(this)
         val accounts = AccountUtils.getAccounts(am)
         if (accounts.isEmpty()) {
-            Toast.makeText(this, R.string.no_account, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.message_toast_no_account, Toast.LENGTH_SHORT).show()
             shouldSkipDraft = true
             finish()
             return
@@ -682,7 +682,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         if (KeyboardShortcutConstants.ACTION_NAVIGATION_BACK == action) {
             if (editText.length() == 0 && !textChanged) {
                 if (!navigateBackPressed) {
-                    Toast.makeText(this, getString(R.string.press_again_to_close), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.message_toast_press_again_to_close), Toast.LENGTH_SHORT).show()
                     editText.removeCallbacks(backTimeoutRunnable)
                     editText.postDelayed(backTimeoutRunnable, 2000)
                 } else {
@@ -1176,7 +1176,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                         // That should not happen
                     }
                 } else {
-                    Toast.makeText(this, R.string.cannot_get_location, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.message_toast_cannot_get_location, Toast.LENGTH_SHORT).show()
                     kPreferences.edit {
                         this[attachLocationKey] = false
                         this[attachPreciseLocationKey] = false
@@ -1186,13 +1186,13 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             }
             REQUEST_OPEN_CAMERA_PERMISSION -> {
                 if (!checkAnySelfPermissionsGranted(AndroidPermission.WRITE_EXTERNAL_STORAGE)) {
-                    Toast.makeText(this, R.string.message_compose_write_storage_permission_not_granted, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.message_toast_compose_write_storage_no_permission, Toast.LENGTH_SHORT).show()
                 }
                 openCamera()
             }
             REQUEST_PICK_MEDIA_PERMISSION -> {
                 if (!checkAnySelfPermissionsGranted(AndroidPermission.WRITE_EXTERNAL_STORAGE)) {
-                    Toast.makeText(this, R.string.message_compose_write_storage_permission_not_granted, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.message_toast_compose_write_storage_no_permission, Toast.LENGTH_SHORT).show()
                 }
                 pickMedia()
             }
@@ -1255,7 +1255,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 locationListener?.onLocationChanged(location)
             }
         } else {
-            Toast.makeText(this, R.string.cannot_get_location, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.message_toast_cannot_get_location, Toast.LENGTH_SHORT).show()
         }
         return provider != null
     }
@@ -1265,7 +1265,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             try {
                 startLocationUpdateIfEnabled()
             } catch (e: SecurityException) {
-                Toast.makeText(this, R.string.cannot_get_location, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.message_toast_cannot_get_location, Toast.LENGTH_SHORT).show()
             }
         } else {
             val permissions = arrayOf(AndroidPermission.ACCESS_COARSE_LOCATION, AndroidPermission.ACCESS_FINE_LOCATION)
@@ -1293,7 +1293,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         val tweetLength = validator.getTweetLength(text)
         val maxLength = statusTextCount.maxLength
         if (accountsAdapter.isSelectionEmpty) {
-            editText.error = getString(R.string.no_account_selected)
+            editText.error = getString(R.string.message_toast_no_account_selected)
             return
         } else if (!hasMedia && (TextUtils.isEmpty(text) || noReplyContent(text))) {
             editText.error = getString(R.string.error_message_no_content)
@@ -1578,7 +1578,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             activity.removeAllMedia(Arrays.asList(*media))
             activity.setMenu()
             if (!result) {
-                Toast.makeText(activity, R.string.error_occurred, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.message_toast_error_occurred, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -1650,7 +1650,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                     if (tag is Address) {
                         textView.text = tag.locality
                     } else if (tag is NoAddress) {
-                        textView.setText(R.string.your_coarse_location)
+                        textView.setText(R.string.label_location_your_coarse_location)
                     } else {
                         textView.setText(R.string.getting_location)
                     }
@@ -1675,7 +1675,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                     if (tag is Address) {
                         textView.text = tag.locality
                     } else {
-                        textView.setText(R.string.your_coarse_location)
+                        textView.setText(R.string.label_location_your_coarse_location)
                         textView.tag = NoAddress()
                     }
                 } else {

@@ -429,7 +429,7 @@
     <string name="created_by">أنشأها <xliff:g id="created_by">%s</xliff:g></string>
     <string name="add_to_list">إضافة إلى القائمة</string>
     <string name="account_delete_confirm_title">حذف حساب</string>
-    <string name="account_delete_confirm_message">سيُحذف هذا الحساب من تويدر.</string>
+    <string name="account_delete_confirm_message">سيُحذف هذا الحساب من Twittnuker.</string>
     <string name="theme">السمة</string>
     <string name="theme_dark">داكن</string>
     <string name="theme_light">فاتح</string>
@@ -454,7 +454,7 @@
     <!-- Next item (tweet, user etc.) -->
     <string name="next_item">التالي</string>
     <string name="invalid_tab">تبويبة معطلة</string>
-    <string name="send_crash_report">إرسال تقرير حول تعطل تويدر</string>
+    <string name="send_crash_report">إرسال تقرير حول تعطل Twittnuker</string>
     <string name="add_to_filter">إضافة إلى لائحة الكتم</string>
     <string name="user_filter_name">المستخدم : <xliff:g id="name">%s</xliff:g></string>
     <string name="keyword_filter_name">الكلمة : <xliff:g id="name">%s</xliff:g></string>
@@ -477,7 +477,7 @@
     <string name="report_user">تقرير <xliff:g id="name">%s</xliff:g></string>
   <string name="report_user_confirm_message">الإبلاغ عن المستخدم <xliff:g id="name">%s</xliff:g> لإرساله سبام؟
 سوف تقوم بحظر هذا المستخدم أيضاً.</string>
-    <string name="twidere_test">تجريب تويدر</string>
+    <string name="twidere_test">تجريب Twittnuker</string>
     <string name="unread_count">عدد غير المقروء</string>
     <string name="developed_by">طوّره</string>
     <string name="project_account">حساب المشروع</string>
@@ -597,7 +597,7 @@
     <string name="save_to_gallery">حفظ في المعرض</string>
     <string name="unknown_location">مكان مجهول</string>
     <string name="no_tab">ولا تبويبة</string>
-    <!--<string name="usage_statistics_notification_summary">ساعدنا كي نحسن تويدر!</string>-->
+    <!--<string name="usage_statistics_notification_summary">ساعدنا كي نحسن Twittnuker!</string>-->
     <!-- 'Tweet' here is a verb -->
     <!--<string name="server_address">عنوان السيرفر</string>-->
     <!--<string name="security_key">مفتاح الأمان</string>-->
@@ -625,7 +625,7 @@
     <!-- GNU social group like https://quitter.se/group/qvitter -->
     <string name="load_defaults">تحميل الإعدادات الافتراضية</string>
     <!-- Normally you don't need to translate this -->
-    <string name="provider_default">تويدر</string>
+    <string name="provider_default">Twittnuker</string>
     <!-- Fanfou is a Chinese micro blogging website http://fanfou.com/ -->
     <string name="provider_fanfou">Fanfou</string>
     <string name="provider_quitter_se">Quitter.se</string>

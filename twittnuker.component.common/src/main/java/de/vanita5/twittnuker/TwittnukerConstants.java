@@ -249,8 +249,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
     String ICON_SPECIAL_TYPE_CUSTOMIZE = "_customize";
 
-    String METADATA_KEY_PLUS_SERVICE_SIGN_IN_LABEL = "de.vanita5.twittnuker.plus_service.sign_in_label";
-
 
     int TAB_CODE_HOME_TIMELINE = 1;
     int TAB_CODE_NOTIFICATIONS_TIMELINE = 2;

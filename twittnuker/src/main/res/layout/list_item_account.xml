@@ -48,9 +48,9 @@
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/drag_handle"
         android:layout_toRightOf="@+id/drag_handle"
-        android:contentDescription="@string/your_profile_image"
+        android:contentDescription="@string/label_your_profile_image"
         android:scaleType="fitCenter"
-        tools:src="@mipmap/ic_launcher"/>
+        tools:src="@drawable/ic_account_logo_twitter"/>
 
     <ImageView
         android:id="@+id/account_type"
