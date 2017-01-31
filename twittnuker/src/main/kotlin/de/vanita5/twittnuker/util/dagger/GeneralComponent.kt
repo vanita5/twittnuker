@@ -27,7 +27,6 @@ import dagger.Component
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.activity.ComposeActivity
 import de.vanita5.twittnuker.activity.MediaViewerActivity
-import de.vanita5.twittnuker.activity.iface.APIEditorActivity
 import de.vanita5.twittnuker.adapter.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.fragment.*
@@ -137,7 +136,7 @@ interface GeneralComponent {
 
     fun inject(task: UpdateProfileImageTask<Any>)
 
-    fun inject(loader: APIEditorActivity.LoadDefaultsChooserDialogFragment.DefaultAPIConfigLoader)
+    fun inject(loader: APIEditorDialogFragment.LoadDefaultsChooserDialogFragment.DefaultAPIConfigLoader)
 
     fun inject(task: UpdateStatusTask)
 

@@ -21,9 +21,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest
+    package="de.vanita5.twittnuker"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="de.vanita5.twittnuker"
     android:installLocation="internalOnly">
 
     <uses-sdk tools:overrideLibrary="android.support.customtabs,net.ypresto.androidtranscoder"/>
@@ -272,12 +272,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.HomeActivity"/>
         </activity>
-        <activity
-            android:name=".activity.iface.APIEditorActivity"
-            android:icon="@drawable/ic_action_twittnuker"
-            android:label="@string/edit_api"
-            android:theme="@style/Theme.Twidere.Dialog"
-            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".activity.AccountSelectorActivity"
             android:icon="@drawable/ic_action_twittnuker"

@@ -889,6 +889,10 @@
     <string name="message_video_too_short">Das Video ist zu kurz</string>
     <string name="message_video_too_long">Das Video ist zu lang</string>
     <string name="message_tab_field_is_required">\"<xliff:g example="Field" id="name">%s</xliff:g>\" darf nicht leer sein</string>
+    <string name="label_account_type">Typ</string>
+    <string name="account_type_twitter">Twitter</string>
+    <string name="account_type_fanfou">Fanfou</string>
+    <string name="account_type_statusnet">StatusNet</string>
 
     <!-- Twittnuker -->
     <string name="stop_auto_refresh_when_battery_low_summary">Deaktiviere Autorefresh bei niedrigem Akkustand</string>

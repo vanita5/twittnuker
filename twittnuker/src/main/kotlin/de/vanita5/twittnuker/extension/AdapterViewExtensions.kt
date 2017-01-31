@@ -20,25 +20,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference
+package de.vanita5.twittnuker.extension
 
-import android.content.Context
-import android.support.v7.preference.DialogPreference
-import android.support.v7.preference.PreferenceFragmentCompat
-import android.util.AttributeSet
-import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.fragment.APIEditorDialogFragment
-import de.vanita5.twittnuker.preference.iface.IDialogPreference
+import android.widget.AdapterView
 
-class DefaultAPIPreference(
-        context: Context,
-        attrs: AttributeSet? = null
-) : DialogPreference(context, attrs, R.attr.dialogPreferenceStyle), IDialogPreference {
-
-    override fun displayDialog(fragment: PreferenceFragmentCompat) {
-        val df = APIEditorDialogFragment()
-        df.setTargetFragment(fragment, 0)
-        df.show(fragment.fragmentManager, key)
+fun AdapterView<*>.setSelectedItem(obj: Any?) {
+    for (i in 0 until count) {
+        if (adapter.getItem(i) == obj) {
+            setSelection(i)
+            return
+        }
     }
-
 }
