@@ -49,6 +49,7 @@ import org.mariotaku.chameleon.ChameleonActivity
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.kpreferences.get
+import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
@@ -57,6 +58,7 @@ import de.vanita5.twittnuker.activity.iface.IThemedActivity
 import de.vanita5.twittnuker.constant.themeColorKey
 import de.vanita5.twittnuker.constant.themeKey
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
+import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.preference.iface.IDialogPreference
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
@@ -96,6 +98,10 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity<BaseActivity>, 
     lateinit var userColorNameManager: UserColorNameManager
     @Inject
     lateinit var extraFeaturesService: ExtraFeaturesService
+    @Inject
+    lateinit var defaultFeatures: DefaultFeatures
+    @Inject
+    lateinit var restHttpClient: RestHttpClient
 
     private val actionHelper = IExtendedActivity.ActionHelper(this)
 
