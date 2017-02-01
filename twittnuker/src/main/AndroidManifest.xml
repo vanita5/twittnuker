@@ -21,9 +21,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest
-    package="de.vanita5.twittnuker"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    package="de.vanita5.twittnuker"
     android:installLocation="internalOnly">
 
     <uses-sdk tools:overrideLibrary="android.support.customtabs,net.ypresto.androidtranscoder"/>
@@ -401,6 +401,16 @@
                 <data android:host="www.twitter.com"/>
                 <data android:host="mobile.twitter.com"/>
                 <data android:host="fanfou.com"/>
+
+                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+            <intent-filter>
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
                 <data
                     android:host="twittnuker.org"
                     android:pathPrefix="/external"/>
