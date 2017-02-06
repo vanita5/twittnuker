@@ -34,15 +34,11 @@ import android.os.Parcelable
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentActivity
 import android.text.TextUtils
-import android.text.TextUtils.isEmpty
-import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.MediaViewerActivity
 import de.vanita5.twittnuker.annotation.Referral
-import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
 import de.vanita5.twittnuker.fragment.SensitiveContentWarningDialogFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
@@ -392,11 +388,13 @@ object IntentUtils {
         context.startActivity(intent)
     }
 
-    fun openStatus(context: Context, accountKey: UserKey?,
-                   statusId: String) {
+    fun status(accountKey: UserKey?, statusId: String): Intent {
         val uri = LinkCreator.getTwidereStatusLink(accountKey, statusId)
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        context.startActivity(intent)
+        return Intent(Intent.ACTION_VIEW, uri)
+    }
+
+    fun openStatus(context: Context, accountKey: UserKey?, statusId: String) {
+        context.startActivity(status(accountKey, statusId))
     }
 
     fun openStatus(context: Context, status: ParcelableStatus, activityOptions: Bundle? = null) {
