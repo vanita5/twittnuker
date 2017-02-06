@@ -404,17 +404,17 @@
     <string name="message_direct_message_sent">Messaggio diretto inviato.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <!-- Toast message for network errors -->
-    <string name="message_network_error">Errore di rete.</string>
+    <string name="message_toast_network_error">Errore di rete.</string>
     <string name="message_please_wait">Attendere prego.</string>
-    <string name="message_retweet_cancelled">Retweet annullato.</string>
-    <string name="message_search_deleted">Ricerca eliminata.</string>
-    <string name="message_search_name_deleted">Ricerca \"<xliff:g id="name">%s</xliff:g>\" eliminata.</string>
-    <string name="message_search_name_saved">Ricerca \"<xliff:g id="name">%s</xliff:g>\" salvata.</string>
-    <string name="message_search_saved">Ricerca salvata.</string>
-    <string name="message_status_deleted">Tweet eliminato.</string>
-    <string name="message_status_favorited">Tweet inserito tra i preferito.</string>
-    <string name="message_status_retweeted">Ritwittato.</string>
-    <string name="message_status_unfavorited">Tweet rimosso dai preferiti.</string>
+    <string name="message_toast_retweet_cancelled">Retweet annullato.</string>
+    <string name="message_toast_search_deleted">Ricerca eliminata.</string>
+    <string name="message_toast_search_name_deleted">Ricerca \"<xliff:g id="name">%s</xliff:g>\" eliminata.</string>
+    <string name="message_toast_search_name_saved">Ricerca \"<xliff:g id="name">%s</xliff:g>\" salvata.</string>
+    <string name="message_toast_search_saved">Ricerca salvata.</string>
+    <string name="message_toast_status_deleted">Tweet eliminato.</string>
+    <string name="message_toast_status_favorited">Tweet inserito tra i preferito.</string>
+    <string name="message_toast_status_retweeted">Ritwittato.</string>
+    <string name="message_toast_status_unfavorited">Tweet rimosso dai preferiti.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -438,8 +438,8 @@
     <string name="message_toast_status_updated">Tweet inviato.</string>
     <string name="message_toast_wrong_api_key">URL delle API non corretto, o consumer key/secret errata. Per favore, controllale.</string>
     <string name="message_user_muted">Utente aggiunto alla lista dei filtrati. Non vedrai i suoi tweet nella timeline o tra le menzioni.</string>
-    <string name="message_user_unmuted">Rimuovi questo utente dal filtro lista.</string>
-    <string name="message_users_muted">Utenti aggiunti alla lista dei filtrati. Non vedrai i loro tweet nella timeline o tra le menzioni.</string>
+    <string name="message_toast_user_filters_removed">Rimuovi questo utente dal filtro lista.</string>
+    <string name="message_toast_users_filters_added">Utenti aggiunti alla lista dei filtrati. Non vedrai i loro tweet nella timeline o tra le menzioni.</string>
     <string name="more">Altro</string>
     <string name="multi_select">Selezione multipla</string>
     <string name="mute_user">Muto <xliff:g id="name">%s</xliff:g></string>

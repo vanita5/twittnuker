@@ -168,8 +168,8 @@
     <string name="twitter_mute_user">Silencia l\'usuari</string>
     <string name="twitter_muted_users">Usuaris silenciats</string>
     <string name="message_user_muted">S\'ha afegit aquest usuari al filtre. No veureu les piulades d\'aquest usuari a la vostra cronologia ni a la llista de mencions.</string>
-    <string name="message_users_muted">S\'han afegit usuaris al filtre. No veureu les piulades d\'aquests usuaris a la vostra cronologia ni a la llista de mencions.</string>
-    <string name="message_user_unmuted">S\'ha eliminat aquest usuari de la llista de filtres.</string>
+    <string name="message_toast_users_filters_added">S\'han afegit usuaris al filtre. No veureu les piulades d\'aquests usuaris a la vostra cronologia ni a la llista de mencions.</string>
+    <string name="message_toast_user_filters_removed">S\'ha eliminat aquest usuari de la llista de filtres.</string>
     <string name="inbox">Safata d\'entrada</string>
     <string name="other_settings">Altres paràmetres</string>
     <string name="auto_refresh">Actualització automàtica</string>
@@ -396,10 +396,10 @@
     <string name="retweet_cancelled">S\'ha canceŀlat la repiulada.</string>
     <string name="direct_message_sent">S\'ha enviat el missatge directe.</string>
     <string name="direct_message_deleted">S\'ha esborrat el missatge directe.</string>
-    <string name="message_search_saved">Cerca desada.</string>
-    <string name="message_search_name_saved">La cerca «<xliff:g id="name">%s</xliff:g>» ha estat desada.</string>
-    <string name="message_search_deleted">La cerca ha estat esborrada.</string>
-    <string name="message_search_name_deleted">La cerca «<xliff:g id="name">%s</xliff:g>» ha estat esborrada.</string>
+    <string name="message_toast_search_saved">Cerca desada.</string>
+    <string name="message_toast_search_name_saved">La cerca «<xliff:g id="name">%s</xliff:g>» ha estat desada.</string>
+    <string name="message_toast_search_deleted">La cerca ha estat esborrada.</string>
+    <string name="message_toast_search_name_deleted">La cerca «<xliff:g id="name">%s</xliff:g>» ha estat esborrada.</string>
     <string name="import_from">Importa des de&#8230;</string>
     <string name="link_to_quoted_status">Enllaça la piulada citada</string>
     <string name="quote_original_status">Cita la piulada original</string>

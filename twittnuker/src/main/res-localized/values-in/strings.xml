@@ -448,24 +448,24 @@
   <string name="message_direct_message_sent">Direct meesage terkirim.</string>
   <string name="message_error_invalid_account">Beberapa data akun rusak, Twittnuker akan menghapus akun tersebut untuk mencegah kerusakan.</string>
   <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-  <string name="message_extra_features_not_purchased">Fitur yang disempurnakan tidak dibeli</string>
+  <string name="message_toast_extra_features_not_purchased">Fitur yang disempurnakan tidak dibeli</string>
   <!-- Toast message for network errors -->
-  <string name="message_network_error">Masalah Jaringan.</string>
+  <string name="message_toast_network_error">Masalah Jaringan.</string>
   <string name="message_permission_request_compose_location">Twittnuker meminta ijin untuk menambahkan lokasi pada cuitan.</string>
   <string name="message_permission_request_save_media">Twittnuker meminta ijin untuk menyimpan media pada ruang penyimpanan.</string>
   <string name="message_permission_request_share_media">Twittnuker meminta ijin untuk membagikan media pada beberapa aplikasi.</string>
   <string name="message_please_wait">Tunggu sebentar.</string>
-  <string name="message_retweet_cancelled">Retweet dibatalkan.</string>
-  <string name="message_search_deleted">Pencarian terhapus.</string>
-  <string name="message_search_name_deleted">Pencarian \"<xliff:g id="name">%s</xliff:g>\" terhapus.</string>
-  <string name="message_search_name_saved">Pencarian \"<xliff:g id="name">%s</xliff:g>\" tersimpan.</string>
-  <string name="message_search_saved">Pencarian tersimpan.</string>
-  <string name="message_status_deleted">Twit dihapus.</string>
-  <string name="message_status_favorited">Twit difavoritkan.</string>
-  <string name="message_status_like_removed">Hapus tanda suka.</string>
-  <string name="message_status_liked">Cuitan disukai.</string>
-  <string name="message_status_retweeted">Di-retweet.</string>
-  <string name="message_status_unfavorited">Twit batal difavoritkan.</string>
+  <string name="message_toast_retweet_cancelled">Retweet dibatalkan.</string>
+  <string name="message_toast_search_deleted">Pencarian terhapus.</string>
+  <string name="message_toast_search_name_deleted">Pencarian \"<xliff:g id="name">%s</xliff:g>\" terhapus.</string>
+  <string name="message_toast_search_name_saved">Pencarian \"<xliff:g id="name">%s</xliff:g>\" tersimpan.</string>
+  <string name="message_toast_search_saved">Pencarian tersimpan.</string>
+  <string name="message_toast_status_deleted">Twit dihapus.</string>
+  <string name="message_toast_status_favorited">Twit difavoritkan.</string>
+  <string name="message_toast_status_like_removed">Hapus tanda suka.</string>
+  <string name="message_toast_status_liked">Cuitan disukai.</string>
+  <string name="message_toast_status_retweeted">Di-retweet.</string>
+  <string name="message_toast_status_unfavorited">Twit batal difavoritkan.</string>
   <string name="message_sync_data_connect_hint">Sambungkan Twittnuker dengan penyimpanan jaringan untuk sinkronisasi data</string>
   <string name="message_sync_data_synced_with_name">Twittnuker telah disinkronisasikan dengan <xliff:g example="ownCloud" id="name">%s</xliff:g></string>
   <string name="message_sync_disconnect_from_name_confirm">Putuskan dari <xliff:g example="ownCloud" id="name">%s</xliff:g>?</string>
@@ -496,8 +496,8 @@
   <string name="message_toast_wrong_api_key">Kesalahan pada API url atau consumer key/secret, coba cek kembali.</string>
   <string name="message_toast_wrong_username_password">Nama pengguna atau kata sandi salah</string>
   <string name="message_user_muted">Pengguna telah ditambah ke daftar saringan. Anda tidak akan melihat tweet-nya di timeline/mention.</string>
-  <string name="message_user_unmuted">Hapus pengguna ini dari daftar saring.</string>
-  <string name="message_users_muted">Menambahkan para pengguna ini ke daftar filter. Anda tidak akan lagi melihat tweet dari pengguna ini di linimasa home/daftar mention anda.</string>
+  <string name="message_toast_user_filters_removed">Hapus pengguna ini dari daftar saring.</string>
+  <string name="message_toast_users_filters_added">Menambahkan para pengguna ini ke daftar filter. Anda tidak akan lagi melihat tweet dari pengguna ini di linimasa home/daftar mention anda.</string>
   <string name="more">Lebih</string>
   <string name="multi_select">Pilih banyak</string>
   <string name="mute_user">Senyapkan <xliff:g id="name">%s</xliff:g></string>

@@ -58,6 +58,7 @@
   <string name="action_open_in_browser">在瀏覽器中打開</string>
   <string name="action_pick_color">選取顏色</string>
   <string name="action_purchase">購買</string>
+  <string name="action_purchase_features_pack">購買功能包</string>
   <string name="action_quote">引用</string>
   <string name="action_record_video">錄影</string>
   <string name="action_refresh">更新</string>
@@ -92,8 +93,11 @@
   <string name="action_subscribe">訂閲</string>
   <string name="action_subscribing_to_list">訂閲列表</string>
   <!-- [verb] Connect to network storage like Dropbox and Google Drive etc -->
+  <string name="action_sync_connect_to_storage">連接</string>
   <!-- [verb] Disconnect from network storage -->
+  <string name="action_sync_disconnect">斷開連接</string>
   <string name="action_sync_settings">設定</string>
+  <string name="action_sync_sync_now">立刻同步</string>
   <string name="action_take_photo">拍照</string>
   <string name="action_toggle">切換</string>
   <string name="action_translate">翻譯</string>
@@ -379,6 +383,7 @@
   <string name="keyboard_shortcut_hint">按下按鍵</string>
   <string name="keyboard_shortcuts">快捷鍵</string>
   <string name="keyword_filter_name">關鍵詞：<xliff:g id="name">%s</xliff:g></string>
+  <string name="label_account_type">帳號類型</string>
   <string name="label_auth_type">驗證方式</string>
   <string name="label_background_operation_service">後台操作服務</string>
   <string name="label_data_provider">Twittnuker 資料庫存儲</string>
@@ -441,19 +446,19 @@
   <string name="message_direct_message_sent">私信已發送</string>
   <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
   <!-- Toast message for network errors -->
-  <string name="message_network_error">網路錯誤</string>
+  <string name="message_toast_network_error">網路錯誤</string>
   <string name="message_please_wait">請稍等</string>
-  <string name="message_retweet_cancelled">轉推已取消</string>
-  <string name="message_search_deleted">搜尋已刪除</string>
-  <string name="message_search_name_deleted">搜尋 \"<xliff:g id="name">%s</xliff:g>\" 已刪除</string>
-  <string name="message_search_name_saved">搜尋 \"<xliff:g id="name">%s</xliff:g>\" 已儲存</string>
-  <string name="message_search_saved">搜尋已保存</string>
-  <string name="message_status_deleted">推文已刪除</string>
-  <string name="message_status_favorited">推文已收藏</string>
-  <string name="message_status_like_removed">已取消喜歡了推文。</string>
-  <string name="message_status_liked">已喜歡了推文</string>
-  <string name="message_status_retweeted">已轉推</string>
-  <string name="message_status_unfavorited">推文已取消收藏</string>
+  <string name="message_toast_retweet_cancelled">轉推已取消</string>
+  <string name="message_toast_search_deleted">搜尋已刪除</string>
+  <string name="message_toast_search_name_deleted">搜尋 \"<xliff:g id="name">%s</xliff:g>\" 已刪除</string>
+  <string name="message_toast_search_name_saved">搜尋 \"<xliff:g id="name">%s</xliff:g>\" 已儲存</string>
+  <string name="message_toast_search_saved">搜尋已保存</string>
+  <string name="message_toast_status_deleted">推文已刪除</string>
+  <string name="message_toast_status_favorited">推文已收藏</string>
+  <string name="message_toast_status_like_removed">已取消喜歡了推文。</string>
+  <string name="message_toast_status_liked">已喜歡了推文</string>
+  <string name="message_toast_status_retweeted">已轉推</string>
+  <string name="message_toast_status_unfavorited">推文已取消收藏</string>
   <!--
       ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
       ~ periods should be omitted
@@ -480,8 +485,8 @@
   <string name="message_toast_wrong_api_key">API地址或者consumer key/secret不正確，請檢查</string>
   <string name="message_toast_wrong_username_password">帳號或密碼錯誤</string>
   <string name="message_user_muted">您過濾了這個用戶，你將不會在主頁/提及中看到這個用戶的推文</string>
-  <string name="message_user_unmuted">從過濾器列表中刪除了這位使用者</string>
-  <string name="message_users_muted">您過濾了這些用戶，你將不會在主頁/提及中看到這些用戶的推文</string>
+  <string name="message_toast_user_filters_removed">從過濾器列表中刪除了這位使用者</string>
+  <string name="message_toast_users_filters_added">您過濾了這些用戶，你將不會在主頁/提及中看到這些用戶的推文</string>
   <string name="more">更多</string>
   <string name="multi_select">多選</string>
   <string name="mute_user">靜音<xliff:g id="name">%s</xliff:g></string>

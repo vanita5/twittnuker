@@ -404,19 +404,19 @@
     <string name="message_direct_message_sent">Yksityisviesti lähetetty.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <!-- Toast message for network errors -->
-    <string name="message_network_error">Verkkovirhe.</string>
+    <string name="message_toast_network_error">Verkkovirhe.</string>
     <string name="message_please_wait">Odota.</string>
-    <string name="message_retweet_cancelled">Uudelleentwiittaus peruttu.</string>
-    <string name="message_search_deleted">Haku poistettu.</string>
-    <string name="message_search_name_deleted">Haku \"<xliff:g id="name">%s</xliff:g>\" poistettu.</string>
-    <string name="message_search_name_saved">Haku \"<xliff:g id="name">%s</xliff:g>\" tallennettu.</string>
-    <string name="message_search_saved">Haku tallennettu.</string>
-    <string name="message_status_deleted">Twiitti poistettu.</string>
-    <string name="message_status_favorited">Twiitti lisätty suosikkeihin.</string>
-    <string name="message_status_like_removed">Tykkäys poistettu.</string>
-    <string name="message_status_liked">Tykkäsit twiitistä.</string>
-    <string name="message_status_retweeted">Uudelleentwiitattu.</string>
-    <string name="message_status_unfavorited">Twiitti poistettu suosikeista.</string>
+    <string name="message_toast_retweet_cancelled">Uudelleentwiittaus peruttu.</string>
+    <string name="message_toast_search_deleted">Haku poistettu.</string>
+    <string name="message_toast_search_name_deleted">Haku \"<xliff:g id="name">%s</xliff:g>\" poistettu.</string>
+    <string name="message_toast_search_name_saved">Haku \"<xliff:g id="name">%s</xliff:g>\" tallennettu.</string>
+    <string name="message_toast_search_saved">Haku tallennettu.</string>
+    <string name="message_toast_status_deleted">Twiitti poistettu.</string>
+    <string name="message_toast_status_favorited">Twiitti lisätty suosikkeihin.</string>
+    <string name="message_toast_status_like_removed">Tykkäys poistettu.</string>
+    <string name="message_toast_status_liked">Tykkäsit twiitistä.</string>
+    <string name="message_toast_status_retweeted">Uudelleentwiitattu.</string>
+    <string name="message_toast_status_unfavorited">Twiitti poistettu suosikeista.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -439,8 +439,8 @@
     <string name="message_toast_status_updated">Twiitti lähetetty.</string>
     <string name="message_toast_wrong_api_key">Virheellinen API-osoite tai kulutusavain/salaus. Tarkista vielä kyseiset kentät.</string>
     <string name="message_user_muted">Käyttäjä lisättiin suodatusluetteloon. Et näe tämän käyttäjän twiittejä omalla aikajanallasi tai maininnoissasi.</string>
-    <string name="message_user_unmuted">Tämä käyttäjä poistettiin suodatuslistasta.</string>
-    <string name="message_users_muted">Käyttäjät lisättiin suodatusluetteloon. Et näe näiden käyttäjien twiittejä omalla aikajanallasi tai maininnoissasi.</string>
+    <string name="message_toast_user_filters_removed">Tämä käyttäjä poistettiin suodatuslistasta.</string>
+    <string name="message_toast_users_filters_added">Käyttäjät lisättiin suodatusluetteloon. Et näe näiden käyttäjien twiittejä omalla aikajanallasi tai maininnoissasi.</string>
     <string name="more">Lisää</string>
     <string name="multi_select">Monivalinta</string>
     <string name="mute_user">Hiljennä <xliff:g id="name">%s</xliff:g></string>

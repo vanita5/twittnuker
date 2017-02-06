@@ -417,19 +417,19 @@
     <string name="message_direct_message_sent">Mensagem direta enviada.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <!-- Toast message for network errors -->
-    <string name="message_network_error">Erro de rede.</string>
+    <string name="message_toast_network_error">Erro de rede.</string>
     <string name="message_please_wait">Por favor, espere.</string>
-    <string name="message_retweet_cancelled">Retweet cancelado.</string>
-    <string name="message_search_deleted">Pesquisa excluída.</string>
-    <string name="message_search_name_deleted">Pesquisa \"<xliff:g id="name">%s</xliff:g>\" excluída.</string>
-    <string name="message_search_name_saved">Busca \"<xliff:g id="name">%s</xliff:g>\" salva.</string>
-    <string name="message_search_saved">Pesquisa salva.</string>
-    <string name="message_status_deleted">Tweet excluído.</string>
-    <string name="message_status_favorited">Tweet marcado como favorito.</string>
-    <string name="message_status_like_removed">Curtida removida.</string>
-    <string name="message_status_liked">Tweet curtido.</string>
-    <string name="message_status_retweeted">Retweetado.</string>
-    <string name="message_status_unfavorited">Tweet desmarcado como favorito.</string>
+    <string name="message_toast_retweet_cancelled">Retweet cancelado.</string>
+    <string name="message_toast_search_deleted">Pesquisa excluída.</string>
+    <string name="message_toast_search_name_deleted">Pesquisa \"<xliff:g id="name">%s</xliff:g>\" excluída.</string>
+    <string name="message_toast_search_name_saved">Busca \"<xliff:g id="name">%s</xliff:g>\" salva.</string>
+    <string name="message_toast_search_saved">Pesquisa salva.</string>
+    <string name="message_toast_status_deleted">Tweet excluído.</string>
+    <string name="message_toast_status_favorited">Tweet marcado como favorito.</string>
+    <string name="message_toast_status_like_removed">Curtida removida.</string>
+    <string name="message_toast_status_liked">Tweet curtido.</string>
+    <string name="message_toast_status_retweeted">Retweetado.</string>
+    <string name="message_toast_status_unfavorited">Tweet desmarcado como favorito.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -453,8 +453,8 @@
     <string name="message_toast_wrong_api_key">URL da API ou chave de usuário incorreta, verifique novamente.</string>
     <string name="message_toast_wrong_username_password">Usuário/senha incorretos</string>
     <string name="message_user_muted">Adicionar este usuário a lista de filtros. Você não verá tweets deste usuário em sua timeline/lista de menções.</string>
-    <string name="message_user_unmuted">Usuário removido da lista de filtros.</string>
-    <string name="message_users_muted">Usuários adicionados aos filtros. Você não verá tweets destes usuários em sua timeline e lista de menções.</string>
+    <string name="message_toast_user_filters_removed">Usuário removido da lista de filtros.</string>
+    <string name="message_toast_users_filters_added">Usuários adicionados aos filtros. Você não verá tweets destes usuários em sua timeline e lista de menções.</string>
     <string name="more">Mais</string>
     <string name="multi_select">Multisseleção</string>
     <string name="mute_user">Silenciar <xliff:g id="name">%s</xliff:g></string>

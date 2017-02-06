@@ -169,8 +169,8 @@
     <string name="twitter_mute_user">SIlenciar usuariu</string>
     <string name="twitter_muted_users">Usuarios silenciaos</string>
     <string name="message_user_muted">Amestóse esti usuariu al llistáu de peñera. Nun verás los sos tuits nel to llistáu de menciones/llinia temporal.</string>
-    <string name="message_users_muted">Amestáronse los usuarios al llistáu de peñera. Nun verás los sos tuits nel to llistáu de menciones/llinia temporal.</string>
-    <string name="message_user_unmuted">Desanicióse esti usuariu del llistáu de peñera.</string>
+    <string name="message_toast_users_filters_added">Amestáronse los usuarios al llistáu de peñera. Nun verás los sos tuits nel to llistáu de menciones/llinia temporal.</string>
+    <string name="message_toast_user_filters_removed">Desanicióse esti usuariu del llistáu de peñera.</string>
     <string name="inbox">Bandexa d\'entrada</string>
     <string name="other_settings">Otros axustes</string>
     <string name="auto_refresh">Auto-refrescu</string>
@@ -392,7 +392,7 @@
     <string name="wrong_url_format">Formatu d\'URL incorreutu.</string>
     <string name="wrong_username_password">Nome d\'usuariu/contraseña incorreutos</string>
     <!-- Toast message for network errors -->
-    <string name="message_network_error">Fallu de rede</string>
+    <string name="message_toast_network_error">Fallu de rede</string>
     <string name="api_data_corrupted">Datos d\'API toyíos</string>
     <string name="ssl_error">Fallu SSL, quiciabes precises habilitar la opción «Inorar fallu SSL».</string>
     <string name="wrong_api_key">URL d\'API o clave/secretu de consumidor incorreutos. Compruébalos de nueves, por favor.</string>
@@ -405,10 +405,10 @@
     <string name="retweet_cancelled">Encaboxóse\'l retuit.</string>
     <string name="direct_message_sent">Unvióse\'l mensaxe direutu.</string>
     <string name="direct_message_deleted">Desanicióse\'l mensaxe direutu.</string>
-    <string name="message_search_saved">Guardóse la gueta.</string>
-    <string name="message_search_name_saved">Guardóse la gueta «<xliff:g id="name">%s</xliff:g>».</string>
-    <string name="message_search_deleted">Desanicióse la gueta.</string>
-    <string name="message_search_name_deleted">Desanicióse la gueta «<xliff:g id="name">%s</xliff:g>».</string>
+    <string name="message_toast_search_saved">Guardóse la gueta.</string>
+    <string name="message_toast_search_name_saved">Guardóse la gueta «<xliff:g id="name">%s</xliff:g>».</string>
+    <string name="message_toast_search_deleted">Desanicióse la gueta.</string>
+    <string name="message_toast_search_name_deleted">Desanicióse la gueta «<xliff:g id="name">%s</xliff:g>».</string>
     <string name="import_from">Importar dende...</string>
     <string name="link_to_quoted_status">Enllaz al tuit citáu</string>
     <string name="quote_original_status">Citar tuit orixinal</string>

@@ -414,17 +414,17 @@
     <string name="message_direct_message_sent">Doğrudan mesaj gönderildi.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <!-- Toast message for network errors -->
-    <string name="message_network_error">Bağlantı hatası.</string>
+    <string name="message_toast_network_error">Bağlantı hatası.</string>
     <string name="message_please_wait">Lütfen bekleyin.</string>
-    <string name="message_retweet_cancelled">Retweet iptal edildi.</string>
-    <string name="message_search_deleted">Arama silindi.</string>
-    <string name="message_search_name_deleted">Arama \"<xliff:g id="name">%s</xliff:g>\" silindi.</string>
-    <string name="message_search_name_saved">Arama \"<xliff:g id="name">%s</xliff:g>\" kaydedildi.</string>
-    <string name="message_search_saved">Arama kaydedildi.</string>
-    <string name="message_status_deleted">Tweet silindi.</string>
-    <string name="message_status_favorited">Tweet favorilere eklendi.</string>
-    <string name="message_status_retweeted">Retweet\'lendi.</string>
-    <string name="message_status_unfavorited">Tweet favorilerden çıkarıldı.</string>
+    <string name="message_toast_retweet_cancelled">Retweet iptal edildi.</string>
+    <string name="message_toast_search_deleted">Arama silindi.</string>
+    <string name="message_toast_search_name_deleted">Arama \"<xliff:g id="name">%s</xliff:g>\" silindi.</string>
+    <string name="message_toast_search_name_saved">Arama \"<xliff:g id="name">%s</xliff:g>\" kaydedildi.</string>
+    <string name="message_toast_search_saved">Arama kaydedildi.</string>
+    <string name="message_toast_status_deleted">Tweet silindi.</string>
+    <string name="message_toast_status_favorited">Tweet favorilere eklendi.</string>
+    <string name="message_toast_status_retweeted">Retweet\'lendi.</string>
+    <string name="message_toast_status_unfavorited">Tweet favorilerden çıkarıldı.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -448,8 +448,8 @@
     <string name="message_toast_status_updated">Tweet gönderildi.</string>
     <string name="message_toast_wrong_api_key">Geçersiz API url\'si veya müşteri anahtar\'ı/gizli\'si, Lütfen onları tekrar kontrol edin.</string>
     <string name="message_user_muted">Bu kullanıcı filtre listesine eklendi. Bu kullanıcıdan gelen tweetleri zaman akışınızda  /bahsedenler listenizde görmeyeceksiniz.</string>
-    <string name="message_user_unmuted">Bu kullanıcı filtreden çıkarılmış.</string>
-    <string name="message_users_muted">Kullanıcılar filtre listesine eklendi. Bu kullanıcılardan gelen tweetleri zaman akışınızda  /bahsedenler listenizde görmeyeceksiniz.</string>
+    <string name="message_toast_user_filters_removed">Bu kullanıcı filtreden çıkarılmış.</string>
+    <string name="message_toast_users_filters_added">Kullanıcılar filtre listesine eklendi. Bu kullanıcılardan gelen tweetleri zaman akışınızda  /bahsedenler listenizde görmeyeceksiniz.</string>
     <string name="more">Dahası</string>
     <string name="multi_select">Çoklu seçim</string>
     <string name="mute_user">Sustur <xliff:g id="name">%s</xliff:g></string>

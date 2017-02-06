@@ -455,24 +455,24 @@
   <string name="message_direct_message_sent">私信已发送</string>
   <string name="message_error_invalid_account">一些帐号数据已损坏，Twittnuker 将删除这些帐户以避免崩溃。</string>
   <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-  <string name="message_extra_features_not_purchased">尚未购买增强功能</string>
+  <string name="message_toast_extra_features_not_purchased">尚未购买增强功能</string>
   <!-- Toast message for network errors -->
-  <string name="message_network_error">网络错误</string>
+  <string name="message_toast_network_error">网络错误</string>
   <string name="message_permission_request_compose_location">Twittnuker 需要权限来向推文添加位置</string>
   <string name="message_permission_request_save_media">Twittnuker 需要存储权限来保存媒体</string>
   <string name="message_permission_request_share_media">Twittnuker 需要存储权限来向一些应用分享媒体</string>
   <string name="message_please_wait">请稍等</string>
-  <string name="message_retweet_cancelled">转推已取消</string>
-  <string name="message_search_deleted">搜索已删除</string>
-  <string name="message_search_name_deleted">搜索 “<xliff:g id="name">%s</xliff:g>” 已删除</string>
-  <string name="message_search_name_saved">搜索 “<xliff:g id="name">%s</xliff:g>” 已保存</string>
-  <string name="message_search_saved">搜索已保存</string>
-  <string name="message_status_deleted">推文已删除</string>
-  <string name="message_status_favorited">推文已收藏</string>
-  <string name="message_status_like_removed">已取消喜欢了推文</string>
-  <string name="message_status_liked">已喜欢了推文</string>
-  <string name="message_status_retweeted">已转推</string>
-  <string name="message_status_unfavorited">推文已取消收藏</string>
+  <string name="message_toast_retweet_cancelled">转推已取消</string>
+  <string name="message_toast_search_deleted">搜索已删除</string>
+  <string name="message_toast_search_name_deleted">搜索 “<xliff:g id="name">%s</xliff:g>” 已删除</string>
+  <string name="message_toast_search_name_saved">搜索 “<xliff:g id="name">%s</xliff:g>” 已保存</string>
+  <string name="message_toast_search_saved">搜索已保存</string>
+  <string name="message_toast_status_deleted">推文已删除</string>
+  <string name="message_toast_status_favorited">推文已收藏</string>
+  <string name="message_toast_status_like_removed">已取消喜欢了推文</string>
+  <string name="message_toast_status_liked">已喜欢了推文</string>
+  <string name="message_toast_status_retweeted">已转推</string>
+  <string name="message_toast_status_unfavorited">推文已取消收藏</string>
   <string name="message_sync_data_connect_hint">将 Twittnuker 连接到网络存储来同步数据</string>
   <string name="message_sync_data_synced_with_name">Twittnuker 现在已经和 <xliff:g example="ownCloud" id="name">%s</xliff:g> 同步</string>
   <string name="message_sync_disconnect_from_name_confirm">从 <xliff:g example="ownCloud" id="name">%s</xliff:g> 断开连接？</string>
@@ -505,8 +505,8 @@
   <string name="message_toast_wrong_api_key">API 设置不正确</string>
   <string name="message_toast_wrong_username_password">用户名/密码错误</string>
   <string name="message_user_muted">您过滤了这位用户，您将不会在主页/提及中看到这位用户的推文</string>
-  <string name="message_user_unmuted">从过滤器列表中删除了这位用户</string>
-  <string name="message_users_muted">你过滤了这些用户，你将不会在主页/提及中看到这些用户的推文</string>
+  <string name="message_toast_user_filters_removed">从过滤器列表中删除了这位用户</string>
+  <string name="message_toast_users_filters_added">你过滤了这些用户，你将不会在主页/提及中看到这些用户的推文</string>
   <string name="message_video_too_long">视频太长</string>
   <string name="message_video_too_short">视频太短</string>
   <string name="more">更多</string>

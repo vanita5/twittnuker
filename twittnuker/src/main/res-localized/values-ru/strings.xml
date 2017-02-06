@@ -450,24 +450,24 @@
   <string name="message_direct_message_sent">Личное сообщение отправлено</string>
   <string name="message_error_invalid_account">Некоторые учетные данные были повреждены, Twittnuker удалит эти учетные записи для предотвращения ошибок.</string>
   <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-  <string name="message_extra_features_not_purchased">Расширенные возможности не приобретены</string>
+  <string name="message_toast_extra_features_not_purchased">Расширенные возможности не приобретены</string>
   <!-- Toast message for network errors -->
-  <string name="message_network_error">Ошибка сети</string>
+  <string name="message_toast_network_error">Ошибка сети</string>
   <string name="message_permission_request_compose_location">Twittnuker требуется разрешение расположения для добавления его в твиты.</string>
   <string name="message_permission_request_save_media">Twittnuker требуется разрешение хранения для сохранения мультимедиа.</string>
   <string name="message_permission_request_share_media">Twittnuker необходимо разрешение хранения для совместного использования мультимедиа для некоторых приложений.</string>
   <string name="message_please_wait">Пожалуйста, подождите.</string>
-  <string name="message_retweet_cancelled">Ретвит отменен</string>
-  <string name="message_search_deleted">Запрос удалён</string>
-  <string name="message_search_name_deleted">Запрос \"<xliff:g id="name">%s</xliff:g>\" удалён</string>
-  <string name="message_search_name_saved">Запрос \"<xliff:g id="name">%s</xliff:g>\" сохранён</string>
-  <string name="message_search_saved">Запрос сохранён</string>
-  <string name="message_status_deleted">Твит удален</string>
-  <string name="message_status_favorited">Твит добавлен в избранное</string>
-  <string name="message_status_like_removed">Лайк удалён.</string>
-  <string name="message_status_liked">Твит нравится.</string>
-  <string name="message_status_retweeted">Ретвит выполнен</string>
-  <string name="message_status_unfavorited">Твит удален из избранного</string>
+  <string name="message_toast_retweet_cancelled">Ретвит отменен</string>
+  <string name="message_toast_search_deleted">Запрос удалён</string>
+  <string name="message_toast_search_name_deleted">Запрос \"<xliff:g id="name">%s</xliff:g>\" удалён</string>
+  <string name="message_toast_search_name_saved">Запрос \"<xliff:g id="name">%s</xliff:g>\" сохранён</string>
+  <string name="message_toast_search_saved">Запрос сохранён</string>
+  <string name="message_toast_status_deleted">Твит удален</string>
+  <string name="message_toast_status_favorited">Твит добавлен в избранное</string>
+  <string name="message_toast_status_like_removed">Лайк удалён.</string>
+  <string name="message_toast_status_liked">Твит нравится.</string>
+  <string name="message_toast_status_retweeted">Ретвит выполнен</string>
+  <string name="message_toast_status_unfavorited">Твит удален из избранного</string>
   <string name="message_sync_data_connect_hint">Подключение Twittnuker к сетевому хранилищу для синхронизации</string>
   <string name="message_sync_data_synced_with_name">Twittnuker теперь синхронизирован с <xliff:g example="ownCloud" id="name">%s </xliff:g></string>
   <string name="message_sync_disconnect_from_name_confirm">Отключиться от <xliff:g example="ownCloud" id="name">%s </xliff:g>?</string>
@@ -497,8 +497,8 @@
   <string name="message_toast_wrong_api_key">Неправильный url-адрес API или пользовательский ключ/пароль, пожалуйста проверьте снова.</string>
   <string name="message_toast_wrong_username_password">Неправильное имя пользователя или пароль</string>
   <string name="message_user_muted">Пользователь добавлен в фильтры. Теперь вы не увидите его твитов в ленте/упоминаниях.</string>
-  <string name="message_user_unmuted">Этот пользователь удален из списка фильтров.</string>
-  <string name="message_users_muted">Пользователи добавлены в фильтр. Теперь вы не увидите его твитов в ленте/упоминаниях.</string>
+  <string name="message_toast_user_filters_removed">Этот пользователь удален из списка фильтров.</string>
+  <string name="message_toast_users_filters_added">Пользователи добавлены в фильтр. Теперь вы не увидите его твитов в ленте/упоминаниях.</string>
   <string name="message_video_too_long">Видео слишком длинное</string>
   <string name="message_video_too_short">Видео слишком короткое</string>
   <string name="more">Еще</string>

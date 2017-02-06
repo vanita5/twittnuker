@@ -408,17 +408,17 @@
     <string name="message_direct_message_sent">Mensaxe directa enviada.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <!-- Toast message for network errors -->
-    <string name="message_network_error">Erro de rede.</string>
+    <string name="message_toast_network_error">Erro de rede.</string>
     <string name="message_please_wait">Agarda, por favor.</string>
-    <string name="message_retweet_cancelled">Rechouchío cancelado.</string>
-    <string name="message_search_deleted">Busca eliminada.</string>
-    <string name="message_search_name_deleted">Eliminada a busca \"<xliff:g id="name">%s</xliff:g>\".</string>
-    <string name="message_search_name_saved">Gardada a busca \"<xliff:g id="name">%s</xliff:g>\".</string>
-    <string name="message_search_saved">Busca gardada.</string>
-    <string name="message_status_deleted">Chío eliminado.</string>
-    <string name="message_status_favorited">Chío marcado favorito.</string>
-    <string name="message_status_retweeted">Rechouchiado.</string>
-    <string name="message_status_unfavorited">Chío desmarcado favorito.</string>
+    <string name="message_toast_retweet_cancelled">Rechouchío cancelado.</string>
+    <string name="message_toast_search_deleted">Busca eliminada.</string>
+    <string name="message_toast_search_name_deleted">Eliminada a busca \"<xliff:g id="name">%s</xliff:g>\".</string>
+    <string name="message_toast_search_name_saved">Gardada a busca \"<xliff:g id="name">%s</xliff:g>\".</string>
+    <string name="message_toast_search_saved">Busca gardada.</string>
+    <string name="message_toast_status_deleted">Chío eliminado.</string>
+    <string name="message_toast_status_favorited">Chío marcado favorito.</string>
+    <string name="message_toast_status_retweeted">Rechouchiado.</string>
+    <string name="message_toast_status_unfavorited">Chío desmarcado favorito.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -442,8 +442,8 @@
     <string name="message_toast_status_updated">Chío enviado.</string>
     <string name="message_toast_wrong_api_key">URL da API ou clave cliente incorrectas, por favor comproba de novo.</string>
     <string name="message_user_muted">Usuario engadido á lista filtrada. Non verás os chíos deste usuario na túa liña de tempo ou mencións.</string>
-    <string name="message_user_unmuted">Usuario eliminado da lista filtrada.</string>
-    <string name="message_users_muted">Usuarios engadidos á lista filtrada. Non verás os chíos destes usuarios na túa liña de tempo ou mencións.</string>
+    <string name="message_toast_user_filters_removed">Usuario eliminado da lista filtrada.</string>
+    <string name="message_toast_users_filters_added">Usuarios engadidos á lista filtrada. Non verás os chíos destes usuarios na túa liña de tempo ou mencións.</string>
     <string name="more">Máis</string>
     <string name="multi_select">Selección múltiple</string>
     <string name="mute_user">Silenciar a <xliff:g id="name">%s</xliff:g></string>

@@ -424,22 +424,22 @@
     <string name="message_direct_message_sent">پیام مستقیم ارسال شد.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <!-- Toast message for network errors -->
-    <string name="message_network_error">خطای شبکه.</string>
+    <string name="message_toast_network_error">خطای شبکه.</string>
     <string name="message_permission_request_compose_location">Twittnuker برای افزودن موقعیّت به توییت‌ها، نیاز به دسترسی موقعیّت دارد.</string>
     <string name="message_permission_request_save_media">Twittnuker برای ذخیرهٔ رسانه، نیاز به دسترسی ذخیره دارد.</string>
     <string name="message_permission_request_share_media">Twittnuker برای هم‌رسانی رسانه با برخی کاره‌ها، نیاز به دسترسی ذخیره دارد.</string>
     <string name="message_please_wait">لطفاً صبر کنید.</string>
-    <string name="message_retweet_cancelled">بازتوییت لغو شد.</string>
-    <string name="message_search_deleted">جست‌وجو حذف شد.</string>
-    <string name="message_search_name_deleted">جست‌وجوی «<xliff:g id="name">%s</xliff:g>» حذف شد.</string>
-    <string name="message_search_name_saved">جست‌وجوی «<xliff:g id="name">%s</xliff:g>» ذخیره شد.</string>
-    <string name="message_search_saved">جست‌وجو ذخیره شد.</string>
-    <string name="message_status_deleted">توییت حذف شد.</string>
-    <string name="message_status_favorited">توییت برگزیده شد.</string>
-    <string name="message_status_like_removed">پسند برداشته شد.</string>
-    <string name="message_status_liked">توییت پسندیده شد.</string>
-    <string name="message_status_retweeted">بازتوییت شد.</string>
-    <string name="message_status_unfavorited">توییت برگزیده نشد.</string>
+    <string name="message_toast_retweet_cancelled">بازتوییت لغو شد.</string>
+    <string name="message_toast_search_deleted">جست‌وجو حذف شد.</string>
+    <string name="message_toast_search_name_deleted">جست‌وجوی «<xliff:g id="name">%s</xliff:g>» حذف شد.</string>
+    <string name="message_toast_search_name_saved">جست‌وجوی «<xliff:g id="name">%s</xliff:g>» ذخیره شد.</string>
+    <string name="message_toast_search_saved">جست‌وجو ذخیره شد.</string>
+    <string name="message_toast_status_deleted">توییت حذف شد.</string>
+    <string name="message_toast_status_favorited">توییت برگزیده شد.</string>
+    <string name="message_toast_status_like_removed">پسند برداشته شد.</string>
+    <string name="message_toast_status_liked">توییت پسندیده شد.</string>
+    <string name="message_toast_status_retweeted">بازتوییت شد.</string>
+    <string name="message_toast_status_unfavorited">توییت برگزیده نشد.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -464,8 +464,8 @@
     <string name="message_toast_status_updated">توییت فرستاده شد.</string>
     <string name="message_toast_wrong_api_key">نشانی API یا کلید/رمز مصرف‌کنندهٔ نادرست است، لطفاً دوباره آن‌ها را بررسی کنید.</string>
     <string name="message_user_muted">این کاربر به فهرست پالایه افزوده شد. دیگر هیچ توییتی از این کاربر در خط زمان/فهرست اشارهٔ خود نخواهید دید.</string>
-    <string name="message_user_unmuted">این کاربر از فهرست پالایه برداشته شد.</string>
-    <string name="message_users_muted">کاربران به فهرست پالایه افزوده شدند. دیگر هیچ توییتی از این کاربران در خط زمان/فهرست اشارهٔ خود نخواهید دید.</string>
+    <string name="message_toast_user_filters_removed">این کاربر از فهرست پالایه برداشته شد.</string>
+    <string name="message_toast_users_filters_added">کاربران به فهرست پالایه افزوده شدند. دیگر هیچ توییتی از این کاربران در خط زمان/فهرست اشارهٔ خود نخواهید دید.</string>
     <string name="more">بیش‌تر</string>
     <string name="multi_select">انتخاب چندگانه</string>
     <string name="mute_user">بی‌صدا کردن <xliff:g id="name">%s</xliff:g></string>

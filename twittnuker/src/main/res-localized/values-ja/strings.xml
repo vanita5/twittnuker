@@ -455,24 +455,24 @@
     <string name="message_direct_message_sent">DMを送信しました。</string>
     <string name="message_error_invalid_account">いくつかのアカウントのデータが破損しています。Twittnuker のクラッシュを防ぐために、これらのアカウントを削除します。</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-    <string name="message_extra_features_not_purchased">追加機能パックは未購入です。</string>
+    <string name="message_toast_extra_features_not_purchased">追加機能パックは未購入です。</string>
     <!-- Toast message for network errors -->
-    <string name="message_network_error">ネットワークエラー</string>
+    <string name="message_toast_network_error">ネットワークエラー</string>
     <string name="message_permission_request_compose_location">位置情報の権限は、ツイートに位置情報を追加するために必要です。</string>
     <string name="message_permission_request_save_media">ストレージの権限は、Twittnuker がメディアを保存するために必要です。</string>
     <string name="message_permission_request_share_media">ストレージの権限は、Twittnuker がメディアを他のアプリに共有するために必要です。</string>
     <string name="message_please_wait">しばらくお待ちください…</string>
-    <string name="message_retweet_cancelled">リツイートをキャンセルしました。</string>
-    <string name="message_search_deleted">検索を削除しました。</string>
-    <string name="message_search_name_deleted">検索 \"<xliff:g id="name">%s</xliff:g>\"を削除しました。</string>
-    <string name="message_search_name_saved">検索 \"<xliff:g id="name">%s</xliff:g>\"を保存しました。</string>
-    <string name="message_search_saved">検索を保存しました。</string>
-    <string name="message_status_deleted">ツイートを削除しました。</string>
-    <string name="message_status_favorited">ツイートをいいねしました。</string>
-    <string name="message_status_like_removed">いいねを取り消しました</string>
-    <string name="message_status_liked">ツイートをいいねしました</string>
-    <string name="message_status_retweeted">リツイートしました。</string>
-    <string name="message_status_unfavorited">ツイートのいいねを解除しました。</string>
+    <string name="message_toast_retweet_cancelled">リツイートをキャンセルしました。</string>
+    <string name="message_toast_search_deleted">検索を削除しました。</string>
+    <string name="message_toast_search_name_deleted">検索 \"<xliff:g id="name">%s</xliff:g>\"を削除しました。</string>
+    <string name="message_toast_search_name_saved">検索 \"<xliff:g id="name">%s</xliff:g>\"を保存しました。</string>
+    <string name="message_toast_search_saved">検索を保存しました。</string>
+    <string name="message_toast_status_deleted">ツイートを削除しました。</string>
+    <string name="message_toast_status_favorited">ツイートをいいねしました。</string>
+    <string name="message_toast_status_like_removed">いいねを取り消しました</string>
+    <string name="message_toast_status_liked">ツイートをいいねしました</string>
+    <string name="message_toast_status_retweeted">リツイートしました。</string>
+    <string name="message_toast_status_unfavorited">ツイートのいいねを解除しました。</string>
     <string name="message_sync_data_connect_hint">データを同期するために Twittnuker をネットワークストレージに接続する</string>
     <string name="message_sync_data_synced_with_name">Twittnuker が <xliff:g example="ownCloud" id="name">%s</xliff:g> と同期されました</string>
     <string name="message_sync_disconnect_from_name_confirm"><xliff:g example="ownCloud" id="name">%s</xliff:g> から切断しますか？</string>
@@ -505,8 +505,8 @@
     <string name="message_toast_wrong_api_key">API URL または consumer key/secret が正しくありません。もう一度確認してください。</string>
     <string name="message_toast_wrong_username_password">間違ったユーザー名/パスワードです</string>
     <string name="message_user_muted">このユーザーをフィルターリストに追加します。ホーム / つながり でこのユーザーのツイートを非表示にします。</string>
-    <string name="message_user_unmuted">フィルターリストから削除しました。</string>
-    <string name="message_users_muted">複数のユーザーをフィルターリストに追加する。ホーム / つながり にこのユーザーのツイートを非表示にする。</string>
+    <string name="message_toast_user_filters_removed">フィルターリストから削除しました。</string>
+    <string name="message_toast_users_filters_added">複数のユーザーをフィルターリストに追加する。ホーム / つながり にこのユーザーのツイートを非表示にする。</string>
     <string name="message_video_too_long">動画が長すぎます</string>
     <string name="message_video_too_short">動画が短すぎます</string>
     <string name="more">設定</string>

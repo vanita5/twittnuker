@@ -415,17 +415,17 @@
     <string name="message_direct_message_sent">Надіслано пряме повідомлення.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <!-- Toast message for network errors -->
-    <string name="message_network_error">Помилка мережі.</string>
+    <string name="message_toast_network_error">Помилка мережі.</string>
     <string name="message_please_wait">Зачекайте.</string>
-    <string name="message_retweet_cancelled">Ретвіт скасовано.</string>
-    <string name="message_search_deleted">Пошук вилучено.</string>
-    <string name="message_search_name_deleted">Пошук \"<xliff:g id="name">%s</xliff:g>\" вилучено.</string>
-    <string name="message_search_name_saved">Пошук \"<xliff:g id="name">%s</xliff:g>\" збережено.</string>
-    <string name="message_search_saved">Пошук збережено.</string>
-    <string name="message_status_deleted">Твіт видалено.</string>
-    <string name="message_status_favorited">Твіт обрано.</string>
-    <string name="message_status_retweeted">Ретвітнуто.</string>
-    <string name="message_status_unfavorited">Твіт видалено з обраних.</string>
+    <string name="message_toast_retweet_cancelled">Ретвіт скасовано.</string>
+    <string name="message_toast_search_deleted">Пошук вилучено.</string>
+    <string name="message_toast_search_name_deleted">Пошук \"<xliff:g id="name">%s</xliff:g>\" вилучено.</string>
+    <string name="message_toast_search_name_saved">Пошук \"<xliff:g id="name">%s</xliff:g>\" збережено.</string>
+    <string name="message_toast_search_saved">Пошук збережено.</string>
+    <string name="message_toast_status_deleted">Твіт видалено.</string>
+    <string name="message_toast_status_favorited">Твіт обрано.</string>
+    <string name="message_toast_status_retweeted">Ретвітнуто.</string>
+    <string name="message_toast_status_unfavorited">Твіт видалено з обраних.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -449,8 +449,8 @@
     <string name="message_toast_status_updated">Твіт надіслано.</string>
     <string name="message_toast_wrong_api_key">Невірне API url або ключ користувача, перевірте їх ще раз.</string>
     <string name="message_user_muted">Користувач доданий в фільтри. Тепер ви не побачите його твітів в стрічці/згадках.</string>
-    <string name="message_user_unmuted">Користувач виключений з фільтру.</string>
-    <string name="message_users_muted">Користувачі додані в фільтр. Тепер ви не побачите їхніх твітів в стрічці / згадках.</string>
+    <string name="message_toast_user_filters_removed">Користувач виключений з фільтру.</string>
+    <string name="message_toast_users_filters_added">Користувачі додані в фільтр. Тепер ви не побачите їхніх твітів в стрічці / згадках.</string>
     <string name="more">Більше</string>
     <string name="multi_select">Множинний вибір</string>
     <string name="mute_user">Ігнорувати <xliff:g id="name">%s</xliff:g></string>

@@ -245,13 +245,13 @@
     <string name="message_direct_message_sent">ההודעה הישירה נשלחה.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <!-- Toast message for network errors -->
-    <string name="message_network_error">שגיאת רשת.</string>
+    <string name="message_toast_network_error">שגיאת רשת.</string>
     <string name="message_please_wait">המתן בבקשה.</string>
-    <string name="message_search_deleted">החיפוש נמחק.</string>
-    <string name="message_search_name_deleted">החיפוש \"<xliff:g id="name">%s</xliff:g>\" נמחק.</string>
-    <string name="message_search_name_saved">החיפוש \"<xliff:g id="name">%s</xliff:g>\" נשמר.</string>
-    <string name="message_search_saved">החיפוש נשמר.</string>
-    <string name="message_status_deleted">הציוץ נמחק.</string>
+    <string name="message_toast_search_deleted">החיפוש נמחק.</string>
+    <string name="message_toast_search_name_deleted">החיפוש \"<xliff:g id="name">%s</xliff:g>\" נמחק.</string>
+    <string name="message_toast_search_name_saved">החיפוש \"<xliff:g id="name">%s</xliff:g>\" נשמר.</string>
+    <string name="message_toast_search_saved">החיפוש נשמר.</string>
+    <string name="message_toast_status_deleted">הציוץ נמחק.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted

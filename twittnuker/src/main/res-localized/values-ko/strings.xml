@@ -411,17 +411,17 @@
     <string name="message_direct_message_sent">쪽지가 전송되었습니다.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <!-- Toast message for network errors -->
-    <string name="message_network_error">네트워크 오류입니다.</string>
+    <string name="message_toast_network_error">네트워크 오류입니다.</string>
     <string name="message_please_wait">기다려 주세요.</string>
-    <string name="message_retweet_cancelled">리트윗이 취소되었습니다.</string>
-    <string name="message_search_deleted">검색어가 삭제되었습니다.</string>
-    <string name="message_search_name_deleted">\"<xliff:g id="name">%s</xliff:g>\" 검색어가 삭제되었습니다.</string>
-    <string name="message_search_name_saved">\"<xliff:g id="name">%s</xliff:g>\" 검색어가 저장되었습니다.</string>
-    <string name="message_search_saved">검색어가 저장되었습니다.</string>
-    <string name="message_status_deleted">트윗이 삭제되었습니다.</string>
-    <string name="message_status_favorited">트윗이 관심글로 담겼습니다.</string>
-    <string name="message_status_retweeted">리트윗되었습니다.</string>
-    <string name="message_status_unfavorited">트윗이 관심글에서 제외되었습니다.</string>
+    <string name="message_toast_retweet_cancelled">리트윗이 취소되었습니다.</string>
+    <string name="message_toast_search_deleted">검색어가 삭제되었습니다.</string>
+    <string name="message_toast_search_name_deleted">\"<xliff:g id="name">%s</xliff:g>\" 검색어가 삭제되었습니다.</string>
+    <string name="message_toast_search_name_saved">\"<xliff:g id="name">%s</xliff:g>\" 검색어가 저장되었습니다.</string>
+    <string name="message_toast_search_saved">검색어가 저장되었습니다.</string>
+    <string name="message_toast_status_deleted">트윗이 삭제되었습니다.</string>
+    <string name="message_toast_status_favorited">트윗이 관심글로 담겼습니다.</string>
+    <string name="message_toast_status_retweeted">리트윗되었습니다.</string>
+    <string name="message_toast_status_unfavorited">트윗이 관심글에서 제외되었습니다.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -446,8 +446,8 @@
     <string name="message_toast_status_updated">트윗이 전송되었습니다.</string>
     <string name="message_toast_wrong_api_key">부정확한 APL 주소 또는 컨슈머 키/시크릿입니다. 다시 한 번 확인해 주세요.</string>
     <string name="message_user_muted">이 사용자 필터 리스트에 추가했습니다. 당신의 홈 타임라인/멘션 리스트에서 이 유저의 트윗이 보이지 않게 됩니다.</string>
-    <string name="message_user_unmuted">이 사용자를 필터에서 제외하였습니다.</string>
-    <string name="message_users_muted">이 사용자들을 필터에 추가했습니다. 메인 타임라인과 멘션 목록에서 이 사용자의 트윗이 보이지 않게 됩니다.</string>
+    <string name="message_toast_user_filters_removed">이 사용자를 필터에서 제외하였습니다.</string>
+    <string name="message_toast_users_filters_added">이 사용자들을 필터에 추가했습니다. 메인 타임라인과 멘션 목록에서 이 사용자의 트윗이 보이지 않게 됩니다.</string>
     <string name="more">기타</string>
     <string name="multi_select">여러개 선택</string>
     <string name="mute_user"><xliff:g id="name">%s</xliff:g> 뮤트하기</string>

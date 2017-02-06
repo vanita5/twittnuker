@@ -660,24 +660,24 @@
     <string name="message_direct_message_sent">Direct message sent.</string>
     <string name="message_error_invalid_account">Some account data are corrupted, Twittnuker will remove those accounts to prevent crash.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-    <string name="message_extra_features_not_purchased">Enhanced features not purchased.</string>
+    <string name="message_toast_extra_features_not_purchased">Enhanced features not purchased.</string>
     <!-- Toast message for network errors -->
-    <string name="message_network_error">Network error.</string>
+    <string name="message_toast_network_error">Network error.</string>
     <string name="message_permission_request_compose_location">Twittnuker needs location permission for adding location to tweets.</string>
     <string name="message_permission_request_save_media">Twittnuker needs storage permission for saving media.</string>
     <string name="message_permission_request_share_media">Twittnuker needs storage permission for sharing media to some apps.</string>
     <string name="message_please_wait">Please wait.</string>
-    <string name="message_retweet_cancelled">Retweet cancelled.</string>
-    <string name="message_search_deleted">Search deleted.</string>
-    <string name="message_search_name_deleted">Search \"<xliff:g id="name">%s</xliff:g>\" deleted.</string>
-    <string name="message_search_name_saved">Search \"<xliff:g id="name">%s</xliff:g>\" saved.</string>
-    <string name="message_search_saved">Search saved.</string>
-    <string name="message_status_deleted">Tweet deleted.</string>
-    <string name="message_status_favorited">Tweet favorited.</string>
-    <string name="message_status_like_removed">Like removed.</string>
-    <string name="message_status_liked">Tweet liked.</string>
-    <string name="message_status_retweeted">Retweeted.</string>
-    <string name="message_status_unfavorited">Tweet unfavorited.</string>
+    <string name="message_toast_retweet_cancelled">Retweet cancelled.</string>
+    <string name="message_toast_search_deleted">Search deleted.</string>
+    <string name="message_toast_search_name_deleted">Search \"<xliff:g id="name">%s</xliff:g>\" deleted.</string>
+    <string name="message_toast_search_name_saved">Search \"<xliff:g id="name">%s</xliff:g>\" saved.</string>
+    <string name="message_toast_search_saved">Search saved.</string>
+    <string name="message_toast_status_deleted">Tweet deleted.</string>
+    <string name="message_toast_status_favorited">Tweet favorited.</string>
+    <string name="message_toast_status_like_removed">Like removed.</string>
+    <string name="message_toast_status_liked">Tweet liked.</string>
+    <string name="message_toast_status_retweeted">Retweeted.</string>
+    <string name="message_toast_status_unfavorited">Tweet unfavorited.</string>
     <string name="message_sync_data_connect_hint">Connect Twittnuker with network storage to sync data</string>
     <string
         name="message_sync_data_synced_with_name">Twittnuker is now synced with <xliff:g
@@ -719,13 +719,10 @@
     <string name="message_toast_status_updated">Tweet sent</string>
     <string name="message_toast_wrong_api_key">Incorrect API settings</string>
     <string name="message_toast_wrong_username_password">Wrong username/password</string>
-    <string name="message_user_muted">Added to filters</string>
-    <string name="message_user_unmuted">Removed from filters</string>
-    <string name="message_users_muted">Added to filters</string>
+    <string name="message_toast_user_filters_removed">Removed from filters</string>
+    <string name="message_toast_users_filters_added">Added to filters</string>
     <string name="message_video_too_long">Video too long</string>
     <string name="message_video_too_short">Video too short</string>
-
-    <string name="more">More</string>
 
     <string name="multi_select">Multi select</string>
 
@@ -1386,4 +1383,6 @@
     <string name="push_status_disconnected">Not connected.</string>
     <string name="push_status_disconnecting">Disconnecting...</string>
     <string name="push_status_title">Status</string>
+
+    <string name="view_user_profile">User profile</string>
 </resources>

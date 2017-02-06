@@ -159,8 +159,8 @@
     <string name="twitter_mute_user">كتم الشخص</string>
     <string name="twitter_muted_users">الأشخاص المكتومين</string>
     <string name="message_user_muted">أضيف الحساب لقائمة الكتم ولن تظهر لك تغريدات هذا المستخدم في خط الزمن الرئيس والإشارات.</string>
-    <string name="message_users_muted">المغردون المضافون لقائمة الكتم. لن ترى التغريدات من هؤلاء في سواء في الرئيسية أو قائمة التنبيهات.</string>
-    <string name="message_user_unmuted">تمت إزالة الشخص من قائمة الكتم.</string>
+    <string name="message_toast_users_filters_added">المغردون المضافون لقائمة الكتم. لن ترى التغريدات من هؤلاء في سواء في الرئيسية أو قائمة التنبيهات.</string>
+    <string name="message_toast_user_filters_removed">تمت إزالة الشخص من قائمة الكتم.</string>
     <string name="inbox">الصندوق الوارد</string>
     <string name="other_settings">إعدادات أخرى</string>
     <string name="auto_refresh">تحديث تلقائي</string>
@@ -388,10 +388,10 @@
     <string name="retweet_cancelled">إعادة التغريد ملغاة.</string>
     <string name="direct_message_sent">أُرسلت الرسالة الخاصة.</string>
     <string name="direct_message_deleted">حُذفت الرسالة الخاصة.</string>
-    <string name="message_search_saved">حُفظ البحث.</string>
-    <string name="message_search_name_saved">حُفظ البحث \"<xliff:g id="name">%s</xliff:g>\".</string>
-    <string name="message_search_deleted">حُذِف البحث.</string>
-    <string name="message_search_name_deleted">حُذِف البحث \"<xliff:g id="name">%s</xliff:g>\".</string>
+    <string name="message_toast_search_saved">حُفظ البحث.</string>
+    <string name="message_toast_search_name_saved">حُفظ البحث \"<xliff:g id="name">%s</xliff:g>\".</string>
+    <string name="message_toast_search_deleted">حُذِف البحث.</string>
+    <string name="message_toast_search_name_deleted">حُذِف البحث \"<xliff:g id="name">%s</xliff:g>\".</string>
     <string name="import_from">استيراد من &#8230;</string>
     <string name="link_to_quoted_status">ربط لتغريدة مقتبسة</string>
     <string name="quote_original_status">اقتباس التغريدة الأصلية</string>

@@ -150,8 +150,8 @@
     <string name="twitter_mute_user">Dæmp bruger</string>
     <string name="twitter_muted_users">Dæmpede brugere</string>
     <string name="message_user_muted">Tilføjede denne bruger til filterliste. Du vil ikke se tweets fra denne bruger i din hjem tidslinje/nævnelsesliste.</string>
-    <string name="message_users_muted">Tilføjede brugere til filterliste. Du vil ikke se tweets fra denne bruger i din hjem tidslinje/nævnelsesliste.</string>
-    <string name="message_user_unmuted">Fjernede denne bruger fra filterliste.</string>
+    <string name="message_toast_users_filters_added">Tilføjede brugere til filterliste. Du vil ikke se tweets fra denne bruger i din hjem tidslinje/nævnelsesliste.</string>
+    <string name="message_toast_user_filters_removed">Fjernede denne bruger fra filterliste.</string>
     <string name="inbox">Indboks</string>
     <string name="other_settings">Andre indstillinger</string>
     <string name="auto_refresh">Autoopdater</string>

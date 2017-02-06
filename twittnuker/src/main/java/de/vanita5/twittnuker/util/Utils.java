@@ -104,7 +104,7 @@ import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.Selectable;
-import de.vanita5.twittnuker.BuildConfig;
+
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
@@ -147,8 +147,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.net.ssl.SSLException;
 
 import static de.vanita5.twittnuker.util.DataStoreUtils.DIRECT_MESSAGES_URIS;
 import static de.vanita5.twittnuker.util.DataStoreUtils.STATUSES_URIS;
@@ -730,7 +728,7 @@ public final class Utils implements Constants {
             final String msg = StatusCodeMessageUtils.getTwitterErrorMessage(context, te.getErrorCode());
             return getErrorMessage(context, action, msg != null ? msg : trimLineBreak(te.getMessage()));
         } else if (te.getCause() instanceof IOException)
-            return getErrorMessage(context, action, context.getString(R.string.message_network_error));
+            return getErrorMessage(context, action, context.getString(R.string.message_toast_network_error));
         else if (te.getCause() instanceof JSONException)
             return getErrorMessage(context, action, context.getString(R.string.message_api_data_corrupted));
         else
@@ -1035,7 +1033,7 @@ public final class Utils implements Constants {
                             trimLineBreak(te.getErrorMessage()));
                 } else if (te.getCause() instanceof IOException) {
                     message = context.getString(R.string.error_message_with_action, action,
-                            context.getString(R.string.message_network_error));
+                            context.getString(R.string.message_toast_network_error));
                 } else {
                     message = context.getString(R.string.error_message_with_action, action,
                             trimLineBreak(te.getMessage()));

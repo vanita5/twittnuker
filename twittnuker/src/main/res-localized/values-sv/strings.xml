@@ -267,7 +267,7 @@
   <string name="message_api_data_corrupted">API-data korrupt.</string>
   <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
   <!-- Toast message for network errors -->
-  <string name="message_network_error">Network error.</string>
+  <string name="message_toast_network_error">Network error.</string>
   <string name="message_please_wait">Snälla vänta.</string>
   <!--
       ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
@@ -280,8 +280,8 @@
   <string name="message_toast_saved_to_gallery">Sparade till galleriet.</string>
   <string name="message_toast_status_saved_to_draft">Tweetet sparades till utkastet</string>
   <string name="message_user_muted">Den här användaren är tillagd i filterlistan. Du kommer inte att se tweets från den här användaren i din tidslinje eller i dina omnämningar.</string>
-  <string name="message_user_unmuted">Användaren är borttagen ur filterlistan.</string>
-  <string name="message_users_muted">Lade till användare till filter lista. Du kommer inte att se tweets from de här användarna på hem tidslinje/mentions lista.</string>
+  <string name="message_toast_user_filters_removed">Användaren är borttagen ur filterlistan.</string>
+  <string name="message_toast_users_filters_added">Lade till användare till filter lista. Du kommer inte att se tweets from de här användarna på hem tidslinje/mentions lista.</string>
   <string name="more">Mer</string>
   <string name="name_and_another_retweeted"><xliff:g id="user_name">%1$s</xliff:g> och en annan retweeted</string>
   <string name="name_and_count_retweeted"><xliff:g id="user_name">%1$s</xliff:g> och <xliff:g id="retweet_count">%2$d</xliff:g> andra retweeted</string>

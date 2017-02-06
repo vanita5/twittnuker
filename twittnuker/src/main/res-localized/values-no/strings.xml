@@ -356,17 +356,17 @@
     <string name="message_direct_message_sent">Direktemelding sendt.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <!-- Toast message for network errors -->
-    <string name="message_network_error">Nettverksfeil.</string>
+    <string name="message_toast_network_error">Nettverksfeil.</string>
     <string name="message_please_wait">Vennligst vent.</string>
-    <string name="message_retweet_cancelled">Retweet avbrutt.</string>
-    <string name="message_search_deleted">Søk slettet.</string>
-    <string name="message_search_name_deleted">Søket «<xliff:g id="name">%s</xliff:g>» er slettet.</string>
-    <string name="message_search_name_saved">Søket «<xliff:g id="name">%s</xliff:g>» er lagret.</string>
-    <string name="message_search_saved">Søk lagret.</string>
-    <string name="message_status_deleted">Tweet slettet.</string>
-    <string name="message_status_favorited">Tweet favorittmarkert.</string>
-    <string name="message_status_retweeted">Retweetet.</string>
-    <string name="message_status_unfavorited">Fjernet tweetens favorittmarkering.</string>
+    <string name="message_toast_retweet_cancelled">Retweet avbrutt.</string>
+    <string name="message_toast_search_deleted">Søk slettet.</string>
+    <string name="message_toast_search_name_deleted">Søket «<xliff:g id="name">%s</xliff:g>» er slettet.</string>
+    <string name="message_toast_search_name_saved">Søket «<xliff:g id="name">%s</xliff:g>» er lagret.</string>
+    <string name="message_toast_search_saved">Søk lagret.</string>
+    <string name="message_toast_status_deleted">Tweet slettet.</string>
+    <string name="message_toast_status_favorited">Tweet favorittmarkert.</string>
+    <string name="message_toast_status_retweeted">Retweetet.</string>
+    <string name="message_toast_status_unfavorited">Fjernet tweetens favorittmarkering.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -387,8 +387,8 @@
     <string name="message_toast_status_updated">Tweet sendt.</string>
     <string name="message_toast_wrong_api_key">Feil API-URL eller brukernøkkel/passord. Sjekk at de er riktig skrevet.</string>
     <string name="message_user_muted">La brukeren til filtreringslisten. Du vil ikke se tweets fra denne brukeren på tidslinjen eller som omtalelser.</string>
-    <string name="message_user_unmuted">Fjernet brukeren fra filterlisten.</string>
-    <string name="message_users_muted">La brukerne til filtreringslisten. Du vil ikke se tweets fra disse brukerne på tidslinjen eller som omtalelser.</string>
+    <string name="message_toast_user_filters_removed">Fjernet brukeren fra filterlisten.</string>
+    <string name="message_toast_users_filters_added">La brukerne til filtreringslisten. Du vil ikke se tweets fra disse brukerne på tidslinjen eller som omtalelser.</string>
     <string name="more">Mer</string>
     <string name="multi_select">Flervalg</string>
     <string name="mute_user">Skjul <xliff:g id="name">%s</xliff:g></string>
