@@ -92,7 +92,6 @@
 
         <de.vanita5.twittnuker.preference.HomeRefreshContentPreference
             android:key="home_refresh"
-            android:summary="@string/home_refresh_summary"
             android:title="@string/home_refresh" />
 
         <SwitchPreferenceCompat

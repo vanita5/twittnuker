@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="accept">Akzeptieren</string>
-    <string name="accepted_users_follow_request"><xliff:g id="user">%s</xliff:g>s Folgeanfrage angenommen.</string>
     <string name="account">Account</string>
     <string name="account_delete_confirm_message">Dieser Account wird aus Twittnuker entfernt.</string>
     <string name="account_delete_confirm_title">Account entfernen</string>
@@ -11,7 +9,6 @@
     <string name="account_type_twitter">Twitter</string>
     <string name="action_accept_friend_request">Akzeptieren</string>
     <string name="action_accept_permission_request">Akzeptieren</string>
-    <string name="accounts">Accounts</string>
     <string name="action_accepting_follow_request">Akzeptiere Follower-Anfrage</string>
     <string name="action_add">Hinzufügen</string>
     <!-- [verb] Add mute filter rule -->
@@ -103,7 +100,7 @@
     <string name="action_take_photo">Foto aufnehmen</string>
     <string name="action_toggle">An/Aus</string>
     <string name="action_translate">Übersetzen</string>
-    <string name="action_twitter_mute_user">Benutzer stummschalten</string>
+    <string name="action_twitter_mute_user">Stummschalten</string>
     <string name="action_twitter_muted_users">Stummgeschaltete Benutzer</string>
     <!-- [verb] Action for unblocking user -->
     <string name="action_unblock">Entblocken</string>
@@ -172,7 +169,6 @@
     <string name="activity_by_friends_retweet_multi"><xliff:g id="user">%1$s</xliff:g> hat <xliff:g id="target">%2$s</xliff:g> und <xliff:g id="other">%3$s</xliff:g> retweetet.</string>
     <string name="activity_joined_twitter"><xliff:g id="user">%s</xliff:g> ist Twitter beigetreten.</string>
     <string name="activity_joined_twitter_multi"><xliff:g id="user">%1$s</xliff:g> und <xliff:g id="other">%2$s</xliff:g> sind Twitter beigetreten.</string>
-    <string name="add">Hinzufügen</string>
     <string name="add_account">Account hinzufügen</string>
     <string name="add_gif">Gif hinzufügen</string>
     <string name="add_host_mapping">Füge host mapping hinzu</string>
@@ -184,45 +180,29 @@
     <string name="add_to_list">Zur Liste hinzufügen</string>
     <string name="added_user_to_list"><xliff:g id="user">%1$s</xliff:g> wurde zur Liste "<xliff:g id="list">%2$s</xliff:g>\" hinzugefügt.</string>
     <string name="and_N_more">und <xliff:g id="count">%d</xliff:g> weitere</string>
-    <string name="api_data_corrupted">API-Daten beschädigt</string>
     <string name="api_url_format">API URL Format</string>
-    <string name="api_url_format_help">[DOMAIN]: API Domain.\nBeispiel: https://[DOMAIN].twitter.com/ wird ersetzt durch https://api.twitter.com/.</string>
     <!-- App name, normally you don't need to translate this. -->
     <string name="app_name">Twittnuker</string>
     <string name="app_restart_confirm">Twittnuker neustarten um die Einstellung zu speichern.</string>
     <string name="appearance">Aussehen</string>
-    <string name="ask">Nachfragen</string>
-    <string name="auth_type">Authentifizierungtyp</string>
     <string name="auth_type_basic">Basic</string>
     <string name="auth_type_oauth">OAuth</string>
     <string name="auth_type_twip_o">twip O Mode</string>
     <string name="auth_type_xauth">xAuth</string>
     <string name="auto_refresh">Automatisch aktualisieren</string>
-    <string name="back">Zurück</string>
     <string name="background">Hintergrund</string>
-    <string name="background_toast_notification">Hintergrundbenachrichtigung</string>
-    <string name="background_toast_notification_summary">Benachrichtigungen einblenden, wenn die App in den Hintergrund geht</string>
     <string name="bandwidth_saving_mode">Weniger Datenverbrauch</string>
     <string name="bandwidth_saving_mode_summary">Medienvorschau bei Mobilfunknetz deaktivieren</string>
-    <string name="basic">Einfach</string>
     <string name="belongs_to">Mitglied</string>
-    <string name="block_user"><xliff:g id="name">%s</xliff:g> blocken</string>
     <string name="block_user_confirm_message"><xliff:g id="name">%s</xliff:g> blocken? Dieser Benutzer kann dir dann nicht mehr folgen, dich nicht erwähnen oder dir Direktnachrichten schicken.</string>
-    <string name="blocked_by_user_summary">Du wurdest von <xliff:g id="name">%s</xliff:g> geblockt</string>
-    <string name="blocked_user"><xliff:g id="user">%s</xliff:g> blockiert.</string>
-    <string name="blocked_users">Blockierte Benutzer</string>
     <string name="both">Beide</string>
-    <string name="browser_sign_in">Browseranmeldung</string>
     <string name="bug_reports">Fehlerberichte</string>
     <string name="bug_reports_summary">Bereitgestellt von Fabric</string>
     <string name="builtin_dns_resolver">Interne DNS Auflösung</string>
     <string name="cache_size_limit">Begrenzung der Cache-Größe</string>
-    <string name="camera">Kamera</string>
-    <string name="cannot_get_location">Ort konnte nicht gefunden werden.</string>
     <string name="cant_load_all_replies_explanation">Da Twitter für Drittanwendungen den Zugriff beschränkt, hat Twittnuker keinen Zugriff auf Antworten zu einem Tweet. Daher gibt es keine Garantie, dass alle Antworten vollständig geladen werden kann.</string>
     <string name="cant_load_all_replies_message">Kann nicht alle Antworten laden. &lt;a href=\"#dialog\";&gt;Warum?&lt;/a&gt;</string>
     <string name="cards">Tweets</string>
-    <string name="center">Mitte</string>
     <string name="clear_cache">Cache löschen</string>
     <string name="clear_cache_summary">Lösche Profilbild-Cache.</string>
     <string name="clear_databases">Lösche Datenbank</string>
@@ -255,7 +235,6 @@
     <string name="count_label_retweets">Retweets</string>
     <string name="created_by">Erstellt von <xliff:g id="created_by">%s</xliff:g></string>
     <string name="created_list">Liste \"<xliff:g id="list">%s</xliff:g>\" erstellt.</string>
-    <string name="crop">Zuschneiden</string>
     <string name="crop_image">Bild zuschneiden</string>
     <string name="current_status">Aktueller Tweet</string>
     <string name="custom_host_mapping">Individuelles Host-Mapping</string>
@@ -284,8 +263,6 @@
     <string name="destroy_status">Tweet löschen</string>
     <string name="destroy_status_confirm_message">Diesen Tweet löschen?</string>
     <string name="developed_by">Developer</string>
-    <string name="direct_message_deleted">DM gelöscht.</string>
-    <string name="direct_message_sent">DM gesendet.</string>
     <string name="direct_messages">Nachrichten</string>
     <string name="direct_messages_next">nächste DM</string>
     <string name="discard">Verwerfen</string>
@@ -309,7 +286,6 @@
     <string name="empty_content">Leerer Inhalt</string>
     <string name="enable_retweets">Retweets erlauben</string>
     <string name="enable_streaming">Streaming freischalten</string>
-    <string name="error_already_logged_in">Du bist schon eingeloggt.</string>
     <string name="error_info_oauth_timestamp_error">Bitte überprüfe dein Systemdatum und die Zeiteinstellungen.</string>
     <string name="error_message">Fehler <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_device_incompatible">Dein Gerät ist nicht kompatibel mit Twittnuker. Ein Update auf ein aktuelles Android OS wird empfohlen.\nDu kannst uns die Informationen unten zukommen lassen, damit wir das dem Gerätehersteller melden können.</string>
@@ -322,7 +298,6 @@
     <string name="error_message_with_action">Fehler beim <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
     <string name="error_no_access_for_credentials">Deine Anwendung kann auf diese Ressource nicht zugreifen, hast du \'Erzwinge die Benutzung von privaten APIs\' aktiviert?</string>
     <string name="error_no_dm_permission">Deine Twitter application hat keine Berechtigung für Direktnachrichten.</string>
-    <string name="error_occurred">Ein Fehler ist aufgetreten, versuche es erneut.</string>
     <string name="error_title_device_incompatible">Inkompatibles Gerät</string>
     <string name="error_too_many_photos_fanfou">Zu viele Bilder</string>
     <string name="error_unknown_error">Fehler: Unbekannter Fehler, es ist wohl ein Bug.</string>
@@ -353,7 +328,6 @@
     <string name="filter_type_sources">Quellen</string>
     <string name="filter_type_users">Benutzer</string>
     <string name="filter_user_confirm_message"><xliff:g example="Username" id="name">%s</xliff:g> zum Filter hinzufügen?</string>
-    <string name="finish">Fertig</string>
     <string name="follow_request_sent">Folgen-Anfrage gesendet</string>
     <string name="followed_user">Folge <xliff:g id="user">%s</xliff:g>.</string>
     <string name="following_only">Nur von Followern</string>
@@ -387,17 +361,15 @@
     <string name="hint_accounts_dashboard_message">Am Rand ziehen um das Account Dashboard zu öffnen.</string>
     <string name="hint_accounts_dashboard_title">Account Dashboard</string>
     <string name="hint_empty_filters_subscriptions">Keine Abonnements</string>
-    <string name="hint_no_account">Kein Konto</string>
+    <string name="hint_no_account">Kein Account</string>
     <string name="hints">Hinweise</string>
     <string name="home_refresh">Zu aktualisierende Timelines</string>
-    <string name="home_refresh_summary">Timelines, die bei einem Refresh aktualisiert werden sollen</string>
     <string name="host_mapping_address">Adresse</string>
     <string name="host_mapping_host">Host (Bsp.: 127.0.0.1)</string>
     <string name="i_want_my_stars_back">Ich will die Sterne zurück!</string>
     <string name="i_want_my_stars_back_summary">Zeige Favoriten (★) anstelle von Likes (♥︎)</string>
     <string name="icon">Icon</string>
     <string name="import_export_settings">Import/Export</string>
-    <string name="import_from">Importiere aus…</string>
     <string name="import_settings">Einstellungen importieren</string>
     <string name="import_settings_type_dialog_title">Einstellungen importieren…</string>
     <string name="in_reply_to_name">Als Antwort auf <xliff:g id="user_name">%s</xliff:g></string>
@@ -435,7 +407,6 @@
     <string name="leftside_compose_button">Tweet Button auf der linken Seite</string>
     <string name="leftside_compose_button_summary">Platziert den Tweet Button links</string>
     <string name="light">Hell</string>
-    <string name="link_copied_to_clipboard">Link kopiert</string>
     <string name="link_highlight_option">Links hervorheben</string>
     <string name="link_to_quoted_status">Zitierten Tweet verlinken</string>
     <string name="list_members">Mitglieder anzeigen</string>
@@ -456,7 +427,6 @@
     <string name="login_challenge_retype_email_hint">Bitte gib die E-Mail Adresse, die mit deinem Twitter Account verknüpft ist, ein.</string>
     <string name="login_challenge_retype_phone_hint">Bitte gib die Handynummer, die mit deinem Twitter Account verknüpft ist, ein.</string>
     <string name="login_verification">Login Verifizierung</string>
-    <string name="login_verification_failed">Login Verifizierung fehlgeschlagen.</string>
     <string name="login_verification_pin_hint">Warte auf den PIN Code und gib ihn hier ein, um dich einzuloggen.</string>
     <string name="login_verification_push_hint">Warte auf die Verifizierungsanfrage von der Twitter App und bestätige sie, um dich einzuloggen.</string>
     <string name="long_click_to_open_menu">Halten, um das Menü zu öffnen</string>
@@ -478,18 +448,16 @@
     <string name="message_blocked_user"><xliff:g id="user">%s</xliff:g> blockiert.</string>
     <string name="message_direct_message_deleted">Direktnachricht gelöscht.</string>
     <string name="message_direct_message_sent">Direktnachricht gesendet.</string>
-    <string name="message_compose_write_storage_permission_not_granted">Diese Berechtigung wird benötigt, um aufgenommene Fotos/Videos wieder löschen zu können</string>
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_extra_features_not_purchased">Erweiterte Funktionen nicht freigeschaltet</string>
     <!-- Toast message for network errors -->
     <string name="message_network_error">Netzwerkfehler</string>
-    <string name="message_no_user_selected">Kein Benutzer ausgewählt</string>
     <string name="message_permission_request_compose_location">Twittnuker benötigt die Standortberechtigung um in Tweets den Standort hinzuzufügen.</string>
     <string name="message_permission_request_save_media">Twittnuker benötigt die Speicherberechtigung um Medien zu speichern.</string>
     <string name="message_permission_request_share_media">Twittnuker benötigt die Speicherberechtigung um Medien mit anderen Apps zu teilen.</string>
     <string name="message_please_wait">Bitte warten.</string>
-    <string name="message_retweet_cancelled">Retweet abgebrochen.</string>
+    <string name="message_retweet_cancelled">Retweet entfernt.</string>
     <string name="message_search_deleted">Suche gelöscht.</string>
     <string name="message_search_name_deleted">Suche \"<xliff:g id="name">%s</xliff:g>\" gelöscht.</string>
     <string name="message_search_name_saved">Suche \"<xliff:g id="name">%s</xliff:g>\" gespeichert.</string>
@@ -497,9 +465,9 @@
     <string name="message_status_deleted">Tweet gelöscht.</string>
     <string name="message_status_favorited">Tweet favorisiert.</string>
     <string name="message_status_like_removed">Like entfernt.</string>
-    <string name="message_status_liked">Tweet gefällt.</string>
+    <string name="message_status_liked">Tweet geliked.</string>
     <string name="message_status_retweeted">Retweeted.</string>
-    <string name="message_status_unfavorited">Tweet nicht favorisiert.</string>
+    <string name="message_status_unfavorited">Favorit entfernt.</string>
     <string name="message_sync_data_connect_hint">Twittnuker mit Onlinedienst verbinden, um Daten zu synchronisieren</string>
     <string name="message_sync_data_synced_with_name">Daten wurden mit <xliff:g example="ownCloud" id="name">%s</xliff:g> synchronisiert</string>
     <string name="message_sync_disconnect_from_name_confirm">Von <xliff:g example="ownCloud" id="name">%s</xliff:g> trennen?</string>
@@ -518,13 +486,13 @@
     <string name="message_toast_link_copied_to_clipboard">Link in die Zwischenablage kopiert</string>
     <string name="message_toast_livewp_daydream_enabled_message">Ich hab ein kleines Geschenk für dich in den Systemeinstellungen versteckt :)</string>
     <string name="message_toast_login_verification_failed">Login-Verifizierung fehlgeschlagen.</string>
-    <string name="message_toast_no_account">Kein Konto</string>
-    <string name="message_toast_no_account_selected">Kein Konto ausgewählt.</string>
+    <string name="message_toast_no_account">Kein Account</string>
+    <string name="message_toast_no_account_selected">Kein Account ausgewählt.</string>
     <string name="message_toast_no_user_selected">Kein Benutzer ausgewählt</string>
-    <string name="message_toast_press_again_to_close">Drücke zum Schließen nochmal</string>
+    <string name="message_toast_press_again_to_close">Nochmal tippen zum schliessen</string>
     <string name="message_toast_profile_banner_image_updated">Profilbanner aktualisiert.</string>
     <string name="message_toast_save_media_no_storage_permission">Speicherberechtigung notwendig um Bilder und Videos zu speichern.</string>
-    <string name="message_toast_saved_to_gallery">In der Galerie gespeichert.</string>
+    <string name="message_toast_saved_to_gallery">In Galerie gespeichert.</string>
     <string name="message_toast_select_file_no_storage_permission">Speicherberechtigung notwendig um Dateien auszuwählen.</string>
     <string name="message_toast_share_media_no_storage_permission">Die Anwendung erfordert die Speicherberechtigung, um Medien zu teilen.</string>
     <string name="message_toast_status_saved_to_draft">Tweet als Entwurf gespeichert.</string>
@@ -541,11 +509,9 @@
     <string name="mute_user"><xliff:g id="name">%s</xliff:g> stummschalten</string>
     <string name="mute_user_confirm_message"><xliff:g id="name">%s</xliff:g> stummschalten? Du wirst keine weiteren Tweets von diesem Nutzer sehen, ihm aber weiter folgen.</string>
     <string name="muted_user"><xliff:g id="name">%s</xliff:g> stummgeschaltet</string>
-    <string name="name">Name</string>
     <string name="name_and_another_retweeted">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und einer weiteren Person</string>
     <string name="name_and_count_retweeted">Retweetet von <xliff:g id="user_name">%1$s</xliff:g> und <xliff:g id="retweet_count">%2$d</xliff:g> anderen</string>
     <string name="name_first">Name bevorzugen</string>
-    <string name="name_first_summary">Benutzernamen statt den @Screennamen zeigen</string>
     <string name="name_first_summary_off">\@Screenname zuerst anzeigen</string>
     <string name="name_first_summary_on">Name zuerst anzeigen</string>
     <string name="name_not_set"><xliff:g id="name">%s</xliff:g> nicht gesetzt</string>
@@ -561,8 +527,6 @@
     <string name="next_item">Weiter</string>
     <string name="next_step">Weiter</string>
     <string name="next_tab">Nächster Tab</string>
-    <string name="no_account">Keine Accounts</string>
-    <string name="no_account_selected">Kein Account ausgewählt.</string>
     <string name="no_close_after_status_updated">Eingabemaske offen lassen</string>
     <string name="no_close_after_status_updated_summary">Lässt die Eingabemaske nach dem Senden eines Tweets geöffnet</string>
     <string name="no_location">Kein Standort</string>
@@ -585,7 +549,6 @@
     <string name="notification_status_multiple">Neuer Tweet von <xliff:g id="user">%1$s</xliff:g> und <xliff:g id="count">%2$d</xliff:g> weiteren</string>
     <string name="notifications">Benachrichtigungen</string>
     <string name="notifications_type">Benachrichtigungstyp</string>
-    <string name="oauth">OAuth</string>
     <string name="open_accounts_dashboard">Account Dashboard öffnen</string>
     <string name="open_twitter_links">Twitter Links öffnen</string>
     <string name="open_with_account">Mit Account öffnen</string>
@@ -621,7 +584,6 @@
     <string name="pick_file">Datei auswählen</string>
     <string name="pinned_status">Angehefteter Tweet</string>
     <string name="play">Abspielen</string>
-    <string name="please_wait">Bitte warten.</string>
     <string name="poll_summary_format"><xliff:g id="poll_count">%1$s</xliff:g> · <xliff:g id="poll_time_left">%2$s</xliff:g></string>
     <string name="preference_filter_possibility_sensitive_statuses">Sensitive Tweets (NSFW) filtern</string>
     <string name="preference_filter_unavailable_quote_statuses">Nicht verfügbare Zitate filtern</string>
@@ -632,7 +594,7 @@
     <string name="preference_randomize_account_rename_accounts_confirm">Accounts umbenennen?</string>
     <string name="preference_summary_chrome_custom_tab">Links in der App öffnen, ohne sie zu verlassen</string>
     <string name="preference_summary_database_item_limit">Anzahl der Objekte, die maximal pro Account gespeichert werden. Ein niedrigerer Wert spart Speicherplatz und erhöht die Ladegeschwindigkeit.</string>
-    <string name="preference_title_accounts">Konten</string>
+    <string name="preference_title_accounts">Accounts</string>
     <string name="preference_title_advanced">Erweitert</string>
     <string name="preference_title_chrome_custom_tab">Chrome Tab</string>
     <string name="preference_title_database_item_limit">Maximale Größe der Datenbank</string>
@@ -641,7 +603,6 @@
     <string name="preference_title_storage">Speicher</string>
     <string name="preference_title_translate">Übersetzen</string>
     <string name="preload_wifi_only">Vorladen nur mit WLAN</string>
-    <string name="press_again_to_close">Nochmal tippen um zu schliessen</string>
     <string name="preview">Vorschau</string>
     <string name="preview_images">Vorschaubilder</string>
     <string name="preview_style_crop">Zuschneiden</string>
@@ -653,7 +614,6 @@
     <string name="profile_background">Profil Hintergrund</string>
     <string name="profile_background_color">Hintergrundfarbe</string>
     <string name="profile_banner">Profil Banner</string>
-    <string name="profile_banner_image_updated">Profilbanner aktualisiert.</string>
     <string name="profile_image">Profilbild</string>
     <string name="profile_image_style">Profilbild Format</string>
     <string name="profile_image_updated">Profilbild aktualisiert.</string>
@@ -716,10 +676,8 @@
     <string name="requested">Angefordert</string>
     <string name="reset_keyboard_shortcuts_confirm">Sollen alle Keyboard Shortcuts zurückgesetzt werden?</string>
     <string name="reset_to_default">Zurücksetzen</string>
-    <string name="retry">Wiederholen</string>
     <string name="retry_on_network_issue">Bei Netzwerkproblemen wiederholen</string>
     <string name="retry_on_network_issue_summary">Verbindungen bei Netzwerkproblemen automatisch neu versuchen</string>
-    <string name="retweet_cancelled">Retweet entfernt.</string>
     <string name="retweet_quote_confirm_title">Retweet</string>
     <string name="retweeted_by_count">Retweetet von <xliff:g id="retweet_count">%d</xliff:g> Benutzern</string>
     <string name="retweeted_by_name">Retweetet von <xliff:g id="user_name">%s</xliff:g></string>
@@ -730,12 +688,9 @@
     <string name="round">Rund</string>
     <string name="safety">Sicherheit</string>
     <string name="same_oauth_signing_url">Benutze dieselbe URL für die OAuth-Anmeldung</string>
-    <string name="save_media_no_storage_permission_message">Speicherberechtigung notwendig um Bilder und Videos zu speichern.</string>
     <string name="save_to_gallery">Speichern</string>
     <string name="saved_searches">Gespeicherte Suchen</string>
     <string name="saved_searches_already_saved_hint">Du hast diese Suche schon gespeichert</string>
-    <string name="saved_to_gallery">In Galerie gespeichert.</string>
-    <string name="scale">Größe ändern</string>
     <string name="scheduled_statuses">Geplante Tweets</string>
     <string name="scrapyard">Schrottplatz</string>
     <string name="search">Suchen</string>
@@ -746,7 +701,6 @@
     <string name="select_account">Account auswählen</string>
     <string name="select_accounts">Accounts auswählen</string>
     <string name="select_accounts_for_compose">Accounts zum Posten auswählen</string>
-    <string name="select_file_no_storage_permission_message">Speicherberechtigung notwendig um Dateien auszuwählen.</string>
     <string name="select_user">Benutzer wählen</string>
     <string name="select_user_list">Wähle Benutzer-Liste aus</string>
     <string name="send_anyway">Trotzdem senden</string>
@@ -765,7 +719,6 @@
     <string name="share_format">Format zum Teilen</string>
     <string name="share_format_summary">\"[TITLE]\" = Überschrift\n\"[TEXT]\" = Inhalt</string>
     <string name="share_link">Link teilen</string>
-    <string name="share_media_no_storage_permission_message">Die Anwendung erfordert die Speicherberechtigung, um Medien zu teilen.</string>
     <string name="share_status">Tweet teilen</string>
     <string name="show_absolute_time">Zeit anzeigen</string>
     <string name="show_absolute_time_summary">Zeitpunkt der Veröffentlichung von Tweets anzeigen statt vergangener Zeitspanne</string>
@@ -775,8 +728,6 @@
     <string name="sign_in_service_google_id">Google ID</string>
     <string name="sign_in_service_twitter">Twitter</string>
     <string name="sign_in_with_ellip">Anmelden mit&#8230;</string>
-    <string name="sign_in_method_introduction">Die meisten Twitter Apps öffnen einen externen Browser, um dort nach dem Benutzernamen und dem Passwort zu fragen. Dies ist manchmal sehr umständlich.\n\nTwittnuker öffnet keinen externen Browser, sondern verwendet einfacherere Methoden, um sich anzumelden. Twittnuker speichert niemals das Passwort, es ist daher völlig sicher!</string>
-    <string name="sign_in_method_introduction_title">Wie funktioniert das?</string>
     <string name="sign_up">Registrieren</string>
     <string name="signing_in_error_browser_sign_in_hint">Fehler bei der Anmeldung, bitte melde Dich im Browser an.</string>
     <string name="size">Grösse</string>
@@ -790,32 +741,22 @@
     <string name="special_thanks_to">Special thanks to</string>
     <string name="sponsored_by">Sponsored by</string>
     <string name="square">Quadratisch</string>
-    <string name="ssl_error">SSL-Fehler, aktivieren von \"SSL-Fehler ignorieren\" könnte helfen.</string>
     <string name="state_blocking">Blockieren</string>
-    <string name="status_deleted">Tweet gelöscht.</string>
-    <string name="status_favorited">Tweet favorisiert.</string>
     <string name="status_format_source"><xliff:g example="Twittnuker for Android" id="source">%s</xliff:g></string>
     <string name="status_format_time_source"><xliff:g example="0:00, Jan 1 2017" id="time">%1$s</xliff:g> · <xliff:g example="Twittnuker for Android" id="source">%2$s</xliff:g></string>
     <string name="status_hint">Schreibe etwas...</string>
     <string name="status_is_duplicate">Dein Tweet ist ein Duplikat.</string>
-    <string name="status_like_removed">Like entfernt.</string>
-    <string name="status_liked">Liked Tweet.</string>
     <string name="status_not_updated">Tweet nicht gesendet.</string>
     <string name="status_not_updated_summary">Tweet wurde nicht gesendet und als Entwurf gespeichert.</string>
-    <string name="status_retweeted">Retweeted.</string>
-    <string name="status_saved_to_draft">Tweet zu den Entwürfen hinzugefügt.</string>
     <string name="status_share_subject_format_with_time">Tweet von <xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>) um <xliff:g id="time">%3$s</xliff:g></string>
     <string name="status_share_text_format_with_link"><xliff:g id="text">%1$s</xliff:g>\n\n<xliff:g id="link">%2$s</xliff:g></string>
     <string name="status_shortener">Tweet-Verkürzungsdienst</string>
     <string name="status_shortener_default">Nicht kürzen (Senden abbrechen)</string>
     <!-- [noun] Accessibility label for retweet icon -->
     <string name="status_type_retweet">Retweet</string>
-    <string name="status_unfavorited">Favorit gelöscht.</string>
-    <string name="status_updated">Tweet gesendet.</string>
     <string name="stop_auto_refresh_when_battery_low">Energiesparen</string>
     <string name="streaming">Streaming</string>
     <string name="style">Style</string>
-    <string name="subscribe">Abonnieren</string>
     <string name="subscribed_to_list">Liste \"<xliff:g id="list">%s</xliff:g>\" abonniert.</string>
     <string name="subscribers">Follower</string>
     <string name="summary_interactions_not_available">Nur mit offiziellen API Keys verfügbar</string>
@@ -887,10 +828,6 @@
     <string name="title_users_favorited_this">Benutzer favorisierten das</string>
     <string name="title_users_liked_this">Benutzer gefällt das</string>
     <string name="title_users_retweeted_this">Benutzer retweeteten das</string>
-    <string name="toggle">An/Aus</string>
-    <string name="translate">Übersetzen</string>
-    <string name="translate_from_language">Übersetze von <xliff:g id="language">%s</xliff:g></string>
-    <string name="translation">Übersetzung</string>
     <string name="translation_destination">Zielsprache</string>
     <string name="translators">Übersetzer</string>
     <string name="trends">Trends</string>
@@ -900,11 +837,6 @@
     <string name="tweet_from_name">Tweet von <xliff:g id="text">%1$s</xliff:g></string>
     <string name="tweet_hashtag">Tweet #<xliff:g id="text">%1$s</xliff:g></string>
     <string name="twidere_test">TEST</string>
-    <string name="twip_o">twip O Modus</string>
-    <string name="twitter_mute_user">Stummschalten</string>
-    <string name="twitter_muted_users">Stummgeschaltete Benutzer</string>
-    <string name="twitter_optimized_searches">Twitter optimierte Suchanfragen</string>
-    <string name="twitter_optimized_searches_summary">Erlaubt spezielle Suchbefehle um bspw. Retweets nicht anzuzeigen</string>
     <string name="type_name_to_search">Name suchen</string>
     <string name="type_to_compose">Schreibe etwas</string>
     <string name="unblocked_user"><xliff:g id="user">%s</xliff:g> nicht mehr blockiert.</string>
@@ -918,7 +850,6 @@
     <string name="unmute_user"><xliff:g id="name">%s</xliff:g> stummschalten</string>
     <string name="unmuted_user">Stummschaltung von: <xliff:g id="name">%s</xliff:g> aufgehoben</string>
     <string name="unread_count">Anzahl ungelesene</string>
-    <string name="unsubscribe">Abbestellen</string>
     <string name="unsubscribe_from_user_list">Aus Liste <xliff:g id="name">%s</xliff:g> austragen</string>
     <string name="unsubscribe_from_user_list_confirm_message">Aus Liste <xliff:g id="name">%s</xliff:g> wirklich austragen? Du kannst Dich jederzeit wieder eintragen.</string>
     <string name="unsubscribed_from_list">Listen-Abonnement von \"<xliff:g id="list">%s</xliff:g>\" entfernt.</string>
@@ -954,14 +885,6 @@
         <xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Nutzers</string>
     <string name="vibration">Vibration</string>
-    <string name="view_replies">Antworten ansehen</string>
-    <string name="view_user_profile">Benutzerprofil</string>
-    <string name="wrong_api_key">Falsche API URL oder Consumer Key/Secret. Bitte überprüfe deine Einstellungen.</string>
-    <string name="wrong_url_format">Falsches URL-Format.</string>
-    <string name="wrong_username_password">Falscher Benutzername/Passwort</string>
-    <string name="xauth">xAuth</string>
-    <string name="your_coarse_location">Dein ungefährer Standort</string>
-    <string name="your_profile_image">Dein Profilbild</string>
 
 
     <!-- Twittnuker -->
