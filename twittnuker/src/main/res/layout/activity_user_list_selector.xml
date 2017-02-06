@@ -28,7 +28,7 @@
     tools:context=".activity.UserListSelectorActivity">
 
     <LinearLayout
-        android:id="@+id/user_lists_container"
+        android:id="@+id/userListsContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="?android:dividerVertical"
@@ -37,13 +37,13 @@
         android:visibility="gone">
 
         <ListView
-            android:id="@+id/user_lists_list"
+            android:id="@+id/userListsList"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
         <LinearLayout
-            android:id="@+id/create_list_container"
+            android:id="@+id/createListContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0"
@@ -51,7 +51,7 @@
             android:visibility="gone">
 
             <Button
-                android:id="@+id/create_list"
+                android:id="@+id/createList"
                 style="?android:borderlessButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/button_bar_height"
@@ -61,7 +61,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/users_list_container"
+        android:id="@+id/usersListContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="?android:dividerVertical"
@@ -88,7 +88,7 @@
                 android:padding="@dimen/element_spacing_normal">
 
                 <AutoCompleteTextView
-                    android:id="@+id/edit_screen_name"
+                    android:id="@+id/editScreenName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -96,7 +96,7 @@
                     android:maxLines="1"/>
 
                 <de.vanita5.twittnuker.view.IconActionButton
-                    android:id="@+id/screen_name_confirm"
+                    android:id="@+id/screenNameConfirm"
                     android:layout_width="@dimen/minimum_element_size"
                     android:layout_height="@dimen/minimum_element_size"
                     android:layout_weight="0"
@@ -110,7 +110,7 @@
         </LinearLayout>
 
         <ListView
-            android:id="@+id/users_list"
+            android:id="@+id/usersList"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
