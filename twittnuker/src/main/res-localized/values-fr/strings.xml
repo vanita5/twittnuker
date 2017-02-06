@@ -6,6 +6,7 @@
     <string name="account_delete_confirm_title">Supprimer le compte</string>
     <string name="account_options">Options du compte</string>
     <string name="account_type_fanfou">Fanfou</string>
+  <string name="account_type_statusnet">StatusNet</string>
     <string name="account_type_twitter">Twitter</string>
     <string name="action_accept_friend_request">Accepter</string>
     <string name="action_accept_permission_request">Accepter</string>
@@ -20,7 +21,7 @@
     <string name="action_blocking">bloquer</string>
     <!-- [verb] Action for cancelling (deleting) a retweet-->
     <string name="action_cancel_retweet">Annuler le retweet</string>
-    <string name="action_cancelling_like">annulation du « J\'aime »</string>
+  <string name="action_cancelling_like">annulation du « J\'aime »</string>
     <string name="action_center">Centre</string>
     <string name="action_clear">Effacer</string>
     <string name="action_compose">Écrire</string>
@@ -49,7 +50,7 @@
     <string name="action_later">Plus tard</string>
     <!-- [verb] e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
     <string name="action_like">J\'aime</string>
-    <string name="action_liking">ajout du « J\'aime »</string>
+  <string name="action_liking">ajout du « J\'aime »</string>
     <string name="action_modifying_lists">modification des listes</string>
     <string name="action_mute">Masquer</string>
     <string name="action_muting">mettre en sourdine</string>
@@ -325,7 +326,7 @@
     <string name="fast_image_loading">Chargement de l\'image rapide</string>
     <string name="fast_image_loading_summary">Activer pour permettre aux images de se charger plus rapidement, désactiver si des images ne s\'affichent pas.</string>
     <string name="filter_everywhere">Filtrer partout</string>
-    <string name="filter_everywhere_description">Le filtre va s\'appliquer dans Twittnuker sur :\n  ·Les tweets de l\'utilisateur\n  ·Les tweets mentionnant l\'utilisateur\n  ·Les retweets/citation de cet utilisateur</string>
+    <string name="filter_everywhere_description">Le filtre va s\'appliquer dans Twittnuker sur:\n  ·Les tweets de l\'utilisateur\n  ·Les tweets mentionnant l\'utilisateur\n  ·Les retweets/citation de cet utilisateur</string>
     <string name="filter_type_keywords">Mots-clés</string>
     <string name="filter_type_links">Liens</string>
     <string name="filter_type_sources">Sources</string>
@@ -414,8 +415,8 @@
     <string name="link_highlight_option">Option de surbrillance des liens</string>
     <string name="link_to_quoted_status">Lien vers le tweet cité</string>
     <string name="list_members">Lister les membres</string>
-    <string name="list_subscribers">Liste « abonnés »</string>
-    <string name="list_timeline">Liste « fil d\'actualité »</string>
+  <string name="list_subscribers">Liste « abonnés »</string>
+  <string name="list_timeline">Liste « fil d\'actualité »</string>
     <string name="listed">Listé</string>
     <string name="lists">Listes</string>
     <string name="lists_following_user">Liste dont cet utilisateur est membre</string>
@@ -468,7 +469,7 @@
     <string name="message_search_saved">Recherche sauvegardée.</string>
     <string name="message_status_deleted">Tweet supprimé.</string>
     <string name="message_status_favorited">Tweet ajouté aux favoris.</string>
-    <string name="message_status_like_removed">« J\'aime » supprimé.</string>
+  <string name="message_status_like_removed">« J\'aime » supprimé.</string>
     <string name="message_status_liked">Tweet aimé.</string>
     <string name="message_status_retweeted">Retweeté.</string>
     <string name="message_status_unfavorited">Tweet supprimé des favoris.</string>
@@ -476,7 +477,7 @@
     <string name="message_sync_data_synced_with_name">Twittnuker est maintenant synchronisé avec <xliff:g example="ownCloud" id="name">%s</xliff:g></string>
     <string name="message_sync_disconnect_from_name_confirm">Se déconnecter de <xliff:g example="ownCloud" id="name">%s</xliff:g>?</string>
     <string name="message_sync_last_synced_time">Dernière synchronisation : <xliff:g example="2017/1/1 12:00" id="time">%s</xliff:g></string>
-    <string name="message_tab_field_is_required">Le champ « <xliff:g example="Field" id="name">%s </xliff:g> » est obligatoire</string>
+  <string name="message_tab_field_is_required">Le champ « <xliff:g example="Field" id="name">%s </xliff:g> » est obligatoire</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
