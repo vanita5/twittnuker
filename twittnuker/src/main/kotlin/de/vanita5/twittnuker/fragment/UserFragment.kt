@@ -83,10 +83,7 @@ import org.apache.commons.lang3.ObjectUtils
 import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
-import org.mariotaku.ktextension.Bundle
-import org.mariotaku.ktextension.empty
-import org.mariotaku.ktextension.set
-import org.mariotaku.ktextension.toTypedArray
+import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate
 import de.vanita5.twittnuker.library.twitter.model.Paging
@@ -102,6 +99,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
+import de.vanita5.twittnuker.constant.lightFontKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
@@ -1307,6 +1305,16 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
 
     private fun setupViewStyle() {
         profileImage.style = preferences[profileImageStyleKey]
+
+        val lightFont = preferences[lightFontKey]
+
+        profileNameContainer.name.applyFontFamily(lightFont)
+        profileNameContainer.screenName.applyFontFamily(lightFont)
+        profileNameContainer.followingYouIndicator.applyFontFamily(lightFont)
+        descriptionContainer.description.applyFontFamily(lightFont)
+        urlContainer.url.applyFontFamily(lightFont)
+        locationContainer.location.applyFontFamily(lightFont)
+        createdAtContainer.createdAt.applyFontFamily(lightFont)
     }
 
     private fun setupUserPages() {

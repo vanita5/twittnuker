@@ -32,6 +32,7 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.list_item_status.view.*
+import org.mariotaku.ktextension.applyFontFamily
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
@@ -49,7 +50,6 @@ import de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText
 import de.vanita5.twittnuker.util.Utils.getUserTypeIconRes
 import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
-import org.mariotaku.ktextension.applyFontFamily
 import java.lang.ref.WeakReference
 
 class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View) : ViewHolder(itemView), Constants, IStatusViewHolder {
@@ -100,8 +100,15 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             View.inflate(quotedMediaPreview.context, R.layout.layout_card_media_preview,
                     itemView.quotedMediaPreview)
         }
+
+        nameView.applyFontFamily(adapter.lightFont)
+        timeView.applyFontFamily(adapter.lightFont)
         textView.applyFontFamily(adapter.lightFont)
+        mediaLabelTextView.applyFontFamily(adapter.lightFont)
+
+        quotedNameView.applyFontFamily(adapter.lightFont)
         quotedTextView.applyFontFamily(adapter.lightFont)
+        quotedMediaLabelTextView.applyFontFamily(adapter.lightFont)
     }
 
 
