@@ -33,6 +33,10 @@ import java.util.List;
 public interface FiltersSubscriptionProvider {
     boolean fetchFilters() throws IOException;
 
+    boolean firstAdded();
+
+    boolean deleteLocalData();
+
     @Nullable
     List<FiltersData.UserItem> getUsers();
 

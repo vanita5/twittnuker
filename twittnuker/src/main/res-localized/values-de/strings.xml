@@ -600,6 +600,7 @@
     <string name="preference_title_database_item_limit">Maximale Größe der Datenbank</string>
     <string name="preference_title_filter_manage_subscriptions">Bearbeiten</string>
     <string name="preference_title_filter_subscriptions">Filter Abonnements</string>
+    <string name="preference_title_light_font">Light Font</string>
     <string name="preference_title_storage">Speicher</string>
     <string name="preference_title_translate">Übersetzen</string>
     <string name="preload_wifi_only">Vorladen nur mit WLAN</string>

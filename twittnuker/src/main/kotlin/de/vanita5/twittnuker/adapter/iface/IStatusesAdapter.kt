@@ -29,10 +29,13 @@ import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.view.CardMediaContainer
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
+
 interface IStatusesAdapter<in Data> : IContentAdapter, IGapSupportedAdapter {
 
     @TwidereLinkify.HighlightStyle
     val linkHighlightingStyle: Int
+
+    val lightFont: Boolean
 
     @CardMediaContainer.PreviewStyle
     val mediaPreviewStyle: Int

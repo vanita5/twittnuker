@@ -24,13 +24,11 @@ package de.vanita5.twittnuker.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.content.UriMatcher
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.ktextension.toLong
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
@@ -39,7 +37,7 @@ import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.Utils
 
-class WebLinkHandlerActivity : Activity(), Constants {
+class WebLinkHandlerActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

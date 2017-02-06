@@ -40,11 +40,8 @@ import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.Companion.ITEM_VIEW_TYPE_LOAD_INDICATOR
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
-import de.vanita5.twittnuker.constant.hideCardActionsKey
-import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
-import de.vanita5.twittnuker.constant.mediaPreviewStyleKey
-import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_DISPLAY_SENSITIVE_CONTENTS
 import de.vanita5.twittnuker.model.ObjectId
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices
@@ -74,9 +71,10 @@ abstract class ParcelableStatusesAdapter(
     final override val nameFirst: Boolean = preferences[nameFirstKey]
     final override val useStarsForLikes: Boolean = preferences[iWantMyStarsBackKey]
     @TwidereLinkify.HighlightStyle
-    final override val linkHighlightingStyle: Int
-    final override val mediaPreviewEnabled: Boolean
-    final override val sensitiveContentEnabled: Boolean
+    final override val linkHighlightingStyle: Int = preferences[linkHighlightOptionKey]
+    final override val lightFont: Boolean = preferences[lightFontKey]
+    final override val mediaPreviewEnabled: Boolean = Utils.isMediaPreviewEnabled(context, preferences)
+    final override val sensitiveContentEnabled: Boolean = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, false)
     private val showCardActions: Boolean = !preferences[hideCardActionsKey]
 
     private val gapLoadingIds: MutableSet<ObjectId> = HashSet()
@@ -120,9 +118,6 @@ abstract class ParcelableStatusesAdapter(
 
     init {
         mediaLoadingHandler = MediaLoadingHandler(*progressViewIds)
-        linkHighlightingStyle = Utils.getLinkHighlightingStyleInt(preferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null))
-        mediaPreviewEnabled = Utils.isMediaPreviewEnabled(context, preferences)
-        sensitiveContentEnabled = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, false)
         val handler = StatusAdapterLinkClickHandler<List<ParcelableStatus>>(context, preferences)
         twidereLinkify = TwidereLinkify(handler)
         handler.setAdapter(this)

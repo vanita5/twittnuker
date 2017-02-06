@@ -32,7 +32,7 @@
         android:order="11"
         android:title="@string/preview">
         <de.vanita5.twittnuker.preference.CardPreviewPreference
-            android:key="card_preview" />
+            android:key="card_preview"/>
     </PreferenceCategory>
 
     <de.vanita5.twittnuker.preference.SeekBarDialogPreference
@@ -46,7 +46,7 @@
         app:progressTextSuffix="sp">
         <extra
             android:name="should_recreate"
-            android:value="true" />
+            android:value="true"/>
     </de.vanita5.twittnuker.preference.SeekBarDialogPreference>
     <SwitchPreferenceCompat
         android:defaultValue="false"
@@ -57,7 +57,7 @@
         android:title="@string/name_first">
         <extra
             android:name="should_recreate"
-            android:value="true" />
+            android:value="true"/>
     </SwitchPreferenceCompat>
 
     <SwitchPreferenceCompat
@@ -67,7 +67,7 @@
         android:title="@string/profile_image">
         <extra
             android:name="should_recreate"
-            android:value="true" />
+            android:value="true"/>
     </SwitchPreferenceCompat>
 
     <de.vanita5.twittnuker.preference.EntrySummaryListPreference
@@ -79,7 +79,7 @@
         android:title="@string/profile_image_style">
         <extra
             android:name="should_recreate"
-            android:value="true" />
+            android:value="true"/>
     </de.vanita5.twittnuker.preference.EntrySummaryListPreference>
 
     <SwitchPreferenceCompat
@@ -89,7 +89,7 @@
         android:title="@string/media_preview">
         <extra
             android:name="should_recreate"
-            android:value="true" />
+            android:value="true"/>
     </SwitchPreferenceCompat>
     <de.vanita5.twittnuker.preference.EntrySummaryListPreference
         android:defaultValue="crop"
@@ -100,7 +100,7 @@
         android:title="@string/media_preview_style">
         <extra
             android:name="should_recreate"
-            android:value="true" />
+            android:value="true"/>
     </de.vanita5.twittnuker.preference.EntrySummaryListPreference>
 
     <de.vanita5.twittnuker.preference.LinkHighlightPreference
@@ -110,7 +110,7 @@
         android:title="@string/link_highlight_option">
         <extra
             android:name="should_recreate"
-            android:value="true" />
+            android:value="true"/>
     </de.vanita5.twittnuker.preference.LinkHighlightPreference>
 
     <SwitchPreferenceCompat
@@ -121,7 +121,16 @@
         android:title="@string/show_absolute_time">
         <extra
             android:name="should_recreate"
-            android:value="true" />
+            android:value="true"/>
+    </SwitchPreferenceCompat>
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="light_font"
+        android:order="28"
+        android:title="@string/preference_title_light_font">
+        <extra
+            android:name="should_recreate"
+            android:value="true"/>
     </SwitchPreferenceCompat>
     <SwitchPreferenceCompat
         android:defaultValue="false"
@@ -130,7 +139,7 @@
         android:title="@string/hide_card_actions">
         <extra
             android:name="should_recreate"
-            android:value="true" />
+            android:value="true"/>
     </SwitchPreferenceCompat>
     <SwitchPreferenceCompat
         android:defaultValue="false"
@@ -140,7 +149,7 @@
         android:title="@string/i_want_my_stars_back">
         <extra
             android:name="should_recreate"
-            android:value="true" />
+            android:value="true"/>
     </SwitchPreferenceCompat>
 
 </PreferenceScreen>

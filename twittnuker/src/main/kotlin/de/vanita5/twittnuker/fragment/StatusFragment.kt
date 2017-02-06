@@ -67,6 +67,7 @@ import kotlinx.android.synthetic.main.fragment_status.*
 import kotlinx.android.synthetic.main.header_status_common.view.*
 import kotlinx.android.synthetic.main.layout_content_fragment_common.*
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.applyFontFamily
 import org.mariotaku.ktextension.findPositionByItemId
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
@@ -1137,6 +1138,9 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             val resources = activity.resources
             itemView.countsUsers.addItemDecoration(SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.element_spacing_normal)))
 
+
+            itemView.text.applyFontFamily(adapter.lightFont)
+            itemView.quotedText.applyFontFamily(adapter.lightFont)
         }
 
 
@@ -1145,14 +1149,10 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 private val statusAdapter: StatusAdapter
         ) : BaseRecyclerViewAdapter<ViewHolder>(statusAdapter.context) {
 
-            private val inflater: LayoutInflater
+            private val inflater = LayoutInflater.from(statusAdapter.context)
 
             private var counts: List<LabeledCount>? = null
             private var users: List<ParcelableUser>? = null
-
-            init {
-                inflater = LayoutInflater.from(statusAdapter.context)
-            }
 
             override fun onBindViewHolder(holder: ViewHolder, position: Int) {
                 when (holder.itemViewType) {
@@ -1428,6 +1428,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         private val cardBackgroundColor: Int
         override val mediaPreviewStyle: Int
         override val linkHighlightingStyle: Int
+        override val lightFont: Boolean
         override val mediaPreviewEnabled: Boolean
         override val sensitiveContentEnabled: Boolean
         private val mShowCardActions: Boolean
@@ -1478,6 +1479,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     ThemeUtils.getThemeBackgroundOption(context),
                     ThemeUtils.getUserThemeBackgroundAlpha(context))
             nameFirst = preferences[nameFirstKey]
+            lightFont = preferences[lightFontKey]
             mediaPreviewStyle = preferences[mediaPreviewStyleKey]
             linkHighlightingStyle = preferences[linkHighlightOptionKey]
             mediaPreviewEnabled = preferences[mediaPreviewKey]

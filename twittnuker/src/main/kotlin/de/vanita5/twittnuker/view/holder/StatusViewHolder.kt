@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText
 import de.vanita5.twittnuker.util.Utils.getUserTypeIconRes
 import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
+import org.mariotaku.ktextension.applyFontFamily
 import java.lang.ref.WeakReference
 
 class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View) : ViewHolder(itemView), Constants, IStatusViewHolder {
@@ -99,6 +100,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             View.inflate(quotedMediaPreview.context, R.layout.layout_card_media_preview,
                     itemView.quotedMediaPreview)
         }
+        textView.applyFontFamily(adapter.lightFont)
+        quotedTextView.applyFontFamily(adapter.lightFont)
     }
 
 
@@ -654,6 +657,5 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             return false
         }
     }
-
 
 }
