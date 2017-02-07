@@ -46,6 +46,7 @@
     <string name="action_retweet">Retweetovat</string>
     <!-- [verb] Save settings/files etc. -->
     <string name="action_save">Uložit</string>
+  <string name="action_select_user">Vybrat uživatele</string>
     <!-- [verb] Send tweet/message -->
     <string name="action_send">Poslat</string>
     <string name="action_set_color">Nastavit barvu</string>
@@ -93,7 +94,6 @@
     <string name="cache_size_limit">Maximální velikost mezipaměti</string>
     <string name="cards">Karty</string>
     <string name="clear_cache">Vymazat mezipaměť</string>
-    <string name="clear_cache_summary">Vyčistit mezipaměť uložených profilových obrázků.</string>
     <string name="clear_databases">Vymazat databázi</string>
     <string name="clear_search_history">Vymazat historii vyhledávání</string>
     <string name="compose_now">Vytvořit hned</string>
@@ -193,9 +193,6 @@
     <string name="long_click_to_open_menu">Dlouhým stiskem zobrazíte menu</string>
     <string name="mark_as_sensitive">Označit jako citlivé</string>
     <string name="members">Členové</string>
-    <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-    <!-- Toast message for network errors -->
-    <string name="message_network_error">Chyba sítě.</string>
     <string name="message_please_wait">Počkejte prosím.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
@@ -204,12 +201,13 @@
     <string name="message_toast_already_logged_in">Jste již přihlášeni.</string>
     <string name="message_toast_cannot_get_location">Nelze získat vaši polohu.</string>
     <string name="message_toast_error_occurred">Stala se chyba, zkuste to, prosím, znovu.</string>
+  <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_link_copied_to_clipboard">Odkaz zkopírován do schránky</string>
+  <!-- Toast message for network errors -->
     <string name="message_toast_no_account">Žádný účet</string>
     <string name="message_toast_no_account_selected">Nevybrán žádný účet.</string>
     <string name="message_toast_saved_to_gallery">Uloženo do galerie.</string>
     <string name="message_toast_status_updated">Tweet odeslán.</string>
-    <string name="more">Více</string>
     <string name="name_retweeted"><xliff:g id="user_name">%s</xliff:g> retweetován</string>
     <string name="name_with_nickname"><xliff:g id="name">%1$s </xliff:g> (<xliff:g id="nickname">%2$s </xliff:g>)</string>
     <string name="navigation">Navigace</string>
@@ -239,6 +237,8 @@
     <string name="preference_title_accounts">Účty</string>
     <string name="preference_title_advanced">Pokročilé</string>
     <string name="preference_title_database_item_limit">Limit velikosti databáze</string>
+  <string name="preference_title_portrait">Svisle</string>
+  <string name="preference_title_landscape">Vodorovně</string>
     <string name="preference_title_storage">Úložiště</string>
     <string name="preference_title_translate">Překlad</string>
     <string name="preview">Náhled</string>
@@ -377,6 +377,7 @@
     <string name="title_subscription_url">URL</string>
     <string name="title_user">Uživatel</string>
     <string name="title_user_colors">Uživatelské barvy</string>
+  <string name="title_user_list_memberships">Patří do</string>
     <string name="title_users_retweeted_this">Uživatelů retweetovalo</string>
     <string name="translators">Překladatelé</string>
     <string name="trends">Trendy</string>

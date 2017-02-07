@@ -202,7 +202,6 @@
   <string name="cant_load_all_replies_message">Tidak dapat memuat semua balasan. &lt;a href=\"#dialog\";&gt;Kenapa? &lt;/a&gt;</string>
   <string name="cards">Kartu</string>
   <string name="clear_cache">Bersihkan tembolok</string>
-  <string name="clear_cache_summary">Bersihkan tembolok gambar profil.</string>
   <string name="clear_databases">Bersihkan database</string>
   <string name="clear_databases_summary">Bersihkan seluruh kicauan, profil, pesan. Data akun anda tidak akan hilang.</string>
   <string name="clear_search_history">Bersihkan riwayat pencarian</string>
