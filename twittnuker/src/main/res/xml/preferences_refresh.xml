@@ -33,7 +33,7 @@
         app:switchDefault="true"
         app:switchKey="auto_refresh"/>
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_streaming"
         android:title="@string/streaming"
         android:enabled="false">
@@ -72,9 +72,9 @@
             <!--android:key="stream_on_mobile"-->
             <!--android:summary="@string/stream_on_mobile_summary"-->
             <!--android:title="@string/stream_on_mobile" />-->
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_general"
         android:title="@string/general">
         <de.vanita5.twittnuker.preference.EntrySummaryListPreference
@@ -104,6 +104,6 @@
             android:key="refresh_after_tweet"
             android:summary="@string/refresh_after_status_updated_summary"
             android:title="@string/refresh_after_status_updated" />
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
 </PreferenceScreen>

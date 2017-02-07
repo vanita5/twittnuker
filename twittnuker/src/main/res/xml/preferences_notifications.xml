@@ -33,7 +33,7 @@
         app:switchDefault="true"
         app:switchKey="notification"/>
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_push_notifications"
         android:title="@string/push_notifications">
 
@@ -49,9 +49,9 @@
             android:summary="@string/push_api_url_summary"
             android:title="@string/push_api_url"/>
         <de.vanita5.twittnuker.preference.PushNotificationStatusPreference/>
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_notifications"
         android:title="@string/notifications">
 
@@ -74,6 +74,6 @@
             android:key="pebble_notifications"
             android:summary="@string/pebble_notifications_summary"
             android:title="@string/pebble_notifications"/>
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
 </PreferenceScreen>
