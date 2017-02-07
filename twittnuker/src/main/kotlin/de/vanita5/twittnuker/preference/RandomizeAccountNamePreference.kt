@@ -37,6 +37,7 @@ import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.model.getAccountKey
 import de.vanita5.twittnuker.extension.model.getAccountUser
+import de.vanita5.twittnuker.extension.model.renameTwidereAccount
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.preference.iface.IDialogPreference
 import de.vanita5.twittnuker.util.generateAccountName
@@ -90,7 +91,7 @@ class RandomizeAccountNamePreference @JvmOverloads constructor(
                     do {
                         newName = UUID.randomUUID().toString()
                     } while (usedNames.contains(newName))
-                    AccountUtils.renameAccount(am, oldAccount, newName)
+                    am.renameTwidereAccount(oldAccount, newName)
                     usedNames.add(newName)
                 }
             } else {
@@ -98,7 +99,7 @@ class RandomizeAccountNamePreference @JvmOverloads constructor(
                     val accountKey = oldAccount.getAccountKey(am)
                     val accountUser = oldAccount.getAccountUser(am)
                     val newName = generateAccountName(accountUser.screen_name, accountKey.host)
-                    AccountUtils.renameAccount(am, oldAccount, newName)
+                    am.renameTwidereAccount(oldAccount, newName)
                 }
             }
         }

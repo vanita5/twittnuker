@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AlertDialog
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_INTENT
+import de.vanita5.twittnuker.extension.model.isAccountValid
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.support.removeAccountSupport
@@ -29,7 +30,7 @@ class InvalidAccountAlertActivity : FragmentActivity() {
             builder.setMessage(R.string.message_error_invalid_account)
             builder.setPositiveButton(android.R.string.ok) { dialog, which ->
                 val am = AccountManager.get(context)
-                AccountUtils.getAccounts(am).filter { !AccountUtils.isAccountValid(am, it) }.forEach { account ->
+                AccountUtils.getAccounts(am).filter { !am.isAccountValid(it) }.forEach { account ->
                     am.removeAccountSupport(account)
                 }
                 val intent = activity.intent.getParcelableExtra<Intent>(EXTRA_INTENT)
