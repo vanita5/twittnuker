@@ -31,6 +31,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  Mapper for IDs object
+ */
+@SuppressWarnings("unused")
 public class IDs$$JsonObjectMapper extends JsonMapper<IDs> {
 
     @SuppressWarnings("TryWithIdenticalCatches")

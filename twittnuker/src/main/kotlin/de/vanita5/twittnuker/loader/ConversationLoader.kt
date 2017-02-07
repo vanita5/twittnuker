@@ -38,7 +38,6 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
-import de.vanita5.twittnuker.util.Nullables
 import java.util.*
 
 class ConversationLoader(
@@ -58,7 +57,7 @@ class ConversationLoader(
     private var canLoadAllReplies: Boolean = false
 
     init {
-        this.status = Nullables.assertNonNull(ParcelUtils.clone(status))
+        this.status = ParcelUtils.clone(status)
         ParcelableStatusUtils.makeOriginalStatus(this.status)
     }
 

@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.User;
 
+@SuppressWarnings("RedundantThrows")
 public interface FriendshipsResources {
 
     @POST("/friendships/create.json")

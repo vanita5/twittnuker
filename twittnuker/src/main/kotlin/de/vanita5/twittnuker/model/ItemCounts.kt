@@ -28,8 +28,8 @@ class ItemCounts(counts: Int) {
 
     fun getItemCountIndex(itemPosition: Int): Int {
         var sum = 0
-        for (i in data.indices) {
-            sum += data[i]
+        data.forEachIndexed { i, num ->
+            sum += num
             if (itemPosition < sum) {
                 return i
             }
@@ -38,11 +38,7 @@ class ItemCounts(counts: Int) {
     }
 
     fun getItemStartPosition(countIndex: Int): Int {
-        var sum = 0
-        for (i in 0..countIndex - 1) {
-            sum += data[i]
-        }
-        return sum
+        return (0..countIndex - 1).sumBy { data[it] }
     }
 
     val itemCount: Int get() = data.sum()
@@ -51,6 +47,10 @@ class ItemCounts(counts: Int) {
 
     operator fun set(countIndex: Int, value: Int) {
         data[countIndex] = value
+    }
+
+    operator fun get(countIndex: Int): Int {
+        return data[countIndex]
     }
 
 }

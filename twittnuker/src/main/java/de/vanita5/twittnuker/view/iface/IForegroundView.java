@@ -53,7 +53,6 @@ public interface IForegroundView {
      * the padding area.
      *
      * @param drawable The Drawable to be drawn on top of the children.
-     * @attr ref android.R.attr#foreground
      */
     void setForeground(final Drawable drawable);
 
@@ -61,7 +60,6 @@ public interface IForegroundView {
      * Describes how the foreground is positioned. Defaults to START and TOP.
      *
      * @param foregroundGravity See {@link android.view.Gravity}
-     * @attr ref android.R.attr#foregroundGravity
      */
     void setForegroundGravity(int foregroundGravity);
 

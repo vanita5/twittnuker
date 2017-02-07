@@ -31,6 +31,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import org.mariotaku.ktextension.coerceInOr
 
 class MediaSwipeCloseContainer(context: Context, attrs: AttributeSet? = null) : ViewGroup(context, attrs) {
 
@@ -53,7 +54,7 @@ class MediaSwipeCloseContainer(context: Context, attrs: AttributeSet? = null) : 
 
         override fun clampViewPositionVertical(child: View, top: Int, dy: Int): Int {
             val container = this@MediaSwipeCloseContainer
-            return top.coerceIn(-container.height, container.height)
+            return top.coerceInOr(-container.height..container.height, 0)
         }
 
         override fun getViewVerticalDragRange(child: View?): Int {

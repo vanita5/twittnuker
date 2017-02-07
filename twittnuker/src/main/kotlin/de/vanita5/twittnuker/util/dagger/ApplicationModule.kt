@@ -49,6 +49,7 @@ import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CACHE_SIZE_LIMIT
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache
@@ -297,7 +298,7 @@ class ApplicationModule(private val application: Application) {
         val cacheDir = Utils.getExternalCacheDir(application, dirName)
         val fallbackCacheDir = Utils.getInternalCacheDir(application, dirName)
         val fileNameGenerator = URLFileNameGenerator()
-        val cacheSize = TwidereMathUtils.clamp(preferences.getInt(SharedPreferenceConstants.KEY_CACHE_SIZE_LIMIT, 300), 100, 500)
+        val cacheSize = preferences.getInt(KEY_CACHE_SIZE_LIMIT, 300).coerceIn(100..500)
         try {
             val cacheMaxSizeBytes = cacheSize * 1024 * 1024
             if (cacheDir != null)

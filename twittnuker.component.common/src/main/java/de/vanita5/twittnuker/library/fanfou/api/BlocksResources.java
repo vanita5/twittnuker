@@ -24,12 +24,12 @@ package de.vanita5.twittnuker.library.fanfou.api;
 
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Param;
-
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.User;
 
+@SuppressWarnings("RedundantThrows")
 public interface BlocksResources {
 
     @POST("/blocks/create.json")

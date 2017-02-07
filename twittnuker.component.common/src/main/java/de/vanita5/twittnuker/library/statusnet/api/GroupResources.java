@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.library.twitter.model.User;
 
+@SuppressWarnings("RedundantThrows")
 public interface GroupResources {
 
     @GET("/statusnet/groups/timeline/{group_id}.json")

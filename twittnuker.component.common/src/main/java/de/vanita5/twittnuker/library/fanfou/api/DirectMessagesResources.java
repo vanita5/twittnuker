@@ -27,6 +27,7 @@ import org.mariotaku.restfu.annotation.param.Param;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
 
+@SuppressWarnings("RedundantThrows")
 public interface DirectMessagesResources {
 
     @POST("/direct_messages/new.json")

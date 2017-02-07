@@ -39,13 +39,11 @@ import org.mariotaku.commons.objectcursor.LoganSquareCursorFieldConverter;
 import org.mariotaku.library.objectcursor.annotation.AfterCursorObjectCreated;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
-
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 
-import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
@@ -449,11 +447,11 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     }
 
     @OnJsonParseComplete
-    void onParseComplete() throws IOException {
+    void onParseComplete() {
         fixSortId();
     }
 
-    void fixSortId() {
+    private void fixSortId() {
         if (sort_id <= 0) {
             try {
                 sort_id = Long.parseLong(id);

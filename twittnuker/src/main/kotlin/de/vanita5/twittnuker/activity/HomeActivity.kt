@@ -99,6 +99,7 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.view.HomeDrawerLayout
 import de.vanita5.twittnuker.view.TabPagerIndicator
+import org.mariotaku.ktextension.coerceInOr
 
 class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, SupportFragmentCallback,
         OnLongClickListener, DrawerLayout.DrawerListener {
@@ -566,7 +567,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     override fun onNewIntent(intent: Intent) {
         val tabPosition = handleIntent(intent, false)
         if (tabPosition >= 0) {
-            mainPager.currentItem = TwidereMathUtils.clamp(tabPosition, pagerAdapter.count, 0)
+            mainPager.currentItem = tabPosition.coerceInOr(0 until pagerAdapter.count, 0)
         }
     }
 
@@ -807,10 +808,10 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     private fun setTabPosition(initialTab: Int) {
         val rememberPosition = preferences.getBoolean(SharedPreferenceConstants.KEY_REMEMBER_POSITION, true)
         if (initialTab >= 0) {
-            mainPager.currentItem = TwidereMathUtils.clamp(initialTab, pagerAdapter.count, 0)
+            mainPager.currentItem = initialTab.coerceInOr(0 until pagerAdapter.count, 0)
         } else if (rememberPosition) {
             val position = preferences.getInt(SharedPreferenceConstants.KEY_SAVED_TAB_POSITION, 0)
-            mainPager.currentItem = TwidereMathUtils.clamp(position, pagerAdapter.count, 0)
+            mainPager.currentItem = position.coerceInOr(0 until pagerAdapter.count, 0)
         }
     }
 

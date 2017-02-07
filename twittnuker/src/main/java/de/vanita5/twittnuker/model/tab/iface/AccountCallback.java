@@ -25,6 +25,9 @@ package de.vanita5.twittnuker.model.tab.iface;
 
 import de.vanita5.twittnuker.model.AccountDetails;
 
+/**
+ * Account callback for extra configurations
+ */
 public interface AccountCallback {
 
     AccountDetails getAccount();

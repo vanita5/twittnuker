@@ -30,23 +30,17 @@ import android.text.TextUtils;
 import org.mariotaku.restfu.http.RestHttpClient;
 
 import de.vanita5.twittnuker.model.ParcelableMedia;
-import de.vanita5.twittnuker.util.HtmlLinkExtractor;
-import de.vanita5.twittnuker.util.media.preview.provider.GenericProvider;
 import de.vanita5.twittnuker.util.media.preview.provider.InstagramProvider;
 import de.vanita5.twittnuker.util.media.preview.provider.Provider;
 import de.vanita5.twittnuker.util.media.preview.provider.TwitterMediaProvider;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class PreviewMediaExtractor {
 
     private static final Provider[] sProviders = {
             new InstagramProvider(),
-            new TwitterMediaProvider(),
-            new GenericProvider()
+            new TwitterMediaProvider()
     };
 
     private PreviewMediaExtractor() {
@@ -81,19 +75,6 @@ public class PreviewMediaExtractor {
 
     public static boolean isSupported(@Nullable String link) {
         return providerFor(link) != null;
-    }
-
-    public static List<String> getSupportedLinksInStatus(final String statusString) {
-        if (statusString == null) return Collections.emptyList();
-        final List<String> links = new ArrayList<>();
-        final HtmlLinkExtractor extractor = new HtmlLinkExtractor();
-        for (final HtmlLinkExtractor.HtmlLink link : extractor.grabLinks(statusString)) {
-            final String linkString = link.getLink();
-            if (isSupported(linkString)) {
-                links.add(linkString);
-            }
-        }
-        return links;
     }
 
 }

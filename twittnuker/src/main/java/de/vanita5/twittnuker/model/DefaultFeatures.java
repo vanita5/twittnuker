@@ -39,6 +39,8 @@ import org.mariotaku.restfu.http.RestHttpClient;
 
 import java.io.IOException;
 
+import de.vanita5.twittnuker.util.Utils;
+
 import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_MEDIA_LINK_COUNTS_IN_STATUS;
 
 @JsonObject
@@ -89,7 +91,7 @@ public class DefaultFeatures {
                 jsonParser.skipChildren();
             }
         } finally {
-            response.close();
+            Utils.closeSilently(response);
         }
         return true;
     }

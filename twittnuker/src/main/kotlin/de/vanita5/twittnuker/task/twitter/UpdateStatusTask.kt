@@ -154,6 +154,8 @@ class UpdateStatusTask(
         } finally {
             // Cleanup
             pendingUpdate.deleteAlways.forEach { item -> item.delete(context) }
+            uploader?.unbindService()
+            shortener?.unbindService()
         }
         return result
     }

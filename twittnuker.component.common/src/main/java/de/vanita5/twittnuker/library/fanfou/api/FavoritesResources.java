@@ -27,6 +27,7 @@ import org.mariotaku.restfu.annotation.param.Path;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Status;
 
+@SuppressWarnings("RedundantThrows")
 public interface FavoritesResources {
 
     @POST("/favorites/create/{id}.json")

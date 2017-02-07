@@ -20,22 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util;
+package de.vanita5.twittnuker.util.view
 
-import de.vanita5.twittnuker.library.MicroBlogException;
-import org.mariotaku.restfu.RestAPIFactory;
+import com.rengwuxian.materialedittext.validation.METValidator
 
-public class MicroBlogBuilder {
+import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 
-    final RestAPIFactory<MicroBlogException> factory;
+class ConsumerKeySecretValidator(errorMessage: String) : METValidator(errorMessage) {
 
-    public MicroBlogBuilder() {
-        factory = new RestAPIFactory<>();
-    }
-
-
-    public <T> T build(Class<T> cls) {
-        return factory.build(cls);
+    override fun isValid(text: CharSequence, isEmpty: Boolean): Boolean {
+        return MicroBlogAPIFactory.isValidConsumerKeySecret(text)
     }
 
 }

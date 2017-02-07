@@ -48,7 +48,9 @@ import de.vanita5.twittnuker.util.model.AccountDetailsUtils;
 
 import java.io.IOException;
 
-
+/**
+ * Object holding account info and credentials
+ */
 @ParcelablePlease
 @JsonObject
 public class AccountDetails implements Parcelable, Comparable<AccountDetails> {

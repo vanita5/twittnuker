@@ -20,21 +20,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.io;
+package de.vanita5.twittnuker.util
 
+import android.support.annotation.UiThread
+import android.view.View
 
-import java.io.IOException;
-import java.io.OutputStream;
+object TwidereViewUtils {
 
-public final class CountOnlyOutputStream extends OutputStream {
-    private int count;
-
-    @Override
-    public void write(int i) throws IOException {
-        count++;
-    }
-
-    public int getCount() {
-        return count;
+    @UiThread
+    fun hitView(x: Float, y: Float, view: View): Boolean {
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        return x in (location[0] until location[0] + view.width)
+                && y in (location[1] until location[1] + view.height)
     }
 }

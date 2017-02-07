@@ -42,19 +42,14 @@ public class NoDuplicatesArrayList<E> extends ArrayList<E> {
 
     @Override
     public boolean add(final E e) {
-        if (contains(e))
-            return false;
-        else
-            return super.add(e);
+        if (contains(e)) return false;
+        return super.add(e);
     }
 
     @Override
     public void add(final int index, final E element) {
-        if (contains(element))
-            return;
-        else {
-            super.add(index, element);
-        }
+        if (contains(element)) return;
+        super.add(index, element);
     }
 
     @Override

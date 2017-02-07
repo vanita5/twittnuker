@@ -538,33 +538,6 @@ public final class Utils implements Constants {
     }
 
 
-    public static String getImagePathFromUri(final Context context, final Uri uri) {
-        if (context == null || uri == null) return null;
-
-        final String mediaUriStart = ParseUtils.parseString(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-        if (ParseUtils.parseString(uri).startsWith(mediaUriStart)) {
-
-            final String[] proj = {MediaStore.Images.Media.DATA};
-            final Cursor cur = context.getContentResolver().query(uri, proj, null, null, null);
-
-            if (cur == null) return null;
-
-            final int idxData = cur.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-            cur.moveToFirst();
-            try {
-                return cur.getString(idxData);
-            } finally {
-                cur.close();
-            }
-        } else {
-            final String path = uri.getPath();
-            if (path != null && new File(path).exists()) return path;
-        }
-        return null;
-    }
-
     public static String getMediaUploadStatus(@NonNull final Context context,
                                               @Nullable final CharSequence[] links,
                                               @Nullable final CharSequence text) {
@@ -587,20 +560,6 @@ public final class Utils implements Constants {
         final File cacheDir = new File(externalCacheDir, cacheDirName);
         if (cacheDir.isDirectory() || cacheDir.mkdirs()) return cacheDir;
         return new File(context.getCacheDir(), cacheDirName);
-    }
-
-    @HighlightStyle
-    public static int getLinkHighlightingStyleInt(final String option) {
-        if (option == null) return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
-        switch (option) {
-            case VALUE_LINK_HIGHLIGHT_OPTION_BOTH:
-                return VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH;
-            case VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT:
-                return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
-            case VALUE_LINK_HIGHLIGHT_OPTION_UNDERLINE:
-                return VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE;
-        }
-        return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
     }
 
     public static String getLocalizedNumber(final Locale locale, final Number number) {
@@ -636,14 +595,6 @@ public final class Utils implements Constants {
         if (matcher.matches())
             return matcher.replaceFirst("$1$2/profile_images/$3/$4$6");
         return url;
-    }
-
-    @ShapeStyle
-    public static int getProfileImageStyle(String style) {
-        if (VALUE_PROFILE_IMAGE_STYLE_ROUND.equalsIgnoreCase(style)) {
-            return ShapedImageView.SHAPE_CIRCLE;
-        }
-        return ShapedImageView.SHAPE_RECTANGLE;
     }
 
     @PreviewStyle
@@ -819,16 +770,6 @@ public final class Utils implements Constants {
         return accountId.equals(retweetedById) || myRetweetId != null;
     }
 
-    public static boolean isNetworkAvailable(final Context context) {
-        try {
-            final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            final NetworkInfo info = cm.getActiveNetworkInfo();
-            return info != null && info.isConnected();
-        } catch (SecurityException e) {
-            return true;
-        }
-    }
-
     public static int matchTabCode(@Nullable final Uri uri) {
         if (uri == null) return UriMatcher.NO_MATCH;
         return HOME_TABS_URI_MATCHER.match(uri);
@@ -902,45 +843,9 @@ public final class Utils implements Constants {
         activity.overridePendingTransition(enterAnim, exitAnim);
     }
 
-    public static void scrollListToPosition(final AbsListView list, final int position) {
-        scrollListToPosition(list, position, 0);
-    }
-
-    public static void scrollListToPosition(final AbsListView absListView, final int position, final int offset) {
-        if (absListView == null) return;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            if (absListView instanceof ListView) {
-                final ListView listView = (ListView) absListView;
-                listView.setSelectionFromTop(position, offset);
-            } else {
-                absListView.setSelection(position);
-            }
-            stopListView(absListView);
-        } else {
-            stopListView(absListView);
-            if (absListView instanceof ListView) {
-                final ListView listView = (ListView) absListView;
-                listView.setSelectionFromTop(position, offset);
-            } else {
-                absListView.setSelection(position);
-            }
-        }
-    }
-
-    public static void scrollListToTop(final AbsListView list) {
-        if (list == null) return;
-        scrollListToPosition(list, 0);
-    }
-
     static boolean isMyStatus(ParcelableStatus status) {
         if (isMyRetweet(status)) return true;
         return status.account_key.maybeEquals(status.user_key);
-    }
-
-    public static boolean shouldStopAutoRefreshOnBatteryLow(final Context context) {
-        final SharedPreferences mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
-                Context.MODE_PRIVATE);
-        return mPreferences.getBoolean(KEY_STOP_AUTO_REFRESH_WHEN_BATTERY_LOW, true);
     }
 
     public static void showErrorMessage(final Context context, final CharSequence message, final boolean longMessage) {
@@ -1068,19 +973,6 @@ public final class Utils implements Constants {
         context.startActivity(Intent.createChooser(intent, context.getString(R.string.action_share)));
     }
 
-    public static void stopListView(final AbsListView list) {
-        if (list == null) return;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            list.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
-                    MotionEvent.ACTION_CANCEL, 0, 0, 0));
-        } else {
-            list.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
-                    MotionEvent.ACTION_DOWN, 0, 0, 0));
-            list.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
-                    MotionEvent.ACTION_UP, 0, 0, 0));
-        }
-    }
-
     public static String trimLineBreak(final String orig) {
         if (orig == null) return null;
         return orig.replaceAll("\\n+", "\n");
@@ -1200,17 +1092,6 @@ public final class Utils implements Constants {
         return null;
     }
 
-    public static boolean isCustomConsumerKeySecret(String consumerKey, String consumerSecret) {
-        if (TextUtils.isEmpty(consumerKey) || TextUtils.isEmpty(consumerSecret)) return false;
-        return (!TWITTER_CONSUMER_KEY.equals(consumerKey) && !TWITTER_CONSUMER_SECRET.equals(consumerKey))
-                && (!TWITTER_CONSUMER_KEY.equals(consumerKey) && !TWITTER_CONSUMER_SECRET.equals(consumerSecret));
-    }
-
-    public static int getErrorNo(Throwable t) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return 0;
-        return UtilsL.getErrorNo(t);
-    }
-
     public static int getNotificationId(int baseId, @Nullable UserKey accountId) {
         int result = baseId;
         result = 31 * result + (accountId != null ? accountId.hashCode() : 0);
@@ -1234,31 +1115,6 @@ public final class Utils implements Constants {
         final NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null
                 && !(networkInfo.getType() == ConnectivityManager.TYPE_MOBILE && preferences.getBoolean(KEY_BANDWIDTH_SAVING_MODE));
-    }
-
-    static class UtilsL {
-
-        private UtilsL() {
-        }
-
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        static void setSharedElementTransition(Context context, Window window, int transitionRes) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
-            window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-            final TransitionInflater inflater = TransitionInflater.from(context);
-            final Transition transition = inflater.inflateTransition(transitionRes);
-            window.setSharedElementEnterTransition(transition);
-            window.setSharedElementExitTransition(transition);
-        }
-
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        public static int getErrorNo(Throwable t) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return 0;
-            if (t instanceof ErrnoException) {
-                return ((ErrnoException) t).errno;
-            }
-            return 0;
-        }
     }
 
     /**
