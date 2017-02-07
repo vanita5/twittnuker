@@ -30,6 +30,7 @@ import android.os.Build
 import de.vanita5.twittnuker.annotation.AutoRefreshType
 import de.vanita5.twittnuker.util.TaskServiceRunner
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.support.JobServiceSupport
 import javax.inject.Inject
 
 @SuppressLint("Registered")
@@ -52,6 +53,13 @@ class JobTaskService : JobService() {
     }
 
     override fun onStopJob(params: JobParameters): Boolean {
+        try {
+            if (JobServiceSupport.handleStopJob(params, false)) {
+                JobServiceSupport.removeCallback(params)
+            }
+        } catch (e: Exception) {
+            // Swallow any possible exceptions
+        }
         return false
     }
 

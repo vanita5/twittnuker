@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 class ExtraFeaturesIntroductionDialogFragment : BaseDialogFragment() {
 
     val feature: String get() = arguments.getString(EXTRA_FEATURE)
+    val source: String get() = arguments.getString(EXTRA_SOURCE)
     val requestCode: Int get() = arguments.getInt(EXTRA_REQUEST_CODE, 0)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -83,7 +84,7 @@ class ExtraFeaturesIntroductionDialogFragment : BaseDialogFragment() {
             }
         }
         if (savedInstanceState == null) {
-            Analyzer.log(PurchaseIntroduction(PurchaseFinished.NAME_EXTRA_FEATURES, "introduction dialog"))
+            Analyzer.log(PurchaseIntroduction(feature, source))
         }
         return dialog
     }
@@ -117,10 +118,12 @@ class ExtraFeaturesIntroductionDialogFragment : BaseDialogFragment() {
 
     companion object {
         const val EXTRA_FEATURE = "feature"
-        fun show(fm: FragmentManager, feature: String, requestCode: Int = 0): ExtraFeaturesIntroductionDialogFragment {
+        const val EXTRA_SOURCE = "source"
+        fun show(fm: FragmentManager, feature: String, source: String? = null, requestCode: Int = 0): ExtraFeaturesIntroductionDialogFragment {
             val df = ExtraFeaturesIntroductionDialogFragment()
             df.arguments = Bundle {
                 this[EXTRA_FEATURE] = feature
+                this[EXTRA_SOURCE] = source
                 this[EXTRA_REQUEST_CODE] = requestCode
             }
             df.show(fm, "extra_features_introduction")
