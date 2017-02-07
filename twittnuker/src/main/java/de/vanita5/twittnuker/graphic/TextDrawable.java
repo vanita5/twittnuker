@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2012 Wireless Designs, LLC
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -8,10 +8,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -32,6 +32,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -45,9 +46,9 @@ import android.util.TypedValue;
  * A Drawable object that draws text. A TextDrawable accepts most of the same
  * parameters that can be applied to {@link android.widget.TextView} for
  * displaying and formatting text.
- *
+ * <p>
  * Optionally, a {@link Path} may be supplied on which to draw the text.
- *
+ * <p>
  * A TextDrawable has an intrinsic size equal to that required to draw all the
  * text it has been supplied, when possible. In cases where a {@link Path} has
  * been supplied, the caller must explicitly call
@@ -154,7 +155,7 @@ public class TextDrawable extends Drawable {
     }
 
     @Override
-	public void draw(@NonNull final Canvas canvas) {
+    public void draw(@NonNull final Canvas canvas) {
         if (mTextPath == null) {
             // Allow the layout to draw the text
             mTextLayout.draw(canvas);
@@ -184,7 +185,7 @@ public class TextDrawable extends Drawable {
 
     @Override
     public int getOpacity() {
-        return mTextPaint.getAlpha();
+        return PixelFormat.TRANSLUCENT;
     }
 
     /**
@@ -225,7 +226,7 @@ public class TextDrawable extends Drawable {
     @Override
     public boolean isStateful() {
         /*
-		 * The drawable's ability to represent state is based on the text color
+         * The drawable's ability to represent state is based on the text color
 		 * list set
 		 */
         return mTextColors.isStateful();
@@ -266,7 +267,7 @@ public class TextDrawable extends Drawable {
      * aligned. For RTL text, those alignments are reversed.
      *
      * @param align Text alignment value. Should be set to one of:
-	 *
+     *              <p>
      *              {@link Layout.Alignment#ALIGN_NORMAL},
      *              {@link Layout.Alignment#ALIGN_NORMAL},
      *              {@link Layout.Alignment#ALIGN_OPPOSITE}.
@@ -304,7 +305,7 @@ public class TextDrawable extends Drawable {
      * TextDrawable cannot properly measure the bounds this drawable will need.
      * You must call {@link #setBounds(int, int, int, int) setBounds()} before
      * applying this TextDrawable to any View.
-	 *
+     * <p>
      * Calling this method with <code>null</code> will remove any Path currently
      * attached.
      */
@@ -365,7 +366,6 @@ public class TextDrawable extends Drawable {
      * Sets the typeface and style in which the text should be displayed, and
      * turns on the fake bold and italic bits in the Paint if the Typeface that
      * you provided does not have all the bits in the style that you specified.
-	 *
      */
     public void setTypeface(Typeface tf, final int style) {
         if (style > 0) {

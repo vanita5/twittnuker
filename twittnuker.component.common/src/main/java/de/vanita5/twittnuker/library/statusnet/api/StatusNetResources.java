@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.library.statusnet.api;
 
 import org.mariotaku.restfu.annotation.method.GET;
-import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Path;
 import org.mariotaku.restfu.annotation.param.Query;
 import de.vanita5.twittnuker.library.statusnet.model.StatusNetConfig;
