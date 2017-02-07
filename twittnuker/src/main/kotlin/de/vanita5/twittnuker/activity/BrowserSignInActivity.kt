@@ -163,6 +163,7 @@ class BrowserSignInActivity : BaseActivity() {
             (activity as BrowserSignInActivity).setLoadProgressShown(true)
         }
 
+        @Suppress("Deprecation")
         override fun onReceivedError(view: WebView, errorCode: Int, description: String?,
                                      failingUrl: String?) {
             super.onReceivedError(view, errorCode, description, failingUrl)
@@ -171,6 +172,7 @@ class BrowserSignInActivity : BaseActivity() {
             activity.finish()
         }
 
+        @Suppress("Deprecation")
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             val uri = Uri.parse(url)
             if (url.startsWith(TwittnukerConstants.OAUTH_CALLBACK_URL)) {

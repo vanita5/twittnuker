@@ -41,6 +41,12 @@ import pl.droidsonroids.gif.InputSource
 
 class GifPageFragment : CacheDownloadMediaViewerFragment() {
 
+    private val media: ParcelableMedia
+        get() = arguments.getParcelable(EXTRA_MEDIA)
+
+    private val accountKey: UserKey
+        get() = arguments.getParcelable(EXTRA_ACCOUNT_KEY)
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         gifView.setOnClickListener { (activity as MediaViewerActivity).toggleBar() }
@@ -48,7 +54,7 @@ class GifPageFragment : CacheDownloadMediaViewerFragment() {
     }
 
     override fun getDownloadUri(): Uri? {
-        return arguments.getParcelable<Uri>(SubsampleImageViewerFragment.EXTRA_MEDIA_URI)
+        return arguments.getParcelable(SubsampleImageViewerFragment.EXTRA_MEDIA_URI)
     }
 
     override fun getDownloadExtra(): Any? {
@@ -76,9 +82,4 @@ class GifPageFragment : CacheDownloadMediaViewerFragment() {
         gifView?.setInputSource(null)
     }
 
-    private val media: ParcelableMedia
-        get() = arguments.getParcelable<ParcelableMedia>(EXTRA_MEDIA)
-
-    private val accountKey: UserKey
-        get() = arguments.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
 }
