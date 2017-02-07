@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.model.account.cred.BasicCredentials
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
+import de.vanita5.twittnuker.util.HttpClientFactory
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory.sTwitterConstantPool
 import de.vanita5.twittnuker.util.TwitterContentUtils
@@ -150,7 +151,21 @@ fun <T> newMicroBlogInstance(
         userAgent = MicroBlogAPIFactory.getTwidereUserAgent(context)
     }
     val holder = DependencyHolder.get(context)
-    factory.setHttpClient(holder.restHttpClient)
+    when (cls) {
+        TwitterUpload::class -> {
+            val conf = HttpClientFactory.HttpClientConfiguration(holder.preferences)
+            // Use longer timeout for uploading
+            conf.readTimeoutSecs = 30
+            conf.writeTimeoutSecs = 30
+            conf.connectionTimeoutSecs = 60
+            val uploadHttpClient = HttpClientFactory.createRestHttpClient(conf, holder.dns,
+                    holder.connectionPool)
+            factory.setHttpClient(uploadHttpClient)
+        }
+        else -> {
+            factory.setHttpClient(holder.restHttpClient)
+        }
+    }
     factory.setAuthorization(auth)
     factory.setEndpoint(endpoint)
     if (twitterExtraQueries) {

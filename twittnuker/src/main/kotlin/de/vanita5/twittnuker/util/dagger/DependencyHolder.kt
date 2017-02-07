@@ -25,11 +25,11 @@ package de.vanita5.twittnuker.util.dagger
 import android.content.Context
 import com.nostra13.universalimageloader.core.ImageLoader
 import okhttp3.ConnectionPool
+import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.net.TwidereDns
-import org.mariotaku.kpreferences.KPreferences
 import javax.inject.Inject
 
 class DependencyHolder internal constructor(context: Context) {
@@ -55,7 +55,7 @@ class DependencyHolder internal constructor(context: Context) {
     lateinit var preferences: SharedPreferencesWrapper
         internal set
     @Inject
-    lateinit var connectionPoll: ConnectionPool
+    lateinit var connectionPool: ConnectionPool
         internal set
     @Inject
     lateinit var defaultFeatures: DefaultFeatures
