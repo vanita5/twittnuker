@@ -79,6 +79,7 @@
     <string name="action_saving_search">Suche speichern</string>
     <string name="action_select_all">Alle</string>
     <string name="action_select_none">Nichts</string>
+    <string name="action_select_user">Benutzer auswählen</string>
     <!-- [verb] Send tweet/message -->
     <string name="action_send">Senden</string>
     <string name="action_sending_direct_message">Sende Direktnachricht</string>
@@ -334,9 +335,6 @@
     <string name="following_only_summary">Zeigt nur Notifications von Benutzern an, denen du folgst</string>
     <string name="following_you">Folgt dir</string>
     <string name="follows">Folgen</string>
-    <string name="title_user_list_subscriptions">Abonnements</string>
-    <string name="title_user_list_memberships">Mitglied von</string>
-    <string name="title_user_list_ownerships">Erstellt</string>
     <string name="font">Schriftart</string>
     <string name="font_family">Schriftart</string>
     <string name="from_camera">Von der Kamera</string>
@@ -831,6 +829,9 @@
     <string name="title_sync_settings">Sync. Einstellungen</string>
     <string name="title_user">Benutzer</string>
     <string name="title_user_colors">Benutzer-Farbschema</string>
+    <string name="title_user_list_memberships">Mitglied von</string>
+    <string name="title_user_list_ownerships">Erstellte</string>
+    <string name="title_user_list_subscriptions">Abonnements</string>
     <string name="title_users_favorited_this">Benutzer favorisierten das</string>
     <string name="title_users_liked_this">Benutzer gefällt das</string>
     <string name="title_users_retweeted_this">Benutzer retweeteten das</string>

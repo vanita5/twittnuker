@@ -210,6 +210,7 @@ public interface IntentConstants {
     String EXTRA_COUNT = "count";
     String EXTRA_REQUEST_CODE = "request_code";
     String EXTRA_FROM_CACHE = "from_cache";
+    String EXTRA_SHOW_MY_LISTS = "show_my_lists";
 
     /* Twittnuker */
     String GCM_REGISTRATION_COMPLETE = INTENT_PACKAGE_PREFIX + "GCM_REGISTRATION_COMPLETE";
