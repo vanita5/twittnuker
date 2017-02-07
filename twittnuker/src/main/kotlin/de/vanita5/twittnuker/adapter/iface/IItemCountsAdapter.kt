@@ -1,22 +1,17 @@
 package de.vanita5.twittnuker.adapter.iface
 
+import de.vanita5.twittnuker.model.ItemCounts
+
 interface IItemCountsAdapter {
 
-    val itemCounts: IntArray
+    val itemCounts: ItemCounts
 
     fun getItemCountIndex(position: Int): Int {
-        var sum: Int = 0
-        itemCounts.forEachIndexed { idx, count ->
-            sum += count
-            if (position < sum) {
-                return idx
-            }
-        }
-        return -1
+        return itemCounts.getItemCountIndex(position)
     }
 
     fun getItemStartPosition(index: Int): Int {
-        return itemCounts.slice(0 until index).sum()
+        return itemCounts.getItemStartPosition(index)
     }
 
 }

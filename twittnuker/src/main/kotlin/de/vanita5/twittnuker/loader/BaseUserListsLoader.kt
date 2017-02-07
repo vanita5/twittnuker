@@ -25,20 +25,25 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import android.support.v4.content.AsyncTaskLoader
 import android.util.Log
-import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.CursorSupport
 import de.vanita5.twittnuker.library.twitter.model.PageableResponseList
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.UserList
+import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
+import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.loader.iface.ICursorSupportLoader
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
+import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 import de.vanita5.twittnuker.util.collection.NoDuplicatesArrayList
+import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import java.util.*
+import javax.inject.Inject
 
 
 abstract class BaseUserListsLoader(
@@ -47,6 +52,8 @@ abstract class BaseUserListsLoader(
         override val cursor: Long,
         data: List<ParcelableUserList>?
 ) : AsyncTaskLoader<List<ParcelableUserList>>(context), ICursorSupportLoader {
+    @Inject
+    lateinit var preferences: SharedPreferencesWrapper
 
     protected val data = NoDuplicatesArrayList<ParcelableUserList>()
 
@@ -54,6 +61,7 @@ abstract class BaseUserListsLoader(
     override var prevCursor: Long = 0
 
     init {
+        GeneralComponentHelper.build(context).inject(this)
         if (data != null) {
             this.data.addAll(data)
         }
@@ -67,6 +75,7 @@ abstract class BaseUserListsLoader(
         var listLoaded: List<UserList>? = null
         try {
             val paging = Paging()
+            paging.count(preferences[loadItemLimitKey].coerceIn(0, 100))
             if (cursor > 0) {
                 paging.cursor(cursor)
             }

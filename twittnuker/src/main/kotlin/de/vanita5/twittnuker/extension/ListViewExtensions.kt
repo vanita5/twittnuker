@@ -31,6 +31,7 @@ fun ListView.selectAll() {
     for (i in 0 until count) {
         setItemChecked(i, true)
     }
+
 }
 
 fun ListView.selectNone() {

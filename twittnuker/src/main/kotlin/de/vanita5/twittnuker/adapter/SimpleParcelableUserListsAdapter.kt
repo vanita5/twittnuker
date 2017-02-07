@@ -26,6 +26,8 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
+import de.vanita5.twittnuker.model.ItemCounts
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.util.view.display
 import de.vanita5.twittnuker.view.holder.SimpleUserListViewHolder
@@ -34,21 +36,53 @@ class SimpleParcelableUserListsAdapter(
         context: Context
 ) : BaseArrayAdapter<ParcelableUserList>(context, R.layout.list_item_simple_user_list) {
 
+    override val itemCounts: ItemCounts = ItemCounts(2)
+
     override fun getItemId(position: Int): Long {
-        return (if (getItem(position) != null) getItem(position).hashCode() else -1).toLong()
+        when (itemCounts.getItemCountIndex(position)) {
+            0 -> {
+                return getItem(position - itemCounts.getItemStartPosition(0)).hashCode().toLong()
+            }
+            1 -> {
+                return Integer.MAX_VALUE + 1L
+            }
+        }
+        throw UnsupportedOperationException()
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view = super.getView(position, convertView, parent)
-        val tag = view.tag
-        val holder = tag as? SimpleUserListViewHolder ?: run {
-            val h = SimpleUserListViewHolder(view)
-            view.tag = h
-            return@run h
+        when (getItemViewType(position)) {
+            0 -> {
+                val view = super.getView(position, convertView, parent)
+                val holder = view.tag as? SimpleUserListViewHolder ?: run {
+                    val h = SimpleUserListViewHolder(view)
+                    view.tag = h
+                    return@run h
+                }
+                val userList = getItem(position)
+                holder.display(userList, mediaLoader, userColorNameManager, profileImageEnabled)
+                return view
+            }
+            1 -> {
+                val view = createViewFromResource(position, convertView, parent, R.layout.list_item_load_indicator)
+                return view
+            }
         }
-        val userList = getItem(position)
-        holder.display(userList, mediaLoader, userColorNameManager, profileImageEnabled)
-        return view
+        throw UnsupportedOperationException()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return itemCounts.getItemCountIndex(position)
+    }
+
+    override fun getViewTypeCount(): Int {
+        return itemCounts.size
+    }
+
+    override fun getCount(): Int {
+        itemCounts[0] = super.getCount()
+        itemCounts[1] = if (loadMoreIndicatorPosition and ILoadMoreSupportAdapter.END != 0L) 1 else 0
+        return itemCounts.itemCount
     }
 
     fun setData(data: List<ParcelableUserList>?) {
