@@ -25,7 +25,9 @@ package de.vanita5.twittnuker.activity
 import android.accounts.AccountManager
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import de.vanita5.twittnuker.BuildConfig
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_INTENT
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.StrictModeUtils
@@ -42,6 +44,8 @@ open class MainActivity : BaseActivity() {
         val am = AccountManager.get(this)
         if (!Utils.checkDeviceCompatible()) {
             startActivity(Intent(this, IncompatibleAlertActivity::class.java))
+        } else if (!AccountUtils.hasAccountPermission(am)) {
+            Toast.makeText(this, R.string.message_toast_no_account_permission, Toast.LENGTH_SHORT).show()
         } else if (AccountUtils.hasInvalidAccount(am)) {
             val intent = Intent(this, InvalidAccountAlertActivity::class.java)
             intent.putExtra(EXTRA_INTENT, Intent(this, HomeActivity::class.java))

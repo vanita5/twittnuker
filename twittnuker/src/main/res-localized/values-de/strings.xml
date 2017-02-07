@@ -487,6 +487,7 @@
     <string name="message_toast_livewp_daydream_enabled_message">Ich hab ein kleines Geschenk für dich in den Systemeinstellungen versteckt :)</string>
     <string name="message_toast_login_verification_failed">Login-Verifizierung fehlgeschlagen.</string>
     <string name="message_toast_no_account">Kein Account</string>
+    <string name="message_toast_no_account_permission">Account Berechtigung wird benötigt</string>
     <string name="message_toast_no_account_selected">Kein Account ausgewählt.</string>
     <string name="message_toast_no_user_selected">Kein Benutzer ausgewählt</string>
     <string name="message_toast_press_again_to_close">Nochmal tippen zum schliessen</string>
