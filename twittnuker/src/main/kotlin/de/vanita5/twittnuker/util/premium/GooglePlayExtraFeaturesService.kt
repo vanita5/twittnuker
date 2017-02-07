@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util.premium
 import android.content.Context
 import android.content.Intent
 import com.anjlab.android.iab.v3.BillingProcessor
+import nl.komponents.kovenant.task
 import de.vanita5.twittnuker.Constants.GOOGLE_PLAY_LICENCING_PUBKEY
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.GooglePlayInAppPurchaseActivity
@@ -39,6 +40,12 @@ class GooglePlayExtraFeaturesService : ExtraFeaturesService() {
     override fun init(context: Context) {
         super.init(context)
         bp = BillingProcessor(context, GOOGLE_PLAY_LICENCING_PUBKEY, null)
+    }
+
+    override fun appStarted() {
+        task {
+            bp.loadOwnedPurchasesFromGoogle()
+        }
     }
 
     override fun release() {

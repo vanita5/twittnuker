@@ -41,6 +41,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.LoaderManager.LoaderCallbacks
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.Loader
 import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewPager
@@ -54,10 +55,9 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.header_drawer_account_selector.view.*
 import org.mariotaku.kpreferences.get
-import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
-import org.mariotaku.ktextension.convert
-import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
-import org.mariotaku.ktextension.setItemAvailability
+import org.mariotaku.kpreferences.set
+import org.mariotaku.ktextension.*
+import de.vanita5.twittnuker.Constants.EXTRA_FEATURES_NOTICE_VERSION
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.*
@@ -66,9 +66,11 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
+import de.vanita5.twittnuker.constant.extraFeaturesNoticeVersionKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.model.setActivated
 import de.vanita5.twittnuker.fragment.AccountsDashboardFragment.AccountsInfo
+import de.vanita5.twittnuker.graphic.BadgeDrawable
 import de.vanita5.twittnuker.menu.AccountToggleProvider
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.SupportTabSpec
@@ -346,6 +348,12 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
         menu.setItemAvailability(R.id.favorites, useStarsForLikes)
         menu.setItemAvailability(R.id.likes, !useStarsForLikes)
         menu.setItemAvailability(R.id.premium_features, extraFeaturesService.isSupported())
+        if (preferences[extraFeaturesNoticeVersionKey] < EXTRA_FEATURES_NOTICE_VERSION) {
+            val icon = ContextCompat.getDrawable(context, R.drawable.ic_action_infinity)
+            val color = ContextCompat.getColor(context, R.color.material_red)
+            val size = resources.getDimensionPixelSize(R.dimen.element_spacing_msmall)
+            menu.setMenuItemIcon(R.id.premium_features, BadgeDrawable(icon, color, size))
+        }
         var hasLists = false
         var hasGroups = false
         var hasPublicTimeline = false
@@ -556,6 +564,7 @@ class AccountsDashboardFragment : BaseFragment(), LoaderCallbacks<AccountsInfo>,
             R.id.premium_features -> {
                 val intent = Intent(activity, PremiumDashboardActivity::class.java)
                 startActivity(intent)
+                preferences[extraFeaturesNoticeVersionKey] = EXTRA_FEATURES_NOTICE_VERSION
                 closeAccountsDrawer()
             }
             R.id.settings -> {
