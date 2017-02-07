@@ -72,6 +72,7 @@ import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.kpreferences.set
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
+import org.mariotaku.ktextension.coerceInOr
 import org.mariotaku.ktextension.convert
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import de.vanita5.twittnuker.Constants.*
@@ -99,7 +100,6 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.view.HomeDrawerLayout
 import de.vanita5.twittnuker.view.TabPagerIndicator
-import org.mariotaku.ktextension.coerceInOr
 
 class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, SupportFragmentCallback,
         OnLongClickListener, DrawerLayout.DrawerListener {
@@ -828,7 +828,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         val hasNoTab = pagerAdapter.count == 0
         emptyTabHint.visibility = if (hasNoTab) View.VISIBLE else View.GONE
         mainPager.visibility = if (hasNoTab) View.GONE else View.VISIBLE
-        if (pagerAdapter.count > 1 && resources.getBoolean(R.bool.home_tab_has_multiple_columns)) {
+        if (pagerAdapter.count > 1 && hasMultiColumns()) {
             mainPager.pageMargin = resources.getDimensionPixelOffset(R.dimen.home_page_margin)
             mainPager.setPageMarginDrawable(ThemeUtils.getDrawableFromThemeAttribute(this, R.attr.dividerVertical))
             pagerAdapter.hasMultipleColumns = true
@@ -900,6 +900,14 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         } else {
             sendBroadcast(Intent(BROADCAST_REFRESH_STREAMING_SERVICE))
         }
+    }
+
+    fun hasMultiColumns(): Boolean {
+        if (!Utils.isScreenTablet(this)) return false
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            return preferences.getBoolean("multi_column_tabs_landscape", resources.getBoolean(R.bool.default_multi_column_tabs_land))
+        }
+        return preferences.getBoolean("multi_column_tabs_portrait", resources.getBoolean(R.bool.default_multi_column_tabs_port))
     }
 
     private fun stopStreamingService() {
