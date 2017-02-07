@@ -29,6 +29,7 @@ import android.support.v4.content.AsyncTaskLoader
 import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
+import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -52,7 +53,9 @@ class ParcelableStatusLoader(
 ) : AsyncTaskLoader<SingleResponse<ParcelableStatus>>(context) {
 
     @Inject
-    lateinit var userColorNameManager: UserColorNameManager
+    internal lateinit var userColorNameManager: UserColorNameManager
+    @Inject
+    internal lateinit var restHttpClient: RestHttpClient
 
     init {
         GeneralComponentHelper.build(context).inject(this)
@@ -82,8 +85,7 @@ class ParcelableStatusLoader(
             if (e.errorCode == ErrorInfo.STATUS_NOT_FOUND) {
                 // Delete all deleted status
                 val cr = context.contentResolver
-                DataStoreUtils.deleteStatus(cr, accountKey,
-                        statusId, null)
+                DataStoreUtils.deleteStatus(cr, accountKey, statusId, null)
                 DataStoreUtils.deleteActivityStatus(cr, accountKey, statusId, null)
             }
             return SingleResponse(e)

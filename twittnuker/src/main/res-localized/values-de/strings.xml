@@ -210,7 +210,7 @@
     <string name="cant_load_all_replies_message">Kann nicht alle Antworten laden. &lt;a href=\"#dialog\";&gt;Warum?&lt;/a&gt;</string>
     <string name="cards">Tweets</string>
     <string name="clear_cache">Cache löschen</string>
-    <string name="clear_cache_summary">Lösche Profilbild-Cache.</string>
+    <string name="clear_cache_summary">Lösche Medien-Cache.</string>
     <string name="clear_databases">Lösche Datenbank</string>
     <string name="clear_databases_summary">Alle Tweets, Profile und Nachrichten löschen. Deine Zugangsdaten werden nicht gelöscht.</string>
     <string name="clear_search_history">Suchbegriffe löschen</string>

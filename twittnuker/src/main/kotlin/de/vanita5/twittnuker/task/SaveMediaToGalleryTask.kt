@@ -29,6 +29,7 @@ import android.os.Environment
 import android.widget.Toast
 
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.annotation.CacheFileType
 import de.vanita5.twittnuker.provider.CacheProvider
 
 import java.io.File
@@ -54,14 +55,13 @@ class SaveMediaToGalleryTask(
 
     companion object {
 
-        fun create(activity: Activity, source: Uri,
-                   @CacheProvider.Type type: String): SaveFileTask {
+        fun create(activity: Activity, source: Uri, @CacheFileType type: String): SaveFileTask {
             val pubDir: File
             when (type) {
-                CacheProvider.Type.VIDEO -> {
+                CacheFileType.VIDEO -> {
                     pubDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
                 }
-                CacheProvider.Type.IMAGE -> {
+                CacheFileType.IMAGE -> {
                     pubDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
                 }
                 else -> {

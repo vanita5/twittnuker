@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 import de.vanita5.twittnuker.util.net.NoIntercept;
 
@@ -163,7 +164,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         }
         final Body body = resp.getBody();
         final CacheMetadata metadata = new CacheMetadata();
-        metadata.setContentType(body.contentType().getContentType());
+        metadata.setContentType(Utils.sanitizeMimeType(body.contentType().getContentType()));
         return new TwidereDownloadResult(body, metadata);
     }
 
