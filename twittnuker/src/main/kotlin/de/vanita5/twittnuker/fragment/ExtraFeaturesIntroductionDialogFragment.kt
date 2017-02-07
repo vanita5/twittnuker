@@ -45,7 +45,7 @@ import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 class ExtraFeaturesIntroductionDialogFragment : BaseDialogFragment() {
 
     val feature: String get() = arguments.getString(EXTRA_FEATURE)
-    val source: String get() = arguments.getString(EXTRA_SOURCE)
+    val source: String? get() = arguments.getString(EXTRA_SOURCE)
     val requestCode: Int get() = arguments.getInt(EXTRA_REQUEST_CODE, 0)
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

@@ -41,15 +41,16 @@ import de.vanita5.twittnuker.model.message.TrendsRefreshedEvent
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends
 import de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri
 import de.vanita5.twittnuker.util.IntentUtils.openTweetSearch
-import de.vanita5.twittnuker.util.Utils.getDefaultAccountKey
+import de.vanita5.twittnuker.util.Utils
 
 class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
-    private var accountId: UserKey? = null
+    private val accountKey: UserKey? get() = Utils.getAccountKeys(context, arguments)?.firstOrNull()
+            ?: Utils.getDefaultAccountKey(context)
+    private val woeId: Int get() = arguments.getInt(EXTRA_WOEID, 1)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        accountId = getDefaultAccountKey(activity)
         listView.onItemClickListener = this
         loaderManager.initLoader(0, null, this)
         showProgress()
@@ -61,19 +62,17 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         val uri = CachedTrends.Local.CONTENT_URI
-        val table = getTableNameByUri(uri)
-        val where: String?
-        if (table != null) {
-            val sqlSelectQuery = SQLQueryBuilder.select(Columns.Column(CachedTrends.TIMESTAMP))
-                    .from(Table(table))
-                    .orderBy(OrderBy(CachedTrends.TIMESTAMP, false))
-                    .limit(1)
-                    .build()
-            where = Expression.equals(Columns.Column(CachedTrends.TIMESTAMP), sqlSelectQuery).sql
-        } else {
-            where = null
-        }
-        return CursorLoader(activity, uri, CachedTrends.COLUMNS, where, null, null)
+        val table = getTableNameByUri(uri)!!
+        val timestampQuery = SQLQueryBuilder.select(Columns.Column(CachedTrends.TIMESTAMP))
+                .from(Table(table))
+                .orderBy(OrderBy(CachedTrends.TIMESTAMP, false))
+                .limit(1)
+                .build()
+        val where = Expression.and(Expression.equalsArgs(CachedTrends.ACCOUNT_KEY),
+                Expression.equalsArgs(CachedTrends.WOEID),
+                Expression.equals(Columns.Column(CachedTrends.TIMESTAMP), timestampQuery)).sql
+        val whereArgs = arrayOf(accountKey?.toString() ?: "", woeId.toString())
+        return CursorLoader(activity, uri, CachedTrends.COLUMNS, where, whereArgs, CachedTrends.NAME)
     }
 
     override fun onItemClick(view: AdapterView<*>, child: View, position: Int, id: Long) {
@@ -86,7 +85,7 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
 
         }
         if (trend == null) return
-        openTweetSearch(activity, accountId, trend)
+        openTweetSearch(activity, accountKey, trend)
     }
 
     override fun onLoaderReset(loader: Loader<Cursor>) {
@@ -100,7 +99,8 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
 
     override fun onRefresh() {
         if (refreshing) return
-        twitterWrapper.getLocalTrendsAsync(accountId, arguments.getInt(EXTRA_WOEID, 1))
+        val accountKey = this.accountKey ?: return
+        twitterWrapper.getLocalTrendsAsync(accountKey, woeId)
     }
 
     override var refreshing: Boolean

@@ -55,7 +55,6 @@ import de.vanita5.twittnuker.library.twitter.model.User;
 import de.vanita5.twittnuker.library.twitter.model.UserList;
 import de.vanita5.twittnuker.library.twitter.model.UserListUpdate;
 import org.mariotaku.sqliteqb.library.Expression;
-import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
@@ -107,10 +106,10 @@ import de.vanita5.twittnuker.task.DestroyUserBlockTask;
 import de.vanita5.twittnuker.task.DestroyUserMuteTask;
 import de.vanita5.twittnuker.task.GetActivitiesAboutMeTask;
 import de.vanita5.twittnuker.task.GetHomeTimelineTask;
-import de.vanita5.twittnuker.task.GetLocalTrendsTask;
 import de.vanita5.twittnuker.task.GetReceivedDirectMessagesTask;
 import de.vanita5.twittnuker.task.GetSavedSearchesTask;
 import de.vanita5.twittnuker.task.GetSentDirectMessagesTask;
+import de.vanita5.twittnuker.task.GetTrendsTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.task.ReportSpamAndBlockTask;
 import de.vanita5.twittnuker.task.twitter.GetActivitiesTask;
@@ -329,7 +328,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
     }
 
     public void getLocalTrendsAsync(final UserKey accountId, final int woeId) {
-        final GetLocalTrendsTask task = new GetLocalTrendsTask(context, accountId, woeId);
+        final GetTrendsTask task = new GetTrendsTask(context, accountId, woeId);
         TaskStarter.execute(task);
     }
 
@@ -1058,7 +1057,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected SingleResponse<Boolean> doInBackground(final Object... args) {
             final MicroBlog microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey);
-            if (microBlog == null) return new SingleResponse<>(new MicroBlogException("No account"));
+            if (microBlog == null)
+                return new SingleResponse<>(new MicroBlogException("No account"));
             try {
                 microBlog.destroyDirectMessagesConversation(mAccountKey.getId(), mUserId);
                 deleteMessages(mAccountKey, mUserId);

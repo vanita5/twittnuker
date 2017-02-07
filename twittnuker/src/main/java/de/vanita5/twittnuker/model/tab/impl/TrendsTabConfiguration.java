@@ -11,7 +11,7 @@ import de.vanita5.twittnuker.model.Tab;
 import de.vanita5.twittnuker.model.tab.DrawableHolder;
 import de.vanita5.twittnuker.model.tab.StringHolder;
 import de.vanita5.twittnuker.model.tab.TabConfiguration;
-import de.vanita5.twittnuker.model.tab.conf.PlaceExtraConfiguration;
+import de.vanita5.twittnuker.model.tab.conf.TrendsLocationExtraConfiguration;
 import de.vanita5.twittnuker.model.tab.extra.TrendsTabExtras;
 
 import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_PLACE;
@@ -40,7 +40,7 @@ public class TrendsTabConfiguration extends TabConfiguration {
     @Override
     public ExtraConfiguration[] getExtraConfigurations(Context context) {
         return new ExtraConfiguration[]{
-                new PlaceExtraConfiguration(EXTRA_WOEID).title(R.string.trends_location).mutable(true),
+                new TrendsLocationExtraConfiguration(EXTRA_WOEID).title(R.string.trends_location).mutable(true),
         };
     }
 
@@ -50,8 +50,8 @@ public class TrendsTabConfiguration extends TabConfiguration {
         assert extras != null;
         switch (extraConf.getKey()) {
             case EXTRA_PLACE: {
-                PlaceExtraConfiguration conf = (PlaceExtraConfiguration) extraConf;
-                PlaceExtraConfiguration.Place place = conf.getValue();
+                TrendsLocationExtraConfiguration conf = (TrendsLocationExtraConfiguration) extraConf;
+                TrendsLocationExtraConfiguration.Place place = conf.getValue();
                 if (place != null) {
                     extras.setWoeId(place.getWoeId());
                     extras.setPlaceName(place.getName());
@@ -74,10 +74,10 @@ public class TrendsTabConfiguration extends TabConfiguration {
                 final int woeId = extras.getWoeId();
                 final String name = extras.getPlaceName();
                 if (name != null) {
-                    PlaceExtraConfiguration.Place place = new PlaceExtraConfiguration.Place(woeId, name);
-                    ((PlaceExtraConfiguration) extraConf).setValue(place);
+                    TrendsLocationExtraConfiguration.Place place = new TrendsLocationExtraConfiguration.Place(woeId, name);
+                    ((TrendsLocationExtraConfiguration) extraConf).setValue(place);
                 } else {
-                    ((PlaceExtraConfiguration) extraConf).setValue(null);
+                    ((TrendsLocationExtraConfiguration) extraConf).setValue(null);
                 }
                 break;
             }
