@@ -615,7 +615,11 @@
     <string name="preference_title_filter_subscriptions">Filter Abonnements</string>
     <string name="preference_title_light_font">Light Font</string>
     <string name="preference_title_media_preload_non_metered_network">Nur mit WLAN vorladen</string>
+    <string name="preference_title_multi_column_tabs">Mehrspaltige Tabs</string>
+    <string name="preference_title_portrait">Portrait</string>
+    <string name="preference_title_landscape">Landscape</string>
     <string name="preference_title_storage">Speicher</string>
+    <string name="preference_title_tablet_mode">Tablet Modus</string>
     <string name="preference_title_translate">Übersetzen</string>
     <string name="preload_wifi_only">Vorladen nur mit WLAN</string>
     <string name="preview">Vorschau</string>
