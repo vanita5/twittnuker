@@ -127,9 +127,6 @@ class UserListSelectorActivity : BaseActivity(), OnClickListener, OnItemClickLis
         AsyncTaskUtils.executeTask(task)
     }
 
-    private val isSelectingUser: Boolean
-        get() = INTENT_ACTION_SELECT_USER == intent.action
-
     private fun setUserListsData(data: List<ParcelableUserList>, isMyAccount: Boolean) {
         userListsAdapter.setData(data, true)
         userListsContainer.visibility = View.VISIBLE

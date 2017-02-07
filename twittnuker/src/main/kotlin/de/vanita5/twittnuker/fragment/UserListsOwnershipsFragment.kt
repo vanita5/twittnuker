@@ -31,21 +31,21 @@ import android.view.MenuItem
 import com.squareup.otto.Subscribe
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.loader.UserListsLoader
+import de.vanita5.twittnuker.loader.UserListOwnershipsLoader
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.UserListDestroyedEvent
 import de.vanita5.twittnuker.util.MenuUtils
 import de.vanita5.twittnuker.util.Utils
 
-class UserListsFragment : ParcelableUserListsFragment() {
+class UserListsOwnershipsFragment : ParcelableUserListsFragment() {
 
-    public override fun onCreateUserListsLoader(context: Context,
+    override fun onCreateUserListsLoader(context: Context,
                                                 args: Bundle, fromUser: Boolean): Loader<List<ParcelableUserList>> {
         val accountKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
         val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)
         val screenName = args.getString(EXTRA_SCREEN_NAME)
-        return UserListsLoader(activity, accountKey, userKey, screenName, true, data)
+        return UserListOwnershipsLoader(activity, accountKey, userKey, screenName, data)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -334,6 +334,9 @@
     <string name="following_only_summary">Zeigt nur Notifications von Benutzern an, denen du folgst</string>
     <string name="following_you">Folgt dir</string>
     <string name="follows">Folgen</string>
+    <string name="title_user_list_subscriptions">Abonnements</string>
+    <string name="title_user_list_memberships">Mitglied von</string>
+    <string name="title_user_list_ownerships">Erstellt</string>
     <string name="font">Schriftart</string>
     <string name="font_family">Schriftart</string>
     <string name="from_camera">Von der Kamera</string>

@@ -44,7 +44,7 @@ abstract class ParcelableUsersLoader(
         }
     }
 
-    public override fun onStartLoading() {
+    override fun onStartLoading() {
         forceLoad()
     }
 

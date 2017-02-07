@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.model.UserKey
 
 class GroupMembersFragment : CursorUsersListFragment() {
 
-    public override fun onCreateUsersLoader(context: Context,
+    override fun onCreateUsersLoader(context: Context,
                                             args: Bundle, fromUser: Boolean): CursorSupportUsersLoader {
         val accountId = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
         val groupId = args.getString(EXTRA_GROUP_ID)

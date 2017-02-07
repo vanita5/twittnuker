@@ -148,7 +148,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     // Listeners
     private var locationListener: LocationListener? = null
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         when (resultCode) {
             Giphy.REQUEST_GIPHY -> {
                 requestOrPickGif()
@@ -207,7 +207,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         return textChanged || hasMedia() || isEditingDraft
     }
 
-    public override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArray(EXTRA_ACCOUNT_KEYS, accountsAdapter.selectedAccountKeys)
         outState.putParcelableArrayList(EXTRA_MEDIA, ArrayList<Parcelable>(mediaList))
         outState.putBoolean(EXTRA_IS_POSSIBLY_SENSITIVE, possiblySensitive)

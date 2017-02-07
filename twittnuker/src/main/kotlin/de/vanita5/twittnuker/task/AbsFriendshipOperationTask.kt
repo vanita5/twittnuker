@@ -90,8 +90,8 @@ abstract class AbsFriendshipOperationTask(
         bus.post(event)
     }
 
-    public override fun doLongOperation(args: Arguments): SingleResponse<ParcelableUser> {
-        val details = AccountUtils.getAccountDetails(AccountManager.get(context), args.accountKey, true) ?: return SingleResponse.getInstance<ParcelableUser>()
+    override fun doLongOperation(args: Arguments): SingleResponse<ParcelableUser> {
+        val details = AccountUtils.getAccountDetails(AccountManager.get(context), args.accountKey, true) ?: return SingleResponse.getInstance()
         val twitter = details.newMicroBlogInstance(context, cls = MicroBlog::class.java)
         try {
             val user = perform(twitter, details, args)

@@ -25,13 +25,12 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
-import de.vanita5.twittnuker.annotation.AccountType
-
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -54,7 +53,7 @@ class UserFavoritesLoader(
         tabPosition, fromUser, loadingMore) {
 
     @Throws(MicroBlogException::class)
-    public override fun getStatuses(microBlog: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<Status> {
+    override fun getStatuses(microBlog: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<Status> {
         if (userKey != null) {
             return microBlog.getFavorites(userKey.id, paging)
         } else if (screenName != null) {

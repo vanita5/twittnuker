@@ -28,31 +28,27 @@ import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.PageableResponseList
 import de.vanita5.twittnuker.library.twitter.model.Paging
-import de.vanita5.twittnuker.library.twitter.model.User
-import de.vanita5.twittnuker.model.AccountDetails
-import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.library.twitter.model.UserList
+import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
 
-class UserListSubscribersLoader(
+class UserListMembershipsLoader(
         context: Context,
         accountKey: UserKey,
-        private val listId: String?,
         private val userKey: UserKey?,
         private val screenName: String?,
-        private val listName: String?,
-        data: List<ParcelableUser>?,
-        fromUser: Boolean
-) : CursorSupportUsersLoader(context, accountKey, data, fromUser) {
+        cursor: Long,
+        data: List<ParcelableUserList>?
+) : BaseUserListsLoader(context, accountKey, cursor, data) {
 
     @Throws(MicroBlogException::class)
-    override fun getCursoredUsers(twitter: MicroBlog, details: AccountDetails, paging: Paging): PageableResponseList<User> {
-        if (listId != null)
-            return twitter.getUserListSubscribers(listId, paging)
-        else if (userKey != null)
-            return twitter.getUserListSubscribers(listName!!.replace(' ', '-'), userKey.id, paging)
-        else if (screenName != null)
-            return twitter.getUserListSubscribersByScreenName(listName!!.replace(' ', '-'), screenName, paging)
-        throw MicroBlogException("list_id or list_name and user_id (or screen_name) required")
+    override fun getUserLists(twitter: MicroBlog, paging: Paging): PageableResponseList<UserList> {
+        if (userKey != null) {
+            return twitter.getUserListMemberships(userKey.id, paging)
+        } else if (screenName != null) {
+            return twitter.getUserListMembershipsByScreenName(screenName, paging)
+        }
+        throw MicroBlogException("Invalid user")
     }
 
 }

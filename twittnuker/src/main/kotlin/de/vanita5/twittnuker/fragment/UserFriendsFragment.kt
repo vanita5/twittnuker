@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
 
 class UserFriendsFragment : CursorUsersListFragment() {
 
-    public override fun onCreateUsersLoader(context: Context,
+    override fun onCreateUsersLoader(context: Context,
                                             args: Bundle, fromUser: Boolean): CursorSupportUsersLoader {
         val accountKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
         val userKey = args.getParcelable<UserKey>(EXTRA_USER_KEY)

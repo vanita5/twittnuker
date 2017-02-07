@@ -30,6 +30,7 @@ import android.view.MenuItem
 import android.view.View
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
@@ -42,12 +43,11 @@ import de.vanita5.twittnuker.model.message.UserListMembersChangedEvent
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.UserViewHolder
-import org.mariotaku.kpreferences.get
 import java.util.*
 
 class UserListMembersFragment : CursorUsersListFragment() {
 
-    public override fun onCreateUsersLoader(context: Context,
+    override fun onCreateUsersLoader(context: Context,
                                             args: Bundle, fromUser: Boolean): CursorSupportUsersLoader {
         val accountId = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
         val listId = args.getString(EXTRA_LIST_ID)

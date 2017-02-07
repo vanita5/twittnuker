@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.view.holder.UserViewHolder
 
 class IncomingFriendshipsFragment : CursorUsersListFragment(), IUsersAdapter.RequestClickListener {
 
-    public override fun onCreateUsersLoader(context: Context, args: Bundle,
+    override fun onCreateUsersLoader(context: Context, args: Bundle,
                                             fromUser: Boolean): CursorSupportUsersLoader {
         val accountKey = args.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
         val loader = IncomingFriendshipsLoader(context, accountKey, adapter.getData(), fromUser)

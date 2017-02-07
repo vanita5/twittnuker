@@ -37,7 +37,6 @@ import de.vanita5.twittnuker.library.twitter.model.Activity
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
 import de.vanita5.twittnuker.constant.loadItemLimitKey
@@ -73,7 +72,7 @@ abstract class GetActivitiesTask(
         GeneralComponentHelper.build(context).inject(this)
     }
 
-    public override fun doLongOperation(param: RefreshTaskParam) {
+    override fun doLongOperation(param: RefreshTaskParam) {
         if (param.shouldAbort) return
         val accountIds = param.accountKeys
         val maxIds = param.maxIds
@@ -209,7 +208,7 @@ abstract class GetActivitiesTask(
     @Throws(MicroBlogException::class)
     protected abstract fun getActivities(twitter: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<Activity>
 
-    public override fun afterExecute(handler: ((Boolean) -> Unit)?, result: Unit) {
+    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: Unit) {
         context.contentResolver.notifyChange(contentUri, null)
         bus.post(GetActivitiesTaskEvent(contentUri, false, null))
         handler?.invoke(true)
@@ -218,7 +217,7 @@ abstract class GetActivitiesTask(
     protected abstract val contentUri: Uri
 
     @UiThread
-    public override fun beforeExecute() {
+    override fun beforeExecute() {
         bus.post(GetActivitiesTaskEvent(contentUri, true, null))
     }
 }

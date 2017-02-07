@@ -437,7 +437,7 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
 
         }
 
-        public override fun onStartLoading() {
+        override fun onStartLoading() {
             forceLoad()
         }
 
