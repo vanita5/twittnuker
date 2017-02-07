@@ -27,7 +27,7 @@ import android.util.AttributeSet
 import org.mariotaku.chameleon.view.ChameleonTextView
 
 
-class FixedTextView(context: Context, attrs: AttributeSet? = null) : ChameleonTextView(context, attrs) {
+open class FixedTextView(context: Context, attrs: AttributeSet? = null) : ChameleonTextView(context, attrs) {
 
     override fun onTextContextMenuItem(id: Int): Boolean {
         try {
