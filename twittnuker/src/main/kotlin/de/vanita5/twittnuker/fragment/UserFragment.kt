@@ -110,6 +110,8 @@ import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable
 import de.vanita5.twittnuker.graphic.ActionIconDrawable
+import de.vanita5.twittnuker.library.MicroBlog
+import de.vanita5.twittnuker.library.twitter.model.UserList
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
@@ -886,21 +888,38 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                         ProgressDialogFragment.show(fragmentManager, "get_list_progress")
                     }
                 }.then {
+                    fun MicroBlog.getUserListOwnerMemberships(id: String): ArrayList<UserList> {
+                        val result = ArrayList<UserList>()
+                        var nextCursor: Long
+                        val paging = Paging()
+                        paging.count(100)
+                        do {
+                            val resp = getUserListMemberships(user.key.id, paging, true)
+                            result.addAll(resp)
+                            nextCursor = resp.nextCursor
+                            paging.cursor(nextCursor)
+                        } while (nextCursor > 0)
+
+                        return result
+                    }
+
                     val microBlog = MicroBlogAPIFactory.getInstance(context, user.account_key)
+                    val ownedLists = ArrayList<ParcelableUserList>()
+                    val listMemberships = microBlog.getUserListOwnerMemberships(user.key.id)
                     val paging = Paging()
-                    val ownedLists = microBlog.getUserListOwnerships(paging)
-                    var nextCursor = ownedLists.nextCursor
-                    while (nextCursor != 0L) {
-                        val list = microBlog.getUserListOwnerships(paging)
-                        ownedLists.addAll(list)
-                        nextCursor = list.nextCursor
-                    }
-                    val userListMemberships = microBlog.getUserListMemberships(user.key.id, null, true)
-                    return@then Array<ParcelableUserList>(ownedLists.size) { idx ->
-                        val list = ParcelableUserListUtils.from(ownedLists[idx], user.account_key)
-                        list.is_user_inside = userListMemberships.firstOrNull { it.id == ownedLists[idx].id } != null
-                        return@Array list
-                    }
+                    paging.count(100)
+                    var nextCursor: Long
+                    do {
+                        val resp = microBlog.getUserListOwnerships(paging)
+                        resp.mapTo(ownedLists) { item ->
+                            val userList = ParcelableUserListUtils.from(item, user.account_key)
+                            userList.is_user_inside = listMemberships.any { it.id == item.id }
+                            return@mapTo userList
+                        }
+                        nextCursor = resp.nextCursor
+                        paging.cursor(nextCursor)
+                    } while (nextCursor > 0)
+                    return@then ownedLists.toTypedArray()
                 }.alwaysUi {
                     executeAfterFragmentResumed {
                         val df = fragmentManager.findFragmentByTag("get_list_progress") as? DialogFragment
