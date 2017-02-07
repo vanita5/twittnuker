@@ -58,11 +58,11 @@ import de.vanita5.twittnuker.extension.model.setPosition
 import de.vanita5.twittnuker.loader.AccountDetailsLoader
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.IntentUtils
+import de.vanita5.twittnuker.util.deleteAccountData
 import de.vanita5.twittnuker.util.support.removeAccountSupport
 
 class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<List<AccountDetails>>,
@@ -222,6 +222,9 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
         }
     }
 
+    /**
+     * DELETE YOUR ACCOUNT
+     */
     class AccountDeletionDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
 
         override fun onClick(dialog: DialogInterface, which: Int) {
@@ -231,18 +234,12 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
                     val accountKey = account.getAccountKey(am)
+                    deleteAccountData(resolver, accountKey)
                     am.removeAccountSupport(account)
-                    val where = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY).sql
-                    val whereArgs = arrayOf(accountKey.toString())
-                    // Also delete tweets related to the account we previously
-                    // deleted.
-                    resolver.delete(Statuses.CONTENT_URI, where, whereArgs)
-                    resolver.delete(Mentions.CONTENT_URI, where, whereArgs)
-                    resolver.delete(Inbox.CONTENT_URI, where, whereArgs)
-                    resolver.delete(Outbox.CONTENT_URI, where, whereArgs)
                 }
             }
         }
+
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             val context = context
