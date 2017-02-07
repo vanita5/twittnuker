@@ -26,12 +26,13 @@ import android.content.Context
 import android.content.Intent
 import android.support.annotation.CallSuper
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.view.ContainerView
 import java.util.*
 
 abstract class ExtraFeaturesService {
     protected lateinit var context: Context
 
-    abstract fun getDashboardLayouts(): IntArray
+    abstract fun getDashboardControllers(): List<Class<out ContainerView.ViewController>>
 
     @CallSuper
     protected open fun init(context: Context) {

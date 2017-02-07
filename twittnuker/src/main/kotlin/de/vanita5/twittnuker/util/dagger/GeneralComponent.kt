@@ -27,6 +27,7 @@ import dagger.Component
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.activity.ComposeActivity
 import de.vanita5.twittnuker.activity.MediaViewerActivity
+import de.vanita5.twittnuker.activity.PremiumDashboardActivity
 import de.vanita5.twittnuker.adapter.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.fragment.*
@@ -155,4 +156,6 @@ interface GeneralComponent {
     fun inject(loader: CacheUserSearchLoader)
 
     fun inject(loader: BaseUserListsLoader)
+
+    fun inject(controller: PremiumDashboardActivity.ExtraFeatureViewController)
 }

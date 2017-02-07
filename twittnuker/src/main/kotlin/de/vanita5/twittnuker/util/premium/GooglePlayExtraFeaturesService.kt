@@ -27,15 +27,21 @@ import android.content.Intent
 import com.anjlab.android.iab.v3.BillingProcessor
 import nl.komponents.kovenant.task
 import de.vanita5.twittnuker.Constants.GOOGLE_PLAY_LICENCING_PUBKEY
-import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.GooglePlayInAppPurchaseActivity
 import de.vanita5.twittnuker.activity.premium.AbsExtraFeaturePurchaseActivity
+import de.vanita5.twittnuker.view.controller.premium.GoogleFiltersImportViewController
+import de.vanita5.twittnuker.view.controller.premium.GoogleFiltersSubscriptionsViewController
+import de.vanita5.twittnuker.view.controller.premium.SyncStatusViewController
 
 class GooglePlayExtraFeaturesService : ExtraFeaturesService() {
 
     private lateinit var bp: BillingProcessor
 
-    override fun getDashboardLayouts() = intArrayOf(R.layout.card_item_extra_features_sync_status)
+    override fun getDashboardControllers() = listOf(
+            SyncStatusViewController::class.java,
+            GoogleFiltersImportViewController::class.java,
+            GoogleFiltersSubscriptionsViewController::class.java
+    )
 
     override fun init(context: Context) {
         super.init(context)

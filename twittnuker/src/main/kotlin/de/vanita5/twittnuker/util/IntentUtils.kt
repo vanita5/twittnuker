@@ -681,13 +681,14 @@ object IntentUtils {
         context.startActivity(intent)
     }
 
-    fun openFilters(context: Context) {
+    fun openFilters(context: Context, initialTab: String? = null) {
         val intent = Intent()
         val builder = Uri.Builder()
         builder.scheme(SCHEME_TWITTNUKER)
         builder.authority(AUTHORITY_FILTERS)
         intent.data = builder.build()
         intent.`package` = BuildConfig.APPLICATION_ID
+        intent.putExtra(EXTRA_INITIAL_TAB, initialTab)
         context.startActivity(intent)
     }
 

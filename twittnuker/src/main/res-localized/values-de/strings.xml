@@ -38,6 +38,7 @@
     <string name="action_favoriting">Favorisieren</string>
     <string name="action_filter_import_from_blocked_users">Importiere geblockte Benutzer</string>
     <string name="action_filter_import_from_muted_users">Importiere stummgeschaltete Benutzer</string>
+    <string name="action_filter_subscriptions_card_manage">Abonnements verwalten</string>
     <string name="action_finish">Fertig</string>
     <string name="action_follow">Folgen</string>
     <string name="action_following">Folgen</string>
@@ -314,9 +315,11 @@
     <string name="external_user_host_format">Externer Benutzer bei <xliff:g id="host">%s</xliff:g></string>
     <string name="extra_configurations">Erweiterte Einstellungen</string>
     <string name="extra_feature_description_filters_import">Importe Filterliste aus Blocks und Mutes</string>
-    <string name="extra_feature_description_filters_subscription">Filterlisten Abonements</string>
+    <string name="extra_feature_description_filters_subscription">Abonniere Filterlisten</string>
     <string name="extra_feature_description_schedule_status">Tweet planen (später senden)</string>
     <string name="extra_feature_description_sync_data">Synchronisieren von Daten mit Dropbox, Google Drive etc.</string>
+    <string name="extra_feature_title_filters_import">Filter Import</string>
+    <string name="extra_feature_title_filters_subscription">Filter Abonnement</string>
     <!-- Enhanced (paid) features description -->
     <string name="extra_features_description">Unterstütze Twittnuker und schalte erweiterte Funktionen frei</string>
     <string name="extra_features_pack_description">oder kaufe dir das Feature Pack und erhalte alle aktuellen und zukünftigen Funktionen</string>
@@ -456,6 +459,7 @@
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_extra_features_not_purchased">Erweiterte Funktionen nicht freigeschaltet</string>
+    <string name="message_toast_filters_import_hint">Drücke \"+\" zum importieren</string>
     <!-- Toast message for network errors -->
     <string name="message_toast_network_error">Netzwerkfehler</string>
     <string name="message_permission_request_compose_location">Twittnuker benötigt die Standortberechtigung um in Tweets den Standort hinzuzufügen.</string>

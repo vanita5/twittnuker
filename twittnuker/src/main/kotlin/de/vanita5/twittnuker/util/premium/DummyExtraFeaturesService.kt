@@ -24,11 +24,12 @@ package de.vanita5.twittnuker.util.premium
 
 import android.content.Context
 import android.content.Intent
+import de.vanita5.twittnuker.view.ContainerView
 
 
 class DummyExtraFeaturesService : ExtraFeaturesService() {
 
-    override fun getDashboardLayouts() = intArrayOf()
+    override fun getDashboardControllers() = emptyList<Class<ContainerView.ViewController>>()
 
     override fun isSupported(): Boolean = false
 

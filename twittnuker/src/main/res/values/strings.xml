@@ -38,6 +38,7 @@
     <string name="action_favoriting">favoriting</string>
     <string name="action_filter_import_from_blocked_users">Import from blocked users</string>
     <string name="action_filter_import_from_muted_users">Import from muted users</string>
+    <string name="action_filter_subscriptions_card_manage">Manage subscriptions</string>
     <string name="action_finish">Finish</string>
     <string name="action_follow">Follow</string>
     <string name="action_following">following</string>
@@ -457,9 +458,11 @@
 
     <string name="extra_configurations">Extra configurations</string>
     <string name="extra_feature_description_filters_import">Import filter list from blocks/mutes</string>
-    <string name="extra_feature_description_filters_subscription">Filters list subscription</string>
+    <string name="extra_feature_description_filters_subscription">Subscribe to mute filters and sync automatically</string>
     <string name="extra_feature_description_schedule_status">Schedule tweet (send later)</string>
     <string name="extra_feature_description_sync_data">Sync data with Dropbox, Google Drive etc</string>
+    <string name="extra_feature_title_filters_import">Filter import</string>
+    <string name="extra_feature_title_filters_subscription">Filter subscription</string>
     <!-- Enhanced (paid) features description -->
     <string name="extra_features_description">Support Twittnuker and get enhanced features</string>
     <string name="extra_features_pack_description">Or buy features pack to get all features (including features in future releases)</string>
@@ -665,6 +668,7 @@
     <string name="message_error_invalid_account">Some account data are corrupted, Twittnuker will remove those accounts to prevent crash.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_extra_features_not_purchased">Enhanced features not purchased.</string>
+    <string name="message_toast_filters_import_hint">Press \"+\" to import</string>
     <!-- Toast message for network errors -->
     <string name="message_toast_network_error">Network error.</string>
     <string name="message_permission_request_compose_location">Twittnuker needs location permission for adding location to tweets.</string>
