@@ -35,3 +35,5 @@ fun parcelableMediaTypeString(@ParcelableMedia.Type type: Int): String? {
         else -> null
     }
 }
+
+val ParcelableMedia.aspect_ratio: Double get() = this.width / this.height.toDouble()

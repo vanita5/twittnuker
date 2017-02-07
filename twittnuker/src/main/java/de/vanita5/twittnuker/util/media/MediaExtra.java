@@ -25,9 +25,9 @@ package de.vanita5.twittnuker.util.media;
 import de.vanita5.twittnuker.model.UserKey;
 
 public class MediaExtra {
-    UserKey accountKey;
-    String fallbackUrl;
-    boolean skipUrlReplacing;
+    private UserKey accountKey;
+    private String fallbackUrl;
+    private boolean skipUrlReplacing;
 
     public UserKey getAccountKey() {
         return accountKey;
