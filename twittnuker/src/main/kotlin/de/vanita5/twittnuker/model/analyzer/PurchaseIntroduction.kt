@@ -24,12 +24,13 @@ package de.vanita5.twittnuker.model.analyzer
 
 import de.vanita5.twittnuker.util.Analyzer
 
-
-data class PurchaseIntroduction(val productName: String, val source: String) : Analyzer.Event {
+data class PurchaseIntroduction(val productName: String, val source: String?) : Analyzer.Event {
     override val name: String = "Purchase Introduction"
     override val accountType: String? = null
     override fun forEachValues(action: (String, String?) -> Unit) {
         action("Product Name", productName)
-        action("Source", source)
+        if (source != null) {
+            action("Source", source)
+        }
     }
 }
