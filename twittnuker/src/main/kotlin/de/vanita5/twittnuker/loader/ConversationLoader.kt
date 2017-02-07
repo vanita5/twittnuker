@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.SearchQuery
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
@@ -65,7 +66,7 @@ class ConversationLoader(
         canLoadAllReplies = false
         when (details.type) {
             AccountType.TWITTER -> {
-                val isOfficial = false
+                val isOfficial = details.isOfficial(context)
                 canLoadAllReplies = isOfficial
                 if (isOfficial) {
                     return microBlog.showConversation(status.id, paging)
