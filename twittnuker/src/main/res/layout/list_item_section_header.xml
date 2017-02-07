@@ -19,11 +19,12 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<TextView
     android:id="@+id/sectionHeader"
     style="?android:listSeparatorTextViewStyle"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:tag="text_color|accent_color"
+    android:textColor="?colorAccent"
     tools:showIn="@layout/dialog_custom_tab_editor" />
