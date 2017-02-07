@@ -79,6 +79,8 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     lateinit internal var syncController: SyncController
     @Inject
     lateinit internal var extraFeaturesService: ExtraFeaturesService
+    @Inject
+    lateinit internal var mediaLoader: MediaLoaderWrapper
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
@@ -175,6 +177,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     }
 
     override fun onLowMemory() {
+        mediaLoader.clearMemoryCache()
         super.onLowMemory()
     }
 
@@ -197,6 +200,9 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             KEY_EMOJI_SUPPORT -> {
                 externalThemeManager.reloadEmojiPreferences()
             }
+            KEY_MEDIA_PRELOAD, KEY_PRELOAD_WIFI_ONLY -> {
+                mediaLoader.reloadOptions(preferences)
+            }
         }
     }
 
@@ -208,7 +214,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     private fun reloadDnsSettings() {
         dns.reloadDnsSettings()
     }
-
 
     private fun initializeAsyncTask() {
         // AsyncTask class needs to be loaded in UI thread.

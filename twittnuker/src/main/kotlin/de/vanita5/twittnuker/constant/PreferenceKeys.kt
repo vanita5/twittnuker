@@ -77,6 +77,8 @@ val filterPossibilitySensitiveStatusesKey = KBooleanKey("filter_possibility_sens
 val chromeCustomTabKey = KBooleanKey("chrome_custom_tab", true)
 val lightFontKey = KBooleanKey("light_font", true)
 val extraFeaturesNoticeVersionKey = KIntKey("extra_features_notice_version", 0)
+val mediaPreloadKey = KBooleanKey(KEY_MEDIA_PRELOAD, true)
+val mediaPreloadOnWifiOnlyKey = KBooleanKey(KEY_PRELOAD_WIFI_ONLY, false)
 
 object themeBackgroundAlphaKey : KSimpleKey<Int>(KEY_THEME_BACKGROUND_ALPHA, 0xFF) {
     override fun read(preferences: SharedPreferences): Int {

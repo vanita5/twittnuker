@@ -25,8 +25,10 @@ package de.vanita5.twittnuker.util.dagger
 import android.app.Application
 import android.content.Context
 import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Looper
+import android.support.v4.net.ConnectivityManagerCompat
 import android.support.v4.text.BidiFormatter
 import com.nostra13.universalimageloader.cache.disc.DiskCache
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache
@@ -181,8 +183,12 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun mediaLoaderWrapper(loader: ImageLoader): MediaLoaderWrapper {
-        return MediaLoaderWrapper(loader)
+    fun mediaLoaderWrapper(loader: ImageLoader, preferences: SharedPreferencesWrapper): MediaLoaderWrapper {
+        val wrapper = MediaLoaderWrapper(loader)
+        wrapper.reloadOptions(preferences)
+        val cm = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        wrapper.isNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(cm)
+        return wrapper
     }
 
     @Provides

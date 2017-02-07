@@ -34,12 +34,8 @@ import de.vanita5.twittnuker.util.collection.CompactHashSet
 
 class ReadStateManager(context: Context) {
 
-    private val preferences: SharedPreferencesWrapper
-
-    init {
-        preferences = SharedPreferencesWrapper.getInstance(context,
+    private val preferences: SharedPreferencesWrapper = SharedPreferencesWrapper.getInstance(context,
                 TIMELINE_POSITIONS_PREFERENCES_NAME, Context.MODE_PRIVATE)
-    }
 
     fun getPosition(key: String): Long {
         if (TextUtils.isEmpty(key)) return -1

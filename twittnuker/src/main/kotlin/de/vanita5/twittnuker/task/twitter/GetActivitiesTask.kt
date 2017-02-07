@@ -57,6 +57,7 @@ import javax.inject.Inject
 abstract class GetActivitiesTask(
         protected val context: Context
 ) : AbstractTask<RefreshTaskParam, Unit, (Boolean) -> Unit>() {
+    private var initialized: Boolean = false
     @Inject
     lateinit var preferences: KPreferences
     @Inject
@@ -67,13 +68,20 @@ abstract class GetActivitiesTask(
     lateinit var readStateManager: ReadStateManager
     @Inject
     lateinit var userColorNameManager: UserColorNameManager
+    @Inject
+    lateinit var mediaLoader: MediaLoaderWrapper
+
+    protected abstract val errorInfoKey: String
+
+    protected abstract val contentUri: Uri
 
     init {
         GeneralComponentHelper.build(context).inject(this)
+        initialized = true
     }
 
     override fun doLongOperation(param: RefreshTaskParam) {
-        if (param.shouldAbort) return
+        if (!initialized || param.shouldAbort) return
         val accountIds = param.accountKeys
         val maxIds = param.maxIds
         val maxSortIds = param.maxSortIds
@@ -131,7 +139,12 @@ abstract class GetActivitiesTask(
         }
     }
 
-    protected abstract val errorInfoKey: String
+    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: Unit) {
+        if (!initialized) return
+        context.contentResolver.notifyChange(contentUri, null)
+        bus.post(GetActivitiesTaskEvent(contentUri, false, null))
+        handler?.invoke(true)
+    }
 
     private fun storeActivities(cr: ContentResolver, loadItemLimit: Int, details: AccountDetails,
                                 noItemsBefore: Boolean, activities: ResponseList<Activity>,
@@ -148,6 +161,7 @@ abstract class GetActivitiesTask(
             for (i in activities.indices) {
                 val item = activities[i]
                 val activity = ParcelableActivityUtils.fromActivity(item, details.key, false)
+                mediaLoader.preloadActivity(activity)
                 activity.position_key = GetStatusesTask.getPositionKey(activity.timestamp,
                         activity.timestamp, lastSortId, sortDiff, i, activities.size)
                 if (deleteBound[0] < 0) {
@@ -203,21 +217,14 @@ abstract class GetActivitiesTask(
         }
     }
 
+    @UiThread
+    override fun beforeExecute() {
+        if (!initialized) return
+        bus.post(GetActivitiesTaskEvent(contentUri, true, null))
+    }
+
     protected abstract fun saveReadPosition(accountKey: UserKey, details: AccountDetails, twitter: MicroBlog)
 
     @Throws(MicroBlogException::class)
     protected abstract fun getActivities(twitter: MicroBlog, details: AccountDetails, paging: Paging): ResponseList<Activity>
-
-    override fun afterExecute(handler: ((Boolean) -> Unit)?, result: Unit) {
-        context.contentResolver.notifyChange(contentUri, null)
-        bus.post(GetActivitiesTaskEvent(contentUri, false, null))
-        handler?.invoke(true)
-    }
-
-    protected abstract val contentUri: Uri
-
-    @UiThread
-    override fun beforeExecute() {
-        bus.post(GetActivitiesTaskEvent(contentUri, true, null))
-    }
 }
