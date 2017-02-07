@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.activity
 
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.support.v4.app.NavUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -65,6 +66,9 @@ class PremiumDashboardActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            android.R.id.home -> {
+                NavUtils.navigateUpFromSameTask(this)
+            }
             R.id.consume_purchase -> {
                 if (BuildConfig.DEBUG) {
                     return true
