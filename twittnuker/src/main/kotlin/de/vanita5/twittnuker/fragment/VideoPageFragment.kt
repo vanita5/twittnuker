@@ -24,6 +24,9 @@ package de.vanita5.twittnuker.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
@@ -48,16 +51,21 @@ import de.vanita5.twittnuker.TwittnukerConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.TwittnukerConstants.EXTRA_MEDIA
 import de.vanita5.twittnuker.activity.MediaViewerActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_POSITION
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.media.MediaExtra
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPreparedListener,
-        MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener, View.OnClickListener, IControlBarActivity.ControlBarOffsetListener {
+class VideoPageFragment : CacheDownloadMediaViewerFragment(), IBaseFragment<VideoPageFragment>,
+        MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener,
+        View.OnClickListener, IControlBarActivity.ControlBarOffsetListener {
 
     private val isLoopEnabled: Boolean get() = arguments.getBoolean(EXTRA_LOOP, false)
+    private val isControlDisabled: Boolean get() = arguments.getBoolean(EXTRA_DISABLE_CONTROL, false)
+    private val isMutedByDefault: Boolean get() = arguments.getBoolean(EXTRA_DEFAULT_MUTE, false)
     private val media: ParcelableMedia? get() = arguments.getParcelable<ParcelableMedia>(EXTRA_MEDIA)
     private val accountKey: UserKey get() = arguments.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
 
@@ -95,11 +103,14 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPrep
         val am = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         // Play audio by default if ringer mode on
-        playAudio = am.ringerMode == AudioManager.RINGER_MODE_NORMAL
+        playAudio = !isMutedByDefault && am.ringerMode == AudioManager.RINGER_MODE_NORMAL
 
         videoProgressRunnable = VideoPlayProgressRunnable(handler, videoViewProgress,
                 durationLabel, positionLabel, videoView)
 
+        if (savedInstanceState != null) {
+            positionBackup = savedInstanceState.getInt(EXTRA_POSITION)
+        }
 
         videoViewOverlay.setOnClickListener(this)
         videoView.setOnPreparedListener(this)
@@ -110,6 +121,13 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPrep
         volumeButton.setOnClickListener(this)
         videoControl.visibility = View.GONE
         videoContainer.setAspectRatioSource(aspectRatioSource)
+        if (isLoopEnabled) {
+            videoViewProgress.thumb = ColorDrawable(Color.TRANSPARENT)
+            videoViewProgress.isEnabled = false
+        } else {
+            videoViewProgress.isEnabled = true
+        }
+
         videoViewProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             private var paused: Boolean = false
 
@@ -159,6 +177,17 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPrep
         super.onDetach()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(EXTRA_POSITION, positionBackup)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        requestFitSystemWindows()
+    }
+
+
     override fun getDownloadExtra(): Any? {
         val extra = MediaExtra()
         val fallbackUrlAndType = getBestVideoUrlAndType(media, FALLBACK_VIDEO_TYPES)
@@ -171,7 +200,6 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPrep
     override fun isAbleToLoad(): Boolean {
         return downloadUri != null
     }
-
 
     override fun getDownloadUri(): Uri? {
         val bestVideoUrlAndType = getBestVideoUrlAndType(media, SUPPORTED_VIDEO_TYPES)
@@ -198,7 +226,9 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPrep
 
     override fun onControlBarOffsetChanged(activity: IControlBarActivity, offset: Float) {
         videoControl.translationY = (1 - offset) * videoControl.height
+        videoControl.alpha = offset
     }
+
 
     override fun onError(mp: MediaPlayer, what: Int, extra: Int): Boolean {
         mediaPlayer = null
@@ -223,7 +253,7 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPrep
             videoViewProgress.visibility = View.VISIBLE
             videoViewProgress.post(videoProgressRunnable)
             updatePlayerState()
-            videoControl.visibility = View.VISIBLE
+            videoControl.visibility = if (isControlDisabled) View.GONE else View.VISIBLE
         }
     }
 
@@ -280,6 +310,18 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPrep
         return inflater.inflate(R.layout.layout_media_viewer_texture_video_view, container, false)
     }
 
+
+
+    override fun fitSystemWindows(insets: Rect) {
+        val lp = videoControl.layoutParams
+        if (lp is ViewGroup.MarginLayoutParams) {
+            lp.bottomMargin = insets.bottom
+        }
+    }
+
+    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (VideoPageFragment) -> Unit) {
+        // No-op
+    }
 
     @SuppressLint("SwitchIntDef")
     private fun getBestVideoUrlAndType(media: ParcelableMedia?, supportedTypes: Array<String>): Pair<String, String>? {
@@ -365,6 +407,8 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), MediaPlayer.OnPrep
     companion object {
 
         const val EXTRA_LOOP = "loop"
+        const val EXTRA_DISABLE_CONTROL = "disable_control"
+        const val EXTRA_DEFAULT_MUTE = "default_mute"
         private val SUPPORTED_VIDEO_TYPES: Array<String>
         private val FALLBACK_VIDEO_TYPES: Array<String> = arrayOf("video/mp4")
 

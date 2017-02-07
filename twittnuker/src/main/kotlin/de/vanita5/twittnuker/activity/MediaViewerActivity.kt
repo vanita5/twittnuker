@@ -20,6 +20,7 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -48,6 +49,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity
 import de.vanita5.twittnuker.fragment.*
+import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.provider.CacheProvider
@@ -87,6 +89,9 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+        }
         super.onCreate(savedInstanceState)
         // KEEP SCREEN ON
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -95,12 +100,15 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
         controlBarShowHideHelper = ControlBarShowHideHelper(this)
         mediaViewerHelper.onCreate(savedInstanceState)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.elevation = 0f
         swipeContainer.listener = this
         swipeContainer.backgroundAlpha = 1f
         WindowSupport.setStatusBarColor(window, Color.TRANSPARENT)
         activityLayout.setStatusBarColor(overrideTheme.colorToolbar)
         activityLayout.setWindowInsetsListener { l, t, r, b ->
-            activityLayout.setStatusBarHeight(t - ThemeUtils.getActionBarHeight(this))
+            val statusBarHeight = t - ThemeUtils.getActionBarHeight(this)
+            activityLayout.setStatusBarHeight(statusBarHeight)
+            onFitSystemWindows(Rect(l, t, r, b))
         }
     }
 
@@ -241,6 +249,7 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
     }
 
     override fun setBarVisibility(visible: Boolean) {
+        if (isBarShowing == visible) return
         setControlBarVisibleAnimate(visible)
     }
 
@@ -272,6 +281,8 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
             }
             ParcelableMedia.Type.ANIMATED_GIF, ParcelableMedia.Type.CARD_ANIMATED_GIF -> {
                 args.putBoolean(VideoPageFragment.EXTRA_LOOP, true)
+                args.putBoolean(VideoPageFragment.EXTRA_DISABLE_CONTROL, true)
+                args.putBoolean(VideoPageFragment.EXTRA_DEFAULT_MUTE, true)
                 return Fragment.instantiate(this, VideoPageFragment::class.java.name, args) as MediaViewerFragment
             }
             ParcelableMedia.Type.VIDEO -> {
@@ -354,13 +365,22 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
                     // Some device will throw this exception
                     hideOffsetNotSupported = true
                 }
-
             }
             notifyControlBarOffsetChanged()
         }
 
     override fun setControlBarVisibleAnimate(visible: Boolean, listener: ControlBarShowHideHelper.ControlBarAnimationListener?) {
         controlBarShowHideHelper.setControlBarVisibleAnimate(visible, listener)
+    }
+
+
+    override fun onFitSystemWindows(insets: Rect) {
+        super.onFitSystemWindows(insets)
+        val adapter = viewPager.adapter
+        val fragment = adapter.instantiateItem(viewPager, viewPager.currentItem)
+        if (fragment is IBaseFragment<*>) {
+            fragment.requestFitSystemWindows()
+        }
     }
 
     private fun processShareIntent(intent: Intent) {

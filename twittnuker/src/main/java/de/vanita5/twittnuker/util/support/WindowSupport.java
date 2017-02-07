@@ -35,6 +35,11 @@ public class WindowSupport {
         WindowAccessorLollipop.setStatusBarColor(window, color);
     }
 
+    public static void setNavigationBarColor(Window window, int color) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
+        WindowAccessorLollipop.setNavigationBarColor(window, color);
+    }
+
     public static void setSharedElementsUseOverlay(Window window, boolean sharedElementsUseOverlay) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
         WindowAccessorLollipop.setSharedElementsUseOverlay(window, sharedElementsUseOverlay);
@@ -44,6 +49,10 @@ public class WindowSupport {
     private static class WindowAccessorLollipop {
         public static void setStatusBarColor(Window window, int color) {
             window.setStatusBarColor(color);
+        }
+
+        public static void setNavigationBarColor(Window window, int color) {
+            window.setNavigationBarColor(color);
         }
 
         public static void setSharedElementsUseOverlay(Window window, boolean sharedElementsUseOverlay) {

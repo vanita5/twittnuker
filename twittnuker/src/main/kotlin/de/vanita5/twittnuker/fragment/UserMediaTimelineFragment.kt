@@ -30,19 +30,15 @@ import android.support.v4.content.Loader
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.text.TextUtils
-import android.view.View
-import org.apache.commons.lang3.ArrayUtils
 import de.vanita5.twittnuker.adapter.StaggeredGridParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.loader.MediaTimelineLoader
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
-import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.view.HeaderDrawerLayout.DrawerCallback
-import de.vanita5.twittnuker.view.holder.GapViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
 class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridParcelableStatusesAdapter, StaggeredGridLayoutManager>(), LoaderCallbacks<List<ParcelableStatus>>, DrawerCallback, IStatusViewHolder.StatusClickListener {
@@ -61,13 +57,21 @@ class UserMediaTimelineFragment : AbsContentRecyclerViewFragment<StaggeredGridPa
     override val reachingEnd: Boolean
         get() {
             val lm = layoutManager
-            return ArrayUtils.contains(lm.findLastCompletelyVisibleItemPositions(null), lm.itemCount - 1)
+            var visiblePos = lm.findLastCompletelyVisibleItemPositions(null)
+            if (visiblePos.all { it == RecyclerView.NO_POSITION }) {
+                visiblePos = lm.findLastVisibleItemPositions(null)
+            }
+            return visiblePos.contains(lm.itemCount - 1)
         }
 
     override val reachingStart: Boolean
         get() {
             val lm = layoutManager
-            return ArrayUtils.contains(lm.findFirstCompletelyVisibleItemPositions(null), 0)
+            var visiblePos = lm.findFirstCompletelyVisibleItemPositions(null)
+            if (visiblePos.all { it == RecyclerView.NO_POSITION }) {
+                visiblePos = lm.findFirstVisibleItemPositions(null)
+            }
+            return visiblePos.contains(0)
         }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
