@@ -31,7 +31,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.layout_extra_config_user.view.*
 import kotlinx.android.synthetic.main.list_item_simple_user.view.*
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.activity.UserListSelectorActivity
+import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.adapter.DummyItemAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.fragment.CustomTabsFragment.TabEditorDialogFragment
@@ -63,7 +63,7 @@ class UserExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(
             val account = fragment.account ?: return@setOnClickListener
             val intent = Intent(INTENT_ACTION_SELECT_USER)
             intent.putExtra(EXTRA_ACCOUNT_KEY, account.key)
-            intent.setClass(context, UserListSelectorActivity::class.java)
+            intent.setClass(context, UserSelectorActivity::class.java)
             fragment.startExtraConfigurationActivityForResult(this@UserExtraConfiguration, intent, 1)
         }
         hintView = view.selectUserHint

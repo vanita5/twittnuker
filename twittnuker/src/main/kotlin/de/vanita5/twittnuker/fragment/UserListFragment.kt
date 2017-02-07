@@ -52,7 +52,7 @@ import de.vanita5.twittnuker.library.twitter.model.UserListUpdate
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
-import de.vanita5.twittnuker.activity.UserListSelectorActivity
+import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
@@ -211,7 +211,7 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
             R.id.add -> {
                 if (userList.user_key != userList.account_key) return false
                 val intent = Intent(INTENT_ACTION_SELECT_USER)
-                intent.setClass(activity, UserListSelectorActivity::class.java)
+                intent.setClass(activity, UserSelectorActivity::class.java)
                 intent.putExtra(EXTRA_ACCOUNT_KEY, userList.account_key)
                 startActivityForResult(intent, REQUEST_SELECT_USER)
             }

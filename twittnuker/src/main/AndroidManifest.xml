@@ -369,12 +369,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.UserListSelectorActivity"
+            android:name=".activity.UserSelectorActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/select_user_list"
             android:theme="@style/Theme.Twidere.Dialog">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.SELECT_USER"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.UserListSelectorActivity"
+            android:icon="@drawable/ic_action_twittnuker"
+            android:label="@string/select_user"
+            android:theme="@style/Theme.Twidere.Dialog">
+            <intent-filter>
                 <action android:name="de.vanita5.twittnuker.SELECT_USER_LIST"/>
 
                 <category android:name="android.intent.category.DEFAULT"/>

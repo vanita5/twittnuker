@@ -24,7 +24,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.activity.LinkHandlerActivity
-import de.vanita5.twittnuker.activity.UserListSelectorActivity
+import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -80,7 +80,7 @@ class FilteredUsersFragment : BaseFiltersFragment() {
             REQUEST_ADD_USER_SELECT_ACCOUNT -> {
                 if (resultCode != FragmentActivity.RESULT_OK) return
                 val intent = Intent(INTENT_ACTION_SELECT_USER)
-                intent.setClass(context, UserListSelectorActivity::class.java)
+                intent.setClass(context, UserSelectorActivity::class.java)
                 intent.putExtra(EXTRA_ACCOUNT_KEY, data!!.getParcelableExtra<UserKey>(EXTRA_ACCOUNT_KEY))
                 startActivityForResult(intent, REQUEST_ADD_USER_SELECT_ACCOUNT)
             }
