@@ -508,6 +508,7 @@
     <string name="message_toast_share_media_no_storage_permission">Die Anwendung erfordert die Speicherberechtigung, um Medien zu teilen.</string>
     <string name="message_toast_status_saved_to_draft">Tweet als Entwurf gespeichert.</string>
     <string name="message_toast_status_updated">Tweet gesendet.</string>
+    <string name="message_toast_unable_to_load_more_statuses">Kann keine weiteren Tweets laden</string>
     <string name="message_toast_wrong_api_key">Inkorrekte API URL oder Consumer Key/Secret. Bitte nochmals prüfen.</string>
     <string name="message_toast_wrong_username_password">Falscher Benutzername/Passwort</string>
     <string name="message_user_muted">Benutzer zur Filterliste hinzugefügt. Tweets dieses Benutzers erscheinen nicht in der Timeline oder bei Erwähnungen.</string>

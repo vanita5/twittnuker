@@ -27,6 +27,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import com.squareup.otto.Bus
+import de.vanita5.twittnuker.R
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.mariotaku.abstask.library.AbstractTask
@@ -138,13 +139,18 @@ abstract class GetStatusesTask(
                     sinceId = null
                 }
                 val statuses = getStatuses(microBlog, paging)
-                storeStatus(accountKey, details, statuses, sinceId, maxId, sinceSortId,
+                val storeResult = storeStatus(accountKey, details, statuses, sinceId, maxId, sinceSortId,
                         maxSortId, loadItemLimit, false)
                 // TODO cache related data and preload
                 val cacheTask = CacheUsersStatusesTask(context)
-                cacheTask.params = TwitterWrapper.StatusListResponse(accountKey, statuses)
+                val response = TwitterWrapper.StatusListResponse(accountKey, statuses)
+                cacheTask.params = response
                 TaskStarter.execute(cacheTask)
                 errorInfoStore.remove(errorInfoKey, accountKey.id)
+                result.add(response)
+                if (storeResult != 0) {
+                    throw GetTimelineException(storeResult)
+                }
             } catch (e: MicroBlogException) {
                 DebugLog.w(LOGTAG, tr = e)
                 if (e.isCausedByNetworkIssue) {
@@ -152,6 +158,8 @@ abstract class GetStatusesTask(
                 } else if (e.statusCode == 401) {
                     // Unauthorized
                 }
+                result.add(TwitterWrapper.StatusListResponse(accountKey, e))
+            } catch (e: GetTimelineException) {
                 result.add(TwitterWrapper.StatusListResponse(accountKey, e))
             }
         }
@@ -161,7 +169,8 @@ abstract class GetStatusesTask(
     override fun afterExecute(handler: ((Boolean) -> Unit)?, result: List<TwitterWrapper.StatusListResponse>) {
         if (!initialized) return
         context.contentResolver.notifyChange(contentUri, null)
-        bus.post(GetStatusesTaskEvent(contentUri, false, AsyncTwitterWrapper.getException(result)))
+        val exception = AsyncTwitterWrapper.getException(result)
+        bus.post(GetStatusesTaskEvent(contentUri, false, exception))
         handler?.invoke(true)
     }
 
@@ -174,7 +183,7 @@ abstract class GetStatusesTask(
                             statuses: List<Status>,
                             sinceId: String?, maxId: String?,
                             sinceSortId: Long, maxSortId: Long,
-                            loadItemLimit: Int, notify: Boolean) {
+                            loadItemLimit: Int, notify: Boolean): Int {
         val uri = contentUri
         val writeUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, notify)
         val resolver = context.contentResolver
@@ -237,16 +246,33 @@ abstract class GetStatusesTask(
 
         // Remove gap flag
         if (maxId != null && sinceId == null) {
-            val noGapValues = ContentValues()
-            noGapValues.put(Statuses.IS_GAP, false)
-            val noGapWhere = Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_KEY),
-                    Expression.equalsArgs(Statuses.STATUS_ID)).sql
-            val noGapWhereArgs = arrayOf(accountKey.toString(), maxId)
-            resolver.update(writeUri, noGapValues, noGapWhere, noGapWhereArgs)
+            if (statuses.isNotEmpty()) {
+                // Only remove when actual result returned, otherwise it seems that gap is too old to load
+                val noGapValues = ContentValues()
+                noGapValues.put(Statuses.IS_GAP, false)
+                val noGapWhere = Expression.and(Expression.equalsArgs(Statuses.ACCOUNT_KEY),
+                        Expression.equalsArgs(Statuses.STATUS_ID)).sql
+                val noGapWhereArgs = arrayOf(accountKey.toString(), maxId)
+                resolver.update(writeUri, noGapValues, noGapWhere, noGapWhereArgs)
+            } else {
+                return ERROR_LOAD_GAP
+            }
+        }
+        return 0
+    }
+
+    class GetTimelineException(val code: Int) : Exception() {
+        fun getToastMessage(context: Context): String {
+            when (code) {
+                ERROR_LOAD_GAP -> return context.getString(R.string.message_toast_unable_to_load_more_statuses)
+            }
+            return context.getString(R.string.error_unknown_error)
         }
     }
 
     companion object {
+
+        const val ERROR_LOAD_GAP = 1
 
         fun getPositionKey(timestamp: Long, sortId: Long, lastSortId: Long, sortDiff: Long,
                            position: Int, count: Int): Long {

@@ -25,11 +25,8 @@ package de.vanita5.twittnuker.view.holder
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.ProgressBar
-import android.widget.TextView
 import kotlinx.android.synthetic.main.card_item_gap.view.*
 import de.vanita5.twittnuker.R
-
 import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
 
 class GapViewHolder(
@@ -37,13 +34,11 @@ class GapViewHolder(
         itemView: View
 ) : RecyclerView.ViewHolder(itemView), OnClickListener {
 
-    private val gapText: TextView
-    private val gapProgress: ProgressBar
+    private val gapText = itemView.gapText
+    private val gapProgress = itemView.gapProgress
 
     init {
         itemView.setOnClickListener(this)
-        gapText = itemView.gapText
-        gapProgress = itemView.gapProgress
     }
 
     override fun onClick(v: View) {
@@ -52,8 +47,14 @@ class GapViewHolder(
     }
 
     fun display(showProgress: Boolean) {
-        gapText.visibility = if (showProgress) View.GONE else View.VISIBLE
-        gapProgress.visibility = if (showProgress) View.VISIBLE else View.GONE
+        if (showProgress) {
+            gapText.visibility = View.INVISIBLE
+            gapProgress.visibility = View.VISIBLE
+            gapProgress.spin()
+        } else {
+            gapText.visibility = View.VISIBLE
+            gapProgress.visibility = View.INVISIBLE
+        }
     }
 
     companion object {

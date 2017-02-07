@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util
 import android.accounts.AccountManager
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.support.annotation.DrawableRes
@@ -42,6 +43,7 @@ import android.view.MenuItem
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.setItemChecked
 import org.mariotaku.ktextension.setMenuItemIcon
+import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
@@ -59,6 +61,7 @@ import de.vanita5.twittnuker.menu.SupportStatusShareProvider
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo
 
 object MenuUtils {
@@ -300,6 +303,14 @@ object MenuUtils {
                 val uri = LinkCreator.getStatusWebLink(status)
                 ClipboardUtils.setText(context, uri.toString())
                 Utils.showOkMessage(context, R.string.message_toast_link_copied_to_clipboard, false)
+            }
+            R.id.make_gap -> {
+                val resolver = context.contentResolver
+                val values = ContentValues()
+                values.put(Statuses.IS_GAP, 1)
+                val where = Expression.equalsArgs(Statuses._ID).sql
+                val whereArgs = arrayOf(status._id.toString())
+                resolver.update(Statuses.CONTENT_URI, values, where, whereArgs)
             }
             else -> {
                 if (item.intent != null) {

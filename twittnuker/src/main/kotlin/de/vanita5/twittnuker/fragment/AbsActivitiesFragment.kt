@@ -275,7 +275,7 @@ abstract class AbsActivitiesFragment protected constructor() :
         if (loader is IExtendedLoader) {
             loader.fromUser = false
         }
-        onLoadingFinished()
+        onContentLoaded(loader, data)
     }
 
     override fun onLoaderReset(loader: Loader<List<ParcelableActivity>>) {
@@ -429,7 +429,7 @@ abstract class AbsActivitiesFragment protected constructor() :
     protected abstract fun onCreateActivitiesLoader(context: Context, args: Bundle,
                                                     fromUser: Boolean): Loader<List<ParcelableActivity>>
 
-    protected abstract fun onLoadingFinished()
+    protected abstract fun onContentLoaded(loader: Loader<List<ParcelableActivity>>, data: List<ParcelableActivity>?)
 
     protected fun saveReadPosition(position: Int) {
         if (host == null) return
