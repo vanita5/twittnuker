@@ -600,7 +600,7 @@
     <string name="preference_summary_database_item_limit">Anzahl der Objekte, die maximal pro Account gespeichert werden. Ein niedrigerer Wert spart Speicherplatz und erhöht die Ladegeschwindigkeit.</string>
     <string name="preference_title_accounts">Accounts</string>
     <string name="preference_title_advanced">Erweitert</string>
-    <string name="preference_title_chrome_custom_tab">Chrome Tab</string>
+    <string name="preference_title_chrome_custom_tab">In-App Browser</string>
     <string name="preference_title_database_item_limit">Maximale Größe der Datenbank</string>
     <string name="preference_title_filter_manage_subscriptions">Bearbeiten</string>
     <string name="preference_title_filter_subscriptions">Filter Abonnements</string>
