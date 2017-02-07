@@ -33,6 +33,7 @@ import de.vanita5.twittnuker.model.FiltersSubscriptionTableInfo;
 import de.vanita5.twittnuker.model.ParcelableActivityTableInfo;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageTableInfo;
 import de.vanita5.twittnuker.model.ParcelableStatusTableInfo;
+import de.vanita5.twittnuker.model.ParcelableTrendTableInfo;
 import de.vanita5.twittnuker.model.ParcelableUserTableInfo;
 
 @SuppressWarnings("unused")
@@ -193,9 +194,10 @@ public interface TwidereDataStore {
 
         String TIMESTAMP = "timestamp";
         String WOEID = "woeid";
+        String TREND_ORDER = "trend_order";
 
-        String[] COLUMNS = {_ID, ACCOUNT_KEY, WOEID, NAME, TIMESTAMP};
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT, TYPE_INT, TYPE_TEXT, TYPE_INT};
+        String[] COLUMNS = ParcelableTrendTableInfo.COLUMNS;
+        String[] TYPES = ParcelableTrendTableInfo.TYPES;
 
         interface Local extends CachedTrends {
             String TABLE_NAME = "local_trends";

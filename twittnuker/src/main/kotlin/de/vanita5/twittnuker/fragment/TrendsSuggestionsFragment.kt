@@ -32,12 +32,14 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
 import com.squareup.otto.Subscribe
+import de.vanita5.twittnuker.R
 import kotlinx.android.synthetic.main.fragment_content_listview.*
 import org.mariotaku.sqliteqb.library.*
 import de.vanita5.twittnuker.adapter.TrendsAdapter
-import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_WOEID
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_EXTRAS
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.TrendsRefreshedEvent
+import de.vanita5.twittnuker.model.tab.extra.TrendsTabExtras
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends
 import de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri
 import de.vanita5.twittnuker.util.IntentUtils.openTweetSearch
@@ -47,7 +49,12 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
 
     private val accountKey: UserKey? get() = Utils.getAccountKeys(context, arguments)?.firstOrNull()
             ?: Utils.getDefaultAccountKey(context)
-    private val woeId: Int get() = arguments.getInt(EXTRA_WOEID, 1)
+    private val tabExtras: TrendsTabExtras? get() = arguments.getParcelable(EXTRA_EXTRAS)
+
+    private val woeId: Int get() {
+        val id = tabExtras?.woeId ?: return 1
+        return if (id > 0) id else 1
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -72,7 +79,7 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
                 Expression.equalsArgs(CachedTrends.WOEID),
                 Expression.equals(Columns.Column(CachedTrends.TIMESTAMP), timestampQuery)).sql
         val whereArgs = arrayOf(accountKey?.toString() ?: "", woeId.toString())
-        return CursorLoader(activity, uri, CachedTrends.COLUMNS, where, whereArgs, CachedTrends.NAME)
+        return CursorLoader(activity, uri, CachedTrends.COLUMNS, where, whereArgs, CachedTrends.TREND_ORDER)
     }
 
     override fun onItemClick(view: AdapterView<*>, child: View, position: Int, id: Long) {
@@ -94,7 +101,11 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
 
     override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor) {
         adapter.swapCursor(cursor)
-        showContent()
+        if (adapter.isEmpty) {
+            showEmpty(R.drawable.ic_info_refresh, getString(R.string.swipe_down_to_refresh))
+        } else {
+            showContent()
+        }
     }
 
     override fun onRefresh() {

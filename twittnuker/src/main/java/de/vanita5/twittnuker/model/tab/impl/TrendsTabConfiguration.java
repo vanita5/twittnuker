@@ -15,7 +15,6 @@ import de.vanita5.twittnuker.model.tab.conf.TrendsLocationExtraConfiguration;
 import de.vanita5.twittnuker.model.tab.extra.TrendsTabExtras;
 
 import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_PLACE;
-import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_WOEID;
 
 public class TrendsTabConfiguration extends TabConfiguration {
     @NonNull
@@ -40,7 +39,7 @@ public class TrendsTabConfiguration extends TabConfiguration {
     @Override
     public ExtraConfiguration[] getExtraConfigurations(Context context) {
         return new ExtraConfiguration[]{
-                new TrendsLocationExtraConfiguration(EXTRA_WOEID).title(R.string.trends_location).mutable(true),
+                new TrendsLocationExtraConfiguration(EXTRA_PLACE).title(R.string.trends_location).mutable(true),
         };
     }
 
@@ -56,8 +55,7 @@ public class TrendsTabConfiguration extends TabConfiguration {
                     extras.setWoeId(place.getWoeId());
                     extras.setPlaceName(place.getName());
                 } else {
-                    extras.setWoeId(0);
-                    extras.setPlaceName(null);
+                    return false;
                 }
                 break;
             }
