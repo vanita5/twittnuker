@@ -35,7 +35,7 @@ import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_listview.*
 import org.mariotaku.sqliteqb.library.*
 import de.vanita5.twittnuker.adapter.TrendsAdapter
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_LOCAL_TRENDS_WOEID
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_WOEID
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.TrendsRefreshedEvent
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends
@@ -100,7 +100,7 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
 
     override fun onRefresh() {
         if (refreshing) return
-        twitterWrapper.getLocalTrendsAsync(accountId, preferences.getInt(KEY_LOCAL_TRENDS_WOEID, 1))
+        twitterWrapper.getLocalTrendsAsync(accountId, arguments.getInt(EXTRA_WOEID, 1))
     }
 
     override var refreshing: Boolean

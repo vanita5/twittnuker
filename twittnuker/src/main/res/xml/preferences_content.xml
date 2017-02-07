@@ -61,11 +61,6 @@
             android:summary="@string/load_more_from_top_summary"
             android:title="@string/read_from_bottom"/>
 
-        <de.vanita5.twittnuker.preference.TrendsLocationPreference
-            android:key="local_trends_woeid"
-            android:summary="@string/trends_location_summary"
-            android:title="@string/trends_location"/>
-
         <de.vanita5.twittnuker.preference.TranslationDestinationPreference
             android:key="translation_destination"
             android:title="@string/translation_destination"/>

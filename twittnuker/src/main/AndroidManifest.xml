@@ -21,9 +21,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest
+    package="de.vanita5.twittnuker"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="de.vanita5.twittnuker"
     android:installLocation="internalOnly">
 
     <uses-sdk tools:overrideLibrary="android.support.customtabs,net.ypresto.androidtranscoder"/>
@@ -79,6 +79,7 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
 
+    <!-- Donations -->
     <uses-permission android:name="com.android.vending.BILLING"/>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 
@@ -393,6 +394,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activity.TrendsLocationSelectorActivity"
+            android:label="@string/trends_location"
+            android:theme="@style/Theme.Twidere.NoDisplay"/>
+        <activity
             android:name=".activity.DataExportActivity"
             android:label="@string/export_settings"
             android:theme="@style/Theme.Twidere.NoDisplay"/>
@@ -551,18 +556,6 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/account_authenticator"/>
         </service>
-        <service
-            android:name=".service.AccountSyncService"
-            android:exported="true"
-            android:process=":sync"
-            tools:ignore="ExportedService">
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter"/>
-            </intent-filter>
-            <meta-data
-                android:name="android.content.SyncAdapter"
-                android:resource="@xml/sync_adapter"/>
-        </service>
 
         <service
             android:name=".service.TwittnukerGcmListenerService"
@@ -581,6 +574,18 @@
         <service
             android:name=".service.RegistrationIntentService"
             android:exported="false"/>
+        <service
+            android:name=".service.AccountSyncService"
+            android:exported="true"
+            android:process=":sync"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/sync_adapter"/>
+        </service>
 
         <provider
             android:name=".provider.TwidereDataProvider"

@@ -100,6 +100,7 @@ import de.vanita5.twittnuker.view.CheckableLinearLayout
 import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.ShapedImageView
 import de.vanita5.twittnuker.view.helper.SimpleItemTouchHelperCallback
+import org.mariotaku.ktextension.getTypedArray
 import xyz.klinker.giphy.Giphy
 import java.io.*
 import java.lang.ref.WeakReference
@@ -531,7 +532,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
         if (savedInstanceState != null) {
             // Restore from previous saved state
-            val selected = savedInstanceState.getParcelableArray(EXTRA_ACCOUNT_KEYS).toTypedArray(UserKey.CREATOR)
+            val selected = savedInstanceState.getTypedArray(EXTRA_ACCOUNT_KEYS, UserKey.CREATOR)
             accountsAdapter.setSelectedAccountIds(*selected)
             possiblySensitive = savedInstanceState.getBoolean(EXTRA_IS_POSSIBLY_SENSITIVE)
             val mediaList = savedInstanceState.getParcelableArrayList<ParcelableMediaUpdate>(EXTRA_MEDIA)
