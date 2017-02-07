@@ -29,8 +29,8 @@ import android.view.View
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 
-open class ContentScrollHandler(
-        private val contentListSupport: ContentScrollHandler.ContentListSupport,
+open class ContentScrollHandler<A>(
+        private val contentListSupport: ContentScrollHandler.ContentListSupport<A>,
         private val viewCallback: ContentScrollHandler.ViewCallback?
 ) {
     val touchListener: View.OnTouchListener
@@ -107,7 +107,7 @@ open class ContentScrollHandler(
         }
         scrollSum += dy
         if (Math.abs(scrollSum) > touchSlop) {
-            //no reverse
+            //KEEP no reverse
             contentListSupport.setControlVisible(dy < 0)
             scrollSum = 0
         }
@@ -124,7 +124,7 @@ open class ContentScrollHandler(
         scrollDirection = 0
     }
 
-    internal class TouchListener(private val listener: ContentScrollHandler) : View.OnTouchListener {
+    internal class TouchListener<A>(private val listener: ContentScrollHandler<A>) : View.OnTouchListener {
         private var lastY: Float = 0f
 
         override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -152,9 +152,9 @@ open class ContentScrollHandler(
         fun post(runnable: Runnable)
     }
 
-    interface ContentListSupport {
+    interface ContentListSupport<A> {
 
-        val adapter: Any?
+        val adapter: A?
 
         val refreshing: Boolean
 

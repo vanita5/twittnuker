@@ -115,14 +115,15 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder.StatusClickList
 import java.util.*
 
 class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<ParcelableStatus>>,
-        OnMediaClickListener, StatusClickListener, KeyboardShortcutCallback, ContentListSupport {
+        OnMediaClickListener, StatusClickListener, KeyboardShortcutCallback,
+        ContentListSupport<StatusFragment.StatusAdapter> {
     private var mItemDecoration: DividerItemDecoration? = null
 
     override lateinit var adapter: StatusAdapter
 
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var navigationHelper: RecyclerViewNavigationHelper
-    private lateinit var scrollListener: RecyclerViewScrollHandler
+    private lateinit var scrollListener: RecyclerViewScrollHandler<StatusFragment.StatusAdapter>
 
     private var loadTranslationTask: LoadTranslationTask? = null
     // Data fields

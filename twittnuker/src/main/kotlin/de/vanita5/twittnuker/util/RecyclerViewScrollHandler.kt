@@ -28,14 +28,10 @@ import android.view.View
 import de.vanita5.twittnuker.util.ContentScrollHandler.ContentListSupport
 import de.vanita5.twittnuker.util.ContentScrollHandler.ViewCallback
 
-class RecyclerViewScrollHandler(contentListSupport: ContentListSupport, viewCallback: ViewCallback?) : RecyclerView.OnScrollListener() {
+class RecyclerViewScrollHandler<A>(contentListSupport: ContentListSupport<A>, viewCallback: ViewCallback?) : RecyclerView.OnScrollListener() {
 
-    internal val scrollHandler: ContentScrollHandler
+    internal val scrollHandler: ContentScrollHandler<A> = ContentScrollHandler(contentListSupport, viewCallback)
     private var oldState = RecyclerView.SCROLL_STATE_IDLE
-
-    init {
-        scrollHandler = ContentScrollHandler(contentListSupport, viewCallback)
-    }
 
     var touchSlop: Int
         get() = scrollHandler.touchSlop
