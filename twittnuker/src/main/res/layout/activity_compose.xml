@@ -127,7 +127,6 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:tag="mvs_tint|accent_color"
                         tools:max="3"
                         tools:position="2"/>
 
@@ -199,7 +198,7 @@
                     app:sivBackgroundColor="?android:colorBackground"
                     app:sivBorder="true"
                     app:sivBorderWidth="@dimen/line_width_compose_account_profile_image"
-                    tools:src="@mipmap/ic_launcher"/>
+                    tools:src="@drawable/ic_account_logo_twitter"/>
             </de.vanita5.twittnuker.view.SquareFrameLayout>
 
             <de.vanita5.twittnuker.view.BadgeView

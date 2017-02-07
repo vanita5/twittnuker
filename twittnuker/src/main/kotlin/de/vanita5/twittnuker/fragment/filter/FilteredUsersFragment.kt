@@ -42,6 +42,7 @@ class FilteredUsersFragment : BaseFiltersFragment() {
     override val contentUri: Uri = Filters.Users.CONTENT_URI
     override val contentColumns: Array<String> = Filters.Users.COLUMNS
     override val sortOrder: String? = "${Filters.Users.SOURCE} >= 0"
+    override val supportsEdit: Boolean = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -72,7 +73,7 @@ class FilteredUsersFragment : BaseFiltersFragment() {
                 if (resultCode != FragmentActivity.RESULT_OK || data == null) return
                 val intent = Intent(INTENT_ACTION_SELECT_USER)
                 intent.setClass(context, UserSelectorActivity::class.java)
-                intent.putExtra(EXTRA_ACCOUNT_KEY, data!!.getParcelableExtra<UserKey>(EXTRA_ACCOUNT_KEY))
+                intent.putExtra(EXTRA_ACCOUNT_KEY, data.getParcelableExtra<UserKey>(EXTRA_ACCOUNT_KEY))
                 startActivityForResult(intent, REQUEST_SELECT_USER)
             }
             REQUEST_PURCHASE_EXTRA_FEATURES -> {
@@ -125,6 +126,10 @@ class FilteredUsersFragment : BaseFiltersFragment() {
 
     override fun onCreateAdapter(context: Context): SimpleCursorAdapter {
         return FilterUsersListAdapter(context)
+    }
+
+    override fun addOrEditItem(id: Long, value: String?) {
+        // No-op
     }
 
     class FilterUsersListAdapter(

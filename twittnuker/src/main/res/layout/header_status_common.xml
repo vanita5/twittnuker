@@ -45,7 +45,6 @@
         android:maxLines="1"
         android:minHeight="@dimen/element_size_small"
         android:padding="@dimen/element_spacing_normal"
-        android:tag="font_family|user"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="?android:textColorSecondary"
         tools:text="Retweeted by Hasi" />
@@ -108,7 +107,6 @@
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:tag="font_family|user"
                 app:nv_primaryTextColor="?android:textColorPrimary"
                 app:nv_secondaryTextColor="?android:textColorSecondary"
                 app:nv_twoLine="false"/>
@@ -119,7 +117,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/element_spacing_small"
                 android:gravity="center_vertical"
-                android:tag="font_family|user"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 tools:text="Jan 8 2015 13:37, via Twittnuker"/>
 
@@ -164,7 +161,6 @@
         android:layout_marginTop="@dimen/element_spacing_small"
         android:paddingLeft="@dimen/element_spacing_normal"
         android:paddingRight="@dimen/element_spacing_normal"
-        android:tag="font_family|user"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="?android:textColorPrimary"
         android:visibility="visible"
@@ -190,7 +186,6 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:padding="@dimen/element_spacing_normal"
-            android:tag="font_family|user"
             android:text="@string/unknown_language"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:textColorSecondary" />
@@ -200,7 +195,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/element_spacing_normal"
-            android:tag="font_family|user"
             android:textColor="?android:textColorPrimary"
             android:visibility="gone"
             tools:text="@string/sample_status_text"/>
@@ -246,7 +240,6 @@
                 android:drawableLeft="@drawable/ic_action_gallery"
                 android:drawableStart="@drawable/ic_action_gallery"
                 android:gravity="center_vertical"
-                android:tag="font_family|user"
                 android:text="@string/load_media"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textStyle="bold"/>
@@ -279,7 +272,6 @@
             android:orientation="horizontal"
             android:paddingLeft="@dimen/element_spacing_normal"
             android:paddingRight="@dimen/element_spacing_normal"
-            android:tag="font_family|user"
             android:visibility="gone"
             app:nv_primaryTextColor="?android:textColorPrimary"
             app:nv_secondaryTextColor="?android:textColorSecondary"
@@ -293,7 +285,6 @@
             android:layout_margin="@dimen/element_spacing_normal"
             android:ellipsize="end"
             android:maxLines="4"
-            android:tag="font_family|user"
             android:textAppearance="?android:textAppearanceMedium"
             android:textColor="?android:textColorPrimary"
             android:visibility="gone"
@@ -359,7 +350,6 @@
         android:gravity="center_vertical"
         android:maxLines="1"
         android:padding="@dimen/element_spacing_normal"
-        android:tag="font_family|user"
         android:text="@string/action_view_map"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="?android:textColorSecondary" />
