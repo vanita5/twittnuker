@@ -54,10 +54,7 @@ import de.vanita5.twittnuker.provider.CacheProvider
 import de.vanita5.twittnuker.provider.ShareProvider
 import de.vanita5.twittnuker.task.SaveFileTask
 import de.vanita5.twittnuker.task.SaveMediaToGalleryTask
-import de.vanita5.twittnuker.util.AsyncTaskUtils
-import de.vanita5.twittnuker.util.IntentUtils
-import de.vanita5.twittnuker.util.MenuUtils
-import de.vanita5.twittnuker.util.PermissionUtils
+import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.support.WindowSupport
 import de.vanita5.twittnuker.view.viewer.MediaSwipeCloseContainer
@@ -78,7 +75,6 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
     private var hideOffsetNotSupported = false
     private lateinit var mediaViewerHelper: IMediaViewerActivity.Helper
     private lateinit var controlBarShowHideHelper: ControlBarShowHideHelper
-    private var tempLocation = IntArray(2)
 
     private val status: ParcelableStatus?
         get() = intent.getParcelableExtra<ParcelableStatus>(EXTRA_STATUS)
@@ -103,6 +99,9 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
         swipeContainer.backgroundAlpha = 1f
         WindowSupport.setStatusBarColor(window, Color.TRANSPARENT)
         activityLayout.setStatusBarColor(overrideTheme.colorToolbar)
+        activityLayout.setWindowInsetsListener { l, t, r, b ->
+            activityLayout.setStatusBarHeight(t - ThemeUtils.getActionBarHeight(this))
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -330,7 +329,9 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
 
 
     override val controlBarHeight: Int
-        get() = supportActionBar?.height ?: 0
+        get() {
+            return supportActionBar?.height ?: 0
+        }
 
     override var controlBarOffset: Float
         get() {
