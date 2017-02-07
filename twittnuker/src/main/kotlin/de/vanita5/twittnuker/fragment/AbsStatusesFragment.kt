@@ -37,6 +37,7 @@ import android.view.*
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.coerceInOr
 import org.mariotaku.ktextension.isNullOrEmpty
 import org.mariotaku.ktextension.rangeOfSize
 import de.vanita5.twittnuker.R
@@ -66,7 +67,6 @@ import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.GapViewHolder
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
-import org.mariotaku.ktextension.coerceInOr
 
 abstract class AbsStatusesFragment protected constructor() :
         AbsContentListRecyclerViewFragment<ParcelableStatusesAdapter>(),
@@ -276,7 +276,7 @@ abstract class AbsStatusesFragment protected constructor() :
             val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
             wasAtTop = firstVisibleItemPosition == 0
             val statusRange = rangeOfSize(adapter.statusStartIndex, adapter.statusCount - 1)
-            val lastReadPosition = if (readFromBottom) {
+            val lastReadPosition = if (loadMore || readFromBottom) {
                 lastVisibleItemPosition
             } else {
                 firstVisibleItemPosition
@@ -314,6 +314,10 @@ abstract class AbsStatusesFragment protected constructor() :
             }
         } else {
             onHasMoreDataChanged(false)
+        }
+        if (loadMore) {
+            restorePosition += 1
+            restorePosition.coerceInOr(0 until layoutManager.itemCount, -1)
         }
         if (restorePosition != -1 && adapter.isStatus(restorePosition) && (loadMore || !wasAtTop
                 || readFromBottom || (rememberPosition && firstLoad))) {
