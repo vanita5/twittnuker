@@ -371,8 +371,9 @@
         <activity
             android:name=".activity.UserSelectorActivity"
             android:icon="@drawable/ic_action_twittnuker"
-            android:label="@string/select_user_list"
-            android:theme="@style/Theme.Twidere.Dialog">
+            android:label="@string/select_user"
+            android:theme="@style/Theme.Twidere.Dialog"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.SELECT_USER"/>
 
@@ -382,8 +383,9 @@
         <activity
             android:name=".activity.UserListSelectorActivity"
             android:icon="@drawable/ic_action_twittnuker"
-            android:label="@string/select_user"
-            android:theme="@style/Theme.Twidere.Dialog">
+            android:label="@string/select_user_list"
+            android:theme="@style/Theme.Twidere.Dialog"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="de.vanita5.twittnuker.SELECT_USER_LIST"/>
 

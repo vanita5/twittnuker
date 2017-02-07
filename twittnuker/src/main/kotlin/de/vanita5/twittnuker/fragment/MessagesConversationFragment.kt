@@ -56,7 +56,6 @@ import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_messages_conversation.*
 import kotlinx.android.synthetic.main.layout_actionbar_message_user_picker.view.*
 import me.uucky.colorpicker.internal.EffectViewHelper
-import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
@@ -70,12 +69,14 @@ import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.ACTION_NAVIGATION_BACK
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
-import de.vanita5.twittnuker.loader.UserSearchLoader
-import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.loader.CacheUserSearchLoader
+import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.ParcelableDirectMessage
+import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.TaskStateChangedEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore
-import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Conversation
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries
@@ -102,8 +103,7 @@ class MessagesConversationFragment : BaseFragment(), LoaderCallbacks<Cursor?>, O
             val query = args.getString(EXTRA_QUERY)
             val fromCache = args.getBoolean(EXTRA_FROM_CACHE)
             val fromUser = args.getBoolean(EXTRA_FROM_USER, false)
-            return CacheUserSearchLoader(this@MessagesConversationFragment, accountKey, query,
-                    fromCache, fromUser)
+            return CacheUserSearchLoader(context, accountKey, query, fromCache, fromUser)
         }
 
         override fun onLoadFinished(loader: Loader<List<ParcelableUser>>, data: List<ParcelableUser>?) {
@@ -709,47 +709,6 @@ class MessagesConversationFragment : BaseFragment(), LoaderCallbacks<Cursor?>, O
     //        }.executeTask();
     //    }
 
-    class CacheUserSearchLoader(
-            fragment: MessagesConversationFragment,
-            accountKey: UserKey,
-            query: String,
-            private val fromCache: Boolean,
-            fromUser: Boolean
-    ) : UserSearchLoader(fragment.context, accountKey, query, 0, null, fromUser) {
-        private val userColorNameManager: UserColorNameManager
-
-        init {
-            userColorNameManager = fragment.userColorNameManager
-        }
-
-        override fun loadInBackground(): List<ParcelableUser> {
-            val query = query
-            if (TextUtils.isEmpty(query)) return emptyList()
-            if (fromCache) {
-                val cachedList = ArrayList<ParcelableUser>()
-                val queryEscaped = query.replace("_", "^_")
-                val selection = Expression.or(Expression.likeRaw(Column(CachedUsers.SCREEN_NAME), "?||'%'", "^"),
-                            Expression.likeRaw(Column(CachedUsers.NAME), "?||'%'", "^"))
-                val selectionArgs = arrayOf(queryEscaped, queryEscaped)
-                val order = arrayOf(CachedUsers.LAST_SEEN, CachedUsers.SCREEN_NAME, CachedUsers.NAME)
-                val ascending = booleanArrayOf(false, true, true)
-                val orderBy = OrderBy(order, ascending)
-                val c = context.contentResolver.query(CachedUsers.CONTENT_URI,
-                        CachedUsers.BASIC_COLUMNS, selection?.sql,
-                        selectionArgs, orderBy.sql)!!
-                val i = ParcelableUserCursorIndices(c)
-                c.moveToFirst()
-                while (!c.isAfterLast) {
-                    cachedList.add(i.newObject(c))
-                    c.moveToNext()
-                }
-                c.close()
-                return cachedList
-            }
-            return super.loadInBackground()
-        }
-    }
-
     class DeleteConversationConfirmDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             val builder = AlertDialog.Builder(activity)
@@ -862,6 +821,6 @@ class MessagesConversationFragment : BaseFragment(), LoaderCallbacks<Cursor?>, O
 
         // Constants
         private val LOADER_ID_SEARCH_USERS = 1
-        private val EXTRA_FROM_CACHE = "from_cache"
+
     }
 }

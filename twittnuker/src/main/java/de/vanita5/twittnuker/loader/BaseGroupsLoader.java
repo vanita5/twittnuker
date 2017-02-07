@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.model.ParcelableGroup;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.ParcelableGroupUtils;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
-import de.vanita5.twittnuker.util.NoDuplicatesArrayList;
+import de.vanita5.twittnuker.util.collection.NoDuplicatesArrayList;
 
 import java.util.Collections;
 import java.util.List;

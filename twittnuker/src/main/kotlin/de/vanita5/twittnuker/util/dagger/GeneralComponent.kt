@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.adapter.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.filter.FilteredUsersFragment
+import de.vanita5.twittnuker.loader.CacheUserSearchLoader
 import de.vanita5.twittnuker.loader.MicroBlogAPIStatusesLoader
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
@@ -153,4 +154,6 @@ interface GeneralComponent {
     fun inject(provider: UrlFiltersSubscriptionProvider)
 
     fun inject(preference: PremiumEntryPreference)
+
+    fun inject(loader: CacheUserSearchLoader)
 }

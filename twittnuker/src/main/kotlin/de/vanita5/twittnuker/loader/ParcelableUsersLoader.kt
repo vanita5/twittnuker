@@ -25,17 +25,16 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import android.support.v4.content.AsyncTaskLoader
 import android.text.TextUtils
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.util.NoDuplicatesArrayList
+import de.vanita5.twittnuker.util.collection.NoDuplicatesArrayList
 import java.util.*
 
 abstract class ParcelableUsersLoader(
         context: Context,
         data: List<ParcelableUser>?,
         override var fromUser: Boolean
-) : AsyncTaskLoader<List<ParcelableUser>>(context), IExtendedLoader, Constants {
+) : AsyncTaskLoader<List<ParcelableUser>>(context), IExtendedLoader {
 
     protected val data: MutableList<ParcelableUser> = Collections.synchronizedList(NoDuplicatesArrayList<ParcelableUser>())
 

@@ -697,6 +697,7 @@
     <string name="scrapyard">Schrottplatz</string>
     <string name="search">Suchen</string>
     <string name="search_hint">Tweets oder Benutzer suchen</string>
+    <string name="search_hint_users">Benutzer suchen</string>
     <string name="search_statuses">Tweets suchen</string>
     <string name="search_type_statuses">Tweets</string>
     <string name="search_type_users">Benutzer</string>

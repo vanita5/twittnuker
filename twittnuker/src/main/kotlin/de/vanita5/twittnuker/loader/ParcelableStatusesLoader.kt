@@ -29,7 +29,7 @@ import android.text.TextUtils
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.util.NoDuplicatesArrayList
+import de.vanita5.twittnuker.util.collection.NoDuplicatesArrayList
 
 abstract class ParcelableStatusesLoader(
         context: Context,

@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.util.collection.NoDuplicatesArrayList;
 
 import java.util.ArrayList;
 import java.util.List;

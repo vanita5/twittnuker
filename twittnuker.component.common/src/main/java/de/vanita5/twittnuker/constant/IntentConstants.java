@@ -208,8 +208,8 @@ public interface IntentConstants {
     String EXTRA_SIMPLE_LAYOUT = "simple_layout";
     String EXTRA_API_CONFIG = "api_config";
     String EXTRA_COUNT = "count";
-
     String EXTRA_REQUEST_CODE = "request_code";
+    String EXTRA_FROM_CACHE = "from_cache";
 
     /* Twittnuker */
     String GCM_REGISTRATION_COMPLETE = INTENT_PACKAGE_PREFIX + "GCM_REGISTRATION_COMPLETE";
