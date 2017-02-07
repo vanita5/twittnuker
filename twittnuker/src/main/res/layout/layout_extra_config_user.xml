@@ -32,7 +32,7 @@
 
     <include layout="@layout/list_item_simple_user"/>
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/selectUserHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

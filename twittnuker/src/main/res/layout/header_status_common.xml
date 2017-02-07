@@ -33,7 +33,7 @@
     android:splitMotionEvents="false"
     tools:ignore="Overdraw">
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/retweetedBy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -190,7 +190,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:textColorSecondary" />
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@+id/translateResult"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -311,7 +311,7 @@
                 android:src="@drawable/ic_action_gallery"
                 tools:tint="?android:textColorSecondary" />
 
-            <TextView
+            <de.vanita5.twittnuker.view.FixedTextView
                 android:id="@+id/quotedMediaLabelText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

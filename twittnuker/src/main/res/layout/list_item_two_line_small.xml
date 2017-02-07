@@ -51,7 +51,7 @@
         android:paddingRight="0dp"
         android:paddingStart="@dimen/element_spacing_small">
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@android:id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
             android:textColor="?android:textColorPrimary"
             tools:text="Title"/>
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@android:id/text2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

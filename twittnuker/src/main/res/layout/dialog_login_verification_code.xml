@@ -27,14 +27,14 @@
               android:orientation="vertical"
               android:padding="@dimen/element_spacing_normal">
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/verification_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/element_spacing_normal"
         android:text="@string/login_verification_pin_hint"/>
 
-    <EditText
+    <de.vanita5.twittnuker.view.FixedEditText
         android:id="@+id/edit_verification_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,5 +43,5 @@
         android:typeface="monospace">
 
         <requestFocus/>
-    </EditText>
+    </de.vanita5.twittnuker.view.FixedEditText>
 </LinearLayout>

@@ -132,8 +132,8 @@ class UserViewHolder(
         } else {
             profileTypeView.setImageDrawable(null)
         }
-        nameView.setName(user.name)
-        nameView.setScreenName("@${user.screen_name}")
+        nameView.name = user.name
+        nameView.screenName = "@${user.screen_name}"
         nameView.updateText(adapter.bidiFormatter)
 
         if (adapter.profileImageEnabled) {
@@ -241,10 +241,10 @@ class UserViewHolder(
         this.requestClickListener = requestClickListener
         this.friendshipClickListener = friendshipClickListener
         if (requestClickListener != null || friendshipClickListener != null) {
-            nameView.setTwoLine(true)
+            nameView.twoLine = true
             actionsProgressContainer.visibility = View.VISIBLE
         } else {
-            nameView.setTwoLine(false)
+            nameView.twoLine = false
             actionsProgressContainer.visibility = View.GONE
         }
         nameView.updateText()

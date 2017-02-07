@@ -59,7 +59,7 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@android:id/text1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             android:textColor="?android:textColorPrimary"
             android:textStyle="bold" />
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@android:id/text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

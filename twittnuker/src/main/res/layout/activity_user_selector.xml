@@ -39,7 +39,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/element_spacing_normal">
 
-        <android.support.v7.widget.AppCompatEditText
+        <de.vanita5.twittnuker.view.FixedEditText
             android:id="@+id/editScreenName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

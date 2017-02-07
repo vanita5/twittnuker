@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <de.vanita5.twittnuker.view.FixedTextView
                     android:id="@+id/replyLabel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
                         app:iabColor="?android:textColorSecondary"
                         tools:activated="true"/>
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.FixedTextView
                         android:id="@+id/locationText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

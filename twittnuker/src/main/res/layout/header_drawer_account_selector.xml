@@ -136,7 +136,7 @@
                     android:focusable="false"
                     android:orientation="vertical">
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.FixedTextView
                         android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -148,7 +148,7 @@
                         android:textStyle="bold"
                         tools:text="Name"/>
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.FixedTextView
                         android:id="@+id/screenName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -197,7 +197,7 @@
         android:clickable="true"
         tools:visibility="gone">
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

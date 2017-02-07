@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:text="@string/exclude_this_host"/>
 
-    <EditText
+    <de.vanita5.twittnuker.view.FixedEditText
         android:id="@+id/host"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         android:inputType="text|textUri"
         android:maxLines="1"/>
 
-    <EditText
+    <de.vanita5.twittnuker.view.FixedEditText
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

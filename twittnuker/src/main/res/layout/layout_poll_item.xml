@@ -31,7 +31,7 @@
     android:gravity="center_vertical"
     android:padding="@dimen/element_spacing_small">
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/choice_percent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
         android:duplicateParentState="false"
         android:focusable="false"/>
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/choice_label"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

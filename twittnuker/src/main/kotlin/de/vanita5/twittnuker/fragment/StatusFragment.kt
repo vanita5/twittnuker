@@ -799,9 +799,9 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     itemView.quotedName.visibility = View.VISIBLE
                     itemView.quotedText.visibility = View.VISIBLE
 
-                    itemView.quotedName.setName(
-                            status.quoted_user_name)
-                    itemView.quotedName.setScreenName(String.format("@%s", status.quoted_user_screen_name))
+                    itemView.quotedName.name =
+                            status.quoted_user_name
+                    itemView.quotedName.screenName = "@${status.quoted_user_screen_name}"
                     itemView.quotedName.updateText(formatter)
 
 
@@ -878,8 +878,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 timestamp = status.timestamp
             }
 
-            itemView.name.setName(status.user_name)
-            itemView.name.setScreenName(String.format("@%s", status.user_screen_name))
+            itemView.name.name = status.user_name
+            itemView.name.screenName = String.format("@%s", status.user_screen_name)
             itemView.name.updateText(formatter)
 
             loader.displayProfileImage(itemView.profileImage, status)
@@ -1138,8 +1138,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             itemView.countsUsersHeightHolder.count.textSize = textSize * 1.25f
             itemView.countsUsersHeightHolder.label.textSize = textSize * 0.85f
 
-            itemView.name.setNameFirst(adapter.nameFirst)
-            itemView.quotedName.setNameFirst(adapter.nameFirst)
+            itemView.name.nameFirst = adapter.nameFirst
+            itemView.quotedName.nameFirst = adapter.nameFirst
 
             itemView.mediaPreview.setStyle(adapter.mediaPreviewStyle)
             itemView.quotedMediaPreview.setStyle(adapter.mediaPreviewStyle)

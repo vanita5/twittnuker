@@ -23,7 +23,7 @@
 
 
 <!-- Layout of a header item in PreferenceActivity. -->
-<TextView
+<de.vanita5.twittnuker.view.FixedTextView
     android:id="@android:id/title"
     style="?android:listSeparatorTextViewStyle"
     xmlns:android="http://schemas.android.com/apk/res/android"

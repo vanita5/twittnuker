@@ -126,7 +126,7 @@
     </LinearLayout>
 
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"/>
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

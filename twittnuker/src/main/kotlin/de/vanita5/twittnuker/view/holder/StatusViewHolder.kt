@@ -34,6 +34,7 @@ import android.widget.ImageView
 import kotlinx.android.synthetic.main.list_item_status.view.*
 import org.mariotaku.ktextension.applyFontFamily
 import de.vanita5.twittnuker.Constants
+import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
@@ -110,14 +111,14 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         statusContentUpperSpace.visibility = View.VISIBLE
 
         profileImageView.setImageResource(R.drawable.ic_account_logo_twitter)
-        nameView.setName(Constants.TWITTNUKER_PREVIEW_NAME)
-        nameView.setScreenName("@" + Constants.TWITTNUKER_PREVIEW_SCREEN_NAME)
+        nameView.name = TWITTNUKER_PREVIEW_NAME
+        nameView.screenName = "@" + TWITTNUKER_PREVIEW_SCREEN_NAME
         nameView.updateText(adapter.bidiFormatter)
         if (adapter.linkHighlightingStyle == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
-            textView.text = toPlainText(Constants.TWITTNUKER_PREVIEW_TEXT_HTML)
+            textView.text = toPlainText(TWITTNUKER_PREVIEW_TEXT_HTML)
         } else {
             val linkify = adapter.twidereLinkify
-            val text = HtmlSpanBuilder.fromHtml(Constants.TWITTNUKER_PREVIEW_TEXT_HTML)
+            val text = HtmlSpanBuilder.fromHtml(TWITTNUKER_PREVIEW_TEXT_HTML)
             linkify.applyAllLinks(text, null, -1, false, adapter.linkHighlightingStyle, true)
             textView.text = text
         }
@@ -210,9 +211,9 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                 quotedTextView.visibility = View.VISIBLE
 
                 val quoted_user_key = status.quoted_user_key!!
-                quotedNameView.setName(
-                        status.quoted_user_name)
-                quotedNameView.setScreenName("@${status.quoted_user_screen_name}")
+                quotedNameView.name =
+                        status.quoted_user_name
+                quotedNameView.screenName = "@${status.quoted_user_screen_name}"
 
                 var quotedDisplayEnd = -1
                 if (status.extras.quoted_display_text_range != null) {
@@ -301,8 +302,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             status.timestamp
         }
 
-        nameView.setName(status.user_name)
-        nameView.setScreenName("@${status.user_screen_name}")
+        nameView.name = status.user_name
+        nameView.screenName = "@${status.user_screen_name}"
 
         if (adapter.profileImageEnabled) {
             profileImageView.visibility = View.VISIBLE
@@ -508,8 +509,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         //        profileImageView.setStyle(adapter.getProfileImageStyle());
 
         val nameFirst = adapter.nameFirst
-        nameView.setNameFirst(nameFirst)
-        quotedNameView.setNameFirst(nameFirst)
+        nameView.nameFirst = nameFirst
+        quotedNameView.nameFirst = nameFirst
 
         val favIcon: Int
         val favStyle: Int

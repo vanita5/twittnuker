@@ -10,14 +10,14 @@
         android:orientation="vertical"
         android:padding="@dimen/element_spacing_large">
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/error_message_device_incompatible"
             android:textAppearance="?android:textAppearanceMedium"
             android:textColor="?android:textColorPrimary"/>
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@+id/infoText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

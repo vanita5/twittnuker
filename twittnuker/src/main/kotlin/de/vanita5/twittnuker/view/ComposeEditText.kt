@@ -29,13 +29,13 @@ import android.text.method.ArrowKeyMovementMethod
 import android.text.method.MovementMethod
 import android.util.AttributeSet
 import android.widget.AdapterView
+import org.mariotaku.chameleon.view.ChameleonMultiAutoCompleteTextView
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.EmojiSupportUtils
 import de.vanita5.twittnuker.util.widget.StatusTextTokenizer
-import org.mariotaku.chameleon.view.ChameleonMultiAutoCompleteTextView
 
-class ComposeEditText @JvmOverloads constructor(
+class ComposeEditText(
         context: Context,
         attrs: AttributeSet? = null
 ) : ChameleonMultiAutoCompleteTextView(context, attrs) {
@@ -66,7 +66,7 @@ class ComposeEditText @JvmOverloads constructor(
         if (!isInEditMode && adapter == null) {
             adapter = ComposeAutoCompleteAdapter(context)
         }
-        setAdapter<ComposeAutoCompleteAdapter>(adapter)
+        setAdapter(adapter)
         updateAccountKey()
     }
 
@@ -74,6 +74,15 @@ class ComposeEditText @JvmOverloads constructor(
         super.onDetachedFromWindow()
         adapter?.closeCursor()
         adapter = null
+    }
+
+    override fun onTextContextMenuItem(id: Int): Boolean {
+        try {
+            return super.onTextContextMenuItem(id)
+        } catch (e: AbstractMethodError) {
+            // http://crashes.to/s/69acd0ea0de
+            return true
+        }
     }
 
     private fun updateAccountKey() {

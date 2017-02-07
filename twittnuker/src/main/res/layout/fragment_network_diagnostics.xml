@@ -27,7 +27,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/log_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

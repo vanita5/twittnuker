@@ -79,7 +79,7 @@
         android:textStyle="italic"
         tools:text="External group at gnu.io"/>
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -100,7 +100,7 @@
         android:orientation="horizontal"
         android:paddingTop="@dimen/element_spacing_small">
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@+id/membersCount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
             tools:text="255"
             android:maxLines="1"/>
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@+id/adminsCount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

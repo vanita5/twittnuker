@@ -27,7 +27,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/btn_cancel"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -39,7 +39,7 @@
         android:textColor="?android:textColorPrimary"
         android:textStyle="bold"/>
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/btn_done"
         android:layout_width="0dp"
         android:layout_height="match_parent"
