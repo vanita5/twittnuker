@@ -281,7 +281,7 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity<BaseActivity>, 
     override val themeBackgroundOption: String
         get() = ThemeUtils.getThemeBackgroundOption(this)
 
-    protected val shouldApplyWindowBackground: Boolean
+    protected open val shouldApplyWindowBackground: Boolean
         get() {
             return true
         }
