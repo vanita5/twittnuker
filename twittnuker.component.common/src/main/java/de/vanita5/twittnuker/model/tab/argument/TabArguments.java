@@ -98,7 +98,8 @@ public class TabArguments implements TwittnukerConstants {
         switch (type) {
             case CustomTabType.HOME_TIMELINE:
             case CustomTabType.NOTIFICATIONS_TIMELINE:
-            case CustomTabType.DIRECT_MESSAGES: {
+            case CustomTabType.DIRECT_MESSAGES:
+            case CustomTabType.TRENDS_SUGGESTIONS: {
                 return LoganSquare.parse(json, TabArguments.class);
             }
             case CustomTabType.USER_TIMELINE:
