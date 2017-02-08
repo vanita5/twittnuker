@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.Utils
+import java.util.*
 
 class WebLinkHandlerActivity : Activity() {
 
@@ -49,7 +50,7 @@ class WebLinkHandlerActivity : Activity() {
             return
         }
 
-        val (handledIntent, handledSuccessfully) = when (uri.host) {
+        val (handledIntent, handledSuccessfully) = when (uri.host.toLowerCase(Locale.US)) {
             "twitter.com", "www.twitter.com", "mobile.twitter.com" -> handleTwitterLink(regulateTwitterUri(uri))
             "fanfou.com" -> handleFanfouLink(uri)
             "twittnuker.org" -> handleTwidereExternalLink(uri)
