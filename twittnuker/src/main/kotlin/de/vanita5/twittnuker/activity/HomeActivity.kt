@@ -642,7 +642,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     override fun onDrawerStateChanged(newState: Int) {
         val fragment = leftDrawerFragment
         if (newState == DrawerLayout.STATE_DRAGGING && fragment is AccountsDashboardFragment) {
-            fragment.loadAccounts(false)
+            fragment.loadAccounts()
         }
     }
 
