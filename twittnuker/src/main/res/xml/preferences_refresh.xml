@@ -77,7 +77,7 @@
     <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_general"
         android:title="@string/general">
-        <de.vanita5.twittnuker.preference.EntrySummaryListPreference
+        <de.vanita5.twittnuker.preference.RefreshIntervalPreference
             android:defaultValue="15"
             android:entries="@array/entries_refresh_interval"
             android:entryValues="@array/values_refresh_interval"
