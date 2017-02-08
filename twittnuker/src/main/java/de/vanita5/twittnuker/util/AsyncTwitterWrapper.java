@@ -1330,31 +1330,28 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
     private class RetweetStatusTask extends ManagedAsyncTask<Object, Object, SingleResponse<ParcelableStatus>> {
 
-        private final UserKey mAccountKey;
-        private final String mStatusId;
+        private final UserKey accountKey;
+        private final String statusId;
 
         RetweetStatusTask(@NonNull Context context, @NonNull final UserKey accountKey, final String statusId) {
             super(context);
-            this.mAccountKey = accountKey;
-            this.mStatusId = statusId;
+            this.accountKey = accountKey;
+            this.statusId = statusId;
         }
 
         @Override
         protected SingleResponse<ParcelableStatus> doInBackground(final Object... params) {
             final ContentResolver resolver = getContext().getContentResolver();
             final AccountDetails details = AccountUtils.getAccountDetails(AccountManager.get(getContext()),
-                    mAccountKey, true);
-            if (details == null) return SingleResponse.Companion.getInstance();
+                    accountKey, true);
+            if (details == null)
+                return SingleResponse.Companion.getInstance(new MicroBlogException("No account"));
             final MicroBlog microBlog = AccountDetailsExtensionsKt.newMicroBlogInstance(details,
-                    getContext(), MicroBlog.class);
-            if (microBlog == null) {
-                return SingleResponse.Companion.getInstance();
-            }
+                    getContext(), false, false, null, MicroBlog.class);
             try {
-                final ParcelableStatus result = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.retweetStatus(mStatusId),
-                        mAccountKey, false);
-                ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, details
-                );
+                final ParcelableStatus result = ParcelableStatusUtils.INSTANCE.fromStatus(microBlog.retweetStatus(statusId),
+                        accountKey, false);
+                ParcelableStatusUtils.INSTANCE.updateExtraInformation(result, details);
                 Utils.setLastSeen(getContext(), result.mentions, System.currentTimeMillis());
                 final ContentValues values = new ContentValues();
                 values.put(Statuses.MY_RETWEET_ID, result.id);
@@ -1365,11 +1362,11 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                         Expression.equalsArgs(Statuses.STATUS_ID),
                         Expression.equalsArgs(Statuses.RETWEET_ID)
                 );
-                final String[] whereArgs = {mStatusId, mStatusId};
+                final String[] whereArgs = {statusId, statusId};
                 for (final Uri uri : DataStoreUtils.STATUSES_URIS) {
                     resolver.update(uri, values, where.getSQL(), whereArgs);
                 }
-                DataStoreUtils.updateActivityStatus(resolver, mAccountKey, mStatusId, new DataStoreUtils.UpdateActivityAction() {
+                DataStoreUtils.updateActivityStatus(resolver, accountKey, statusId, new DataStoreUtils.UpdateActivityAction() {
                     @Override
                     public void process(ParcelableActivity activity) {
                         ParcelableStatus[][] statusesMatrix = {activity.target_statuses,
@@ -1378,8 +1375,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
                         for (ParcelableStatus[] statusesArray : statusesMatrix) {
                             if (statusesArray == null) continue;
                             for (ParcelableStatus status : statusesArray) {
-                                if (mStatusId.equals(status.id) || mStatusId.equals(status.retweet_id)
-                                        || mStatusId.equals(status.my_retweet_id)) {
+                                if (statusId.equals(status.id) || statusId.equals(status.retweet_id)
+                                        || statusId.equals(status.my_retweet_id)) {
                                     status.my_retweet_id = result.id;
                                     status.reply_count = result.reply_count;
                                     status.retweet_count = result.retweet_count;
@@ -1398,7 +1395,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            final int hashCode = calculateHashCode(mAccountKey, mStatusId);
+            final int hashCode = calculateHashCode(accountKey, statusId);
             if (!mCreatingRetweetIds.contains(hashCode)) {
                 mCreatingRetweetIds.add(hashCode);
             }
@@ -1407,9 +1404,10 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
 
         @Override
         protected void onPostExecute(final SingleResponse<ParcelableStatus> result) {
-            mCreatingRetweetIds.removeElement(calculateHashCode(mAccountKey, mStatusId));
+            mCreatingRetweetIds.removeElement(calculateHashCode(accountKey, statusId));
             if (result.hasData()) {
                 final ParcelableStatus status = result.getData();
+
                 getBus().post(new StatusRetweetedEvent(status));
             } else {
                 Utils.showErrorMessage(getContext(), R.string.action_retweeting, result.getException(), true);

@@ -32,6 +32,7 @@ import org.mariotaku.library.objectcursor.converter.CursorFieldConverter;
 import de.vanita5.twittnuker.model.Draft;
 import de.vanita5.twittnuker.model.draft.ActionExtras;
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras;
+import de.vanita5.twittnuker.model.draft.StatusObjectExtras;
 import de.vanita5.twittnuker.model.draft.UpdateStatusActionExtras;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 
@@ -45,16 +46,20 @@ public class DraftExtrasConverter implements CursorFieldConverter<ActionExtras> 
         final String json = cursor.getString(columnIndex);
         if (TextUtils.isEmpty(actionType) || TextUtils.isEmpty(json)) return null;
         switch (actionType) {
-            case "0":
-            case "1":
+            case Draft.Action.UPDATE_STATUS_COMPAT_1:
+            case Draft.Action.UPDATE_STATUS_COMPAT_2:
             case Draft.Action.UPDATE_STATUS:
             case Draft.Action.REPLY:
             case Draft.Action.QUOTE: {
                 return LoganSquare.parse(json, UpdateStatusActionExtras.class);
             }
-            case "2":
+            case Draft.Action.SEND_DIRECT_MESSAGE_COMPAT:
             case Draft.Action.SEND_DIRECT_MESSAGE: {
                 return LoganSquare.parse(json, SendDirectMessageActionExtras.class);
+            }
+            case Draft.Action.FAVORITE:
+            case Draft.Action.RETWEET: {
+                return LoganSquare.parse(json, StatusObjectExtras.class);
             }
         }
         return null;

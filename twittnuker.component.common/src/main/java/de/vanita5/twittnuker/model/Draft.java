@@ -123,7 +123,8 @@ public class Draft implements Parcelable {
         }
     };
 
-    @StringDef({Action.UPDATE_STATUS, Action.REPLY, Action.QUOTE, Action.SEND_DIRECT_MESSAGE})
+    @StringDef({Action.UPDATE_STATUS, Action.REPLY, Action.QUOTE, Action.SEND_DIRECT_MESSAGE,
+            Action.FAVORITE, Action.RETWEET})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Action {
 
@@ -134,6 +135,8 @@ public class Draft implements Parcelable {
         String QUOTE = "quote";
         String SEND_DIRECT_MESSAGE = "send_direct_message";
         String SEND_DIRECT_MESSAGE_COMPAT = "2";
+        String FAVORITE = "favorite";
+        String RETWEET = "retweet";
 
     }
 }
