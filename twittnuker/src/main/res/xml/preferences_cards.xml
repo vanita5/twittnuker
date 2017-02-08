@@ -106,7 +106,7 @@
     <de.vanita5.twittnuker.preference.LinkHighlightPreference
         android:defaultValue="highlight"
         android:key="link_highlight_option"
-        android:order="26"
+        android:order="27"
         android:title="@string/link_highlight_option">
         <extra
             android:name="should_recreate"
@@ -114,20 +114,20 @@
     </de.vanita5.twittnuker.preference.LinkHighlightPreference>
 
     <SwitchPreferenceCompat
-        android:defaultValue="false"
-        android:key="show_absolute_time"
-        android:order="29"
-        android:summary="@string/show_absolute_time_summary"
-        android:title="@string/show_absolute_time">
+        android:defaultValue="true"
+        android:key="light_font"
+        android:order="28"
+        android:title="@string/preference_title_light_font">
         <extra
             android:name="should_recreate"
             android:value="true"/>
     </SwitchPreferenceCompat>
     <SwitchPreferenceCompat
-        android:defaultValue="true"
-        android:key="light_font"
-        android:order="28"
-        android:title="@string/preference_title_light_font">
+        android:defaultValue="false"
+        android:key="show_absolute_time"
+        android:order="29"
+        android:summary="@string/show_absolute_time_summary"
+        android:title="@string/show_absolute_time">
         <extra
             android:name="should_recreate"
             android:value="true"/>

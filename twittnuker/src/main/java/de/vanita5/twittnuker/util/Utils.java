@@ -121,7 +121,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 import java.io.Closeable;
@@ -583,14 +582,6 @@ public final class Utils implements Constants {
         if (matcher.matches())
             return matcher.replaceFirst("$1$2/profile_images/$3/$4$6");
         return url;
-    }
-
-    @PreviewStyle
-    public static int getMediaPreviewStyle(String style) {
-        if (VALUE_MEDIA_PREVIEW_STYLE_SCALE.equalsIgnoreCase(style)) {
-            return VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE;
-        }
-        return VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP;
     }
 
     public static String getQuoteStatus(final Context context, final ParcelableStatus status) {

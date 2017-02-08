@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.UserKey
@@ -106,14 +107,21 @@ object profileImageStyleKey : KSimpleKey<Int>(KEY_PROFILE_IMAGE_STYLE, ProfileIm
 
 }
 
-object mediaPreviewStyleKey : KSimpleKey<Int>(KEY_MEDIA_PREVIEW_STYLE, VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP) {
+object mediaPreviewStyleKey : KSimpleKey<Int>(KEY_MEDIA_PREVIEW_STYLE, PreviewStyle.CROP) {
     override fun read(preferences: SharedPreferences): Int {
-        if (preferences.getString(key, null) == VALUE_MEDIA_PREVIEW_STYLE_SCALE) return VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE
-        return VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP
+        when (preferences.getString(key, null)) {
+            VALUE_MEDIA_PREVIEW_STYLE_SCALE -> return PreviewStyle.SCALE
+            VALUE_MEDIA_PREVIEW_STYLE_REAL_SIZE -> return PreviewStyle.REAL_SIZE
+            else -> return PreviewStyle.CROP
+        }
     }
 
     override fun write(editor: SharedPreferences.Editor, value: Int): Boolean {
-        editor.putString(key, if (value == VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE) VALUE_MEDIA_PREVIEW_STYLE_SCALE else VALUE_MEDIA_PREVIEW_STYLE_CROP)
+        editor.putString(key, when (value) {
+            PreviewStyle.SCALE -> VALUE_MEDIA_PREVIEW_STYLE_SCALE
+            PreviewStyle.REAL_SIZE -> VALUE_MEDIA_PREVIEW_STYLE_REAL_SIZE
+            else -> VALUE_MEDIA_PREVIEW_STYLE_CROP
+        })
         return true
     }
 

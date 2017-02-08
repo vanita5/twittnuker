@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.adapter.iface
 
+import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.MediaLoadingHandler
@@ -37,7 +38,7 @@ interface IStatusesAdapter<in Data> : IContentAdapter, IGapSupportedAdapter {
 
     val lightFont: Boolean
 
-    @CardMediaContainer.PreviewStyle
+    @PreviewStyle
     val mediaPreviewStyle: Int
 
     val statusCount: Int

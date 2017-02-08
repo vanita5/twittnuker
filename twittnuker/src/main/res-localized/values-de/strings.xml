@@ -626,6 +626,7 @@
     <string name="preview_images">Vorschaubilder</string>
     <string name="preview_style_crop">Zuschneiden</string>
     <string name="preview_style_scale">Skalieren</string>
+    <string name="preview_style_real_size">Volle Grösse</string>
     <!-- Previous item (tweet, user etc.) -->
     <string name="previous_item">Zurück</string>
     <string name="previous_tab">Vorheriger Tab</string>

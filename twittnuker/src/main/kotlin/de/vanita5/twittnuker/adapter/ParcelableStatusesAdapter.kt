@@ -40,6 +40,7 @@ import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.Companion.ITEM_VIEW_TYPE_LOAD_INDICATOR
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
+import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_DISPLAY_SENSITIVE_CONTENTS
 import de.vanita5.twittnuker.model.*
@@ -63,7 +64,7 @@ abstract class ParcelableStatusesAdapter(
 
     override final val mediaLoadingHandler: MediaLoadingHandler
     final override val twidereLinkify: TwidereLinkify
-    @CardMediaContainer.PreviewStyle
+    @PreviewStyle
     final override val mediaPreviewStyle: Int = preferences[mediaPreviewStyleKey]
     final override val nameFirst: Boolean = preferences[nameFirstKey]
     final override val useStarsForLikes: Boolean = preferences[iWantMyStarsBackKey]

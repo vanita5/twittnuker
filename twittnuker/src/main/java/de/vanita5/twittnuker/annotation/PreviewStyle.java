@@ -20,23 +20,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.extension.model
+package de.vanita5.twittnuker.annotation;
 
-import de.vanita5.twittnuker.model.ParcelableMedia
+import android.support.annotation.IntDef;
 
-fun parcelableMediaTypeString(@ParcelableMedia.Type type: Int): String? {
-    return when (type) {
-        ParcelableMedia.Type.IMAGE -> "image"
-        ParcelableMedia.Type.VIDEO -> "video"
-        ParcelableMedia.Type.ANIMATED_GIF -> "gif"
-        ParcelableMedia.Type.CARD_ANIMATED_GIF -> "gif"
-        ParcelableMedia.Type.EXTERNAL_PLAYER -> "external"
-        ParcelableMedia.Type.VARIABLE_TYPE -> "variable"
-        else -> null
-    }
-}
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-val ParcelableMedia.aspect_ratio: Double get() {
-    if (this.height <= 0 || this.width <= 0) return Double.NaN
-    return this.width / this.height.toDouble()
+@IntDef({PreviewStyle.NONE, PreviewStyle.SCALE, PreviewStyle.CROP, PreviewStyle.REAL_SIZE})
+@Retention(RetentionPolicy.SOURCE)
+public @interface PreviewStyle {
+
+    int NONE = 0;
+
+    int CROP = 1;
+    int SCALE = 2;
+    int REAL_SIZE = 3;
 }

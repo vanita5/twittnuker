@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.adapter.iface
 
+import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.model.ParcelableDirectMessage
 import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.view.CardMediaContainer
@@ -38,7 +39,7 @@ interface IDirectMessagesAdapter {
     @ShapedImageView.ShapeStyle
     val profileImageStyle: Int
 
-    @CardMediaContainer.PreviewStyle
+    @PreviewStyle
     val mediaPreviewStyle: Int
 
     fun findItem(id: Long): ParcelableDirectMessage?
