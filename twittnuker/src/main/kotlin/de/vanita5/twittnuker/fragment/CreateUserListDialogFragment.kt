@@ -31,6 +31,7 @@ import android.widget.CheckBox
 import com.rengwuxian.materialedittext.MaterialEditText
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.text.validator.UserListNameValidator
 import de.vanita5.twittnuker.util.ParseUtils
@@ -63,9 +64,10 @@ class CreateUserListDialogFragment : BaseDialogFragment(), DialogInterface.OnCli
         builder.setPositiveButton(android.R.string.ok, this)
         builder.setNegativeButton(android.R.string.cancel, this)
         val dialog = builder.create()
-        dialog.setOnShowListener { dialog ->
-            val alertDialog = dialog as AlertDialog
-            val editName = alertDialog.findViewById(R.id.name) as MaterialEditText
+        dialog.setOnShowListener {
+            it as AlertDialog
+            it.applyTheme()
+            val editName = it.findViewById(R.id.name) as MaterialEditText
             editName.addValidator(UserListNameValidator(getString(R.string.invalid_list_name)))
         }
         return dialog

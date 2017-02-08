@@ -32,6 +32,7 @@ import com.squareup.otto.Subscribe
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.SYNC_PREFERENCES_NAME
 import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BasePreferenceFragment
 import de.vanita5.twittnuker.model.sync.SyncProviderInfo
@@ -107,7 +108,12 @@ class SyncSettingsFragment : BasePreferenceFragment() {
                 (parentFragment as SyncSettingsFragment).cleanupAndDisconnect()
             }
             builder.setNegativeButton(android.R.string.cancel, null)
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
 
     }

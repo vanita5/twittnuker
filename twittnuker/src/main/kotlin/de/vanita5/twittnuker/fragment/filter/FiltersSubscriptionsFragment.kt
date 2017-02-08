@@ -50,13 +50,10 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PURCHASE_EXTRA_FEATURES
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACTION
 import de.vanita5.twittnuker.constant.IntentConstants.INTENT_PACKAGE_PREFIX
-import de.vanita5.twittnuker.extension.invertSelection
+import de.vanita5.twittnuker.extension.*
 import de.vanita5.twittnuker.extension.model.getComponentLabel
 import de.vanita5.twittnuker.extension.model.instantiateComponent
 import de.vanita5.twittnuker.extension.model.setupUrl
-import de.vanita5.twittnuker.extension.selectAll
-import de.vanita5.twittnuker.extension.selectNone
-import de.vanita5.twittnuker.extension.updateSelectionItems
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BaseFragment
 import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
@@ -321,11 +318,12 @@ class FiltersSubscriptionsFragment : BaseFragment(), LoaderManager.LoaderCallbac
             }
             builder.setNegativeButton(android.R.string.cancel, null)
             val dialog = builder.create()
-            dialog.setOnShowListener { dialog ->
-                dialog as AlertDialog
-                val editName = dialog.findViewById(R.id.name) as MaterialEditText
-                val editUrl = dialog.findViewById(R.id.url) as MaterialEditText
-                val positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+                val editName = it.findViewById(R.id.name) as MaterialEditText
+                val editUrl = it.findViewById(R.id.url) as MaterialEditText
+                val positiveButton = it.getButton(DialogInterface.BUTTON_POSITIVE)
 
                 fun updateEnableState() {
                     val nameValid = !editName.empty

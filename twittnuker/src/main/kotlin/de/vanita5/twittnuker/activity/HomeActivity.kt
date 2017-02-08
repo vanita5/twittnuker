@@ -82,6 +82,7 @@ import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
@@ -1001,7 +1002,12 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
             builder.setNegativeButton(R.string.no_thanks) { dialog, which ->
                 kPreferences[defaultAutoRefreshKey] = false
             }
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
 
         override fun onDismiss(dialog: DialogInterface?) {

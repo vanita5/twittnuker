@@ -31,6 +31,7 @@ import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.extension.applyTheme
 
 class PermissionRequestDialog : BaseDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -46,7 +47,12 @@ class PermissionRequestDialog : BaseDialogFragment() {
                     PermissionRequestCancelCallback ?: return@setNegativeButton
             callback.onPermissionRequestCancelled(requestCode)
         }
-        return builder.create()
+        val dialog = builder.create()
+        dialog.setOnShowListener {
+            it as AlertDialog
+            it.applyTheme()
+        }
+        return dialog
     }
 
     interface PermissionRequestCancelCallback {

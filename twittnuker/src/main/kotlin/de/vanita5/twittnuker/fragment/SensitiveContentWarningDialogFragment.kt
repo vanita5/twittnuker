@@ -29,6 +29,7 @@ import android.support.v7.app.AlertDialog
 import org.mariotaku.ktextension.toTypedArray
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
@@ -62,7 +63,12 @@ class SensitiveContentWarningDialogFragment : BaseDialogFragment(), DialogInterf
         builder.setMessage(R.string.sensitive_content_warning)
         builder.setPositiveButton(android.R.string.ok, this)
         builder.setNegativeButton(android.R.string.cancel, null)
-        return builder.create()
+        val dialog = builder.create()
+        dialog.setOnShowListener {
+            it as AlertDialog
+            it.applyTheme()
+        }
+        return dialog
     }
 
 }

@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.adapter.DummyItemAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_QUICK_SEND
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -83,15 +84,15 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
 
         val dialog = builder.create()
         dialog.setOnShowListener {
-            val alertDialog = it as AlertDialog
-
-            val itemContent = alertDialog.findViewById(R.id.itemContent)!!
-            val textCountView = alertDialog.findViewById(R.id.comment_text_count) as StatusTextCountView
-            val itemMenu = alertDialog.findViewById(R.id.itemMenu)!!
-            val actionButtons = alertDialog.findViewById(R.id.actionButtons)!!
-            val commentContainer = alertDialog.findViewById(R.id.comment_container)!!
-            val editComment = alertDialog.findViewById(R.id.edit_comment) as ComposeEditText
-            val commentMenu = alertDialog.findViewById(R.id.comment_menu)!!
+            it as AlertDialog
+            it.applyTheme()
+            val itemContent = it.findViewById(R.id.itemContent)!!
+            val textCountView = it.findViewById(R.id.comment_text_count) as StatusTextCountView
+            val itemMenu = it.findViewById(R.id.itemMenu)!!
+            val actionButtons = it.findViewById(R.id.actionButtons)!!
+            val commentContainer = it.findViewById(R.id.comment_container)!!
+            val editComment = it.findViewById(R.id.edit_comment) as ComposeEditText
+            val commentMenu = it.findViewById(R.id.comment_menu)!!
 
             val adapter = DummyItemAdapter(context)
             adapter.setShouldShowAccountsColor(true)
@@ -152,7 +153,7 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
                 false
             })
 
-            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+            it.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
                 var dismissDialog = false
                 if (editComment.length() > 0) {
                     dismissDialog = retweetOrQuote(details, status, SHOW_PROTECTED_CONFIRM)
@@ -169,7 +170,7 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
                 }
             }
 
-            updateTextCount(alertDialog, editComment.text, status, details)
+            updateTextCount(it, editComment.text, status, details)
         }
         return dialog
     }
@@ -287,7 +288,12 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
             builder.setMessage(R.string.quote_protected_status_warning_message)
             builder.setPositiveButton(R.string.send_anyway, this)
             builder.setNegativeButton(android.R.string.cancel, null)
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
 
         companion object {

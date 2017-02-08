@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -368,10 +369,11 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
             builder.setNegativeButton(android.R.string.cancel, this)
             val dialog = builder.create()
             dialog.setOnShowListener { dialog ->
-                val alertDialog = dialog as AlertDialog
-                val editName = alertDialog.findViewById(R.id.name) as MaterialEditText?
-                val editDescription = alertDialog.findViewById(R.id.description) as MaterialEditText?
-                val editPublic = alertDialog.findViewById(R.id.is_public) as CheckBox?
+                dialog as AlertDialog
+                dialog.applyTheme()
+                val editName = dialog.findViewById(R.id.name) as MaterialEditText?
+                val editDescription = dialog.findViewById(R.id.description) as MaterialEditText?
+                val editPublic = dialog.findViewById(R.id.is_public) as CheckBox?
                 assert(editName != null && editDescription != null && editPublic != null)
                 editName!!.addValidator(UserListNameValidator(getString(R.string.invalid_list_name)))
                 if (mName != null) {
@@ -450,7 +452,12 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
             builder.setTitle(userList.name)
             builder.setMessage(userList.description)
             builder.setPositiveButton(android.R.string.ok, null)
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
     }
 

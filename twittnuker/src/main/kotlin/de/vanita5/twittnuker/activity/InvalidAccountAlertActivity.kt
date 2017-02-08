@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AlertDialog
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_INTENT
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.isAccountValid
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -41,7 +42,12 @@ class InvalidAccountAlertActivity : FragmentActivity() {
             builder.setNegativeButton(android.R.string.cancel) { dialog, which ->
 
             }
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
 
         override fun onDismiss(dialog: DialogInterface?) {

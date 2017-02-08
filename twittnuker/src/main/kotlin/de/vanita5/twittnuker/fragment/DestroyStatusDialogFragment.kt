@@ -30,6 +30,7 @@ import android.support.v7.app.AlertDialog
 
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUS
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.model.ParcelableStatus
 
 class DestroyStatusDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
@@ -52,7 +53,12 @@ class DestroyStatusDialogFragment : BaseDialogFragment(), DialogInterface.OnClic
         builder.setMessage(R.string.destroy_status_confirm_message)
         builder.setPositiveButton(android.R.string.ok, this)
         builder.setNegativeButton(android.R.string.cancel, null)
-        return builder.create()
+        val dialog = builder.create()
+        dialog.setOnShowListener {
+            it as AlertDialog
+            it.applyTheme()
+        }
+        return dialog
     }
 
     private val status: ParcelableStatus?

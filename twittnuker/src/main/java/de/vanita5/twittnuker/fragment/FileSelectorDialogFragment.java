@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.fragment;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,6 +37,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils.TruncateAt;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +48,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
+import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
 import de.vanita5.twittnuker.fragment.iface.ISupportDialogFragmentCallback;
 import de.vanita5.twittnuker.util.ThemeUtils;
 import de.vanita5.twittnuker.util.TwidereArrayUtils;
@@ -120,8 +121,15 @@ public class FileSelectorDialogFragment extends BaseDialogFragment implements Lo
             builder.setPositiveButton(android.R.string.ok, this);
         }
         final AlertDialog dialog = builder.create();
-        final ListView listView = dialog.getListView();
-        listView.setOnItemClickListener(this);
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialog) {
+                final AlertDialog alertDialog = (AlertDialog) dialog;
+                AlertDialogExtensionsKt.applyTheme(alertDialog);
+                final ListView listView = alertDialog.getListView();
+                listView.setOnItemClickListener(FileSelectorDialogFragment.this);
+            }
+        });
         return dialog;
     }
 

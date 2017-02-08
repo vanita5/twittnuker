@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.fragment
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -35,6 +34,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
+import android.support.v7.app.AlertDialog
 import android.view.*
 import android.view.ContextMenu.ContextMenuInfo
 import android.widget.AdapterView
@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.adapter.AccountDetailsAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.getAccountKey
 import de.vanita5.twittnuker.extension.model.setActivated
 import de.vanita5.twittnuker.extension.model.setColor
@@ -248,7 +249,12 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
             builder.setPositiveButton(android.R.string.ok, this)
             builder.setTitle(R.string.account_delete_confirm_title)
             builder.setMessage(R.string.account_delete_confirm_message)
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
 
     }

@@ -25,23 +25,23 @@ package de.vanita5.twittnuker.fragment
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.support.v4.app.FragmentManager
 import android.support.v7.app.AlertDialog
-import android.widget.CheckBox
-import android.widget.TextView
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER
+import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
-import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.UserKey
 
-abstract class AbsUserMuteBlockDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
-
-    private val user: ParcelableUser by lazy { arguments.getParcelable<ParcelableUser>(EXTRA_USER) }
+class DestroySavedSearchDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
 
     override fun onClick(dialog: DialogInterface, which: Int) {
         when (which) {
             DialogInterface.BUTTON_POSITIVE -> {
-                val filterEverywhere = ((dialog as Dialog).findViewById(R.id.filterEverywhereToggle) as CheckBox).isChecked
-                performUserAction(user, filterEverywhere)
+                val accountKey = accountKey
+                val searchId = searchId
+                val twitter = twitterWrapper
+                if (searchId <= 0) return
+                twitter.destroySavedSearchAsync(accountKey, searchId)
             }
             else -> {
             }
@@ -49,29 +49,43 @@ abstract class AbsUserMuteBlockDialogFragment : BaseDialogFragment(), DialogInte
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val context = activity
         val builder = AlertDialog.Builder(context)
-        builder.setTitle(getTitle(user))
-        builder.setView(R.layout.dialog_block_mute_filter_user_confirm)
-        builder.setPositiveButton(getPositiveButtonTitle(user), this)
+        val name = searchName
+        builder.setTitle(getString(R.string.destroy_saved_search, name))
+        builder.setMessage(getString(R.string.destroy_saved_search_confirm_message, name))
+        builder.setPositiveButton(android.R.string.ok, this)
         builder.setNegativeButton(android.R.string.cancel, null)
         val dialog = builder.create()
         dialog.setOnShowListener {
             it as AlertDialog
             it.applyTheme()
-            val confirmMessageView = it.findViewById(R.id.confirmMessage) as TextView
-            val filterEverywhereHelp = it.findViewById(R.id.filterEverywhereHelp)!!
-            filterEverywhereHelp.setOnClickListener {
-                MessageDialogFragment.show(childFragmentManager, title = getString(R.string.filter_everywhere),
-                        message = getString(R.string.filter_everywhere_description), tag = "filter_everywhere_help")
-            }
-            confirmMessageView.text = getMessage(user)
         }
         return dialog
     }
 
-    abstract fun performUserAction(user: ParcelableUser, filterEverywhere: Boolean)
+    private val accountKey: UserKey
+        get() = arguments.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
 
-    protected abstract fun getTitle(user: ParcelableUser): String
-    protected abstract fun getMessage(user: ParcelableUser): String
-    protected open fun getPositiveButtonTitle(user: ParcelableUser): String = getString(android.R.string.ok)
+    private val searchId: Long
+        get() = arguments.getLong(EXTRA_SEARCH_ID, -1)
+
+    private val searchName: String
+        get() = arguments.getString(EXTRA_NAME)
+
+    companion object {
+
+        private const val FRAGMENT_TAG = "destroy_saved_search"
+
+        fun show(fm: FragmentManager, accountKey: UserKey, searchId: Long, name: String): DestroySavedSearchDialogFragment {
+            val args = Bundle()
+            args.putParcelable(EXTRA_ACCOUNT_KEY, accountKey)
+            args.putLong(EXTRA_SEARCH_ID, searchId)
+            args.putString(EXTRA_NAME, name)
+            val f = DestroySavedSearchDialogFragment()
+            f.arguments = args
+            f.show(fm, FRAGMENT_TAG)
+            return f
+        }
+    }
 }

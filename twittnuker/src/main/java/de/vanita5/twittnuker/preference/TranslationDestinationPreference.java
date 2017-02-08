@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.Language;
 import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 
 import java.text.Collator;
@@ -192,10 +193,17 @@ public class TranslationDestinationPreference extends Preference implements OnCl
                     TranslationDestinationPreference.this);
             selectorBuilder.setNegativeButton(android.R.string.cancel, null);
             mDialog = selectorBuilder.create();
-            final ListView lv = mDialog.getListView();
-            if (lv != null) {
-                lv.setFastScrollEnabled(true);
-            }
+            mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(final DialogInterface dialog) {
+                    final AlertDialog alertDialog = (AlertDialog) dialog;
+                    AlertDialogExtensionsKt.applyTheme(alertDialog);
+                    final ListView lv = alertDialog.getListView();
+                    if (lv != null) {
+                        lv.setFastScrollEnabled(true);
+                    }
+                }
+            });
             mDialog.show();
         }
 

@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Location
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.model.UserKey
@@ -110,9 +111,10 @@ class TrendsLocationSelectorActivity : BaseActivity() {
             selectorBuilder.setView(R.layout.dialog_trends_location_selector)
             selectorBuilder.setNegativeButton(android.R.string.cancel, null)
             val dialog = selectorBuilder.create()
-            dialog.setOnShowListener { dialogInterface ->
-                dialogInterface as Dialog
-                val listView = dialogInterface.findViewById(R.id.expandable_list) as ExpandableListView
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+                val listView = it.findViewById(R.id.expandable_list) as ExpandableListView
                 val adapter = ExpandableTrendLocationsListAdapter(context)
                 adapter.data = list
                 listView.setAdapter(adapter)

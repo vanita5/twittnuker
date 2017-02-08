@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.activity.SettingsActivity
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter
 import de.vanita5.twittnuker.adapter.ArrayAdapter
 import de.vanita5.twittnuker.annotation.CustomTabType
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.Tab
@@ -234,6 +235,7 @@ class CustomTabsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, MultiChoice
 
         override fun onShow(dialog: DialogInterface) {
             dialog as AlertDialog
+            dialog.applyTheme()
             @CustomTabType
             val tabType: String
             val tab: Tab

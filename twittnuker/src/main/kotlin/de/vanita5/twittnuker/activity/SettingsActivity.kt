@@ -47,6 +47,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.ACTION_NAVIGATION_BACK
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.CONTEXT_TAG_NAVIGATION
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.ThemeUtils
@@ -372,7 +373,12 @@ class SettingsActivity : BaseActivity(), OnItemClickListener, OnPreferenceStartF
             builder.setMessage(R.string.app_restart_confirm)
             builder.setPositiveButton(android.R.string.ok, this)
             builder.setNegativeButton(R.string.dont_restart, this)
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
 
         override fun onClick(dialog: DialogInterface, which: Int) {

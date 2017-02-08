@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.fragment
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.app.NotificationManager
 import android.content.Context
@@ -38,6 +37,7 @@ import android.support.v4.app.FragmentActivity
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.Loader
+import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.view.*
 import android.widget.AbsListView.MultiChoiceModeListener
@@ -55,10 +55,7 @@ import de.vanita5.twittnuker.activity.iface.IExtendedActivity
 import de.vanita5.twittnuker.adapter.DraftsAdapter
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.textSizeKey
-import de.vanita5.twittnuker.extension.invertSelection
-import de.vanita5.twittnuker.extension.selectAll
-import de.vanita5.twittnuker.extension.selectNone
-import de.vanita5.twittnuker.extension.updateSelectionItems
+import de.vanita5.twittnuker.extension.*
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
@@ -260,7 +257,12 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
             builder.setMessage(R.string.delete_drafts_confirm)
             builder.setPositiveButton(android.R.string.ok, this)
             builder.setNegativeButton(android.R.string.cancel, null)
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
 
     }

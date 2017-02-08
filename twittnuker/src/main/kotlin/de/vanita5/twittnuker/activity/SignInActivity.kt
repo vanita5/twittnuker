@@ -77,6 +77,7 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CREDENTIALS_
 import de.vanita5.twittnuker.constant.chromeCustomTabKey
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.constant.randomizeAccountNameKey
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.getColor
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.official
@@ -678,9 +679,9 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
         }
 
         override fun onShow(dialog: DialogInterface) {
-            val alertDialog = dialog as AlertDialog
-            val verificationHint = alertDialog.findViewById(R.id.verification_hint) as TextView?
-            val editVerification = alertDialog.findViewById(R.id.edit_verification_code) as EditText?
+            (dialog as AlertDialog).applyTheme()
+            val verificationHint = dialog.findViewById(R.id.verification_hint) as TextView?
+            val editVerification = dialog.findViewById(R.id.edit_verification_code) as EditText?
             if (verificationHint == null || editVerification == null) return
             when {
                 "Push".equals(challengeType, ignoreCase = true) -> {
@@ -728,10 +729,11 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
             builder.setNegativeButton(android.R.string.cancel, null)
 
             val alertDialog = builder.create()
-            alertDialog.setOnShowListener { dialog ->
-                val materialDialog = dialog as AlertDialog
-                val editUsername = materialDialog.findViewById(R.id.username) as EditText?
-                val editPassword = materialDialog.findViewById(R.id.password) as EditText?
+            alertDialog.setOnShowListener {
+                (it as AlertDialog)
+                it.applyTheme()
+                val editUsername = it.findViewById(R.id.username) as EditText?
+                val editPassword = it.findViewById(R.id.password) as EditText?
                 assert(editUsername != null && editPassword != null)
                 val textWatcher = object : TextWatcher {
                     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -739,7 +741,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
                     }
 
                     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                        val button = materialDialog.getButton(DialogInterface.BUTTON_POSITIVE) ?: return
+                        val button = it.getButton(DialogInterface.BUTTON_POSITIVE) ?: return
                         button.isEnabled = editUsername!!.length() > 0 && editPassword!!.length() > 0
                     }
 

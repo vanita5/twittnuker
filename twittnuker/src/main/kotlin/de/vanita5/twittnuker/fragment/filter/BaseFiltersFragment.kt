@@ -54,10 +54,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.EXTRA_URI
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
 import de.vanita5.twittnuker.adapter.ComposeAutoCompleteAdapter
 import de.vanita5.twittnuker.adapter.SourceAutoCompleteAdapter
-import de.vanita5.twittnuker.extension.invertSelection
-import de.vanita5.twittnuker.extension.selectAll
-import de.vanita5.twittnuker.extension.selectNone
-import de.vanita5.twittnuker.extension.updateSelectionItems
+import de.vanita5.twittnuker.extension.*
 import de.vanita5.twittnuker.fragment.AbsContentListViewFragment
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.model.FiltersData
@@ -292,8 +289,9 @@ abstract class BaseFiltersFragment : AbsContentListViewFragment<SimpleCursorAdap
             builder.setPositiveButton(android.R.string.ok, this)
             builder.setNegativeButton(android.R.string.cancel, this)
             val dialog = builder.create()
-            dialog.setOnShowListener { dialog ->
-                val alertDialog = dialog as AlertDialog
+            dialog.setOnShowListener {
+                val alertDialog = it as AlertDialog
+                it.applyTheme()
                 val editText = (alertDialog.findViewById(R.id.edit_text) as AutoCompleteTextView?)!!
                 if (savedInstanceState == null) {
                     editText.setText(arguments.getString(EXTRA_VALUE))

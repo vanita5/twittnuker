@@ -36,6 +36,7 @@ import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_REQUEST_CODE
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.model.analyzer.PurchaseConfirm
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.model.analyzer.PurchaseIntroduction
@@ -67,8 +68,9 @@ class ExtraFeaturesIntroductionDialogFragment : BaseDialogFragment() {
         }
         val dialog = builder.create()
         dialog.setOnShowListener {
-            it as Dialog
-            it.findViewById(R.id.restorePurchaseHint).visibility = if (restorePurchaseIntent != null) {
+            it as AlertDialog
+            it.applyTheme()
+            it.findViewById(R.id.restorePurchaseHint)?.visibility = if (restorePurchaseIntent != null) {
                 View.VISIBLE
             } else {
                 View.GONE
@@ -78,7 +80,7 @@ class ExtraFeaturesIntroductionDialogFragment : BaseDialogFragment() {
             val featureDescription = it.findViewById(R.id.featureDescription) as TextView
             featureIcon.setImageResource(description.icon)
             featureDescription.text = description.description
-            it.findViewById(R.id.buyFeaturesPack).setOnClickListener {
+            it.findViewById(R.id.buyFeaturesPack)?.setOnClickListener {
                 startPurchase(ExtraFeaturesService.FEATURE_FEATURES_PACK)
                 dismiss()
             }
