@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.loader
 
 import android.content.Context
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.util.Log
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
@@ -36,11 +36,10 @@ import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 class SavedSearchesLoader(
         context: Context,
         private val accountId: UserKey
-) : AsyncTaskLoader<ResponseList<SavedSearch>>(context), Constants {
+) : FixedAsyncTaskLoader<ResponseList<SavedSearch>>(context), Constants {
 
     override fun loadInBackground(): ResponseList<SavedSearch>? {
-        val twitter = MicroBlogAPIFactory.getInstance(context, accountId
-        ) ?: return null
+        val twitter = MicroBlogAPIFactory.getInstance(context, accountId) ?: return null
         try {
             return twitter.savedSearches
         } catch (e: MicroBlogException) {

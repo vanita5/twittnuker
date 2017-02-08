@@ -38,6 +38,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.app.hasRunningLoadersSafe
 import android.support.v4.content.AsyncTaskLoader
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
 import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewCompat
@@ -2068,7 +2069,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             context: Context,
             private val accountKey: UserKey,
             private val statusId: String
-    ) : AsyncTaskLoader<StatusActivity>(context) {
+    ) : FixedAsyncTaskLoader<StatusActivity>(context) {
 
         override fun loadInBackground(): StatusActivity? {
             val context = context

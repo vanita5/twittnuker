@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.loader
 
 import android.content.Context
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.statusnet.model.Group
@@ -45,7 +45,7 @@ abstract class BaseGroupsLoader(
         protected val accountKey: UserKey,
         override val cursor: Long,
         data: List<ParcelableGroup>?
-) : AsyncTaskLoader<List<ParcelableGroup>>(context), ICursorSupportLoader {
+) : FixedAsyncTaskLoader<List<ParcelableGroup>>(context), ICursorSupportLoader {
 
     protected val data = NoDuplicatesArrayList<ParcelableGroup>()
 

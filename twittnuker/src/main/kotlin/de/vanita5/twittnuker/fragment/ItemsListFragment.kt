@@ -27,7 +27,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.LoaderManager.LoaderCallbacks
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
 import android.support.v7.widget.RecyclerView
 import android.view.ContextMenu
@@ -35,6 +35,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.VariousItemsAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
@@ -51,7 +52,6 @@ import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
-import org.mariotaku.kpreferences.get
 
 class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter>(), LoaderCallbacks<List<*>> {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -166,7 +166,7 @@ class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter
         return false
     }
 
-    class ItemsLoader(context: Context, private val arguments: Bundle) : AsyncTaskLoader<List<*>>(context) {
+    class ItemsLoader(context: Context, private val arguments: Bundle) : FixedAsyncTaskLoader<List<*>>(context) {
 
         override fun loadInBackground(): List<*> {
             return arguments.getParcelableArrayList<Parcelable>(EXTRA_ITEMS)

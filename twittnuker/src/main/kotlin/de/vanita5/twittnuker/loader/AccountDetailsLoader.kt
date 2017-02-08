@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.loader
 import android.accounts.AccountManager
 import android.accounts.OnAccountsUpdateListener
 import android.content.Context
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import de.vanita5.twittnuker.model.AccountDetails
@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 class AccountDetailsLoader(
         context: Context,
         val filter: (AccountDetails.() -> Boolean)? = null
-) : AsyncTaskLoader<List<AccountDetails>>(context) {
+) : FixedAsyncTaskLoader<List<AccountDetails>>(context) {
     private val am: AccountManager = AccountManager.get(context)
     private val accountUpdateListener = OnAccountsUpdateListener {
         onContentChanged()

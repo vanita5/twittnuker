@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.loader
 import android.accounts.AccountManager
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
@@ -50,7 +50,7 @@ class ParcelableStatusLoader(
         private val extras: Bundle?,
         private val accountKey: UserKey?,
         private val statusId: String?
-) : AsyncTaskLoader<SingleResponse<ParcelableStatus>>(context) {
+) : FixedAsyncTaskLoader<SingleResponse<ParcelableStatus>>(context) {
 
     @Inject
     internal lateinit var userColorNameManager: UserColorNameManager
@@ -96,5 +96,6 @@ class ParcelableStatusLoader(
     override fun onStartLoading() {
         forceLoad()
     }
+
 
 }

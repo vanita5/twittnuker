@@ -26,7 +26,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.FixedAsyncTaskLoader;
 import android.support.v4.content.LoaderAccessor;
 
 import org.mariotaku.library.objectcursor.ObjectCursor;
@@ -37,7 +37,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
-public class ObjectCursorLoader<T> extends AsyncTaskLoader<List<T>> {
+public class ObjectCursorLoader<T> extends FixedAsyncTaskLoader<List<T>> {
 
     final ForceLoadContentObserver mObserver;
     final Class<? extends ObjectCursor.CursorIndices<T>> mIndicesClass;

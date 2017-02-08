@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.loader
 
 import android.content.Context
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.text.TextUtils
 
 import de.vanita5.twittnuker.Constants
@@ -36,7 +36,7 @@ abstract class ParcelableStatusesLoader(
         adapterData: List<ParcelableStatus>?,
         protected val tabPosition: Int,
         override var fromUser: Boolean
-) : AsyncTaskLoader<List<ParcelableStatus>>(context), Constants, IExtendedLoader {
+) : FixedAsyncTaskLoader<List<ParcelableStatus>>(context), IExtendedLoader {
 
     protected val data = NoDuplicatesArrayList<ParcelableStatus>()
     protected val isFirstLoad: Boolean = adapterData == null

@@ -49,6 +49,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.graphics.ColorUtils
@@ -84,9 +85,11 @@ import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.*
+import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.FriendshipUpdate
 import de.vanita5.twittnuker.library.twitter.model.Paging
+import de.vanita5.twittnuker.library.twitter.model.UserList
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
@@ -111,8 +114,6 @@ import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.graphic.ActionBarColorDrawable
 import de.vanita5.twittnuker.graphic.ActionIconDrawable
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.twitter.model.UserList
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
@@ -1526,7 +1527,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             context: Context,
             private val accountKey: UserKey?,
             private val user: ParcelableUser?
-    ) : AsyncTaskLoader<SingleResponse<ParcelableRelationship>>(context) {
+    ) : FixedAsyncTaskLoader<SingleResponse<ParcelableRelationship>>(context) {
 
         override fun loadInBackground(): SingleResponse<ParcelableRelationship> {
             if (accountKey == null || user == null) {
