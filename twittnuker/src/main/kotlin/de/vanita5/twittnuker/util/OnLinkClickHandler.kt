@@ -144,6 +144,7 @@ open class OnLinkClickHandler(
             return
         }
         val builder = CustomTabsIntent.Builder()
+        builder.addDefaultShareMenuItem()
         (ChameleonUtils.getActivity(context) as? Chameleon.Themeable)?.overrideTheme?.let { theme ->
             builder.setToolbarColor(theme.colorToolbar)
         }
