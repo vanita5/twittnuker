@@ -103,7 +103,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 public class DataStoreUtils implements Constants {
 
     public static final Uri[] STATUSES_URIS = new Uri[]{Statuses.CONTENT_URI, CachedStatuses.CONTENT_URI};
@@ -932,7 +931,10 @@ public class DataStoreUtils implements Constants {
         }
     }
 
-    static void updateActivityStatus(ContentResolver resolver, UserKey accountKey, String statusId, UpdateActivityAction action) {
+    public static void updateActivityStatus(@NonNull ContentResolver resolver,
+                                     @NonNull UserKey accountKey,
+                                     @NonNull String statusId,
+                                     @NonNull UpdateActivityAction action) {
         final String activityWhere = Expression.and(
                 Expression.equalsArgs(Activities.ACCOUNT_KEY),
                 Expression.or(
@@ -1082,6 +1084,6 @@ public class DataStoreUtils implements Constants {
 
     public interface UpdateActivityAction {
 
-        void process(ParcelableActivity activity);
+        void process(@NonNull ParcelableActivity activity);
     }
 }

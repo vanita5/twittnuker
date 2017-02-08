@@ -62,6 +62,9 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
+import de.vanita5.twittnuker.task.CreateFavoriteTask
+import de.vanita5.twittnuker.task.DestroyFavoriteTask
+import de.vanita5.twittnuker.task.RetweetStatusTask
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo
 
 object MenuUtils {
@@ -143,7 +146,7 @@ object MenuUtils {
         val likeHighlight = ContextCompat.getColor(context, R.color.highlight_like)
         val loveHighlight = ContextCompat.getColor(context, R.color.highlight_love)
         val isMyRetweet: Boolean
-        if (twitter.isCreatingRetweet(status.account_key, status.id)) {
+        if (RetweetStatusTask.isCreatingRetweet(status.account_key, status.id)) {
             isMyRetweet = true
         } else if (twitter.isDestroyingStatus(status.account_key, status.id)) {
             isMyRetweet = false
@@ -162,9 +165,9 @@ object MenuUtils {
         val favorite = menu.findItem(R.id.favorite)
         var isFavorite = false
         if (favorite != null) {
-            if (twitter.isCreatingFavorite(status.account_key, status.id)) {
+            if (CreateFavoriteTask.isCreatingFavorite(status.account_key, status.id)) {
                 isFavorite = true
-            } else if (twitter.isDestroyingFavorite(status.account_key, status.id)) {
+            } else if (DestroyFavoriteTask.isDestroyingFavorite(status.account_key, status.id)) {
                 isFavorite = false
             } else {
                 isFavorite = status.is_favorite

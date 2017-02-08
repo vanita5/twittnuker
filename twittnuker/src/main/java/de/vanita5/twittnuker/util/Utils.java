@@ -995,11 +995,9 @@ public final class Utils implements Constants {
 
     public static void retweet(ParcelableStatus status, AsyncTwitterWrapper twitter) {
         if (isMyRetweet(status)) {
-            twitter.cancelRetweetAsync(status.account_key,
-                    status.id, status.my_retweet_id);
+            twitter.cancelRetweetAsync(status.account_key, status.id, status.my_retweet_id);
         } else {
-            twitter.retweetStatusAsync(status.account_key,
-                    status.id);
+            twitter.retweetStatusAsync(status.account_key, status);
         }
     }
 
@@ -1012,7 +1010,7 @@ public final class Utils implements Constants {
                 ((FavoriteItemProvider) provider).invokeItem(item,
                         new AbsStatusesFragment.DefaultOnLikedListener(twitter, status));
             } else {
-                twitter.createFavoriteAsync(status.account_key, status.id);
+                twitter.createFavoriteAsync(status.account_key, status);
             }
         }
     }

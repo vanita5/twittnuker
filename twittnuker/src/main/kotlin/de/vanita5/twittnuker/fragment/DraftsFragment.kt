@@ -46,9 +46,7 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
 import kotlinx.android.synthetic.main.fragment_drafts.*
 import org.mariotaku.kpreferences.get
-import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.Expression
-import org.mariotaku.sqliteqb.library.RawItemArray
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity
@@ -57,14 +55,11 @@ import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.textSizeKey
 import de.vanita5.twittnuker.extension.*
 import de.vanita5.twittnuker.model.Draft
-import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
-import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.AsyncTaskUtils
 import de.vanita5.twittnuker.util.deleteDrafts
 import java.lang.ref.WeakReference
-import java.util.*
 
 class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickListener, MultiChoiceModeListener {
 
@@ -130,25 +125,13 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
             R.id.delete -> {
                 val f = DeleteDraftsConfirmDialogFragment()
                 val args = Bundle()
-                args.putLongArray(IntentConstants.EXTRA_IDS, listView.checkedItemIds)
+                args.putLongArray(EXTRA_IDS, listView.checkedItemIds)
                 f.arguments = args
                 f.show(childFragmentManager, "delete_drafts_confirm")
                 mode.finish()
             }
             R.id.send -> {
-                val checked = listView.checkedItemPositions
-                val list = ArrayList<Draft>()
-                for (i in 0 until checked.size()) {
-                    val position = checked.keyAt(i)
-                    if (checked.valueAt(i)) {
-                        list.add(adapter.getDraft(position))
-                    }
-                }
-                if (sendDrafts(list)) {
-                    val where = Expression.`in`(Column(Drafts._ID),
-                            RawItemArray(listView.checkedItemIds))
-                    context.contentResolver.delete(Drafts.CONTENT_URI, where.sql, null)
-                }
+                sendDrafts(listView.checkedItemIds)
                 mode.finish()
             }
             R.id.select_all -> {
@@ -205,31 +188,14 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
         startActivityForResult(intent, REQUEST_COMPOSE)
     }
 
-    private fun sendDrafts(list: List<Draft>): Boolean {
-        loop@ for (item in list) {
-            if (TextUtils.isEmpty(item.action_type)) {
-                item.action_type = Draft.Action.UPDATE_STATUS
-            }
-            notificationManager.cancel(Uri.withAppendedPath(Drafts.CONTENT_URI,
-                    item._id.toString()).toString(), NOTIFICATION_ID_DRAFTS)
-            when (item.action_type) {
-                Draft.Action.UPDATE_STATUS_COMPAT_1, Draft.Action.UPDATE_STATUS_COMPAT_2, Draft.Action.UPDATE_STATUS, Draft.Action.REPLY, Draft.Action.QUOTE -> {
-                    LengthyOperationsService.updateStatusesAsync(context, item.action_type,
-                            ParcelableStatusUpdateUtils.fromDraftItem(activity, item))
-                }
-                Draft.Action.SEND_DIRECT_MESSAGE_COMPAT, Draft.Action.SEND_DIRECT_MESSAGE -> {
-                    var recipientId: String? = null
-                    if (item.action_extras is SendDirectMessageActionExtras) {
-                        recipientId = (item.action_extras as SendDirectMessageActionExtras).recipientId
-                    }
-                    if (item.account_keys?.isEmpty() ?: true || recipientId == null) {
-                        continue@loop
-                    }
-                    val accountId = item.account_keys?.firstOrNull()
-                    val imageUri = item.media?.firstOrNull()?.uri
-                    twitterWrapper.sendDirectMessageAsync(accountId, recipientId, item.text, imageUri)
-                }
-            }
+    private fun sendDrafts(list: LongArray): Boolean {
+        for (id in list) {
+            val uri = Uri.withAppendedPath(Drafts.CONTENT_URI, id.toString())
+            notificationManager.cancel(uri.toString(), NOTIFICATION_ID_DRAFTS)
+            val sendIntent = Intent(context, LengthyOperationsService::class.java)
+            sendIntent.action = IntentConstants.INTENT_ACTION_SEND_DRAFT
+            sendIntent.data = uri
+            context.startService(sendIntent)
         }
         return true
     }

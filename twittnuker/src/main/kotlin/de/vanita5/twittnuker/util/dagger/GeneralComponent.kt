@@ -119,7 +119,7 @@ interface GeneralComponent {
 
     fun inject(obj: NotificationHelper)
 
-    fun inject(task: AbsFriendshipOperationTask)
+    fun inject(task: BaseAbstractTask<Any, Any, Any>)
 
     fun inject(preference: KeyboardShortcutPreference)
 

@@ -678,8 +678,8 @@
     <string name="message_please_wait">Please wait.</string>
     <string name="message_toast_retweet_cancelled">Retweet cancelled.</string>
     <string name="message_toast_search_deleted">Search deleted.</string>
-    <string name="message_toast_search_name_deleted">Search \"<xliff:g id="name">%s</xliff:g>\" deleted.</string>
-    <string name="message_toast_search_name_saved">Search \"<xliff:g id="name">%s</xliff:g>\" saved.</string>
+    <string name="message_toast_search_name_deleted">Search \"<xliff:g example="SearchQuery" id="name">%1$s</xliff:g>\" deleted</string>
+    <string name="message_toast_search_name_saved">Search \"<xliff:g example="SearchQuery" id="name">%1$s</xliff:g>\" saved</string>
     <string name="message_toast_search_saved">Search saved.</string>
     <string name="message_toast_status_deleted">Tweet deleted.</string>
     <string name="message_toast_status_favorited">Tweet favorited.</string>
