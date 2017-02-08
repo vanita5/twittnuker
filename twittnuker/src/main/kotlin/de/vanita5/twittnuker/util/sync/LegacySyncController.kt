@@ -26,10 +26,13 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.SystemClock
 import android.support.v4.util.ArrayMap
+import de.vanita5.twittnuker.service.JobTaskService
 import de.vanita5.twittnuker.service.LegacyTaskService
 import de.vanita5.twittnuker.util.TaskServiceRunner
+import de.vanita5.twittnuker.util.refresh.LegacyAutoRefreshController
 import java.util.concurrent.TimeUnit
 
 
@@ -47,6 +50,9 @@ class LegacySyncController(context: Context) : SyncController(context) {
     }
 
     override fun appStarted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            LegacyAutoRefreshController.removeAllJobs(context, JobTaskService.JOB_IDS_REFRESH)
+        }
         for ((action, pendingIntent) in pendingIntents) {
             alarmManager.cancel(pendingIntent)
             val interval = TimeUnit.HOURS.toMillis(4)
