@@ -32,9 +32,11 @@ import android.widget.TextView
 import de.vanita5.twittnuker.library.twitter.model.Location
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.TrendsLocationSelectorActivity
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_LOCATION
 import de.vanita5.twittnuker.fragment.CustomTabsFragment
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.tab.TabConfiguration
 
 open class TrendsLocationExtraConfiguration(
@@ -53,6 +55,7 @@ open class TrendsLocationExtraConfiguration(
         }
 
     private lateinit var summaryView: TextView
+
     override fun onCreateView(context: Context, parent: ViewGroup): View {
         return LayoutInflater.from(context).inflate(R.layout.layout_extra_config_checkbox, parent, false)
     }
@@ -80,6 +83,19 @@ open class TrendsLocationExtraConfiguration(
                     value = Place(location.woeid, location.name)
                 }
             }
+        }
+    }
+
+    override fun onAccountSelectionChanged(account: AccountDetails?) {
+        super.onAccountSelectionChanged(account)
+        val titleView = view.findViewById(android.R.id.title) as TextView
+        val summaryView = view.findViewById(android.R.id.summary) as TextView
+        val canSelectLocation = account?.type == AccountType.TWITTER
+        view.isEnabled = canSelectLocation
+        titleView.isEnabled = canSelectLocation
+        summaryView.isEnabled = canSelectLocation
+        if (!canSelectLocation) {
+            value = null
         }
     }
 

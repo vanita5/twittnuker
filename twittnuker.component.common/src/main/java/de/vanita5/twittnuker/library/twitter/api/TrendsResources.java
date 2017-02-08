@@ -37,8 +37,8 @@ import de.vanita5.twittnuker.library.twitter.model.Trends;
 @SuppressWarnings("RedundantThrows")
 public interface TrendsResources {
 
-	@GET("/trends/available.json")
-	ResponseList<Location> getAvailableTrends() throws MicroBlogException;
+    @GET("/trends/available.json")
+    ResponseList<Location> getAvailableTrends() throws MicroBlogException;
 
     @GET("/trends/available.json")
     ResponseList<Location> getAvailableTrends(@Query GeoLocation location) throws MicroBlogException;
@@ -49,6 +49,4 @@ public interface TrendsResources {
     @GET("/trends/place.json")
     ResponseList<Trends> getLocationTrends(@Query("id") int woeid) throws MicroBlogException;
 
-    @GET("/trends/place.json")
-    Trends getPlaceTrends(@Query("id") int woeid) throws MicroBlogException;
 }

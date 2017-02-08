@@ -33,7 +33,7 @@ import org.mariotaku.restfu.annotation.param.Query;
 
 @SuppressWarnings("RedundantThrows")
 @Queries(template = StatusAnnotationTemplate.class)
-public interface SearchResource {
+public interface SearchResources {
     @GET("/search/tweets.json")
     QueryResult search(@Query SearchQuery query) throws MicroBlogException;
 }
