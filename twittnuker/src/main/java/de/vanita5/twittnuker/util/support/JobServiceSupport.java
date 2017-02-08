@@ -30,6 +30,8 @@ import android.annotation.TargetApi;
 import android.app.job.JobParameters;
 import android.os.Build;
 
+import de.vanita5.twittnuker.util.Analyzer;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -68,9 +70,11 @@ public class JobServiceSupport {
             return false;
         } catch (IllegalAccessException e) {
             // This shouldn't happen, skip
+            Analyzer.Companion.logException(e);
             return false;
         } catch (InvocationTargetException e) {
             // Internal error, skip
+            Analyzer.Companion.logException(e);
             return false;
         }
     }
@@ -84,9 +88,11 @@ public class JobServiceSupport {
             return true;
         } catch (NoSuchFieldException e) {
             // Framework version mismatch, skip
+            Analyzer.Companion.logException(e);
             return false;
         } catch (IllegalAccessException e) {
             // This shouldn't happen, skip
+            Analyzer.Companion.logException(e);
             return false;
         }
     }

@@ -30,6 +30,7 @@ import android.os.Build
 import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.annotation.AutoRefreshType
 import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
+import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.TaskServiceRunner
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.support.JobServiceSupport
@@ -64,6 +65,7 @@ class JobTaskService : JobService() {
             }
         } catch (e: Exception) {
             // Swallow any possible exceptions
+            Analyzer.logException(e)
         }
         return false
     }
