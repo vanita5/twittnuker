@@ -32,16 +32,15 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
 import com.squareup.otto.Subscribe
-import de.vanita5.twittnuker.R
 import kotlinx.android.synthetic.main.fragment_content_listview.*
-import org.mariotaku.sqliteqb.library.*
+import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.TrendsAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_EXTRAS
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.TrendsRefreshedEvent
 import de.vanita5.twittnuker.model.tab.extra.TrendsTabExtras
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends
-import de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri
 import de.vanita5.twittnuker.util.IntentUtils.openTweetSearch
 import de.vanita5.twittnuker.util.Utils
 
@@ -69,17 +68,10 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         val uri = CachedTrends.Local.CONTENT_URI
-        val table = getTableNameByUri(uri)!!
-        val timestampQuery = SQLQueryBuilder.select(Columns.Column(CachedTrends.TIMESTAMP))
-                .from(Table(table))
-                .orderBy(OrderBy(CachedTrends.TIMESTAMP, false))
-                .limit(1)
-                .build()
-        val where = Expression.and(Expression.equalsArgs(CachedTrends.ACCOUNT_KEY),
-                Expression.equalsArgs(CachedTrends.WOEID),
-                Expression.equals(Columns.Column(CachedTrends.TIMESTAMP), timestampQuery)).sql
-        val whereArgs = arrayOf(accountKey?.toString() ?: "", woeId.toString())
-        return CursorLoader(activity, uri, CachedTrends.COLUMNS, where, whereArgs, CachedTrends.TREND_ORDER)
+        val loaderWhere = Expression.and(Expression.equalsArgs(CachedTrends.ACCOUNT_KEY),
+                Expression.equalsArgs(CachedTrends.WOEID)).sql
+        val loaderWhereArgs = arrayOf(accountKey?.toString() ?: "", woeId.toString())
+        return CursorLoader(activity, uri, CachedTrends.COLUMNS, loaderWhere, loaderWhereArgs, CachedTrends.TREND_ORDER)
     }
 
     override fun onItemClick(view: AdapterView<*>, child: View, position: Int, id: Long) {
