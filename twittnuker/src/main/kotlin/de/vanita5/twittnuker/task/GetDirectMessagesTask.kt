@@ -35,6 +35,8 @@ import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.TwittnukerConstants
+import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
+import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
 import de.vanita5.twittnuker.constant.loadItemLimitKey
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
@@ -107,7 +109,7 @@ abstract class GetDirectMessagesTask(
                 } else if (e.isCausedByNetworkIssue) {
                     errorInfoStore[ErrorInfoStore.KEY_DIRECT_MESSAGES, accountKey] = ErrorInfoStore.CODE_NETWORK_ERROR
                 }
-                DebugLog.w(TwittnukerConstants.LOGTAG, tr = e)
+                DebugLog.w(LOGTAG, tr = e)
                 result.add(TwitterWrapper.MessageListResponse(accountKey, e))
             }
 
@@ -130,7 +132,7 @@ abstract class GetDirectMessagesTask(
 
 
         // Insert previously fetched items.
-        val insertUri = UriUtils.appendQueryParameters(uri, TwittnukerConstants.QUERY_PARAM_NOTIFY, notify)
+        val insertUri = UriUtils.appendQueryParameters(uri, QUERY_PARAM_NOTIFY, notify)
         ContentResolverUtils.bulkInsert(context.contentResolver, insertUri, valuesArray)
         return false
     }

@@ -80,6 +80,7 @@ val lightFontKey = KBooleanKey("light_font", true)
 val extraFeaturesNoticeVersionKey = KIntKey("extra_features_notice_version", 0)
 val mediaPreloadKey = KBooleanKey(KEY_MEDIA_PRELOAD, true)
 val mediaPreloadOnWifiOnlyKey = KBooleanKey(KEY_PRELOAD_WIFI_ONLY, false)
+val autoRefreshCompatibilityModeKey = KBooleanKey("auto_refresh_compatibility_mode", Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
 
 object themeBackgroundAlphaKey : KSimpleKey<Int>(KEY_THEME_BACKGROUND_ALPHA, 0xFF) {
     override fun read(preferences: SharedPreferences): Int {

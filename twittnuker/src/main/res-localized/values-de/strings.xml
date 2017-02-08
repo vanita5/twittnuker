@@ -190,6 +190,7 @@
     <!-- App name, normally you don't need to translate this. -->
     <string name="app_name">Twittnuker</string>
     <string name="app_restart_confirm">Twittnuker neustarten um die Einstellung zu speichern.</string>
+    <string name="app_terminate_confirm">Twidere beenden um die Einstellungen anzuwenden.</string>
     <string name="appearance">Aussehen</string>
     <string name="auth_type_basic">Basic</string>
     <string name="auth_type_oauth">OAuth</string>
@@ -277,7 +278,8 @@
     <string name="dns_server">DNS-Server</string>
     <string name="dns_server_summary">DNS-Server für Netzwerkanfragen einstellen.</string>
     <string name="donate_twidere_via_paypal">Spende an Twidere via PayPal</string>
-    <string name="dont_restart">Nicht neustarten</string>
+    <string name="action_dont_restart">Nicht neustarten</string>
+    <string name="action_dont_terminate">Nicht beenden</string>
     <string name="draft_saved">Entwurf gespeichert</string>
     <string name="drafts_hint_messages">Keine Entwürfe</string>
     <string name="drawer_toggle">Menu Button</string>
@@ -604,11 +606,15 @@
     <string name="preference_randomize_account_name">Account Name verstecken</string>
     <string name="preference_randomize_account_name_summary">Verhindert, dass andere Apps deine echten Accountnamen auslesen können.</string>
     <string name="preference_randomize_account_rename_accounts_confirm">Accounts umbenennen?</string>
+    <string name="preference_summary_auto_refresh_compatibility_mode">Aktivieren, wenn Autorefresh nicht funktioniert. Erhöht den Energieverbrauch unter Android 5.0+</string>
+    <string name="preference_summary_auto_refresh_power_saving">Autorefresh anhalten, wenn der Akkustand niedrig ist</string>
     <string name="preference_summary_chrome_custom_tab">Links in der App öffnen, ohne sie zu verlassen</string>
     <string name="preference_summary_database_item_limit">Anzahl der Objekte, die maximal pro Account gespeichert werden. Ein niedrigerer Wert spart Speicherplatz und erhöht die Ladegeschwindigkeit.</string>
     <string name="preference_summary_media_preload_non_metered_network">Medien nur in nicht beschränkten Netzwerken wie WLAN vorladen.</string>
     <string name="preference_title_accounts">Accounts</string>
     <string name="preference_title_advanced">Erweitert</string>
+    <string name="preference_title_auto_refresh_compatibility_mode">Kompatibilitätsmodus</string>
+    <string name="preference_title_auto_refresh_power_saving">Energiesparmodus</string>
     <string name="preference_title_chrome_custom_tab">In-App Browser</string>
     <string name="preference_title_database_item_limit">Maximale Größe der Datenbank</string>
     <string name="preference_title_filter_manage_subscriptions">Bearbeiten</string>
@@ -775,7 +781,6 @@
     <string name="status_shortener_default">Nicht kürzen (Senden abbrechen)</string>
     <!-- [noun] Accessibility label for retweet icon -->
     <string name="status_type_retweet">Retweet</string>
-    <string name="stop_auto_refresh_when_battery_low">Energiesparen</string>
     <string name="streaming">Streaming</string>
     <string name="style">Style</string>
     <string name="subscribed_to_list">Liste \"<xliff:g id="list">%s</xliff:g>\" abonniert.</string>

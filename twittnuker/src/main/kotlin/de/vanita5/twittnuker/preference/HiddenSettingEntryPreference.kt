@@ -25,16 +25,14 @@ package de.vanita5.twittnuker.preference
 import android.content.Context
 import android.content.Intent
 import android.support.v7.preference.Preference
-import android.support.v7.preference.PreferenceCategory
 import android.support.v7.preference.PreferenceManager
 import android.util.AttributeSet
 import de.vanita5.twittnuker.constant.IntentConstants.INTENT_ACTION_HIDDEN_SETTINGS_ENTRY
 
-class HiddenSettingEntryPreference @JvmOverloads constructor(
+class HiddenSettingEntryPreference(
         context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = android.support.v7.preference.R.attr.preferenceCategoryStyle
-) : PreferenceCategory(context, attrs, defStyleAttr) {
+        attrs: AttributeSet? = null
+) : TintedPreferenceCategory(context, attrs) {
 
     override fun onAttachedToHierarchy(preferenceManager: PreferenceManager?, id: Long) {
         super.onAttachedToHierarchy(preferenceManager, id)

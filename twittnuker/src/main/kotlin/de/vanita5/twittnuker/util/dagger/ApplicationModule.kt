@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CACHE_SIZE_LIMIT
+import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache
@@ -242,7 +243,7 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun autoRefreshController(kPreferences: KPreferences): AutoRefreshController {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !kPreferences[autoRefreshCompatibilityModeKey]) {
             return JobSchedulerAutoRefreshController(application, kPreferences)
         }
         return LegacyAutoRefreshController(application, kPreferences)
