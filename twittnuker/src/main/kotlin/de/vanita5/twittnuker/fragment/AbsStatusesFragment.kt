@@ -23,10 +23,12 @@
 package de.vanita5.twittnuker.fragment
 
 import android.accounts.AccountManager
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.Loader
@@ -37,22 +39,18 @@ import android.view.*
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
-import org.mariotaku.ktextension.coerceInOr
-import org.mariotaku.ktextension.isNullOrEmpty
-import org.mariotaku.ktextension.rangeOfSize
+import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants
+import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.annotation.Referral
+import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
-import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
-import de.vanita5.twittnuker.constant.newDocumentApiKey
-import de.vanita5.twittnuker.constant.readFromBottomKey
-import de.vanita5.twittnuker.constant.rememberPositionKey
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
@@ -68,8 +66,7 @@ import de.vanita5.twittnuker.view.holder.GapViewHolder
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 
-abstract class AbsStatusesFragment protected constructor() :
-        AbsContentListRecyclerViewFragment<ParcelableStatusesAdapter>(),
+abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<ParcelableStatusesAdapter>(),
         LoaderCallbacks<List<ParcelableStatus>?>, IStatusViewHolder.StatusClickListener,
         KeyboardShortcutCallback {
 
@@ -157,6 +154,14 @@ abstract class AbsStatusesFragment protected constructor() :
     override fun onDestroy() {
         adapter.statusClickListener = null
         super.onDestroy()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_FAVORITE_SELECT_ACCOUNT, REQUEST_RETWEET_SELECT_ACCOUNT -> {
+                handleActionActivityResult(this, requestCode, resultCode, data)
+            }
+        }
     }
 
     abstract fun getStatuses(param: RefreshTaskParam): Boolean
@@ -361,7 +366,12 @@ abstract class AbsStatusesFragment protected constructor() :
 
     override fun onItemActionClick(holder: RecyclerView.ViewHolder, id: Int, position: Int) {
         val status = adapter.getStatus(position) ?: return
-        handleStatusActionClick(context, fragmentManager, twitterWrapper, holder as StatusViewHolder, status, id)
+        handleActionClick(context, fragmentManager, twitterWrapper, holder as StatusViewHolder, status, id)
+    }
+
+    override fun onItemActionLongClick(holder: RecyclerView.ViewHolder, id: Int, position: Int): Boolean {
+        val status = adapter.getStatus(position) ?: return false
+        return handleActionLongClick(this, status, adapter.getItemId(position), id)
     }
 
     override fun createItemDecoration(context: Context, recyclerView: RecyclerView, layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
@@ -499,12 +509,13 @@ abstract class AbsStatusesFragment protected constructor() :
 
     class DefaultOnLikedListener(
             private val twitter: AsyncTwitterWrapper,
-            private val status: ParcelableStatus
+            private val status: ParcelableStatus,
+            private val accountKey: UserKey? = null
     ) : LikeAnimationDrawable.OnLikedListener {
 
         override fun onLiked(): Boolean {
             if (status.is_favorite) return false
-            twitter.createFavoriteAsync(status.account_key, status)
+            twitter.createFavoriteAsync(accountKey ?: status.account_key, status)
             return true
         }
     }
@@ -524,11 +535,11 @@ abstract class AbsStatusesFragment protected constructor() :
 
     companion object {
 
-        fun handleStatusActionClick(context: Context, fm: FragmentManager,
-                                    twitter: AsyncTwitterWrapper?, holder: StatusViewHolder,
-                                    status: ParcelableStatus?, id: Int) {
+        const val REQUEST_FAVORITE_SELECT_ACCOUNT = 101
+        const val REQUEST_RETWEET_SELECT_ACCOUNT = 102
 
-            if (status == null) return
+        fun handleActionClick(context: Context, fm: FragmentManager, twitter: AsyncTwitterWrapper?,
+                              holder: StatusViewHolder, status: ParcelableStatus, id: Int) {
             when (id) {
                 R.id.reply -> {
                     val intent = Intent(INTENT_ACTION_REPLY)
@@ -544,11 +555,58 @@ abstract class AbsStatusesFragment protected constructor() :
                     if (status.is_favorite) {
                         twitter.destroyFavoriteAsync(status.account_key, status.id)
                     } else {
-                        holder.playLikeAnimation(DefaultOnLikedListener(twitter,
-                                status))
+                        holder.playLikeAnimation(DefaultOnLikedListener(twitter, status))
                     }
                 }
             }
         }
+
+        fun handleActionLongClick(fragment: Fragment, status: ParcelableStatus, itemId: Long, id: Int): Boolean {
+            when (id) {
+                R.id.favorite -> {
+                    val intent = selectAccountIntent(fragment.context, status, itemId)
+                    fragment.startActivityForResult(intent, REQUEST_FAVORITE_SELECT_ACCOUNT)
+                    return true
+                }
+                R.id.retweet -> {
+                    val intent = selectAccountIntent(fragment.context, status, itemId)
+                    fragment.startActivityForResult(intent, REQUEST_RETWEET_SELECT_ACCOUNT)
+                    return true
+                }
+            }
+            return false
+        }
+
+        fun handleActionActivityResult(fragment: BaseFragment, requestCode: Int, resultCode: Int, data: Intent?) {
+            when (requestCode) {
+                AbsStatusesFragment.REQUEST_FAVORITE_SELECT_ACCOUNT -> {
+                    if (resultCode != Activity.RESULT_OK || data == null) return
+                    val accountKey = data.getParcelableExtra<UserKey>(IntentConstants.EXTRA_ACCOUNT_KEY)
+                    val extras = data.getBundleExtra(IntentConstants.EXTRA_EXTRAS)
+                    val status = extras.getParcelable<ParcelableStatus>(IntentConstants.EXTRA_STATUS)
+                    fragment.twitterWrapper.createFavoriteAsync(accountKey, status)
+                }
+                AbsStatusesFragment.REQUEST_RETWEET_SELECT_ACCOUNT -> {
+                    if (resultCode != Activity.RESULT_OK || data == null) return
+                    val accountKey = data.getParcelableExtra<UserKey>(IntentConstants.EXTRA_ACCOUNT_KEY)
+                    val extras = data.getBundleExtra(IntentConstants.EXTRA_EXTRAS)
+                    val status = extras.getParcelable<ParcelableStatus>(IntentConstants.EXTRA_STATUS)
+                    RetweetQuoteDialogFragment.show(fragment.childFragmentManager, status, accountKey)
+                }
+            }
+        }
+
+        fun selectAccountIntent(context: Context, status: ParcelableStatus, itemId: Long): Intent {
+            val intent = Intent(context, AccountSelectorActivity::class.java)
+            intent.putExtra(EXTRA_SELECT_ONLY_ITEM_AUTOMATICALLY, true)
+            intent.putExtra(EXTRA_ACCOUNT_HOST, status.account_key.host)
+            intent.putExtra(EXTRA_SINGLE_SELECTION, true)
+            intent.putExtra(EXTRA_EXTRAS, Bundle {
+                this[EXTRA_STATUS] = status
+                this[EXTRA_ID] = itemId
+            })
+            return intent
+        }
+
     }
 }

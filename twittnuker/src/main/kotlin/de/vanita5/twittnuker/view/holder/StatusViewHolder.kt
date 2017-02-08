@@ -33,7 +33,6 @@ import android.view.View.OnLongClickListener
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.list_item_status.view.*
 import org.mariotaku.ktextension.applyFontFamily
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
@@ -56,7 +55,7 @@ import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import java.lang.ref.WeakReference
 
-class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View) : ViewHolder(itemView), Constants, IStatusViewHolder {
+class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View) : ViewHolder(itemView), IStatusViewHolder {
 
     override val profileImageView: ProfileImageView by lazy { itemView.profileImage }
     override val profileTypeView: ImageView by lazy { itemView.profileType }
@@ -479,6 +478,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         replyButton.setOnClickListener(eventListener)
         retweetButton.setOnClickListener(eventListener)
         favoriteButton.setOnClickListener(eventListener)
+        retweetButton.setOnLongClickListener(eventListener)
+        favoriteButton.setOnLongClickListener(eventListener)
 
         mediaLabel.setOnClickListener(eventListener)
 
@@ -663,6 +664,12 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                         return true
                     }
                     return listener.onStatusLongClick(holder, position)
+                }
+                holder.favoriteButton -> {
+                    return listener.onItemActionLongClick(holder, R.id.favorite, position)
+                }
+                holder.retweetButton -> {
+                    return listener.onItemActionLongClick(holder, R.id.retweet, position)
                 }
             }
             return false
