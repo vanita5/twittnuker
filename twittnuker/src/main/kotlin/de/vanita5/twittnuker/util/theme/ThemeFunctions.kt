@@ -23,14 +23,20 @@
 package de.vanita5.twittnuker.util.theme
 
 import android.content.Context
+import android.content.res.TypedArray
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_THEME_NAME_AUTO
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_THEME_NAME_DARK
 import de.vanita5.twittnuker.util.ThemeUtils
 
 
-fun getCurrentThemeResource(context: Context, theme: String): Int {
-    val a = context.obtainStyledAttributes(R.styleable.TwidereTheme)
+fun getCurrentThemeResource(context: Context, theme: String, fromThemeResource: Int = 0): Int {
+    val a: TypedArray
+    if (fromThemeResource == 0) {
+        a = context.obtainStyledAttributes(R.styleable.TwidereTheme)
+    } else {
+        a = context.obtainStyledAttributes(fromThemeResource, R.styleable.TwidereTheme)
+    }
     try {
         val lightTheme = a.getResourceId(R.styleable.TwidereTheme_lightThemeResource, 0)
         val darkTheme = a.getResourceId(R.styleable.TwidereTheme_darkThemeResource, 0)

@@ -31,6 +31,8 @@
     <string name="action_deleting">Löschen</string>
     <string name="action_deleting_search">Lösche Suche</string>
     <string name="action_denying_follow_request">Lehne Follower-Anfrage ab</string>
+    <string name="action_dont_restart">Nicht neustarten</string>
+    <string name="action_dont_terminate">Nicht beenden</string>
     <!-- [verb] Edit image/settings etc. -->
     <string name="action_edit">Bearbeiten</string>
     <string name="action_edit_filter_rule">Regel bearbeiten</string>
@@ -278,8 +280,6 @@
     <string name="dns_server">DNS-Server</string>
     <string name="dns_server_summary">DNS-Server für Netzwerkanfragen einstellen.</string>
     <string name="donate_twidere_via_paypal">Spende an Twidere via PayPal</string>
-    <string name="action_dont_restart">Nicht neustarten</string>
-    <string name="action_dont_terminate">Nicht beenden</string>
     <string name="draft_saved">Entwurf gespeichert</string>
     <string name="drafts_hint_messages">Keine Entwürfe</string>
     <string name="drawer_toggle">Menu Button</string>
@@ -619,6 +619,7 @@
     <string name="preference_title_database_item_limit">Maximale Größe der Datenbank</string>
     <string name="preference_title_filter_manage_subscriptions">Bearbeiten</string>
     <string name="preference_title_filter_subscriptions">Filter Abonnements</string>
+    <string name="preference_title_floating_detailed_view">(D) Floating detailed view</string>
     <string name="preference_title_landscape">Landscape</string>
     <string name="preference_title_light_font">Light Font</string>
     <string name="preference_title_media_preload_non_metered_network">Nur mit WLAN vorladen</string>
