@@ -613,11 +613,11 @@
     <string name="preference_title_database_item_limit">Maximale Größe der Datenbank</string>
     <string name="preference_title_filter_manage_subscriptions">Bearbeiten</string>
     <string name="preference_title_filter_subscriptions">Filter Abonnements</string>
+    <string name="preference_title_landscape">Landscape</string>
     <string name="preference_title_light_font">Light Font</string>
     <string name="preference_title_media_preload_non_metered_network">Nur mit WLAN vorladen</string>
     <string name="preference_title_multi_column_tabs">Mehrspaltige Tabs</string>
     <string name="preference_title_portrait">Portrait</string>
-    <string name="preference_title_landscape">Landscape</string>
     <string name="preference_title_storage">Speicher</string>
     <string name="preference_title_tablet_mode">Tablet Modus</string>
     <string name="preference_title_translate">Übersetzen</string>
@@ -625,8 +625,8 @@
     <string name="preview">Vorschau</string>
     <string name="preview_images">Vorschaubilder</string>
     <string name="preview_style_crop">Zuschneiden</string>
-    <string name="preview_style_scale">Skalieren</string>
     <string name="preview_style_real_size">Volle Grösse</string>
+    <string name="preview_style_scale">Skalieren</string>
     <!-- Previous item (tweet, user etc.) -->
     <string name="previous_item">Zurück</string>
     <string name="previous_tab">Vorheriger Tab</string>
