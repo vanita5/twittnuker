@@ -190,7 +190,7 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:2.1.0"
     compile "com.squareup.retrofit2:converter-gson:2.1.0"
 
-    compile "com.klinkerapps:giphy:1.0.2"
+    compile "com.klinkerapps:giphy:1.0.3"
 
     compile fileTree(dir: 'lib', include: ['*.jar'])
 }
