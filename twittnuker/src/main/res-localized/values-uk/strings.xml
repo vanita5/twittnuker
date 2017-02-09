@@ -65,6 +65,7 @@
     <!-- [verb] Save settings/files etc. -->
     <string name="action_save">Зберегти</string>
     <string name="action_saving_search">збереження пошуку</string>
+  <string name="action_select_user">Вибрати користувача</string>
     <!-- [verb] Send tweet/message -->
     <string name="action_send">Надіслати</string>
     <string name="action_sending_direct_message">Надсилаємо приватне повідомлення</string>
@@ -186,7 +187,6 @@
     <string name="cant_load_all_replies_message">Неможливо завантажити всі відповіді. &lt;a href=\"#dialog\";&gt;Чому?&lt;/a&gt;</string>
     <string name="cards">Картки</string>
     <string name="clear_cache">Очистити кеш</string>
-    <string name="clear_cache_summary">Очистити кеш зображень профілю.</string>
     <string name="clear_databases">Очистити бази даних</string>
     <string name="clear_databases_summary">Очистити всі твіти, профілі, повідомлення. Ваші облікові дані не будуть втрачені.</string>
     <string name="clear_search_history">Очистити історію пошуку</string>
@@ -252,7 +252,7 @@
     <string name="display_sensitive_contents_summary">Відображати делікатний вміст без попередження у стрічці</string>
     <string name="dns_server">DNS сервер</string>
     <string name="dns_server_summary">Встановлення DNS серверу для мережевих запитів.</string>
-    <string name="dont_restart">Не перезаванатажувати</string>
+    <string name="action_dont_restart">Не перезаванатажувати</string>
     <string name="draft_saved">Чернетку збережено</string>
     <string name="drafts_hint_messages">Тут зберігаються невідправлені твіти</string>
     <string name="drawer_toggle">Перемикач бічної панелі</string>
@@ -413,19 +413,7 @@
     <string name="message_blocked_user">Заблоковано <xliff:g id="user">%s</xliff:g>.</string>
     <string name="message_direct_message_deleted">Видалено пряме повідомлення.</string>
     <string name="message_direct_message_sent">Надіслано пряме повідомлення.</string>
-    <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-    <!-- Toast message for network errors -->
-    <string name="message_network_error">Помилка мережі.</string>
     <string name="message_please_wait">Зачекайте.</string>
-    <string name="message_retweet_cancelled">Ретвіт скасовано.</string>
-    <string name="message_search_deleted">Пошук вилучено.</string>
-    <string name="message_search_name_deleted">Пошук \"<xliff:g id="name">%s</xliff:g>\" вилучено.</string>
-    <string name="message_search_name_saved">Пошук \"<xliff:g id="name">%s</xliff:g>\" збережено.</string>
-    <string name="message_search_saved">Пошук збережено.</string>
-    <string name="message_status_deleted">Твіт видалено.</string>
-    <string name="message_status_favorited">Твіт обрано.</string>
-    <string name="message_status_retweeted">Ретвітнуто.</string>
-    <string name="message_status_unfavorited">Твіт видалено з обраних.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -434,9 +422,11 @@
     <string name="message_toast_already_logged_in">Ви вже увійшли.</string>
     <string name="message_toast_cannot_get_location">Не вдається отримати ваше розташування.</string>
     <string name="message_toast_error_occurred">Трапилася помилка, спробуйте ще раз.</string>
+  <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_link_copied_to_clipboard">Посилання скопійовано до буферу обміну</string>
     <string name="message_toast_livewp_daydream_enabled_message">Тут є маленький дарунок для вас, знайдіть його у ваших системних налаштуваннях :)</string>
     <string name="message_toast_login_verification_failed">Не вдалося підтвердити вхід.</string>
+  <!-- Toast message for network errors -->
     <string name="message_toast_no_account">Немає профілю</string>
     <string name="message_toast_no_account_selected">Не вибрано жодного профілю.</string>
     <string name="message_toast_press_again_to_close">Натисни ще раз, щоб закрити</string>
@@ -448,10 +438,6 @@
     <string name="message_toast_status_saved_to_draft">Твіт збережено як чернетку.</string>
     <string name="message_toast_status_updated">Твіт надіслано.</string>
     <string name="message_toast_wrong_api_key">Невірне API url або ключ користувача, перевірте їх ще раз.</string>
-    <string name="message_user_muted">Користувач доданий в фільтри. Тепер ви не побачите його твітів в стрічці/згадках.</string>
-    <string name="message_user_unmuted">Користувач виключений з фільтру.</string>
-    <string name="message_users_muted">Користувачі додані в фільтр. Тепер ви не побачите їхніх твітів в стрічці / згадках.</string>
-    <string name="more">Більше</string>
     <string name="multi_select">Множинний вибір</string>
     <string name="mute_user">Ігнорувати <xliff:g id="name">%s</xliff:g></string>
     <string name="mute_user_confirm_message">Ігнорувати <xliff:g id="name">%s</xliff:g>? Ви більше не побачите твітів користувача, але все одно будете його читачем.</string>
@@ -539,6 +525,8 @@
     <string name="preference_title_accounts">Профілі</string>
     <string name="preference_title_advanced">Додатково</string>
     <string name="preference_title_database_item_limit">Обмеження розміру бази даних</string>
+  <string name="preference_title_portrait">Портретний</string>
+  <string name="preference_title_landscape">Ландшафтний</string>
     <string name="preference_title_storage">Пам\'ять</string>
     <string name="preference_title_translate">Перекласти</string>
     <string name="preload_wifi_only">Попереднє завантаження лише через wi-fi</string>
@@ -760,6 +748,7 @@
     <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
     <string name="title_user">Користувач</string>
     <string name="title_user_colors">Кольори користувача</string>
+  <string name="title_user_list_memberships">Списки зі мною</string>
     <string name="title_users_favorited_this">Додали до обраного</string>
     <string name="title_users_liked_this">Вподобали</string>
     <string name="title_users_retweeted_this">Користувачі, які ретвітнули це</string>

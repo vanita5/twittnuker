@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +25,11 @@ package de.vanita5.twittnuker.util.dagger
 import android.content.Context
 import com.nostra13.universalimageloader.core.ImageLoader
 import okhttp3.ConnectionPool
+import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.net.TwidereDns
-import org.mariotaku.kpreferences.KPreferences
 import javax.inject.Inject
 
 class DependencyHolder internal constructor(context: Context) {
@@ -55,7 +55,7 @@ class DependencyHolder internal constructor(context: Context) {
     lateinit var preferences: SharedPreferencesWrapper
         internal set
     @Inject
-    lateinit var connectionPoll: ConnectionPool
+    lateinit var connectionPool: ConnectionPool
         internal set
     @Inject
     lateinit var defaultFeatures: DefaultFeatures

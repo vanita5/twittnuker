@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,13 +27,14 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.bluelinelabs.logansquare.LoganSquare
+import com.rengwuxian.materialedittext.MaterialEditText
 import org.mariotaku.restfu.annotation.method.GET
 import org.mariotaku.restfu.http.HttpRequest
 import org.mariotaku.restfu.http.RestHttpClient
@@ -43,11 +44,13 @@ import de.vanita5.twittnuker.adapter.BaseArrayAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_API_CONFIG
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.setSelectedItem
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.util.ParseUtils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.view.ConsumerKeySecretValidator
 import java.io.IOException
 import javax.inject.Inject
 
@@ -57,8 +60,8 @@ class APIEditorDialogFragment : BaseDialogFragment() {
     private val editAPIUrlFormat by lazy { dialog.findViewById(R.id.editApiUrlFormat) as EditText }
     private val editSameOAuthSigningUrl by lazy { dialog.findViewById(R.id.editSameOAuthSigningUrl) as CheckBox }
     private val editNoVersionSuffix by lazy { dialog.findViewById(R.id.editNoVersionSuffix) as CheckBox }
-    private val editConsumerKey by lazy { dialog.findViewById(R.id.editConsumerKey) as EditText }
-    private val editConsumerSecret by lazy { dialog.findViewById(R.id.editConsumerSecret) as EditText }
+    private val editConsumerKey by lazy { dialog.findViewById(R.id.editConsumerKey) as MaterialEditText }
+    private val editConsumerSecret by lazy { dialog.findViewById(R.id.editConsumerSecret) as MaterialEditText }
     private val editAuthType by lazy { dialog.findViewById(R.id.editAuthType) as RadioGroup }
     private val apiFormatHelpButton by lazy { dialog.findViewById(R.id.apiUrlFormatHelp) }
     private val accountTypeSpinner by lazy { dialog.findViewById(R.id.accountTypeSpinner) as Spinner }
@@ -68,7 +71,7 @@ class APIEditorDialogFragment : BaseDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(context)
-        builder.setView(R.layout.layout_api_editor)
+        builder.setView(R.layout.dialog_api_editor)
         builder.setPositiveButton(R.string.action_save) { dialog, which ->
             val targetFragment = this.targetFragment
             val parentFragment = this.parentFragment
@@ -86,8 +89,9 @@ class APIEditorDialogFragment : BaseDialogFragment() {
         builder.setNegativeButton(android.R.string.cancel, null)
 
         val dialog = builder.create()
-        dialog.setOnShowListener { dialog ->
-
+        dialog.setOnShowListener {
+            it as AlertDialog
+            it.applyTheme()
             if (arguments?.getBoolean(EXTRA_SHOW_LOAD_DEFAULTS) ?: false) {
                 loadDefaults.visibility = View.VISIBLE
             } else {
@@ -99,6 +103,10 @@ class APIEditorDialogFragment : BaseDialogFragment() {
             }
 
             accountTypeSpinner.adapter = AccountTypeSpinnerAdapter(context)
+
+            editConsumerKey.addValidator(ConsumerKeySecretValidator(context.getString(R.string.invalid_consumer_key)))
+            editConsumerSecret.addValidator(ConsumerKeySecretValidator(context.getString(R.string.invalid_consumer_secret)))
+
             editNoVersionSuffix.setOnCheckedChangeListener { buttonView, isChecked -> editNoVersionSuffixChanged = true }
             editAuthType.setOnCheckedChangeListener { group, checkedId ->
                 val authType = getCheckedAuthType(checkedId)
@@ -170,7 +178,12 @@ class APIEditorDialogFragment : BaseDialogFragment() {
             val builder = AlertDialog.Builder(context)
             builder.setAdapter(adapter, this)
             loaderManager.initLoader(0, null, this)
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
 
         override fun onClick(dialog: DialogInterface, which: Int) {
@@ -195,7 +208,7 @@ class APIEditorDialogFragment : BaseDialogFragment() {
 
         }
 
-        class DefaultAPIConfigLoader(context: Context) : AsyncTaskLoader<List<CustomAPIConfig>?>(context) {
+        class DefaultAPIConfigLoader(context: Context) : FixedAsyncTaskLoader<List<CustomAPIConfig>?>(context) {
             @Inject
             lateinit var client: RestHttpClient
 

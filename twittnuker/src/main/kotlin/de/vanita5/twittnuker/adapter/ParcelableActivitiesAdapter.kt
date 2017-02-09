@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,9 +59,11 @@ class ParcelableActivitiesAdapter(
         context: Context
 ) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context), IActivitiesAdapter<List<ParcelableActivity>> {
 
-    private val inflater: LayoutInflater
-    override val mediaLoadingHandler: MediaLoadingHandler
-    private val statusAdapterDelegate: DummyItemAdapter
+    override val mediaLoadingHandler = MediaLoadingHandler(R.id.media_preview_progress)
+
+    private val inflater = LayoutInflater.from(context)
+    private val statusAdapterDelegate = DummyItemAdapter(context,
+            TwidereLinkify(OnLinkClickHandler(context, null, preferences)), this)
     private val eventListener: EventListener
     private var data: List<ParcelableActivity>? = null
     private var activityAdapterListener: ActivityAdapterListener? = null
@@ -80,10 +82,6 @@ class ParcelableActivitiesAdapter(
         }
 
     init {
-        statusAdapterDelegate = DummyItemAdapter(context,
-                TwidereLinkify(OnLinkClickHandler(context, null, preferences)), this)
-        inflater = LayoutInflater.from(context)
-        mediaLoadingHandler = MediaLoadingHandler(R.id.media_preview_progress)
         eventListener = EventListener(this)
         statusAdapterDelegate.updateOptions()
     }
@@ -211,7 +209,7 @@ class ParcelableActivitiesAdapter(
                 return GapViewHolder(this, view)
             }
             ITEM_VIEW_TYPE_LOAD_INDICATOR -> {
-                val view = inflater.inflate(R.layout.card_item_load_indicator, parent, false)
+                val view = inflater.inflate(R.layout.list_item_load_indicator, parent, false)
                 return LoadIndicatorViewHolder(view)
             }
             ITEM_VIEW_TYPE_STUB -> {
@@ -240,7 +238,7 @@ class ParcelableActivitiesAdapter(
             }
             ITEM_VIEW_TYPE_GAP -> {
                 val activity = getActivity(position)!!
-                val loading = gapLoadingIds.find { it.accountKey == activity.account_key && it.id == activity.id } != null
+                val loading = gapLoadingIds.any { it.accountKey == activity.account_key && it.id == activity.id }
                 (holder as GapViewHolder).display(loading)
             }
         }
@@ -322,6 +320,9 @@ class ParcelableActivitiesAdapter(
     override val mediaPreviewEnabled: Boolean
         get() = statusAdapterDelegate.mediaPreviewEnabled
 
+    override val lightFont: Boolean
+        get() = statusAdapterDelegate.lightFont
+
     override var showAccountsColor: Boolean
         get() = statusAdapterDelegate.showAccountsColor
         set(value) {
@@ -355,6 +356,8 @@ class ParcelableActivitiesAdapter(
         fun onActivityClick(holder: ActivityTitleSummaryViewHolder, position: Int)
 
         fun onStatusActionClick(holder: IStatusViewHolder, id: Int, position: Int)
+
+        fun onStatusActionLongClick(holder: IStatusViewHolder, id: Int, position: Int): Boolean
 
         fun onStatusMenuClick(holder: IStatusViewHolder, menuView: View, position: Int)
 
@@ -398,8 +401,13 @@ class ParcelableActivitiesAdapter(
         }
 
         override fun onItemActionClick(holder: RecyclerView.ViewHolder, id: Int, position: Int) {
-            val adapter = adapterRef.get() ?: return
-            adapter.activityAdapterListener?.onStatusActionClick(holder as IStatusViewHolder, id, position)
+            val listener = adapterRef.get()?.activityAdapterListener ?: return
+            listener.onStatusActionClick(holder as IStatusViewHolder, id, position)
+        }
+
+        override fun onItemActionLongClick(holder: RecyclerView.ViewHolder, id: Int, position: Int): Boolean {
+            val listener = adapterRef.get()?.activityAdapterListener ?: return false
+            return listener.onStatusActionLongClick(holder as IStatusViewHolder, id, position)
         }
 
         override fun onStatusLongClick(holder: IStatusViewHolder, position: Int): Boolean {

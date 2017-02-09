@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ class UserListExtraConfiguration(key: String) : TabConfiguration.ExtraConfigurat
             val account = fragment.account ?: return@setOnClickListener
             val intent = Intent(INTENT_ACTION_SELECT_USER_LIST)
             intent.putExtra(EXTRA_ACCOUNT_KEY, account.key)
+            intent.putExtra(EXTRA_SHOW_MY_LISTS, true)
             intent.setClass(context, UserListSelectorActivity::class.java)
             fragment.startExtraConfigurationActivityForResult(this@UserListExtraConfiguration, intent, 1)
         }

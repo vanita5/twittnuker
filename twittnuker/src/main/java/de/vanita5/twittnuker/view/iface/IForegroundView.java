@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,6 @@ public interface IForegroundView {
      * the padding area.
      *
      * @param drawable The Drawable to be drawn on top of the children.
-     * @attr ref android.R.attr#foreground
      */
     void setForeground(final Drawable drawable);
 
@@ -61,7 +60,6 @@ public interface IForegroundView {
      * Describes how the foreground is positioned. Defaults to START and TOP.
      *
      * @param foregroundGravity See {@link android.view.Gravity}
-     * @attr ref android.R.attr#foregroundGravity
      */
     void setForegroundGravity(int foregroundGravity);
 

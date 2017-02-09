@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.view.iface.IExtendedView
 abstract class AbsContentRecyclerViewFragment<A : LoadMoreSupportAdapter<RecyclerView.ViewHolder>,
         L : RecyclerView.LayoutManager> : BaseFragment(), SwipeRefreshLayout.OnRefreshListener,
         HeaderDrawerLayout.DrawerCallback, RefreshScrollTopInterface, IControlBarActivity.ControlBarOffsetListener,
-        ContentScrollHandler.ContentListSupport, ControlBarShowHideHelper.ControlBarAnimationListener {
+        ContentScrollHandler.ContentListSupport<A>, ControlBarShowHideHelper.ControlBarAnimationListener {
 
     lateinit var layoutManager: L
         protected set
@@ -57,7 +57,7 @@ abstract class AbsContentRecyclerViewFragment<A : LoadMoreSupportAdapter<Recycle
 
     // Callbacks and listeners
     private lateinit var drawerCallback: SimpleDrawerCallback
-    lateinit var scrollListener: RecyclerViewScrollHandler
+    lateinit var scrollListener: RecyclerViewScrollHandler<A>
     // Data fields
     private val systemWindowsInsets = Rect()
 

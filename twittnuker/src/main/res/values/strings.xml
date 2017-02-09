@@ -31,12 +31,16 @@
     <string name="action_deleting">deleting</string>
     <string name="action_deleting_search">deleting search</string>
     <string name="action_denying_follow_request">denying follow request</string>
+    <string name="action_dont_restart">Don\'t restart</string>
+    <string name="action_dont_terminate">Don\'t quit</string>
     <!-- [verb] Edit image/settings etc. -->
     <string name="action_edit">Edit</string>
+    <string name="action_edit_filter_rule">Edit rule</string>
     <string name="action_favorite">Favorite</string>
     <string name="action_favoriting">favoriting</string>
     <string name="action_filter_import_from_blocked_users">Import from blocked users</string>
     <string name="action_filter_import_from_muted_users">Import from muted users</string>
+    <string name="action_filter_subscriptions_card_manage">Manage subscriptions</string>
     <string name="action_finish">Finish</string>
     <string name="action_follow">Follow</string>
     <string name="action_following">following</string>
@@ -82,6 +86,7 @@
     <string name="action_saving_search">saving search</string>
     <string name="action_select_all">Select all</string>
     <string name="action_select_none">Select none</string>
+    <string name="action_select_user">Select user</string>
     <!-- [verb] Send tweet/message -->
     <string name="action_send">Send</string>
     <string name="action_sending_direct_message">sending direct message</string>
@@ -92,6 +97,8 @@
     <!-- [verb] Used for skip some settings -->
     <string name="action_skip">Skip</string>
     <string name="action_start">Start</string>
+    <string name="action_status_block_users">Block users…</string>
+    <string name="action_status_mute_users">Mute users…</string>
     <string name="action_subscribe">Subscribe</string>
     <string name="action_subscribing_to_list">subscribing to list</string>
     <!-- [verb] Connect to network storage like Dropbox and Google Drive etc -->
@@ -247,6 +254,7 @@
     <!-- App name, normally you don't need to translate this. -->
     <string name="app_name">Twittnuker</string>
     <string name="app_restart_confirm">Twittnuker will restart to apply settings.</string>
+    <string name="app_terminate_confirm">Twittnuker will quit to apply settings.</string>
 
     <string name="appearance">Appearance</string>
 
@@ -282,7 +290,7 @@
     <string name="cards">Cards</string>
 
     <string name="clear_cache">Clear cache</string>
-    <string name="clear_cache_summary">Clear stored profile image cache.</string>
+    <string name="clear_cache_summary">Clear stored media cache.</string>
     <string name="clear_databases">Clear databases</string>
     <string name="clear_databases_summary">Clear all tweets, profiles, messages. Your account credentials won\'t be lost.</string>
     <string name="clear_search_history">Clear search history</string>
@@ -386,8 +394,6 @@
     <string name="dns_server">DNS Server</string>
     <string name="dns_server_summary">Set DNS Server for network requests.</string>
 
-    <string name="dont_restart">Don\'t restart</string>
-
     <string name="draft_saved">Draft saved</string>
 
     <string name="drafts_hint_messages">Your unsent tweets will save here</string>
@@ -453,9 +459,11 @@
 
     <string name="extra_configurations">Extra configurations</string>
     <string name="extra_feature_description_filters_import">Import filter list from blocks/mutes</string>
-    <string name="extra_feature_description_filters_subscription">Filters list subscription</string>
+    <string name="extra_feature_description_filters_subscription">Subscribe to mute filters and sync automatically</string>
     <string name="extra_feature_description_schedule_status">Schedule tweet (send later)</string>
     <string name="extra_feature_description_sync_data">Sync data with Dropbox, Google Drive etc</string>
+    <string name="extra_feature_title_filters_import">Filter import</string>
+    <string name="extra_feature_title_filters_subscription">Filter subscription</string>
     <!-- Enhanced (paid) features description -->
     <string name="extra_features_description">Support Twittnuker and get enhanced features</string>
     <string name="extra_features_pack_description">Or buy features pack to get all features (including features in future releases)</string>
@@ -660,24 +668,25 @@
     <string name="message_direct_message_sent">Direct message sent.</string>
     <string name="message_error_invalid_account">Some account data are corrupted, Twittnuker will remove those accounts to prevent crash.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-    <string name="message_extra_features_not_purchased">Enhanced features not purchased.</string>
+    <string name="message_toast_extra_features_not_purchased">Enhanced features not purchased.</string>
+    <string name="message_toast_filters_import_hint">Press \"+\" to import</string>
     <!-- Toast message for network errors -->
-    <string name="message_network_error">Network error.</string>
+    <string name="message_toast_network_error">Network error.</string>
     <string name="message_permission_request_compose_location">Twittnuker needs location permission for adding location to tweets.</string>
     <string name="message_permission_request_save_media">Twittnuker needs storage permission for saving media.</string>
     <string name="message_permission_request_share_media">Twittnuker needs storage permission for sharing media to some apps.</string>
     <string name="message_please_wait">Please wait.</string>
-    <string name="message_retweet_cancelled">Retweet cancelled.</string>
-    <string name="message_search_deleted">Search deleted.</string>
-    <string name="message_search_name_deleted">Search \"<xliff:g id="name">%s</xliff:g>\" deleted.</string>
-    <string name="message_search_name_saved">Search \"<xliff:g id="name">%s</xliff:g>\" saved.</string>
-    <string name="message_search_saved">Search saved.</string>
-    <string name="message_status_deleted">Tweet deleted.</string>
-    <string name="message_status_favorited">Tweet favorited.</string>
-    <string name="message_status_like_removed">Like removed.</string>
-    <string name="message_status_liked">Tweet liked.</string>
-    <string name="message_status_retweeted">Retweeted.</string>
-    <string name="message_status_unfavorited">Tweet unfavorited.</string>
+    <string name="message_toast_retweet_cancelled">Retweet cancelled.</string>
+    <string name="message_toast_search_deleted">Search deleted.</string>
+    <string name="message_toast_search_name_deleted">Search \"<xliff:g example="SearchQuery" id="name">%1$s</xliff:g>\" deleted</string>
+    <string name="message_toast_search_name_saved">Search \"<xliff:g example="SearchQuery" id="name">%1$s</xliff:g>\" saved</string>
+    <string name="message_toast_search_saved">Search saved.</string>
+    <string name="message_toast_status_deleted">Tweet deleted.</string>
+    <string name="message_toast_status_favorited">Tweet favorited.</string>
+    <string name="message_toast_status_like_removed">Like removed.</string>
+    <string name="message_toast_status_liked">Tweet liked.</string>
+    <string name="message_toast_status_retweeted">Retweeted.</string>
+    <string name="message_toast_status_unfavorited">Tweet unfavorited.</string>
     <string name="message_sync_data_connect_hint">Connect Twittnuker with network storage to sync data</string>
     <string
         name="message_sync_data_synced_with_name">Twittnuker is now synced with <xliff:g
@@ -702,11 +711,13 @@
     <string name="message_toast_already_logged_in">You have already logged in</string>
     <string name="message_toast_cannot_get_location">Can\'t get your location</string>
     <string name="message_toast_compose_write_storage_no_permission">Permission required to delete taken photo/video</string>
+    <string name="message_toast_duplicate_filter_rule">Rule duplicated</string>
     <string name="message_toast_error_occurred">An error occurred, please try again</string>
     <string name="message_toast_link_copied_to_clipboard">Link copied to clipboard</string>
     <string name="message_toast_livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
     <string name="message_toast_login_verification_failed">Login verification failed</string>
     <string name="message_toast_no_account">No account</string>
+    <string name="message_toast_no_account_permission">Account permission is required</string>
     <string name="message_toast_no_account_selected">No account selected</string>
     <string name="message_toast_no_user_selected">No user selected</string>
     <string name="message_toast_press_again_to_close">Press again to close</string>
@@ -717,15 +728,13 @@
     <string name="message_toast_share_media_no_storage_permission">Some apps requires storage permission to share media</string>
     <string name="message_toast_status_saved_to_draft">Tweet saved to draft</string>
     <string name="message_toast_status_updated">Tweet sent</string>
+    <string name="message_toast_unable_to_load_more_statuses">Unable to load older tweets</string>
     <string name="message_toast_wrong_api_key">Incorrect API settings</string>
     <string name="message_toast_wrong_username_password">Wrong username/password</string>
-    <string name="message_user_muted">Added to filters</string>
-    <string name="message_user_unmuted">Removed from filters</string>
-    <string name="message_users_muted">Added to filters</string>
+    <string name="message_toast_user_filters_removed">Removed from filters</string>
+    <string name="message_toast_users_filters_added">Added to filters</string>
     <string name="message_video_too_long">Video too long</string>
     <string name="message_video_too_short">Video too short</string>
-
-    <string name="more">More</string>
 
     <string name="multi_select">Multi select</string>
 
@@ -860,15 +869,27 @@
     <string name="preference_randomize_account_name">Randomize account name</string>
     <string name="preference_randomize_account_name_summary">Disallow other apps to get your name by reading accounts, improves privacy.</string>
     <string name="preference_randomize_account_rename_accounts_confirm">Rename existing accounts?</string>
-    <string name="preference_summary_chrome_custom_tab">Open links in Chrome custom tab</string>
+    <string name="preference_summary_auto_refresh_compatibility_mode">Enable for faster refresh interval, increases power usage on Android 5.0+</string>
+    <string name="preference_summary_auto_refresh_power_saving">Stop auto refresh when battery is low</string>
+    <string name="preference_summary_chrome_custom_tab">Open links in in-app browser (Powered by Chrome)</string>
     <string name="preference_summary_database_item_limit">Upper limit of items stored in databases for each account, set to a smaller value to save space and increase loading speed.</string>
+    <string name="preference_summary_media_preload_non_metered_network">Preload media only on free networks like Wi-Fi</string>
     <string name="preference_title_accounts">Accounts</string>
     <string name="preference_title_advanced">Advanced</string>
-    <string name="preference_title_chrome_custom_tab">Chrome custom tab</string>
+    <string name="preference_title_auto_refresh_compatibility_mode">Compatibility mode</string>
+    <string name="preference_title_auto_refresh_power_saving">Power saving mode</string>
+    <string name="preference_title_chrome_custom_tab">In-app browser</string>
     <string name="preference_title_database_item_limit">Database size limit</string>
     <string name="preference_title_filter_manage_subscriptions">Manage</string>
     <string name="preference_title_filter_subscriptions">Filter subscriptions</string>
+    <string name="preference_title_floating_detailed_view">Floating detailed view</string>
+    <string name="preference_title_landscape">Landscape</string>
+    <string name="preference_title_light_font">Light font</string>
+    <string name="preference_title_media_preload_non_metered_network">Preload on free network</string>
+    <string name="preference_title_multi_column_tabs">Multi column tabs</string>
+    <string name="preference_title_portrait">Portrait</string>
     <string name="preference_title_storage">Storage</string>
+    <string name="preference_title_tablet_mode">Tablet mode</string>
     <string name="preference_title_translate">Translate</string>
 
     <string name="preload_wifi_only">Preload using Wi-Fi only</string>
@@ -876,6 +897,7 @@
     <string name="preview">Preview</string>
     <string name="preview_images">Preview images</string>
     <string name="preview_style_crop">Crop</string>
+    <string name="preview_style_real_size">Real size</string>
     <string name="preview_style_scale">Scale</string>
 
     <!-- Previous item (tweet, user etc.) -->
@@ -1015,6 +1037,7 @@
 
     <string name="search">Search</string>
     <string name="search_hint">Search tweets or users</string>
+    <string name="search_hint_users">Search users</string>
     <string name="search_statuses">Search Tweets</string>
     <string name="search_type_statuses">Tweets</string>
     <string name="search_type_users">Users</string>
@@ -1120,8 +1143,6 @@
     <!-- [noun] Accessibility label for retweet icon -->
     <string name="status_type_retweet">Retweet</string>
 
-    <string name="stop_auto_refresh_when_battery_low">Stop auto refresh when battery is low</string>
-
     <string name="streaming">Streaming</string>
 
     <string name="style">Style</string>
@@ -1216,6 +1237,9 @@
     <string name="title_sync_settings">Sync settings</string>
     <string name="title_user">User</string>
     <string name="title_user_colors">User colors</string>
+    <string name="title_user_list_memberships">Belongs to</string>
+    <string name="title_user_list_ownerships">Created</string>
+    <string name="title_user_list_subscriptions">Subscriptions</string>
     <string name="title_users_favorited_this">Users favorited this</string>
     <string name="title_users_liked_this">Users liked this</string>
     <string name="title_users_retweeted_this">Users retweeted this</string>
@@ -1386,4 +1410,6 @@
     <string name="push_status_disconnected">Not connected.</string>
     <string name="push_status_disconnecting">Disconnecting...</string>
     <string name="push_status_title">Status</string>
+
+    <string name="view_user_profile">User profile</string>
 </resources>

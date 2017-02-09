@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import org.mariotaku.restfu.annotation.param.Param;
 import org.mariotaku.restfu.annotation.param.Queries;
 import org.mariotaku.restfu.annotation.param.Query;
 
+@SuppressWarnings("RedundantThrows")
 public interface ListResources {
     @POST("/lists/members/create.json")
     UserList addUserListMember(@Query("list_id") String listId, @Query("user_id") String userId) throws MicroBlogException;
@@ -151,11 +152,11 @@ public interface ListResources {
 
 
     @GET("/lists/subscriptions.json")
-    PageableResponseList<UserList> getUserListSubscriptionsByScreenName(@Query("screen_name") String listOwnerScreenName, long cursor)
+    PageableResponseList<UserList> getUserListSubscriptionsByScreenName(@Query("screen_name") String listOwnerScreenName, @Query Paging paging)
             throws MicroBlogException;
 
     @GET("/lists/subscriptions.json")
-    PageableResponseList<UserList> getUserListSubscriptions(@Query("user_id") String userId, long cursor)
+    PageableResponseList<UserList> getUserListSubscriptions(@Query("user_id") String userId, @Query Paging paging)
             throws MicroBlogException;
 
     @GET("/lists/show.json")

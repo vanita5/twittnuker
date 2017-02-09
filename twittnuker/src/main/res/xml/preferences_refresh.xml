@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
         app:switchDefault="true"
         app:switchKey="auto_refresh"/>
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_streaming"
         android:title="@string/streaming"
         android:enabled="false">
@@ -72,12 +72,12 @@
             <!--android:key="stream_on_mobile"-->
             <!--android:summary="@string/stream_on_mobile_summary"-->
             <!--android:title="@string/stream_on_mobile" />-->
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_general"
         android:title="@string/general">
-        <de.vanita5.twittnuker.preference.EntrySummaryListPreference
+        <de.vanita5.twittnuker.preference.RefreshIntervalPreference
             android:defaultValue="15"
             android:entries="@array/entries_refresh_interval"
             android:entryValues="@array/values_refresh_interval"
@@ -87,12 +87,22 @@
         <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="stop_auto_refresh_when_battery_low"
-            android:summary="@string/stop_auto_refresh_when_battery_low_summary"
-            android:title="@string/stop_auto_refresh_when_battery_low" />
+            android:summary="@string/preference_summary_auto_refresh_power_saving"
+            android:title="@string/preference_title_auto_refresh_power_saving"/>
+
+        <SwitchPreferenceCompat
+            android:defaultValue="@bool/use_legacy_refresh_service"
+            android:enabled="@bool/use_job_refresh_service"
+            android:key="auto_refresh_compatibility_mode"
+            android:summary="@string/preference_summary_auto_refresh_compatibility_mode"
+            android:title="@string/preference_title_auto_refresh_compatibility_mode">
+            <extra
+                android:name="should_terminate"
+                android:value="true"/>
+        </SwitchPreferenceCompat>
 
         <de.vanita5.twittnuker.preference.HomeRefreshContentPreference
             android:key="home_refresh"
-            android:summary="@string/home_refresh_summary"
             android:title="@string/home_refresh" />
 
         <SwitchPreferenceCompat
@@ -105,6 +115,6 @@
             android:key="refresh_after_tweet"
             android:summary="@string/refresh_after_status_updated_summary"
             android:title="@string/refresh_after_status_updated" />
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
 </PreferenceScreen>

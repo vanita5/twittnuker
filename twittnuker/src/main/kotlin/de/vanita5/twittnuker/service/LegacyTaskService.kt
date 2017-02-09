@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,8 +24,11 @@ package de.vanita5.twittnuker.service
 
 import android.app.Service
 import android.content.Intent
+import android.os.Build
 import android.os.IBinder
+import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.annotation.AutoRefreshType
+import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
 import de.vanita5.twittnuker.util.TaskServiceRunner
 import de.vanita5.twittnuker.util.TaskServiceRunner.Companion.ACTION_REFRESH_DIRECT_MESSAGES
 import de.vanita5.twittnuker.util.TaskServiceRunner.Companion.ACTION_REFRESH_HOME_TIMELINE
@@ -37,6 +40,8 @@ class LegacyTaskService : Service() {
 
     @Inject
     internal lateinit var taskServiceRunner: TaskServiceRunner
+    @Inject
+    internal lateinit var kPreferences: KPreferences
 
     override fun onBind(intent: Intent): IBinder? = null
 
@@ -46,6 +51,8 @@ class LegacyTaskService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+                !kPreferences[autoRefreshCompatibilityModeKey]) return START_NOT_STICKY
         val action = intent?.action ?: return START_NOT_STICKY
         taskServiceRunner.runTask(action) {
             stopSelfResult(startId)

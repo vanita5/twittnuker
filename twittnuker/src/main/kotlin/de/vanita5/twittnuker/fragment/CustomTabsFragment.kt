@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.activity.SettingsActivity
 import de.vanita5.twittnuker.adapter.AccountsSpinnerAdapter
 import de.vanita5.twittnuker.adapter.ArrayAdapter
 import de.vanita5.twittnuker.annotation.CustomTabType
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.Tab
@@ -234,6 +235,7 @@ class CustomTabsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, MultiChoice
 
         override fun onShow(dialog: DialogInterface) {
             dialog as AlertDialog
+            dialog.applyTheme()
             @CustomTabType
             val tabType: String
             val tab: Tab

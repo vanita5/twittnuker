@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.fasterxml.jackson.core.TreeNode;
 
 import org.mariotaku.commons.logansquare.LoganSquareMapperFinder;
 import de.vanita5.twittnuker.library.MicroBlogException;
@@ -152,10 +151,6 @@ public abstract class UserStreamCallback implements RawCallback {
         }
     }
 
-
-    private static <T> T parse(final Class<T> cls, final TreeNode json) throws IOException {
-        return LoganSquareMapperFinder.mapperFor(cls).parse(json.traverse());
-    }
 
     @Override
     public final void error(final Exception cause) {

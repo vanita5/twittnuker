@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ import de.vanita5.twittnuker.view.holder.UserListViewHolder
 
 abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<ParcelableUserListsAdapter>(), LoaderCallbacks<List<ParcelableUserList>>, UserListClickListener, KeyboardShortcutCallback {
 
-    private var navigationHelper: RecyclerViewNavigationHelper? = null
+    private lateinit var navigationHelper: RecyclerViewNavigationHelper
     var nextCursor: Long = 0
         private set
     var prevCursor: Long = 0
@@ -118,15 +118,15 @@ abstract class ParcelableUserListsFragment : AbsContentListRecyclerViewFragment<
         get() = adapter.getData()
 
     override fun handleKeyboardShortcutSingle(handler: KeyboardShortcutsHandler, keyCode: Int, event: KeyEvent, metaState: Int): Boolean {
-        return navigationHelper!!.handleKeyboardShortcutSingle(handler, keyCode, event, metaState)
+        return navigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event, metaState)
     }
 
     override fun handleKeyboardShortcutRepeat(handler: KeyboardShortcutsHandler, keyCode: Int, repeatCount: Int, event: KeyEvent, metaState: Int): Boolean {
-        return navigationHelper!!.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState)
+        return navigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState)
     }
 
     override fun isKeyboardShortcutHandled(handler: KeyboardShortcutsHandler, keyCode: Int, event: KeyEvent, metaState: Int): Boolean {
-        return navigationHelper!!.isKeyboardShortcutHandled(handler, keyCode, event, metaState)
+        return navigationHelper.isKeyboardShortcutHandled(handler, keyCode, event, metaState)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

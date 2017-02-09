@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.extension.model.getAccountKey
 import de.vanita5.twittnuker.extension.model.getAccountUser
+import de.vanita5.twittnuker.extension.model.renameTwidereAccount
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.preference.iface.IDialogPreference
 import de.vanita5.twittnuker.util.generateAccountName
@@ -90,7 +91,7 @@ class RandomizeAccountNamePreference @JvmOverloads constructor(
                     do {
                         newName = UUID.randomUUID().toString()
                     } while (usedNames.contains(newName))
-                    AccountUtils.renameAccount(am, oldAccount, newName)
+                    am.renameTwidereAccount(oldAccount, newName)
                     usedNames.add(newName)
                 }
             } else {
@@ -98,7 +99,7 @@ class RandomizeAccountNamePreference @JvmOverloads constructor(
                     val accountKey = oldAccount.getAccountKey(am)
                     val accountUser = oldAccount.getAccountUser(am)
                     val newName = generateAccountName(accountUser.screen_name, accountKey.host)
-                    AccountUtils.renameAccount(am, oldAccount, newName)
+                    am.renameTwidereAccount(oldAccount, newName)
                 }
             }
         }

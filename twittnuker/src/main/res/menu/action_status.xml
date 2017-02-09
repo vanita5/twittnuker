@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -21,28 +21,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools">
 
-    <!--<item-->
-    <!--android:id="@id/reply"-->
-    <!--android:icon="@drawable/ic_action_reply"-->
-    <!--android:title="@string/reply"/>-->
-    <!--<item-->
-    <!--android:id="@id/quote"-->
-    <!--android:icon="@drawable/ic_action_quote"-->
-    <!--android:title="@string/quote"/>-->
-    <!--<item-->
-    <!--android:id="@id/retweet"-->
-    <!--android:icon="@drawable/ic_action_retweet"-->
-    <!--android:title="@string/retweet"/>-->
-    <!--<item-->
-    <!--android:id="@id/favorite"-->
-    <!--android:icon="@drawable/ic_action_star"-->
-    <!--android:title="@string/favorite"/>-->
-    <!--<item -->
-    <!--android:id="@+id/love"-->
-    <!--android:icon="@drawable/ic_action_heart"-->
-    <!--android:title="@string/love"/>-->
     <item
         android:id="@id/share"
         android:icon="@drawable/ic_action_share"
@@ -60,9 +41,28 @@
         android:icon="@drawable/ic_action_speaker_muted"
         android:title="@string/add_to_filter" />
     <item
+        android:id="@+id/mute_users"
+        android:enabled="@bool/debug"
+        android:icon="@drawable/ic_action_mic_muted"
+        android:title="@string/action_status_mute_users"
+        android:visible="@bool/debug"/>
+    <item
+        android:id="@+id/block_users"
+        android:enabled="@bool/debug"
+        android:icon="@drawable/ic_action_block"
+        android:title="@string/action_status_block_users"
+        android:visible="@bool/debug"/>
+    <item
         android:id="@id/delete"
         android:icon="@drawable/ic_action_delete"
         android:title="@string/action_delete"
         android:visible="false" />
+    <item
+        android:id="@+id/make_gap"
+        android:enabled="@bool/debug"
+        android:title="Make gap"
+        android:visible="@bool/debug"
+        tools:ignore="HardcodedText"/>
+
 
 </menu>

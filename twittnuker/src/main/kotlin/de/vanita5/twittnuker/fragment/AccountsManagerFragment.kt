@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.fragment
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ContentResolver
 import android.content.ContentValues
@@ -35,6 +34,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
+import android.support.v7.app.AlertDialog
 import android.view.*
 import android.view.ContextMenu.ContextMenuInfo
 import android.widget.AdapterView
@@ -51,6 +51,7 @@ import de.vanita5.twittnuker.adapter.AccountDetailsAdapter
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.getAccountKey
 import de.vanita5.twittnuker.extension.model.setActivated
 import de.vanita5.twittnuker.extension.model.setColor
@@ -58,11 +59,11 @@ import de.vanita5.twittnuker.extension.model.setPosition
 import de.vanita5.twittnuker.loader.AccountDetailsLoader
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.IntentUtils
+import de.vanita5.twittnuker.util.deleteAccountData
 import de.vanita5.twittnuker.util.support.removeAccountSupport
 
 class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<List<AccountDetails>>,
@@ -222,6 +223,9 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
         }
     }
 
+    /**
+     * DELETE YOUR ACCOUNT
+     */
     class AccountDeletionDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
 
         override fun onClick(dialog: DialogInterface, which: Int) {
@@ -231,18 +235,12 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
                     val accountKey = account.getAccountKey(am)
+                    deleteAccountData(resolver, accountKey)
                     am.removeAccountSupport(account)
-                    val where = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY).sql
-                    val whereArgs = arrayOf(accountKey.toString())
-                    // Also delete tweets related to the account we previously
-                    // deleted.
-                    resolver.delete(Statuses.CONTENT_URI, where, whereArgs)
-                    resolver.delete(Mentions.CONTENT_URI, where, whereArgs)
-                    resolver.delete(Inbox.CONTENT_URI, where, whereArgs)
-                    resolver.delete(Outbox.CONTENT_URI, where, whereArgs)
                 }
             }
         }
+
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             val context = context
@@ -251,7 +249,12 @@ class AccountsManagerFragment : BaseFragment(), LoaderManager.LoaderCallbacks<Li
             builder.setPositiveButton(android.R.string.ok, this)
             builder.setTitle(R.string.account_delete_confirm_title)
             builder.setMessage(R.string.account_delete_confirm_message)
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
 
     }

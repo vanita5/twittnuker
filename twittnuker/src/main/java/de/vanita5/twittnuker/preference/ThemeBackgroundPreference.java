@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ import android.widget.SeekBar;
 
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 
 public class ThemeBackgroundPreference extends DialogPreference implements Constants,
@@ -191,10 +192,11 @@ public class ThemeBackgroundPreference extends DialogPreference implements Const
             dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface dialog) {
+                    final AlertDialog alertDialog = (AlertDialog) dialog;
+                    AlertDialogExtensionsKt.applyTheme(alertDialog);
                     if (preferences != null) {
-                        final AlertDialog materialDialog = (AlertDialog) dialog;
-                        final LayoutInflater inflater = materialDialog.getLayoutInflater();
-                        final ListView listView = materialDialog.getListView();
+                        final LayoutInflater inflater = alertDialog.getLayoutInflater();
+                        final ListView listView = alertDialog.getListView();
                         assert listView != null;
                         final ViewGroup listViewParent = (ViewGroup) listView.getParent();
                         listViewParent.removeView(listView);

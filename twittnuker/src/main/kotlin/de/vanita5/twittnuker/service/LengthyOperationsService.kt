@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import android.util.Log
 import android.widget.Toast
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.successUi
+import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.ManualTaskStarter
 import org.mariotaku.ktextension.configure
 import org.mariotaku.ktextension.toLong
@@ -62,11 +63,14 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
+import de.vanita5.twittnuker.model.draft.StatusObjectExtras
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableDirectMessageUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
+import de.vanita5.twittnuker.task.CreateFavoriteTask
+import de.vanita5.twittnuker.task.RetweetStatusTask
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.util.ContentValuesCreator
 import de.vanita5.twittnuker.util.NotificationManagerWrapper
@@ -122,28 +126,36 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
         if (draftId == -1L) return
         val where = Expression.equals(Drafts._ID, draftId)
         @SuppressLint("Recycle")
-        val item: Draft = contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql, null, null)?.useCursor {
+        val draft: Draft = contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql, null, null)?.useCursor {
             val i = DraftCursorIndices(it)
             if (!it.moveToFirst()) return@useCursor null
             return@useCursor i.newObject(it)
         } ?: return
 
         contentResolver.delete(Drafts.CONTENT_URI, where.sql, null)
-        if (TextUtils.isEmpty(item.action_type)) {
-            item.action_type = Draft.Action.UPDATE_STATUS
+        if (TextUtils.isEmpty(draft.action_type)) {
+            draft.action_type = Draft.Action.UPDATE_STATUS
         }
-        when (item.action_type) {
-            Draft.Action.UPDATE_STATUS_COMPAT_1, Draft.Action.UPDATE_STATUS_COMPAT_2, Draft.Action.UPDATE_STATUS, Draft.Action.REPLY, Draft.Action.QUOTE -> {
-                updateStatuses(item.action_type, ParcelableStatusUpdateUtils.fromDraftItem(this, item))
+        when (draft.action_type) {
+            Draft.Action.UPDATE_STATUS_COMPAT_1, Draft.Action.UPDATE_STATUS_COMPAT_2,
+            Draft.Action.UPDATE_STATUS, Draft.Action.REPLY, Draft.Action.QUOTE -> {
+                updateStatuses(draft.action_type, ParcelableStatusUpdateUtils.fromDraftItem(this, draft))
             }
             Draft.Action.SEND_DIRECT_MESSAGE_COMPAT, Draft.Action.SEND_DIRECT_MESSAGE -> {
-                val recipientId = (item.action_extras as? SendDirectMessageActionExtras)?.recipientId ?: return
-                if (item.account_keys?.isEmpty() ?: true) {
-                    return
+                val recipientId = (draft.action_extras as? SendDirectMessageActionExtras)?.recipientId ?: return
+                val accountKey = draft.account_keys?.firstOrNull() ?: return
+                val imageUri = draft.media.firstOrNull()?.uri
+                sendMessage(accountKey, recipientId, draft.text, imageUri)
+            }
+            Draft.Action.FAVORITE -> {
+                performStatusAction(draft) { accountKey, status ->
+                    CreateFavoriteTask(this, accountKey, status)
                 }
-                val accountKey = item.account_keys!!.first()
-                val imageUri = item.media.firstOrNull()?.uri
-                sendMessage(accountKey, recipientId, item.text, imageUri)
+            }
+            Draft.Action.RETWEET -> {
+                performStatusAction(draft) { accountKey, status ->
+                    RetweetStatusTask(this, accountKey, status)
+                }
             }
         }
     }
@@ -291,10 +303,10 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
             })
             task.callback = this
             task.params = Pair(actionType, item)
-            handler.post { ManualTaskStarter.invokeBeforeExecute(task) }
+            invokeBeforeExecute(task)
 
             val result = ManualTaskStarter.invokeExecute(task)
-            handler.post { ManualTaskStarter.invokeAfterExecute(task, result) }
+            invokeAfterExecute(task, result)
 
             if (!result.succeed) {
                 contentResolver.insert(Drafts.CONTENT_URI_NOTIFICATIONS, configure(ContentValues()) {
@@ -357,11 +369,11 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
             Utils.setLastSeen(this, UserKey(recipientId, accountKey.host),
                     System.currentTimeMillis())
 
-            return SingleResponse.getInstance(directMessage)
+            return SingleResponse(directMessage)
         } catch (e: IOException) {
-            return SingleResponse.getInstance<ParcelableDirectMessage>(e)
+            return SingleResponse(e)
         } catch (e: MicroBlogException) {
-            return SingleResponse.getInstance<ParcelableDirectMessage>(e)
+            return SingleResponse(e)
         }
 
     }
@@ -415,6 +427,24 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
             ProcessingInfo.State.PENDING, ProcessingInfo.State.IN_PROGRESS -> return true
             else -> return false
         }
+    }
+
+    private fun <T> performStatusAction(draft: Draft, action: (accountKey: UserKey, status: ParcelableStatus) -> AbstractTask<*, T, *>): Boolean {
+        val accountKey = draft.account_keys?.firstOrNull() ?: return false
+        val status = (draft.action_extras as? StatusObjectExtras)?.status ?: return false
+        val task = action(accountKey, status)
+        invokeBeforeExecute(task)
+        val result = ManualTaskStarter.invokeExecute(task)
+        invokeAfterExecute(task, result)
+        return true
+        }
+
+    private fun invokeBeforeExecute(task: AbstractTask<*, *, *>) {
+        handler.post { ManualTaskStarter.invokeBeforeExecute(task) }
+    }
+
+    private fun <T> invokeAfterExecute(task: AbstractTask<*, T, *>, result: T) {
+        handler.post { ManualTaskStarter.invokeAfterExecute(task, result) }
     }
 
     internal class MessageMediaUploadListener(private val context: Context, private val manager: NotificationManagerWrapper,

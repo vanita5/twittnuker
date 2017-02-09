@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 package de.vanita5.twittnuker.loader
 
 import android.content.Context
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.util.Log
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
@@ -36,11 +36,10 @@ import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 class SavedSearchesLoader(
         context: Context,
         private val accountId: UserKey
-) : AsyncTaskLoader<ResponseList<SavedSearch>>(context), Constants {
+) : FixedAsyncTaskLoader<ResponseList<SavedSearch>>(context), Constants {
 
     override fun loadInBackground(): ResponseList<SavedSearch>? {
-        val twitter = MicroBlogAPIFactory.getInstance(context, accountId
-        ) ?: return null
+        val twitter = MicroBlogAPIFactory.getInstance(context, accountId) ?: return null
         try {
             return twitter.savedSearches
         } catch (e: MicroBlogException) {
@@ -50,7 +49,7 @@ class SavedSearchesLoader(
         return null
     }
 
-    public override fun onStartLoading() {
+    override fun onStartLoading() {
         forceLoad()
     }
 

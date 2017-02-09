@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import com.twitter.Extractor
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_STATUS
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.ParcelableUserMention
 import de.vanita5.twittnuker.model.UserKey
@@ -98,7 +99,7 @@ class AddStatusFilterDialogFragment : BaseDialogFragment() {
                     val keyword = ParseUtils.parseString(value)
                     keywords.add(keyword)
                     val values = ContentValues()
-                    values.put(Filters.Keywords.VALUE, "#" + keyword)
+                    values.put(Filters.Keywords.VALUE, "#$keyword")
                     keywordValues.add(values)
                 } else if (info.type == FilterItemInfo.FILTER_TYPE_SOURCE) {
                     val source = ParseUtils.parseString(value)
@@ -109,15 +110,20 @@ class AddStatusFilterDialogFragment : BaseDialogFragment() {
                 }
             }
             val resolver = context.contentResolver
-            ContentResolverUtils.bulkDelete(resolver, Filters.Users.CONTENT_URI, Filters.Users.USER_KEY, userKeys, null)
-            ContentResolverUtils.bulkDelete(resolver, Filters.Keywords.CONTENT_URI, Filters.Keywords.VALUE, keywords, null)
-            ContentResolverUtils.bulkDelete(resolver, Filters.Sources.CONTENT_URI, Filters.Sources.VALUE, sources, null)
+            ContentResolverUtils.bulkDelete(resolver, Filters.Users.CONTENT_URI, Filters.Users.USER_KEY, false, userKeys, null)
+            ContentResolverUtils.bulkDelete(resolver, Filters.Keywords.CONTENT_URI, Filters.Keywords.VALUE, false, keywords, null)
+            ContentResolverUtils.bulkDelete(resolver, Filters.Sources.CONTENT_URI, Filters.Sources.VALUE, false, sources, null)
             ContentResolverUtils.bulkInsert(resolver, Filters.Users.CONTENT_URI, userValues)
             ContentResolverUtils.bulkInsert(resolver, Filters.Keywords.CONTENT_URI, keywordValues)
             ContentResolverUtils.bulkInsert(resolver, Filters.Sources.CONTENT_URI, sourceValues)
         }
         builder.setNegativeButton(android.R.string.cancel, null)
-        return builder.create()
+        val dialog = builder.create()
+        dialog.setOnShowListener {
+            it as AlertDialog
+            it.applyTheme()
+        }
+        return dialog
     }
 
     private val filterItemsInfo: Array<FilterItemInfo>

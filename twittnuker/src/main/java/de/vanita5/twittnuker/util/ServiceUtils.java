@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,10 +40,6 @@ public final class ServiceUtils {
     private ServiceUtils() {
     }
 
-    public static ServiceToken bindToService(final Context context, final Intent intent) {
-        return bindToService(context, intent, null);
-    }
-
     public static ServiceToken bindToService(final Context context, final Intent intent,
                                              final ServiceConnection callback) {
 
@@ -56,7 +52,7 @@ public final class ServiceUtils {
                 return new ServiceToken(cw);
             }
         }
-        Log.e(LOGTAG, "Failed to bind to service");
+        DebugLog.w(LOGTAG, "Failed to bind to service", null);
         return null;
     }
 

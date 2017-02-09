@@ -79,6 +79,7 @@
   <string name="action_saving_search">сохранение поиска</string>
   <string name="action_select_all">Выбрать все</string>
   <string name="action_select_none">Ничего не выбирать</string>
+  <string name="action_select_user">Выбрать пользователя</string>
   <!-- [verb] Send tweet/message -->
   <string name="action_send">Отправить</string>
   <string name="action_sending_direct_message">отправляем личное сообщение</string>
@@ -204,7 +205,6 @@
   <string name="cant_load_all_replies_message">Невозможно загрузить все ответы. &lt;a href=\"#dialog\";&gt;Почему?&lt;/a&gt;</string>
   <string name="cards">Карточки</string>
   <string name="clear_cache">Очистить кэш</string>
-  <string name="clear_cache_summary">Очистит хранящийся кэш изображений профиля.</string>
   <string name="clear_databases">Очистить базы данных</string>
   <string name="clear_databases_summary">Очистить все твиты, профили, сообщения. Данные вашего аккаунта не будут потеряны.</string>
   <string name="clear_search_history">Очистить историю поиска</string>
@@ -270,7 +270,7 @@
   <string name="display_sensitive_contents_summary">Показывать особый контент в ленте без предупреждения</string>
   <string name="dns_server">DNS-сервер</string>
   <string name="dns_server_summary">Укажите DNS-сервер для сетевых запросов.</string>
-  <string name="dont_restart">Не перезапускать</string>
+  <string name="action_dont_restart">Не перезапускать</string>
   <string name="draft_saved">Черновик сохранен</string>
   <string name="drafts_hint_messages">Здесь сохраняются ваши неотправленные твиты</string>
   <string name="drawer_toggle">Отобразить шторку</string>
@@ -312,7 +312,6 @@
   <string name="external_user_host_format">Внешний пользователь на <xliff:g id="host">%s</xliff:g></string>
   <string name="extra_configurations">Дополнительные настройки</string>
   <string name="extra_feature_description_filters_import">Импортировать список блокированных/заглушенных</string>
-  <string name="extra_feature_description_filters_subscription">Фильтровать список подписок</string>
   <string name="extra_feature_description_schedule_status">Расписание твитов</string>
   <string name="extra_feature_description_sync_data">Синхронизация с Dropbox, Google Drive и др.</string>
   <!-- Enhanced (paid) features description -->
@@ -449,25 +448,10 @@
   <string name="message_direct_message_deleted">Личное сообщение удалено</string>
   <string name="message_direct_message_sent">Личное сообщение отправлено</string>
   <string name="message_error_invalid_account">Некоторые учетные данные были повреждены, Twittnuker удалит эти учетные записи для предотвращения ошибок.</string>
-  <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-  <string name="message_extra_features_not_purchased">Расширенные возможности не приобретены</string>
-  <!-- Toast message for network errors -->
-  <string name="message_network_error">Ошибка сети</string>
   <string name="message_permission_request_compose_location">Twittnuker требуется разрешение расположения для добавления его в твиты.</string>
   <string name="message_permission_request_save_media">Twittnuker требуется разрешение хранения для сохранения мультимедиа.</string>
   <string name="message_permission_request_share_media">Twittnuker необходимо разрешение хранения для совместного использования мультимедиа для некоторых приложений.</string>
   <string name="message_please_wait">Пожалуйста, подождите.</string>
-  <string name="message_retweet_cancelled">Ретвит отменен</string>
-  <string name="message_search_deleted">Запрос удалён</string>
-  <string name="message_search_name_deleted">Запрос \"<xliff:g id="name">%s</xliff:g>\" удалён</string>
-  <string name="message_search_name_saved">Запрос \"<xliff:g id="name">%s</xliff:g>\" сохранён</string>
-  <string name="message_search_saved">Запрос сохранён</string>
-  <string name="message_status_deleted">Твит удален</string>
-  <string name="message_status_favorited">Твит добавлен в избранное</string>
-  <string name="message_status_like_removed">Лайк удалён.</string>
-  <string name="message_status_liked">Твит нравится.</string>
-  <string name="message_status_retweeted">Ретвит выполнен</string>
-  <string name="message_status_unfavorited">Твит удален из избранного</string>
   <string name="message_sync_data_connect_hint">Подключение Twittnuker к сетевому хранилищу для синхронизации</string>
   <string name="message_sync_data_synced_with_name">Twittnuker теперь синхронизирован с <xliff:g example="ownCloud" id="name">%s </xliff:g></string>
   <string name="message_sync_disconnect_from_name_confirm">Отключиться от <xliff:g example="ownCloud" id="name">%s </xliff:g>?</string>
@@ -480,28 +464,41 @@
   <string name="message_toast_added_to_filter">Добавлено в фильтр.</string>
   <string name="message_toast_cannot_get_location">Не удается получить ваше местоположение.</string>
   <string name="message_toast_error_occurred">Произошла ошибка, пожалуйста, попробуйте еще раз.</string>
+  <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
+  <string name="message_toast_extra_features_not_purchased">Расширенные возможности не приобретены</string>
   <string name="message_toast_link_copied_to_clipboard">Ссылка скопирована в буфер обмена</string>
   <string name="message_toast_livewp_daydream_enabled_message">Небольшой подарок для тебя, поищи его в настройках заставки (daydream) ;)</string>
   <string name="message_toast_login_verification_failed">Ошибка проверки входа.</string>
+  <!-- Toast message for network errors -->
+  <string name="message_toast_network_error">Ошибка сети</string>
   <string name="message_toast_no_account">Нет аккаунтов</string>
   <string name="message_toast_no_account_selected">Аккаунт не выбран.</string>
   <string name="message_toast_no_user_selected">Пользователь не выбран</string>
   <string name="message_toast_press_again_to_close">Нажмите снова, чтобы закрыть</string>
   <string name="message_toast_profile_banner_image_updated">Изображение шапки профиля обновлено</string>
+  <string name="message_toast_retweet_cancelled">Ретвит отменен</string>
   <string name="message_toast_save_media_no_storage_permission">Доступ к хранилищу необходим, чтобы сохранять медиафайлы.</string>
   <string name="message_toast_saved_to_gallery">Сохранено в галерее</string>
+  <string name="message_toast_search_deleted">Запрос удалён</string>
+  <string name="message_toast_search_name_deleted">Запрос \"<xliff:g id="name">%s</xliff:g>\" удалён</string>
+  <string name="message_toast_search_name_saved">Запрос \"<xliff:g id="name">%s</xliff:g>\" сохранён</string>
+  <string name="message_toast_search_saved">Запрос сохранён</string>
   <string name="message_toast_select_file_no_storage_permission">Доступ к хранилищу необходим, чтобы выбирать файлы.</string>
   <string name="message_toast_share_media_no_storage_permission">Некоторые приложения требуют разрешения хранения для совместного использования мультимедиа.</string>
+  <string name="message_toast_status_deleted">Твит удален</string>
+  <string name="message_toast_status_favorited">Твит добавлен в избранное</string>
+  <string name="message_toast_status_like_removed">Лайк удалён.</string>
+  <string name="message_toast_status_liked">Твит нравится.</string>
+  <string name="message_toast_status_retweeted">Ретвит выполнен</string>
   <string name="message_toast_status_saved_to_draft">Твит сохранен в черновик</string>
+  <string name="message_toast_status_unfavorited">Твит удален из избранного</string>
   <string name="message_toast_status_updated">Твит отправлен</string>
+  <string name="message_toast_user_filters_removed">Этот пользователь удален из списка фильтров.</string>
+  <string name="message_toast_users_filters_added">Пользователи добавлены в фильтр. Теперь вы не увидите его твитов в ленте/упоминаниях.</string>
   <string name="message_toast_wrong_api_key">Неправильный url-адрес API или пользовательский ключ/пароль, пожалуйста проверьте снова.</string>
   <string name="message_toast_wrong_username_password">Неправильное имя пользователя или пароль</string>
-  <string name="message_user_muted">Пользователь добавлен в фильтры. Теперь вы не увидите его твитов в ленте/упоминаниях.</string>
-  <string name="message_user_unmuted">Этот пользователь удален из списка фильтров.</string>
-  <string name="message_users_muted">Пользователи добавлены в фильтр. Теперь вы не увидите его твитов в ленте/упоминаниях.</string>
   <string name="message_video_too_long">Видео слишком длинное</string>
   <string name="message_video_too_short">Видео слишком короткое</string>
-  <string name="more">Еще</string>
   <string name="multi_select">Выбрать несколько</string>
   <string name="mute_user">Заблокировать <xliff:g id="name">%s</xliff:g></string>
   <string name="mute_user_confirm_message">Игнорировать <xliff:g id="name">%s</xliff:g>? Вы больше не будете видеть твиты от этого пользователя, пока продолжите читать его.</string>
@@ -597,6 +594,8 @@
   <string name="preference_title_database_item_limit">Ограничение размера базы данных</string>
   <string name="preference_title_filter_manage_subscriptions">Управление</string>
   <string name="preference_title_filter_subscriptions">Фильтровать подписки</string>
+  <string name="preference_title_portrait">Портретный</string>
+  <string name="preference_title_landscape">Ландшафтный</string>
   <string name="preference_title_storage">Хранилище</string>
   <string name="preference_title_translate">Перевести</string>
   <string name="preload_wifi_only">Предзагружать только по Wi-Fi</string>
@@ -828,6 +827,7 @@
   <string name="title_sync_settings">Настройки синхронизации</string>
   <string name="title_user">Пользователь</string>
   <string name="title_user_colors">Пользовательские цвета</string>
+  <string name="title_user_list_memberships">Списки со мной</string>
   <string name="title_users_favorited_this">Пользователи добавившие в избранное</string>
   <string name="title_users_liked_this">Пользователям понравилось это</string>
   <string name="title_users_retweeted_this">Пользователей ретвитнули это</string>

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.extension.getNonEmptyString
 import de.vanita5.twittnuker.model.CustomAPIConfig
 import de.vanita5.twittnuker.model.UserKey
@@ -75,6 +76,13 @@ val themeColorKey = KIntKey(KEY_THEME_COLOR, 0)
 val filterUnavailableQuoteStatusesKey = KBooleanKey("filter_unavailable_quote_statuses", false)
 val filterPossibilitySensitiveStatusesKey = KBooleanKey("filter_possibility_sensitive_statuses", false)
 val chromeCustomTabKey = KBooleanKey("chrome_custom_tab", true)
+val lightFontKey = KBooleanKey("light_font", true)
+val extraFeaturesNoticeVersionKey = KIntKey("extra_features_notice_version", 0)
+val mediaPreloadKey = KBooleanKey(KEY_MEDIA_PRELOAD, true)
+val mediaPreloadOnWifiOnlyKey = KBooleanKey(KEY_PRELOAD_WIFI_ONLY, false)
+val autoRefreshCompatibilityModeKey = KBooleanKey("auto_refresh_compatibility_mode", Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+val floatingDetailedContentsKey = KBooleanKey("floating_detailed_contents", true)
+val localTrendsWoeIdKey = KIntKey(KEY_LOCAL_TRENDS_WOEID, 1)
 
 object themeBackgroundAlphaKey : KSimpleKey<Int>(KEY_THEME_BACKGROUND_ALPHA, 0xFF) {
     override fun read(preferences: SharedPreferences): Int {
@@ -102,14 +110,21 @@ object profileImageStyleKey : KSimpleKey<Int>(KEY_PROFILE_IMAGE_STYLE, ProfileIm
 
 }
 
-object mediaPreviewStyleKey : KSimpleKey<Int>(KEY_MEDIA_PREVIEW_STYLE, VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP) {
+object mediaPreviewStyleKey : KSimpleKey<Int>(KEY_MEDIA_PREVIEW_STYLE, PreviewStyle.CROP) {
     override fun read(preferences: SharedPreferences): Int {
-        if (preferences.getString(key, null) == VALUE_MEDIA_PREVIEW_STYLE_SCALE) return VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE
-        return VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP
+        when (preferences.getString(key, null)) {
+            VALUE_MEDIA_PREVIEW_STYLE_SCALE -> return PreviewStyle.SCALE
+            VALUE_MEDIA_PREVIEW_STYLE_REAL_SIZE -> return PreviewStyle.REAL_SIZE
+            else -> return PreviewStyle.CROP
+        }
     }
 
     override fun write(editor: SharedPreferences.Editor, value: Int): Boolean {
-        editor.putString(key, if (value == VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE) VALUE_MEDIA_PREVIEW_STYLE_SCALE else VALUE_MEDIA_PREVIEW_STYLE_CROP)
+        editor.putString(key, when (value) {
+            PreviewStyle.SCALE -> VALUE_MEDIA_PREVIEW_STYLE_SCALE
+            PreviewStyle.REAL_SIZE -> VALUE_MEDIA_PREVIEW_STYLE_REAL_SIZE
+            else -> VALUE_MEDIA_PREVIEW_STYLE_CROP
+        })
         return true
     }
 

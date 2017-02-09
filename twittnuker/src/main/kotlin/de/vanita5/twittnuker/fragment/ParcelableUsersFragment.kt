@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import android.view.KeyEvent
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.commons.parcel.ParcelUtils
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.ParcelableUsersAdapter
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
@@ -42,7 +43,6 @@ import de.vanita5.twittnuker.adapter.iface.IUsersAdapter.UserClickListener
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_SIMPLE_LAYOUT
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -53,15 +53,14 @@ import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.RecyclerViewNavigationHelper
 import de.vanita5.twittnuker.view.holder.UserViewHolder
-import org.mariotaku.kpreferences.get
 
 abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<ParcelableUsersAdapter>(),
         LoaderCallbacks<List<ParcelableUser>?>, UserClickListener, KeyboardShortcutCallback,
         IUsersAdapter.FriendshipClickListener {
 
-    private val usersBusCallback: Any
+    private lateinit var navigationHelper: RecyclerViewNavigationHelper
 
-    private var navigationHelper: RecyclerViewNavigationHelper? = null
+    private val usersBusCallback: Any
 
     init {
         usersBusCallback = createMessageBusCallback()
@@ -121,17 +120,17 @@ abstract class ParcelableUsersFragment : AbsContentListRecyclerViewFragment<Parc
 
     override fun handleKeyboardShortcutSingle(handler: KeyboardShortcutsHandler, keyCode: Int,
                                               event: KeyEvent, metaState: Int): Boolean {
-        return navigationHelper!!.handleKeyboardShortcutSingle(handler, keyCode, event, metaState)
+        return navigationHelper.handleKeyboardShortcutSingle(handler, keyCode, event, metaState)
     }
 
     override fun handleKeyboardShortcutRepeat(handler: KeyboardShortcutsHandler, keyCode: Int,
                                               repeatCount: Int, event: KeyEvent, metaState: Int): Boolean {
-        return navigationHelper!!.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState)
+        return navigationHelper.handleKeyboardShortcutRepeat(handler, keyCode, repeatCount, event, metaState)
     }
 
     override fun isKeyboardShortcutHandled(handler: KeyboardShortcutsHandler, keyCode: Int,
                                            event: KeyEvent, metaState: Int): Boolean {
-        return navigationHelper!!.isKeyboardShortcutHandled(handler, keyCode, event, metaState)
+        return navigationHelper.isKeyboardShortcutHandled(handler, keyCode, event, metaState)
     }
 
     override fun onCreateLoader(id: Int, args: Bundle): Loader<List<ParcelableUser>?> {

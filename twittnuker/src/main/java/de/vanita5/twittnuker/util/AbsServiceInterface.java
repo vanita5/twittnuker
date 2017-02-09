@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,10 @@ import android.support.annotation.Nullable;
 import de.vanita5.twittnuker.constant.IntentConstants;
 import de.vanita5.twittnuker.util.ServiceUtils.ServiceToken;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+
 public abstract class AbsServiceInterface<I extends IInterface> implements IInterface {
 
     private final Context mContext;
@@ -43,27 +47,10 @@ public abstract class AbsServiceInterface<I extends IInterface> implements IInte
     private I mIInterface;
 
     private ServiceToken mToken;
-    private boolean mDisconnected;
-
-    private final ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(final ComponentName service, final IBinder obj) {
-            mIInterface = AbsServiceInterface.this.onServiceConnected(service, obj);
-            mDisconnected = false;
-        }
-
-        @Override
-        public void onServiceDisconnected(final ComponentName service) {
-            mIInterface = null;
-            mDisconnected = true;
-        }
-    };
 
     protected abstract I onServiceConnected(ComponentName service, IBinder obj);
 
     protected AbsServiceInterface(final Context context, final String componentName, @Nullable final Bundle metaData) {
-        mDisconnected = true;
         mContext = context;
         mShortenerName = componentName;
         mMetaData = metaData;
@@ -89,19 +76,38 @@ public abstract class AbsServiceInterface<I extends IInterface> implements IInte
         final Intent intent = new Intent(IntentConstants.INTENT_ACTION_EXTENSION_SHORTEN_STATUS);
         final ComponentName component = ComponentName.unflattenFromString(mShortenerName);
         intent.setComponent(component);
-        mDisconnected = true;
-        mToken = ServiceUtils.bindToService(mContext, intent, mConnection);
-        if (mToken == null) return false;
-        mDisconnected = false;
-        while (mIInterface == null && !mDisconnected) {
-            try {
-                Thread.sleep(50L);
-            } catch (InterruptedException e) {
-                // Ignore
-                return false;
+        final FutureTask<Boolean> futureTask = new FutureTask<>(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return mIInterface != null;
             }
+        });
+        mToken = ServiceUtils.bindToService(mContext, intent, new ServiceConnection() {
+            @Override
+            public void onServiceConnected(final ComponentName name, final IBinder obj) {
+                mIInterface = AbsServiceInterface.this.onServiceConnected(name, obj);
+                if (!futureTask.isDone() && !futureTask.isCancelled()) {
+                    futureTask.run();
+                }
+            }
+
+            @Override
+            public void onServiceDisconnected(final ComponentName name) {
+                mIInterface = null;
+                if (!futureTask.isDone() && !futureTask.isCancelled()) {
+                    futureTask.run();
+                }
+            }
+        });
+        if (mToken == null) return false;
+
+        try {
+            return futureTask.get();
+        } catch (InterruptedException e) {
+            return false;
+        } catch (ExecutionException e) {
+            return false;
         }
-        return true;
     }
 
     public final void checkService(CheckServiceAction action) throws CheckServiceException {
@@ -109,6 +115,7 @@ public abstract class AbsServiceInterface<I extends IInterface> implements IInte
     }
 
     public interface CheckServiceAction {
+        @SuppressWarnings("RedundantThrows")
         void check(@Nullable Bundle metaData) throws CheckServiceException;
     }
 

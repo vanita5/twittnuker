@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory;
 import de.vanita5.twittnuker.util.UserAgentUtils;
+import de.vanita5.twittnuker.util.Utils;
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 import de.vanita5.twittnuker.util.net.NoIntercept;
 
@@ -61,14 +62,15 @@ import java.io.InputStream;
 
 public class TwidereMediaDownloader implements MediaDownloader, Constants {
 
-    private final Context mContext;
-    private final RestHttpClient mClient;
-    private final String mUserAgent;
+    private final Context context;
+    private final RestHttpClient client;
+    private final String userAgent;
 
-    public TwidereMediaDownloader(final Context context, RestHttpClient client) {
-        mContext = context;
-        mClient = client;
-        mUserAgent = UserAgentUtils.getDefaultUserAgentStringSafe(context);
+    public TwidereMediaDownloader(final Context context,
+                                  RestHttpClient client) {
+        this.context = context;
+        this.client = client;
+        userAgent = UserAgentUtils.getDefaultUserAgentStringSafe(context);
         reloadConnectivitySettings();
     }
 
@@ -84,7 +86,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
                 skipUrlReplacing = ((MediaExtra) extra).isSkipUrlReplacing();
             }
             if (!skipUrlReplacing) {
-                final ParcelableMedia media = PreviewMediaExtractor.fromLink(url, mClient, extra);
+                final ParcelableMedia media = PreviewMediaExtractor.fromLink(url, client, extra);
                 if (media != null && media.media_url != null) {
                     return getInternal(media.media_url, extra);
                 }
@@ -95,7 +97,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
                 final String fallbackUrl = ((MediaExtra) extra).getFallbackUrl();
                 if (fallbackUrl != null) {
                     final ParcelableMedia media = PreviewMediaExtractor.fromLink(fallbackUrl,
-                            mClient, extra);
+                            client, extra);
                     if (media != null && media.media_url != null) {
                         return getInternal(media.media_url, extra);
                     } else {
@@ -115,7 +117,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         if (extra instanceof MediaExtra) {
             UserKey accountKey = ((MediaExtra) extra).getAccountKey();
             if (accountKey != null) {
-                account = AccountUtils.getAccountDetails(AccountManager.get(mContext), accountKey, true);
+                account = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true);
                 if (account != null) {
                     auth = CredentialsExtensionsKt.getAuthorization(account.credentials);
                 }
@@ -123,7 +125,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         }
         final Uri modifiedUri = getReplacedUri(uri, account != null ? account.credentials.api_url_format : null);
         final MultiValueMap<String> additionalHeaders = new MultiValueMap<>();
-        additionalHeaders.add("User-Agent", mUserAgent);
+        additionalHeaders.add("User-Agent", userAgent);
         final String method = GET.METHOD;
         final String requestUri;
         if (isAuthRequired(uri, account) && auth != null && auth.hasAuthorization()) {
@@ -151,7 +153,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         builder.url(requestUri);
         builder.headers(additionalHeaders);
         builder.tag(NoIntercept.INSTANCE);
-        final HttpResponse resp = mClient.newCall(builder.build()).execute();
+        final HttpResponse resp = client.newCall(builder.build()).execute();
         if (!resp.isSuccessful()) {
             final String detailMessage = "Unable to get " + requestUri + ", response code: "
                     + resp.getStatus();
@@ -162,7 +164,7 @@ public class TwidereMediaDownloader implements MediaDownloader, Constants {
         }
         final Body body = resp.getBody();
         final CacheMetadata metadata = new CacheMetadata();
-        metadata.setContentType(body.contentType().getContentType());
+        metadata.setContentType(Utils.sanitizeMimeType(body.contentType().getContentType()));
         return new TwidereDownloadResult(body, metadata);
     }
 

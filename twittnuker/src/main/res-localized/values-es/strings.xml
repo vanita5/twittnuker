@@ -33,6 +33,7 @@
   <string name="action_denying_follow_request">rechazando petición de seguimiento</string>
   <!-- [verb] Edit image/settings etc. -->
   <string name="action_edit">Editar</string>
+  <string name="action_edit_filter_rule">Editar regla</string>
   <string name="action_favorite">Añadir a Favoritos</string>
   <string name="action_favoriting">marcando como favorito</string>
   <string name="action_filter_import_from_blocked_users">Importar de usuarios bloqueados</string>
@@ -80,6 +81,7 @@
   <string name="action_saving_search">Guardando búsqueda</string>
   <string name="action_select_all">Seleccionar todo</string>
   <string name="action_select_none">Seleccionar ninguno</string>
+  <string name="action_select_user">Selecciona usuario</string>
   <!-- [verb] Send tweet/message -->
   <string name="action_send">Enviar</string>
   <string name="action_sending_direct_message">enviando el mensaje directo</string>
@@ -205,7 +207,6 @@
   <string name="cant_load_all_replies_message">No se pueden cargar todas las menciones. &lt;a href=\"#dialog\";&gt;¿Por qué?&lt;/a&gt;</string>
   <string name="cards">Tarjetas</string>
   <string name="clear_cache">Borrar caché</string>
-  <string name="clear_cache_summary">Limpiar caché de imagen de perfil almacenado.</string>
   <string name="clear_databases">Limpiar bases de datos</string>
   <string name="clear_databases_summary">Borra todos los tweets, perfiles y mensajes. Las credenciales de su cuenta no se perderán.</string>
   <string name="clear_search_history">Limpiar historial de búsqueda</string>
@@ -271,7 +272,7 @@
   <string name="display_sensitive_contents_summary">Mostrar contenidos sensibles en la cronología sin aviso</string>
   <string name="dns_server">Servidor DNS</string>
   <string name="dns_server_summary">Configure el servidor DNS para peticiones de red.</string>
-  <string name="dont_restart">No reinicie</string>
+  <string name="action_dont_restart">No reinicie</string>
   <string name="draft_saved">Borrador guardado</string>
   <string name="drafts_hint_messages">Tus tweets sin enviar se guardarán aquí</string>
   <string name="drawer_toggle">Barra lateral</string>
@@ -313,7 +314,6 @@
   <string name="external_user_host_format">Usuario externo en <xliff:g id="host">%s</xliff:g></string>
   <string name="extra_configurations">Configuraciones Extra</string>
   <string name="extra_feature_description_filters_import">Importar lista de filtros de bloqueados/silenciados</string>
-  <string name="extra_feature_description_filters_subscription">Filtra la lista de suscripciones</string>
   <string name="extra_feature_description_schedule_status">Planifica tu tweet (envíalo más tarde)</string>
   <string name="extra_feature_description_sync_data">Sincronizar datos con Dropbox, Google Drive etc</string>
   <!-- Enhanced (paid) features description -->
@@ -454,25 +454,10 @@
   <string name="message_direct_message_deleted">Mensaje directo eliminado.</string>
   <string name="message_direct_message_sent">Mensaje directo enviado.</string>
   <string name="message_error_invalid_account">Los datos de algunas cuentas están dañados, Twittnuker quitará esas cuentas para evitar fallos.</string>
-  <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-  <string name="message_extra_features_not_purchased">Características extra no compradas</string>
-  <!-- Toast message for network errors -->
-  <string name="message_network_error">Error de red.</string>
   <string name="message_permission_request_compose_location">Twittnuker necesita permiso de ubicación para agregar la ubicación a los twits.</string>
   <string name="message_permission_request_save_media">Twittnuker necesita permiso de almacenamiento para guardar los archivos.</string>
   <string name="message_permission_request_share_media">Twittnuker necesita permiso de almacenamiento para el intercambio de archivos con otras aplicaciones.</string>
   <string name="message_please_wait">Por favor espera.</string>
-  <string name="message_retweet_cancelled">Retweet cancelado.</string>
-  <string name="message_search_deleted">Búsqueda borrada.</string>
-  <string name="message_search_name_deleted">Búsqueda \"<xliff:g id="name">%s</xliff:g>\" borrada.</string>
-  <string name="message_search_name_saved">Búsqueda \"<xliff:g id="name">%s</xliff:g>\" salvada.</string>
-  <string name="message_search_saved">Búsqueda guardada.</string>
-  <string name="message_status_deleted">Tweet eliminado.</string>
-  <string name="message_status_favorited">Tweet marcado como favorito.</string>
-  <string name="message_status_like_removed">\"Me gusta\" borrado.</string>
-  <string name="message_status_liked">El twit ha gustado.</string>
-  <string name="message_status_retweeted">Retwitteado.</string>
-  <string name="message_status_unfavorited">Tweet desmarcado como favorito.</string>
   <string name="message_sync_data_connect_hint">Conectar Twittnuker con la red para sincronizar los datos</string>
   <string name="message_sync_data_synced_with_name">Twittnuker se ha conectado con <xliff:g example="ownCloud" id="name">%s</xliff:g></string>
   <string name="message_sync_disconnect_from_name_confirm">¿Desconectar de <xliff:g example="ownCloud" id="name">%s</xliff:g>?</string>
@@ -487,29 +472,44 @@
   <string name="message_toast_already_logged_in">Ya has iniciado sesión.</string>
   <string name="message_toast_cannot_get_location">No puede obtener su ubicación.</string>
   <string name="message_toast_compose_write_storage_no_permission">Se requiere este permiso para borrar fotos/vídeos realizados</string>
+  <string name="message_toast_duplicate_filter_rule">Regla duplicada</string>
   <string name="message_toast_error_occurred">A ocurrido un error, inténtelo de nuevo.</string>
+  <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
+  <string name="message_toast_extra_features_not_purchased">Características extra no compradas</string>
   <string name="message_toast_link_copied_to_clipboard">Enlace copiado al portapapeles</string>
   <string name="message_toast_livewp_daydream_enabled_message">Aquí hay un pequeño regalo para ti, encuéntralo en los ajustes del sistema :)</string>
   <string name="message_toast_login_verification_failed">Verificación de inicio de sesión fallida.</string>
+  <!-- Toast message for network errors -->
+  <string name="message_toast_network_error">Error de red</string>
   <string name="message_toast_no_account">Sin cuenta</string>
+  <string name="message_toast_no_account_permission">Se requiere permiso de cuenta</string>
   <string name="message_toast_no_account_selected">No se seleccionó ninguna cuenta.</string>
-  <string name="message_toast_no_user_selected">Ningún usuario seleccionado.</string>
+  <string name="message_toast_no_user_selected">Ningún usuario seleccionado</string>
   <string name="message_toast_press_again_to_close">Presione de nuevo para cerrar</string>
   <string name="message_toast_profile_banner_image_updated">Imagen de cabecera del perfil actualizada.</string>
+  <string name="message_toast_retweet_cancelled">Retweet cancelado</string>
   <string name="message_toast_save_media_no_storage_permission">Se necesita permiso de almacenamiento para guardar archivos.</string>
   <string name="message_toast_saved_to_gallery">Guardado en la galería.</string>
+  <string name="message_toast_search_deleted">Búsqueda borrada</string>
+  <string name="message_toast_search_name_deleted">Búsqueda \"<xliff:g id="name">%s</xliff:g>\" borrada</string>
+  <string name="message_toast_search_name_saved">Búsqueda \"<xliff:g id="name">%s</xliff:g>\" salvada</string>
+  <string name="message_toast_search_saved">Búsqueda guardada</string>
   <string name="message_toast_select_file_no_storage_permission">Se necesita permiso de almacenamiento para seleccionar un archivo.</string>
   <string name="message_toast_share_media_no_storage_permission">Alguna aplicación requiere permisos de almacenamiento para compartir los datos.</string>
+  <string name="message_toast_status_deleted">Tweet eliminado</string>
+  <string name="message_toast_status_favorited">Tweet marcado como favorito</string>
+  <string name="message_toast_status_like_removed">\"Me gusta\" borrado</string>
+  <string name="message_toast_status_liked">El twit ha gustado</string>
+  <string name="message_toast_status_retweeted">Retwitteado</string>
   <string name="message_toast_status_saved_to_draft">Tweet guardado en borradores.</string>
+  <string name="message_toast_status_unfavorited">Tweet desmarcado como favorito</string>
   <string name="message_toast_status_updated">Tweet enviado.</string>
+  <string name="message_toast_user_filters_removed">Eliminar este usuario de la lista filtrada</string>
+  <string name="message_toast_users_filters_added">Usuarios añadidos a la lista de filtros</string>
   <string name="message_toast_wrong_api_key">Url de la API o clave de consumidor/secreto incorrectos, por favor compruébalo de nuevo.</string>
   <string name="message_toast_wrong_username_password">Usuario/contraseña incorrectos</string>
-  <string name="message_user_muted">Usuario añadido a la lista de filtros. No verás tweets de estos usuarios en tu cronología ni en tu lista de menciones.</string>
-  <string name="message_user_unmuted">Eliminar este usuario de la lista filtrada.</string>
-  <string name="message_users_muted">Usuarios añadidos a la lista de filtros. No verás tweets de estos usuarios en tu cronología ni en tu lista de menciones.</string>
   <string name="message_video_too_long">Vídeo demasiado largo</string>
   <string name="message_video_too_short">Vídeo demasiado corto</string>
-  <string name="more">Más</string>
   <string name="multi_select">Selección múltiple</string>
   <string name="mute_user">Silenciar <xliff:g id="name">%s</xliff:g></string>
   <string name="mute_user_confirm_message">Silenciar <xliff:g id="name">%s</xliff:g>? Ya no verás los tweets de este usuario, mientras lo estés siguiendo.</string>
@@ -607,6 +607,9 @@
   <string name="preference_title_database_item_limit">Tamaño máximo de la base de datos</string>
   <string name="preference_title_filter_manage_subscriptions">Administrar</string>
   <string name="preference_title_filter_subscriptions">Filtrar suscripciones</string>
+  <string name="preference_title_light_font">Fuente suave</string>
+  <string name="preference_title_portrait">Vertical</string>
+  <string name="preference_title_landscape">Horizontal</string>
   <string name="preference_title_storage">Almacenamiento de información</string>
   <string name="preference_title_translate">Traducir</string>
   <string name="preload_wifi_only">Precargar solo con Wi-Fi</string>
@@ -704,6 +707,7 @@
   <string name="scrapyard">Más ajustes</string>
   <string name="search">Búsqueda</string>
   <string name="search_hint">Búsqueda de tweets o usuarios</string>
+  <string name="search_hint_users">Buscar usuarios</string>
   <string name="search_statuses">Buscar Tweets</string>
   <string name="search_type_statuses">Tweets</string>
   <string name="search_type_users">Usuarios</string>
@@ -841,6 +845,9 @@
   <string name="title_sync_settings">Sincronizar ajustes</string>
   <string name="title_user">Usuario</string>
   <string name="title_user_colors">Colores de usuario</string>
+  <string name="title_user_list_memberships">Pertenece a</string>
+  <string name="title_user_list_ownerships">Creado</string>
+  <string name="title_user_list_subscriptions">Suscripciones</string>
   <string name="title_users_favorited_this">Favoritos de los usuarios</string>
   <string name="title_users_liked_this">Usuarios a los que les gustó esto</string>
   <string name="title_users_retweeted_this">Usuarios retweeted esto</string>

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,13 +78,11 @@ public class NotificationHelper implements Constants {
     ImageLoader mMediaLoader;
     @Inject
     ActivityTracker mActivityTracker;
-    private ImagePreloader mImagePreloader;
     private SharedPreferencesWrapper mSharedPreferences;
 
     public NotificationHelper(final Context context) {
         this.mContext = context;
         GeneralComponentHelper.build(context).inject(this);
-        mImagePreloader = new ImagePreloader(context, mMediaLoader);
         mSharedPreferences = SharedPreferencesWrapper.getInstance(context, SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
@@ -663,7 +661,7 @@ public class NotificationHelper implements Constants {
         final Resources res = mContext.getResources();
         final int w = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width);
         final int h = res.getDimensionPixelSize(android.R.dimen.notification_large_icon_height);
-        final File profileImageFile = mImagePreloader.getCachedImageFile(profileImageUrl);
+        final File profileImageFile = mMediaLoader.getDiskCache().get(profileImageUrl);
 
         Bitmap profileImage = null;
         if (profileImageFile != null && profileImageFile.isFile()) {

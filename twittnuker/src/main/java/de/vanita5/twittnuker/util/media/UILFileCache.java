@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,19 +64,19 @@ public class UILFileCache implements FileCache {
             }
         });
         if (extra != null) {
-            cache.save(CacheProvider.getExtraKey(key), new ByteArrayInputStream(extra), null);
+            cache.save(CacheProvider.Companion.getExtraKey(key), new ByteArrayInputStream(extra), null);
         }
     }
 
     @NonNull
     @Override
     public Uri toUri(@NonNull final String key) {
-        return CacheProvider.getCacheUri(key, null);
+        return CacheProvider.Companion.getCacheUri(key, null);
     }
 
     @NonNull
     @Override
     public String fromUri(@NonNull final Uri uri) {
-        return CacheProvider.getCacheKey(uri);
+        return CacheProvider.Companion.getCacheKey(uri);
     }
 }

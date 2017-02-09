@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.model.tab.argument.UserListArguments;
 import de.vanita5.twittnuker.model.tab.extra.HomeTabExtras;
 import de.vanita5.twittnuker.model.tab.extra.InteractionsTabExtras;
 import de.vanita5.twittnuker.model.tab.extra.TabExtras;
+import de.vanita5.twittnuker.model.tab.extra.TrendsTabExtras;
 import de.vanita5.twittnuker.model.util.TabArgumentsFieldConverter;
 import de.vanita5.twittnuker.model.util.TabExtrasFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Tabs;
@@ -280,15 +281,19 @@ public class Tab implements Parcelable {
         @JsonField(name = "home")
         @ParcelableThisPlease
         HomeTabExtras home;
+        @JsonField(name = "trends")
+        @ParcelableThisPlease
+        TrendsTabExtras trends;
 
         public static InternalExtras from(TabExtras extras) {
             if (extras == null) return null;
             InternalExtras result = new InternalExtras();
             if (extras instanceof InteractionsTabExtras) {
                 result.interactions = (InteractionsTabExtras) extras;
-            }
-            if (extras instanceof HomeTabExtras) {
+            } else if (extras instanceof HomeTabExtras) {
                 result.home = (HomeTabExtras) extras;
+            } else if (extras instanceof TrendsTabExtras) {
+                result.trends = (TrendsTabExtras) extras;
             } else {
                 result.base = extras;
             }
@@ -300,6 +305,8 @@ public class Tab implements Parcelable {
                 return interactions;
             } else if (home != null) {
                 return home;
+            } else if (trends != null) {
+                return trends;
             } else {
                 return base;
             }

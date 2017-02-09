@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
 import de.vanita5.twittnuker.preference.iface.IDialogPreference;
 import de.vanita5.twittnuker.util.TwidereColorUtils;
 
@@ -153,7 +154,8 @@ public class ColorPickerPreference extends DialogPreference implements
         @Override
         public void onShow(DialogInterface dialog) {
             final ColorPickerPreference preference = (ColorPickerPreference) getPreference();
-            final Dialog alertDialog = (Dialog) dialog;
+            final AlertDialog alertDialog = (AlertDialog) dialog;
+            AlertDialogExtensionsKt.applyTheme(alertDialog);
             final View windowView = alertDialog.getWindow().getDecorView();
             if (windowView == null) return;
             mController = new ColorPickerDialog.Controller(getContext(), windowView);

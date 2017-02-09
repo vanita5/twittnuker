@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.util;
 
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -51,8 +50,6 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.os.SystemClock;
-import android.provider.MediaStore;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -64,26 +61,22 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
-import android.system.ErrnoException;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
-import android.widget.AbsListView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -97,14 +90,12 @@ import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.library.twitter.model.Status;
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment;
-
 import org.mariotaku.pickncrop.library.PNCUtils;
 import org.mariotaku.sqliteqb.library.AllColumns;
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.Selectable;
-import de.vanita5.twittnuker.BuildConfig;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
@@ -130,10 +121,6 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
-import de.vanita5.twittnuker.util.TwidereLinkify.HighlightStyle;
-import de.vanita5.twittnuker.view.CardMediaContainer.PreviewStyle;
-import de.vanita5.twittnuker.view.ShapedImageView;
-import de.vanita5.twittnuker.view.ShapedImageView.ShapeStyle;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 import java.io.Closeable;
@@ -147,8 +134,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.net.ssl.SSLException;
 
 import static de.vanita5.twittnuker.util.DataStoreUtils.DIRECT_MESSAGES_URIS;
 import static de.vanita5.twittnuker.util.DataStoreUtils.STATUSES_URIS;
@@ -252,6 +237,15 @@ public final class Utils implements Constants {
         } catch (SecurityException e) {
             return false;
         }
+    }
+
+    public static String sanitizeMimeType(@Nullable final String contentType) {
+        if (contentType == null) return null;
+        switch (contentType) {
+            case "image/jpg":
+                return "image/jpeg";
+        }
+        return contentType;
     }
 
     public static class NoAccountException extends Exception {
@@ -531,33 +525,6 @@ public final class Utils implements Constants {
     }
 
 
-    public static String getImagePathFromUri(final Context context, final Uri uri) {
-        if (context == null || uri == null) return null;
-
-        final String mediaUriStart = ParseUtils.parseString(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-        if (ParseUtils.parseString(uri).startsWith(mediaUriStart)) {
-
-            final String[] proj = {MediaStore.Images.Media.DATA};
-            final Cursor cur = context.getContentResolver().query(uri, proj, null, null, null);
-
-            if (cur == null) return null;
-
-            final int idxData = cur.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-            cur.moveToFirst();
-            try {
-                return cur.getString(idxData);
-            } finally {
-                cur.close();
-            }
-        } else {
-            final String path = uri.getPath();
-            if (path != null && new File(path).exists()) return path;
-        }
-        return null;
-    }
-
     public static String getMediaUploadStatus(@NonNull final Context context,
                                               @Nullable final CharSequence[] links,
                                               @Nullable final CharSequence text) {
@@ -580,20 +547,6 @@ public final class Utils implements Constants {
         final File cacheDir = new File(externalCacheDir, cacheDirName);
         if (cacheDir.isDirectory() || cacheDir.mkdirs()) return cacheDir;
         return new File(context.getCacheDir(), cacheDirName);
-    }
-
-    @HighlightStyle
-    public static int getLinkHighlightingStyleInt(final String option) {
-        if (option == null) return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
-        switch (option) {
-            case VALUE_LINK_HIGHLIGHT_OPTION_BOTH:
-                return VALUE_LINK_HIGHLIGHT_OPTION_CODE_BOTH;
-            case VALUE_LINK_HIGHLIGHT_OPTION_HIGHLIGHT:
-                return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
-            case VALUE_LINK_HIGHLIGHT_OPTION_UNDERLINE:
-                return VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE;
-        }
-        return VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
     }
 
     public static String getLocalizedNumber(final Locale locale, final Number number) {
@@ -629,22 +582,6 @@ public final class Utils implements Constants {
         if (matcher.matches())
             return matcher.replaceFirst("$1$2/profile_images/$3/$4$6");
         return url;
-    }
-
-    @ShapeStyle
-    public static int getProfileImageStyle(String style) {
-        if (VALUE_PROFILE_IMAGE_STYLE_ROUND.equalsIgnoreCase(style)) {
-            return ShapedImageView.SHAPE_CIRCLE;
-        }
-        return ShapedImageView.SHAPE_RECTANGLE;
-    }
-
-    @PreviewStyle
-    public static int getMediaPreviewStyle(String style) {
-        if (VALUE_MEDIA_PREVIEW_STYLE_SCALE.equalsIgnoreCase(style)) {
-            return VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE;
-        }
-        return VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP;
     }
 
     public static String getQuoteStatus(final Context context, final ParcelableStatus status) {
@@ -730,7 +667,7 @@ public final class Utils implements Constants {
             final String msg = StatusCodeMessageUtils.getTwitterErrorMessage(context, te.getErrorCode());
             return getErrorMessage(context, action, msg != null ? msg : trimLineBreak(te.getMessage()));
         } else if (te.getCause() instanceof IOException)
-            return getErrorMessage(context, action, context.getString(R.string.message_network_error));
+            return getErrorMessage(context, action, context.getString(R.string.message_toast_network_error));
         else if (te.getCause() instanceof JSONException)
             return getErrorMessage(context, action, context.getString(R.string.message_api_data_corrupted));
         else
@@ -812,16 +749,6 @@ public final class Utils implements Constants {
         return accountId.equals(retweetedById) || myRetweetId != null;
     }
 
-    public static boolean isNetworkAvailable(final Context context) {
-        try {
-            final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            final NetworkInfo info = cm.getActiveNetworkInfo();
-            return info != null && info.isConnected();
-        } catch (SecurityException e) {
-            return true;
-        }
-    }
-
     public static int matchTabCode(@Nullable final Uri uri) {
         if (uri == null) return UriMatcher.NO_MATCH;
         return HOME_TABS_URI_MATCHER.match(uri);
@@ -895,45 +822,9 @@ public final class Utils implements Constants {
         activity.overridePendingTransition(enterAnim, exitAnim);
     }
 
-    public static void scrollListToPosition(final AbsListView list, final int position) {
-        scrollListToPosition(list, position, 0);
-    }
-
-    public static void scrollListToPosition(final AbsListView absListView, final int position, final int offset) {
-        if (absListView == null) return;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            if (absListView instanceof ListView) {
-                final ListView listView = (ListView) absListView;
-                listView.setSelectionFromTop(position, offset);
-            } else {
-                absListView.setSelection(position);
-            }
-            stopListView(absListView);
-        } else {
-            stopListView(absListView);
-            if (absListView instanceof ListView) {
-                final ListView listView = (ListView) absListView;
-                listView.setSelectionFromTop(position, offset);
-            } else {
-                absListView.setSelection(position);
-            }
-        }
-    }
-
-    public static void scrollListToTop(final AbsListView list) {
-        if (list == null) return;
-        scrollListToPosition(list, 0);
-    }
-
     static boolean isMyStatus(ParcelableStatus status) {
         if (isMyRetweet(status)) return true;
         return status.account_key.maybeEquals(status.user_key);
-    }
-
-    public static boolean shouldStopAutoRefreshOnBatteryLow(final Context context) {
-        final SharedPreferences mPreferences = context.getSharedPreferences(SHARED_PREFERENCES_NAME,
-                Context.MODE_PRIVATE);
-        return mPreferences.getBoolean(KEY_STOP_AUTO_REFRESH_WHEN_BATTERY_LOW, true);
     }
 
     public static void showErrorMessage(final Context context, final CharSequence message, final boolean longMessage) {
@@ -1035,7 +926,7 @@ public final class Utils implements Constants {
                             trimLineBreak(te.getErrorMessage()));
                 } else if (te.getCause() instanceof IOException) {
                     message = context.getString(R.string.error_message_with_action, action,
-                            context.getString(R.string.message_network_error));
+                            context.getString(R.string.message_toast_network_error));
                 } else {
                     message = context.getString(R.string.error_message_with_action, action,
                             trimLineBreak(te.getMessage()));
@@ -1059,19 +950,6 @@ public final class Utils implements Constants {
         intent.putExtra(Intent.EXTRA_TEXT, status.text_plain);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         context.startActivity(Intent.createChooser(intent, context.getString(R.string.action_share)));
-    }
-
-    public static void stopListView(final AbsListView list) {
-        if (list == null) return;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            list.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
-                    MotionEvent.ACTION_CANCEL, 0, 0, 0));
-        } else {
-            list.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
-                    MotionEvent.ACTION_DOWN, 0, 0, 0));
-            list.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
-                    MotionEvent.ACTION_UP, 0, 0, 0));
-        }
     }
 
     public static String trimLineBreak(final String orig) {
@@ -1117,11 +995,9 @@ public final class Utils implements Constants {
 
     public static void retweet(ParcelableStatus status, AsyncTwitterWrapper twitter) {
         if (isMyRetweet(status)) {
-            twitter.cancelRetweetAsync(status.account_key,
-                    status.id, status.my_retweet_id);
+            twitter.cancelRetweetAsync(status.account_key, status.id, status.my_retweet_id);
         } else {
-            twitter.retweetStatusAsync(status.account_key,
-                    status.id);
+            twitter.retweetStatusAsync(status.account_key, status);
         }
     }
 
@@ -1134,7 +1010,7 @@ public final class Utils implements Constants {
                 ((FavoriteItemProvider) provider).invokeItem(item,
                         new AbsStatusesFragment.DefaultOnLikedListener(twitter, status));
             } else {
-                twitter.createFavoriteAsync(status.account_key, status.id);
+                twitter.createFavoriteAsync(status.account_key, status);
             }
         }
     }
@@ -1193,17 +1069,6 @@ public final class Utils implements Constants {
         return null;
     }
 
-    public static boolean isCustomConsumerKeySecret(String consumerKey, String consumerSecret) {
-        if (TextUtils.isEmpty(consumerKey) || TextUtils.isEmpty(consumerSecret)) return false;
-        return (!TWITTER_CONSUMER_KEY.equals(consumerKey) && !TWITTER_CONSUMER_SECRET.equals(consumerKey))
-                && (!TWITTER_CONSUMER_KEY.equals(consumerKey) && !TWITTER_CONSUMER_SECRET.equals(consumerSecret));
-    }
-
-    public static int getErrorNo(Throwable t) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return 0;
-        return UtilsL.getErrorNo(t);
-    }
-
     public static int getNotificationId(int baseId, @Nullable UserKey accountId) {
         int result = baseId;
         result = 31 * result + (accountId != null ? accountId.hashCode() : 0);
@@ -1227,31 +1092,6 @@ public final class Utils implements Constants {
         final NetworkInfo networkInfo = cm.getActiveNetworkInfo();
         return networkInfo != null
                 && !(networkInfo.getType() == ConnectivityManager.TYPE_MOBILE && preferences.getBoolean(KEY_BANDWIDTH_SAVING_MODE));
-    }
-
-    static class UtilsL {
-
-        private UtilsL() {
-        }
-
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        static void setSharedElementTransition(Context context, Window window, int transitionRes) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
-            window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-            final TransitionInflater inflater = TransitionInflater.from(context);
-            final Transition transition = inflater.inflateTransition(transitionRes);
-            window.setSharedElementEnterTransition(transition);
-            window.setSharedElementExitTransition(transition);
-        }
-
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        public static int getErrorNo(Throwable t) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return 0;
-            if (t instanceof ErrnoException) {
-                return ((ErrnoException) t).errno;
-            }
-            return 0;
-        }
     }
 
     /**
@@ -1331,6 +1171,30 @@ public final class Utils implements Constants {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Detect whether screen minimum width is not smaller than 600dp, regardless split screen mode
+     */
+    public static boolean isDeviceTablet(@NonNull Context context) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        final Display defaultDisplay = wm.getDefaultDisplay();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            defaultDisplay.getMetrics(metrics);
+        } else {
+            defaultDisplay.getRealMetrics(metrics);
+        }
+        final float mw = Math.min(metrics.widthPixels / metrics.density, metrics.heightPixels / metrics.density);
+        return mw >= 600;
+    }
+
+    /*
+     * May return false on tablets when using split window
+     */
+    public static boolean isScreenTablet(@NonNull Context context) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return metrics.widthPixels / metrics.density >= 600;
     }
 
 }

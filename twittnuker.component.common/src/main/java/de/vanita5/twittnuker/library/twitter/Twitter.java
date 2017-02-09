@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,14 +29,14 @@ import de.vanita5.twittnuker.library.twitter.api.HelpResources;
 import de.vanita5.twittnuker.library.twitter.api.ListResources;
 import de.vanita5.twittnuker.library.twitter.api.PlacesGeoResources;
 import de.vanita5.twittnuker.library.twitter.api.SavedSearchesResources;
-import de.vanita5.twittnuker.library.twitter.api.SearchResource;
+import de.vanita5.twittnuker.library.twitter.api.SearchResources;
 import de.vanita5.twittnuker.library.twitter.api.SpamReportingResources;
 import de.vanita5.twittnuker.library.twitter.api.TimelineResources;
 import de.vanita5.twittnuker.library.twitter.api.TrendsResources;
 import de.vanita5.twittnuker.library.twitter.api.TweetResources;
 import de.vanita5.twittnuker.library.twitter.api.UsersResources;
 
-public interface Twitter extends SearchResource, TimelineResources, TweetResources, UsersResources,
+public interface Twitter extends SearchResources, TimelineResources, TweetResources, UsersResources,
         ListResources, DirectMessagesResources, FriendsFollowersResources, FavoritesResources,
         SpamReportingResources, SavedSearchesResources, TrendsResources, PlacesGeoResources,
         HelpResources, TwitterPrivate {

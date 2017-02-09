@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *  
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *  
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,13 +24,11 @@ package de.vanita5.twittnuker.activity
 
 import android.app.Activity
 import android.content.Intent
-import android.content.UriMatcher
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.ktextension.toLong
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
@@ -38,8 +36,9 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.Utils
+import java.util.*
 
-class WebLinkHandlerActivity : Activity(), Constants {
+class WebLinkHandlerActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +50,7 @@ class WebLinkHandlerActivity : Activity(), Constants {
             return
         }
 
-        val (handledIntent, handledSuccessfully) = when (uri.host) {
+        val (handledIntent, handledSuccessfully) = when (uri.host.toLowerCase(Locale.US)) {
             "twitter.com", "www.twitter.com", "mobile.twitter.com" -> handleTwitterLink(regulateTwitterUri(uri))
             "fanfou.com" -> handleFanfouLink(uri)
             "twittnuker.org" -> handleTwidereExternalLink(uri)
@@ -117,16 +116,15 @@ class WebLinkHandlerActivity : Activity(), Constants {
                     return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                 }
                 else -> {
-                    if (!ArrayUtils.contains(FANFOU_RESERVED_PATHS, pathSegments[0])) {
-                        if (pathSegments.size == 1) {
-                            val builder = Uri.Builder()
-                            builder.scheme(SCHEME_TWITTNUKER)
-                            builder.authority(AUTHORITY_USER)
-                            builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_FANFOU_COM)
-                            val userKey = UserKey(pathSegments[0], USER_TYPE_FANFOU_COM)
-                            builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userKey.toString())
-                            return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
-                        }
+                    if (FANFOU_RESERVED_PATHS.contains(pathSegments[0])) return Pair(null, false)
+                    if (pathSegments.size == 1) {
+                        val builder = Uri.Builder()
+                        builder.scheme(SCHEME_TWITTNUKER)
+                        builder.authority(AUTHORITY_USER)
+                        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_HOST, USER_TYPE_FANFOU_COM)
+                        val userKey = UserKey(pathSegments[0], USER_TYPE_FANFOU_COM)
+                        builder.appendQueryParameter(QUERY_PARAM_USER_KEY, userKey.toString())
+                        return Pair(Intent(Intent.ACTION_VIEW, builder.build()), true)
                     }
                     return Pair(null, false)
                 }
@@ -300,6 +298,10 @@ class WebLinkHandlerActivity : Activity(), Constants {
                 }
                 handledIntent.putExtra(Intent.EXTRA_TEXT, sb.toString())
                 return Pair(handledIntent, true)
+            }
+            "favorite", "retweet" -> {
+                val tweetId = uri.getQueryParameter("tweet_id") ?: return Pair(null, false)
+                return Pair(IntentUtils.status(null, tweetId), true)
             }
         }
         return Pair(null, false)

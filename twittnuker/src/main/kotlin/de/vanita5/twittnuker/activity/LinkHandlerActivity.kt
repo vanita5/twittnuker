@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Rect
 import android.net.Uri
 import android.os.BadParcelableException
@@ -36,6 +37,7 @@ import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.MenuItem
+import android.view.View
 import android.view.Window
 import kotlinx.android.synthetic.main.activity_link_handler.*
 import org.mariotaku.kpreferences.get
@@ -62,6 +64,7 @@ import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
 import de.vanita5.twittnuker.util.linkhandler.TwidereLinkMatcher
+import de.vanita5.twittnuker.util.theme.getCurrentThemeResource
 
 class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IControlBarActivity,
         SupportFragmentCallback {
@@ -118,7 +121,14 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         } else {
             setContentView(R.layout.activity_link_handler)
             toolbar?.let { toolbar ->
-                setSupportActionBar(toolbar)
+                if (supportActionBar != null) {
+                    toolbar.visibility = View.GONE
+                    windowOverlay?.visibility = View.GONE
+                } else {
+                    toolbar.visibility = View.VISIBLE
+                    windowOverlay?.visibility = View.VISIBLE
+                    setSupportActionBar(toolbar)
+                }
             }
             contentFragmentId = R.id.contentFragment
         }
@@ -128,7 +138,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         ft.replace(contentFragmentId, fragment, "content_fragment")
         ft.commit()
         setTitle(linkId, uri)
-        finishOnly = java.lang.Boolean.parseBoolean(uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY))
+        finishOnly = uri.getQueryParameter(QUERY_PARAM_FINISH_ONLY)?.toBoolean() ?: false
 
         if (fragment is IToolBarSupportFragment) {
             ThemeUtils.setCompatContentViewOverlay(window, EmptyDrawable())
@@ -184,6 +194,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                 } else {
                     NavUtils.navigateUpFromSameTask(this)
                 }
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
@@ -240,57 +251,59 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         setupActionBarOption()
     }
 
-    override fun setControlBarVisibleAnimate(visible: Boolean) {
-        // Currently only search page needs this pattern, so we only enable this feature for it.
-        if (currentVisibleFragment !is HideUiOnScroll) return
-        controlBarShowHideHelper.setControlBarVisibleAnimate(visible)
-    }
-
-    override fun setControlBarVisibleAnimate(visible: Boolean, listener: ControlBarShowHideHelper.ControlBarAnimationListener) {
+    override fun setControlBarVisibleAnimate(visible: Boolean, listener: ControlBarShowHideHelper.ControlBarAnimationListener?) {
         // Currently only search page needs this pattern, so we only enable this feature for it.
         if (currentVisibleFragment !is HideUiOnScroll) return
         controlBarShowHideHelper.setControlBarVisibleAnimate(visible, listener)
     }
 
-    override fun getControlBarOffset(): Float {
-        val fragment = currentVisibleFragment
-        val actionBar = supportActionBar
-        if (fragment is IToolBarSupportFragment) {
-            return fragment.controlBarOffset
-        } else if (actionBar != null) {
-            return actionBar.hideOffset / controlBarHeight.toFloat()
-        }
-        return 0f
-    }
-
-    override fun setControlBarOffset(offset: Float) {
-        val fragment = currentVisibleFragment
-        val actionBar = supportActionBar
-        if (fragment is IToolBarSupportFragment) {
-            fragment.controlBarOffset = offset
-        } else if (actionBar != null && !hideOffsetNotSupported) {
-            try {
-                actionBar.hideOffset = (controlBarHeight * offset).toInt()
-            } catch (e: UnsupportedOperationException) {
-                // Some device will throw this exception
-                hideOffsetNotSupported = true
+    override var controlBarOffset: Float
+        get() {
+            val fragment = currentVisibleFragment
+            val actionBar = supportActionBar
+            if (fragment is IToolBarSupportFragment) {
+                return fragment.controlBarOffset
+            } else if (actionBar != null) {
+                return actionBar.hideOffset / controlBarHeight.toFloat()
             }
-
+            return 0f
         }
-        notifyControlBarOffsetChanged()
-    }
+        set(offset) {
+            val fragment = currentVisibleFragment
+            val actionBar = supportActionBar
+            if (fragment is IToolBarSupportFragment) {
+                fragment.controlBarOffset = offset
+            } else if (actionBar != null && !hideOffsetNotSupported) {
+                try {
+                    actionBar.hideOffset = (controlBarHeight * offset).toInt()
+                } catch (e: UnsupportedOperationException) {
+                    // Some device will throw this exception
+                    hideOffsetNotSupported = true
+                }
 
-    override fun getControlBarHeight(): Int {
-        val fragment = currentVisibleFragment
-        val actionBar = supportActionBar
-        if (fragment is IToolBarSupportFragment) {
-            return fragment.controlBarHeight
-        } else if (actionBar != null) {
-            return actionBar.height
+            }
+            notifyControlBarOffsetChanged()
         }
-        if (actionBarHeight != 0) return actionBarHeight
-        actionBarHeight = ThemeUtils.getActionBarHeight(this)
-        return actionBarHeight
+
+    override val controlBarHeight: Int
+        get() {
+            val fragment = currentVisibleFragment
+            val actionBar = supportActionBar
+            if (fragment is IToolBarSupportFragment) {
+                return fragment.controlBarHeight
+            } else if (actionBar != null) {
+                return actionBar.height
+            }
+            if (actionBarHeight != 0) return actionBarHeight
+            actionBarHeight = ThemeUtils.getActionBarHeight(this)
+            return actionBarHeight
+        }
+
+    override fun getThemeResource(preferences: SharedPreferences, theme: String, themeColor: Int): Int {
+        if (preferences[floatingDetailedContentsKey]) {
+            return super.getThemeResource(preferences, theme, themeColor)
+        }
+        return getCurrentThemeResource(this, theme, R.style.Theme_Twidere)
     }
 
     private fun setTitle(linkId: Int, uri: Uri): Boolean {

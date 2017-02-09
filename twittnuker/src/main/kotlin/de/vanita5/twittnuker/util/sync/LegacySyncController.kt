@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,13 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.SystemClock
 import android.support.v4.util.ArrayMap
+import de.vanita5.twittnuker.service.JobTaskService
 import de.vanita5.twittnuker.service.LegacyTaskService
 import de.vanita5.twittnuker.util.TaskServiceRunner
+import de.vanita5.twittnuker.util.refresh.LegacyAutoRefreshController
 import java.util.concurrent.TimeUnit
 
 
@@ -47,6 +50,9 @@ class LegacySyncController(context: Context) : SyncController(context) {
     }
 
     override fun appStarted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            LegacyAutoRefreshController.removeAllJobs(context, JobTaskService.JOB_IDS_REFRESH)
+        }
         for ((action, pendingIntent) in pendingIntents) {
             alarmManager.cancel(pendingIntent)
             val interval = TimeUnit.HOURS.toMillis(4)

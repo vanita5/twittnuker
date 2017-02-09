@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,8 @@ import android.view.View.OnClickListener
 import android.view.View.OnLongClickListener
 import android.widget.ImageView
 import kotlinx.android.synthetic.main.list_item_status.view.*
-import de.vanita5.twittnuker.Constants
+import org.mariotaku.ktextension.applyFontFamily
+import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
@@ -44,6 +45,9 @@ import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
+import de.vanita5.twittnuker.task.CreateFavoriteTask
+import de.vanita5.twittnuker.task.DestroyFavoriteTask
+import de.vanita5.twittnuker.task.RetweetStatusTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.HtmlEscapeHelper.toPlainText
 import de.vanita5.twittnuker.util.Utils.getUserTypeIconRes
@@ -51,7 +55,7 @@ import de.vanita5.twittnuker.view.ProfileImageView
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import java.lang.ref.WeakReference
 
-class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View) : ViewHolder(itemView), Constants, IStatusViewHolder {
+class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View) : ViewHolder(itemView), IStatusViewHolder {
 
     override val profileImageView: ProfileImageView by lazy { itemView.profileImage }
     override val profileTypeView: ImageView by lazy { itemView.profileType }
@@ -99,6 +103,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             View.inflate(quotedMediaPreview.context, R.layout.layout_card_media_preview,
                     itemView.quotedMediaPreview)
         }
+
     }
 
 
@@ -108,14 +113,14 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         statusContentUpperSpace.visibility = View.VISIBLE
 
         profileImageView.setImageResource(R.drawable.ic_account_logo_twitter)
-        nameView.setName(Constants.TWITTNUKER_PREVIEW_NAME)
-        nameView.setScreenName("@" + Constants.TWITTNUKER_PREVIEW_SCREEN_NAME)
+        nameView.name = TWITTNUKER_PREVIEW_NAME
+        nameView.screenName = "@" + TWITTNUKER_PREVIEW_SCREEN_NAME
         nameView.updateText(adapter.bidiFormatter)
         if (adapter.linkHighlightingStyle == VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
-            textView.text = toPlainText(Constants.TWITTNUKER_PREVIEW_TEXT_HTML)
+            textView.text = toPlainText(TWITTNUKER_PREVIEW_TEXT_HTML)
         } else {
             val linkify = adapter.twidereLinkify
-            val text = HtmlSpanBuilder.fromHtml(Constants.TWITTNUKER_PREVIEW_TEXT_HTML)
+            val text = HtmlSpanBuilder.fromHtml(TWITTNUKER_PREVIEW_TEXT_HTML)
             linkify.applyAllLinks(text, null, -1, false, adapter.linkHighlightingStyle, true)
             textView.text = text
         }
@@ -208,9 +213,9 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                 quotedTextView.visibility = View.VISIBLE
 
                 val quoted_user_key = status.quoted_user_key!!
-                quotedNameView.setName(
-                        status.quoted_user_name)
-                quotedNameView.setScreenName("@${status.quoted_user_screen_name}")
+                quotedNameView.name =
+                        status.quoted_user_name
+                quotedNameView.screenName = "@${status.quoted_user_screen_name}"
 
                 var quotedDisplayEnd = -1
                 if (status.extras.quoted_display_text_range != null) {
@@ -258,17 +263,16 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                     quotedMediaLabel.visibility = View.GONE
                 }
 
-                val quoteHint = if (!quoteContentAvailable) {
+                quotedTextView.text = if (!quoteContentAvailable) {
                     // Display 'not available' label
-                    context.getString(R.string.label_status_not_available)
+                    SpannableString.valueOf(context.getString(R.string.label_status_not_available)).apply {
+                        setSpan(ForegroundColorSpan(ThemeUtils.getColorFromAttribute(context,
+                                android.R.attr.textColorTertiary, textView.currentTextColor)), 0,
+                                length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    }
                 } else {
                     // Display 'original status' label
                     context.getString(R.string.label_original_status)
-                }
-                quotedTextView.text = SpannableString.valueOf(quoteHint).apply {
-                    setSpan(ForegroundColorSpan(ThemeUtils.getColorFromAttribute(context,
-                            android.R.attr.textColorTertiary, textView.currentTextColor)), 0,
-                            length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
                 quotedView.drawStart(ThemeUtils.getColorFromAttribute(context, R.attr.quoteIndicatorBackgroundColor, 0))
@@ -300,8 +304,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             status.timestamp
         }
 
-        nameView.setName(status.user_name)
-        nameView.setScreenName("@${status.user_screen_name}")
+        nameView.name = status.user_name
+        nameView.screenName = "@${status.user_screen_name}"
 
         if (adapter.profileImageEnabled) {
             profileImageView.visibility = View.VISIBLE
@@ -338,8 +342,9 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                 mediaLabel.visibility = View.GONE
                 mediaPreview.visibility = View.VISIBLE
 
-                mediaPreview.displayMedia(status.media, loader, status.account_key, -1, this,
-                        adapter.mediaLoadingHandler)
+                mediaPreview.displayMedia(loader = loader, media = status.media,
+                        accountId = status.account_key, mediaClickListener = this,
+                        loadingHandler = adapter.mediaLoadingHandler)
             }
         } else {
             // No media, hide all related views
@@ -388,7 +393,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             retweetIcon.isActivated = false
             retweetCount = Math.max(0, status.retweet_count - 1)
         } else {
-            val creatingRetweet = twitter.isCreatingRetweet(status.account_key, status.id)
+            val creatingRetweet = RetweetStatusTask.isCreatingRetweet(status.account_key, status.id)
             retweetIcon.isActivated = creatingRetweet || status.retweeted ||
                     Utils.isMyRetweet(status.account_key, status.retweeted_by_user_key,
                             status.my_retweet_id)
@@ -402,11 +407,11 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
             retweetCountView.text = null
             retweetCountView.visibility = View.GONE
         }
-        if (twitter.isDestroyingFavorite(status.account_key, status.id)) {
+        if (DestroyFavoriteTask.isDestroyingFavorite(status.account_key, status.id)) {
             favoriteIcon.isActivated = false
             favoriteCount = Math.max(0, status.favorite_count - 1)
         } else {
-            val creatingFavorite = twitter.isCreatingFavorite(status.account_key, status.id)
+            val creatingFavorite = CreateFavoriteTask.isCreatingFavorite(status.account_key, status.id)
             favoriteIcon.isActivated = creatingFavorite || status.is_favorite
             favoriteCount = status.favorite_count + if (creatingFavorite) 1 else 0
         }
@@ -445,8 +450,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                 quotedMediaPreview.visibility = View.VISIBLE
                 quotedMediaLabel.visibility = View.GONE
 
-                quotedMediaPreview.displayMedia(status.quoted_media, loader, status.account_key, -1,
-                        null, null)
+                quotedMediaPreview.displayMedia(loader = loader, media = status.quoted_media,
+                        accountId = status.account_key)
             }
         } else {
             // No media, hide all related views
@@ -455,10 +460,9 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         }
     }
 
-    override fun onMediaClick(view: View, media: ParcelableMedia, accountKey: UserKey, extraId: Long) {
+    override fun onMediaClick(view: View, media: ParcelableMedia, accountKey: UserKey?, id: Long) {
         statusClickListener?.onMediaClick(this, view, media, layoutPosition)
     }
-
 
     fun setOnClickListeners() {
         setStatusClickListener(adapter.statusClickListener)
@@ -474,6 +478,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         replyButton.setOnClickListener(eventListener)
         retweetButton.setOnClickListener(eventListener)
         favoriteButton.setOnClickListener(eventListener)
+        retweetButton.setOnLongClickListener(eventListener)
+        favoriteButton.setOnLongClickListener(eventListener)
 
         mediaLabel.setOnClickListener(eventListener)
 
@@ -502,13 +508,13 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         setTextSize(adapter.textSize)
         profileImageView.style = adapter.profileImageStyle
 
-        mediaPreview.setStyle(adapter.mediaPreviewStyle)
-        quotedMediaPreview.setStyle(adapter.mediaPreviewStyle)
+        mediaPreview.style = adapter.mediaPreviewStyle
+        quotedMediaPreview.style = adapter.mediaPreviewStyle
         //        profileImageView.setStyle(adapter.getProfileImageStyle());
 
         val nameFirst = adapter.nameFirst
-        nameView.setNameFirst(nameFirst)
-        quotedNameView.setNameFirst(nameFirst)
+        nameView.nameFirst = nameFirst
+        quotedNameView.nameFirst = nameFirst
 
         val favIcon: Int
         val favStyle: Int
@@ -531,6 +537,15 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
         timeView.showAbsoluteTime = adapter.showAbsoluteTime
 
         favoriteIcon.activatedColor = favColor
+
+        nameView.applyFontFamily(adapter.lightFont)
+        timeView.applyFontFamily(adapter.lightFont)
+        textView.applyFontFamily(adapter.lightFont)
+        mediaLabelTextView.applyFontFamily(adapter.lightFont)
+
+        quotedNameView.applyFontFamily(adapter.lightFont)
+        quotedTextView.applyFontFamily(adapter.lightFont)
+        quotedMediaLabelTextView.applyFontFamily(adapter.lightFont)
     }
 
     override fun playLikeAnimation(listener: LikeAnimationDrawable.OnLikedListener) {
@@ -650,10 +665,15 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                     }
                     return listener.onStatusLongClick(holder, position)
                 }
+                holder.favoriteButton -> {
+                    return listener.onItemActionLongClick(holder, R.id.favorite, position)
+                }
+                holder.retweetButton -> {
+                    return listener.onItemActionLongClick(holder, R.id.retweet, position)
+                }
             }
             return false
         }
     }
-
 
 }

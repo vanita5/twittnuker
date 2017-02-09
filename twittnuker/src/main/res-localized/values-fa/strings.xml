@@ -68,6 +68,7 @@
     <!-- [verb] Save settings/files etc. -->
     <string name="action_save">ذخیره</string>
     <string name="action_saving_search">ذخیرهٔ جست‌وجو</string>
+  <string name="action_select_user">گزینش کاربر</string>
     <!-- [verb] Send tweet/message -->
     <string name="action_send">ارسال</string>
     <string name="action_sending_direct_message">ارسال پیام مستقیم</string>
@@ -190,7 +191,6 @@
     <string name="cant_load_all_replies_message">نمی‌توان تمام پاسخ‌ها را بار کرد. &lt;a href=\"#dialog\";&gt;چرا؟&lt;/a&gt;</string>
     <string name="cards">کارت‌ها</string>
     <string name="clear_cache">پاک‌سازی انباره</string>
-    <string name="clear_cache_summary">پاک‌سازی انبارهٔ تصویر نمایهٔ ذخیره‌شده.</string>
     <string name="clear_databases">پاک‌سازی پایگاه‌داده‌ها</string>
     <string name="clear_databases_summary">پاک‌سازی تمام توییت‌ها، نمایه‌ها و پیام‌ها. اجازه‌نامهٔ حسابتان از بین نخواهد رفت.</string>
     <string name="clear_search_history">پاک‌سازی تاریخچهٔ جست‌وجو</string>
@@ -256,7 +256,7 @@
     <string name="display_sensitive_contents_summary">نمایش بدون هشدار محتوای حسّاسیت‌برانگیر در خط زمانی</string>
     <string name="dns_server">کارگزار DNS</string>
     <string name="dns_server_summary">تنظیم کارساز نام دامنه برای درخواست‌های شبکه.</string>
-    <string name="dont_restart">عدم شروع مجدّد</string>
+    <string name="action_dont_restart">عدم شروع مجدّد</string>
     <string name="draft_saved">چرک‌نویس ذخیره شد</string>
     <string name="drafts_hint_messages">توییت‌های فرستاده نشده‌تان این‌حا ذخیره می‌شوند</string>
     <string name="drawer_toggle">تغییر وضعیت کشو</string>
@@ -422,24 +422,10 @@
     <string name="message_blocked_user"><xliff:g id="user">%s</xliff:g> مسدود شد.</string>
     <string name="message_direct_message_deleted">پیام مستقیم حذف شد.</string>
     <string name="message_direct_message_sent">پیام مستقیم ارسال شد.</string>
-    <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-    <!-- Toast message for network errors -->
-    <string name="message_network_error">خطای شبکه.</string>
     <string name="message_permission_request_compose_location">Twittnuker برای افزودن موقعیّت به توییت‌ها، نیاز به دسترسی موقعیّت دارد.</string>
     <string name="message_permission_request_save_media">Twittnuker برای ذخیرهٔ رسانه، نیاز به دسترسی ذخیره دارد.</string>
     <string name="message_permission_request_share_media">Twittnuker برای هم‌رسانی رسانه با برخی کاره‌ها، نیاز به دسترسی ذخیره دارد.</string>
     <string name="message_please_wait">لطفاً صبر کنید.</string>
-    <string name="message_retweet_cancelled">بازتوییت لغو شد.</string>
-    <string name="message_search_deleted">جست‌وجو حذف شد.</string>
-    <string name="message_search_name_deleted">جست‌وجوی «<xliff:g id="name">%s</xliff:g>» حذف شد.</string>
-    <string name="message_search_name_saved">جست‌وجوی «<xliff:g id="name">%s</xliff:g>» ذخیره شد.</string>
-    <string name="message_search_saved">جست‌وجو ذخیره شد.</string>
-    <string name="message_status_deleted">توییت حذف شد.</string>
-    <string name="message_status_favorited">توییت برگزیده شد.</string>
-    <string name="message_status_like_removed">پسند برداشته شد.</string>
-    <string name="message_status_liked">توییت پسندیده شد.</string>
-    <string name="message_status_retweeted">بازتوییت شد.</string>
-    <string name="message_status_unfavorited">توییت برگزیده نشد.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -449,9 +435,11 @@
     <string name="message_toast_already_logged_in">هم‌اکنون وارد شده‌اید.</string>
     <string name="message_toast_cannot_get_location">نمی‌توان موقعیّتتان را گرفت.</string>
     <string name="message_toast_error_occurred">مشکلی پیش آمد، لطفاً دوباره امتحان کنید.</string>
+  <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_link_copied_to_clipboard">پیوند در حافظه رونوشت شد</string>
     <string name="message_toast_livewp_daydream_enabled_message">هدیهٔ کوچکی برای شما وجود دارد. آن را در تنظیمات سامانه پیدا کنید (:</string>
     <string name="message_toast_login_verification_failed">تأیید هویت ورود شکست خورد.</string>
+  <!-- Toast message for network errors -->
     <string name="message_toast_no_account">بدون حساب</string>
     <string name="message_toast_no_account_selected">هیچ حسابی گزینش نشده است.</string>
     <string name="message_toast_press_again_to_close">برای بستن، دوباره فشار دهید</string>
@@ -463,10 +451,6 @@
     <string name="message_toast_status_saved_to_draft">توییت در چرک‌نویس‌ها ذخیره شد.</string>
     <string name="message_toast_status_updated">توییت فرستاده شد.</string>
     <string name="message_toast_wrong_api_key">نشانی API یا کلید/رمز مصرف‌کنندهٔ نادرست است، لطفاً دوباره آن‌ها را بررسی کنید.</string>
-    <string name="message_user_muted">این کاربر به فهرست پالایه افزوده شد. دیگر هیچ توییتی از این کاربر در خط زمان/فهرست اشارهٔ خود نخواهید دید.</string>
-    <string name="message_user_unmuted">این کاربر از فهرست پالایه برداشته شد.</string>
-    <string name="message_users_muted">کاربران به فهرست پالایه افزوده شدند. دیگر هیچ توییتی از این کاربران در خط زمان/فهرست اشارهٔ خود نخواهید دید.</string>
-    <string name="more">بیش‌تر</string>
     <string name="multi_select">انتخاب چندگانه</string>
     <string name="mute_user">بی‌صدا کردن <xliff:g id="name">%s</xliff:g></string>
     <string name="mute_user_confirm_message">‫<xliff:g id="name">%s</xliff:g> بی‌صدا شود؟ شما در حالی که هم‌چنان این کاربر را دنبال می‌کنید، دیگر توییت‌هایش را نمی‌بینید.</string>
@@ -775,6 +759,7 @@
     <string name="title_summary_line_format">‫<xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
     <string name="title_user">کاربر</string>
     <string name="title_user_colors">رنگ‌های کاربر</string>
+  <string name="title_user_list_memberships">متعلّق است به</string>
     <string name="title_users_favorited_this">کاربرانی که این را برگزیدند</string>
     <string name="title_users_liked_this">کاربرانی که این را پسندیدند</string>
     <string name="title_users_retweeted_this">کاربرانی که این را بازتوییت کردند</string>

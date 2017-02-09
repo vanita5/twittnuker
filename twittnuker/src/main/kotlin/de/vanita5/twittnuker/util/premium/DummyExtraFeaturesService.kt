@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,12 @@ package de.vanita5.twittnuker.util.premium
 
 import android.content.Context
 import android.content.Intent
+import de.vanita5.twittnuker.view.ContainerView
 
 
 class DummyExtraFeaturesService : ExtraFeaturesService() {
 
-    override fun getDashboardLayouts() = intArrayOf()
+    override fun getDashboardControllers() = emptyList<Class<ContainerView.ViewController>>()
 
     override fun isSupported(): Boolean = false
 

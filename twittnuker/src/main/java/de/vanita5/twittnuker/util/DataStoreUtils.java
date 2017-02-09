@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,6 @@ import com.bluelinelabs.logansquare.LoganSquare;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import de.vanita5.twittnuker.extension.model.AccountExtensionsKt;
 import de.vanita5.twittnuker.library.twitter.model.Activity;
 import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns;
@@ -59,6 +58,7 @@ import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.TwittnukerConstants;
+import de.vanita5.twittnuker.extension.model.AccountExtensionsKt;
 import de.vanita5.twittnuker.model.FiltersData;
 import de.vanita5.twittnuker.model.FiltersData$BaseItemValuesCreator;
 import de.vanita5.twittnuker.model.FiltersData$UserItemValuesCreator;
@@ -101,11 +101,7 @@ import de.vanita5.twittnuker.util.content.ContentResolverUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static android.text.TextUtils.isEmpty;
 
 public class DataStoreUtils implements Constants {
 
@@ -115,8 +111,6 @@ public class DataStoreUtils implements Constants {
     public static final Uri[] ACTIVITIES_URIS = new Uri[]{Activities.AboutMe.CONTENT_URI};
 
     private static final UriMatcher CONTENT_PROVIDER_URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
-    private static Map<UserKey, String> sAccountScreenNames = new HashMap<>();
-    private static Map<UserKey, String> sAccountNames = new HashMap<>();
 
     static {
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Statuses.CONTENT_PATH,
@@ -338,9 +332,6 @@ public class DataStoreUtils implements Constants {
     }
 
     public static String getAccountName(@NonNull final Context context, final UserKey accountKey) {
-        final String cached = sAccountNames.get(accountKey);
-        if (!isEmpty(cached)) return cached;
-
         AccountManager am = AccountManager.get(context);
         Account account = AccountUtils.findByAccountKey(am, accountKey);
         if (account == null) return null;
@@ -350,13 +341,9 @@ public class DataStoreUtils implements Constants {
 
     public static String getAccountScreenName(final Context context, final UserKey accountKey) {
         if (context == null) return null;
-        final String cached = sAccountScreenNames.get(accountKey);
-        if (!isEmpty(cached)) return cached;
-
         AccountManager am = AccountManager.get(context);
         Account account = AccountUtils.findByAccountKey(am, accountKey);
         if (account == null) return null;
-
         return AccountExtensionsKt.getAccountUser(account, am).screen_name;
     }
 
@@ -735,10 +722,6 @@ public class DataStoreUtils implements Constants {
         }
     }
 
-    public static void clearAccountName() {
-        sAccountScreenNames.clear();
-    }
-
     public static boolean isFilteringUser(Context context, UserKey userKey) {
         return isFilteringUser(context, userKey.toString());
     }
@@ -948,7 +931,10 @@ public class DataStoreUtils implements Constants {
         }
     }
 
-    static void updateActivityStatus(ContentResolver resolver, UserKey accountKey, String statusId, UpdateActivityAction action) {
+    public static void updateActivityStatus(@NonNull ContentResolver resolver,
+                                     @NonNull UserKey accountKey,
+                                     @NonNull String statusId,
+                                     @NonNull UpdateActivityAction action) {
         final String activityWhere = Expression.and(
                 Expression.equalsArgs(Activities.ACCOUNT_KEY),
                 Expression.or(
@@ -1091,13 +1077,13 @@ public class DataStoreUtils implements Constants {
             }
             linkValues.add(linkWithoutScheme);
         }
-        ContentResolverUtils.bulkDelete(cr, Filters.Users.CONTENT_URI, Filters.Users.USER_KEY, userKeyValues, null);
-        ContentResolverUtils.bulkDelete(cr, Filters.Keywords.CONTENT_URI, Filters.Keywords.VALUE, keywordValues, null);
-        ContentResolverUtils.bulkDelete(cr, Filters.Links.CONTENT_URI, Filters.Links.VALUE, linkValues, null);
+        ContentResolverUtils.bulkDelete(cr, Filters.Users.CONTENT_URI, Filters.Users.USER_KEY, false, userKeyValues, null);
+        ContentResolverUtils.bulkDelete(cr, Filters.Keywords.CONTENT_URI, Filters.Keywords.VALUE, false, keywordValues, null);
+        ContentResolverUtils.bulkDelete(cr, Filters.Links.CONTENT_URI, Filters.Links.VALUE, false, linkValues, null);
     }
 
     public interface UpdateActivityAction {
 
-        void process(ParcelableActivity activity);
+        void process(@NonNull ParcelableActivity activity);
     }
 }

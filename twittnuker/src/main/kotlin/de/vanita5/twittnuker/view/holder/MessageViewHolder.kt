@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ open class MessageViewHolder(
         textView = itemView.findViewById(R.id.text) as TextView
         time = itemView.findViewById(R.id.time) as TextView
         mediaContainer = itemView.findViewById(R.id.media_preview_container) as CardMediaContainer
-        mediaContainer.setStyle(adapter.mediaPreviewStyle)
+        mediaContainer.style = adapter.mediaPreviewStyle
     }
 
     open fun displayMessage(cursor: Cursor, indices: ParcelableDirectMessageCursorIndices) {
@@ -97,8 +97,10 @@ open class MessageViewHolder(
         textView.text = text
         time.text = Utils.formatToLongTimeString(context, timestamp)
         mediaContainer.visibility = if (media != null && media.isNotEmpty()) View.VISIBLE else View.GONE
-        mediaContainer.displayMedia(loader, media, accountKey, adapter.onMediaClickListener, adapter.mediaLoadingHandler, layoutPosition.toLong(), true
-        )
+        mediaContainer.displayMedia(loader = loader, media = media, accountId = accountKey,
+                extraId = layoutPosition.toLong(), withCredentials = true,
+                mediaClickListener = adapter.onMediaClickListener,
+                loadingHandler = adapter.mediaLoadingHandler)
     }
 
     fun setMessageColor(color: Int) {

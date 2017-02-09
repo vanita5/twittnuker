@@ -63,6 +63,7 @@
     <!-- [verb] Save settings/files etc. -->
     <string name="action_save">Salva</string>
     <string name="action_saving_search">salva ricerca</string>
+  <string name="action_select_user">Seleziona utente</string>
     <!-- [verb] Send tweet/message -->
     <string name="action_send">Invia</string>
     <string name="action_sending_direct_message">invio messaggio diretto in corso</string>
@@ -182,7 +183,6 @@
     <string name="cant_load_all_replies_message">Non è possibile caricare tutte le risposte. &lt;a href=\"#dialog\";&gt;Perché?&lt;/a&gt;</string>
     <string name="cards">Schede</string>
     <string name="clear_cache">Cancella cache</string>
-    <string name="clear_cache_summary">Cancella cache delle immagini profilo memorizzate.</string>
     <string name="clear_databases">Cancella i database</string>
     <string name="clear_databases_summary">Cancella tutti i tweet, profili, messaggi. Le credenziali degli account non saranno perse.</string>
     <string name="clear_search_history">Cancella cronologia ricerche</string>
@@ -248,7 +248,7 @@
     <string name="display_sensitive_contents_summary">Mostra contenuti sensibili senza preavviso in timeline</string>
     <string name="dns_server">DNS Server</string>
     <string name="dns_server_summary">Imposta il server DNS per le richieste di rete.</string>
-    <string name="dont_restart">Non riavviare</string>
+    <string name="action_dont_restart">Non riavviare</string>
     <string name="draft_saved">Progetto salvato</string>
     <string name="drafts_hint_messages">I tuoi tweet non inviati saranno salvati qui</string>
     <string name="edit_api">Edit API</string>
@@ -402,19 +402,7 @@
     <string name="message_blocked_user">Bloccato <xliff:g id="user">%s</xliff:g>.</string>
     <string name="message_direct_message_deleted">Messaggio diretto cancellato.</string>
     <string name="message_direct_message_sent">Messaggio diretto inviato.</string>
-    <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-    <!-- Toast message for network errors -->
-    <string name="message_network_error">Errore di rete.</string>
     <string name="message_please_wait">Attendere prego.</string>
-    <string name="message_retweet_cancelled">Retweet annullato.</string>
-    <string name="message_search_deleted">Ricerca eliminata.</string>
-    <string name="message_search_name_deleted">Ricerca \"<xliff:g id="name">%s</xliff:g>\" eliminata.</string>
-    <string name="message_search_name_saved">Ricerca \"<xliff:g id="name">%s</xliff:g>\" salvata.</string>
-    <string name="message_search_saved">Ricerca salvata.</string>
-    <string name="message_status_deleted">Tweet eliminato.</string>
-    <string name="message_status_favorited">Tweet inserito tra i preferito.</string>
-    <string name="message_status_retweeted">Ritwittato.</string>
-    <string name="message_status_unfavorited">Tweet rimosso dai preferiti.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -423,9 +411,11 @@
     <string name="message_toast_already_logged_in">Hai già effettuato il login.</string>
     <string name="message_toast_cannot_get_location">Non è possibile ottenere la tua posizione.</string>
     <string name="message_toast_error_occurred">Si è verificato un errore, riprova.</string>
+  <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_link_copied_to_clipboard">Link copiato negli appunti</string>
     <string name="message_toast_livewp_daydream_enabled_message">Ecco un regalino per te, trovalo tra le impostazioni di sistema :)</string>
     <string name="message_toast_login_verification_failed">Verifica di login fallita.</string>
+  <!-- Toast message for network errors -->
     <string name="message_toast_no_account">Nessun account</string>
     <string name="message_toast_no_account_selected">Nessun account selezionato.</string>
     <string name="message_toast_press_again_to_close">Premi di nuovo per chiudere</string>
@@ -437,10 +427,6 @@
     <string name="message_toast_status_saved_to_draft">Tweet salvato in bozze.</string>
     <string name="message_toast_status_updated">Tweet inviato.</string>
     <string name="message_toast_wrong_api_key">URL delle API non corretto, o consumer key/secret errata. Per favore, controllale.</string>
-    <string name="message_user_muted">Utente aggiunto alla lista dei filtrati. Non vedrai i suoi tweet nella timeline o tra le menzioni.</string>
-    <string name="message_user_unmuted">Rimuovi questo utente dal filtro lista.</string>
-    <string name="message_users_muted">Utenti aggiunti alla lista dei filtrati. Non vedrai i loro tweet nella timeline o tra le menzioni.</string>
-    <string name="more">Altro</string>
     <string name="multi_select">Selezione multipla</string>
     <string name="mute_user">Muto <xliff:g id="name">%s</xliff:g></string>
     <string name="mute_user_confirm_message">Silenziare <xliff:g id="name">%s</xliff:g>? Non vedrai più i tweets di questo utente ma continuerai a seguirlo.</string>
@@ -524,6 +510,8 @@
     <string name="preference_title_accounts">Accounts</string>
     <string name="preference_title_advanced">Avanzate</string>
     <string name="preference_title_database_item_limit">Limite dimensione database</string>
+  <string name="preference_title_portrait">Portrait</string>
+  <string name="preference_title_landscape">Landscape</string>
     <string name="preference_title_storage">Archivio</string>
     <string name="preference_title_translate">Traduce</string>
     <string name="preload_wifi_only">Precarica solo se in Wi-Fi</string>
@@ -733,6 +721,7 @@
     <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
     <string name="title_user">Utenti</string>
     <string name="title_user_colors">Colori personalizzati</string>
+  <string name="title_user_list_memberships">Appartiene a</string>
     <string name="title_users_favorited_this">Users che hanno inserito tra i preferiti</string>
     <string name="title_users_liked_this">Utenti a cui piace</string>
     <string name="title_users_retweeted_this">Utenti che hanno retwittato questo</string>

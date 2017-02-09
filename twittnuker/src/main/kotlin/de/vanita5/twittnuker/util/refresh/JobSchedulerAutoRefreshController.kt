@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,6 @@ class JobSchedulerAutoRefreshController(
 
     fun scheduleJob(jobId: Int, periodMillis: Long = TimeUnit.MINUTES.toMillis(kPreferences[refreshIntervalKey]), persisted: Boolean = true) {
         val builder = JobInfo.Builder(jobId, ComponentName(context, JobTaskService::class.java))
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
         builder.setPeriodic(periodMillis)
         builder.setPersisted(persisted)
         try {

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.commons.io.StreamUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.checkAnySelfPermissionsGranted
+import org.mariotaku.ktextension.getTypedArray
 import org.mariotaku.ktextension.setItemChecked
 import org.mariotaku.ktextension.toTypedArray
 import org.mariotaku.pickncrop.library.MediaPickerActivity
@@ -78,6 +79,7 @@ import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.adapter.ArrayRecyclerAdapter
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.getAccountUser
 import de.vanita5.twittnuker.extension.model.unique_id_non_null
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
@@ -148,7 +150,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     // Listeners
     private var locationListener: LocationListener? = null
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         when (resultCode) {
             Giphy.REQUEST_GIPHY -> {
                 requestOrPickGif()
@@ -207,7 +209,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         return textChanged || hasMedia() || isEditingDraft
     }
 
-    public override fun onSaveInstanceState(outState: Bundle) {
+    override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArray(EXTRA_ACCOUNT_KEYS, accountsAdapter.selectedAccountKeys)
         outState.putParcelableArrayList(EXTRA_MEDIA, ArrayList<Parcelable>(mediaList))
         outState.putBoolean(EXTRA_IS_POSSIBLY_SENSITIVE, possiblySensitive)
@@ -531,7 +533,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
         if (savedInstanceState != null) {
             // Restore from previous saved state
-            val selected = savedInstanceState.getParcelableArray(EXTRA_ACCOUNT_KEYS).toTypedArray(UserKey.CREATOR)
+            val selected = savedInstanceState.getTypedArray(EXTRA_ACCOUNT_KEYS, UserKey.CREATOR)
             accountsAdapter.setSelectedAccountIds(*selected)
             possiblySensitive = savedInstanceState.getBoolean(EXTRA_IS_POSSIBLY_SENSITIVE)
             val mediaList = savedInstanceState.getParcelableArrayList<ParcelableMediaUpdate>(EXTRA_MEDIA)
@@ -1759,7 +1761,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
 
         fun displayMedia(adapter: MediaPreviewAdapter, media: ParcelableMediaUpdate) {
-            adapter.mediaLoader.displayPreviewImage(media.uri, imageView)
+            adapter.mediaLoader.displayPreviewImage(imageView, media.uri)
             videoIndicatorView.visibility = if (media.type == ParcelableMedia.Type.VIDEO) {
                 View.VISIBLE
             } else {
@@ -1802,9 +1804,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 (activity as ComposeActivity).setMediaAltText(arguments.getInt(EXTRA_POSITION), null)
             }
             val dialog = builder.create()
-            dialog.setOnShowListener { dialog ->
-                val materialDialog = dialog as Dialog
-                val editText = materialDialog.findViewById(R.id.edit_text) as EditText
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+                val editText = it.findViewById(R.id.edit_text) as EditText
                 editText.setText(arguments.getString(EXTRA_TEXT))
             }
             return dialog
@@ -1835,7 +1838,12 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             builder.setMessage(R.string.quote_protected_status_warning_message)
             builder.setPositiveButton(R.string.send_anyway, this)
             builder.setNegativeButton(android.R.string.cancel, null)
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
     }
 

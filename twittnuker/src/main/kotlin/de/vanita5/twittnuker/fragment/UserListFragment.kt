@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import android.nfc.NfcAdapter.CreateNdefMessageCallback
 import android.os.Bundle
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
@@ -52,8 +53,9 @@ import de.vanita5.twittnuker.library.twitter.model.UserListUpdate
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
-import de.vanita5.twittnuker.activity.UserListSelectorActivity
+import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.model.ParcelableUser
@@ -211,7 +213,7 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
             R.id.add -> {
                 if (userList.user_key != userList.account_key) return false
                 val intent = Intent(INTENT_ACTION_SELECT_USER)
-                intent.setClass(activity, UserListSelectorActivity::class.java)
+                intent.setClass(activity, UserSelectorActivity::class.java)
                 intent.putExtra(EXTRA_ACCOUNT_KEY, userList.account_key)
                 startActivityForResult(intent, REQUEST_SELECT_USER)
             }
@@ -368,10 +370,11 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
             builder.setNegativeButton(android.R.string.cancel, this)
             val dialog = builder.create()
             dialog.setOnShowListener { dialog ->
-                val alertDialog = dialog as AlertDialog
-                val editName = alertDialog.findViewById(R.id.name) as MaterialEditText?
-                val editDescription = alertDialog.findViewById(R.id.description) as MaterialEditText?
-                val editPublic = alertDialog.findViewById(R.id.is_public) as CheckBox?
+                dialog as AlertDialog
+                dialog.applyTheme()
+                val editName = dialog.findViewById(R.id.name) as MaterialEditText?
+                val editDescription = dialog.findViewById(R.id.description) as MaterialEditText?
+                val editPublic = dialog.findViewById(R.id.is_public) as CheckBox?
                 assert(editName != null && editDescription != null && editPublic != null)
                 editName!!.addValidator(UserListNameValidator(getString(R.string.invalid_list_name)))
                 if (mName != null) {
@@ -405,7 +408,7 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
             private val listName: String?,
             private val userKey: UserKey?,
             private val screenName: String?
-    ) : AsyncTaskLoader<SingleResponse<ParcelableUserList>>(context) {
+    ) : FixedAsyncTaskLoader<SingleResponse<ParcelableUserList>>(context) {
 
         override fun loadInBackground(): SingleResponse<ParcelableUserList> {
             if (!omitIntentExtra && extras != null) {
@@ -437,7 +440,7 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
 
         }
 
-        public override fun onStartLoading() {
+        override fun onStartLoading() {
             forceLoad()
         }
 
@@ -450,7 +453,12 @@ class UserListFragment : AbsToolbarTabPagesFragment(), OnClickListener, LoaderCa
             builder.setTitle(userList.name)
             builder.setMessage(userList.description)
             builder.setPositiveButton(android.R.string.ok, null)
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
     }
 

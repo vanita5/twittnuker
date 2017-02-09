@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,8 +50,9 @@ class PremiumEntryPreference(context: Context, attrs: AttributeSet) : Preference
             if (!extraFeaturesService.isEnabled(requiredFeature)) {
                 val activity = ChameleonUtils.getActivity(context)
                 if (activity is FragmentActivity) {
-                    ExtraFeaturesIntroductionDialogFragment.show(activity.supportFragmentManager,
-                            requiredFeature, REQUEST_PURCHASE_EXTRA_FEATURES)
+                    ExtraFeaturesIntroductionDialogFragment.show(fm = activity.supportFragmentManager,
+                            feature = requiredFeature, source = "preference:${key}",
+                            requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
                 }
                 return@setOnPreferenceClickListener true
             }

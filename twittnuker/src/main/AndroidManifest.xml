@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest
+    package="de.vanita5.twittnuker"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="de.vanita5.twittnuker"
     android:installLocation="internalOnly">
 
     <uses-sdk tools:overrideLibrary="android.support.customtabs,net.ypresto.androidtranscoder"/>
@@ -79,6 +79,7 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS"/>
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
 
+    <!-- Donations -->
     <uses-permission android:name="com.android.vending.BILLING"/>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 
@@ -369,17 +370,33 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activity.UserSelectorActivity"
+            android:icon="@drawable/ic_action_twittnuker"
+            android:label="@string/select_user"
+            android:theme="@style/Theme.Twidere.Dialog"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="de.vanita5.twittnuker.SELECT_USER"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".activity.UserListSelectorActivity"
             android:icon="@drawable/ic_action_twittnuker"
             android:label="@string/select_user_list"
-            android:theme="@style/Theme.Twidere.Dialog">
+            android:theme="@style/Theme.Twidere.Dialog"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
-                <action android:name="de.vanita5.twittnuker.SELECT_USER"/>
                 <action android:name="de.vanita5.twittnuker.SELECT_USER_LIST"/>
 
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.TrendsLocationSelectorActivity"
+            android:label="@string/trends_location"
+            android:theme="@style/Theme.Twidere.NoDisplay"/>
         <activity
             android:name=".activity.DataExportActivity"
             android:label="@string/export_settings"
@@ -514,11 +531,12 @@
 
         <service
             android:name=".service.LegacyTaskService"
-            android:enabled="@bool/use_legacy_refresh_service"
+            android:enabled="true"
+            android:exported="false"
             android:label="@string/label_refresh_and_sync_service"/>
         <service
             android:name=".service.JobTaskService"
-            android:enabled="@bool/use_job_refresh_service"
+            android:enabled="true"
             android:exported="true"
             android:label="@string/label_refresh_and_sync_service"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
@@ -539,18 +557,6 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/account_authenticator"/>
         </service>
-        <service
-            android:name=".service.AccountSyncService"
-            android:exported="true"
-            android:process=":sync"
-            tools:ignore="ExportedService">
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter"/>
-            </intent-filter>
-            <meta-data
-                android:name="android.content.SyncAdapter"
-                android:resource="@xml/sync_adapter"/>
-        </service>
 
         <service
             android:name=".service.TwittnukerGcmListenerService"
@@ -569,6 +575,18 @@
         <service
             android:name=".service.RegistrationIntentService"
             android:exported="false"/>
+        <service
+            android:name=".service.AccountSyncService"
+            android:exported="true"
+            android:process=":sync"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/sync_adapter"/>
+        </service>
 
         <provider
             android:name=".provider.TwidereDataProvider"

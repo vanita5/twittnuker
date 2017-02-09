@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,7 @@ import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CREDENTIALS_
 import de.vanita5.twittnuker.constant.chromeCustomTabKey
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.constant.randomizeAccountNameKey
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.getColor
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.official
@@ -173,7 +174,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
             }
             REQUEST_BROWSER_SIGN_IN -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    doBrowserLogin(data)
+                    handleBrowserLoginResult(data)
                 }
             }
         }
@@ -229,7 +230,11 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
                     editUsername.text = null
                     editPassword.text = null
                 }
-                doLogin()
+                if (apiConfig.credentialsType == Credentials.Type.OAUTH) {
+                    doBrowserLogin()
+                } else {
+                    doLogin()
+                }
             }
             passwordSignIn -> {
                 executeAfterFragmentResumed { fragment ->
@@ -312,7 +317,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
         }
     }
 
-    internal fun openBrowserLogin(): Boolean {
+    internal fun doBrowserLogin(): Boolean {
         if (apiConfig.credentialsType != Credentials.Type.OAUTH || signInTask != null && signInTask!!.status == AsyncTask.Status.RUNNING)
             return true
         val intent = Intent(this, BrowserSignInActivity::class.java)
@@ -324,10 +329,6 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
     internal fun doLogin() {
         if (signInTask != null && signInTask!!.status == AsyncTask.Status.RUNNING) {
             signInTask!!.cancel(true)
-        }
-        if (apiConfig.credentialsType == Credentials.Type.OAUTH) {
-            openBrowserLogin()
-            return
         }
 
         val username = editUsername.text.toString()
@@ -341,6 +342,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
         setSignInButton()
         if (result.alreadyLoggedIn) {
             result.updateAccount(am)
+            deleteAccountData(contentResolver, result.user.key)
             Toast.makeText(this, R.string.message_toast_already_logged_in, Toast.LENGTH_SHORT).show()
         } else {
             result.addAccount(am, preferences[randomizeAccountNameKey])
@@ -438,7 +440,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
         }
     }
 
-    private fun doBrowserLogin(intent: Intent?) {
+    private fun handleBrowserLoginResult(intent: Intent?) {
         if (intent == null) return
         if (signInTask?.status == AsyncTask.Status.RUNNING) {
             signInTask?.cancel(true)
@@ -677,9 +679,9 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
         }
 
         override fun onShow(dialog: DialogInterface) {
-            val alertDialog = dialog as AlertDialog
-            val verificationHint = alertDialog.findViewById(R.id.verification_hint) as TextView?
-            val editVerification = alertDialog.findViewById(R.id.edit_verification_code) as EditText?
+            (dialog as AlertDialog).applyTheme()
+            val verificationHint = dialog.findViewById(R.id.verification_hint) as TextView?
+            val editVerification = dialog.findViewById(R.id.edit_verification_code) as EditText?
             if (verificationHint == null || editVerification == null) return
             when {
                 "Push".equals(challengeType, ignoreCase = true) -> {
@@ -727,10 +729,11 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
             builder.setNegativeButton(android.R.string.cancel, null)
 
             val alertDialog = builder.create()
-            alertDialog.setOnShowListener { dialog ->
-                val materialDialog = dialog as AlertDialog
-                val editUsername = materialDialog.findViewById(R.id.username) as EditText?
-                val editPassword = materialDialog.findViewById(R.id.password) as EditText?
+            alertDialog.setOnShowListener {
+                (it as AlertDialog)
+                it.applyTheme()
+                val editUsername = it.findViewById(R.id.username) as EditText?
+                val editPassword = it.findViewById(R.id.password) as EditText?
                 assert(editUsername != null && editPassword != null)
                 val textWatcher = object : TextWatcher {
                     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -738,7 +741,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
                     }
 
                     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                        val button = materialDialog.getButton(DialogInterface.BUTTON_POSITIVE) ?: return
+                        val button = it.getButton(DialogInterface.BUTTON_POSITIVE) ?: return
                         button.isEnabled = editUsername!!.length() > 0 && editPassword!!.length() > 0
                     }
 

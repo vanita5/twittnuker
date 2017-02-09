@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.support.v4.app.LoaderManager.LoaderCallbacks
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.statusnet.model.Group
@@ -116,7 +116,7 @@ class GroupFragment : AbsToolbarTabPagesFragment(), LoaderCallbacks<SingleRespon
             private val accountKey: UserKey,
             private val groupId: String?,
             private val groupName: String?
-    ) : AsyncTaskLoader<SingleResponse<ParcelableGroup>>(context) {
+    ) : FixedAsyncTaskLoader<SingleResponse<ParcelableGroup>>(context) {
 
         override fun loadInBackground(): SingleResponse<ParcelableGroup> {
             if (!omitIntentExtra && extras != null) {
@@ -142,7 +142,7 @@ class GroupFragment : AbsToolbarTabPagesFragment(), LoaderCallbacks<SingleRespon
 
         }
 
-        public override fun onStartLoading() {
+        override fun onStartLoading() {
             forceLoad()
         }
 

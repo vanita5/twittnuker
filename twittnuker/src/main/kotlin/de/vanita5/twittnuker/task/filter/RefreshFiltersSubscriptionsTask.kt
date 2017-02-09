@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.task.filter
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
@@ -34,32 +35,56 @@ import de.vanita5.twittnuker.model.FiltersSubscriptionCursorIndices
 import de.vanita5.twittnuker.model.`FiltersData$BaseItemValuesCreator`
 import de.vanita5.twittnuker.model.`FiltersData$UserItemValuesCreator`
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
+import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
+import de.vanita5.twittnuker.util.sync.LOGTAG_SYNC
 import java.io.IOException
+import java.util.*
 
 class RefreshFiltersSubscriptionsTask(val context: Context) : AbstractTask<Unit?, Boolean, (Boolean) -> Unit>() {
 
+    @SuppressLint("Recycle")
     override fun doLongOperation(param: Unit?): Boolean {
         val resolver = context.contentResolver
-        return resolver.query(Filters.Subscriptions.CONTENT_URI, Filters.Subscriptions.COLUMNS, null, null, null)?.useCursor { cursor ->
+        val sourceIds = ArrayList<Long>()
+        resolver.query(Filters.Subscriptions.CONTENT_URI, Filters.Subscriptions.COLUMNS, null, null, null)?.useCursor { cursor ->
             val indices = FiltersSubscriptionCursorIndices(cursor)
-            cursor.moveToPosition(-1)
-            while (cursor.moveToNext()) {
+            cursor.moveToFirst()
+            while (!cursor.isAfterLast) {
                 val subscription = indices.newObject(cursor)
-                val component = subscription.instantiateComponent(context) ?: continue
-                try {
-                    if (component.fetchFilters()) {
-                        updateUserItems(resolver, component.users, subscription.id)
-                        updateBaseItems(resolver, component.keywords, Filters.Keywords.CONTENT_URI, subscription.id)
-                        updateBaseItems(resolver, component.links, Filters.Links.CONTENT_URI, subscription.id)
-                        updateBaseItems(resolver, component.sources, Filters.Sources.CONTENT_URI, subscription.id)
+                sourceIds.add(subscription.id)
+                val component = subscription.instantiateComponent(context)
+                if (component != null) {
+                    try {
+                        if (component.fetchFilters()) {
+                            updateUserItems(resolver, component.users, subscription.id)
+                            updateBaseItems(resolver, component.keywords, Filters.Keywords.CONTENT_URI, subscription.id)
+                            updateBaseItems(resolver, component.links, Filters.Links.CONTENT_URI, subscription.id)
+                            updateBaseItems(resolver, component.sources, Filters.Sources.CONTENT_URI, subscription.id)
+                        }
+                    } catch (e: IOException) {
+                        DebugLog.w(LOGTAG_SYNC, "Unable to refresh filters", e)
                     }
-                } catch (e: IOException) {
-                    // Ignore
                 }
+                cursor.moveToNext()
             }
-            return@useCursor true
-        } ?: false
+        }
+        // Delete 'orphaned' filter items with `sourceId` > 0
+        val extraWhere = Expression.greaterThan(Filters.SOURCE, 0).sql
+        ContentResolverUtils.bulkDelete(resolver, Filters.Users.CONTENT_URI, Filters.Users.SOURCE,
+                true, sourceIds, extraWhere)
+        ContentResolverUtils.bulkDelete(resolver, Filters.Keywords.CONTENT_URI, Filters.Keywords.SOURCE,
+                true, sourceIds, extraWhere)
+        ContentResolverUtils.bulkDelete(resolver, Filters.Sources.CONTENT_URI, Filters.Sources.SOURCE,
+                true, sourceIds, extraWhere)
+        ContentResolverUtils.bulkDelete(resolver, Filters.Links.CONTENT_URI, Filters.Links.SOURCE,
+                true, sourceIds, extraWhere)
+        try {
+            Thread.sleep(1000)
+        } catch (e: InterruptedException) {
+            return false
+        }
+        return true
     }
 
     override fun afterExecute(callback: ((Boolean) -> Unit)?, result: Boolean) {

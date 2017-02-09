@@ -67,6 +67,7 @@
     <!-- [verb] Save settings/files etc. -->
     <string name="action_save">Tallenna</string>
     <string name="action_saving_search">tallennetaan haku</string>
+  <string name="action_select_user">Valitse käyttäjä</string>
     <!-- [verb] Send tweet/message -->
     <string name="action_send">Lähetä</string>
     <string name="action_sending_direct_message">Lähetetään yksityisviestiä</string>
@@ -186,7 +187,6 @@
     <string name="cant_load_all_replies_message">Kaikkia vastauksia ei voida ladata. &lt;a href=\"#dialog\";&gt;Miksikö?&lt;/a&gt;</string>
     <string name="cards">Kortit</string>
     <string name="clear_cache">Tyhjennä välimuisti</string>
-    <string name="clear_cache_summary">Tyhjennä profiilikuvien säilytetty välimuisti.</string>
     <string name="clear_databases">Tyhjennä tietokannat</string>
     <string name="clear_databases_summary">Tyhjennä kaikki twiitit, profiilit ja viestit. Tilisi valtuutukset eivät häviä.</string>
     <string name="clear_search_history">Tyhjennä hakuhistoria</string>
@@ -252,7 +252,7 @@
     <string name="display_sensitive_contents_summary">Näytä arkaluontoinen sisältö ilman aikajanan varoituksia</string>
     <string name="dns_server">DNS-palvelin</string>
     <string name="dns_server_summary">Aseta verkkopyynnöille DNS-palvelin.</string>
-    <string name="dont_restart">Älä käynnistä uudelleen</string>
+    <string name="action_dont_restart">Älä käynnistä uudelleen</string>
     <string name="draft_saved">Luonnos tallennettu</string>
     <string name="drafts_hint_messages">Twiittiluonnoksesi tallennetaan tänne</string>
     <string name="edit_api">Muokkaa API:a</string>
@@ -402,21 +402,7 @@
     <string name="message_blocked_user"><xliff:g id="user">%s</xliff:g> estetty.</string>
     <string name="message_direct_message_deleted">Yksityisviesti poistettu.</string>
     <string name="message_direct_message_sent">Yksityisviesti lähetetty.</string>
-    <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-    <!-- Toast message for network errors -->
-    <string name="message_network_error">Verkkovirhe.</string>
     <string name="message_please_wait">Odota.</string>
-    <string name="message_retweet_cancelled">Uudelleentwiittaus peruttu.</string>
-    <string name="message_search_deleted">Haku poistettu.</string>
-    <string name="message_search_name_deleted">Haku \"<xliff:g id="name">%s</xliff:g>\" poistettu.</string>
-    <string name="message_search_name_saved">Haku \"<xliff:g id="name">%s</xliff:g>\" tallennettu.</string>
-    <string name="message_search_saved">Haku tallennettu.</string>
-    <string name="message_status_deleted">Twiitti poistettu.</string>
-    <string name="message_status_favorited">Twiitti lisätty suosikkeihin.</string>
-    <string name="message_status_like_removed">Tykkäys poistettu.</string>
-    <string name="message_status_liked">Tykkäsit twiitistä.</string>
-    <string name="message_status_retweeted">Uudelleentwiitattu.</string>
-    <string name="message_status_unfavorited">Twiitti poistettu suosikeista.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -424,9 +410,11 @@
     <string name="message_toast_accepted_users_follow_request">Käyttäjän <xliff:g id="user">%s</xliff:g> seurauspyyntö on hyväksytty.</string>
     <string name="message_toast_cannot_get_location">Sijaintiasi ei voida määrittää.</string>
     <string name="message_toast_error_occurred">Tapahtui virhe, yritä uudelleen.</string>
+  <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_link_copied_to_clipboard">Linkki on kopioitu leikepöydälle</string>
     <string name="message_toast_livewp_daydream_enabled_message">Sinulle on pieni yllätys. Etsi se järjestelmäasetuksista :)</string>
     <string name="message_toast_login_verification_failed">Kirjautumisen varmennuspyyntö epäonnistui.</string>
+  <!-- Toast message for network errors -->
     <string name="message_toast_no_account">Ei tiliä</string>
     <string name="message_toast_no_account_selected">Tiliä ei ole valittu.</string>
     <string name="message_toast_press_again_to_close">Paina uudelleen sulkeaksesi</string>
@@ -438,10 +426,6 @@
     <string name="message_toast_status_saved_to_draft">Twiitti tallennettu luonnoksiin.</string>
     <string name="message_toast_status_updated">Twiitti lähetetty.</string>
     <string name="message_toast_wrong_api_key">Virheellinen API-osoite tai kulutusavain/salaus. Tarkista vielä kyseiset kentät.</string>
-    <string name="message_user_muted">Käyttäjä lisättiin suodatusluetteloon. Et näe tämän käyttäjän twiittejä omalla aikajanallasi tai maininnoissasi.</string>
-    <string name="message_user_unmuted">Tämä käyttäjä poistettiin suodatuslistasta.</string>
-    <string name="message_users_muted">Käyttäjät lisättiin suodatusluetteloon. Et näe näiden käyttäjien twiittejä omalla aikajanallasi tai maininnoissasi.</string>
-    <string name="more">Lisää</string>
     <string name="multi_select">Monivalinta</string>
     <string name="mute_user">Hiljennä <xliff:g id="name">%s</xliff:g></string>
     <string name="mute_user_confirm_message">Hiljennetäänkö <xliff:g id="name">%s</xliff:g>? Et näe enää twiittejä tältä käyttäjältä, vaikka seuraatkin häntä.</string>
@@ -526,6 +510,8 @@
     <string name="preference_title_accounts">Tilit</string>
     <string name="preference_title_advanced">Lisäasetukset</string>
     <string name="preference_title_database_item_limit">Tietokannan kokorajoitus</string>
+  <string name="preference_title_portrait">Pystykuva</string>
+  <string name="preference_title_landscape">Vaakakuva</string>
     <string name="preference_title_storage">Säilytys</string>
     <string name="preference_title_translate">Käännä</string>
     <string name="preload_wifi_only">Lataa etukäteen vain Wi-Fi-yhteydellä</string>
@@ -739,6 +725,7 @@
     <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
     <string name="title_user">Käyttäjä</string>
     <string name="title_user_colors">Käyttäjän värit</string>
+  <string name="title_user_list_memberships">Kuuluu käyttäjälle</string>
     <string name="title_users_favorited_this">Käyttäjä lisäsi tämän suosikkeihinsa</string>
     <string name="title_users_liked_this">Käyttäjät tykkäsivät tästä</string>
     <string name="title_users_retweeted_this">Uudelleentwiitanneet käyttäjät</string>

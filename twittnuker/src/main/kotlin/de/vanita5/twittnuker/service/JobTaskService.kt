@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,9 +27,13 @@ import android.annotation.TargetApi
 import android.app.job.JobParameters
 import android.app.job.JobService
 import android.os.Build
+import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.annotation.AutoRefreshType
+import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
+import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.TaskServiceRunner
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.support.JobServiceSupport
 import javax.inject.Inject
 
 @SuppressLint("Registered")
@@ -38,6 +42,8 @@ class JobTaskService : JobService() {
 
     @Inject
     internal lateinit var taskServiceRunner: TaskServiceRunner
+    @Inject
+    internal lateinit var kPreferences: KPreferences
 
     override fun onCreate() {
         super.onCreate()
@@ -45,6 +51,7 @@ class JobTaskService : JobService() {
     }
 
     override fun onStartJob(params: JobParameters): Boolean {
+        if (kPreferences[autoRefreshCompatibilityModeKey]) return false
         val action = getTaskAction(params.jobId) ?: return false
         return taskServiceRunner.runTask(action) {
             this.jobFinished(params, false)
@@ -52,6 +59,14 @@ class JobTaskService : JobService() {
     }
 
     override fun onStopJob(params: JobParameters): Boolean {
+        try {
+            if (JobServiceSupport.handleStopJob(params, false)) {
+                JobServiceSupport.removeCallback(params)
+            }
+        } catch (e: Exception) {
+            // Swallow any possible exceptions
+            Analyzer.logException(e)
+        }
         return false
     }
 

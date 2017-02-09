@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
         app:switchDefault="true"
         app:switchKey="notification"/>
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_push_notifications"
         android:title="@string/push_notifications">
 
@@ -49,9 +49,9 @@
             android:summary="@string/push_api_url_summary"
             android:title="@string/push_api_url"/>
         <de.vanita5.twittnuker.preference.PushNotificationStatusPreference/>
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_notifications"
         android:title="@string/notifications">
 
@@ -74,6 +74,6 @@
             android:key="pebble_notifications"
             android:summary="@string/pebble_notifications_summary"
             android:title="@string/pebble_notifications"/>
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
 </PreferenceScreen>

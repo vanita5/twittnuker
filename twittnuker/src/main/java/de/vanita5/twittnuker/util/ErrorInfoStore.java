@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,7 +98,7 @@ public class ErrorInfoStore {
             }
             case CODE_NETWORK_ERROR: {
                 return new DisplayErrorInfo(code, R.drawable.ic_info_error_generic,
-                        context.getString(R.string.message_network_error));
+                        context.getString(R.string.message_toast_network_error));
             }
             case CODE_TIMESTAMP_ERROR: {
                 return new DisplayErrorInfo(code, R.drawable.ic_info_error_generic,

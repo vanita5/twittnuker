@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ class UserAutoCompleteAdapter(val context: Context) : SimpleCursorAdapter(contex
 
     private var indices: ParcelableUserCursorIndices? = null
 
-    private var accountKey: UserKey? = null
+    var accountKey: UserKey? = null
 
     init {
         GeneralComponentHelper.build(context).inject(this)
@@ -125,11 +125,6 @@ class UserAutoCompleteAdapter(val context: Context) : SimpleCursorAdapter(contex
         val cursor = context.contentResolver.query(uri, CachedUsers.COLUMNS, usersSelection.sql,
                 selectionArgs, orderBy.sql)
         return cursor
-    }
-
-
-    fun setAccountKey(accountKey: UserKey) {
-        this.accountKey = accountKey
     }
 
     override fun swapCursor(cursor: Cursor?): Cursor? {

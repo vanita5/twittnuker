@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,9 +83,9 @@ class DestroyStatusTask(
         if (result.hasData()) {
             val status = result.data!!
             if (status.retweet_id != null) {
-                Utils.showInfoMessage(context, R.string.message_retweet_cancelled, false)
+                Utils.showInfoMessage(context, R.string.message_toast_retweet_cancelled, false)
             } else {
-                Utils.showInfoMessage(context, R.string.message_status_deleted, false)
+                Utils.showInfoMessage(context, R.string.message_toast_status_deleted, false)
             }
             bus.post(StatusDestroyedEvent(status))
         } else {

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,10 +130,14 @@ class FabricAnalyzer : Analyzer(), Constants {
         Crashlytics.setString("build.model", Build.MODEL)
         Crashlytics.setString("build.product", Build.PRODUCT)
         val am = AccountManager.get(application)
-        am.addOnAccountsUpdatedListenerSafe(OnAccountsUpdateListener { accounts ->
-            Crashlytics.setString("twidere.accounts", accounts.filter { it.type == ACCOUNT_TYPE }
-                    .joinToString(transform = Account::name))
-        }, updateImmediately = true)
+        try {
+            am.addOnAccountsUpdatedListenerSafe(OnAccountsUpdateListener { accounts ->
+                Crashlytics.setString("twidere.accounts", accounts.filter { it.type == ACCOUNT_TYPE }
+                        .joinToString(transform = Account::name))
+            }, updateImmediately = true)
+        } catch (e: SecurityException) {
+            // Permission managers (like some Xposed plugins) may block Twidere from getting accounts
+        }
     }
 
     private fun AnswersEvent<*>.putAttributes(event: Analyzer.Event) {

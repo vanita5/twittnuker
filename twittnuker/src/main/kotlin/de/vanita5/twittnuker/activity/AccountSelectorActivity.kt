@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
@@ -44,7 +43,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
 
-class AccountSelectorActivity : BaseActivity(), OnClickListener, OnItemClickListener {
+class AccountSelectorActivity : BaseActivity(), OnItemClickListener {
 
     private lateinit var adapter: AccountDetailsAdapter
 
@@ -73,7 +72,7 @@ class AccountSelectorActivity : BaseActivity(), OnClickListener, OnItemClickList
 
     private val isSingleSelection: Boolean
         get() {
-            return intent.getBooleanExtra(EXTRA_SINGLE_SELECTION, false)
+            return intent.getBooleanExtra(EXTRA_SINGLE_SELECTION, true)
         }
 
     /**
@@ -125,21 +124,17 @@ class AccountSelectorActivity : BaseActivity(), OnClickListener, OnItemClickList
         if (adapter.count == 1 && isSelectOnlyItemAutomatically) {
             selectSingleAccount(0)
         }
-    }
-
-    override fun onClick(view: View) {
-        when (view.id) {
-            R.id.save -> {
-                val checkedIds = accountsList.checkedItemIds
-                if (checkedIds.isEmpty() && !isSelectNoneAllowed) {
-                    Toast.makeText(this, R.string.message_toast_no_account_selected, Toast.LENGTH_SHORT).show()
-                    return
-                }
-                val data = Intent()
-                data.putExtra(EXTRA_IDS, checkedIds)
-                setResult(Activity.RESULT_OK, data)
-                finish()
+        confirmSelection.setOnClickListener {
+            val checkedIds = accountsList.checkedItemIds
+            if (checkedIds.isEmpty() && !isSelectNoneAllowed) {
+                Toast.makeText(this, R.string.message_toast_no_account_selected, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+            val data = Intent()
+            data.putExtra(EXTRA_IDS, checkedIds)
+            data.putExtra(EXTRA_EXTRAS, intent.getBundleExtra(EXTRA_EXTRAS))
+            setResult(Activity.RESULT_OK, data)
+            finish()
         }
     }
 
@@ -147,11 +142,12 @@ class AccountSelectorActivity : BaseActivity(), OnClickListener, OnItemClickList
         selectSingleAccount(position)
     }
 
-    fun selectSingleAccount(position: Int) {
+    private fun selectSingleAccount(position: Int) {
         val account = adapter.getItem(position)
         val data = Intent()
         data.putExtra(EXTRA_ID, account.key.id)
         data.putExtra(EXTRA_ACCOUNT_KEY, account.key)
+        data.putExtra(EXTRA_EXTRAS, intent.getBundleExtra(EXTRA_EXTRAS))
 
         val startIntent = startIntent
         if (startIntent != null) {

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -344,47 +344,35 @@ class OAuthPasswordAuthenticator(
 
     open class AuthenticationException : Exception {
 
-        constructor() {
-        }
+        constructor()
 
-        constructor(cause: Exception) : super(cause) {
-        }
+        constructor(cause: Exception) : super(cause)
 
-        constructor(detailMessage: String, throwable: Throwable) : super(detailMessage, throwable) {
-        }
+        constructor(detailMessage: String, throwable: Throwable) : super(detailMessage, throwable)
 
-        constructor(message: String) : super(message) {
-        }
+        constructor(message: String) : super(message)
     }
 
     class AuthenticityTokenException(e: Exception) : AuthenticationException(e)
 
     class WrongUserPassException : AuthenticationException {
-        internal constructor() : super() {
-        }
+        internal constructor() : super()
 
-        internal constructor(cause: Exception) : super(cause) {
-        }
+        internal constructor(cause: Exception) : super(cause)
 
-        internal constructor(detailMessage: String, throwable: Throwable) : super(detailMessage, throwable) {
-        }
+        internal constructor(detailMessage: String, throwable: Throwable) : super(detailMessage, throwable)
 
-        internal constructor(message: String) : super(message) {
-        }
+        internal constructor(message: String) : super(message)
     }
 
     class LoginVerificationException : AuthenticationException {
-        internal constructor(message: String) : super(message) {
-        }
+        internal constructor(message: String) : super(message)
 
-        internal constructor(detailMessage: String, throwable: Throwable) : super(detailMessage, throwable) {
-        }
+        internal constructor(detailMessage: String, throwable: Throwable) : super(detailMessage, throwable)
 
-        internal constructor(cause: Exception) : super(cause) {
-        }
+        internal constructor(cause: Exception) : super(cause)
 
-        internal constructor() : super() {
-        }
+        internal constructor() : super()
     }
 
     internal class AuthorizeResponseData {

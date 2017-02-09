@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,23 +33,35 @@ import android.widget.AdapterView
 import android.widget.ListView
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_listview.*
-import org.mariotaku.sqliteqb.library.*
+import org.mariotaku.kpreferences.get
+import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.TrendsAdapter
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_LOCAL_TRENDS_WOEID
+import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_EXTRAS
+import de.vanita5.twittnuker.constant.localTrendsWoeIdKey
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.TrendsRefreshedEvent
+import de.vanita5.twittnuker.model.tab.extra.TrendsTabExtras
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends
-import de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri
 import de.vanita5.twittnuker.util.IntentUtils.openTweetSearch
-import de.vanita5.twittnuker.util.Utils.getDefaultAccountKey
+import de.vanita5.twittnuker.util.Utils
 
 class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
-    private var accountId: UserKey? = null
+    private val tabExtras: TrendsTabExtras? get() = arguments.getParcelable(EXTRA_EXTRAS)
+
+    private val accountKey: UserKey? get() {
+        return Utils.getAccountKeys(context, arguments)?.firstOrNull()
+                ?: Utils.getDefaultAccountKey(context)
+    }
+
+    private val woeId: Int get() {
+        val id = tabExtras?.woeId ?: 0
+        return if (id > 0) id else preferences[localTrendsWoeIdKey]
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        accountId = getDefaultAccountKey(activity)
         listView.onItemClickListener = this
         loaderManager.initLoader(0, null, this)
         showProgress()
@@ -61,19 +73,10 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
         val uri = CachedTrends.Local.CONTENT_URI
-        val table = getTableNameByUri(uri)
-        val where: String?
-        if (table != null) {
-            val sqlSelectQuery = SQLQueryBuilder.select(Columns.Column(CachedTrends.TIMESTAMP))
-                    .from(Table(table))
-                    .orderBy(OrderBy(CachedTrends.TIMESTAMP, false))
-                    .limit(1)
-                    .build()
-            where = Expression.equals(Columns.Column(CachedTrends.TIMESTAMP), sqlSelectQuery).sql
-        } else {
-            where = null
-        }
-        return CursorLoader(activity, uri, CachedTrends.COLUMNS, where, null, null)
+        val loaderWhere = Expression.and(Expression.equalsArgs(CachedTrends.ACCOUNT_KEY),
+                Expression.equalsArgs(CachedTrends.WOEID)).sql
+        val loaderWhereArgs = arrayOf(accountKey?.toString() ?: "", woeId.toString())
+        return CursorLoader(activity, uri, CachedTrends.COLUMNS, loaderWhere, loaderWhereArgs, CachedTrends.TREND_ORDER)
     }
 
     override fun onItemClick(view: AdapterView<*>, child: View, position: Int, id: Long) {
@@ -86,7 +89,7 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
 
         }
         if (trend == null) return
-        openTweetSearch(activity, accountId, trend)
+        openTweetSearch(activity, accountKey, trend)
     }
 
     override fun onLoaderReset(loader: Loader<Cursor>) {
@@ -95,12 +98,17 @@ class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), L
 
     override fun onLoadFinished(loader: Loader<Cursor>, cursor: Cursor) {
         adapter.swapCursor(cursor)
-        showContent()
+        if (adapter.isEmpty) {
+            showEmpty(R.drawable.ic_info_refresh, getString(R.string.swipe_down_to_refresh))
+        } else {
+            showContent()
+        }
     }
 
     override fun onRefresh() {
         if (refreshing) return
-        twitterWrapper.getLocalTrendsAsync(accountId, preferences.getInt(KEY_LOCAL_TRENDS_WOEID, 1))
+        val accountKey = this.accountKey ?: return
+        twitterWrapper.getLocalTrendsAsync(accountKey, woeId)
     }
 
     override var refreshing: Boolean

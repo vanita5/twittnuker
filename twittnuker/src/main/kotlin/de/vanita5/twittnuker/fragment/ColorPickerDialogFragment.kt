@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import android.support.v7.app.AlertDialog
 import me.uucky.colorpicker.ColorPickerDialog
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.iface.IDialogFragmentCallback
 
 class ColorPickerDialogFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
@@ -78,7 +79,8 @@ class ColorPickerDialogFragment : BaseDialogFragment(), DialogInterface.OnClickL
         builder.setNegativeButton(android.R.string.cancel, this)
         val dialog = builder.create()
         dialog.setOnShowListener {
-            it as Dialog
+            it as AlertDialog
+            it.applyTheme()
             mController = ColorPickerDialog.Controller(it.context, it.window.decorView)
 
             val showAlphaSlider = args.getBoolean(EXTRA_ALPHA_SLIDER, true)

@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,17 +32,14 @@ import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IDirectMessagesAdapter
-import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
+import de.vanita5.twittnuker.constant.mediaPreviewStyleKey
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.ParcelableDirectMessage
 import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler
-import de.vanita5.twittnuker.util.IntentUtils
-import de.vanita5.twittnuker.util.MediaLoadingHandler
-import de.vanita5.twittnuker.util.ThemeUtils
-import de.vanita5.twittnuker.util.TwidereLinkify
-import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.view.CardMediaContainer
 import de.vanita5.twittnuker.view.holder.IncomingMessageViewHolder
 import de.vanita5.twittnuker.view.holder.MessageViewHolder
@@ -54,7 +51,7 @@ class MessageConversationAdapter(context: Context) : BaseRecyclerViewAdapter<Vie
             ThemeUtils.getThemeBackgroundOption(context), ThemeUtils.getUserThemeBackgroundAlpha(context))
     private val incomingMessageColor: Int = ThemeUtils.getUserAccentColor(context)
 
-    override val mediaPreviewStyle: Int = Utils.getMediaPreviewStyle(preferences.getString(SharedPreferenceConstants.KEY_MEDIA_PREVIEW_STYLE, null))
+    override val mediaPreviewStyle: Int = preferences[mediaPreviewStyleKey]
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     val mediaLoadingHandler: MediaLoadingHandler = MediaLoadingHandler(R.id.media_preview_progress)
@@ -154,9 +151,9 @@ class MessageConversationAdapter(context: Context) : BaseRecyclerViewAdapter<Vie
             this.adapterRef = WeakReference(adapter)
         }
 
-        override fun onMediaClick(view: View, media: ParcelableMedia, accountKey: UserKey, extraId: Long) {
+        override fun onMediaClick(view: View, media: ParcelableMedia, accountKey: UserKey?, id: Long) {
             val adapter = adapterRef.get()
-            IntentUtils.openMedia(adapter.context, adapter.getDirectMessage(extraId.toInt())!!, media,
+            IntentUtils.openMedia(adapter.context, adapter.getDirectMessage(id.toInt())!!, media,
                     adapter.preferences[newDocumentApiKey], adapter.preferences[displaySensitiveContentsKey])
         }
 

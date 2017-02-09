@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +25,10 @@ package de.vanita5.twittnuker.util.dagger
 import android.app.Application
 import android.content.Context
 import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Looper
+import android.support.v4.net.ConnectivityManagerCompat
 import android.support.v4.text.BidiFormatter
 import com.nostra13.universalimageloader.cache.disc.DiskCache
 import com.nostra13.universalimageloader.cache.disc.impl.ext.LruDiskCache
@@ -47,6 +49,8 @@ import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_CACHE_SIZE_LIMIT
+import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.imageloader.ReadOnlyDiskLRUNameCache
@@ -122,7 +126,8 @@ class ApplicationModule(private val application: Application) {
     @Singleton
     fun restHttpClient(prefs: SharedPreferencesWrapper, dns: TwidereDns,
                        connectionPool: ConnectionPool): RestHttpClient {
-        return HttpClientFactory.createRestHttpClient(application, prefs, dns, connectionPool)
+        val conf = HttpClientFactory.HttpClientConfiguration(prefs)
+        return HttpClientFactory.createRestHttpClient(conf, dns, connectionPool)
     }
 
     @Provides
@@ -180,8 +185,12 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun mediaLoaderWrapper(loader: ImageLoader): MediaLoaderWrapper {
-        return MediaLoaderWrapper(loader)
+    fun mediaLoaderWrapper(loader: ImageLoader, preferences: SharedPreferencesWrapper): MediaLoaderWrapper {
+        val wrapper = MediaLoaderWrapper(loader)
+        wrapper.reloadOptions(preferences)
+        val cm = application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        wrapper.isNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(cm)
+        return wrapper
     }
 
     @Provides
@@ -234,7 +243,7 @@ class ApplicationModule(private val application: Application) {
     @Provides
     @Singleton
     fun autoRefreshController(kPreferences: KPreferences): AutoRefreshController {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !kPreferences[autoRefreshCompatibilityModeKey]) {
             return JobSchedulerAutoRefreshController(application, kPreferences)
         }
         return LegacyAutoRefreshController(application, kPreferences)
@@ -290,7 +299,7 @@ class ApplicationModule(private val application: Application) {
         val cacheDir = Utils.getExternalCacheDir(application, dirName)
         val fallbackCacheDir = Utils.getInternalCacheDir(application, dirName)
         val fileNameGenerator = URLFileNameGenerator()
-        val cacheSize = TwidereMathUtils.clamp(preferences.getInt(SharedPreferenceConstants.KEY_CACHE_SIZE_LIMIT, 300), 100, 500)
+        val cacheSize = preferences.getInt(KEY_CACHE_SIZE_LIMIT, 300).coerceIn(100..500)
         try {
             val cacheMaxSizeBytes = cacheSize * 1024 * 1024
             if (cacheDir != null)

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,9 +133,9 @@ class MultiSelectEventHandler(
                     }
                 }
                 ContentResolverUtils.bulkDelete(resolver, Filters.Users.CONTENT_URI,
-                        Filters.Users.USER_KEY, userIds, null)
+                        Filters.Users.USER_KEY, false, userIds, null)
                 ContentResolverUtils.bulkInsert(resolver, Filters.Users.CONTENT_URI, valuesList)
-                Toast.makeText(activity, R.string.message_users_muted, Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.message_toast_users_filters_added, Toast.LENGTH_SHORT).show()
                 mode.finish()
             }
             R.id.block -> {

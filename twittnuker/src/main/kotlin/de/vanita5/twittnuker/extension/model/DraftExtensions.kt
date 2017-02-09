@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,7 +124,8 @@ fun Draft.readMimeMessageFrom(context: Context, st: InputStream): Boolean {
 fun Draft.getActionName(context: Context): String? {
     if (TextUtils.isEmpty(action_type)) return context.getString(R.string.update_status)
     when (action_type) {
-        Draft.Action.UPDATE_STATUS, Draft.Action.UPDATE_STATUS_COMPAT_1, Draft.Action.UPDATE_STATUS_COMPAT_2 -> {
+        Draft.Action.UPDATE_STATUS, Draft.Action.UPDATE_STATUS_COMPAT_1,
+        Draft.Action.UPDATE_STATUS_COMPAT_2 -> {
             return context.getString(R.string.update_status)
         }
         Draft.Action.REPLY -> {
@@ -132,6 +133,12 @@ fun Draft.getActionName(context: Context): String? {
         }
         Draft.Action.QUOTE -> {
             return context.getString(R.string.action_quote)
+        }
+        Draft.Action.FAVORITE -> {
+            return context.getString(R.string.action_favorite)
+        }
+        Draft.Action.RETWEET -> {
+            return context.getString(R.string.action_retweet)
         }
         Draft.Action.SEND_DIRECT_MESSAGE, Draft.Action.SEND_DIRECT_MESSAGE_COMPAT -> {
             return context.getString(R.string.send_direct_message)

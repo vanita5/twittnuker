@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/title_about">
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_about"
         android:title="@string/title_about">
         <de.vanita5.twittnuker.preference.AppVersionPreference />
@@ -52,8 +52,8 @@
                 android:action="android.intent.action.VIEW"
                 android:data="twittnuker://user?user_key=583328497@twitter.com&amp;account_host=twitter.com&amp;finish_only=true" />
         </Preference>
-    </PreferenceCategory>
-    <PreferenceCategory
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_donate"
         android:title="@string/donation">
         <Preference
@@ -61,7 +61,7 @@
             android:title="@string/donation">
             <intent android:action="de.vanita5.twittnuker.activity.DonationsActivity"/>
         </Preference>
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
     <!--<PreferenceCategory-->
         <!--android:key="cat_donate"-->
         <!--android:title="@string/donate">-->
@@ -97,7 +97,7 @@
                 <!--android:data="twidere://user_list_members?list_id=99024901&amp;user_key=583328497@twitter.com&amp;finish_only=true" />-->
         <!--</Preference>-->
     <!--</PreferenceCategory>-->
-    <PreferenceCategory android:title="@string/special_thanks_to">
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory android:title="@string/special_thanks_to">
         <Preference
             android:summary="for the Twittnuker Launcher icon"
             android:title="trvmmergemyt">
@@ -133,8 +133,8 @@
                 android:action="android.intent.action.VIEW"
                 android:data="twittnuker://user?user_key=210818534@twitter.com&amp;account_host=twitter.com&amp;finish_only=true" />
         </Preference>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/contact">
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory android:title="@string/contact">
         <Preference
             android:summary="@string/mail_summary"
             android:title="@string/mail">
@@ -142,5 +142,5 @@
                 android:action="android.intent.action.VIEW"
                 android:data="mailto:mail@twittnuker.org" />
         </Preference>
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 </PreferenceScreen>

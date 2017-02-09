@@ -68,6 +68,7 @@
     <!-- [verb] Save settings/files etc. -->
     <string name="action_save">Salvar</string>
     <string name="action_saving_search">salvando pesquisa</string>
+  <string name="action_select_user">Selecionar usuário</string>
     <!-- [verb] Send tweet/message -->
     <string name="action_send">Enviar</string>
     <string name="action_sending_direct_message">enviando mensagem direta</string>
@@ -189,7 +190,6 @@
     <string name="cant_load_all_replies_message">Não é possível carregar todas as respostas. &lt;a href=\"#dialog\";&gt;Por quê?&lt;/a&gt;</string>
     <string name="cards">Cartões</string>
     <string name="clear_cache">Limpar o cache</string>
-    <string name="clear_cache_summary">Limpar as imagens de perfil armazenadas em cache.</string>
     <string name="clear_databases">Limpar dados armazenados</string>
     <string name="clear_databases_summary">Limpar todos os tweets, perfis e mensagens. Você não irá perder as credenciais de sua conta.</string>
     <string name="clear_search_history">Limpar histórico de buscas</string>
@@ -254,7 +254,7 @@
     <string name="display_sensitive_contents_summary">Exibir conteúdo sensível sem avisar</string>
     <string name="dns_server">Servidor DNS</string>
     <string name="dns_server_summary">Definir o Servidor de DNS para solicitações de rede.</string>
-    <string name="dont_restart">Não reiniciar</string>
+    <string name="action_dont_restart">Não reiniciar</string>
     <string name="draft_saved">Rascunho salvo</string>
     <string name="drafts_hint_messages">Os teus tweets não enviados vão ser guardados aqui</string>
     <string name="drawer_toggle">Alternador de gaveta</string>
@@ -415,21 +415,7 @@
     <string name="message_blocked_user">Bloqueou <xliff:g id="user">%s</xliff:g>.</string>
     <string name="message_direct_message_deleted">Mensagem direta excluída.</string>
     <string name="message_direct_message_sent">Mensagem direta enviada.</string>
-    <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-    <!-- Toast message for network errors -->
-    <string name="message_network_error">Erro de rede.</string>
     <string name="message_please_wait">Por favor, espere.</string>
-    <string name="message_retweet_cancelled">Retweet cancelado.</string>
-    <string name="message_search_deleted">Pesquisa excluída.</string>
-    <string name="message_search_name_deleted">Pesquisa \"<xliff:g id="name">%s</xliff:g>\" excluída.</string>
-    <string name="message_search_name_saved">Busca \"<xliff:g id="name">%s</xliff:g>\" salva.</string>
-    <string name="message_search_saved">Pesquisa salva.</string>
-    <string name="message_status_deleted">Tweet excluído.</string>
-    <string name="message_status_favorited">Tweet marcado como favorito.</string>
-    <string name="message_status_like_removed">Curtida removida.</string>
-    <string name="message_status_liked">Tweet curtido.</string>
-    <string name="message_status_retweeted">Retweetado.</string>
-    <string name="message_status_unfavorited">Tweet desmarcado como favorito.</string>
     <!--
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
@@ -437,9 +423,12 @@
     <string name="message_toast_accepted_users_follow_request">Foi aceita solicitação de seguidor de <xliff:g id="user">%s</xliff:g>.</string>
     <string name="message_toast_cannot_get_location">Não foi possível obter sua localização.</string>
     <string name="message_toast_error_occurred">Ocorreu um erro, por favor tente novamente.</string>
+  <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_link_copied_to_clipboard">Link copiado para a área de transferência</string>
     <string name="message_toast_livewp_daydream_enabled_message">Aqui vai um pequeno presente, encontre-o nas configurações de sistema :)</string>
     <string name="message_toast_login_verification_failed">A verificação do login falhou.</string>
+  <!-- Toast message for network errors -->
+  <string name="message_toast_network_error">Erro de rede</string>
     <string name="message_toast_no_account">Sem conta</string>
     <string name="message_toast_no_account_selected">Nenhuma conta selecionada.</string>
     <string name="message_toast_press_again_to_close">Carregar outra vez para fechar</string>
@@ -452,10 +441,6 @@
     <string name="message_toast_status_updated">Tweet enviado.</string>
     <string name="message_toast_wrong_api_key">URL da API ou chave de usuário incorreta, verifique novamente.</string>
     <string name="message_toast_wrong_username_password">Usuário/senha incorretos</string>
-    <string name="message_user_muted">Adicionar este usuário a lista de filtros. Você não verá tweets deste usuário em sua timeline/lista de menções.</string>
-    <string name="message_user_unmuted">Usuário removido da lista de filtros.</string>
-    <string name="message_users_muted">Usuários adicionados aos filtros. Você não verá tweets destes usuários em sua timeline e lista de menções.</string>
-    <string name="more">Mais</string>
     <string name="multi_select">Multisseleção</string>
     <string name="mute_user">Silenciar <xliff:g id="name">%s</xliff:g></string>
     <string name="mute_user_confirm_message">Silenciar <xliff:g id="name">%s</xliff:g>? Você não será capaz de ver tweets deste usuário enquanto continuar seguindo-o.</string>
@@ -542,6 +527,8 @@
     <string name="preference_title_accounts">Contas</string>
     <string name="preference_title_advanced">Avançado</string>
     <string name="preference_title_database_item_limit">Tamanho limite do banco de dados</string>
+  <string name="preference_title_portrait">Retrato</string>
+  <string name="preference_title_landscape">Paisagem</string>
     <string name="preference_title_storage">Armazenamento</string>
     <string name="preference_title_translate">Traduzir</string>
     <string name="preload_wifi_only">Pré-Carregar apenas em Wi-Fi</string>
@@ -763,6 +750,7 @@
     <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
     <string name="title_user">Usuários</string>
     <string name="title_user_colors">Cores de usuários</string>
+  <string name="title_user_list_memberships">Pertence a</string>
     <string name="title_users_favorited_this">Usuários favoritaram isso</string>
     <string name="title_users_liked_this">Usuários curtiram isso</string>
     <string name="title_users_retweeted_this">Usuários retweetaram isso</string>

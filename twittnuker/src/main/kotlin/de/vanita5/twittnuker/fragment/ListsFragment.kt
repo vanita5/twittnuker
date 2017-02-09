@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,11 @@ class ListsFragment : AbsToolbarTabPagesFragment() {
     }
 
     override fun addTabs(adapter: SupportTabsAdapter) {
-        adapter.addTab(cls = UserListsFragment::class.java, args = arguments, name = getString(R.string.follows))
-        adapter.addTab(cls = UserListMembershipsFragment::class.java, args = arguments, name = getString(R.string.belongs_to))
+        adapter.addTab(cls = UserListsOwnershipsFragment::class.java, args = arguments,
+                name = getString(R.string.title_user_list_ownerships))
+        adapter.addTab(cls = UserListSubscriptionsFragment::class.java, args = arguments,
+                name = getString(R.string.title_user_list_subscriptions))
+        adapter.addTab(cls = UserListMembershipsFragment::class.java, args = arguments,
+                name = getString(R.string.title_user_list_memberships))
     }
 }

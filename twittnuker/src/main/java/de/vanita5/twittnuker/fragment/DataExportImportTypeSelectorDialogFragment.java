@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ import android.widget.TextView;
 
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.adapter.ArrayAdapter;
+import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
 import de.vanita5.twittnuker.fragment.iface.ISupportDialogFragmentCallback;
 import de.vanita5.twittnuker.util.DataImportExportUtils;
 
@@ -54,7 +55,6 @@ import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_TITLE;
 public final class DataExportImportTypeSelectorDialogFragment extends BaseDialogFragment implements
         OnMultiChoiceClickListener, OnClickListener, OnShowListener, OnItemClickListener {
 
-    private TypeAdapter mAdapter;
     private ListView mListView;
 
     @Override
@@ -87,19 +87,19 @@ public final class DataExportImportTypeSelectorDialogFragment extends BaseDialog
     public final Dialog onCreateDialog(final Bundle savedInstanceState) {
         final Context context = getActivity();
         final int flags = getEnabledFlags();
-        mAdapter = new TypeAdapter(context, flags);
         mListView = new ListView(context);
-        mAdapter.add(new Type(R.string.settings, DataImportExportUtils.FLAG_PREFERENCES));
-        mAdapter.add(new Type(R.string.title_user_colors, DataImportExportUtils.FLAG_USER_COLORS));
-        mAdapter.add(new Type(R.string.custom_host_mapping, DataImportExportUtils.FLAG_HOST_MAPPING));
-        mAdapter.add(new Type(R.string.keyboard_shortcuts, DataImportExportUtils.FLAG_KEYBOARD_SHORTCUTS));
-        mAdapter.add(new Type(R.string.title_filters, DataImportExportUtils.FLAG_FILTERS));
-        mAdapter.add(new Type(R.string.tabs, DataImportExportUtils.FLAG_TABS));
-        mListView.setAdapter(mAdapter);
+        final TypeAdapter adapter = new TypeAdapter(context, flags);
+        adapter.add(new Type(R.string.settings, DataImportExportUtils.FLAG_PREFERENCES));
+        adapter.add(new Type(R.string.title_user_colors, DataImportExportUtils.FLAG_USER_COLORS));
+        adapter.add(new Type(R.string.custom_host_mapping, DataImportExportUtils.FLAG_HOST_MAPPING));
+        adapter.add(new Type(R.string.keyboard_shortcuts, DataImportExportUtils.FLAG_KEYBOARD_SHORTCUTS));
+        adapter.add(new Type(R.string.title_filters, DataImportExportUtils.FLAG_FILTERS));
+        adapter.add(new Type(R.string.tabs, DataImportExportUtils.FLAG_TABS));
+        mListView.setAdapter(adapter);
         mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         mListView.setOnItemClickListener(this);
-        for (int i = 0, j = mAdapter.getCount(); i < j; i++) {
-            mListView.setItemChecked(i, mAdapter.isEnabled(i));
+        for (int i = 0, j = adapter.getCount(); i < j; i++) {
+            mListView.setItemChecked(i, adapter.isEnabled(i));
         }
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(getTitle());
@@ -127,6 +127,7 @@ public final class DataExportImportTypeSelectorDialogFragment extends BaseDialog
 
     @Override
     public final void onShow(final DialogInterface dialog) {
+        AlertDialogExtensionsKt.applyTheme((AlertDialog) dialog);
         updatePositiveButton(dialog);
     }
 

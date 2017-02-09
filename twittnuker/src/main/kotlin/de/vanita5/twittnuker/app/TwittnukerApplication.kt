@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.TwidereSQLiteOpenHelper
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.net.TwidereDns
+import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import de.vanita5.twittnuker.util.refresh.AutoRefreshController
 import de.vanita5.twittnuker.util.sync.SyncController
 import java.util.*
@@ -76,6 +77,10 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     lateinit internal var autoRefreshController: AutoRefreshController
     @Inject
     lateinit internal var syncController: SyncController
+    @Inject
+    lateinit internal var extraFeaturesService: ExtraFeaturesService
+    @Inject
+    lateinit internal var mediaLoader: MediaLoaderWrapper
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
@@ -107,6 +112,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
 
         autoRefreshController.appStarted()
         syncController.appStarted()
+        extraFeaturesService.appStarted()
 
         registerActivityLifecycleCallbacks(activityTracker)
 
@@ -171,6 +177,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     }
 
     override fun onLowMemory() {
+        mediaLoader.clearMemoryCache()
         super.onLowMemory()
     }
 
@@ -193,6 +200,9 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             KEY_EMOJI_SUPPORT -> {
                 externalThemeManager.reloadEmojiPreferences()
             }
+            KEY_MEDIA_PRELOAD, KEY_PRELOAD_WIFI_ONLY -> {
+                mediaLoader.reloadOptions(preferences)
+            }
         }
     }
 
@@ -204,7 +214,6 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     private fun reloadDnsSettings() {
         dns.reloadDnsSettings()
     }
-
 
     private fun initializeAsyncTask() {
         // AsyncTask class needs to be loaded in UI thread.

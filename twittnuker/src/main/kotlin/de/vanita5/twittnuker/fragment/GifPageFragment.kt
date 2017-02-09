@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,12 @@ import pl.droidsonroids.gif.InputSource
 
 class GifPageFragment : CacheDownloadMediaViewerFragment() {
 
+    private val media: ParcelableMedia
+        get() = arguments.getParcelable(EXTRA_MEDIA)
+
+    private val accountKey: UserKey
+        get() = arguments.getParcelable(EXTRA_ACCOUNT_KEY)
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         gifView.setOnClickListener { (activity as MediaViewerActivity).toggleBar() }
@@ -48,7 +54,7 @@ class GifPageFragment : CacheDownloadMediaViewerFragment() {
     }
 
     override fun getDownloadUri(): Uri? {
-        return arguments.getParcelable<Uri>(SubsampleImageViewerFragment.EXTRA_MEDIA_URI)
+        return arguments.getParcelable(SubsampleImageViewerFragment.EXTRA_MEDIA_URI)
     }
 
     override fun getDownloadExtra(): Any? {
@@ -57,8 +63,9 @@ class GifPageFragment : CacheDownloadMediaViewerFragment() {
 
     override fun displayMedia(result: CacheDownloadLoader.Result) {
         val context = context ?: return
-        if (result.cacheUri != null) {
-            gifView.setInputSource(InputSource.UriSource(context.contentResolver, result.cacheUri!!))
+        val cacheUri = result.cacheUri
+        if (cacheUri != null) {
+            gifView.setInputSource(InputSource.UriSource(context.contentResolver, cacheUri))
         } else {
             gifView.setInputSource(null)
         }
@@ -76,9 +83,4 @@ class GifPageFragment : CacheDownloadMediaViewerFragment() {
         gifView?.setInputSource(null)
     }
 
-    private val media: ParcelableMedia
-        get() = arguments.getParcelable<ParcelableMedia>(EXTRA_MEDIA)
-
-    private val accountKey: UserKey
-        get() = arguments.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
 }

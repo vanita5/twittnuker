@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *  
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *  
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,15 +34,11 @@ import android.os.Parcelable
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentActivity
 import android.text.TextUtils
-import android.text.TextUtils.isEmpty
-import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.MediaViewerActivity
 import de.vanita5.twittnuker.annotation.Referral
-import de.vanita5.twittnuker.constant.IntentConstants.*
-import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
 import de.vanita5.twittnuker.fragment.SensitiveContentWarningDialogFragment
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
@@ -88,7 +84,7 @@ object IntentUtils {
                         userKey: UserKey?, screenName: String?,
                         newDocument: Boolean, @Referral referral: String? = null,
                         activityOptions: Bundle? = null) {
-        val intent = userProfile(accountKey, userKey, screenName, referral, null) ?: return
+        val intent = userProfile(accountKey, userKey, screenName, referral, null)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && newDocument) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
         }
@@ -392,11 +388,13 @@ object IntentUtils {
         context.startActivity(intent)
     }
 
-    fun openStatus(context: Context, accountKey: UserKey?,
-                   statusId: String) {
+    fun status(accountKey: UserKey?, statusId: String): Intent {
         val uri = LinkCreator.getTwidereStatusLink(accountKey, statusId)
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        context.startActivity(intent)
+        return Intent(Intent.ACTION_VIEW, uri)
+    }
+
+    fun openStatus(context: Context, accountKey: UserKey?, statusId: String) {
+        context.startActivity(status(accountKey, statusId))
     }
 
     fun openStatus(context: Context, status: ParcelableStatus, activityOptions: Bundle? = null) {
@@ -683,13 +681,14 @@ object IntentUtils {
         context.startActivity(intent)
     }
 
-    fun openFilters(context: Context) {
+    fun openFilters(context: Context, initialTab: String? = null) {
         val intent = Intent()
         val builder = Uri.Builder()
         builder.scheme(SCHEME_TWITTNUKER)
         builder.authority(AUTHORITY_FILTERS)
         intent.data = builder.build()
         intent.`package` = BuildConfig.APPLICATION_ID
+        intent.putExtra(EXTRA_INITIAL_TAB, initialTab)
         context.startActivity(intent)
     }
 

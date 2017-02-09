@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,10 +26,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import android.support.v4.net.ConnectivityManagerCompat
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.util.DebugLog
-import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.dagger.DependencyHolder
 
 class ConnectivityStateReceiver : BroadcastReceiver() {
 
@@ -39,6 +40,11 @@ class ConnectivityStateReceiver : BroadcastReceiver() {
         val application = TwittnukerApplication.getInstance(context)
         //        application.reloadConnectivitySettings();
         //TODO start streaming here?
+
+        val appContext = context.applicationContext
+        val cm = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val isNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(cm)
+        DependencyHolder.get(context).mediaLoader.isNetworkMetered = isNetworkMetered
     }
 
     companion object {

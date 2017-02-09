@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,11 @@ package de.vanita5.twittnuker.loader
 import android.accounts.AccountManager
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import org.mariotaku.ktextension.set
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.ErrorInfo
+import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT
 import de.vanita5.twittnuker.model.ParcelableStatus
@@ -49,10 +50,12 @@ class ParcelableStatusLoader(
         private val extras: Bundle?,
         private val accountKey: UserKey?,
         private val statusId: String?
-) : AsyncTaskLoader<SingleResponse<ParcelableStatus>>(context) {
+) : FixedAsyncTaskLoader<SingleResponse<ParcelableStatus>>(context) {
 
     @Inject
-    lateinit var userColorNameManager: UserColorNameManager
+    internal lateinit var userColorNameManager: UserColorNameManager
+    @Inject
+    internal lateinit var restHttpClient: RestHttpClient
 
     init {
         GeneralComponentHelper.build(context).inject(this)
@@ -82,8 +85,7 @@ class ParcelableStatusLoader(
             if (e.errorCode == ErrorInfo.STATUS_NOT_FOUND) {
                 // Delete all deleted status
                 val cr = context.contentResolver
-                DataStoreUtils.deleteStatus(cr, accountKey,
-                        statusId, null)
+                DataStoreUtils.deleteStatus(cr, accountKey, statusId, null)
                 DataStoreUtils.deleteActivityStatus(cr, accountKey, statusId, null)
             }
             return SingleResponse(e)
@@ -94,5 +96,6 @@ class ParcelableStatusLoader(
     override fun onStartLoading() {
         forceLoad()
     }
+
 
 }

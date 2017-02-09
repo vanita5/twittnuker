@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -187,6 +187,7 @@ public interface IntentConstants {
     String EXTRA_RECREATE_ACTIVITY = "recreate_activity";
     String EXTRA_SHOULD_RECREATE = "should_recreate";
     String EXTRA_SHOULD_RESTART = "should_restart";
+    String EXTRA_SHOULD_TERMINATE = "should_terminate";
     String EXTRA_FROM_USER = "from_user";
     String EXTRA_SHOW_MEDIA_PREVIEW = "show_media_preview";
     String EXTRA_SHOW_EXTRA_TYPE = "show_extra_type";
@@ -208,8 +209,12 @@ public interface IntentConstants {
     String EXTRA_SIMPLE_LAYOUT = "simple_layout";
     String EXTRA_API_CONFIG = "api_config";
     String EXTRA_COUNT = "count";
-
     String EXTRA_REQUEST_CODE = "request_code";
+    String EXTRA_FROM_CACHE = "from_cache";
+    String EXTRA_SHOW_MY_LISTS = "show_my_lists";
+    String EXTRA_WOEID = "woeid";
+    String EXTRA_PLACE = "place";
+    String EXTRA_PLACE_NAME = "place_name";
 
     /* Twittnuker */
     String GCM_REGISTRATION_COMPLETE = INTENT_PACKAGE_PREFIX + "GCM_REGISTRATION_COMPLETE";

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,14 +23,10 @@
 package de.vanita5.twittnuker.util;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public final class TwidereArrayUtils {
 
@@ -38,40 +34,10 @@ public final class TwidereArrayUtils {
         throw new AssertionError("You are trying to create an instance for this utility class!");
     }
 
-    public static boolean contains(final int[] array, final int value) {
-        if (array == null) return false;
-        for (final int item : array) {
-            if (item == value) return true;
-        }
-        return false;
-    }
-
-    public static boolean contains(final long[] array, final long value) {
-        if (array == null) return false;
-        for (final long item : array) {
-            if (item == value) return true;
-        }
-        return false;
-    }
-
-    public static boolean contains(final Object[] array, final Object value) {
-        if (array == null || value == null) return false;
-        return contains(array, new Object[]{value});
-    }
-
     public static boolean contains(final Object[] array, final Object[] values) {
         if (array == null || values == null) return false;
         for (final Object value : values) {
             if (!ArrayUtils.contains(array, value)) return false;
-        }
-        return true;
-    }
-
-    public static boolean contentMatch(final long[] array1, final long[] array2) {
-        if (array1 == null || array2 == null) return array1 == array2;
-        if (array1.length != array2.length) return false;
-        for (long anArray1 : array1) {
-            if (!ArrayUtils.contains(array2, anArray1)) return false;
         }
         return true;
     }
@@ -85,47 +51,6 @@ public final class TwidereArrayUtils {
         return true;
     }
 
-    public static long[] fromList(final List<Long> list) {
-        if (list == null) return null;
-        final int count = list.size();
-        final long[] array = new long[count];
-        for (int i = 0; i < count; i++) {
-            array[i] = list.get(i);
-        }
-        return array;
-    }
-
-    public static int indexOf(final Object[] array, final Object value) {
-        final int length = array.length;
-        for (int i = 0; i < length; i++) {
-            if (array[i].equals(value)) return i;
-        }
-        return -1;
-    }
-
-    public static long[] intersection(final long[] array1, final long[] array2) {
-        if (array1 == null || array2 == null) return new long[0];
-        final List<Long> list1 = new ArrayList<>();
-        for (final long item : array1) {
-            list1.add(item);
-        }
-        final List<Long> list2 = new ArrayList<>();
-        for (final long item : array2) {
-            list2.add(item);
-        }
-        list1.retainAll(list2);
-        return fromList(list1);
-    }
-
-    public static <T> T[] intersection(@NonNull final T[] array1, @NonNull final T[] array2) {
-        final List<T> list1 = new ArrayList<>();
-        Collections.addAll(list1, array1);
-        final List<T> list2 = new ArrayList<>();
-        Collections.addAll(list2, array2);
-        list1.retainAll(list2);
-        //noinspection unchecked
-        return list1.toArray((T[]) Array.newInstance(array1.getClass().getComponentType(), list1.size()));
-    }
 
     public static int arraysLength(@NonNull final Object... arrays) {
         int length = 0;
@@ -145,21 +70,6 @@ public final class TwidereArrayUtils {
             System.arraycopy(array, 0, dest, k, length);
             k += length;
         }
-    }
-
-    @NonNull
-    public static long[] parseLongArray(final String string, final char token) {
-        if (TextUtils.isEmpty(string)) return new long[0];
-        final String[] itemsStringArray = string.split(String.valueOf(token));
-        final long[] array = new long[itemsStringArray.length];
-        for (int i = 0, j = itemsStringArray.length; i < j; i++) {
-            try {
-                array[i] = Long.parseLong(itemsStringArray[i]);
-            } catch (final NumberFormatException e) {
-                return new long[0];
-            }
-        }
-        return array;
     }
 
     public static String toString(final long[] array, final char token, final boolean include_space) {
@@ -203,18 +113,6 @@ public final class TwidereArrayUtils {
         return toStringArray(array, 0, Array.getLength(array));
     }
 
-
-    public static String toStringForSQL(final String[] array) {
-        final int size = array != null ? array.length : 0;
-        final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < size; i++) {
-            if (i > 0) {
-                builder.append(',');
-            }
-            builder.append('?');
-        }
-        return builder.toString();
-    }
 
     public static void offset(long[] array, long offset) {
         for (int i = 0; i < array.length; i++) {

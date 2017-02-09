@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,13 +39,11 @@ import org.mariotaku.commons.objectcursor.LoganSquareCursorFieldConverter;
 import org.mariotaku.library.objectcursor.annotation.AfterCursorObjectCreated;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
-
 import de.vanita5.twittnuker.model.util.UserKeyConverter;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 
-import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
@@ -77,7 +75,7 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
         }
     };
     @CursorField(value = Statuses._ID, excludeWrite = true, type = TwidereDataStore.TYPE_PRIMARY_KEY)
-    long _id;
+    public long _id;
 
     @SuppressWarnings("NullableProblems")
     @ParcelableThisPlease
@@ -449,11 +447,11 @@ public class ParcelableStatus implements Parcelable, Comparable<ParcelableStatus
     }
 
     @OnJsonParseComplete
-    void onParseComplete() throws IOException {
+    void onParseComplete() {
         fixSortId();
     }
 
-    void fixSortId() {
+    private void fixSortId() {
         if (sort_id <= 0) {
             try {
                 sort_id = Long.parseLong(id);

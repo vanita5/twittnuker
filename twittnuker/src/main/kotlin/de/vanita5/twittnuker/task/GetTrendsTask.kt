@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,28 +22,38 @@
 
 package de.vanita5.twittnuker.task
 
+import android.accounts.AccountManager
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.support.v4.util.ArraySet
 import com.squareup.otto.Bus
 import org.mariotaku.abstask.library.AbstractTask
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Trends
+import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.model.ParcelableTrend
+import de.vanita5.twittnuker.model.ParcelableTrendValuesCreator
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.TrendsRefreshedEvent
-import de.vanita5.twittnuker.provider.TwidereDataStore
-import de.vanita5.twittnuker.util.ContentValuesCreator
-import de.vanita5.twittnuker.util.MicroBlogAPIFactory
+import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags
+import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends
+import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import java.util.*
 import javax.inject.Inject
 
-abstract class GetTrendsTask(
+class GetTrendsTask(
         private val context: Context,
-        private val accountId: UserKey
+        private val accountKey: UserKey,
+        private val woeId: Int
 ) : AbstractTask<Any?, Unit, Any?>() {
 
     @Inject
@@ -53,47 +63,51 @@ abstract class GetTrendsTask(
         GeneralComponentHelper.build(context).inject(this)
     }
 
-    @Throws(MicroBlogException::class)
-    abstract fun getTrends(twitter: MicroBlog): List<Trends>
-
-    public override fun doLongOperation(param: Any?) {
-        val twitter = MicroBlogAPIFactory.getInstance(context, accountId) ?: return
+    override fun doLongOperation(param: Any?) {
+        val details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true) ?: return
+        val twitter = details.newMicroBlogInstance(context, cls = MicroBlog::class.java)
         try {
-            val trends = getTrends(twitter)
-            storeTrends(context.contentResolver, contentUri, trends)
-            return
+            val trends = when {
+                details.type == AccountType.FANFOU -> twitter.fanfouTrends
+                else -> twitter.getLocationTrends(woeId).firstOrNull()
+            } ?: return
+            storeTrends(context.contentResolver, CachedTrends.Local.CONTENT_URI, trends)
         } catch (e: MicroBlogException) {
-            return
+            DebugLog.w(LOGTAG, tr = e)
         }
-
     }
 
     override fun afterExecute(handler: Any?, result: Unit) {
         bus.post(TrendsRefreshedEvent())
     }
 
-    protected abstract val contentUri: Uri
+    private fun storeTrends(cr: ContentResolver, uri: Uri, trends: Trends) {
+        val hashtags = ArraySet<String>()
+        val deleteWhere = Expression.and(Expression.equalsArgs(CachedTrends.ACCOUNT_KEY),
+                Expression.equalsArgs(CachedTrends.WOEID)).sql
+        val deleteWhereArgs = arrayOf(accountKey.toString(), woeId.toString())
+        cr.delete(CachedTrends.Local.CONTENT_URI, deleteWhere, deleteWhereArgs)
 
-    private fun storeTrends(cr: ContentResolver, uri: Uri, trendsList: List<Trends>) {
-        val hashtags = ArrayList<String>()
-        val hashtagValues = ArrayList<ContentValues>()
-        if (trendsList.isNotEmpty()) {
-            val valuesArray = ContentValuesCreator.createTrends(trendsList)
-            for (values in valuesArray) {
-                val hashtag = values.getAsString(TwidereDataStore.CachedTrends.NAME).replaceFirst("#".toRegex(), "")
-                if (hashtags.contains(hashtag)) {
-                    continue
-                }
-                hashtags.add(hashtag)
-                val hashtagValue = ContentValues()
-                hashtagValue.put(TwidereDataStore.CachedHashtags.NAME, hashtag)
-                hashtagValues.add(hashtagValue)
-            }
-            cr.delete(uri, null, null)
-            ContentResolverUtils.bulkInsert(cr, uri, valuesArray)
-            ContentResolverUtils.bulkDelete(cr, TwidereDataStore.CachedHashtags.CONTENT_URI, TwidereDataStore.CachedHashtags.NAME, hashtags, null)
-            ContentResolverUtils.bulkInsert(cr, TwidereDataStore.CachedHashtags.CONTENT_URI,
-                    hashtagValues.toTypedArray())
+        val allTrends = ArrayList<ParcelableTrend>()
+
+        trends.trends.forEachIndexed { idx, trend ->
+            val hashtag = trend.name.replaceFirst("#", "")
+            hashtags.add(hashtag)
+            allTrends.add(ParcelableTrend().apply {
+                this.account_key = accountKey
+                this.woe_id = woeId
+                this.name = trend.name
+                this.timestamp = System.currentTimeMillis()
+                this.trend_order = idx
+            })
         }
+        ContentResolverUtils.bulkInsert(cr, uri, allTrends.map(ParcelableTrendValuesCreator::create))
+        ContentResolverUtils.bulkDelete(cr, CachedHashtags.CONTENT_URI, CachedHashtags.NAME, false,
+                hashtags, null)
+        ContentResolverUtils.bulkInsert(cr, CachedHashtags.CONTENT_URI, hashtags.map {
+            val values = ContentValues()
+            values.put(CachedHashtags.NAME, it)
+            return@map values
+        })
     }
 }

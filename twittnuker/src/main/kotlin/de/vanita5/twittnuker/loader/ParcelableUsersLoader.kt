@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,19 +23,18 @@
 package de.vanita5.twittnuker.loader
 
 import android.content.Context
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.text.TextUtils
-import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.util.NoDuplicatesArrayList
+import de.vanita5.twittnuker.util.collection.NoDuplicatesArrayList
 import java.util.*
 
 abstract class ParcelableUsersLoader(
         context: Context,
         data: List<ParcelableUser>?,
         override var fromUser: Boolean
-) : AsyncTaskLoader<List<ParcelableUser>>(context), IExtendedLoader, Constants {
+) : FixedAsyncTaskLoader<List<ParcelableUser>>(context), IExtendedLoader {
 
     protected val data: MutableList<ParcelableUser> = Collections.synchronizedList(NoDuplicatesArrayList<ParcelableUser>())
 
@@ -45,7 +44,7 @@ abstract class ParcelableUsersLoader(
         }
     }
 
-    public override fun onStartLoading() {
+    override fun onStartLoading() {
         forceLoad()
     }
 

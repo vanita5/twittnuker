@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,11 +53,8 @@ public interface SharedPreferenceConstants {
 
     String VALUE_MEDIA_PREVIEW_STYLE_CROP = "crop";
     String VALUE_MEDIA_PREVIEW_STYLE_SCALE = "scale";
+    String VALUE_MEDIA_PREVIEW_STYLE_REAL_SIZE = "real_size";
     String VALUE_MEDIA_PREVIEW_STYLE_NONE = VALUE_NONE;
-
-    int VALUE_MEDIA_PREVIEW_STYLE_CODE_CROP = 1;
-    int VALUE_MEDIA_PREVIEW_STYLE_CODE_SCALE = 2;
-    int VALUE_MEDIA_PREVIEW_STYLE_CODE_NONE = 0;
 
     int VALUE_NOTIFICATION_FLAG_NONE = 0x0;
     int VALUE_NOTIFICATION_FLAG_RINGTONE = 0x1;
@@ -210,8 +207,7 @@ public interface SharedPreferenceConstants {
     String KEY_PHISHING_LINK_WARNING = "phishing_link_warning";
     @Preference(type = STRING, hasDefault = true, defaultString = VALUE_LINK_HIGHLIGHT_OPTION_NONE)
     String KEY_LINK_HIGHLIGHT_OPTION = "link_highlight_option";
-    String KEY_PRELOAD_PROFILE_IMAGES = "preload_profile_images";
-    String KEY_PRELOAD_PREVIEW_IMAGES = "preload_preview_images";
+    String KEY_MEDIA_PRELOAD = "media_preload";
     @Preference(type = BOOLEAN, hasDefault = true, defaultBoolean = true)
     String KEY_PRELOAD_WIFI_ONLY = "preload_wifi_only";
     @Preference(type = BOOLEAN)

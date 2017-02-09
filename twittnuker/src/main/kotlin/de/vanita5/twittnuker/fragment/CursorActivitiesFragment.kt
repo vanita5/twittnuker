@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.content.Loader
+import android.widget.Toast
 import com.squareup.otto.Subscribe
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
@@ -47,6 +48,7 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.message.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
+import de.vanita5.twittnuker.task.twitter.GetStatusesTask
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.DataStoreUtils.getTableNameByUri
 import de.vanita5.twittnuker.util.ErrorInfoStore
@@ -54,31 +56,25 @@ import de.vanita5.twittnuker.util.Utils
 
 abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
 
-    override fun onLoadingFinished() {
-        val accountKeys = accountKeys
-        if (adapter.itemCount > 0) {
-            showContent()
-        } else if (accountKeys.isNotEmpty()) {
-            val errorInfo = ErrorInfoStore.getErrorInfo(context,
-                    errorInfoStore[errorInfoKey, accountKeys[0]])
-            if (errorInfo != null) {
-                showEmpty(errorInfo.icon, errorInfo.message)
-            } else {
-                showEmpty(R.drawable.ic_info_refresh, getString(R.string.swipe_down_to_refresh))
-            }
-        } else {
-            showError(R.drawable.ic_info_accounts, getString(R.string.message_toast_no_account_selected))
-        }
-    }
-
-    protected abstract val errorInfoKey: String
-
     private var contentObserver: ContentObserver? = null
+
     private val accountListener: OnAccountsUpdateListener = OnAccountsUpdateListener { accounts ->
         reloadActivities()
     }
 
+    override val accountKeys: Array<UserKey>
+        get() = Utils.getAccountKeys(context, arguments) ?: DataStoreUtils.getActivatedAccountKeys(context)
+
+    protected abstract val errorInfoKey: String
+
+    private val sortOrder: String
+        get() = Activities.DEFAULT_SORT_ORDER
+
     abstract val contentUri: Uri
+
+    override fun onContentLoaded(loader: Loader<List<ParcelableActivity>>, data: List<ParcelableActivity>?) {
+        showContentOrError()
+    }
 
     override fun onCreateActivitiesLoader(context: Context,
                                           args: Bundle,
@@ -112,9 +108,6 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
         return CursorActivitiesBusCallback()
     }
 
-    override val accountKeys: Array<UserKey>
-        get() = Utils.getAccountKeys(context, arguments) ?: DataStoreUtils.getActivatedAccountKeys(context)
-
     override fun onStart() {
         super.onStart()
         if (contentObserver == null) {
@@ -137,17 +130,6 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
         }
         AccountManager.get(context).removeOnAccountsUpdatedListenerSafe(accountListener)
         super.onStop()
-    }
-
-    protected fun reloadActivities() {
-        if (activity == null || isDetached) return
-        val args = Bundle()
-        val fragmentArgs = arguments
-        if (fragmentArgs != null) {
-            args.putAll(fragmentArgs)
-            args.putBoolean(EXTRA_FROM_USER, true)
-        }
-        loaderManager.restartLoader(0, args, this)
     }
 
     override fun hasMoreData(data: List<ParcelableActivity>?): Boolean {
@@ -248,8 +230,34 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
 
     protected abstract fun updateRefreshState()
 
-    private val sortOrder: String
-        get() = Activities.DEFAULT_SORT_ORDER
+
+    protected fun reloadActivities() {
+        if (activity == null || isDetached) return
+        val args = Bundle()
+        val fragmentArgs = arguments
+        if (fragmentArgs != null) {
+            args.putAll(fragmentArgs)
+            args.putBoolean(EXTRA_FROM_USER, true)
+        }
+        loaderManager.restartLoader(0, args, this)
+    }
+
+    private fun showContentOrError() {
+        val accountKeys = accountKeys
+        if (adapter.itemCount > 0) {
+            showContent()
+        } else if (accountKeys.isNotEmpty()) {
+            val errorInfo = ErrorInfoStore.getErrorInfo(context,
+                    errorInfoStore[errorInfoKey, accountKeys[0]])
+            if (errorInfo != null) {
+                showEmpty(errorInfo.icon, errorInfo.message)
+            } else {
+                showEmpty(R.drawable.ic_info_refresh, getString(R.string.swipe_down_to_refresh))
+            }
+        } else {
+            showError(R.drawable.ic_info_accounts, getString(R.string.message_toast_no_account_selected))
+        }
+    }
 
 
     private fun updateFavoritedStatus(status: ParcelableStatus) {
@@ -295,7 +303,11 @@ abstract class CursorActivitiesFragment : AbsActivitiesFragment() {
             if (!event.running) {
                 setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.NONE)
                 refreshEnabled = true
-                onLoadingFinished()
+                showContentOrError()
+
+                if (event.exception is GetStatusesTask.GetTimelineException && userVisibleHint) {
+                    Toast.makeText(context, event.exception.getToastMessage(context), Toast.LENGTH_SHORT).show()
+                }
             }
         }
 

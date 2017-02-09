@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,12 +34,8 @@ import de.vanita5.twittnuker.util.collection.CompactHashSet
 
 class ReadStateManager(context: Context) {
 
-    private val preferences: SharedPreferencesWrapper
-
-    init {
-        preferences = SharedPreferencesWrapper.getInstance(context,
+    private val preferences = SharedPreferencesWrapper.getInstance(context,
                 TIMELINE_POSITIONS_PREFERENCES_NAME, Context.MODE_PRIVATE)
-    }
 
     fun getPosition(key: String): Long {
         if (TextUtils.isEmpty(key)) return -1
@@ -72,7 +68,7 @@ class ReadStateManager(context: Context) {
         preferences.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
-    @JvmOverloads fun setPosition(key: String, keyId: String, position: Long, acceptOlder: Boolean = false): Boolean {
+    fun setPosition(key: String, keyId: String, position: Long, acceptOlder: Boolean = false): Boolean {
         if (TextUtils.isEmpty(key)) return false
         val set: MutableSet<String> = preferences.getStringSet(key, null) ?: CompactHashSet<String>()
         val prefix = keyId + ":"

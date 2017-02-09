@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@
         android:paddingRight="@dimen/element_spacing_normal"
         android:paddingStart="0dp">
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
             android:textStyle="bold"
             tools:text="Sample list"/>
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@+id/createdBy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,12 +68,12 @@
     <de.vanita5.twittnuker.view.ProfileImageView
         android:id="@+id/profileImage"
         style="?profileImageStyle"
-        android:layout_width="@dimen/icon_size_card_list_item"
-        android:layout_height="@dimen/icon_size_card_list_item"
+        android:layout_width="@dimen/icon_size_list_item_small"
+        android:layout_height="@dimen/icon_size_list_item_small"
         android:layout_marginLeft="@dimen/element_spacing_normal"
         android:layout_marginStart="@dimen/element_spacing_normal"
         android:layout_weight="0"
         android:contentDescription="@string/profile_image"
         android:scaleType="fitCenter"
-        tools:src="@mipmap/ic_launcher"/>
+        tools:src="@drawable/ic_account_logo_twitter"/>
 </LinearLayout>

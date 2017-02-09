@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,6 @@ import android.widget.TextView
 import android.widget.Toast
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.alwaysUi
-import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.BaseActivity
@@ -47,8 +46,9 @@ import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.IContentAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
-import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_COUNT
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.AbsContentListRecyclerViewFragment
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.MessageDialogFragment
@@ -63,6 +63,7 @@ import de.vanita5.twittnuker.util.support.ViewSupport
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.SimpleUserViewHolder
 import java.lang.ref.WeakReference
+import kotlin.collections.set
 
 abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<BaseFiltersImportFragment.SelectableUsersAdapter>(),
         LoaderManager.LoaderCallbacks<List<ParcelableUser>?> {
@@ -241,6 +242,8 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Ba
             builder.setNegativeButton(android.R.string.cancel, null)
             val dialog = builder.create()
             dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
                 val confirmMessageView = dialog.findViewById(R.id.confirmMessage) as TextView
                 val filterEverywhereHelp = dialog.findViewById(R.id.filterEverywhereHelp)!!
                 filterEverywhereHelp.setOnClickListener {
@@ -354,7 +357,7 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Ba
                     return holder
                 }
                 ILoadMoreSupportAdapter.ITEM_VIEW_TYPE_LOAD_INDICATOR -> {
-                    val view = inflater.inflate(R.layout.card_item_load_indicator, parent, false)
+                    val view = inflater.inflate(R.layout.list_item_load_indicator, parent, false)
                     return LoadIndicatorViewHolder(view)
                 }
             }

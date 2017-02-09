@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,13 +75,13 @@ abstract class FileBasedFiltersDataSyncAction<DownloadSession : Closeable, Uploa
 
     override fun removeFromLocal(data: FiltersData) {
         ContentResolverUtils.bulkDelete(context.contentResolver, Filters.Users.CONTENT_URI,
-                Filters.Users.USER_KEY, data.users?.map { it.userKey }, null)
+                Filters.Users.USER_KEY, false, data.users?.map { it.userKey }, null)
         ContentResolverUtils.bulkDelete(context.contentResolver, Filters.Keywords.CONTENT_URI,
-                Filters.Keywords.VALUE, data.keywords?.map { it.value }, null)
+                Filters.Keywords.VALUE, false, data.keywords?.map { it.value }, null)
         ContentResolverUtils.bulkDelete(context.contentResolver, Filters.Sources.CONTENT_URI,
-                Filters.Sources.VALUE, data.sources?.map { it.value }, null)
+                Filters.Sources.VALUE, false, data.sources?.map { it.value }, null)
         ContentResolverUtils.bulkDelete(context.contentResolver, Filters.Links.CONTENT_URI,
-                Filters.Links.VALUE, data.links?.map { it.value }, null)
+                Filters.Links.VALUE, false, data.links?.map { it.value }, null)
     }
 
     override fun newData(): FiltersData {

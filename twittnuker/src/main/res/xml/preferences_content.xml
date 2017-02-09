@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
     android:key="settings_content"
     android:title="@string/content_and_storage">
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="category_multimedia_contents"
         android:title="@string/media">
         <de.vanita5.twittnuker.preference.MediaUploaderPreference
@@ -36,8 +36,8 @@
             android:key="media_uploader"
             android:summary="%s"
             android:title="@string/media_uploader"/>
-    </PreferenceCategory>
-    <PreferenceCategory
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="category_content"
         android:title="@string/content">
 
@@ -60,11 +60,6 @@
             android:key="read_from_bottom"
             android:summary="@string/load_more_from_top_summary"
             android:title="@string/read_from_bottom"/>
-
-        <de.vanita5.twittnuker.preference.TrendsLocationPreference
-            android:key="local_trends_woeid"
-            android:summary="@string/trends_location_summary"
-            android:title="@string/trends_location"/>
 
         <de.vanita5.twittnuker.preference.TranslationDestinationPreference
             android:key="translation_destination"
@@ -90,9 +85,9 @@
             android:summary="@string/preference_summary_chrome_custom_tab"
             android:title="@string/preference_title_chrome_custom_tab"/>
 
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="category_safety"
         android:title="@string/safety">
         <SwitchPreferenceCompat
@@ -110,6 +105,6 @@
             android:key="randomize_account_name"
             android:summary="@string/preference_randomize_account_name_summary"
             android:title="@string/preference_randomize_account_name"/>
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
 </PreferenceScreen>

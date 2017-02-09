@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="@string/notifications">
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_general"
         android:title="@string/general">
 
@@ -41,18 +41,18 @@
             android:key="notification_light_color"
             android:title="@string/notification_light_color"
             app:defaultColor="@color/branding_color" />
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_standard"
         android:title="@string/standard_notifications">
 
         <de.vanita5.twittnuker.preference.NotificationContentPreference
             android:key="content_to_notify"
             android:title="@string/content_to_notify" />
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
-    <PreferenceCategory
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_notifications_type"
         android:title="@string/notifications_type">
         <de.vanita5.twittnuker.preference.NotificationTypePreference
@@ -69,8 +69,8 @@
             app:dependencyValueDefault="false"
             app:dependencyValues="@array/dependency_values_true"
             app:notificationType="ringtone|vibration|light" />
-    </PreferenceCategory>
-    <PreferenceCategory
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
+    <de.vanita5.twittnuker.preference.TintedPreferenceCategory
         android:key="cat_other_settings"
         android:title="@string/other_settings">
         <SwitchPreferenceCompat
@@ -82,6 +82,6 @@
             android:defaultValue="false"
             android:key="notification_mentions_only"
             android:title="@string/mentions_only" />
-    </PreferenceCategory>
+    </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
 </PreferenceScreen>

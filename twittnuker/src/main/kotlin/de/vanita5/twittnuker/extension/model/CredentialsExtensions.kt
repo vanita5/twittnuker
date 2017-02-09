@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.model.account.cred.BasicCredentials
 import de.vanita5.twittnuker.model.account.cred.Credentials
 import de.vanita5.twittnuker.model.account.cred.EmptyCredentials
 import de.vanita5.twittnuker.model.account.cred.OAuthCredentials
+import de.vanita5.twittnuker.util.HttpClientFactory
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory.sTwitterConstantPool
 import de.vanita5.twittnuker.util.TwitterContentUtils
@@ -118,20 +119,24 @@ fun Credentials.getEndpoint(cls: Class<*>): Endpoint {
     return Endpoint(endpointUrl)
 }
 
-fun <T> Credentials.newMicroBlogInstance(context: Context,
-                                         twitterExtraQueries: Boolean = true,
-                                         extraRequestParams: Map<String, String>? = null,
-                                         cls: Class<T>): T {
+fun <T> Credentials.newMicroBlogInstance(
+        context: Context,
+        twitterExtraQueries: Boolean = true,
+        extraRequestParams: Map<String, String>? = null,
+        cls: Class<T>
+): T {
     return newMicroBlogInstance(context, getEndpoint(cls), getAuthorization(),
             twitterExtraQueries, extraRequestParams, cls)
 }
 
-fun <T> newMicroBlogInstance(context: Context,
-                             endpoint: Endpoint,
-                             auth: Authorization,
-                             twitterExtraQueries: Boolean = true,
-                             extraRequestParams: Map<String, String>? = null,
-                             cls: Class<T>): T {
+fun <T> newMicroBlogInstance(
+        context: Context,
+        endpoint: Endpoint,
+        auth: Authorization,
+        twitterExtraQueries: Boolean = true,
+        extraRequestParams: Map<String, String>? = null,
+        cls: Class<T>
+): T {
     val factory = RestAPIFactory<MicroBlogException>()
     val userAgent: String
     if (auth is OAuthAuthorization) {
@@ -146,7 +151,21 @@ fun <T> newMicroBlogInstance(context: Context,
         userAgent = MicroBlogAPIFactory.getTwidereUserAgent(context)
     }
     val holder = DependencyHolder.get(context)
-    factory.setHttpClient(holder.restHttpClient)
+    when (cls) {
+        TwitterUpload::class -> {
+            val conf = HttpClientFactory.HttpClientConfiguration(holder.preferences)
+            // Use longer timeout for uploading
+            conf.readTimeoutSecs = 30
+            conf.writeTimeoutSecs = 30
+            conf.connectionTimeoutSecs = 60
+            val uploadHttpClient = HttpClientFactory.createRestHttpClient(conf, holder.dns,
+                    holder.connectionPool)
+            factory.setHttpClient(uploadHttpClient)
+        }
+        else -> {
+            factory.setHttpClient(holder.restHttpClient)
+        }
+    }
     factory.setAuthorization(auth)
     factory.setEndpoint(endpoint)
     if (twitterExtraQueries) {

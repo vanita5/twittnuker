@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,9 @@ import de.vanita5.twittnuker.model.FiltersData$UserItemTableInfo;
 import de.vanita5.twittnuker.model.FiltersSubscriptionTableInfo;
 import de.vanita5.twittnuker.model.ParcelableActivityTableInfo;
 import de.vanita5.twittnuker.model.ParcelableDirectMessageTableInfo;
+import de.vanita5.twittnuker.model.ParcelableMessageConversationTableInfo;
 import de.vanita5.twittnuker.model.ParcelableStatusTableInfo;
+import de.vanita5.twittnuker.model.ParcelableTrendTableInfo;
 import de.vanita5.twittnuker.model.ParcelableUserTableInfo;
 
 @SuppressWarnings("unused")
@@ -189,12 +191,14 @@ public interface TwidereDataStore {
         Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
     }
 
-    interface CachedTrends extends CachedValues {
+    interface CachedTrends extends CachedValues, AccountSupportColumns {
 
         String TIMESTAMP = "timestamp";
+        String WOEID = "woeid";
+        String TREND_ORDER = "trend_order";
 
-        String[] COLUMNS = {_ID, NAME, TIMESTAMP};
-        String[] TYPES = {TYPE_PRIMARY_KEY, TYPE_TEXT, TYPE_INT};
+        String[] COLUMNS = ParcelableTrendTableInfo.COLUMNS;
+        String[] TYPES = ParcelableTrendTableInfo.TYPES;
 
         interface Local extends CachedTrends {
             String TABLE_NAME = "local_trends";
@@ -363,6 +367,9 @@ public interface TwidereDataStore {
             String SENDER_KEY = "sender_key";
             String RECIPIENT_KEY = "recipient_key";
             String REQUEST_CURSOR = "request_cursor";
+
+            String[] COLUMNS = ParcelableMessageConversationTableInfo.COLUMNS;
+            String[] TYPES = ParcelableMessageConversationTableInfo.TYPES;
         }
     }
 

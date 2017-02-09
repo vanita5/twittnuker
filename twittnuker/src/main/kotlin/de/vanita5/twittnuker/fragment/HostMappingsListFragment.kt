@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.HOST_MAPPING_PREFERENCES_NAME
 import de.vanita5.twittnuker.adapter.ArrayAdapter
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.util.ParseUtils
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper
 
@@ -203,11 +204,12 @@ class HostMappingsListFragment : AbsContentListViewFragment<HostMappingsListFrag
             builder.setPositiveButton(android.R.string.ok, this)
             builder.setNegativeButton(android.R.string.cancel, null)
             val dialog = builder.create()
-            dialog.setOnShowListener { dialog ->
-                val alertDialog = dialog as AlertDialog
-                mEditHost = alertDialog.findViewById(R.id.host) as EditText?
-                mEditAddress = alertDialog.findViewById(R.id.address) as EditText?
-                mCheckExclude = alertDialog.findViewById(R.id.exclude) as CheckBox?
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+                mEditHost = it.findViewById(R.id.host) as EditText?
+                mEditAddress = it.findViewById(R.id.address) as EditText?
+                mCheckExclude = it.findViewById(R.id.exclude) as CheckBox?
                 mEditHost!!.addTextChangedListener(this@AddMappingDialogFragment)
                 mEditAddress!!.addTextChangedListener(this@AddMappingDialogFragment)
                 mCheckExclude!!.setOnCheckedChangeListener(this@AddMappingDialogFragment)

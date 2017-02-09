@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,8 @@ import android.os.Bundle
 import android.support.annotation.UiThread
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.app.hasRunningLoadersSafe
-import android.support.v4.content.AsyncTaskLoader
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
 import android.support.v4.view.MenuItemCompat
 import android.support.v4.view.ViewCompat
@@ -67,6 +67,7 @@ import kotlinx.android.synthetic.main.fragment_status.*
 import kotlinx.android.synthetic.main.header_status_common.view.*
 import kotlinx.android.synthetic.main.layout_content_fragment_common.*
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.applyFontFamily
 import org.mariotaku.ktextension.findPositionByItemId
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
@@ -87,6 +88,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.media_type
 import de.vanita5.twittnuker.loader.ConversationLoader
@@ -114,14 +116,15 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder.StatusClickList
 import java.util.*
 
 class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<ParcelableStatus>>,
-        OnMediaClickListener, StatusClickListener, KeyboardShortcutCallback, ContentListSupport {
+        OnMediaClickListener, StatusClickListener, KeyboardShortcutCallback,
+        ContentListSupport<StatusFragment.StatusAdapter> {
     private var mItemDecoration: DividerItemDecoration? = null
 
     override lateinit var adapter: StatusAdapter
 
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var navigationHelper: RecyclerViewNavigationHelper
-    private lateinit var scrollListener: RecyclerViewScrollHandler
+    private lateinit var scrollListener: RecyclerViewScrollHandler<StatusFragment.StatusAdapter>
 
     private var loadTranslationTask: LoadTranslationTask? = null
     // Data fields
@@ -246,6 +249,10 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     IntentUtils.openStatus(activity, accountKey, status.id)
                 }
             }
+            AbsStatusesFragment.REQUEST_FAVORITE_SELECT_ACCOUNT,
+            AbsStatusesFragment.REQUEST_RETWEET_SELECT_ACCOUNT -> {
+                AbsStatusesFragment.handleActionActivityResult(this, requestCode, resultCode, data)
+            }
         }
     }
 
@@ -294,8 +301,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
     }
 
     override fun onItemActionClick(holder: ViewHolder, id: Int, position: Int) {
-        val status = adapter.getStatus(position)
-        AbsStatusesFragment.handleStatusActionClick(context, fragmentManager, twitterWrapper,
+        val status = adapter.getStatus(position) ?: return
+        AbsStatusesFragment.handleActionClick(context, fragmentManager, twitterWrapper,
                 holder as StatusViewHolder, status, id)
     }
 
@@ -306,7 +313,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
     override fun onQuotedStatusClick(holder: IStatusViewHolder, position: Int) {
         val status = adapter.getStatus(position) ?: return
-        IntentUtils.openStatus(activity, status.account_key, status.quoted_id)
+        val quotedId = status.quoted_id ?: return
+        IntentUtils.openStatus(activity, status.account_key, quotedId)
     }
 
     override fun onStatusLongClick(holder: IStatusViewHolder, position: Int): Boolean {
@@ -322,15 +330,14 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
     override fun onUserProfileClick(holder: IStatusViewHolder, position: Int) {
         val status = adapter.getStatus(position)!!
         IntentUtils.openUserProfile(activity, status.account_key, status.user_key,
-                status.user_screen_name, preferences.getBoolean(KEY_NEW_DOCUMENT_API), Referral.TIMELINE_STATUS,
+                status.user_screen_name, preferences[newDocumentApiKey], Referral.TIMELINE_STATUS,
                 null)
     }
 
-    override fun onMediaClick(view: View, media: ParcelableMedia?, accountKey: UserKey, extraId: Long) {
-        val status = adapter.status
-        if (status == null || media == null) return
-        IntentUtils.openMediaDirectly(activity, accountKey, status, media, preferences.getBoolean(KEY_NEW_DOCUMENT_API),
-                null)
+    override fun onMediaClick(view: View, media: ParcelableMedia, accountKey: UserKey?, id: Long) {
+        val status = adapter.status ?: return
+        IntentUtils.openMediaDirectly(activity, accountKey, status, media,
+                preferences[newDocumentApiKey], null)
     }
 
     override fun handleKeyboardShortcutSingle(handler: KeyboardShortcutsHandler,
@@ -363,7 +370,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 if (status.is_favorite) {
                     twitter.destroyFavoriteAsync(status.account_key, status.id)
                 } else {
-                    twitter.createFavoriteAsync(status.account_key, status.id)
+                    twitter.createFavoriteAsync(status.account_key, status)
                 }
                 return true
             }
@@ -490,10 +497,26 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
     }
 
     override val reachingEnd: Boolean
-        get() = layoutManager.findLastCompletelyVisibleItemPosition() >= adapter.itemCount - 1
+        get() {
+            val lm = layoutManager
+            var itemPos = lm.findLastCompletelyVisibleItemPosition()
+            if (itemPos == RecyclerView.NO_POSITION) {
+                // No completely visible item, find visible item instead
+                itemPos = lm.findLastVisibleItemPosition()
+            }
+            return itemPos >= lm.itemCount - 1
+        }
 
     override val reachingStart: Boolean
-        get() = layoutManager.findFirstCompletelyVisibleItemPosition() <= 1
+        get() {
+            val lm = layoutManager
+            var itemPos = lm.findFirstCompletelyVisibleItemPosition()
+            if (itemPos == RecyclerView.NO_POSITION) {
+                // No completely visible item, find visible item instead
+                itemPos = lm.findFirstVisibleItemPosition()
+            }
+            return itemPos <= 1
+        }
 
     private val status: ParcelableStatus?
         get() = adapter.status
@@ -671,7 +694,12 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             builder.setMessage(R.string.sensitive_content_warning)
             builder.setPositiveButton(android.R.string.ok, this)
             builder.setNegativeButton(android.R.string.cancel, null)
-            return builder.create()
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
         }
     }
 
@@ -780,9 +808,9 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     itemView.quotedName.visibility = View.VISIBLE
                     itemView.quotedText.visibility = View.VISIBLE
 
-                    itemView.quotedName.setName(
-                            status.quoted_user_name)
-                    itemView.quotedName.setScreenName(String.format("@%s", status.quoted_user_screen_name))
+                    itemView.quotedName.name =
+                            status.quoted_user_name
+                    itemView.quotedName.screenName = "@${status.quoted_user_screen_name}"
                     itemView.quotedName.updateText(formatter)
 
 
@@ -823,8 +851,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     } else if (adapter.isDetailMediaExpanded) {
                         itemView.quotedMediaLabel.visibility = View.GONE
                         itemView.quotedMediaPreview.visibility = View.VISIBLE
-                        itemView.quotedMediaPreview.displayMedia(quotedMedia, loader, status.account_key, -1,
-                                adapter.fragment, null)
+                        itemView.quotedMediaPreview.displayMedia(loader = loader, media = quotedMedia,
+                                accountId = status.account_key, mediaClickListener = adapter.fragment)
                     } else {
                         itemView.quotedMediaLabel.visibility = View.VISIBLE
                         itemView.quotedMediaPreview.visibility = View.GONE
@@ -859,8 +887,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 timestamp = status.timestamp
             }
 
-            itemView.name.setName(status.user_name)
-            itemView.name.setScreenName(String.format("@%s", status.user_screen_name))
+            itemView.name.name = status.user_name
+            itemView.name.screenName = String.format("@%s", status.user_screen_name)
             itemView.name.updateText(formatter)
 
             loader.displayProfileImage(itemView.profileImage, status)
@@ -954,8 +982,9 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 itemView.mediaPreviewContainer.visibility = View.VISIBLE
                 itemView.mediaPreview.visibility = View.VISIBLE
                 itemView.mediaPreviewLoad.visibility = View.GONE
-                itemView.mediaPreview.displayMedia(media, loader, status.account_key, -1,
-                        adapter.fragment, adapter.mediaLoadingHandler)
+                itemView.mediaPreview.displayMedia(loader = loader, media = media,
+                        accountId = status.account_key, mediaClickListener = adapter.fragment,
+                        loadingHandler = adapter.mediaLoadingHandler)
             } else {
                 itemView.mediaPreviewContainer.visibility = View.VISIBLE
                 itemView.mediaPreview.visibility = View.GONE
@@ -1119,11 +1148,11 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             itemView.countsUsersHeightHolder.count.textSize = textSize * 1.25f
             itemView.countsUsersHeightHolder.label.textSize = textSize * 0.85f
 
-            itemView.name.setNameFirst(adapter.nameFirst)
-            itemView.quotedName.setNameFirst(adapter.nameFirst)
+            itemView.name.nameFirst = adapter.nameFirst
+            itemView.quotedName.nameFirst = adapter.nameFirst
 
-            itemView.mediaPreview.setStyle(adapter.mediaPreviewStyle)
-            itemView.quotedMediaPreview.setStyle(adapter.mediaPreviewStyle)
+            itemView.mediaPreview.style = adapter.mediaPreviewStyle
+            itemView.quotedMediaPreview.style = adapter.mediaPreviewStyle
 
             itemView.text.customSelectionActionModeCallback = StatusActionModeCallback(itemView.text, activity)
             itemView.profileImage.style = adapter.profileImageStyle
@@ -1137,6 +1166,14 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             val resources = activity.resources
             itemView.countsUsers.addItemDecoration(SpacingItemDecoration(resources.getDimensionPixelOffset(R.dimen.element_spacing_normal)))
 
+            // Apply font families
+            itemView.name.applyFontFamily(adapter.lightFont)
+            itemView.text.applyFontFamily(adapter.lightFont)
+            itemView.quotedName.applyFontFamily(adapter.lightFont)
+            itemView.quotedText.applyFontFamily(adapter.lightFont)
+            itemView.locationView.applyFontFamily(adapter.lightFont)
+            itemView.translateLabel.applyFontFamily(adapter.lightFont)
+            itemView.translateResult.applyFontFamily(adapter.lightFont)
         }
 
 
@@ -1145,14 +1182,10 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 private val statusAdapter: StatusAdapter
         ) : BaseRecyclerViewAdapter<ViewHolder>(statusAdapter.context) {
 
-            private val inflater: LayoutInflater
+            private val inflater = LayoutInflater.from(statusAdapter.context)
 
             private var counts: List<LabeledCount>? = null
             private var users: List<ParcelableUser>? = null
-
-            init {
-                inflater = LayoutInflater.from(statusAdapter.context)
-            }
 
             override fun onBindViewHolder(holder: ViewHolder, position: Int) {
                 when (holder.itemViewType) {
@@ -1422,12 +1455,13 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         private var recyclerView: RecyclerView? = null
         private var statusViewHolder: DetailStatusViewHolder? = null
 
-        private val itemCounts: IntArray
+        private val itemCounts = ItemCounts(ITEM_TYPES_SUM)
 
         override val nameFirst: Boolean
         private val cardBackgroundColor: Int
         override val mediaPreviewStyle: Int
         override val linkHighlightingStyle: Int
+        override val lightFont: Boolean
         override val mediaPreviewEnabled: Boolean
         override val sensitiveContentEnabled: Boolean
         private val mShowCardActions: Boolean
@@ -1466,7 +1500,6 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         init {
             setHasStableIds(true)
             val context = fragment.activity
-            itemCounts = IntArray(ITEM_TYPES_SUM)
             // There's always a space at the end of the list
             itemCounts[ITEM_IDX_SPACE] = 1
             itemCounts[ITEM_IDX_STATUS] = 1
@@ -1478,6 +1511,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     ThemeUtils.getThemeBackgroundOption(context),
                     ThemeUtils.getUserThemeBackgroundAlpha(context))
             nameFirst = preferences[nameFirstKey]
+            lightFont = preferences[lightFontKey]
             mediaPreviewStyle = preferences[mediaPreviewStyleKey]
             linkHighlightingStyle = preferences[linkHighlightOptionKey]
             mediaPreviewEnabled = preferences[mediaPreviewKey]
@@ -1510,7 +1544,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
         fun getIndexStart(index: Int): Int {
             if (index == 0) return 0
-            return TwidereMathUtils.sum(itemCounts, 0, index - 1)
+            return itemCounts.getItemStartPosition(index)
         }
 
         override fun getStatusId(position: Int): String? {
@@ -1645,7 +1679,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     return ListParcelableStatusesAdapter.createStatusViewHolder(this, inflater, parent)
                 }
                 VIEW_TYPE_CONVERSATION_LOAD_INDICATOR, VIEW_TYPE_REPLIES_LOAD_INDICATOR -> {
-                    val view = inflater.inflate(R.layout.card_item_load_indicator, parent,
+                    val view = inflater.inflate(R.layout.list_item_load_indicator, parent,
                             false)
                     return LoadIndicatorViewHolder(view)
                 }
@@ -1767,7 +1801,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
         override fun getItemCount(): Int {
             if (status == null) return 0
-            return TwidereMathUtils.sum(itemCounts)
+            return itemCounts.itemCount
         }
 
         override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
@@ -2037,7 +2071,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             context: Context,
             private val accountKey: UserKey,
             private val statusId: String
-    ) : AsyncTaskLoader<StatusActivity>(context) {
+    ) : FixedAsyncTaskLoader<StatusActivity>(context) {
 
         override fun loadInBackground(): StatusActivity? {
             val context = context

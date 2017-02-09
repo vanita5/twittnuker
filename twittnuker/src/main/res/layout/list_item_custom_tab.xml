@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -31,7 +31,6 @@
     android:gravity="center_vertical"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
-    android:tag="tint_background|accent_color"
     app:backgroundTint="?colorControlActivated">
 
     <View
@@ -60,7 +59,7 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@android:id/text1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +68,7 @@
             android:textColor="?android:textColorPrimary"
             android:textStyle="bold" />
 
-        <TextView
+        <de.vanita5.twittnuker.view.FixedTextView
             android:id="@android:id/text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

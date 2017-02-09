@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,8 +132,8 @@ class UserViewHolder(
         } else {
             profileTypeView.setImageDrawable(null)
         }
-        nameView.setName(user.name)
-        nameView.setScreenName("@${user.screen_name}")
+        nameView.name = user.name
+        nameView.screenName = "@${user.screen_name}"
         nameView.updateText(adapter.bidiFormatter)
 
         if (adapter.profileImageEnabled) {
@@ -241,10 +241,10 @@ class UserViewHolder(
         this.requestClickListener = requestClickListener
         this.friendshipClickListener = friendshipClickListener
         if (requestClickListener != null || friendshipClickListener != null) {
-            nameView.setTwoLine(true)
+            nameView.twoLine = true
             actionsProgressContainer.visibility = View.VISIBLE
         } else {
-            nameView.setTwoLine(false)
+            nameView.twoLine = false
             actionsProgressContainer.visibility = View.GONE
         }
         nameView.updateText()

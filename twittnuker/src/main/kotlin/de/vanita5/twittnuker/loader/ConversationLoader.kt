@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ package de.vanita5.twittnuker.loader
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.annotation.WorkerThread
-import android.text.TextUtils
 import org.mariotaku.commons.parcel.ParcelUtils
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
@@ -38,7 +37,6 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
-import de.vanita5.twittnuker.util.Nullables
 import java.util.*
 
 class ConversationLoader(
@@ -58,12 +56,12 @@ class ConversationLoader(
     private var canLoadAllReplies: Boolean = false
 
     init {
-        this.status = Nullables.assertNonNull(ParcelUtils.clone(status))
+        this.status = ParcelUtils.clone(status)
         ParcelableStatusUtils.makeOriginalStatus(this.status)
     }
 
     @Throws(MicroBlogException::class)
-    public override fun getStatuses(microBlog: MicroBlog, details: AccountDetails, paging: Paging): List<Status> {
+    override fun getStatuses(microBlog: MicroBlog, details: AccountDetails, paging: Paging): List<Status> {
         canLoadAllReplies = false
         when (details.type) {
             AccountType.TWITTER -> {
@@ -121,11 +119,7 @@ class ConversationLoader(
                 }
                 query.sinceId(sinceId ?: status.id)
                 try {
-                    for (item in twitter.search(query)) {
-                        if (TextUtils.equals(item.inReplyToStatusId, status.id)) {
-                            statuses.add(item)
-                        }
-                    }
+                    twitter.search(query).filterTo(statuses) { it.inReplyToStatusId == status.id }
                 } catch (e: MicroBlogException) {
                     // Ignore for now
                 }

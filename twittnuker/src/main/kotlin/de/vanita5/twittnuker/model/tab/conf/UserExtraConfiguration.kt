@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.layout_extra_config_user.view.*
 import kotlinx.android.synthetic.main.list_item_simple_user.view.*
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.activity.UserListSelectorActivity
+import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.adapter.DummyItemAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.fragment.CustomTabsFragment.TabEditorDialogFragment
@@ -63,7 +63,7 @@ class UserExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(
             val account = fragment.account ?: return@setOnClickListener
             val intent = Intent(INTENT_ACTION_SELECT_USER)
             intent.putExtra(EXTRA_ACCOUNT_KEY, account.key)
-            intent.setClass(context, UserListSelectorActivity::class.java)
+            intent.setClass(context, UserSelectorActivity::class.java)
             fragment.startExtraConfigurationActivityForResult(this@UserExtraConfiguration, intent, 1)
         }
         hintView = view.selectUserHint

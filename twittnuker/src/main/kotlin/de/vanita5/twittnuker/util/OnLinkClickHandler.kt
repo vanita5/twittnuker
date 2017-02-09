@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableMediaUtils
 import de.vanita5.twittnuker.util.TwidereLinkify.OnLinkClickListener
+import de.vanita5.twittnuker.util.TwidereLinkify.USER_TYPE_FANFOU_COM
 import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor
 
 open class OnLinkClickHandler(
@@ -67,16 +68,16 @@ open class OnLinkClickHandler(
                 return true
             }
             TwidereLinkify.LINK_TYPE_LINK_IN_TEXT -> {
-                if (isMedia(link, extraId)) {
-                    openMedia(accountKey!!, extraId, sensitive, link, start, end)
+                if (accountKey != null && isMedia(link, extraId)) {
+                    openMedia(accountKey, extraId, sensitive, link, start, end)
                 } else {
                     openLink(link)
                 }
                 return true
             }
             TwidereLinkify.LINK_TYPE_ENTITY_URL -> {
-                if (isMedia(link, extraId)) {
-                    openMedia(accountKey!!, extraId, sensitive, link, start, end)
+                if (accountKey != null && isMedia(link, extraId)) {
+                    openMedia(accountKey, extraId, sensitive, link, start, end)
                 } else {
                     val authority = UriUtils.getAuthority(link)
                     if (authority == null) {
@@ -84,36 +85,12 @@ open class OnLinkClickHandler(
                         return true
                     }
                     when (authority) {
-                        "fanfou.com" -> {
-                            if (orig != null) {
-                                // Process special case for fanfou
-                                val ch = orig[0]
-                                // Extend selection
-                                val length = orig.length
-                                if (TwidereLinkify.isAtSymbol(ch)) {
-                                    var id = UriUtils.getPath(link)
-                                    if (id != null) {
-                                        val idxOfSlash = id.indexOf('/')
-                                        if (idxOfSlash == 0) {
-                                            id = id.substring(1)
-                                        }
-                                        val screenName = orig.substring(1, length)
-                                        IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(id),
-                                                screenName, preferences[newDocumentApiKey], Referral.USER_MENTION,
-                                                null)
-                                        return true
-                                    }
-                                } else if (TwidereLinkify.isHashSymbol(ch) && TwidereLinkify.isHashSymbol(orig[length - 1])) {
-                                    IntentUtils.openSearch(context, accountKey, orig.substring(1, length - 1))
-                                    return true
-                                }
-                            }
+                        "fanfou.com" -> if (accountKey != null && handleFanfouLink(link, orig, accountKey)) {
+                            return true
                         }
-                        else -> {
-                            if (IntentUtils.isWebLinkHandled(context, Uri.parse(link))) {
-                                openTwitterLink(link, accountKey!!)
-                                return true
-                            }
+                        else -> if (IntentUtils.isWebLinkHandled(context, Uri.parse(link))) {
+                            openTwitterLink(link, accountKey!!)
+                            return true
                         }
                     }
                     openLink(link)
@@ -167,6 +144,7 @@ open class OnLinkClickHandler(
             return
         }
         val builder = CustomTabsIntent.Builder()
+        builder.addDefaultShareMenuItem()
         (ChameleonUtils.getActivity(context) as? Chameleon.Themeable)?.overrideTheme?.let { theme ->
             builder.setToolbarColor(theme.colorToolbar)
         }
@@ -194,5 +172,37 @@ open class OnLinkClickHandler(
             }
 
         }
+    }
+
+    private fun handleFanfouLink(link: String, orig: String?, accountKey: UserKey): Boolean {
+        if (orig == null) return false
+        // Process special case for fanfou
+        val ch = orig[0]
+        // Extend selection
+        val length = orig.length
+        if (TwidereLinkify.isAtSymbol(ch)) {
+            var id = UriUtils.getPath(link)
+            if (id != null) {
+                val idxOfSlash = id.indexOf('/')
+                if (idxOfSlash == 0) {
+                    id = id.substring(1)
+                }
+                val screenName = orig.substring(1, length)
+                IntentUtils.openUserProfile(context, accountKey, UserKey.valueOf(id),
+                        screenName, preferences[newDocumentApiKey], Referral.USER_MENTION,
+                        null)
+                return true
+            }
+        } else if (TwidereLinkify.isHashSymbol(ch) && TwidereLinkify.isHashSymbol(orig[length - 1])) {
+            IntentUtils.openSearch(context, accountKey, orig.substring(1, length - 1))
+            return true
+        }
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        intent.setClass(context, WebLinkHandlerActivity::class.java)
+        if (accountKey.host == USER_TYPE_FANFOU_COM) {
+            intent.putExtra(EXTRA_ACCOUNT_KEY, accountKey)
+        }
+        context.startActivity(intent)
+        return true
     }
 }

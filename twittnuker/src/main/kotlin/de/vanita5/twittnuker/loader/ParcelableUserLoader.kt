@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.loader
 import android.accounts.AccountManager
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.text.TextUtils
 import android.util.Log
 import org.mariotaku.abstask.library.TaskStarter
@@ -59,7 +59,7 @@ class ParcelableUserLoader(
         private val extras: Bundle?,
         private val omitIntentExtra: Boolean,
         private val loadFromCache: Boolean
-) : AsyncTaskLoader<SingleResponse<ParcelableUser>>(context), Constants {
+) : FixedAsyncTaskLoader<SingleResponse<ParcelableUser>>(context), Constants {
 
     @Inject
     lateinit var userColorNameManager: UserColorNameManager

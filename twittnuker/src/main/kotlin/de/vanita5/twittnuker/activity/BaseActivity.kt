@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Rect
 import android.nfc.NfcAdapter
@@ -189,7 +190,7 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity<BaseActivity>, 
             StrictModeUtils.detectAllThreadPolicy()
         }
         val prefs = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-        val themeResource = getThemeResource(prefs[themeKey], prefs[themeColorKey])
+        val themeResource = getThemeResource(prefs, prefs[themeKey], prefs[themeColorKey])
         if (themeResource != 0) {
             setTheme(themeResource)
         }
@@ -241,26 +242,6 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity<BaseActivity>, 
         super.onPause()
     }
 
-    override fun setControlBarOffset(offset: Float) {
-
-    }
-
-    override fun setControlBarVisibleAnimate(visible: Boolean) {
-
-    }
-
-    override fun setControlBarVisibleAnimate(visible: Boolean, listener: IControlBarActivity.ControlBarShowHideHelper.ControlBarAnimationListener) {
-
-    }
-
-    override fun getControlBarOffset(): Float {
-        return 0f
-    }
-
-    override fun getControlBarHeight(): Int {
-        return 0
-    }
-
     override fun notifyControlBarOffsetChanged() {
         val offset = controlBarOffset
         for (l in controlBarOffsetListeners) {
@@ -300,7 +281,7 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity<BaseActivity>, 
     override val themeBackgroundOption: String
         get() = ThemeUtils.getThemeBackgroundOption(this)
 
-    protected val shouldApplyWindowBackground: Boolean
+    protected open val shouldApplyWindowBackground: Boolean
         get() {
             return true
         }
@@ -394,7 +375,7 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity<BaseActivity>, 
     }
 
     @StyleRes
-    protected open fun getThemeResource(theme: String, themeColor: Int): Int {
+    protected open fun getThemeResource(preferences: SharedPreferences, theme: String, themeColor: Int): Int {
         return getCurrentThemeResource(this, theme)
     }
 

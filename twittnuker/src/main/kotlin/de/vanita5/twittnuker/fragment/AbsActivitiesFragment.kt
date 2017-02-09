@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.fragment
 
 import android.accounts.AccountManager
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
@@ -37,6 +38,7 @@ import android.view.*
 import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.coerceInOr
 import org.mariotaku.ktextension.isNullOrEmpty
 import org.mariotaku.ktextension.rangeOfSize
 import de.vanita5.twittnuker.R
@@ -49,8 +51,12 @@ import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.ReadPositionTag
-import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
+import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
+import de.vanita5.twittnuker.constant.newDocumentApiKey
+import de.vanita5.twittnuker.constant.readFromBottomKey
+import de.vanita5.twittnuker.constant.rememberPositionKey
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.DefaultOnLikedListener
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
@@ -101,9 +107,18 @@ abstract class AbsActivitiesFragment protected constructor() :
         pauseOnScrollListener = PauseRecyclerViewOnScrollListener(adapter.mediaLoader.imageLoader, false, true)
 
         val loaderArgs = Bundle(arguments)
-        loaderArgs.putBoolean(IntentConstants.EXTRA_FROM_USER, true)
+        loaderArgs.putBoolean(EXTRA_FROM_USER, true)
         loaderManager.initLoader(0, loaderArgs, this)
         showProgress()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            AbsStatusesFragment.REQUEST_FAVORITE_SELECT_ACCOUNT,
+            AbsStatusesFragment.REQUEST_RETWEET_SELECT_ACCOUNT -> {
+                AbsStatusesFragment.handleActionActivityResult(this, requestCode, resultCode, data)
+            }
+        }
     }
 
     abstract fun getActivities(param: RefreshTaskParam): Boolean
@@ -133,8 +148,8 @@ abstract class AbsActivitiesFragment protected constructor() :
             if (action == null) return false
             when (action) {
                 ACTION_STATUS_REPLY -> {
-                    val intent = Intent(IntentConstants.INTENT_ACTION_REPLY)
-                    intent.putExtra(IntentConstants.EXTRA_STATUS, status)
+                    val intent = Intent(INTENT_ACTION_REPLY)
+                    intent.putExtra(EXTRA_STATUS, status)
                     startActivity(intent)
                     return true
                 }
@@ -185,8 +200,8 @@ abstract class AbsActivitiesFragment protected constructor() :
     }
 
     override fun onCreateLoader(id: Int, args: Bundle): Loader<List<ParcelableActivity>> {
-        val fromUser = args.getBoolean(IntentConstants.EXTRA_FROM_USER)
-        args.remove(IntentConstants.EXTRA_FROM_USER)
+        val fromUser = args.getBoolean(EXTRA_FROM_USER)
+        args.remove(EXTRA_FROM_USER)
         return onCreateActivitiesLoader(activity, args, fromUser)
     }
 
@@ -219,19 +234,22 @@ abstract class AbsActivitiesFragment protected constructor() :
         var lastReadId: Long = -1
         var lastReadViewTop: Int = 0
         var loadMore = false
+        var wasAtTop = false
 
         // 1. Save current read position if not first load
         if (!firstLoad) {
+            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
             val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-            val statusRange = rangeOfSize(adapter.activityStartIndex, adapter.activityCount - 1)
-            val lastReadPosition = if (readFromBottom) {
+            wasAtTop = firstVisibleItemPosition == 0
+            val activityRange = rangeOfSize(adapter.activityStartIndex, Math.max(0, adapter.activityCount - 1))
+            val lastReadPosition = if (loadMore || readFromBottom) {
                 lastVisibleItemPosition
             } else {
-                layoutManager.findFirstVisibleItemPosition()
-            }.coerceIn(statusRange)
+                firstVisibleItemPosition
+            }.coerceInOr(activityRange, -1)
             lastReadId = adapter.getTimestamp(lastReadPosition)
             lastReadViewTop = layoutManager.findViewByPosition(lastReadPosition)?.top ?: 0
-            loadMore = lastVisibleItemPosition >= statusRange.endInclusive
+            loadMore = activityRange.endInclusive >= 0 && lastVisibleItemPosition >= activityRange.endInclusive
         } else if (rememberPosition && readPositionTag != null) {
             lastReadId = readStateManager.getPosition(readPositionTag)
             lastReadViewTop = 0
@@ -252,7 +270,12 @@ abstract class AbsActivitiesFragment protected constructor() :
             restorePosition = adapter.findPositionBySortTimestamp(lastReadId)
         }
 
-        if (restorePosition != -1 && adapter.isActivity(restorePosition) && (loadMore || readFromBottom
+        if (loadMore) {
+            restorePosition += 1
+            restorePosition.coerceInOr(0 until layoutManager.itemCount, -1)
+        }
+        if (restorePosition != -1 && adapter.isActivity(restorePosition) && (loadMore || !wasAtTop ||
+                readFromBottom
                 || (rememberPosition && firstLoad))) {
             if (layoutManager.height == 0) {
                 // RecyclerView has not currently laid out, ignore padding.
@@ -266,7 +289,7 @@ abstract class AbsActivitiesFragment protected constructor() :
         if (loader is IExtendedLoader) {
             loader.fromUser = false
         }
-        onLoadingFinished()
+        onContentLoaded(loader, data)
     }
 
     override fun onLoaderReset(loader: Loader<List<ParcelableActivity>>) {
@@ -293,7 +316,8 @@ abstract class AbsActivitiesFragment protected constructor() :
 
     override fun onMediaClick(holder: IStatusViewHolder, view: View, media: ParcelableMedia, position: Int) {
         val status = adapter.getActivity(position)?.getActivityStatus() ?: return
-        IntentUtils.openMedia(activity, status, media, preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey],
+        IntentUtils.openMedia(activity, status, media, preferences[newDocumentApiKey],
+                preferences[displaySensitiveContentsKey],
                 null)
     }
 
@@ -302,9 +326,9 @@ abstract class AbsActivitiesFragment protected constructor() :
         val activity = activity
         when (id) {
             R.id.reply -> {
-                val intent = Intent(IntentConstants.INTENT_ACTION_REPLY)
+                val intent = Intent(INTENT_ACTION_REPLY)
                 intent.`package` = activity.packageName
-                intent.putExtra(IntentConstants.EXTRA_STATUS, status)
+                intent.putExtra(EXTRA_STATUS, status)
                 activity.startActivity(intent)
             }
             R.id.retweet -> {
@@ -318,6 +342,11 @@ abstract class AbsActivitiesFragment protected constructor() :
                 }
             }
         }
+    }
+
+    override fun onStatusActionLongClick(holder: IStatusViewHolder, id: Int, position: Int): Boolean {
+        val status = getActivityStatus(position) ?: return false
+        return AbsStatusesFragment.handleActionLongClick(this, status, adapter.getItemId(position), id)
     }
 
     override fun onActivityClick(holder: ActivityTitleSummaryViewHolder, position: Int) {
@@ -384,10 +413,13 @@ abstract class AbsActivitiesFragment protected constructor() :
     override val reachingEnd: Boolean
         get() {
             val lm = layoutManager
-            val lastPosition = lm.findLastCompletelyVisibleItemPosition()
+            var lastPosition = lm.findLastCompletelyVisibleItemPosition()
+            if (lastPosition == RecyclerView.NO_POSITION) {
+                lastPosition = lm.findLastVisibleItemPosition()
+            }
             val itemCount = adapter.itemCount
             var finalPos = itemCount - 1
-            for (i in lastPosition + 1..itemCount - 1) {
+            for (i in lastPosition + 1 until itemCount) {
                 if (adapter.getItemViewType(i) != ParcelableActivitiesAdapter.ITEM_VIEW_TYPE_EMPTY) {
                     finalPos = i - 1
                     break
@@ -395,9 +427,6 @@ abstract class AbsActivitiesFragment protected constructor() :
             }
             return finalPos >= itemCount - 1
         }
-
-    override val reachingStart: Boolean
-        get() = super.reachingStart
 
     protected open fun createMessageBusCallback(): Any {
         return StatusesBusCallback()
@@ -419,7 +448,7 @@ abstract class AbsActivitiesFragment protected constructor() :
     protected abstract fun onCreateActivitiesLoader(context: Context, args: Bundle,
                                                     fromUser: Boolean): Loader<List<ParcelableActivity>>
 
-    protected abstract fun onLoadingFinished()
+    protected abstract fun onContentLoaded(loader: Loader<List<ParcelableActivity>>, data: List<ParcelableActivity>?)
 
     protected fun saveReadPosition(position: Int) {
         if (host == null) return

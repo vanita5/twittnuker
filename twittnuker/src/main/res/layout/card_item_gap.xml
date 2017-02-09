@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -24,11 +24,12 @@
 <FrameLayout
     android:id="@+id/gapIndicator"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/element_size_normal"
     android:focusable="true">
 
-    <TextView
+    <de.vanita5.twittnuker.view.FixedTextView
         android:id="@+id/gapText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,11 +41,15 @@
         android:textColor="?android:textColorPrimary"
         android:textStyle="bold"/>
 
-    <ProgressBar
+    <com.pnikosis.materialishprogress.ProgressWheel
         android:id="@+id/gapProgress"
         style="?android:progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"/>
+        android:padding="@dimen/element_spacing_small"
+        android:visibility="invisible"
+        app:matProg_barColor="?colorAccent"
+        app:matProg_barWidth="3dp"
+        app:matProg_progressIndeterminate="true"/>
 </FrameLayout>

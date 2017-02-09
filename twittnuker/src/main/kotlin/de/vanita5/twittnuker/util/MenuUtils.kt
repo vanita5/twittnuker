@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util
 import android.accounts.AccountManager
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.support.annotation.DrawableRes
@@ -42,6 +43,7 @@ import android.view.MenuItem
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.setItemChecked
 import org.mariotaku.ktextension.setMenuItemIcon
+import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.Constants
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
@@ -59,6 +61,10 @@ import de.vanita5.twittnuker.menu.SupportStatusShareProvider
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
+import de.vanita5.twittnuker.task.CreateFavoriteTask
+import de.vanita5.twittnuker.task.DestroyFavoriteTask
+import de.vanita5.twittnuker.task.RetweetStatusTask
 import de.vanita5.twittnuker.util.menu.TwidereMenuInfo
 
 object MenuUtils {
@@ -140,7 +146,7 @@ object MenuUtils {
         val likeHighlight = ContextCompat.getColor(context, R.color.highlight_like)
         val loveHighlight = ContextCompat.getColor(context, R.color.highlight_love)
         val isMyRetweet: Boolean
-        if (twitter.isCreatingRetweet(status.account_key, status.id)) {
+        if (RetweetStatusTask.isCreatingRetweet(status.account_key, status.id)) {
             isMyRetweet = true
         } else if (twitter.isDestroyingStatus(status.account_key, status.id)) {
             isMyRetweet = false
@@ -159,9 +165,9 @@ object MenuUtils {
         val favorite = menu.findItem(R.id.favorite)
         var isFavorite = false
         if (favorite != null) {
-            if (twitter.isCreatingFavorite(status.account_key, status.id)) {
+            if (CreateFavoriteTask.isCreatingFavorite(status.account_key, status.id)) {
                 isFavorite = true
-            } else if (twitter.isDestroyingFavorite(status.account_key, status.id)) {
+            } else if (DestroyFavoriteTask.isDestroyingFavorite(status.account_key, status.id)) {
                 isFavorite = false
             } else {
                 isFavorite = status.is_favorite
@@ -300,6 +306,14 @@ object MenuUtils {
                 val uri = LinkCreator.getStatusWebLink(status)
                 ClipboardUtils.setText(context, uri.toString())
                 Utils.showOkMessage(context, R.string.message_toast_link_copied_to_clipboard, false)
+            }
+            R.id.make_gap -> {
+                val resolver = context.contentResolver
+                val values = ContentValues()
+                values.put(Statuses.IS_GAP, 1)
+                val where = Expression.equalsArgs(Statuses._ID).sql
+                val whereArgs = arrayOf(status._id.toString())
+                resolver.update(Statuses.CONTENT_URI, values, where, whereArgs)
             }
             else -> {
                 if (item.intent != null) {

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.LoaderManager.LoaderCallbacks
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
 import android.support.v7.widget.RecyclerView
 import android.view.ContextMenu
@@ -35,6 +35,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.VariousItemsAdapter
 import de.vanita5.twittnuker.adapter.iface.IUsersAdapter
@@ -51,7 +52,6 @@ import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.StatusViewHolder
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
-import org.mariotaku.kpreferences.get
 
 class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter>(), LoaderCallbacks<List<*>> {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -78,8 +78,14 @@ class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter
 
             override fun onItemActionClick(holder: RecyclerView.ViewHolder, id: Int, position: Int) {
                 val status = dummyItemAdapter.getStatus(position) ?: return
-                AbsStatusesFragment.handleStatusActionClick(context, fragmentManager,
+                AbsStatusesFragment.handleActionClick(context, fragmentManager,
                         twitterWrapper, holder as StatusViewHolder, status, id)
+            }
+
+            override fun onItemActionLongClick(holder: RecyclerView.ViewHolder, id: Int, position: Int): Boolean {
+                val status = dummyItemAdapter.getStatus(position) ?: return false
+                return AbsStatusesFragment.handleActionLongClick(this@ItemsListFragment, status,
+                        adapter.getItemId(position), id)
             }
 
             override fun onItemMenuClick(holder: RecyclerView.ViewHolder, menuView: View, position: Int) {
@@ -110,6 +116,15 @@ class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter
             }
         }
         return adapter
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            AbsStatusesFragment.REQUEST_FAVORITE_SELECT_ACCOUNT,
+            AbsStatusesFragment.REQUEST_RETWEET_SELECT_ACCOUNT -> {
+                AbsStatusesFragment.handleActionActivityResult(this, requestCode, resultCode, data)
+            }
+        }
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<*>?> {
@@ -166,7 +181,7 @@ class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter
         return false
     }
 
-    class ItemsLoader(context: Context, private val arguments: Bundle) : AsyncTaskLoader<List<*>>(context) {
+    class ItemsLoader(context: Context, private val arguments: Bundle) : FixedAsyncTaskLoader<List<*>>(context) {
 
         override fun loadInBackground(): List<*> {
             return arguments.getParcelableArrayList<Parcelable>(EXTRA_ITEMS)

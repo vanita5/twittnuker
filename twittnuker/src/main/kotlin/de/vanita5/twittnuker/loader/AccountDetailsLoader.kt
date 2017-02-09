@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.loader
 import android.accounts.AccountManager
 import android.accounts.OnAccountsUpdateListener
 import android.content.Context
-import android.support.v4.content.AsyncTaskLoader
+import android.support.v4.content.FixedAsyncTaskLoader
 import org.mariotaku.ktextension.addOnAccountsUpdatedListenerSafe
 import org.mariotaku.ktextension.removeOnAccountsUpdatedListenerSafe
 import de.vanita5.twittnuker.model.AccountDetails
@@ -34,14 +34,10 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 class AccountDetailsLoader(
         context: Context,
         val filter: (AccountDetails.() -> Boolean)? = null
-) : AsyncTaskLoader<List<AccountDetails>>(context) {
-    private val am: AccountManager
+) : FixedAsyncTaskLoader<List<AccountDetails>>(context) {
+    private val am: AccountManager = AccountManager.get(context)
     private val accountUpdateListener = OnAccountsUpdateListener {
         onContentChanged()
-    }
-
-    init {
-        am = AccountManager.get(context)
     }
 
     override fun loadInBackground(): List<AccountDetails> {

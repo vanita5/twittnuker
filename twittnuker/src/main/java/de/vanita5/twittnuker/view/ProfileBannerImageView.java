@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,25 +33,25 @@ import de.vanita5.twittnuker.view.iface.IExtendedView;
 
 public class ProfileBannerImageView extends ForegroundImageView implements IExtendedView, Constants {
 
-	private OnSizeChangedListener mOnSizeChangedListener;
-	private TouchInterceptor mTouchInterceptor;
+    private OnSizeChangedListener mOnSizeChangedListener;
+    private TouchInterceptor mTouchInterceptor;
     private OnFitSystemWindowsListener mOnFitSystemWindowsListener;
 
-	public ProfileBannerImageView(final Context context) {
-		this(context, null);
-	}
+    public ProfileBannerImageView(final Context context) {
+        this(context, null);
+    }
 
-	public ProfileBannerImageView(final Context context, final AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+    public ProfileBannerImageView(final Context context, final AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
 
-	public ProfileBannerImageView(final Context context, final AttributeSet attrs, final int defStyle) {
-		super(context, attrs, defStyle);
-		if (isInEditMode()) return;
+    public ProfileBannerImageView(final Context context, final AttributeSet attrs, final int defStyle) {
+        super(context, attrs, defStyle);
+        if (isInEditMode()) return;
         setScaleType(ScaleType.CENTER_CROP);
     }
 
-	@Override
+    @Override
     public void setOnFitSystemWindowsListener(OnFitSystemWindowsListener listener) {
         mOnFitSystemWindowsListener = listener;
     }
@@ -67,6 +67,7 @@ public class ProfileBannerImageView extends ForegroundImageView implements IExte
     }
 
     @Override
+    @Deprecated
     protected boolean fitSystemWindows(@NonNull Rect insets) {
         if (mOnFitSystemWindowsListener != null) {
             mOnFitSystemWindowsListener.onFitSystemWindows(insets);
@@ -76,35 +77,35 @@ public class ProfileBannerImageView extends ForegroundImageView implements IExte
 
     @Override
     public final boolean dispatchTouchEvent(@NonNull final MotionEvent event) {
-		if (mTouchInterceptor != null) {
-			final boolean ret = mTouchInterceptor.dispatchTouchEvent(this, event);
-			if (ret) return true;
-		}
-		return super.dispatchTouchEvent(event);
-	}
+        if (mTouchInterceptor != null) {
+            final boolean ret = mTouchInterceptor.dispatchTouchEvent(this, event);
+            if (ret) return true;
+        }
+        return super.dispatchTouchEvent(event);
+    }
 
-	@Override
+    @Override
     public final boolean onTouchEvent(@NonNull final MotionEvent event) {
-		if (mTouchInterceptor != null) {
-			final boolean ret = mTouchInterceptor.onTouchEvent(this, event);
-			if (ret) return true;
-		}
-		return super.onTouchEvent(event);
-	}
+        if (mTouchInterceptor != null) {
+            final boolean ret = mTouchInterceptor.onTouchEvent(this, event);
+            if (ret) return true;
+        }
+        return super.onTouchEvent(event);
+    }
 
-	@Override
-	protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
+    @Override
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         final int width = MeasureSpec.getSize(widthMeasureSpec), height = width / 2;
-		setMeasuredDimension(width, height);
-		super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
-	}
+        setMeasuredDimension(width, height);
+        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+    }
 
-	@Override
-	protected final void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
-		if (mOnSizeChangedListener != null) {
-			mOnSizeChangedListener.onSizeChanged(this, w, h, oldw, oldh);
-		}
-	}
+    @Override
+    protected final void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        if (mOnSizeChangedListener != null) {
+            mOnSizeChangedListener.onSizeChanged(this, w, h, oldw, oldh);
+        }
+    }
 
 }

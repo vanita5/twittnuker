@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@
             android:minHeight="@dimen/element_size_normal"
             android:orientation="vertical">
 
-            <TextView
+            <de.vanita5.twittnuker.view.FixedTextView
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
                 android:textColor="?android:textColorPrimary"
                 tools:text="Name" />
 
-            <TextView
+            <de.vanita5.twittnuker.view.FixedTextView
                 android:id="@+id/screenName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
                 android:textColor="?android:textColorPrimary"
                 tools:text="\@screenname" />
 
-            <TextView
+            <de.vanita5.twittnuker.view.FixedTextView
                 android:id="@+id/followingYouIndicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
                     android:color="?android:textColorPrimary"
                     android:src="@drawable/ic_action_location" />
 
-                <TextView
+                <de.vanita5.twittnuker.view.FixedTextView
                     android:id="@+id/location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -251,7 +251,7 @@
                     android:color="?android:textColorPrimary"
                     android:src="@drawable/ic_action_time" />
 
-                <TextView
+                <de.vanita5.twittnuker.view.FixedTextView
                     android:id="@+id/createdAt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -282,7 +282,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/element_spacing_small">
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.FixedTextView
                         android:id="@+id/statusesCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -291,7 +291,7 @@
                         android:textColor="?android:textColorPrimary"
                         tools:text="255"/>
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.FixedTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -312,7 +312,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/element_spacing_small">
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.FixedTextView
                         android:id="@+id/followersCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -321,7 +321,7 @@
                         android:textColor="?android:textColorPrimary"
                         tools:text="255"/>
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.FixedTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -342,7 +342,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/element_spacing_small">
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.FixedTextView
                         android:id="@+id/friendsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -351,7 +351,7 @@
                         android:textColor="?android:textColorPrimary"
                         tools:text="255"/>
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.FixedTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -372,7 +372,7 @@
                     android:orientation="vertical"
                     android:padding="@dimen/element_spacing_small">
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.FixedTextView
                         android:id="@+id/groupsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -381,7 +381,7 @@
                         android:textColor="?android:textColorPrimary"
                         tools:text="255"/>
 
-                    <TextView
+                    <de.vanita5.twittnuker.view.FixedTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"

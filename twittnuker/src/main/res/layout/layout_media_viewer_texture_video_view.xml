@@ -2,10 +2,10 @@
 <!--
   ~ Twittnuker - Twitter client for Android
   ~
-  ~ Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+  ~ Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
   ~
   ~ This program incorporates a modified version of Twidere.
-  ~ Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+  ~ Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -28,11 +28,18 @@
     android:layout_height="match_parent"
     android:layout_gravity="center">
 
-    <com.sprylab.android.widget.TextureVideoView
-        android:id="@+id/videoView"
+    <com.commonsware.cwac.layouts.AspectLockedFrameLayout
+        android:id="@+id/videoContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true">
+
+        <com.sprylab.android.widget.TextureVideoView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.commonsware.cwac.layouts.AspectLockedFrameLayout>
 
     <FrameLayout
         android:id="@+id/videoViewOverlay"
@@ -42,10 +49,10 @@
 
         <RelativeLayout
             android:id="@+id/videoControl"
-            style="?actionBarSplitStyle"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:layout_gravity="bottom"
+            android:clickable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             tools:ignore="UselessParent">
@@ -62,7 +69,7 @@
                 android:minWidth="@dimen/element_size_normal"
                 android:src="@drawable/ic_action_play_arrow"/>
 
-            <TextView
+            <de.vanita5.twittnuker.view.FixedTextView
                 android:id="@+id/positionLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -74,7 +81,7 @@
                 android:textSize="@dimen/text_size_extra_small"
                 tools:text="--:--"/>
 
-            <ProgressBar
+            <SeekBar
                 android:id="@+id/videoViewProgress"
                 style="?android:progressBarStyleHorizontal"
                 android:layout_width="0dp"
@@ -83,10 +90,9 @@
                 android:layout_toEndOf="@+id/playPauseButton"
                 android:layout_toLeftOf="@+id/volumeButton"
                 android:layout_toRightOf="@+id/playPauseButton"
-                android:layout_toStartOf="@+id/volumeButton"
-                android:indeterminate="false"/>
+                android:layout_toStartOf="@+id/volumeButton"/>
 
-            <TextView
+            <de.vanita5.twittnuker.view.FixedTextView
                 android:id="@+id/durationLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -97,7 +103,6 @@
                 android:textColor="?android:textColorPrimary"
                 android:textSize="@dimen/text_size_extra_small"
                 tools:text="--:--"/>
-
 
             <ImageButton
                 android:id="@+id/volumeButton"
@@ -110,7 +115,6 @@
                 android:contentDescription="@string/action_mute"
                 android:minWidth="@dimen/element_size_normal"
                 android:src="@drawable/ic_action_speaker_max"/>
-
 
         </RelativeLayout>
     </FrameLayout>

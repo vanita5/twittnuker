@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,13 +27,12 @@ import dagger.Component
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.activity.ComposeActivity
 import de.vanita5.twittnuker.activity.MediaViewerActivity
+import de.vanita5.twittnuker.activity.PremiumDashboardActivity
 import de.vanita5.twittnuker.adapter.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.filter.FilteredUsersFragment
-import de.vanita5.twittnuker.loader.MicroBlogAPIStatusesLoader
-import de.vanita5.twittnuker.loader.ParcelableStatusLoader
-import de.vanita5.twittnuker.loader.ParcelableUserLoader
+import de.vanita5.twittnuker.loader.*
 import de.vanita5.twittnuker.preference.AccountsListPreference
 import de.vanita5.twittnuker.preference.KeyboardShortcutPreference
 import de.vanita5.twittnuker.preference.PremiumEntryPreference
@@ -120,7 +119,7 @@ interface GeneralComponent {
 
     fun inject(obj: NotificationHelper)
 
-    fun inject(task: AbsFriendshipOperationTask)
+    fun inject(task: BaseAbstractTask<Any, Any, Any>)
 
     fun inject(preference: KeyboardShortcutPreference)
 
@@ -153,4 +152,10 @@ interface GeneralComponent {
     fun inject(provider: UrlFiltersSubscriptionProvider)
 
     fun inject(preference: PremiumEntryPreference)
+
+    fun inject(loader: CacheUserSearchLoader)
+
+    fun inject(loader: BaseUserListsLoader)
+
+    fun inject(controller: PremiumDashboardActivity.ExtraFeatureViewController)
 }

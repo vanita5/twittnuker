@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import android.view.MenuItem;
 import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.activity.KeyboardShortcutPreferenceCompatActivity;
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants;
+import de.vanita5.twittnuker.extension.AlertDialogExtensionsKt;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler;
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutSpec;
 
@@ -146,7 +147,14 @@ public class KeyboardShortcutsFragment extends BasePreferenceFragment implements
             builder.setMessage(R.string.reset_keyboard_shortcuts_confirm);
             builder.setPositiveButton(android.R.string.ok, this);
             builder.setNegativeButton(android.R.string.cancel, this);
-            return builder.create();
+            final AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(final DialogInterface dialog) {
+                    AlertDialogExtensionsKt.applyTheme((AlertDialog) dialog);
+                }
+            });
+            return dialog;
         }
     }
 }

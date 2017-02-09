@@ -18,7 +18,7 @@
     <string name="action_adding_member">アカウントの追加</string>
     <!-- [verb] Action for blocking user -->
     <string name="action_block">ブロック</string>
-    <string name="action_blocking">ブロック</string>
+    <string name="action_blocking">ブロック中</string>
     <!-- [verb] Action for cancelling (deleting) a retweet-->
     <string name="action_cancel_retweet">リツイートの取り消し</string>
     <string name="action_cancelling_like">いいねを取り消す</string>
@@ -33,10 +33,12 @@
     <string name="action_denying_follow_request">フォローリクエスト拒否</string>
     <!-- [verb] Edit image/settings etc. -->
     <string name="action_edit">編集</string>
+  <string name="action_edit_filter_rule">ルールの編集</string>
     <string name="action_favorite">お気に入り</string>
-    <string name="action_favoriting">いいねする</string>
+    <string name="action_favoriting">お気に入りへ登録</string>
     <string name="action_filter_import_from_blocked_users">ブロック済みユーザーをインポートする</string>
     <string name="action_filter_import_from_muted_users">ミュート済みユーザーをインポートする</string>
+  <string name="action_filter_subscriptions_card_manage">購読の管理</string>
     <string name="action_finish">終了</string>
     <string name="action_follow">フォロー</string>
     <string name="action_following">フォロー</string>
@@ -80,6 +82,7 @@
     <string name="action_saving_search">検索の保存</string>
     <string name="action_select_all">すべて選択</string>
     <string name="action_select_none">選択しない</string>
+  <string name="action_select_user">ユーザーの選択</string>
     <!-- [verb] Send tweet/message -->
     <string name="action_send">送信</string>
     <string name="action_sending_direct_message">DM送信</string>
@@ -90,6 +93,8 @@
     <!-- [verb] Used for skip some settings -->
     <string name="action_skip">スキップ</string>
     <string name="action_start">開始</string>
+  <string name="action_status_block_users">ユーザーをブロック&#8230;</string>
+  <string name="action_status_mute_users">ユーザーをミュート</string>
     <string name="action_subscribe">保存</string>
     <string name="action_subscribing_to_list">リストの保存</string>
     <!-- [verb] Connect to network storage like Dropbox and Google Drive etc -->
@@ -108,7 +113,7 @@
     <string name="action_unblocking">ブロックを解除</string>
     <string name="action_undo_like">いいねを取り消し</string>
     <string name="action_unfavorite">お気に入りから削除</string>
-    <string name="action_unfavoriting">いいねから削除</string>
+    <string name="action_unfavoriting">お気に入りから削除</string>
     <string name="action_unfollow">フォローを解除</string>
     <string name="action_unfollowing">フォローの解除</string>
     <string name="action_unmute">ミュートの解除</string>
@@ -271,7 +276,7 @@
     <string name="display_sensitive_contents_summary">プロンプトを表示せずに不適切な可能性のある内容を表示します。</string>
     <string name="dns_server">DNS サーバー</string>
     <string name="dns_server_summary">ネットワーク要件に使用されるDNSサーバーを設定します。</string>
-    <string name="dont_restart">再起動しない</string>
+    <string name="action_dont_restart">再起動しない</string>
     <string name="draft_saved">下書きを保存</string>
     <string name="drafts_hint_messages">未送信のツイートが保存されます</string>
     <string name="drawer_toggle">ドロワーの切り替え</string>
@@ -313,12 +318,14 @@
     <string name="external_user_host_format"><xliff:g id="host">%s</xliff:g>の外部ユーザー</string>
     <string name="extra_configurations">追加設定</string>
     <string name="extra_feature_description_filters_import">ブロック/ミュートからフィルタリストをインポートする</string>
-    <string name="extra_feature_description_filters_subscription">フィルタリストの購読</string>
+  <string name="extra_feature_description_filters_subscription">ミュートフィルターを購読し、自動的に同期する</string>
     <string name="extra_feature_description_schedule_status">予約ツイート (あとで送る)</string>
     <string name="extra_feature_description_sync_data">データを Dropbox や Google ドライブなどで同期</string>
+  <string name="extra_feature_title_filters_import">フィルタのインポート</string>
+  <string name="extra_feature_title_filters_subscription">フィルタの購読</string>
     <!-- Enhanced (paid) features description -->
     <string name="extra_features_description">Twittnuker を支援して追加機能を取得する</string>
-    <string name="extra_features_pack_description">または、拡張機能パックを購入して、すべての機能 (将来追加される機能を含む) を手に入れましょう。</string>
+    <string name="extra_features_pack_description">または、追加機能パックを購入して、すべての機能 (将来追加される機能を含む) を手に入れましょう</string>
     <!-- Enhanced (paid) features title -->
     <string name="extra_features_restore_purchase_hint">追加拡張パックを購入済みの場合、「復元」から購入情報を復元してください。</string>
     <string name="fab_visible">フローティングアクションボタン</string>
@@ -454,25 +461,10 @@
     <string name="message_direct_message_deleted">DMを削除しました。</string>
     <string name="message_direct_message_sent">DMを送信しました。</string>
     <string name="message_error_invalid_account">いくつかのアカウントのデータが破損しています。Twittnuker のクラッシュを防ぐために、これらのアカウントを削除します。</string>
-    <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-    <string name="message_extra_features_not_purchased">追加機能パックは未購入です。</string>
-    <!-- Toast message for network errors -->
-    <string name="message_network_error">ネットワークエラー</string>
     <string name="message_permission_request_compose_location">位置情報の権限は、ツイートに位置情報を追加するために必要です。</string>
     <string name="message_permission_request_save_media">ストレージの権限は、Twittnuker がメディアを保存するために必要です。</string>
     <string name="message_permission_request_share_media">ストレージの権限は、Twittnuker がメディアを他のアプリに共有するために必要です。</string>
     <string name="message_please_wait">しばらくお待ちください…</string>
-    <string name="message_retweet_cancelled">リツイートをキャンセルしました。</string>
-    <string name="message_search_deleted">検索を削除しました。</string>
-    <string name="message_search_name_deleted">検索 \"<xliff:g id="name">%s</xliff:g>\"を削除しました。</string>
-    <string name="message_search_name_saved">検索 \"<xliff:g id="name">%s</xliff:g>\"を保存しました。</string>
-    <string name="message_search_saved">検索を保存しました。</string>
-    <string name="message_status_deleted">ツイートを削除しました。</string>
-    <string name="message_status_favorited">ツイートをいいねしました。</string>
-    <string name="message_status_like_removed">いいねを取り消しました</string>
-    <string name="message_status_liked">ツイートをいいねしました</string>
-    <string name="message_status_retweeted">リツイートしました。</string>
-    <string name="message_status_unfavorited">ツイートのいいねを解除しました。</string>
     <string name="message_sync_data_connect_hint">データを同期するために Twittnuker をネットワークストレージに接続する</string>
     <string name="message_sync_data_synced_with_name">Twittnuker が <xliff:g example="ownCloud" id="name">%s</xliff:g> と同期されました</string>
     <string name="message_sync_disconnect_from_name_confirm"><xliff:g example="ownCloud" id="name">%s</xliff:g> から切断しますか？</string>
@@ -482,34 +474,51 @@
         ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
         ~ periods should be omitted
       -->
-    <string name="message_toast_accepted_users_follow_request"><xliff:g id="user">%s</xliff:g>さんのフォローリクエストを許可しました</string>
+    <string name="message_toast_accepted_users_follow_request"><xliff:g id="user">%s</xliff:g>さんのフォローリクエストを許可しました。</string>
     <string name="message_toast_added_to_filter">フィルターに追加しました</string>
     <string name="message_toast_already_logged_in">あなたはすでにログインしています</string>
     <string name="message_toast_cannot_get_location">位置情報が取得できません</string>
     <string name="message_toast_compose_write_storage_no_permission">撮影した写真/動画を削除するには権限が必要です</string>
+  <string name="message_toast_duplicate_filter_rule">ルールが重複しています</string>
     <string name="message_toast_error_occurred">エラーが発生しました。もう一度お試しください。</string>
+    <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
+    <string name="message_toast_extra_features_not_purchased">追加機能パックは未購入です。</string>
+  <string name="message_toast_filters_import_hint">インポートするには \"+\" をタップしてください</string>
     <string name="message_toast_link_copied_to_clipboard">リンクがクリップボードにコピーされました</string>
     <string name="message_toast_livewp_daydream_enabled_message">システム設定のどこかにプレゼントを隠したぜ!</string>
     <string name="message_toast_login_verification_failed">ログイン認証に失敗しました</string>
+    <!-- Toast message for network errors -->
+    <string name="message_toast_network_error">ネットワークエラー</string>
     <string name="message_toast_no_account">アカウント無し</string>
+  <string name="message_toast_no_account_permission">アカウントの権限が必要です</string>
     <string name="message_toast_no_account_selected">アカウントが選択されていません</string>
     <string name="message_toast_no_user_selected">ユーザを選択してください</string>
     <string name="message_toast_press_again_to_close">閉じるにはもう一度押して下さい</string>
     <string name="message_toast_profile_banner_image_updated">ヘッダー画像を更新しました</string>
+    <string name="message_toast_retweet_cancelled">リツイートをキャンセルしました。</string>
     <string name="message_toast_save_media_no_storage_permission">ストレージアクセス許可は、メディアを保存するために必要とされます。</string>
     <string name="message_toast_saved_to_gallery">ギャラリーに保存しました</string>
+    <string name="message_toast_search_deleted">検索を削除しました。</string>
+    <string name="message_toast_search_name_deleted">検索 \"<xliff:g id="name">%s</xliff:g>\"を削除しました。</string>
+    <string name="message_toast_search_name_saved">検索 \"<xliff:g id="name">%s</xliff:g>\"を保存しました。</string>
+    <string name="message_toast_search_saved">検索を保存しました。</string>
     <string name="message_toast_select_file_no_storage_permission">ストレージアクセス許可は、ファイルを選択するために必要とされます。</string>
     <string name="message_toast_share_media_no_storage_permission">一部のアプリケーションでは、メディアを共有するためのストレージのアクセス許可が要求されます。</string>
+    <string name="message_toast_status_deleted">ツイートを削除しました。</string>
+    <string name="message_toast_status_favorited">ツイートをお気に入りに登録しました</string>
+    <string name="message_toast_status_like_removed">いいねを取り消しました</string>
+    <string name="message_toast_status_liked">ツイートをいいねしました</string>
+    <string name="message_toast_status_retweeted">リツイートしました。</string>
     <string name="message_toast_status_saved_to_draft">ツイートは下書きに保存されました</string>
+    <string name="message_toast_status_unfavorited">ツイートのお気に入りを解除しました</string>
     <string name="message_toast_status_updated">ツイートを送信しました。</string>
+  <string name="message_toast_unable_to_load_more_statuses">以前のツイートを読み込むことができません</string>
+    <string name="message_toast_user_filters_removed">フィルターリストから削除しました。</string>
+    <string name="message_toast_users_filters_added">複数のユーザーをフィルターリストに追加する。</string>
     <string name="message_toast_wrong_api_key">API URL または consumer key/secret が正しくありません。もう一度確認してください。</string>
-    <string name="message_toast_wrong_username_password">間違ったユーザー名/パスワードです</string>
-    <string name="message_user_muted">このユーザーをフィルターリストに追加します。ホーム / つながり でこのユーザーのツイートを非表示にします。</string>
-    <string name="message_user_unmuted">フィルターリストから削除しました。</string>
-    <string name="message_users_muted">複数のユーザーをフィルターリストに追加する。ホーム / つながり にこのユーザーのツイートを非表示にする。</string>
+    <string name="message_toast_wrong_username_password">間違ったユーザー名/パスワードです。</string>
     <string name="message_video_too_long">動画が長すぎます</string>
     <string name="message_video_too_short">動画が短すぎます</string>
-    <string name="more">設定</string>
     <string name="multi_select">複数選択</string>
     <string name="mute_user"><xliff:g id="name">%s</xliff:g>さんをミュート</string>
     <string name="mute_user_confirm_message"><xliff:g id="name">%s</xliff:g>さんをミュートしますか？フォローしたままで、このユーザーのツイートが表示されなくなります。</string>
@@ -601,12 +610,17 @@
     <string name="preference_randomize_account_rename_accounts_confirm">既存のアカウント名を変更しますか？</string>
     <string name="preference_summary_chrome_custom_tab">Chrome カスタムタブでリンクを開く</string>
     <string name="preference_summary_database_item_limit">各アカウントのデータベースに格納するアイテムの上限数です。\n小さな値に設定すると読み込み速度を速くできます。</string>
+  <string name="preference_summary_media_preload_non_metered_network">Wi-Fi などの無料のネットワーク上でのみメディアをプリロードします</string>
     <string name="preference_title_accounts">アカウント</string>
     <string name="preference_title_advanced">詳細設定</string>
     <string name="preference_title_chrome_custom_tab">Chrome カスタムタブ</string>
     <string name="preference_title_database_item_limit">アイテム制限</string>
     <string name="preference_title_filter_manage_subscriptions">管理</string>
     <string name="preference_title_filter_subscriptions">フィルタの購読</string>
+  <string name="preference_title_light_font">細字フォント</string>
+  <string name="preference_title_media_preload_non_metered_network">無料のネットワークでプリロードする</string>
+  <string name="preference_title_portrait">ポートレイト</string>
+  <string name="preference_title_landscape">ランドスケープ</string>
     <string name="preference_title_storage">ストレージ</string>
     <string name="preference_title_translate">翻訳する</string>
     <string name="preload_wifi_only">Wi-Fi接続時のみ先読み</string>
@@ -704,6 +718,7 @@
     <string name="scrapyard">ゴミ置き場</string>
     <string name="search">検索</string>
     <string name="search_hint">ツイートかユーザーの検索</string>
+  <string name="search_hint_users">ユーザー検索</string>
     <string name="search_statuses">ツイートの検索</string>
     <string name="search_type_statuses">ツイート</string>
     <string name="search_type_users">ユーザー</string>
@@ -841,6 +856,9 @@
     <string name="title_sync_settings">同期設定</string>
     <string name="title_user">ユーザー</string>
     <string name="title_user_colors">ユーザー色</string>
+  <string name="title_user_list_memberships">自分が含まれるリスト</string>
+  <string name="title_user_list_ownerships">作成者</string>
+  <string name="title_user_list_subscriptions">購読</string>
     <string name="title_users_favorited_this">お気に入りに登録したユーザーを表示</string>
     <string name="title_users_liked_this">いいねしたユーザーを表示</string>
     <string name="title_users_retweeted_this">リツイートしたユーザーを表示</string>
@@ -904,6 +922,7 @@
     <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>が保存しているリスト</string>
     <string name="users_statuses">ユーザーのツイート</string>
     <string name="vibration">バイブ</string>
+
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">タブに未読ツイート/メッセージ数を表示します。</string>

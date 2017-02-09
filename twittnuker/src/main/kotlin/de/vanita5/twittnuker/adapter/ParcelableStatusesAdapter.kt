@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,15 +40,10 @@ import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.Companion.ITEM_VIEW_TYPE_LOAD_INDICATOR
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.*
-import de.vanita5.twittnuker.constant.hideCardActionsKey
-import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
-import de.vanita5.twittnuker.constant.mediaPreviewStyleKey
-import de.vanita5.twittnuker.constant.nameFirstKey
-import de.vanita5.twittnuker.model.ObjectId
-import de.vanita5.twittnuker.model.ParcelableStatus
-import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.annotation.PreviewStyle
+import de.vanita5.twittnuker.constant.*
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_DISPLAY_SENSITIVE_CONTENTS
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.util.MediaLoadingHandler
 import de.vanita5.twittnuker.util.StatusAdapterLinkClickHandler
 import de.vanita5.twittnuker.util.TwidereLinkify
@@ -69,14 +64,15 @@ abstract class ParcelableStatusesAdapter(
 
     override final val mediaLoadingHandler: MediaLoadingHandler
     final override val twidereLinkify: TwidereLinkify
-    @CardMediaContainer.PreviewStyle
+    @PreviewStyle
     final override val mediaPreviewStyle: Int = preferences[mediaPreviewStyleKey]
     final override val nameFirst: Boolean = preferences[nameFirstKey]
     final override val useStarsForLikes: Boolean = preferences[iWantMyStarsBackKey]
     @TwidereLinkify.HighlightStyle
-    final override val linkHighlightingStyle: Int
-    final override val mediaPreviewEnabled: Boolean
-    final override val sensitiveContentEnabled: Boolean
+    final override val linkHighlightingStyle: Int = preferences[linkHighlightOptionKey]
+    final override val lightFont: Boolean = preferences[lightFontKey]
+    final override val mediaPreviewEnabled: Boolean = Utils.isMediaPreviewEnabled(context, preferences)
+    final override val sensitiveContentEnabled: Boolean = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, false)
     private val showCardActions: Boolean = !preferences[hideCardActionsKey]
 
     private val gapLoadingIds: MutableSet<ObjectId> = HashSet()
@@ -114,15 +110,12 @@ abstract class ParcelableStatusesAdapter(
     private var showingActionCardId = RecyclerView.NO_ID
     private var lastItemFiltered: Boolean = false
 
-    override val itemCounts: IntArray = IntArray(4)
+    override val itemCounts = ItemCounts(4)
 
     protected abstract val progressViewIds: IntArray
 
     init {
         mediaLoadingHandler = MediaLoadingHandler(*progressViewIds)
-        linkHighlightingStyle = Utils.getLinkHighlightingStyleInt(preferences.getString(KEY_LINK_HIGHLIGHT_OPTION, null))
-        mediaPreviewEnabled = Utils.isMediaPreviewEnabled(context, preferences)
-        sensitiveContentEnabled = preferences.getBoolean(KEY_DISPLAY_SENSITIVE_CONTENTS, false)
         val handler = StatusAdapterLinkClickHandler<List<ParcelableStatus>>(context, preferences)
         twidereLinkify = TwidereLinkify(handler)
         handler.setAdapter(this)
@@ -268,7 +261,7 @@ abstract class ParcelableStatusesAdapter(
                 return GapViewHolder(this, view)
             }
             ITEM_VIEW_TYPE_LOAD_INDICATOR -> {
-                val view = inflater.inflate(R.layout.card_item_load_indicator, parent, false)
+                val view = inflater.inflate(R.layout.list_item_load_indicator, parent, false)
                 return LoadIndicatorViewHolder(view)
             }
             ITEM_VIEW_TYPE_EMPTY -> {
@@ -291,7 +284,7 @@ abstract class ParcelableStatusesAdapter(
                         (holder as IStatusViewHolder).displayStatus(status, isShowInReplyTo)
                     }
                     ITEM_VIEW_TYPE_GAP -> {
-                        val loading = gapLoadingIds.find { it.accountKey == status.account_key && it.id == status.id } != null
+                        val loading = gapLoadingIds.any { it.accountKey == status.account_key && it.id == status.id }
                         (holder as GapViewHolder).display(loading)
                     }
                 }
@@ -349,7 +342,7 @@ abstract class ParcelableStatusesAdapter(
         itemCounts[1] = pinnedStatuses?.size ?: 0
         itemCounts[2] = statusCount
         itemCounts[3] = if (position and ILoadMoreSupportAdapter.END != 0L) 1 else 0
-        return itemCounts.sum()
+        return itemCounts.itemCount
     }
 
 

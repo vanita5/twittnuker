@@ -1,10 +1,10 @@
 /*
  *  Twittnuker - Twitter client for Android
  *
- *  Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ *  Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  *  This program incorporates a modified version of Twidere.
- *  Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ *  Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,11 +25,8 @@ package de.vanita5.twittnuker.view.holder
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.View.OnClickListener
-import android.widget.ProgressBar
-import android.widget.TextView
 import kotlinx.android.synthetic.main.card_item_gap.view.*
 import de.vanita5.twittnuker.R
-
 import de.vanita5.twittnuker.adapter.iface.IGapSupportedAdapter
 
 class GapViewHolder(
@@ -37,13 +34,11 @@ class GapViewHolder(
         itemView: View
 ) : RecyclerView.ViewHolder(itemView), OnClickListener {
 
-    private val gapText: TextView
-    private val gapProgress: ProgressBar
+    private val gapText = itemView.gapText
+    private val gapProgress = itemView.gapProgress
 
     init {
         itemView.setOnClickListener(this)
-        gapText = itemView.gapText
-        gapProgress = itemView.gapProgress
     }
 
     override fun onClick(v: View) {
@@ -52,8 +47,14 @@ class GapViewHolder(
     }
 
     fun display(showProgress: Boolean) {
-        gapText.visibility = if (showProgress) View.GONE else View.VISIBLE
-        gapProgress.visibility = if (showProgress) View.VISIBLE else View.GONE
+        if (showProgress) {
+            gapText.visibility = View.INVISIBLE
+            gapProgress.visibility = View.VISIBLE
+            gapProgress.spin()
+        } else {
+            gapText.visibility = View.VISIBLE
+            gapProgress.visibility = View.INVISIBLE
+        }
     }
 
     companion object {
