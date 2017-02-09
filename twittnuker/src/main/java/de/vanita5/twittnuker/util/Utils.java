@@ -1008,7 +1008,7 @@ public final class Utils implements Constants {
             ActionProvider provider = MenuItemCompat.getActionProvider(item);
             if (provider instanceof FavoriteItemProvider) {
                 ((FavoriteItemProvider) provider).invokeItem(item,
-                        new AbsStatusesFragment.DefaultOnLikedListener(twitter, status));
+                        new AbsStatusesFragment.DefaultOnLikedListener(twitter, status, null));
             } else {
                 twitter.createFavoriteAsync(status.account_key, status);
             }
