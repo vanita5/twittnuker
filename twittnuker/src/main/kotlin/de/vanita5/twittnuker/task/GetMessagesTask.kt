@@ -30,6 +30,7 @@ import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.setFrom
 import de.vanita5.twittnuker.extension.model.timestamp
@@ -69,9 +70,9 @@ class GetMessagesTask(context: Context) : BaseAbstractTask<RefreshTaskParam, Uni
             }
             AccountType.TWITTER -> {
                 // Use official DM api
-//                if (details.isOfficial(context)) {
-//                    return getTwitterOfficialMessages(microBlog)
-//                }
+                if (details.isOfficial(context)) {
+                    return getTwitterOfficialMessages(microBlog, details)
+                }
             }
         }
         // Use default method
@@ -82,8 +83,8 @@ class GetMessagesTask(context: Context) : BaseAbstractTask<RefreshTaskParam, Uni
         return GetMessagesData(emptyList(), emptyList(), emptyList())
     }
 
-    private fun getTwitterOfficialMessages(microBlog: MicroBlog): GetMessagesData {
-        return GetMessagesData(emptyList(), emptyList(), emptyList())
+    private fun getTwitterOfficialMessages(microBlog: MicroBlog, details: AccountDetails): GetMessagesData {
+        return getDefaultMessages(microBlog, details)
     }
 
     private fun getDefaultMessages(microBlog: MicroBlog, details: AccountDetails): GetMessagesData {

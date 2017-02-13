@@ -167,8 +167,7 @@ abstract class GetActivitiesTask(
                 }
 
                 activity.inserted_date = System.currentTimeMillis()
-                val values = ContentValuesCreator.createActivity(activity,
-                        details, userColorNameManager)
+                val values = ContentValuesCreator.createActivity(activity, details)
                 valuesList.add(values)
             }
         }
