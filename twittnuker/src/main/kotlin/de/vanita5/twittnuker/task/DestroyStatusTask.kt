@@ -32,8 +32,8 @@ import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.StatusDestroyedEvent
-import de.vanita5.twittnuker.model.message.StatusListChangedEvent
+import de.vanita5.twittnuker.model.event.StatusDestroyedEvent
+import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper

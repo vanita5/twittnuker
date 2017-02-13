@@ -25,7 +25,10 @@ package de.vanita5.twittnuker.model.util
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.message.MessageExtras
+import de.vanita5.twittnuker.model.message.StickerExtras
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
+
 
 object ParcelableMessageUtils {
     fun incomingMessage(accountKey: UserKey, message: DirectMessage): ParcelableMessage {
@@ -51,10 +54,23 @@ object ParcelableMessageUtils {
         result.message_timestamp = message.createdAt.time
         result.local_timestamp = result.message_timestamp
 
+        val (type, extras) = typeAndExtras(accountKey, message)
         val (text, spans) = InternalTwitterContentUtils.formatDirectMessageText(message)
+        result.message_type = type
+        result.extras = extras
         result.text_unescaped = text
         result.spans = spans
         result.media = ParcelableMediaUtils.fromEntities(message)
         return result
+    }
+
+    private fun typeAndExtras(accountKey: UserKey, message: DirectMessage): Pair<String, MessageExtras?> {
+        val singleUrl = message.urlEntities?.singleOrNull()
+        if (singleUrl != null) {
+            if (singleUrl.expandedUrl.startsWith("https://twitter.com/i/stickers/image/")) {
+                return Pair(ParcelableMessage.Type.STICKER, StickerExtras(singleUrl.expandedUrl))
+            }
+        }
+        return Pair(ParcelableMessage.Type.TEXT, null)
     }
 }

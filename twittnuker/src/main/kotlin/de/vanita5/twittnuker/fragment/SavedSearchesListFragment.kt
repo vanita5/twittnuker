@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.adapter.SavedSearchesAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.loader.SavedSearchesLoader
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.SavedSearchDestroyedEvent
+import de.vanita5.twittnuker.model.event.SavedSearchDestroyedEvent
 import de.vanita5.twittnuker.util.IntentUtils.openTweetSearch
 import java.util.*
 

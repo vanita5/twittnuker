@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,15 +20,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.message;
+package de.vanita5.twittnuker.model.event;
 
-import de.vanita5.twittnuker.model.ParcelableStatus;
+import android.support.annotation.NonNull;
 
-public class StatusRetweetedEvent {
+import de.vanita5.twittnuker.model.ParcelableUserList;
 
-    public final ParcelableStatus status;
+public class UserListDestroyedEvent {
 
-    public StatusRetweetedEvent(ParcelableStatus status) {
-        this.status = status;
+    @NonNull
+    public final ParcelableUserList userList;
+
+    public UserListDestroyedEvent(@NonNull ParcelableUserList userList) {
+        this.userList = userList;
     }
 }

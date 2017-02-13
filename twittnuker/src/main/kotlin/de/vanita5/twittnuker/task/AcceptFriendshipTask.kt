@@ -33,7 +33,7 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
+import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.util.Utils
 
 class AcceptFriendshipTask(context: Context) : AbsFriendshipOperationTask(context, FriendshipTaskEvent.Action.ACCEPT), Constants {

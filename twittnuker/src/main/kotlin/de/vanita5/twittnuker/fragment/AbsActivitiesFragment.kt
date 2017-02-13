@@ -62,7 +62,7 @@ import de.vanita5.twittnuker.fragment.AbsStatusesFragment.DefaultOnLikedListener
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
-import de.vanita5.twittnuker.model.message.StatusListChangedEvent
+import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus

@@ -56,7 +56,7 @@ import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
-import de.vanita5.twittnuker.model.message.StatusListChangedEvent
+import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback

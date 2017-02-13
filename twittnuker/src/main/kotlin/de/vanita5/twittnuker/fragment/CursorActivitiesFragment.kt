@@ -45,6 +45,7 @@ import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosi
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_FROM_USER
 import de.vanita5.twittnuker.loader.ExtendedObjectCursorLoader
 import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.event.*
 import de.vanita5.twittnuker.model.message.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters

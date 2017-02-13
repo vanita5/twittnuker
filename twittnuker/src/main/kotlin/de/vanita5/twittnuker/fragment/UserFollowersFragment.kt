@@ -28,7 +28,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.UserFollowersLoader
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
+import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 
 class UserFollowersFragment : CursorUsersListFragment() {
 

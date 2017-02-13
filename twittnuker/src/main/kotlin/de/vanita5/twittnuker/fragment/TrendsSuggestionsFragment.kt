@@ -40,7 +40,7 @@ import de.vanita5.twittnuker.adapter.TrendsAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_EXTRAS
 import de.vanita5.twittnuker.constant.localTrendsWoeIdKey
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.TrendsRefreshedEvent
+import de.vanita5.twittnuker.model.event.TrendsRefreshedEvent
 import de.vanita5.twittnuker.model.tab.extra.TrendsTabExtras
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends
 import de.vanita5.twittnuker.util.IntentUtils.openTweetSearch

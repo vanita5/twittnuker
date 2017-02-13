@@ -56,8 +56,6 @@ import org.mariotaku.sqliteqb.library.SQLQueryBuilder;
 import org.mariotaku.sqliteqb.library.Table;
 import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
-import de.vanita5.twittnuker.Constants;
-import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.extension.model.AccountExtensionsKt;
 import de.vanita5.twittnuker.model.FiltersData;
 import de.vanita5.twittnuker.model.FiltersData$BaseItemValuesCreator;
@@ -104,7 +102,51 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class DataStoreUtils implements Constants {
+import static de.vanita5.twittnuker.TwittnukerConstants.ACCOUNT_USER_DATA_KEY;
+import static de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_ACTIVITIES_ABOUT_ME;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_ACTIVITIES_BY_FRIENDS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_CACHED_HASHTAGS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_CACHED_RELATIONSHIPS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_CACHED_STATUSES;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_CACHED_USERS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_DRAFTS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_FILTERED_KEYWORDS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_FILTERED_LINKS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_FILTERED_SOURCES;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_FILTERED_USERS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_FILTERS_SUBSCRIPTIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_MESSAGES;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_MESSAGES_CONVERSATIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_PUSH_NOTIFICATIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_SAVED_SEARCHES;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_SEARCH_HISTORY;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_STATUSES;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_TABS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_TRENDS_LOCAL;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_ALL_PREFERENCES;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_CACHED_IMAGES;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_CACHED_USERS_WITH_RELATIONSHIP;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_CACHE_FILES;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_DATABASE_PREPARE;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_DNS;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_DRAFTS_NOTIFICATIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_DRAFTS_UNSENT;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_EMPTY;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_NOTIFICATIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_NULL;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_PREFERENCES;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_RAW_QUERY;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_SUGGESTIONS_AUTO_COMPLETE;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_SUGGESTIONS_SEARCH;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_UNREAD_COUNTS;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_UNREAD_COUNTS_BY_TYPE;
+import static de.vanita5.twittnuker.constant.IntentConstants.EXTRA_EXTRAS;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.DEFAULT_DATABASE_ITEM_LIMIT;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_DATABASE_ITEM_LIMIT;
+
+public class DataStoreUtils {
 
     public static final Uri[] STATUSES_URIS = new Uri[]{Statuses.CONTENT_URI, CachedStatuses.CONTENT_URI};
     public static final Uri[] CACHE_URIS = new Uri[]{CachedUsers.CONTENT_URI, CachedStatuses.CONTENT_URI, CachedHashtags.CONTENT_URI, CachedTrends.Local.CONTENT_URI};
@@ -483,41 +525,45 @@ public class DataStoreUtils implements Constants {
 
     public static String getTableNameById(final int id) {
         switch (id) {
-            case TwittnukerConstants.TABLE_ID_STATUSES:
+            case TABLE_ID_STATUSES:
                 return Statuses.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_ACTIVITIES_ABOUT_ME:
+            case TABLE_ID_ACTIVITIES_ABOUT_ME:
                 return Activities.AboutMe.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_ACTIVITIES_BY_FRIENDS:
+            case TABLE_ID_ACTIVITIES_BY_FRIENDS:
                 return Activities.ByFriends.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_DRAFTS:
+            case TABLE_ID_DRAFTS:
                 return Drafts.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_FILTERED_USERS:
+            case TABLE_ID_FILTERED_USERS:
                 return Filters.Users.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_FILTERED_KEYWORDS:
+            case TABLE_ID_FILTERED_KEYWORDS:
                 return Filters.Keywords.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_FILTERED_SOURCES:
+            case TABLE_ID_FILTERED_SOURCES:
                 return Filters.Sources.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_FILTERED_LINKS:
+            case TABLE_ID_FILTERED_LINKS:
                 return Filters.Links.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_FILTERS_SUBSCRIPTIONS:
+            case TABLE_ID_FILTERS_SUBSCRIPTIONS:
                 return Filters.Subscriptions.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_TRENDS_LOCAL:
+            case TABLE_ID_MESSAGES:
+                return Messages.TABLE_NAME;
+            case TABLE_ID_MESSAGES_CONVERSATIONS:
+                return Messages.Conversations.TABLE_NAME;
+            case TABLE_ID_TRENDS_LOCAL:
                 return CachedTrends.Local.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_TABS:
+            case TABLE_ID_TABS:
                 return Tabs.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_PUSH_NOTIFICATIONS:
+            case TABLE_ID_PUSH_NOTIFICATIONS:
                 return PushNotifications.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_CACHED_STATUSES:
+            case TABLE_ID_CACHED_STATUSES:
                 return CachedStatuses.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_CACHED_USERS:
+            case TABLE_ID_CACHED_USERS:
                 return CachedUsers.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_CACHED_HASHTAGS:
+            case TABLE_ID_CACHED_HASHTAGS:
                 return CachedHashtags.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_CACHED_RELATIONSHIPS:
+            case TABLE_ID_CACHED_RELATIONSHIPS:
                 return CachedRelationships.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_SAVED_SEARCHES:
+            case TABLE_ID_SAVED_SEARCHES:
                 return SavedSearches.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_SEARCH_HISTORY:
+            case TABLE_ID_SEARCH_HISTORY:
                 return SearchHistory.TABLE_NAME;
             default:
                 return null;

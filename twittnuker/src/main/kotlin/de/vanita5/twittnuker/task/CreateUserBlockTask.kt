@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
+import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.Utils

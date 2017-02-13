@@ -27,7 +27,7 @@ import android.os.AsyncTask
 
 import com.squareup.otto.Bus
 
-import de.vanita5.twittnuker.model.message.TaskStateChangedEvent
+import de.vanita5.twittnuker.model.event.TaskStateChangedEvent
 import de.vanita5.twittnuker.util.AsyncTaskManager
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper

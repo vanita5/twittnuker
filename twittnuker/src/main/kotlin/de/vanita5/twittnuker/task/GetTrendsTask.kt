@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.ParcelableTrend
 import de.vanita5.twittnuker.model.ParcelableTrendValuesCreator
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.TrendsRefreshedEvent
+import de.vanita5.twittnuker.model.event.TrendsRefreshedEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedTrends

@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.UserListMembersChangedEvent
+import de.vanita5.twittnuker.model.event.UserListMembersChangedEvent
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.Utils

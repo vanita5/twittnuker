@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent
+import de.vanita5.twittnuker.model.event.ProfileUpdatedEvent
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.TwitterWrapper

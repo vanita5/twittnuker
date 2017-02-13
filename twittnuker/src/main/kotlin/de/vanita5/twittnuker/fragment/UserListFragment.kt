@@ -62,8 +62,8 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.UserListSubscriptionEvent
-import de.vanita5.twittnuker.model.message.UserListUpdatedEvent
+import de.vanita5.twittnuker.model.event.UserListSubscriptionEvent
+import de.vanita5.twittnuker.model.event.UserListUpdatedEvent
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.text.validator.UserListNameValidator
 import de.vanita5.twittnuker.util.*

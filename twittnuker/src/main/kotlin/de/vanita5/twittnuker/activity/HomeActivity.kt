@@ -91,8 +91,8 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.SupportTabSpec
 import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.TaskStateChangedEvent
-import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent
+import de.vanita5.twittnuker.model.event.TaskStateChangedEvent
+import de.vanita5.twittnuker.model.event.UnreadCountUpdatedEvent
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.service.RegistrationIntentService

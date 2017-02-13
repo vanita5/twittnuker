@@ -29,7 +29,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_USER
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
+import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.util.DataStoreUtils
 
 class AddUserFilterDialogFragment : AbsUserMuteBlockDialogFragment() {

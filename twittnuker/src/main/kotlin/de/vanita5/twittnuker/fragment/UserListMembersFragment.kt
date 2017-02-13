@@ -39,7 +39,7 @@ import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.UserListMembersLoader
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.UserListMembersChangedEvent
+import de.vanita5.twittnuker.model.event.UserListMembersChangedEvent
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.view.ExtendedRecyclerView
 import de.vanita5.twittnuker.view.holder.UserViewHolder

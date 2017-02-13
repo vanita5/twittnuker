@@ -37,10 +37,10 @@ import de.vanita5.twittnuker.model.BaseRefreshTaskParam
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.FavoriteTaskEvent
-import de.vanita5.twittnuker.model.message.StatusDestroyedEvent
-import de.vanita5.twittnuker.model.message.StatusListChangedEvent
-import de.vanita5.twittnuker.model.message.StatusRetweetedEvent
+import de.vanita5.twittnuker.model.event.FavoriteTaskEvent
+import de.vanita5.twittnuker.model.event.StatusDestroyedEvent
+import de.vanita5.twittnuker.model.event.StatusListChangedEvent
+import de.vanita5.twittnuker.model.event.StatusRetweetedEvent
 import de.vanita5.twittnuker.util.Utils
 import java.util.*
 

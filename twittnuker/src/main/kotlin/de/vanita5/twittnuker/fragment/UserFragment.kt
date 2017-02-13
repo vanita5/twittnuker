@@ -116,10 +116,10 @@ import de.vanita5.twittnuker.graphic.ActionBarColorDrawable
 import de.vanita5.twittnuker.graphic.ActionIconDrawable
 import de.vanita5.twittnuker.loader.ParcelableUserLoader
 import de.vanita5.twittnuker.model.*
-import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
-import de.vanita5.twittnuker.model.message.FriendshipUpdatedEvent
-import de.vanita5.twittnuker.model.message.ProfileUpdatedEvent
-import de.vanita5.twittnuker.model.message.TaskStateChangedEvent
+import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
+import de.vanita5.twittnuker.model.event.FriendshipUpdatedEvent
+import de.vanita5.twittnuker.model.event.ProfileUpdatedEvent
+import de.vanita5.twittnuker.model.event.TaskStateChangedEvent
 import de.vanita5.twittnuker.model.tab.DrawableHolder
 import de.vanita5.twittnuker.model.util.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships

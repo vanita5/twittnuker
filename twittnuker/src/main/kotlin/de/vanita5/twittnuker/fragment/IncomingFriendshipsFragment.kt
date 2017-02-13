@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.IncomingFriendshipsLoader
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
+import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.view.holder.UserViewHolder
 

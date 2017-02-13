@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.loader.UserListOwnershipsLoader
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.UserListDestroyedEvent
+import de.vanita5.twittnuker.model.event.UserListDestroyedEvent
 import de.vanita5.twittnuker.util.MenuUtils
 import de.vanita5.twittnuker.util.Utils
 

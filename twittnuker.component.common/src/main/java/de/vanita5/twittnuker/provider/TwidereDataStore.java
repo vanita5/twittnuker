@@ -377,6 +377,8 @@ public interface TwidereDataStore {
         String TABLE_NAME = "messages";
         String CONTENT_PATH = "messages";
 
+        Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
+
         interface Conversations extends BaseColumns, AccountSupportColumns {
             String CONVERSATION_ID = "conversation_id";
             String MESSAGE_TYPE = "message_type";
@@ -398,6 +400,7 @@ public interface TwidereDataStore {
             String TABLE_NAME = "messages_conversations";
 
             String CONTENT_PATH = "messages/conversations";
+            Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, CONTENT_PATH);
         }
     }
 

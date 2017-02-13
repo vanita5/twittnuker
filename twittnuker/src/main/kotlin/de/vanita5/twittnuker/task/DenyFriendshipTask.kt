@@ -31,7 +31,7 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
+import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.util.Utils
 
 class DenyFriendshipTask(context: Context) : AbsFriendshipOperationTask(context, FriendshipTaskEvent.Action.DENY) {

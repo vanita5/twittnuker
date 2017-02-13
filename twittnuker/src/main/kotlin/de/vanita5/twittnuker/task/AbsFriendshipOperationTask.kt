@@ -32,7 +32,7 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
+import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 

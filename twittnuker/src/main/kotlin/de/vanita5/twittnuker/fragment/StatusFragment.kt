@@ -97,8 +97,8 @@ import de.vanita5.twittnuker.menu.FavoriteItemProvider
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.analyzer.Share
 import de.vanita5.twittnuker.model.analyzer.StatusView
-import de.vanita5.twittnuker.model.message.FavoriteTaskEvent
-import de.vanita5.twittnuker.model.message.StatusListChangedEvent
+import de.vanita5.twittnuker.model.event.FavoriteTaskEvent
+import de.vanita5.twittnuker.model.event.StatusListChangedEvent
 import de.vanita5.twittnuker.model.util.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.*

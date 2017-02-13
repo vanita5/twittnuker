@@ -42,7 +42,7 @@ import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent
+import de.vanita5.twittnuker.model.event.GetActivitiesTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities

@@ -76,7 +76,6 @@ import de.vanita5.twittnuker.annotation.NotificationType;
 import de.vanita5.twittnuker.annotation.ReadPositionTag;
 import de.vanita5.twittnuker.library.twitter.model.Activity;
 import de.vanita5.twittnuker.app.TwittnukerApplication;
-import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.AccountPreferences;
 import de.vanita5.twittnuker.model.ActivityTitleSummaryMessage;
 import de.vanita5.twittnuker.model.Draft;
@@ -91,7 +90,7 @@ import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.model.UnreadItem;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent;
+import de.vanita5.twittnuker.model.event.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
@@ -333,11 +332,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     private int bulkInsertInternal(@NonNull Uri uri, @NonNull ContentValues[] valuesArray) {
         final int tableId = DataStoreUtils.getTableId(uri);
         final String table = DataStoreUtils.getTableNameById(tableId);
-        switch (tableId) {
-            case TABLE_ID_MESSAGES_CONVERSATIONS:
-            case TABLE_ID_MESSAGES:
-                return 0;
-        }
         int result = 0;
         final long[] newIds = new long[valuesArray.length];
         if (table != null && valuesArray.length > 0) {
@@ -402,9 +396,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final int tableId = DataStoreUtils.getTableId(uri);
         final String table = DataStoreUtils.getTableNameById(tableId);
         switch (tableId) {
-            case TABLE_ID_MESSAGES_CONVERSATIONS:
-            case TABLE_ID_MESSAGES:
-                return 0;
             case VIRTUAL_TABLE_ID_NOTIFICATIONS: {
                 final List<String> segments = uri.getPathSegments();
                 if (segments.size() == 1) {
@@ -455,11 +446,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     private Uri insertInternal(@NonNull Uri uri, ContentValues values) {
         final int tableId = DataStoreUtils.getTableId(uri);
         final String table = DataStoreUtils.getTableNameById(tableId);
-        switch (tableId) {
-            case TABLE_ID_MESSAGES_CONVERSATIONS:
-            case TABLE_ID_MESSAGES:
-                return null;
-        }
         final long rowId;
         switch (tableId) {
             case TABLE_ID_CACHED_USERS: {
@@ -872,11 +858,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final String table = DataStoreUtils.getTableNameById(tableId);
         int result = 0;
         if (table != null) {
-            switch (tableId) {
-                case TABLE_ID_MESSAGES_CONVERSATIONS:
-                case TABLE_ID_MESSAGES:
-                    return 0;
-            }
             result = databaseWrapper.update(table, values, selection, selectionArgs);
         }
         if (result > 0) {

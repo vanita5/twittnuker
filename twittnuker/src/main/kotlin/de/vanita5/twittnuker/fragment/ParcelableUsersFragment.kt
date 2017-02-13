@@ -47,7 +47,7 @@ import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.FriendshipTaskEvent
+import de.vanita5.twittnuker.model.event.FriendshipTaskEvent
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback

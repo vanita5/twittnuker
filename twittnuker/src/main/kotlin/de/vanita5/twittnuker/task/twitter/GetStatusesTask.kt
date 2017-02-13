@@ -46,7 +46,7 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator
 import de.vanita5.twittnuker.model.RefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.message.GetStatusesTaskEvent
+import de.vanita5.twittnuker.model.event.GetStatusesTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,24 +20,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.message;
+package de.vanita5.twittnuker.model.event;
 
 import de.vanita5.twittnuker.model.UserKey;
 
-public class UsersBlockedEvent {
-    private UserKey accountKey;
-    private String[] userIds;
+public class SavedSearchDestroyedEvent {
+    private final UserKey mAccountKey;
+    private final long searchId;
 
-    public UsersBlockedEvent(UserKey accountKey, String[] userIds) {
-        this.accountKey = accountKey;
-        this.userIds = userIds;
+    public SavedSearchDestroyedEvent(UserKey accountKey, long searchId) {
+        this.mAccountKey = accountKey;
+        this.searchId = searchId;
     }
 
     public UserKey getAccountKey() {
-        return accountKey;
+        return mAccountKey;
     }
 
-    public String[] getUserIds() {
-        return userIds;
+    public long getSearchId() {
+        return searchId;
     }
 }
