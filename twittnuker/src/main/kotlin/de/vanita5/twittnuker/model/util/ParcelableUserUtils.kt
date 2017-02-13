@@ -22,14 +22,12 @@
 
 package de.vanita5.twittnuker.model.util
 
-import android.database.Cursor
 import android.text.TextUtils
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 import de.vanita5.twittnuker.util.ParseUtils
 import de.vanita5.twittnuker.util.TwitterContentUtils
@@ -40,7 +38,7 @@ import de.vanita5.twittnuker.util.UserColorNameManager
  */
 object ParcelableUserUtils {
 
-    @JvmOverloads fun fromUser(user: User, accountKey: UserKey?, position: Long = 0): ParcelableUser {
+    fun fromUser(user: User, accountKey: UserKey?, position: Long = 0): ParcelableUser {
         val urlEntities = user.urlEntities
         val obj = ParcelableUser()
         obj.position = position
@@ -101,16 +99,7 @@ object ParcelableUserUtils {
         return obj
     }
 
-    fun fromDirectMessageConversationEntry(cursor: Cursor): ParcelableUser {
-        val accountId = UserKey.valueOf(cursor.getString(DirectMessages.ConversationEntries.IDX_ACCOUNT_KEY))
-        val id = UserKey.valueOf(cursor.getString(DirectMessages.ConversationEntries.IDX_CONVERSATION_ID))
-        val name = cursor.getString(DirectMessages.ConversationEntries.IDX_NAME)
-        val screenName = cursor.getString(DirectMessages.ConversationEntries.IDX_SCREEN_NAME)
-        val profileImageUrl = cursor.getString(DirectMessages.ConversationEntries.IDX_PROFILE_IMAGE_URL)
-        return ParcelableUser(accountId, id, name, screenName, profileImageUrl)
-    }
-
-    fun fromUsers(users: Array<User>?, accountKey: UserKey): Array<ParcelableUser>? {
+    fun fromUsers(users: Array<User>?, accountKey: UserKey?): Array<ParcelableUser>? {
         return users?.map { fromUser(it, accountKey) }?.toTypedArray()
     }
 
