@@ -28,9 +28,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.support.annotation.UiThread
-import com.squareup.otto.Bus
-import org.mariotaku.abstask.library.AbstractTask
-import org.mariotaku.kpreferences.KPreferences
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Activity
@@ -48,38 +46,19 @@ import de.vanita5.twittnuker.model.message.GetActivitiesTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
+import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.TwitterWrapper.TwitterListResponse
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import java.util.*
-import javax.inject.Inject
 
 abstract class GetActivitiesTask(
-        protected val context: Context
-) : AbstractTask<RefreshTaskParam, List<TwitterListResponse<Activity>>, (Boolean) -> Unit>() {
-    private var initialized: Boolean = false
-    @Inject
-    lateinit var preferences: KPreferences
-    @Inject
-    lateinit var bus: Bus
-    @Inject
-    lateinit var errorInfoStore: ErrorInfoStore
-    @Inject
-    lateinit var readStateManager: ReadStateManager
-    @Inject
-    lateinit var userColorNameManager: UserColorNameManager
-    @Inject
-    lateinit var mediaLoader: MediaLoaderWrapper
+        context: Context
+) : BaseAbstractTask<RefreshTaskParam, List<TwitterListResponse<Activity>>, (Boolean) -> Unit>(context) {
 
     protected abstract val errorInfoKey: String
 
     protected abstract val contentUri: Uri
-
-    init {
-        GeneralComponentHelper.build(context).inject(this)
-        initialized = true
-    }
 
     override fun doLongOperation(param: RefreshTaskParam): List<TwitterListResponse<Activity>> {
         if (!initialized || param.shouldAbort) return emptyList()

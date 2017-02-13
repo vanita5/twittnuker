@@ -98,9 +98,8 @@ import de.vanita5.twittnuker.task.DestroyUserBlockTask;
 import de.vanita5.twittnuker.task.DestroyUserMuteTask;
 import de.vanita5.twittnuker.task.GetActivitiesAboutMeTask;
 import de.vanita5.twittnuker.task.GetHomeTimelineTask;
-import de.vanita5.twittnuker.task.GetReceivedDirectMessagesTask;
+import de.vanita5.twittnuker.task.GetMessagesTask;
 import de.vanita5.twittnuker.task.GetSavedSearchesTask;
-import de.vanita5.twittnuker.task.GetSentDirectMessagesTask;
 import de.vanita5.twittnuker.task.GetTrendsTask;
 import de.vanita5.twittnuker.task.ManagedAsyncTask;
 import de.vanita5.twittnuker.task.ReportSpamAndBlockTask;
@@ -323,14 +322,8 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
         TaskStarter.execute(task);
     }
 
-    public void getReceivedDirectMessagesAsync(RefreshTaskParam param) {
-        final GetReceivedDirectMessagesTask task = new GetReceivedDirectMessagesTask(context);
-        task.setParams(param);
-        TaskStarter.execute(task);
-    }
-
-    public void getSentDirectMessagesAsync(RefreshTaskParam param) {
-        final GetSentDirectMessagesTask task = new GetSentDirectMessagesTask(context);
+    public void getMessagesAsync(RefreshTaskParam param) {
+        final GetMessagesTask task = new GetMessagesTask(context);
         task.setParams(param);
         TaskStarter.execute(task);
     }
@@ -409,14 +402,7 @@ public class AsyncTwitterWrapper extends TwitterWrapper {
             });
         }
         if (preferences.getBoolean(KEY_HOME_REFRESH_DIRECT_MESSAGES)) {
-            getReceivedDirectMessagesAsync(new SimpleRefreshTaskParam() {
-                @NonNull
-                @Override
-                public UserKey[] getAccountKeysWorker() {
-                    return closure.getAccountKeys();
-                }
-            });
-            getSentDirectMessagesAsync(new SimpleRefreshTaskParam() {
+            getMessagesAsync(new SimpleRefreshTaskParam() {
                 @NonNull
                 @Override
                 public UserKey[] getAccountKeysWorker() {

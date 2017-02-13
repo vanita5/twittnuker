@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.task.GetActivitiesAboutMeTask
 import de.vanita5.twittnuker.task.GetHomeTimelineTask
-import de.vanita5.twittnuker.task.GetReceivedDirectMessagesTask
+import de.vanita5.twittnuker.task.GetMessagesTask
 import de.vanita5.twittnuker.task.filter.RefreshFiltersSubscriptionsTask
 
 
@@ -85,7 +85,7 @@ class TaskServiceRunner(
                 return task
             }
             ACTION_REFRESH_DIRECT_MESSAGES -> {
-                val task = GetReceivedDirectMessagesTask(context)
+                val task = GetMessagesTask(context)
                 task.params = AutoRefreshTaskParam(context, AccountPreferences::isAutoRefreshDirectMessagesEnabled) { accountKeys ->
                     DataStoreUtils.getNewestMessageIds(context, DirectMessages.Inbox.CONTENT_URI, accountKeys)
                 }

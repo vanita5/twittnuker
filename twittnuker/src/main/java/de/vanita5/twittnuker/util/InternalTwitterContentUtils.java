@@ -26,7 +26,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
 import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
@@ -44,6 +43,7 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SpanItem;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
+import kotlin.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -260,13 +260,13 @@ public class InternalTwitterContentUtils {
         parseEntities(builder, status);
         StatusTextWithIndices textWithIndices = new StatusTextWithIndices();
         final Pair<String, SpanItem[]> pair = builder.buildWithIndices();
-        textWithIndices.text = pair.first;
-        textWithIndices.spans = pair.second;
+        textWithIndices.text = pair.getFirst();
+        textWithIndices.spans = pair.getSecond();
         if (range != null && range.length == 2) {
             textWithIndices.range = new int[2];
-            textWithIndices.range[0] = getResultRangeLength(source, pair.second, 0, range[0]);
-            textWithIndices.range[1] = pair.first.length() - getResultRangeLength(source,
-                    pair.second, range[1], source.length());
+            textWithIndices.range[0] = getResultRangeLength(source, pair.getSecond(), 0, range[0]);
+            textWithIndices.range[1] = pair.getFirst().length() - getResultRangeLength(source,
+                    pair.getSecond(), range[1], source.length());
         }
         return textWithIndices;
     }

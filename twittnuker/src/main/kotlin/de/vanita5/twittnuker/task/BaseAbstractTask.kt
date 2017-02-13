@@ -26,15 +26,15 @@ import android.content.Context
 import com.squareup.otto.Bus
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.kpreferences.KPreferences
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper
-import de.vanita5.twittnuker.util.MediaLoaderWrapper
-import de.vanita5.twittnuker.util.SharedPreferencesWrapper
-import de.vanita5.twittnuker.util.UserColorNameManager
+import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import javax.inject.Inject
 
 
 abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) : AbstractTask<Params, Result, Callback>() {
+
+    protected var initialized: Boolean = false
+    private set
 
     @Inject
     lateinit var bus: Bus
@@ -48,10 +48,17 @@ abstract class BaseAbstractTask<Params, Result, Callback>(val context: Context) 
     lateinit var kPreferences: KPreferences
     @Inject
     lateinit var manager: UserColorNameManager
+    @Inject
+    lateinit var errorInfoStore: ErrorInfoStore
+    @Inject
+    lateinit var readStateManager: ReadStateManager
+    @Inject
+    lateinit var userColorNameManager: UserColorNameManager
 
     init {
         @Suppress("UNCHECKED_CAST", "LeakingThis")
         GeneralComponentHelper.build(context).inject(this as BaseAbstractTask<Any, Any, Any>)
+        initialized = true
     }
 
 

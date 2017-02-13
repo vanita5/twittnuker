@@ -23,15 +23,15 @@
 package de.vanita5.twittnuker.util;
 
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
 
 import org.mariotaku.commons.text.CodePointArray;
-
 import de.vanita5.twittnuker.model.SpanItem;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
+
+import kotlin.Pair;
 
 import static android.text.TextUtils.isEmpty;
 import static de.vanita5.twittnuker.util.HtmlEscapeHelper.escape;
@@ -83,7 +83,7 @@ public class HtmlBuilder {
     }
 
     public Pair<String, SpanItem[]> buildWithIndices() {
-        if (spanSpecs.isEmpty()) return Pair.create(escapeSource(), new SpanItem[0]);
+        if (spanSpecs.isEmpty()) return new Pair<>(escapeSource(), new SpanItem[0]);
         Collections.sort(spanSpecs);
         final StringBuilder sb = new StringBuilder();
         final int linksSize = spanSpecs.size();
@@ -118,7 +118,7 @@ public class HtmlBuilder {
                 appendSource(sb, end, sourceLength, false, sourceIsEscaped);
             }
         }
-        return Pair.create(sb.toString(), items);
+        return new Pair<>(sb.toString(), items);
     }
 
     public boolean hasLink(final int start, final int end) {

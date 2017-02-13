@@ -22,14 +22,12 @@
 
 package de.vanita5.twittnuker.service
 
-import android.accounts.AccountManager
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.Service
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.BaseColumns
@@ -48,7 +46,6 @@ import org.mariotaku.ktextension.configure
 import org.mariotaku.ktextension.toLong
 import org.mariotaku.ktextension.toTypedArray
 import org.mariotaku.ktextension.useCursor
-import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterUpload
 import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse
@@ -59,18 +56,14 @@ import org.mariotaku.restfu.http.mime.SimpleBody
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.annotation.AccountType
-import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
 import de.vanita5.twittnuker.model.draft.StatusObjectExtras
-import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.model.util.ParcelableDirectMessageUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.task.CreateFavoriteTask
 import de.vanita5.twittnuker.task.RetweetStatusTask
+import de.vanita5.twittnuker.task.SendMessageTask
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.util.ContentValuesCreator
 import de.vanita5.twittnuker.util.NotificationManagerWrapper
@@ -182,8 +175,7 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
         sendMessage(accountId, recipientId, text, imageUri)
     }
 
-    private fun sendMessage(accountId: UserKey, recipientId: String,
-                            text: String, imageUri: String?) {
+    private fun sendMessage(accountId: UserKey, recipientId: String, text: String, imageUri: String?) {
         val title = getString(R.string.sending_direct_message)
         val builder = Builder(this)
         builder.setSmallIcon(R.drawable.ic_stat_send)
@@ -195,18 +187,13 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
         builder.setOngoing(true)
         val notification = builder.build()
         startForeground(NOTIFICATION_ID_SEND_DIRECT_MESSAGE, notification)
-        val result = sendDirectMessage(builder, accountId,
-                recipientId, text, imageUri)
+        val task = SendMessageTask(this)
+        invokeBeforeExecute(task)
+        val result = ManualTaskStarter.invokeExecute(task)
+        invokeAfterExecute(task, result)
 
         val resolver = contentResolver
         if (result.hasData()) {
-            val message = result.data!!
-            val values = ContentValuesCreator.createDirectMessage(message)
-            val deleteWhere = Expression.and(Expression.equalsArgs(DirectMessages.ACCOUNT_KEY),
-                    Expression.equalsArgs(DirectMessages.MESSAGE_ID)).sql
-            val deleteWhereArgs = arrayOf(message.account_key.toString(), message.id)
-            resolver.delete(DirectMessages.Outbox.CONTENT_URI, deleteWhere, deleteWhereArgs)
-            resolver.insert(DirectMessages.Outbox.CONTENT_URI, values)
             showOkMessage(R.string.message_direct_message_sent, false)
         } else {
             val values = ContentValuesCreator.createMessageDraft(accountId, recipientId, text, imageUri)
@@ -319,63 +306,6 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
         }
         stopForeground(false)
         notificationManager.cancel(NOTIFICATION_ID_UPDATE_STATUS)
-    }
-
-
-    private fun sendDirectMessage(builder: NotificationCompat.Builder,
-                                  accountKey: UserKey,
-                                  recipientId: String,
-                                  text: String,
-                                  imageUri: String?): SingleResponse<ParcelableDirectMessage> {
-        val details = AccountUtils.getAccountDetails(AccountManager.get(this),
-                accountKey, true) ?: return SingleResponse.getInstance()
-        val twitter = details.newMicroBlogInstance(context = this, cls = MicroBlog::class.java)
-        val twitterUpload = details.newMicroBlogInstance(context = this, cls = TwitterUpload::class.java)
-        try {
-            val directMessage: ParcelableDirectMessage
-            when (details.type) {
-                AccountType.FANFOU -> {
-                    if (imageUri != null) {
-                        throw MicroBlogException("Can't send image DM on Fanfou")
-                    }
-                    val dm = twitter.sendFanfouDirectMessage(recipientId, text)
-                    directMessage = ParcelableDirectMessageUtils.fromDirectMessage(dm, accountKey, true)
-                }
-                else -> {
-                    if (imageUri != null) {
-                        val mediaUri = Uri.parse(imageUri)
-                        val listener = MessageMediaUploadListener(this, notificationManager,
-                                builder, text)
-                        val chucked = details.type == AccountType.TWITTER
-                        val uploadResp = UpdateStatusTask.getBodyFromMedia(this, mediaLoader,
-                                mediaUri, null, ParcelableMedia.Type.IMAGE, chucked, listener).use { body ->
-                            val resp = uploadMedia(twitterUpload, body.body)
-                            body.deleteOnSuccess?.forEach { item ->
-                                item.delete(this)
-                            }
-                            return@use resp
-                        }
-                        val response = twitter.sendDirectMessage(recipientId,
-                                text, uploadResp.id)
-                        directMessage = ParcelableDirectMessageUtils.fromDirectMessage(response,
-                                accountKey, true)
-                    } else {
-                        val response = twitter.sendDirectMessage(recipientId, text)
-                        directMessage = ParcelableDirectMessageUtils.fromDirectMessage(response,
-                                accountKey, true)
-                    }
-                }
-            }
-            Utils.setLastSeen(this, UserKey(recipientId, accountKey.host),
-                    System.currentTimeMillis())
-
-            return SingleResponse(directMessage)
-        } catch (e: IOException) {
-            return SingleResponse(e)
-        } catch (e: MicroBlogException) {
-            return SingleResponse(e)
-        }
-
     }
 
 

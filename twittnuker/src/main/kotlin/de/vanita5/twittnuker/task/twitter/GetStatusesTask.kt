@@ -26,11 +26,8 @@ import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
-import com.squareup.otto.Bus
-import de.vanita5.twittnuker.R
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.math.NumberUtils
-import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.library.MicroBlog
@@ -40,6 +37,7 @@ import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
 import org.mariotaku.sqliteqb.library.Columns
 import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
 import de.vanita5.twittnuker.constant.loadItemLimitKey
@@ -53,34 +51,15 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
+import de.vanita5.twittnuker.task.BaseAbstractTask
 import de.vanita5.twittnuker.task.CacheUsersStatusesTask
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import java.util.*
-import javax.inject.Inject
 
 abstract class GetStatusesTask(
-        protected val context: Context
-) : AbstractTask<RefreshTaskParam, List<TwitterWrapper.StatusListResponse>, (Boolean) -> Unit>() {
-    private var initialized: Boolean = false
-    @Inject
-    lateinit var preferences: SharedPreferencesWrapper
-    @Inject
-    lateinit var bus: Bus
-    @Inject
-    lateinit var errorInfoStore: ErrorInfoStore
-    @Inject
-    lateinit var manager: UserColorNameManager
-    @Inject
-    lateinit var wrapper: AsyncTwitterWrapper
-    @Inject
-    lateinit var mediaLoader: MediaLoaderWrapper
-
-    init {
-        GeneralComponentHelper.build(context).inject(this)
-        initialized = true
-    }
+        context: Context
+) : BaseAbstractTask<RefreshTaskParam, List<TwitterWrapper.StatusListResponse>, (Boolean) -> Unit>(context) {
 
     @Throws(MicroBlogException::class)
     abstract fun getStatuses(twitter: MicroBlog, paging: Paging): ResponseList<Status>

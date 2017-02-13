@@ -48,7 +48,8 @@ import de.vanita5.twittnuker.util.Utils
 
 class TrendsSuggestionsFragment : AbsContentListViewFragment<TrendsAdapter>(), LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
-    private val tabExtras: TrendsTabExtras? get() = arguments.getParcelable(EXTRA_EXTRAS)
+    private val tabExtras: TrendsTabExtras?
+        get() = arguments.getParcelable(EXTRA_EXTRAS)
 
     private val accountKey: UserKey? get() {
         return Utils.getAccountKeys(context, arguments)?.firstOrNull()

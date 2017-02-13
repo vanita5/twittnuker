@@ -42,10 +42,8 @@ import de.vanita5.twittnuker.provider.TwidereDataProvider
 import de.vanita5.twittnuker.service.BaseIntentService
 import de.vanita5.twittnuker.service.JobTaskService
 import de.vanita5.twittnuker.service.LegacyTaskService
-import de.vanita5.twittnuker.task.*
-import de.vanita5.twittnuker.task.twitter.GetActivitiesTask
-import de.vanita5.twittnuker.task.twitter.GetStatusesTask
-import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
+import de.vanita5.twittnuker.task.BaseAbstractTask
+import de.vanita5.twittnuker.task.ManagedAsyncTask
 import de.vanita5.twittnuker.text.util.EmojiEditableFactory
 import de.vanita5.twittnuker.text.util.EmojiSpannableFactory
 import de.vanita5.twittnuker.util.MultiSelectEventHandler
@@ -99,8 +97,6 @@ interface GeneralComponent {
 
     fun inject(obj: AccountsListPreference.AccountItemPreference)
 
-    fun inject(obj: MessagesConversationFragment.SetReadStateTask)
-
     fun inject(obj: DependencyHolder)
 
     fun inject(provider: CacheProvider)
@@ -109,13 +105,7 @@ interface GeneralComponent {
 
     fun inject(activity: MediaViewerActivity)
 
-    fun inject(task: GetStatusesTask)
-
     fun inject(service: JobTaskService)
-
-    fun inject(task: GetActivitiesTask)
-
-    fun inject(task: GetDirectMessagesTask)
 
     fun inject(obj: NotificationHelper)
 
@@ -127,17 +117,7 @@ interface GeneralComponent {
 
     fun inject(loader: ParcelableStatusLoader)
 
-    fun inject(task: GetTrendsTask)
-
-    fun inject(task: UpdateProfileBackgroundImageTask<Any>)
-
-    fun inject(task: UpdateProfileBannerImageTask<Any>)
-
-    fun inject(task: UpdateProfileImageTask<Any>)
-
     fun inject(loader: APIEditorDialogFragment.LoadDefaultsChooserDialogFragment.DefaultAPIConfigLoader)
-
-    fun inject(task: UpdateStatusTask)
 
     fun inject(application: TwittnukerApplication)
 

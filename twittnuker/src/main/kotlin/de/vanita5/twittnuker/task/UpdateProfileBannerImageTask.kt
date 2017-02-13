@@ -25,8 +25,6 @@ package de.vanita5.twittnuker.task
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.squareup.otto.Bus
-import org.mariotaku.abstask.library.AbstractTask
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
@@ -38,31 +36,20 @@ import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.TwitterWrapper
 import de.vanita5.twittnuker.util.Utils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
-
 import java.io.IOException
-import javax.inject.Inject
 
 open class UpdateProfileBannerImageTask<ResultHandler>(
-        private val context: Context,
+        context: Context,
         private val accountKey: UserKey,
         private val imageUri: Uri,
         private val deleteImage: Boolean
-) : AbstractTask<Any?, SingleResponse<ParcelableUser>, ResultHandler>() {
-
-    @Inject
-    lateinit var mBus: Bus
-
-    init {
-        @Suppress("UNCHECKED_CAST")
-        GeneralComponentHelper.build(context).inject(this as UpdateProfileBannerImageTask<Any>)
-    }
+) : BaseAbstractTask<Any?, SingleResponse<ParcelableUser>, ResultHandler>(context) {
 
     override fun afterExecute(handler: ResultHandler?, result: SingleResponse<ParcelableUser>?) {
         super.afterExecute(handler, result)
         if (result!!.hasData()) {
             Utils.showOkMessage(context, R.string.message_toast_profile_banner_image_updated, false)
-            mBus.post(ProfileUpdatedEvent(result.data!!))
+            bus.post(ProfileUpdatedEvent(result.data!!))
         } else {
             Utils.showErrorMessage(context, R.string.action_updating_profile_banner_image, result.exception,
                     true)

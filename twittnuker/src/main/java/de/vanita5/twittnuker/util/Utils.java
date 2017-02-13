@@ -103,23 +103,17 @@ import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.AccountPreferences;
-import de.vanita5.twittnuker.model.ParcelableDirectMessage;
-import de.vanita5.twittnuker.model.ParcelableDirectMessageCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableStatusValuesCreator;
-import de.vanita5.twittnuker.model.ParcelableUser;
 import de.vanita5.twittnuker.model.ParcelableUserMention;
 import de.vanita5.twittnuker.model.PebbleMessage;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils;
-import de.vanita5.twittnuker.model.util.ParcelableUserUtils;
-import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
@@ -135,7 +129,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.vanita5.twittnuker.util.DataStoreUtils.DIRECT_MESSAGES_URIS;
 import static de.vanita5.twittnuker.util.DataStoreUtils.STATUSES_URIS;
 import static de.vanita5.twittnuker.util.TwidereLinkify.PATTERN_TWITTER_PROFILE_IMAGES;
 
@@ -185,24 +178,6 @@ public final class Utils implements Constants {
         // application only targets SDK 14+, you should just call
         // getParent().requestSendAccessibilityEvent(this, event);
         accessibilityManager.sendAccessibilityEvent(event);
-    }
-
-    public static Uri buildDirectMessageConversationUri(final UserKey accountKey, final String conversationId,
-                                                        final String screenName) {
-        if (conversationId == null && screenName == null) return TwidereDataStore.CONTENT_URI_NULL;
-        final Uri.Builder builder;
-        if (conversationId != null) {
-            builder = DirectMessages.Conversation.CONTENT_URI.buildUpon();
-        } else {
-            builder = DirectMessages.Conversation.CONTENT_URI_SCREEN_NAME.buildUpon();
-        }
-        builder.appendPath(String.valueOf(accountKey));
-        if (conversationId != null) {
-            builder.appendPath(String.valueOf(conversationId));
-        } else {
-            builder.appendPath(screenName);
-        }
-        return builder.build();
     }
 
     public static int calculateInSampleSize(final int width, final int height, final int preferredWidth,
@@ -313,33 +288,6 @@ public final class Utils implements Constants {
                                                        @Nullable final UserKey accountKey) {
         if (accountKey == null) return tag;
         return accountKey + ":" + tag;
-    }
-
-    public static ParcelableDirectMessage findDirectMessageInDatabases(final Context context,
-                                                                       final UserKey accountKey,
-                                                                       final long messageId) {
-        if (context == null) return null;
-        final ContentResolver resolver = context.getContentResolver();
-        ParcelableDirectMessage message = null;
-        final String where = Expression.and(Expression.equalsArgs(DirectMessages.ACCOUNT_KEY),
-                Expression.equalsArgs(DirectMessages.MESSAGE_ID)).getSQL();
-        final String[] whereArgs = {accountKey.toString(), String.valueOf(messageId)};
-        for (final Uri uri : DIRECT_MESSAGES_URIS) {
-            final Cursor cur = resolver.query(uri, DirectMessages.COLUMNS, where, whereArgs, null);
-            if (cur == null) {
-                continue;
-            }
-            try {
-                if (cur.getCount() > 0 && cur.moveToFirst()) {
-                    message = ParcelableDirectMessageCursorIndices.fromCursor(cur);
-                }
-            } catch (IOException e) {
-                // Ignore
-            } finally {
-                cur.close();
-            }
-        }
-        return message;
     }
 
     @NonNull
@@ -567,10 +515,8 @@ public final class Utils implements Constants {
 
     public static Uri getNotificationUri(final int tableId, final Uri def) {
         switch (tableId) {
-            case TABLE_ID_DIRECT_MESSAGES:
-            case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
-            case TABLE_ID_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME:
-            case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
+            case TABLE_ID_MESSAGES:
+            case TABLE_ID_MESSAGES_CONVERSATIONS:
                 return DirectMessages.CONTENT_URI;
         }
         return def;
@@ -1025,26 +971,6 @@ public final class Utils implements Constants {
             return TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
         }
         return 0;
-    }
-
-
-    @Nullable
-    public static ParcelableUser getUserForConversation(@NonNull final Context context,
-                                                        @NonNull final UserKey accountKey,
-                                                        @NonNull final String conversationId) {
-        final ContentResolver cr = context.getContentResolver();
-        final Expression where = Expression.and(Expression.equalsArgs(ConversationEntries.ACCOUNT_KEY),
-                Expression.equalsArgs(ConversationEntries.CONVERSATION_ID));
-        final String[] whereArgs = {accountKey.toString(), conversationId};
-        final Cursor c = cr.query(ConversationEntries.CONTENT_URI, null, where.getSQL(), whereArgs,
-                null);
-        if (c == null) return null;
-        try {
-            if (c.moveToFirst()) return ParcelableUserUtils.fromDirectMessageConversationEntry(c);
-        } finally {
-            c.close();
-        }
-        return null;
     }
 
 

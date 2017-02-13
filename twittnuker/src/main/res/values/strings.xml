@@ -667,26 +667,10 @@
     <string name="message_direct_message_deleted">Direct message deleted.</string>
     <string name="message_direct_message_sent">Direct message sent.</string>
     <string name="message_error_invalid_account">Some account data are corrupted, Twittnuker will remove those accounts to prevent crash.</string>
-    <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
-    <string name="message_toast_extra_features_not_purchased">Enhanced features not purchased.</string>
-    <string name="message_toast_filters_import_hint">Press \"+\" to import</string>
-    <!-- Toast message for network errors -->
-    <string name="message_toast_network_error">Network error.</string>
     <string name="message_permission_request_compose_location">Twittnuker needs location permission for adding location to tweets.</string>
     <string name="message_permission_request_save_media">Twittnuker needs storage permission for saving media.</string>
     <string name="message_permission_request_share_media">Twittnuker needs storage permission for sharing media to some apps.</string>
     <string name="message_please_wait">Please wait.</string>
-    <string name="message_toast_retweet_cancelled">Retweet cancelled.</string>
-    <string name="message_toast_search_deleted">Search deleted.</string>
-    <string name="message_toast_search_name_deleted">Search \"<xliff:g example="SearchQuery" id="name">%1$s</xliff:g>\" deleted</string>
-    <string name="message_toast_search_name_saved">Search \"<xliff:g example="SearchQuery" id="name">%1$s</xliff:g>\" saved</string>
-    <string name="message_toast_search_saved">Search saved.</string>
-    <string name="message_toast_status_deleted">Tweet deleted.</string>
-    <string name="message_toast_status_favorited">Tweet favorited.</string>
-    <string name="message_toast_status_like_removed">Like removed.</string>
-    <string name="message_toast_status_liked">Tweet liked.</string>
-    <string name="message_toast_status_retweeted">Retweeted.</string>
-    <string name="message_toast_status_unfavorited">Tweet unfavorited.</string>
     <string name="message_sync_data_connect_hint">Connect Twittnuker with network storage to sync data</string>
     <string
         name="message_sync_data_synced_with_name">Twittnuker is now synced with <xliff:g
@@ -713,26 +697,44 @@
     <string name="message_toast_compose_write_storage_no_permission">Permission required to delete taken photo/video</string>
     <string name="message_toast_duplicate_filter_rule">Rule duplicated</string>
     <string name="message_toast_error_occurred">An error occurred, please try again</string>
+    <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
+    <string name="message_toast_extra_features_not_purchased">Enhanced features not purchased</string>
+    <string name="message_toast_filters_import_hint">Press \"+\" to import</string>
     <string name="message_toast_link_copied_to_clipboard">Link copied to clipboard</string>
     <string name="message_toast_livewp_daydream_enabled_message">Here\'s a little present for you, find it in your system settings :)</string>
     <string name="message_toast_login_verification_failed">Login verification failed</string>
+    <!-- Toast message for network errors -->
+    <string name="message_toast_network_error">Network error</string>
     <string name="message_toast_no_account">No account</string>
     <string name="message_toast_no_account_permission">Account permission is required</string>
     <string name="message_toast_no_account_selected">No account selected</string>
     <string name="message_toast_no_user_selected">No user selected</string>
     <string name="message_toast_press_again_to_close">Press again to close</string>
     <string name="message_toast_profile_banner_image_updated">Profile banner image updated</string>
+    <string name="message_toast_retweet_cancelled">Retweet cancelled</string>
     <string name="message_toast_save_media_no_storage_permission">Storage permission is needed to save media</string>
     <string name="message_toast_saved_to_gallery">Saved to gallery</string>
+    <string name="message_toast_search_deleted">Search deleted</string>
+    <string name="message_toast_search_name_deleted">Search \"<xliff:g
+        example="SearchQuery" id="name">%1$s</xliff:g>\" deleted</string>
+    <string name="message_toast_search_name_saved">Search \"<xliff:g
+        example="SearchQuery" id="name">%1$s</xliff:g>\" saved</string>
+    <string name="message_toast_search_saved">Search saved</string>
     <string name="message_toast_select_file_no_storage_permission">Storage permission is needed to select file</string>
     <string name="message_toast_share_media_no_storage_permission">Some apps requires storage permission to share media</string>
+    <string name="message_toast_status_deleted">Tweet deleted</string>
+    <string name="message_toast_status_favorited">Tweet favorited</string>
+    <string name="message_toast_status_like_removed">Like removed</string>
+    <string name="message_toast_status_liked">Tweet liked</string>
+    <string name="message_toast_status_retweeted">Retweeted</string>
     <string name="message_toast_status_saved_to_draft">Tweet saved to draft</string>
+    <string name="message_toast_status_unfavorited">Tweet unfavorited</string>
     <string name="message_toast_status_updated">Tweet sent</string>
     <string name="message_toast_unable_to_load_more_statuses">Unable to load older tweets</string>
-    <string name="message_toast_wrong_api_key">Incorrect API settings</string>
-    <string name="message_toast_wrong_username_password">Wrong username/password</string>
     <string name="message_toast_user_filters_removed">Removed from filters</string>
     <string name="message_toast_users_filters_added">Added to filters</string>
+    <string name="message_toast_wrong_api_key">Incorrect API settings</string>
+    <string name="message_toast_wrong_username_password">Wrong username/password</string>
     <string name="message_video_too_long">Video too long</string>
     <string name="message_video_too_short">Video too short</string>
 
@@ -874,6 +876,7 @@
     <string name="preference_summary_chrome_custom_tab">Open links in in-app browser (Powered by Chrome)</string>
     <string name="preference_summary_database_item_limit">Upper limit of items stored in databases for each account, set to a smaller value to save space and increase loading speed.</string>
     <string name="preference_summary_media_preload_non_metered_network">Preload media only on free networks like Wi-Fi</string>
+    <string name="preference_summary_trends_location">Now you can set location separately in tab settings.</string>
     <string name="preference_title_accounts">Accounts</string>
     <string name="preference_title_advanced">Advanced</string>
     <string name="preference_title_auto_refresh_compatibility_mode">Compatibility mode</string>
@@ -891,6 +894,7 @@
     <string name="preference_title_storage">Storage</string>
     <string name="preference_title_tablet_mode">Tablet mode</string>
     <string name="preference_title_translate">Translate</string>
+    <string name="preference_title_trends_location">Trends location</string>
 
     <string name="preload_wifi_only">Preload using Wi-Fi only</string>
 

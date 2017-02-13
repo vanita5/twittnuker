@@ -44,20 +44,12 @@ import java.io.IOException
 import javax.inject.Inject
 
 open class UpdateProfileBackgroundImageTask<ResultHandler>(
-        private val context: Context,
+        context: Context,
         private val accountKey: UserKey,
         private val imageUri: Uri,
         private val tile: Boolean,
         private val deleteImage: Boolean
-) : AbstractTask<Any?, SingleResponse<ParcelableUser>, ResultHandler>() {
-
-    @Inject
-    lateinit var bus: Bus
-
-    init {
-        @Suppress("UNCHECKED_CAST")
-        GeneralComponentHelper.build(context).inject(this as UpdateProfileBackgroundImageTask<Any>)
-    }
+) : BaseAbstractTask<Any?, SingleResponse<ParcelableUser>, ResultHandler>(context) {
 
     override fun afterExecute(handler: ResultHandler?, result: SingleResponse<ParcelableUser>) {
         super.afterExecute(handler, result)

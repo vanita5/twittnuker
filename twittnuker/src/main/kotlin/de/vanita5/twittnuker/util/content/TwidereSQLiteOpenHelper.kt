@@ -40,8 +40,6 @@ import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.TabValuesCreator
 import de.vanita5.twittnuker.model.tab.TabConfiguration
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
-import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationsEntryQueryBuilder
-import de.vanita5.twittnuker.util.TwidereQueryBuilder.DirectMessagesQueryBuilder
 import de.vanita5.twittnuker.util.content.DatabaseUpgradeHelper.safeUpgrade
 import de.vanita5.twittnuker.util.migrateAccounts
 import java.util.*
@@ -84,10 +82,13 @@ class TwidereSQLiteOpenHelper(
         db.endTransaction()
 
         db.beginTransaction()
-        db.execSQL(createTable(DirectMessages.Inbox.TABLE_NAME, DirectMessages.Inbox.COLUMNS,
-                DirectMessages.Inbox.TYPES, true))
-        db.execSQL(createTable(DirectMessages.Outbox.TABLE_NAME, DirectMessages.Outbox.COLUMNS,
-                DirectMessages.Outbox.TYPES, true))
+        db.execSQL(createTable(Messages.TABLE_NAME, Messages.COLUMNS, Messages.TYPES, true))
+        db.execSQL(createTable(Messages.Conversations.TABLE_NAME, Messages.Conversations.COLUMNS,
+                Messages.Conversations.TYPES, true))
+        db.setTransactionSuccessful()
+        db.endTransaction()
+
+        db.beginTransaction()
         db.execSQL(createTable(Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, true))
         db.execSQL(createTable(SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true))
         db.execSQL(createTable(SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true))
@@ -96,7 +97,6 @@ class TwidereSQLiteOpenHelper(
         db.endTransaction()
 
         db.beginTransaction()
-        createViews(db)
         createTriggers(db)
         createIndices(db)
         db.setTransactionSuccessful()
@@ -132,31 +132,16 @@ class TwidereSQLiteOpenHelper(
     private fun createIndices(db: SQLiteDatabase) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return
         db.execSQL(createIndex("statuses_index", Statuses.TABLE_NAME, arrayOf(Statuses.ACCOUNT_KEY), true))
-        db.execSQL(createIndex("messages_inbox_index", DirectMessages.Inbox.TABLE_NAME, arrayOf(DirectMessages.ACCOUNT_KEY), true))
-        db.execSQL(createIndex("messages_outbox_index", DirectMessages.Outbox.TABLE_NAME, arrayOf(DirectMessages.ACCOUNT_KEY), true))
-    }
-
-    private fun createViews(db: SQLiteDatabase) {
-        db.execSQL(SQLQueryBuilder.dropView(true, DirectMessages.TABLE_NAME).sql)
-        db.execSQL(SQLQueryBuilder.dropView(true, DirectMessages.ConversationEntries.TABLE_NAME).sql)
-
-        db.execSQL(SQLQueryBuilder.createView(true, DirectMessages.TABLE_NAME)
-                .`as`(DirectMessagesQueryBuilder.build()).buildSQL())
-        db.execSQL(SQLQueryBuilder.createView(true, DirectMessages.ConversationEntries.TABLE_NAME)
-                .`as`(ConversationsEntryQueryBuilder.build()).buildSQL())
     }
 
     private fun createTriggers(db: SQLiteDatabase) {
         db.execSQL(SQLQueryBuilder.dropTrigger(true, "delete_old_statuses").sql)
         db.execSQL(SQLQueryBuilder.dropTrigger(true, "delete_old_cached_statuses").sql)
-        db.execSQL(SQLQueryBuilder.dropTrigger(true, "delete_old_received_messages").sql)
-        db.execSQL(SQLQueryBuilder.dropTrigger(true, "delete_old_sent_messages").sql)
         db.execSQL(SQLQueryBuilder.dropTrigger(true, "on_user_cache_update_trigger").sql)
         db.execSQL(SQLQueryBuilder.dropTrigger(true, "delete_old_cached_hashtags").sql)
+
         db.execSQL(createDeleteDuplicateStatusTrigger("delete_old_statuses", Statuses.TABLE_NAME).sql)
         db.execSQL(createDeleteDuplicateStatusTrigger("delete_old_cached_statuses", CachedStatuses.TABLE_NAME).sql)
-        db.execSQL(createDeleteDuplicateMessageTrigger("delete_old_received_messages", DirectMessages.Inbox.TABLE_NAME).sql)
-        db.execSQL(createDeleteDuplicateMessageTrigger("delete_old_sent_messages", DirectMessages.Outbox.TABLE_NAME).sql)
 
         // Update user info in filtered users
         val cachedUsersTable = Table(CachedUsers.TABLE_NAME)
@@ -199,18 +184,6 @@ class TwidereSQLiteOpenHelper(
     }
 
 
-    private fun createDeleteDuplicateMessageTrigger(triggerName: String, tableName: String): SQLQuery {
-        val table = Table(tableName)
-        val deleteOld = SQLQueryBuilder.deleteFrom(table).where(Expression.and(
-                Expression.equals(Column(DirectMessages.ACCOUNT_KEY), Column(Table.NEW, DirectMessages.ACCOUNT_KEY)),
-                Expression.equals(Column(DirectMessages.MESSAGE_ID), Column(Table.NEW, DirectMessages.MESSAGE_ID))
-        )).build()
-        return SQLQueryBuilder.createTrigger(false, true, triggerName)
-                .type(Type.BEFORE).event(Event.INSERT).on(table).forEachRow(true)
-                .actions(deleteOld).build()
-    }
-
-
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         handleVersionChange(db, oldVersion, newVersion)
     }
@@ -230,13 +203,24 @@ class TwidereSQLiteOpenHelper(
     }
 
     private fun handleVersionChange(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-
         if (oldVersion <= 153) {
             migrateLegacyAccounts(db)
             if (newVersion > 153) {
                 migrateAccounts(AccountManager.get(context), db)
                 db.execSQL(SQLQueryBuilder.dropTable(true, Accounts.TABLE_NAME).sql)
             }
+        }
+        if (oldVersion <= 164) {
+            db.execSQL(SQLQueryBuilder.dropView(true, DirectMessages.TABLE_NAME).sql)
+            db.execSQL(SQLQueryBuilder.dropView(true, DirectMessages.ConversationEntries.TABLE_NAME).sql)
+            db.execSQL(SQLQueryBuilder.dropTrigger(true, "delete_old_received_messages").sql)
+            db.execSQL(SQLQueryBuilder.dropTrigger(true, "delete_old_sent_messages").sql)
+
+            db.execSQL(SQLQueryBuilder.dropTable(true, DirectMessages.Inbox.TABLE_NAME).sql)
+            db.execSQL(SQLQueryBuilder.dropTable(true, DirectMessages.Outbox.TABLE_NAME).sql)
+
+            db.execSQL(SQLQueryBuilder.dropIndex(true, "messages_inbox_index").sql)
+            db.execSQL(SQLQueryBuilder.dropIndex(true, "messages_outbox_index").sql)
         }
 
         safeUpgrade(db, Statuses.TABLE_NAME, Statuses.COLUMNS, Statuses.TYPES, true, null)
@@ -253,17 +237,18 @@ class TwidereSQLiteOpenHelper(
                 createConflictReplaceConstraint(CachedRelationships.ACCOUNT_KEY, CachedRelationships.USER_KEY))
 
         migrateFilters(db, oldVersion)
-        safeUpgrade(db, DirectMessages.Inbox.TABLE_NAME, DirectMessages.Inbox.COLUMNS,
-                DirectMessages.Inbox.TYPES, true, null)
-        safeUpgrade(db, DirectMessages.Outbox.TABLE_NAME, DirectMessages.Outbox.COLUMNS,
-                DirectMessages.Outbox.TYPES, true, null)
         safeUpgrade(db, CachedTrends.Local.TABLE_NAME, CachedTrends.Local.COLUMNS,
                 CachedTrends.Local.TYPES, true, null)
         safeUpgrade(db, Tabs.TABLE_NAME, Tabs.COLUMNS, Tabs.TYPES, false, null)
         safeUpgrade(db, SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true, null)
-        safeUpgrade(db, SearchHistory.TABLE_NAME, SearchHistory.COLUMNS, SearchHistory.TYPES, true, null)
-        safeUpgrade(db, PushNotifications.TABLE_NAME, PushNotifications.COLUMNS, PushNotifications.TYPES,
-                false, null)
+
+        // DM columns
+        safeUpgrade(db, Messages.TABLE_NAME, Messages.COLUMNS, Messages.TYPES, true, null)
+        safeUpgrade(db, Messages.Conversations.TABLE_NAME, Messages.Conversations.COLUMNS,
+                Messages.Conversations.TYPES, true, null)
+
+        safeUpgrade(db, PushNotifications.TABLE_NAME, PushNotifications.COLUMNS,
+                PushNotifications.TYPES, false, null)
 
         if (oldVersion < 131) {
             migrateFilteredUsers(db)
@@ -272,7 +257,6 @@ class TwidereSQLiteOpenHelper(
         db.beginTransaction()
         db.execSQL(SQLQueryBuilder.dropTable(true, "network_usages").sql)
         db.execSQL(SQLQueryBuilder.dropTable(true, "mentions").sql)
-        createViews(db)
         createTriggers(db)
         createIndices(db)
         db.setTransactionSuccessful()
@@ -301,14 +285,14 @@ class TwidereSQLiteOpenHelper(
     }
 
     private fun migrateLegacyAccounts(db: SQLiteDatabase) {
-        val accountsAlias = HashMap<String, String>()
-        accountsAlias.put(Accounts.SCREEN_NAME, "username")
-        accountsAlias.put(Accounts.NAME, "username")
-        accountsAlias.put(Accounts.ACCOUNT_KEY, "user_id")
-        accountsAlias.put(Accounts.COLOR, "user_color")
-        accountsAlias.put(Accounts.OAUTH_TOKEN_SECRET, "token_secret")
-        accountsAlias.put(Accounts.API_URL_FORMAT, "rest_base_url")
-        safeUpgrade(db, Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, false, accountsAlias)
+        val alias = HashMap<String, String>()
+        alias[Accounts.SCREEN_NAME] = "username"
+        alias[Accounts.NAME] = "username"
+        alias[Accounts.ACCOUNT_KEY] = "user_id"
+        alias[Accounts.COLOR] = "user_color"
+        alias[Accounts.OAUTH_TOKEN_SECRET] = "token_secret"
+        alias[Accounts.API_URL_FORMAT] = "rest_base_url"
+        safeUpgrade(db, Accounts.TABLE_NAME, Accounts.COLUMNS, Accounts.TYPES, false, alias)
     }
 
     private fun migrateFilteredUsers(db: SQLiteDatabase) {

@@ -39,7 +39,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteFullException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Handler;
@@ -51,11 +50,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.InboxStyle;
 import android.support.v4.text.BidiFormatter;
-import android.support.v4.util.LongSparseArray;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.util.Pair;
 
@@ -64,7 +59,6 @@ import com.squareup.otto.Bus;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.mariotaku.sqliteqb.library.ArgsArray;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.OrderBy;
@@ -94,7 +88,6 @@ import de.vanita5.twittnuker.model.ParcelableDirectMessage;
 import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.ParcelableStatusCursorIndices;
 import de.vanita5.twittnuker.model.ParcelableUser;
-import de.vanita5.twittnuker.model.SpanItem;
 import de.vanita5.twittnuker.model.StringLongPair;
 import de.vanita5.twittnuker.model.UnreadItem;
 import de.vanita5.twittnuker.model.UserKey;
@@ -102,12 +95,10 @@ import de.vanita5.twittnuker.model.message.UnreadCountUpdatedEvent;
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedHashtags;
-import de.vanita5.twittnuker.provider.TwidereDataStore.CachedImages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedStatuses;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DNS;
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
@@ -124,7 +115,6 @@ import de.vanita5.twittnuker.util.DataStoreFunctionsKt;
 import de.vanita5.twittnuker.util.DataStoreUtils;
 import de.vanita5.twittnuker.util.DebugLog;
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils;
-import de.vanita5.twittnuker.util.JsonSerializer;
 import de.vanita5.twittnuker.util.NotificationManagerWrapper;
 import de.vanita5.twittnuker.util.ParseUtils;
 import de.vanita5.twittnuker.util.NotificationHelper;
@@ -133,13 +123,10 @@ import de.vanita5.twittnuker.util.SQLiteDatabaseWrapper;
 import de.vanita5.twittnuker.util.SQLiteDatabaseWrapper.LazyLoadCallback;
 import de.vanita5.twittnuker.util.SharedPreferencesWrapper;
 import de.vanita5.twittnuker.util.TwidereQueryBuilder.CachedUsersQueryBuilder;
-import de.vanita5.twittnuker.util.TwidereQueryBuilder.ConversationQueryBuilder;
 import de.vanita5.twittnuker.util.UriExtraUtils;
 import de.vanita5.twittnuker.util.UserColorNameManager;
 import de.vanita5.twittnuker.util.Utils;
-import de.vanita5.twittnuker.util.collection.CompactHashSet;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
-import de.vanita5.twittnuker.util.media.preview.PreviewMediaExtractor;
 import de.vanita5.twittnuker.util.net.TwidereDns;
 
 import org.oshkimaadziig.george.androidutils.SpanFormatter;
@@ -148,11 +135,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -349,9 +334,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final int tableId = DataStoreUtils.getTableId(uri);
         final String table = DataStoreUtils.getTableNameById(tableId);
         switch (tableId) {
-            case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
-            case TABLE_ID_DIRECT_MESSAGES:
-            case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
+            case TABLE_ID_MESSAGES_CONVERSATIONS:
+            case TABLE_ID_MESSAGES:
                 return 0;
         }
         int result = 0;
@@ -418,9 +402,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final int tableId = DataStoreUtils.getTableId(uri);
         final String table = DataStoreUtils.getTableNameById(tableId);
         switch (tableId) {
-            case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
-            case TABLE_ID_DIRECT_MESSAGES:
-            case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
+            case TABLE_ID_MESSAGES_CONVERSATIONS:
+            case TABLE_ID_MESSAGES:
                 return 0;
             case VIRTUAL_TABLE_ID_NOTIFICATIONS: {
                 final List<String> segments = uri.getPathSegments();
@@ -473,9 +456,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         final int tableId = DataStoreUtils.getTableId(uri);
         final String table = DataStoreUtils.getTableNameById(tableId);
         switch (tableId) {
-            case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
-            case TABLE_ID_DIRECT_MESSAGES:
-            case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
+            case TABLE_ID_MESSAGES_CONVERSATIONS:
+            case TABLE_ID_MESSAGES:
                 return null;
         }
         final long rowId;
@@ -678,29 +660,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     final List<String> segments = uri.getPathSegments();
                     if (segments.size() != 3) return null;
                     return getUnreadCountsCursorByType(segments.get(2));
-                }
-                case TABLE_ID_DIRECT_MESSAGES_CONVERSATION: {
-                    final List<String> segments = uri.getPathSegments();
-                    if (segments.size() != 4) return null;
-                    final UserKey accountId = UserKey.valueOf(segments.get(2));
-                    final String conversationId = segments.get(3);
-                    final Pair<SQLSelectQuery, String[]> query = ConversationQueryBuilder
-                            .buildByConversationId(projection, accountId, conversationId, selection,
-                                    sortOrder);
-                    final Cursor c = databaseWrapper.rawQuery(query.first.getSQL(), query.second);
-                    setNotificationUri(c, DirectMessages.CONTENT_URI);
-                    return c;
-                }
-                case TABLE_ID_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME: {
-                    final List<String> segments = uri.getPathSegments();
-                    if (segments.size() != 4) return null;
-                    final UserKey accountKey = UserKey.valueOf(segments.get(2));
-                    final String screenName = segments.get(3);
-                    final Pair<SQLSelectQuery, String[]> query = ConversationQueryBuilder.byScreenName(
-                            projection, accountKey, screenName, selection, sortOrder);
-                    final Cursor c = databaseWrapper.rawQuery(query.first.getSQL(), query.second);
-                    setNotificationUri(c, DirectMessages.CONTENT_URI);
-                    return c;
                 }
                 case VIRTUAL_TABLE_ID_CACHED_USERS_WITH_RELATIONSHIP: {
                     final UserKey accountKey = UserKey.valueOf(uri.getLastPathSegment());
@@ -914,9 +873,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         int result = 0;
         if (table != null) {
             switch (tableId) {
-                case TABLE_ID_DIRECT_MESSAGES_CONVERSATION:
-                case TABLE_ID_DIRECT_MESSAGES:
-                case TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
+                case TABLE_ID_MESSAGES_CONVERSATIONS:
+                case TABLE_ID_MESSAGES:
                     return 0;
             }
             result = databaseWrapper.update(table, values, selection, selectionArgs);
@@ -1118,13 +1076,13 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                 });
                 break;
             }
-            case TABLE_ID_DIRECT_MESSAGES_INBOX: {
+            case TABLE_ID_MESSAGES: {
                 final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(context,
                         DataStoreUtils.getAccountKeys(context));
                 for (final AccountPreferences pref : prefs) {
                     if (!pref.isDirectMessagesNotificationEnabled()) continue;
                     final StringLongPair[] pairs = readStateManager.getPositionPairs(CustomTabType.DIRECT_MESSAGES);
-                    showMessagesNotification(pref, pairs, valuesArray);
+                    // TODO show messages notifications
                 }
                 notifyUnreadCountChanged(NOTIFICATION_ID_DIRECT_MESSAGES);
                 break;
@@ -1365,167 +1323,6 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
         builder.setColor(pref.getNotificationLightColor());
         builder.setDefaults(notificationDefaults);
         builder.setOnlyAlertOnce(true);
-    }
-
-    private void showMessagesNotification(AccountPreferences pref, StringLongPair[] pairs, ContentValues[] valuesArray) {
-        if (preferences.getBoolean(KEY_ENABLE_PUSH_NOTIFICATIONS, false)
-                && preferences.getBoolean(GCM_TOKEN_SENT, false)) return;
-        final Context context = getContext();
-        assert context != null;
-        final UserKey accountKey = pref.getAccountKey();
-        final long prevOldestId = readStateManager.getPosition(TAG_OLDEST_MESSAGES,
-                String.valueOf(accountKey));
-        long oldestId = -1;
-        for (final ContentValues contentValues : valuesArray) {
-            final long messageId = contentValues.getAsLong(DirectMessages.MESSAGE_ID);
-            oldestId = oldestId < 0 ? messageId : Math.min(oldestId, messageId);
-            if (messageId <= prevOldestId) return;
-        }
-        readStateManager.setPosition(TAG_OLDEST_MESSAGES, String.valueOf(accountKey), oldestId,
-                false);
-        final Resources resources = context.getResources();
-        final NotificationManagerWrapper nm = notificationManager;
-        final ArrayList<Expression> orExpressions = new ArrayList<>();
-        final String prefix = accountKey + "-";
-        final int prefixLength = prefix.length();
-        final Set<String> senderIds = new CompactHashSet<>();
-        final List<String> whereArgs = new ArrayList<>();
-        for (StringLongPair pair : pairs) {
-            final String key = pair.getKey();
-            if (key.startsWith(prefix)) {
-                final String senderId = key.substring(prefixLength);
-                senderIds.add(senderId);
-                final Expression expression = Expression.and(
-                        Expression.equalsArgs(DirectMessages.SENDER_ID),
-                        Expression.greaterThanArgs(DirectMessages.MESSAGE_ID)
-                );
-                whereArgs.add(senderId);
-                whereArgs.add(String.valueOf(pair.getValue()));
-                orExpressions.add(expression);
-            }
-        }
-        orExpressions.add(Expression.notIn(new Column(DirectMessages.SENDER_ID), new ArgsArray(senderIds.size())));
-        whereArgs.addAll(senderIds);
-        final Expression selection = Expression.and(
-                Expression.equalsArgs(DirectMessages.ACCOUNT_KEY),
-                Expression.greaterThanArgs(DirectMessages.MESSAGE_ID),
-                Expression.or(orExpressions.toArray(new Expression[orExpressions.size()]))
-        );
-        whereArgs.add(accountKey.toString());
-        whereArgs.add(String.valueOf(prevOldestId));
-        final String filteredSelection = selection.getSQL();
-        final String[] selectionArgs = whereArgs.toArray(new String[whereArgs.size()]);
-        final String[] userProjection = {DirectMessages.SENDER_ID, DirectMessages.SENDER_NAME,
-                DirectMessages.SENDER_SCREEN_NAME};
-        final String[] messageProjection = {DirectMessages.MESSAGE_ID, DirectMessages.SENDER_ID,
-                DirectMessages.SENDER_NAME, DirectMessages.SENDER_SCREEN_NAME, DirectMessages.TEXT_UNESCAPED,
-                DirectMessages.MESSAGE_TIMESTAMP};
-        final Cursor messageCursor = databaseWrapper.query(DirectMessages.Inbox.TABLE_NAME,
-                messageProjection, filteredSelection, selectionArgs, null, null,
-                DirectMessages.DEFAULT_SORT_ORDER);
-        final Cursor userCursor = databaseWrapper.query(DirectMessages.Inbox.TABLE_NAME,
-                userProjection, filteredSelection, selectionArgs, DirectMessages.SENDER_ID, null,
-                DirectMessages.DEFAULT_SORT_ORDER);
-
-        final StringBuilder pebbleNotificationBuilder = new StringBuilder();
-
-        //noinspection TryFinallyCanBeTryWithResources
-        try {
-            final int usersCount = userCursor.getCount();
-            final int messagesCount = messageCursor.getCount();
-            if (messagesCount == 0 || usersCount == 0) return;
-            final String accountName = DataStoreUtils.getAccountName(context, accountKey);
-            final String accountScreenName = DataStoreUtils.getAccountScreenName(context, accountKey);
-            final ParcelableDirectMessageCursorIndices messageIndices = new ParcelableDirectMessageCursorIndices(messageCursor);
-            final int idxUserName = userCursor.getColumnIndex(DirectMessages.SENDER_NAME),
-                    idxUserScreenName = userCursor.getColumnIndex(DirectMessages.SENDER_NAME),
-                    idxUserId = userCursor.getColumnIndex(DirectMessages.SENDER_NAME);
-
-            final CharSequence notificationTitle = resources.getQuantityString(R.plurals.N_new_messages,
-                    messagesCount, messagesCount);
-            final String notificationContent;
-            userCursor.moveToFirst();
-            final String displayName =
-                    nameFirst ? userCursor.getString(idxUserName) : "@" + userCursor.getString(idxUserScreenName);
-            if (usersCount == 1) {
-                if (messagesCount == 1) {
-                    notificationContent = context.getString(R.string.notification_direct_message, displayName);
-                } else {
-                    notificationContent = context.getString(R.string.notification_direct_message_multiple_messages,
-                            displayName, messagesCount);
-                }
-            } else {
-                notificationContent = context.getString(R.string.notification_direct_message_multiple_users,
-                        displayName, usersCount - 1, messagesCount);
-            }
-
-            final LongSparseArray<Long> idsMap = new LongSparseArray<>();
-            // Add rich notification and get latest tweet timestamp
-            long when = -1;
-            final InboxStyle style = new InboxStyle();
-            for (int i = 0; messageCursor.moveToPosition(i) && i < messagesCount; i++) {
-                if (when < 0) {
-                    when = messageCursor.getLong(messageIndices.timestamp);
-                }
-                if (i < 5) {
-                    final SpannableStringBuilder sb = new SpannableStringBuilder();
-                    sb.append(
-                            nameFirst ? messageCursor.getString(messageIndices.sender_name) :
-                                    '@' + messageCursor.getString(messageIndices.sender_screen_name));
-                    sb.setSpan(new StyleSpan(Typeface.BOLD), 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    sb.append(' ');
-                    sb.append(messageCursor.getString(messageIndices.text_unescaped));
-                    style.addLine(sb);
-                    pebbleNotificationBuilder.append(
-                            nameFirst ? messageCursor.getString(messageIndices.sender_name) :
-                                    messageCursor.getString(messageIndices.sender_screen_name));
-                    pebbleNotificationBuilder.append(": ");
-                    pebbleNotificationBuilder.append(messageCursor.getString(messageIndices.text_unescaped));
-                    pebbleNotificationBuilder.append("\n");
-                }
-                final long userId = messageCursor.getLong(messageIndices.sender_id);
-                final long messageId = messageCursor.getLong(messageIndices.id);
-                idsMap.put(userId, Math.max(idsMap.get(userId, -1L), messageId));
-            }
-            if (nameFirst) {
-                style.setSummaryText(accountName);
-            } else {
-                style.setSummaryText("@" + accountScreenName);
-            }
-            final StringLongPair[] positions = new StringLongPair[idsMap.size()];
-            for (int i = 0, j = idsMap.size(); i < j; i++) {
-                positions[i] = new StringLongPair(String.valueOf(idsMap.keyAt(i)), idsMap.valueAt(i));
-            }
-
-            // Setup notification
-            final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-            builder.setAutoCancel(true);
-            builder.setSmallIcon(R.drawable.ic_stat_message);
-            builder.setTicker(notificationTitle);
-            builder.setContentTitle(notificationTitle);
-            builder.setContentText(notificationContent);
-            builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
-            builder.setContentIntent(getContentIntent(context, CustomTabType.DIRECT_MESSAGES,
-                    NotificationType.DIRECT_MESSAGES, accountKey, -1));
-            builder.setDeleteIntent(getMarkReadDeleteIntent(context,
-                    NotificationType.DIRECT_MESSAGES, accountKey, positions));
-            builder.setNumber(messagesCount);
-            builder.setWhen(when);
-            builder.setStyle(style);
-            builder.setColor(pref.getNotificationLightColor());
-            applyNotificationPreferences(builder, pref, pref.getDirectMessagesNotificationType());
-            try {
-                nm.notify("messages_" + accountKey, NOTIFICATION_ID_DIRECT_MESSAGES, builder.build());
-
-                //TODO: Pebble notification - Only notify about recently added DMs, not previous ones?
-                Utils.sendPebbleNotification(context, "DM", pebbleNotificationBuilder.toString());
-            } catch (SecurityException e) {
-                // Silently ignore
-            }
-        } finally {
-            messageCursor.close();
-            userCursor.close();
-        }
     }
 
     private void setNotificationUri(final Cursor c, final Uri uri) {

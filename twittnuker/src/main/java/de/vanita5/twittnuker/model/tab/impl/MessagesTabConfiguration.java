@@ -4,10 +4,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.DirectMessagesFragment;
-import de.vanita5.twittnuker.model.tab.TabConfiguration;
+import de.vanita5.twittnuker.fragment.MessagesEntriesFragment;
 import de.vanita5.twittnuker.model.tab.DrawableHolder;
 import de.vanita5.twittnuker.model.tab.StringHolder;
+import de.vanita5.twittnuker.model.tab.TabConfiguration;
 
 public class MessagesTabConfiguration extends TabConfiguration {
     @NonNull
@@ -31,6 +31,6 @@ public class MessagesTabConfiguration extends TabConfiguration {
     @NonNull
     @Override
     public Class<? extends Fragment> getFragmentClass() {
-        return DirectMessagesFragment.class;
+        return MessagesEntriesFragment.class;
     }
 }

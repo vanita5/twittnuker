@@ -87,6 +87,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.DNS;
 import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Preferences;
 import de.vanita5.twittnuker.provider.TwidereDataStore.PushNotifications;
@@ -133,18 +134,10 @@ public class DataStoreUtils implements Constants {
                 TABLE_ID_FILTERED_LINKS);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Filters.Subscriptions.CONTENT_PATH,
                 TABLE_ID_FILTERS_SUBSCRIPTIONS);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.CONTENT_PATH,
-                TABLE_ID_DIRECT_MESSAGES);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Inbox.CONTENT_PATH,
-                TABLE_ID_DIRECT_MESSAGES_INBOX);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Outbox.CONTENT_PATH,
-                TABLE_ID_DIRECT_MESSAGES_OUTBOX);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Conversation.CONTENT_PATH + "/*/*",
-                TABLE_ID_DIRECT_MESSAGES_CONVERSATION);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.Conversation.CONTENT_PATH_SCREEN_NAME + "/*/*",
-                TABLE_ID_DIRECT_MESSAGES_CONVERSATION_SCREEN_NAME);
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, DirectMessages.ConversationEntries.CONTENT_PATH,
-                TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES);
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Messages.CONTENT_PATH,
+                TABLE_ID_MESSAGES);
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Messages.Conversations.CONTENT_PATH,
+                TABLE_ID_MESSAGES_CONVERSATIONS);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedTrends.Local.CONTENT_PATH,
                 TABLE_ID_TRENDS_LOCAL);
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Tabs.CONTENT_PATH,
@@ -508,14 +501,6 @@ public class DataStoreUtils implements Constants {
                 return Filters.Links.TABLE_NAME;
             case TwittnukerConstants.TABLE_ID_FILTERS_SUBSCRIPTIONS:
                 return Filters.Subscriptions.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_DIRECT_MESSAGES_INBOX:
-                return DirectMessages.Inbox.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_DIRECT_MESSAGES_OUTBOX:
-                return DirectMessages.Outbox.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_DIRECT_MESSAGES:
-                return DirectMessages.TABLE_NAME;
-            case TwittnukerConstants.TABLE_ID_DIRECT_MESSAGES_CONVERSATIONS_ENTRIES:
-                return DirectMessages.ConversationEntries.TABLE_NAME;
             case TwittnukerConstants.TABLE_ID_TRENDS_LOCAL:
                 return CachedTrends.Local.TABLE_NAME;
             case TwittnukerConstants.TABLE_ID_TABS:
@@ -687,22 +672,6 @@ public class DataStoreUtils implements Constants {
                 final Expression where = Expression.and(
                         Expression.notIn(new Column(Activities._ID), qb.build()),
                         Expression.equalsArgs(Activities.ACCOUNT_KEY)
-                );
-                final String[] whereArgs = {String.valueOf(accountKey), String.valueOf(accountKey)};
-                resolver.delete(uri, where.getSQL(), whereArgs);
-            }
-            for (final Uri uri : DIRECT_MESSAGES_URIS) {
-                final String table = getTableNameByUri(uri);
-                final Expression accountWhere = Expression.equalsArgs(DirectMessages.ACCOUNT_KEY);
-                final SQLSelectQuery.Builder qb = new SQLSelectQuery.Builder();
-                qb.select(new Column(DirectMessages._ID))
-                        .from(new Tables(table))
-                        .where(accountWhere)
-                        .orderBy(new OrderBy(DirectMessages.MESSAGE_ID, false))
-                        .limit(itemLimit * 10);
-                final Expression where = Expression.and(
-                        Expression.notIn(new Column(DirectMessages._ID), qb.build()),
-                        Expression.equalsArgs(DirectMessages.ACCOUNT_KEY)
                 );
                 final String[] whereArgs = {String.valueOf(accountKey), String.valueOf(accountKey)};
                 resolver.delete(uri, where.getSQL(), whereArgs);

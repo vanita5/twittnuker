@@ -31,8 +31,8 @@ import de.vanita5.twittnuker.model.FiltersData$BaseItemTableInfo;
 import de.vanita5.twittnuker.model.FiltersData$UserItemTableInfo;
 import de.vanita5.twittnuker.model.FiltersSubscriptionTableInfo;
 import de.vanita5.twittnuker.model.ParcelableActivityTableInfo;
-import de.vanita5.twittnuker.model.ParcelableDirectMessageTableInfo;
 import de.vanita5.twittnuker.model.ParcelableMessageConversationTableInfo;
+import de.vanita5.twittnuker.model.ParcelableMessageTableInfo;
 import de.vanita5.twittnuker.model.ParcelableStatusTableInfo;
 import de.vanita5.twittnuker.model.ParcelableTrendTableInfo;
 import de.vanita5.twittnuker.model.ParcelableUserTableInfo;
@@ -357,19 +357,46 @@ public interface TwidereDataStore {
     }
 
     interface Messages extends BaseColumns, InsertedDateColumns, AccountSupportColumns {
+        String MESSAGE_ID = "message_id";
+        String CONVERSATION_ID = "conversation_id";
+        String MESSAGE_TYPE = "message_type";
+        String MESSAGE_TIMESTAMP = "message_timestamp";
+        String LOCAL_TIMESTAMP = "local_timestamp";
+        String TEXT_UNESCAPED = "text_unescaped";
+        String MEDIA = "media";
+        String SPANS = "spans";
+        String EXTRAS = "extras";
+        String SENDER_KEY = "sender_key";
+        String RECIPIENT_KEY = "recipient_key";
+        String REQUEST_CURSOR = "request_cursor";
+        String IS_OUTGOING = "is_outgoing";
+
+        String[] COLUMNS = ParcelableMessageTableInfo.COLUMNS;
+        String[] TYPES = ParcelableMessageTableInfo.TYPES;
+
+        String TABLE_NAME = "messages";
+        String CONTENT_PATH = "messages";
 
         interface Conversations extends BaseColumns, AccountSupportColumns {
             String CONVERSATION_ID = "conversation_id";
+            String MESSAGE_TYPE = "message_type";
+            String MESSAGE_TIMESTAMP = "message_timestamp";
             String TEXT_UNESCAPED = "text_unescaped";
-            String LAST_SEND_AT = "last_send_at";
-            String MEDIA_JSON = "media_json";
+            String MEDIA = "media";
+            String SPANS = "spans";
+            String EXTRAS = "extras";
             String PARTICIPANTS = "participants";
             String SENDER_KEY = "sender_key";
             String RECIPIENT_KEY = "recipient_key";
             String REQUEST_CURSOR = "request_cursor";
+            String IS_OUTGOING = "is_outgoing";
 
             String[] COLUMNS = ParcelableMessageConversationTableInfo.COLUMNS;
             String[] TYPES = ParcelableMessageConversationTableInfo.TYPES;
+
+            String TABLE_NAME = "messages_conversations";
+
+            String CONTENT_PATH = "messages/conversations";
         }
     }
 
@@ -400,27 +427,10 @@ public interface TwidereDataStore {
 
         String MEDIA_JSON = "media_json";
 
-        String[] COLUMNS = ParcelableDirectMessageTableInfo.COLUMNS;
-        String[] TYPES = ParcelableDirectMessageTableInfo.TYPES;
-
         String DEFAULT_SORT_ORDER = MESSAGE_ID + " DESC";
 
         interface Conversation extends DirectMessages {
 
-            String DEFAULT_SORT_ORDER = MESSAGE_TIMESTAMP + " ASC";
-
-            String CONTENT_PATH_SEGMENT = "conversation";
-            String CONTENT_PATH_SEGMENT_SCREEN_NAME = "conversation_screen_name";
-
-            String CONTENT_PATH = DirectMessages.CONTENT_PATH + "/" + CONTENT_PATH_SEGMENT;
-            String CONTENT_PATH_SCREEN_NAME = DirectMessages.CONTENT_PATH + "/"
-                    + CONTENT_PATH_SEGMENT_SCREEN_NAME;
-
-            Uri CONTENT_URI = Uri
-                    .withAppendedPath(DirectMessages.CONTENT_URI, CONTENT_PATH_SEGMENT);
-
-            Uri CONTENT_URI_SCREEN_NAME = Uri.withAppendedPath(DirectMessages.CONTENT_URI,
-                    CONTENT_PATH_SEGMENT_SCREEN_NAME);
         }
 
         interface ConversationEntries extends BaseColumns {

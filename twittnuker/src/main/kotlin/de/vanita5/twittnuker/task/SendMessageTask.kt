@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,27 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.adapter.iface
+package de.vanita5.twittnuker.task
 
-import de.vanita5.twittnuker.annotation.PreviewStyle
-import de.vanita5.twittnuker.model.ParcelableDirectMessage
-import de.vanita5.twittnuker.util.MediaLoaderWrapper
-import de.vanita5.twittnuker.view.CardMediaContainer
-import de.vanita5.twittnuker.view.ShapedImageView
+import android.content.Context
+import de.vanita5.twittnuker.model.ParcelableMessage
+import de.vanita5.twittnuker.model.SingleResponse
 
-interface IDirectMessagesAdapter {
+class SendMessageTask(context: Context) : BaseAbstractTask<Unit, SingleResponse<ParcelableMessage>, Unit>(context) {
+    override fun doLongOperation(params: Unit?): SingleResponse<ParcelableMessage> {
+        return SingleResponse(UnsupportedOperationException())
+    }
 
-    val mediaLoader: MediaLoaderWrapper
-
-    val profileImageEnabled: Boolean
-
-    val textSize: Float
-
-    @ShapedImageView.ShapeStyle
-    val profileImageStyle: Int
-
-    @PreviewStyle
-    val mediaPreviewStyle: Int
-
-    fun findItem(id: Long): ParcelableDirectMessage?
 }

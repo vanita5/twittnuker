@@ -308,24 +308,7 @@ class StreamingService : Service() {
             for (uri in MESSAGES_URIS) {
                 resolver.delete(uri, where, whereArgs)
             }
-            val sender = directMessage.sender
-            val recipient = directMessage.recipient
-            if (TextUtils.equals(sender.id, account.key.id)) {
-                val values = ContentValuesCreator.createDirectMessage(directMessage,
-                        account.key, true)
-                if (values != null) {
-                    resolver.insert(DirectMessages.Outbox.CONTENT_URI, values)
-                }
-            }
-            if (TextUtils.equals(recipient.id, account.key.id)) {
-                val values = ContentValuesCreator.createDirectMessage(directMessage,
-                        account.key, false)
-                val builder = DirectMessages.Inbox.CONTENT_URI.buildUpon()
-                builder.appendQueryParameter(QUERY_PARAM_NOTIFY, "true")
-                if (values != null) {
-                    resolver.insert(builder.build(), values)
-                }
-            }
+
 
         }
 
