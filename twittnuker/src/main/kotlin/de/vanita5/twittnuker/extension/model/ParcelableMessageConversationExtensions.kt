@@ -22,12 +22,18 @@
 
 package de.vanita5.twittnuker.extension.model
 
+import android.content.Context
+import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMessage
+import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
+import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
+import de.vanita5.twittnuker.model.ParcelableUser
 
-fun ParcelableMessageConversation.setFrom(message: ParcelableMessage) {
-    account_key = message.account_key
-    id = message.conversation_id
+fun ParcelableMessageConversation.setFrom(message: ParcelableMessage, details: AccountDetails) {
+    account_key = details.key
+    account_color = details.color
     message_type = message.message_type
     message_timestamp = message.message_timestamp
     local_timestamp = message.local_timestamp
@@ -43,3 +49,28 @@ fun ParcelableMessageConversation.setFrom(message: ParcelableMessage) {
 
 val ParcelableMessageConversation.timestamp: Long
     get() = if (message_timestamp > 0) message_timestamp else local_timestamp
+
+fun ParcelableMessageConversation.getConversationName(context: Context): Pair<String, String?> {
+    if (conversation_type == ConversationType.ONE_TO_ONE) {
+        val user = this.user ?: return Pair(context.getString(R.string.direct_messages), null)
+        return Pair(user.name, user.screen_name)
+    }
+    return Pair(participants.joinToString(separator = ", ") {
+        it.name
+    }, null)
+}
+
+fun ParcelableMessageConversation.getSummaryText(context: Context): String {
+    when (message_type) {
+        MessageType.STICKER -> {
+            return context.getString(R.string.message_summary_type_sticker)
+        }
+    }
+    return text_unescaped
+}
+
+val ParcelableMessageConversation.user: ParcelableUser?
+    get() {
+        val userKey = if (is_outgoing) recipient_key else sender_key
+        return participants.firstOrNull { it.key == userKey }
+    }

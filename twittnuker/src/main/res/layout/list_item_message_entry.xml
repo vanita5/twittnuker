@@ -34,7 +34,7 @@
     android:paddingLeft="@dimen/element_spacing_normal"
     android:paddingRight="@dimen/element_spacing_normal"
     app:ignorePadding="true"
-    tools:context=".adapter.MessageEntriesAdapter">
+    tools:context=".adapter.MessagesConversationsAdapter">
 
     <de.vanita5.twittnuker.view.ProfileImageView
         android:id="@+id/profileImage"

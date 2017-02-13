@@ -15,7 +15,6 @@ import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.fragment.CustomTabsFragment.TabEditorDialogFragment;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.Tab;
-import de.vanita5.twittnuker.model.tab.impl.DMTabConfiguration;
 import de.vanita5.twittnuker.model.tab.impl.FavoriteTimelineTabConfiguration;
 import de.vanita5.twittnuker.model.tab.impl.HomeTabConfiguration;
 import de.vanita5.twittnuker.model.tab.impl.InteractionsTabConfiguration;
@@ -108,8 +107,6 @@ public abstract class TabConfiguration {
                 return new InteractionsTabConfiguration();
             case CustomTabType.DIRECT_MESSAGES:
                 return new MessagesTabConfiguration();
-            case CustomTabType.DIRECT_MESSAGES_NEXT:
-                return new DMTabConfiguration();
             case CustomTabType.LIST_TIMELINE:
                 return new UserListTimelineTabConfiguration();
             case CustomTabType.FAVORITES:

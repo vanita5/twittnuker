@@ -468,6 +468,7 @@
     <string name="message_permission_request_save_media">Twittnuker benötigt die Speicherberechtigung um Medien zu speichern.</string>
     <string name="message_permission_request_share_media">Twittnuker benötigt die Speicherberechtigung um Medien mit anderen Apps zu teilen.</string>
     <string name="message_please_wait">Bitte warten.</string>
+    <string name="message_summary_type_sticker">[Sticker]</string>
     <string name="message_toast_retweet_cancelled">Retweet entfernt.</string>
     <string name="message_toast_search_deleted">Suche gelöscht.</string>
     <string name="message_toast_search_name_deleted">Suche \"<xliff:g example="SearchQuery" id="name">%1$s</xliff:g>\" gelöscht</string>

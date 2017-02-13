@@ -22,6 +22,8 @@
 
 package de.vanita5.twittnuker.model;
 
+import android.support.annotation.StringDef;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
@@ -46,12 +48,21 @@ public class ParcelableMessageConversation {
     @JsonField(name = "account_key")
     @CursorField(value = Conversations.ACCOUNT_KEY, converter = UserKeyCursorFieldConverter.class)
     public UserKey account_key;
+    @JsonField(name = "account_color")
+    @CursorField(Conversations.ACCOUNT_COLOR)
+    public int account_color;
 
     @JsonField(name = "conversation_id")
     @CursorField(Conversations.CONVERSATION_ID)
     public String id;
 
-    @JsonField(name = "type")
+    @ConversationType
+    @JsonField(name = "conversation_type")
+    @CursorField(Conversations.CONVERSATION_TYPE)
+    public String conversation_type;
+
+    @ParcelableMessage.MessageType
+    @JsonField(name = "message_type")
     @CursorField(Conversations.MESSAGE_TYPE)
     public String message_type;
 
@@ -109,15 +120,27 @@ public class ParcelableMessageConversation {
                 "_id=" + _id +
                 ", account_key=" + account_key +
                 ", id='" + id + '\'' +
+                ", conversation_type='" + conversation_type + '\'' +
                 ", message_type='" + message_type + '\'' +
                 ", message_timestamp=" + message_timestamp +
+                ", local_timestamp=" + local_timestamp +
                 ", text_unescaped='" + text_unescaped + '\'' +
                 ", media=" + Arrays.toString(media) +
                 ", spans=" + Arrays.toString(spans) +
+                ", extras=" + extras +
+                ", internalExtras=" + internalExtras +
                 ", participants=" + Arrays.toString(participants) +
                 ", sender_key=" + sender_key +
                 ", recipient_key=" + recipient_key +
+                ", is_outgoing=" + is_outgoing +
                 ", request_cursor='" + request_cursor + '\'' +
                 '}';
     }
+
+    @StringDef({ConversationType.ONE_TO_ONE, ConversationType.GROUP})
+    public @interface ConversationType {
+        String ONE_TO_ONE = "one_to_one";
+        String GROUP = "group";
+    }
+
 }

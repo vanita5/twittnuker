@@ -261,16 +261,14 @@ object IntentUtils {
         return builder.build()
     }
 
-    fun openMessageConversation(context: Context,
-                                accountKey: UserKey?,
-                                recipientId: String?) {
+    fun openMessageConversation(context: Context, accountKey: UserKey?, conversationId: String?) {
         val builder = Uri.Builder()
             builder.scheme(SCHEME_TWITTNUKER)
         builder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION)
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString())
-            if (recipientId != null) {
-                builder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, recipientId)
+            if (conversationId != null) {
+                builder.appendQueryParameter(QUERY_PARAM_CONVERSATION_ID, conversationId)
             }
         }
         val intent = Intent(Intent.ACTION_VIEW, builder.build())

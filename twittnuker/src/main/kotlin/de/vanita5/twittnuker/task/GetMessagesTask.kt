@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.extension.model.setFrom
 import de.vanita5.twittnuker.extension.model.timestamp
 import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 import de.vanita5.twittnuker.model.util.AccountUtils.getAccountDetails
 import de.vanita5.twittnuker.model.util.ParcelableMessageUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
@@ -97,12 +98,12 @@ class GetMessagesTask(context: Context) : BaseAbstractTask<RefreshTaskParam, Uni
         microBlog.getDirectMessages(paging).forEach { dm ->
             val message = ParcelableMessageUtils.incomingMessage(accountKey, dm)
             insertMessages.add(message)
-            conversations.addConversation(accountKey, message, dm.sender, dm.recipient)
+            conversations.addConversation(details, message, dm.sender, dm.recipient)
         }
         microBlog.getSentDirectMessages(paging).forEach { dm ->
             val message = ParcelableMessageUtils.outgoingMessage(accountKey, dm)
             insertMessages.add(message)
-            conversations.addConversation(accountKey, message, dm.sender, dm.recipient)
+            conversations.addConversation(details, message, dm.sender, dm.recipient)
         }
         return GetMessagesData(conversations.values, emptyList(), insertMessages)
     }
@@ -139,21 +140,23 @@ class GetMessagesTask(context: Context) : BaseAbstractTask<RefreshTaskParam, Uni
         }
 
     private fun MutableMap<String, ParcelableMessageConversation>.addConversation(
-            accountKey: UserKey,
+            details: AccountDetails,
             message: ParcelableMessage,
             vararg users: User
     ) {
         val conversation = this[message.conversation_id] ?: run {
             val obj = ParcelableMessageConversation()
+            obj.id = message.conversation_id
+            obj.conversation_type = ConversationType.ONE_TO_ONE
+            obj.setFrom(message, details)
             this[message.conversation_id] = obj
-        obj.setFrom(message)
             return@run obj
         }
         if (message.timestamp > conversation.timestamp) {
-            conversation.setFrom(message)
+            conversation.setFrom(message, details)
         }
         users.forEach { user ->
-            conversation.addParticipant(accountKey, user)
+            conversation.addParticipant(details.key, user)
         }
     }
 
