@@ -20,22 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.view.holder.message
 
-import android.os.Bundle
-import android.view.LayoutInflater
+import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.view.ViewGroup
-import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.model.ParcelableMessage
 
-class MessagesConversationFragment : BaseFragment() {
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+abstract class AbsMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    open fun display(message: ParcelableMessage) {
 
     }
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_messages_conversation, container, false)
-    }
-
 }

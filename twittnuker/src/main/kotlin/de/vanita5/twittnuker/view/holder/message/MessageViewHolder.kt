@@ -20,22 +20,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.view.holder.message
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import kotlinx.android.synthetic.main.list_item_message_conversation_text.view.*
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.model.ParcelableMessage
 
-class MessagesConversationFragment : BaseFragment() {
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+class MessageViewHolder(itemView: View) : AbsMessageViewHolder(itemView) {
 
+    private val text by lazy { itemView.text }
+
+    override fun display(message: ParcelableMessage) {
+        super.display(message)
+        text.text = message.text_unescaped
     }
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_messages_conversation, container, false)
-    }
 
+    companion object {
+        const val layoutResource = R.layout.list_item_message_conversation_text
+    }
 }

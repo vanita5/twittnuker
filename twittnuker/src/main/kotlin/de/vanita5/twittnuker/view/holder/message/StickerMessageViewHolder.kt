@@ -20,22 +20,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.holder;
+package de.vanita5.twittnuker.view.holder.message
 
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import android.view.View
 
-import de.vanita5.twittnuker.R;
 
-public class LoadIndicatorViewHolder extends RecyclerView.ViewHolder {
-    private final View loadProgress;
+class StickerMessageViewHolder(itemView: View) : AbsMessageViewHolder(itemView) {
 
-    public LoadIndicatorViewHolder(View view) {
-        super(view);
-        loadProgress = view.findViewById(R.id.load_progress);
-    }
-
-    public void setLoadProgressVisible(boolean visible) {
-        loadProgress.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
 }

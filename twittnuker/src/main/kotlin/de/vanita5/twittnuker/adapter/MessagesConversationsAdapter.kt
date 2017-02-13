@@ -29,7 +29,7 @@ import android.view.ViewGroup
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.model.ItemCounts
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
-import de.vanita5.twittnuker.view.holder.MessageConversationViewHolder
+import de.vanita5.twittnuker.view.holder.message.MessageConversationViewHolder
 
 
 class MessagesConversationsAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context),

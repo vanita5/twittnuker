@@ -20,22 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.view.holder
 
-import android.os.Bundle
-import android.view.LayoutInflater
+import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.view.ViewGroup
-import de.vanita5.twittnuker.R
+import kotlinx.android.synthetic.main.list_item_load_indicator.view.*
 
-class MessagesConversationFragment : BaseFragment() {
+class LoadIndicatorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private val loadProgress by lazy { itemView.loadProgress }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    fun setLoadProgressVisible(visible: Boolean) {
+        loadProgress.visibility = if (visible) View.VISIBLE else View.GONE
     }
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_messages_conversation, container, false)
-    }
-
 }
