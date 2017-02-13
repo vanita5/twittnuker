@@ -26,13 +26,11 @@ import android.text.Spannable
 import android.text.Spanned
 import android.text.style.URLSpan
 import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableStatus.FilterFlags
 import de.vanita5.twittnuker.util.HtmlSpanBuilder
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 import de.vanita5.twittnuker.util.TwitterContentUtils
-import de.vanita5.twittnuker.util.UserColorNameManager
 import java.util.*
 
 object ParcelableStatusUtils {
@@ -121,7 +119,7 @@ object ParcelableStatusUtils {
 
             result.quoted_timestamp = quoted.createdAt.time
             result.quoted_source = quoted.source
-            result.quoted_media = ParcelableMediaUtils.fromStatus(quoted)
+            result.quoted_media = ParcelableMediaUtils.fromStatus(quoted, accountKey)
 
             result.quoted_user_key = UserKeyUtils.fromUser(quotedUser)
             result.quoted_user_name = quotedUser.name
@@ -175,7 +173,7 @@ object ParcelableStatusUtils {
             result.extras.display_text_range = textWithIndices.range
         }
 
-        result.media = ParcelableMediaUtils.fromStatus(status)
+        result.media = ParcelableMediaUtils.fromStatus(status, accountKey)
         result.source = status.source
         result.location = getLocation(status)
         result.is_favorite = status.isFavorited

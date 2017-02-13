@@ -26,12 +26,13 @@ import android.accounts.AccountManager
 import android.content.Context
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.extension.model.setFrom
+import de.vanita5.twittnuker.extension.model.timestamp
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.AccountUtils.getAccountDetails
 import de.vanita5.twittnuker.model.util.ParcelableMessageUtils
@@ -86,7 +87,31 @@ class GetMessagesTask(context: Context) : BaseAbstractTask<RefreshTaskParam, Uni
     }
 
     private fun getDefaultMessages(microBlog: MicroBlog, details: AccountDetails): GetMessagesData {
-        fun ParcelableMessageConversation.addParticipant(accountKey: UserKey, user: User) {
+        val accountKey = details.key
+        val paging = Paging()
+        val insertMessages = arrayListOf<ParcelableMessage>()
+        val conversations = hashMapOf<String, ParcelableMessageConversation>()
+        microBlog.getDirectMessages(paging).forEach { dm ->
+            val message = ParcelableMessageUtils.incomingMessage(accountKey, dm)
+            insertMessages.add(message)
+            conversations.addConversation(accountKey, message, dm.sender, dm.recipient)
+        }
+        microBlog.getSentDirectMessages(paging).forEach { dm ->
+            val message = ParcelableMessageUtils.outgoingMessage(accountKey, dm)
+            insertMessages.add(message)
+            conversations.addConversation(accountKey, message, dm.sender, dm.recipient)
+        }
+        return GetMessagesData(conversations.values, emptyList(), insertMessages)
+    }
+
+    private fun storeMessages(data: GetMessagesData) {
+        DebugLog.d(LOGTAG, data.toString())
+    }
+
+    private fun ParcelableMessageConversation.addParticipant(
+            accountKey: UserKey,
+            user: User
+    ) {
             val userKey = UserKeyUtils.fromUser(user)
             val participants = this.participants
             if (participants == null) {
@@ -101,38 +126,25 @@ class GetMessagesTask(context: Context) : BaseAbstractTask<RefreshTaskParam, Uni
             }
         }
 
-        fun MutableMap<String, ParcelableMessageConversation>.addConversation(accountKey: UserKey,
-                                                                              message: ParcelableMessage,
-                                                                              dm: DirectMessage) {
-            val conversation = this[message.conversation_id] ?: run {
-                val obj = ParcelableMessageConversation()
-                this[message.conversation_id] = obj
-                return@run obj
-            }
-            conversation.addParticipant(accountKey, dm.recipient)
-            conversation.addParticipant(accountKey, dm.sender)
+    private fun MutableMap<String, ParcelableMessageConversation>.addConversation(
+            accountKey: UserKey,
+            message: ParcelableMessage,
+            vararg users: User
+    ) {
+        val conversation = this[message.conversation_id] ?: run {
+            val obj = ParcelableMessageConversation()
+            this[message.conversation_id] = obj
+        obj.setFrom(message)
+            return@run obj
         }
-
-        val accountKey = details.key
-        val paging = Paging()
-        val insertMessages = arrayListOf<ParcelableMessage>()
-        val conversations = hashMapOf<String, ParcelableMessageConversation>()
-        microBlog.getDirectMessages(paging).forEach { dm ->
-            val message = ParcelableMessageUtils.incomingMessage(accountKey, dm)
-            insertMessages.add(message)
-            conversations.addConversation(accountKey, message, dm)
+        if (message.timestamp > conversation.timestamp) {
+            conversation.setFrom(message)
         }
-        microBlog.getSentDirectMessages(paging).forEach { dm ->
-            val message = ParcelableMessageUtils.outgoingMessage(accountKey, dm)
-            insertMessages.add(message)
-            conversations.addConversation(accountKey, message, dm)
+        users.forEach { user ->
+            conversation.addParticipant(accountKey, user)
         }
-        return GetMessagesData(conversations.values, emptyList(), insertMessages)
     }
 
-    private fun storeMessages(data: GetMessagesData) {
-        DebugLog.d(LOGTAG, data.toString())
-    }
 
     data class GetMessagesData(
             val insertConversations: Collection<ParcelableMessageConversation>,
