@@ -21,13 +21,24 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="@dimen/element_spacing_normal">
+
+    <de.vanita5.twittnuker.view.FixedTextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/element_spacing_normal"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:textColor="?android:textColorTertiary"
+        tools:text="Yesterday"/>
 
     <org.mariotaku.messagebubbleview.library.MessageBubbleView
         android:id="@+id/messageContent"
@@ -67,18 +78,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="?android:attr/textColorPrimary"
                     tools:text="@string/sample_status_text"/>
 
-                <de.vanita5.twittnuker.view.ShortTimeView
+                <de.vanita5.twittnuker.view.FixedTextView
                     android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/element_spacing_small"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="?android:attr/textColorTertiary"
                     tools:text="12:00"/>
             </LinearLayout>
         </RelativeLayout>
     </org.mariotaku.messagebubbleview.library.MessageBubbleView>
 
-</FrameLayout>
+</LinearLayout>

@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.model.util
 
+import android.support.annotation.FloatRange
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.UserKey
@@ -33,15 +34,23 @@ import de.vanita5.twittnuker.util.InternalTwitterContentUtils
  *
  */
 object ParcelableMessageUtils {
-    fun incomingMessage(accountKey: UserKey, message: DirectMessage): ParcelableMessage {
-        val result = message(accountKey, message)
+    fun incomingMessage(
+            accountKey: UserKey,
+            message: DirectMessage,
+            @FloatRange(from = 0.0, to = 1.0) sortIdAdj: Double = 0.0
+    ): ParcelableMessage {
+        val result = message(accountKey, message, sortIdAdj)
         result.is_outgoing = false
         result.conversation_id = incomingConversationId(message.senderId, message.recipientId)
         return result
     }
 
-    fun outgoingMessage(accountKey: UserKey, message: DirectMessage): ParcelableMessage {
-        val result = message(accountKey, message)
+    fun outgoingMessage(
+            accountKey: UserKey,
+            message: DirectMessage,
+            @FloatRange(from = 0.0, to = 1.0) sortIdAdj: Double = 0.0
+    ): ParcelableMessage {
+        val result = message(accountKey, message, sortIdAdj)
         result.is_outgoing = true
         result.conversation_id = outgoingConversationId(message.senderId, message.recipientId)
         return result
@@ -55,7 +64,11 @@ object ParcelableMessageUtils {
         return "$senderId-$recipientId"
     }
 
-    private fun message(accountKey: UserKey, message: DirectMessage): ParcelableMessage {
+    private fun message(
+            accountKey: UserKey,
+            message: DirectMessage,
+            @FloatRange(from = 0.0, to = 1.0) sortIdAdj: Double = 0.0
+    ): ParcelableMessage {
         val result = ParcelableMessage()
         result.account_key = accountKey
         result.id = message.id
@@ -63,6 +76,7 @@ object ParcelableMessageUtils {
         result.recipient_key = UserKeyUtils.fromUser(message.recipient)
         result.message_timestamp = message.createdAt.time
         result.local_timestamp = result.message_timestamp
+        result.sort_id = result.message_timestamp + (499 * sortIdAdj).toLong()
 
         val (type, extras) = typeAndExtras(accountKey, message)
         val (text, spans) = InternalTwitterContentUtils.formatDirectMessageText(message)
