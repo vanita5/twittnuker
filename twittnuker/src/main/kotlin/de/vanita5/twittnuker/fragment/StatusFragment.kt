@@ -89,6 +89,7 @@ import de.vanita5.twittnuker.annotation.Referral
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.constant.KeyboardShortcutConstants.*
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.media_type
 import de.vanita5.twittnuker.loader.ConversationLoader
@@ -828,7 +829,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     }
 
                     val quotedText = SpannableStringBuilder.valueOf(status.quoted_text_unescaped)
-                    ParcelableStatusUtils.applySpans(quotedText, status.quoted_spans)
+                    status.quoted_spans?.applyTo(quotedText)
                     linkify.applyAllLinks(quotedText, status.account_key, layoutPosition.toLong(),
                             status.is_possibly_sensitive, skipLinksInText)
                     if (quotedDisplayEnd != -1 && quotedDisplayEnd <= quotedText.length) {
@@ -929,10 +930,11 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                 displayEnd = status.extras.display_text_range!![1]
             }
 
-            val text = SpannableStringBuilder.valueOf(status.text_unescaped)
-            ParcelableStatusUtils.applySpans(text, status.spans)
-            linkify.applyAllLinks(text, status.account_key, layoutPosition.toLong(),
-                    status.is_possibly_sensitive, skipLinksInText)
+            val text = SpannableStringBuilder.valueOf(status.text_unescaped).apply {
+                status.spans?.applyTo(this)
+                linkify.applyAllLinks(this, status.account_key, layoutPosition.toLong(),
+                        status.is_possibly_sensitive, skipLinksInText)
+            }
 
             if (displayEnd != -1 && displayEnd <= text.length) {
                 itemView.text.text = text.subSequence(0, displayEnd)
@@ -1456,7 +1458,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
     class StatusAdapter(val fragment: StatusFragment) : LoadMoreSupportAdapter<ViewHolder>(fragment.context), IStatusesAdapter<List<ParcelableStatus>> {
         private val inflater: LayoutInflater
-        override val mediaLoadingHandler: MediaLoadingHandler
+        override val mediaLoadingHandler = MediaLoadingHandler(R.id.media_preview_progress)
         override val twidereLinkify: TwidereLinkify
 
         override var statusClickListener: StatusClickListener? = null
@@ -1465,15 +1467,15 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
         private val itemCounts = ItemCounts(ITEM_TYPES_SUM)
 
-        override val nameFirst: Boolean
         private val cardBackgroundColor: Int
-        override val mediaPreviewStyle: Int
-        override val linkHighlightingStyle: Int
-        override val lightFont: Boolean
-        override val mediaPreviewEnabled: Boolean
-        override val sensitiveContentEnabled: Boolean
-        private val showCardActions: Boolean
-        override val useStarsForLikes: Boolean
+        override val nameFirst = preferences[nameFirstKey]
+        override val mediaPreviewStyle = preferences[mediaPreviewStyleKey]
+        override val linkHighlightingStyle = preferences[linkHighlightOptionKey]
+        override val lightFont = preferences[lightFontKey]
+        override val mediaPreviewEnabled = preferences[mediaPreviewKey]
+        override val sensitiveContentEnabled = preferences[displaySensitiveContentsKey]
+        private val showCardActions = !preferences[hideCardActionsKey]
+        override val useStarsForLikes = preferences[iWantMyStarsBackKey]
         private var mDetailMediaExpanded: Boolean = false
 
         var status: ParcelableStatus? = null
@@ -1514,18 +1516,9 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
             itemCounts[ITEM_IDX_CONVERSATION_LOAD_MORE] = 1
             itemCounts[ITEM_IDX_REPLY_LOAD_MORE] = 1
             inflater = LayoutInflater.from(context)
-            mediaLoadingHandler = MediaLoadingHandler(R.id.media_preview_progress)
             cardBackgroundColor = ThemeUtils.getCardBackgroundColor(context,
                     ThemeUtils.getThemeBackgroundOption(context),
                     ThemeUtils.getUserThemeBackgroundAlpha(context))
-            nameFirst = preferences[nameFirstKey]
-            lightFont = preferences[lightFontKey]
-            mediaPreviewStyle = preferences[mediaPreviewStyleKey]
-            linkHighlightingStyle = preferences[linkHighlightOptionKey]
-            mediaPreviewEnabled = preferences[mediaPreviewKey]
-            sensitiveContentEnabled = preferences.getBoolean(SharedPreferenceConstants.KEY_DISPLAY_SENSITIVE_CONTENTS, false)
-            showCardActions = !preferences[hideCardActionsKey]
-            useStarsForLikes = preferences[iWantMyStarsBackKey]
             val listener = StatusAdapterLinkClickHandler<List<ParcelableStatus>>(context, preferences)
             listener.setAdapter(this)
             twidereLinkify = TwidereLinkify(listener)

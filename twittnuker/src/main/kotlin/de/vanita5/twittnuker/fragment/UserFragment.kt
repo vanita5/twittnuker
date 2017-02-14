@@ -106,6 +106,7 @@ import de.vanita5.twittnuker.constant.lightFontKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.StatusesFragmentDelegate
 import de.vanita5.twittnuker.fragment.UserTimelineFragment.UserTimelineFragmentDelegate
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
@@ -470,9 +471,10 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
         profileNameContainer.screenName.text = "@${user.screen_name}"
         val linkify = TwidereLinkify(this)
         if (user.description_unescaped != null) {
-            val text = SpannableStringBuilder.valueOf(user.description_unescaped)
-            ParcelableStatusUtils.applySpans(text, user.description_spans)
-            linkify.applyAllLinks(text, user.account_key, false, false)
+            val text = SpannableStringBuilder.valueOf(user.description_unescaped).apply {
+                user.description_spans?.applyTo(this)
+                linkify.applyAllLinks(this, user.account_key, false, false)
+            }
             descriptionContainer.description.text = text
         } else {
             descriptionContainer.description.text = user.description_plain

@@ -273,13 +273,6 @@ object ParcelableStatusUtils {
         return status.inReplyToScreenName
     }
 
-    fun applySpans(text: Spannable, spans: Array<SpanItem>?) {
-        spans?.forEach { span ->
-            text.setSpan(URLSpan(span.link), span.start, span.end,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
-    }
-
     fun updateExtraInformation(status: ParcelableStatus, details: AccountDetails) {
         status.account_color = details.color
     }

@@ -20,31 +20,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.text;
+package de.vanita5.twittnuker.extension.model
 
-import android.text.SpannableStringBuilder;
+import android.text.Spannable
+import android.text.Spanned
+import android.text.style.URLSpan
+import de.vanita5.twittnuker.model.SpanItem
+import de.vanita5.twittnuker.text.ZeroWidthSpan
 
-import de.vanita5.twittnuker.util.CheckUtils;
-import de.vanita5.twittnuker.util.TwidereStringUtils;
+val SpanItem.length: Int get() = end - start
 
-/**
- * Created by Ningyuan on 2015/5/1.
- */
-public class SafeSpannableStringBuilder extends SpannableStringBuilder {
-
-    public SafeSpannableStringBuilder(CharSequence source) {
-        super(source);
-        TwidereStringUtils.fixSHY(this);
-    }
-
-    @Override
-    public void setSpan(Object what, int start, int end, int flags) {
-        if (!CheckUtils.checkRange(this, start, end)) {
-            // Silently ignore
-            return;
+fun Array<SpanItem>.applyTo(spannable: Spannable) {
+    forEach { span ->
+        when (span.type) {
+            SpanItem.SpanType.HIDE -> {
+                spannable.setSpan(ZeroWidthSpan(), span.start, span.end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            else -> {
+                spannable.setSpan(URLSpan(span.link), span.start, span.end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
         }
-        super.setSpan(what, start, end, flags);
     }
-
-
 }

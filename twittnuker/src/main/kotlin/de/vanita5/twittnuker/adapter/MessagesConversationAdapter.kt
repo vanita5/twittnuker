@@ -27,11 +27,16 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import org.apache.commons.lang3.time.DateUtils
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
+import de.vanita5.twittnuker.annotation.PreviewStyle
+import de.vanita5.twittnuker.constant.linkHighlightOptionKey
+import de.vanita5.twittnuker.constant.mediaPreviewStyleKey
 import de.vanita5.twittnuker.extension.model.timestamp
 import de.vanita5.twittnuker.model.ItemCounts
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
+import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.view.holder.message.AbsMessageViewHolder
 import de.vanita5.twittnuker.view.holder.message.MessageViewHolder
 import de.vanita5.twittnuker.view.holder.message.StickerMessageViewHolder
@@ -41,6 +46,12 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
         IItemCountsAdapter {
     private val calendars = Pair(Calendar.getInstance(), Calendar.getInstance())
     override val itemCounts: ItemCounts = ItemCounts(1)
+
+    @PreviewStyle
+    val mediaPreviewStyle: Int = preferences[mediaPreviewStyleKey]
+    val linkHighlightingStyle: Int = preferences[linkHighlightOptionKey]
+    val linkify: TwidereLinkify = TwidereLinkify(null)
+
     var messages: List<ParcelableMessage>? = null
         set(value) {
             field = value

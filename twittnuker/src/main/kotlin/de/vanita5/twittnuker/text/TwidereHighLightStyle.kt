@@ -20,29 +20,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.text;
+package de.vanita5.twittnuker.text
 
-import android.text.TextPaint;
-import android.text.style.CharacterStyle;
+import android.text.TextPaint
+import android.text.style.CharacterStyle
 
-import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT;
-import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE;
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT
+import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE
 
-public class TwidereHighLightStyle extends CharacterStyle {
+class TwidereHighLightStyle(private val option: Int) : CharacterStyle() {
 
-    private final int option;
-
-    public TwidereHighLightStyle(final int option) {
-        this.option = option;
-    }
-
-    @Override
-    public void updateDrawState(final TextPaint ds) {
-        if ((option & VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE) != 0) {
-            ds.setUnderlineText(true);
+    override fun updateDrawState(ds: TextPaint) {
+        if (option and VALUE_LINK_HIGHLIGHT_OPTION_CODE_UNDERLINE != 0) {
+            ds.isUnderlineText = true
         }
-        if ((option & VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT) != 0) {
-            ds.setColor(ds.linkColor);
+        if (option and VALUE_LINK_HIGHLIGHT_OPTION_CODE_HIGHLIGHT != 0) {
+            ds.color = ds.linkColor
         }
     }
 }

@@ -20,14 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.text;
+package de.vanita5.twittnuker.text
 
-import android.text.TextPaint;
-import android.text.style.CharacterStyle;
+import android.text.TextPaint
+import android.text.style.CharacterStyle
 
-public class MarkForDeleteSpan extends CharacterStyle {
-	@Override
-	public void updateDrawState(TextPaint tp) {
+class MarkForDeleteSpan : CharacterStyle() {
+    override fun updateDrawState(tp: TextPaint) {
 
-	}
+    }
 }

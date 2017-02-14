@@ -25,7 +25,10 @@ package de.vanita5.twittnuker.view.holder
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.ViewHolder
-import android.text.*
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.View.OnClickListener
@@ -38,13 +41,13 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_FANFOU_COM
 import de.vanita5.twittnuker.adapter.iface.IStatusesAdapter
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE
+import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.graphic.like.LikeAnimationDrawable
 import de.vanita5.twittnuker.model.ParcelableLocation
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.ParcelableLocationUtils
-import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.task.CreateFavoriteTask
 import de.vanita5.twittnuker.task.DestroyFavoriteTask
 import de.vanita5.twittnuker.task.RetweetStatusTask
@@ -224,7 +227,7 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                 val quotedText: CharSequence
                 if (adapter.linkHighlightingStyle != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
                     quotedText = SpannableStringBuilder.valueOf(status.quoted_text_unescaped)
-                    ParcelableStatusUtils.applySpans(quotedText as Spannable, status.quoted_spans)
+                    status.quoted_spans?.applyTo(quotedText)
                     linkify.applyAllLinks(quotedText, status.account_key, layoutPosition.toLong(),
                             status.is_possibly_sensitive, adapter.linkHighlightingStyle,
                             skipLinksInText)
@@ -360,11 +363,12 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
 
         val text: CharSequence
         if (adapter.linkHighlightingStyle != VALUE_LINK_HIGHLIGHT_OPTION_CODE_NONE) {
-            text = SpannableStringBuilder.valueOf(status.text_unescaped)
-            ParcelableStatusUtils.applySpans(text as Spannable, status.spans)
-            linkify.applyAllLinks(text, status.account_key, layoutPosition.toLong(),
-                    status.is_possibly_sensitive, adapter.linkHighlightingStyle,
-                    skipLinksInText)
+            text = SpannableStringBuilder.valueOf(status.text_unescaped).apply {
+                status.spans?.applyTo(this)
+                linkify.applyAllLinks(this, status.account_key, layoutPosition.toLong(),
+                        status.is_possibly_sensitive, adapter.linkHighlightingStyle,
+                        skipLinksInText)
+            }
         } else {
             text = status.text_unescaped
         }
