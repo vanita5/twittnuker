@@ -236,6 +236,7 @@
     <string name="consumer_secret">Benutzergeheimnis</string>
     <string name="content">Inhalt</string>
     <string name="content_and_storage">Inhalt &amp; Speicher</string>
+    <string name="content_description_sticker">Sticker</string>
     <string name="content_to_notify">Inhalte für Benachrichtigungen</string>
     <string name="content_to_refresh">Zu aktualisierende Inhalte</string>
     <string name="contributors_list_summary">Wenn du deinen Namen nicht gefunden hast, wende dich bitte an den Entwickler.</string>

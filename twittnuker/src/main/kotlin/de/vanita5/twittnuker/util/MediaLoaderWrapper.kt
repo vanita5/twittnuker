@@ -40,7 +40,6 @@ import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils.getBestBannerUrl
 import de.vanita5.twittnuker.util.media.MediaExtra
-
 import javax.inject.Singleton
 
 @Singleton
@@ -48,7 +47,7 @@ class MediaLoaderWrapper(val imageLoader: ImageLoader) {
 
     var isNetworkMetered: Boolean = true
     private var preloadEnabled: Boolean = true
-    private var preloadOnWifiOnly: Boolean = false
+    private var preloadOnWifiOnly: Boolean = true
 
     private val shouldPreload: Boolean get() = preloadEnabled && (!preloadOnWifiOnly || !isNetworkMetered)
 
@@ -56,7 +55,7 @@ class MediaLoaderWrapper(val imageLoader: ImageLoader) {
             .resetViewBeforeLoading(true)
             .cacheInMemory(true)
             .cacheOnDisk(true)
-            .bitmapConfig(Bitmap.Config.ARGB_8888)
+            .bitmapConfig(Bitmap.Config.RGB_565)
             .build()
 
     private val dashboardProfileImageDisplayOptions = DisplayImageOptions.Builder()
@@ -80,6 +79,14 @@ class MediaLoaderWrapper(val imageLoader: ImageLoader) {
             .bitmapConfig(Bitmap.Config.RGB_565)
             .build()
 
+
+    private val stickerDisplayOptions = DisplayImageOptions.Builder()
+            .resetViewBeforeLoading(true)
+            .showImageOnLoading(android.R.color.transparent)
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+            .bitmapConfig(Bitmap.Config.ARGB_8888)
+            .build()
 
     fun displayPreviewImage(view: ImageView, url: String?) {
         imageLoader.displayImage(url, view, previewDisplayOptions)
@@ -174,6 +181,11 @@ class MediaLoaderWrapper(val imageLoader: ImageLoader) {
 
     fun displayImage(view: ImageView, url: String?) {
         imageLoader.displayImage(url, view)
+    }
+
+
+    fun displayStickerImage(view: ImageView, url: String?) {
+        imageLoader.displayImage(url, view, stickerDisplayOptions)
     }
 
     fun displayProfileImage(view: ImageView, url: String?, listener: ImageLoadingListener) {

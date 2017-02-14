@@ -26,7 +26,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.list_item_message_entry.view.*
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.adapter.MessagesConversationsAdapter
+import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
 import de.vanita5.twittnuker.extension.model.getConversationName
 import de.vanita5.twittnuker.extension.model.getSummaryText
 import de.vanita5.twittnuker.extension.model.timestamp
@@ -35,7 +35,7 @@ import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 
 
-class MessageConversationViewHolder(itemView: View, val adapter: MessagesConversationsAdapter) : RecyclerView.ViewHolder(itemView) {
+class MessageEntryViewHolder(itemView: View, val adapter: MessagesEntriesAdapter) : RecyclerView.ViewHolder(itemView) {
 
     private val content by lazy { itemView.content }
     private val time by lazy { itemView.time }

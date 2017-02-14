@@ -29,7 +29,7 @@ import android.support.v4.content.Loader
 import org.mariotaku.kpreferences.get
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.adapter.MessagesConversationsAdapter
+import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.model.user
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
@@ -43,8 +43,8 @@ import de.vanita5.twittnuker.util.ErrorInfoStore
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.Utils
 
-class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesConversationsAdapter>(),
-        LoaderManager.LoaderCallbacks<List<ParcelableMessageConversation>?>, MessagesConversationsAdapter.MessageConversationClickListener {
+class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntriesAdapter>(),
+        LoaderManager.LoaderCallbacks<List<ParcelableMessageConversation>?>, MessagesEntriesAdapter.MessageConversationClickListener {
 
     private val accountKeys: Array<UserKey>
         get() = Utils.getAccountKeys(context, arguments) ?: DataStoreUtils.getActivatedAccountKeys(context)
@@ -75,8 +75,8 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesConve
         showContentOrError()
     }
 
-    override fun onCreateAdapter(context: Context): MessagesConversationsAdapter {
-        return MessagesConversationsAdapter(context)
+    override fun onCreateAdapter(context: Context): MessagesEntriesAdapter {
+        return MessagesEntriesAdapter(context)
     }
 
     override fun triggerRefresh(): Boolean {

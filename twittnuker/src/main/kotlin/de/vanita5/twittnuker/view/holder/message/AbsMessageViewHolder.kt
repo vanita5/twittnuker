@@ -24,10 +24,11 @@ package de.vanita5.twittnuker.view.holder.message
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
 import de.vanita5.twittnuker.model.ParcelableMessage
 
 
-abstract class AbsMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+abstract class AbsMessageViewHolder(itemView: View, val adapter: MessagesConversationAdapter) : RecyclerView.ViewHolder(itemView) {
     open fun display(message: ParcelableMessage) {
 
     }

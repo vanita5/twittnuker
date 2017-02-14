@@ -22,22 +22,54 @@
 
 package de.vanita5.twittnuker.view.holder.message
 
+import android.support.v4.view.GravityCompat
 import android.view.View
+import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.list_item_message_conversation_text.view.*
+import org.mariotaku.ktextension.isNullOrEmpty
+import org.mariotaku.messagebubbleview.library.MessageBubbleView
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
+import de.vanita5.twittnuker.extension.model.timestamp
 import de.vanita5.twittnuker.model.ParcelableMessage
 
 
-class MessageViewHolder(itemView: View) : AbsMessageViewHolder(itemView) {
+class MessageViewHolder(itemView: View, adapter: MessagesConversationAdapter) : AbsMessageViewHolder(itemView, adapter) {
 
     private val text by lazy { itemView.text }
+    private val time by lazy { itemView.time }
+    private val mediaPreview by lazy { itemView.mediaPreview }
+    private val messageContent by lazy { itemView.messageContent }
 
     override fun display(message: ParcelableMessage) {
         super.display(message)
+        setOutgoingStatus(messageContent, message.is_outgoing)
         text.text = message.text_unescaped
+        time.time = message.timestamp
+        if (message.media.isNullOrEmpty()) {
+            mediaPreview.visibility = View.GONE
+        } else {
+            mediaPreview.visibility = View.VISIBLE
+            mediaPreview.displayMedia(adapter.mediaLoader, message.media, message.account_key,
+                    withCredentials = true)
+        }
     }
 
     companion object {
         const val layoutResource = R.layout.list_item_message_conversation_text
+
+        fun setOutgoingStatus(view: MessageBubbleView, outgoing: Boolean) {
+            view.setCaretPosition(if (outgoing) MessageBubbleView.BOTTOM_END else MessageBubbleView.BOTTOM_START)
+            setMessageContentGravity(view, outgoing)
+        }
+
+        fun setMessageContentGravity(view: View, outgoing: Boolean) {
+            val lp = view.layoutParams
+            when (lp) {
+                is FrameLayout.LayoutParams -> {
+                    lp.gravity = if (outgoing) GravityCompat.END else GravityCompat.START
+                }
+            }
+        }
     }
 }
