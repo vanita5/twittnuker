@@ -119,8 +119,8 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
         final Credentials credentials = AccountExtensionsKt.getCredentials(account, am);
         final String accountType = AccountExtensionsKt.getAccountType(account, am);
         final HashMap<String, String> extraParams = getExtraParams(accountType, true, true);
-        return CredentialsExtensionsKt.newMicroBlogInstance(credentials, context,
-                AccountType.TWITTER.equals(accountType), extraParams, MicroBlog.class);
+        return CredentialsExtensionsKt.newMicroBlogInstance(credentials, context, accountType,
+                extraParams, MicroBlog.class);
     }
 
     @NonNull

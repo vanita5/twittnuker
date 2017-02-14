@@ -23,21 +23,24 @@
 package de.vanita5.twittnuker.view.holder.message
 
 import android.view.View
+import android.widget.RelativeLayout
 import kotlinx.android.synthetic.main.list_item_message_conversation_sticker.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.message.StickerExtras
+import de.vanita5.twittnuker.view.FixedTextView
 
 
 class StickerMessageViewHolder(itemView: View, adapter: MessagesConversationAdapter) : AbsMessageViewHolder(itemView, adapter) {
 
-    private val messageContent by lazy { itemView.messageContent }
+    override val date: FixedTextView by lazy { itemView.date }
+    override val messageContent: RelativeLayout by lazy { itemView.messageContent }
+
     private val stickerIcon by lazy { itemView.stickerIcon }
 
     override fun display(message: ParcelableMessage, showDate: Boolean) {
         super.display(message, showDate)
-        MessageViewHolder.setMessageContentGravity(messageContent, message.is_outgoing)
         val extras = message.extras as StickerExtras
         adapter.mediaLoader.displayStickerImage(stickerIcon, extras.url)
     }

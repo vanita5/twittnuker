@@ -599,6 +599,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
                     apiConfig.isSameOAuthUrl)
             val oauth = newMicroBlogInstance(context, endpoint = endpoint,
                     auth = OAuthAuthorization(apiConfig.consumerKey, apiConfig.consumerSecret),
+                    accountType = apiConfig.type,
                     cls = TwitterOAuth::class.java)
             val accessToken: OAuthToken
             if (oauthVerifier != null) {
@@ -612,7 +613,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
                     apiConfig.isSameOAuthUrl)
 
             val twitter = newMicroBlogInstance(context, endpoint = endpoint, auth = auth,
-                    cls = MicroBlog::class.java)
+                    accountType = apiConfig.type, cls = MicroBlog::class.java)
             val apiUser = twitter.verifyCredentials()
             var color = analyseUserProfileColor(apiUser)
             val accountType = SignInActivity.detectAccountType(twitter, apiUser, apiConfig.type)
@@ -848,7 +849,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
             val auth = OAuthAuthorization(apiConfig.consumerKey,
                     apiConfig.consumerSecret)
             val oauth = newMicroBlogInstance(activity, endpoint = endpoint, auth = auth,
-                    cls = TwitterOAuth::class.java)
+                    accountType = apiConfig.type, cls = TwitterOAuth::class.java)
             val authenticator = OAuthPasswordAuthenticator(oauth,
                     verificationCallback, userAgent)
             val accessToken = authenticator.getOAuthAccessToken(username, password)
@@ -865,7 +866,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
             var auth = OAuthAuthorization(apiConfig.consumerKey,
                     apiConfig.consumerSecret)
             val oauth = newMicroBlogInstance(activity, endpoint = endpoint, auth = auth,
-                    cls = TwitterOAuth::class.java)
+                    accountType = apiConfig.type, cls = TwitterOAuth::class.java)
             val accessToken = oauth.getAccessToken(username, password)
             var userId: String? = accessToken.userId
             if (userId == null) {
@@ -875,7 +876,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
                 endpoint = MicroBlogAPIFactory.getOAuthRestEndpoint(apiUrlFormat, apiConfig.isSameOAuthUrl,
                         apiConfig.isNoVersionSuffix)
                 val microBlog = newMicroBlogInstance(activity, endpoint = endpoint, auth = auth,
-                        cls = MicroBlog::class.java)
+                        accountType = apiConfig.type, cls = MicroBlog::class.java)
                 userId = microBlog.verifyCredentials().id
             }
             return getOAuthSignInResponse(activity, accessToken, userId!!, Credentials.Type.XAUTH)
@@ -889,7 +890,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
                     versionSuffix))
             val auth = BasicAuthorization(username, password)
             val twitter = newMicroBlogInstance(activity, endpoint = endpoint, auth = auth,
-                    cls = MicroBlog::class.java)
+                    accountType = apiConfig.type, cls = MicroBlog::class.java)
             val apiUser: User
             try {
                 apiUser = twitter.verifyCredentials()
@@ -930,7 +931,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
                     versionSuffix))
             val auth = EmptyAuthorization()
             val twitter = newMicroBlogInstance(activity, endpoint = endpoint, auth = auth,
-                    cls = MicroBlog::class.java)
+                    accountType = apiConfig.type, cls = MicroBlog::class.java)
             val apiUser = twitter.verifyCredentials()
             val userId = apiUser.id!!
             var color = analyseUserProfileColor(apiUser)
@@ -959,7 +960,7 @@ class SignInActivity : BaseActivity(), OnClickListener, TextWatcher, APIEditorDi
             val endpoint = MicroBlogAPIFactory.getOAuthRestEndpoint(apiUrlFormat,
                     apiConfig.isSameOAuthUrl, apiConfig.isNoVersionSuffix)
             val twitter = newMicroBlogInstance(activity, endpoint = endpoint, auth = auth,
-                    cls = MicroBlog::class.java)
+                    accountType = apiConfig.type, cls = MicroBlog::class.java)
             val apiUser = twitter.verifyCredentials()
             var color = analyseUserProfileColor(apiUser)
             val accountType = SignInActivity.detectAccountType(twitter, apiUser, apiConfig.type)

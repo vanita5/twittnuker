@@ -24,10 +24,14 @@
 
 package de.vanita5.twittnuker.library.fanfou.api;
 
+import de.vanita5.twittnuker.library.MicroBlogException;
+import de.vanita5.twittnuker.library.fanfou.model.Conversation;
+import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
+import de.vanita5.twittnuker.library.twitter.model.Paging;
+import de.vanita5.twittnuker.library.twitter.model.ResponseList;
+import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Param;
-import de.vanita5.twittnuker.library.MicroBlogException;
-import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
 
 @SuppressWarnings("RedundantThrows")
 public interface DirectMessagesResources {
@@ -41,4 +45,7 @@ public interface DirectMessagesResources {
     DirectMessage sendFanfouDirectMessage(@Param("user") String user, @Param("text") String text)
             throws MicroBlogException;
 
+    @GET("/direct_messages/conversation_list.json")
+    ResponseList<Conversation> getConversationList(@Param Paging paging)
+            throws MicroBlogException;
 }
