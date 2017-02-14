@@ -439,7 +439,7 @@ public class NotificationHelper implements Constants {
                     uriBuilder.scheme(SCHEME_TWITTNUKER);
                     uriBuilder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION);
                     uriBuilder.appendQueryParameter(QUERY_PARAM_ACCOUNT_ID, String.valueOf(notification.getAccountKey()));
-                    uriBuilder.appendQueryParameter(QUERY_PARAM_RECIPIENT_ID, notification.getObjectUserKey().getId());
+                    uriBuilder.appendQueryParameter(QUERY_PARAM_CONVERSATION_ID, notification.getObjectId());
 //                    UriExtraUtils.addExtra(uriBuilder, "item_id", String.valueOf(notification.getFromUser()));
                     UriExtraUtils.addExtra(uriBuilder, "item_user_id", notification.getObjectUserKey().getId());
                     uriBuilder.appendQueryParameter(QUERY_PARAM_FROM_NOTIFICATION, String.valueOf(true));
