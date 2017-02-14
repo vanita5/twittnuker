@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.model.util
 
 import android.support.annotation.FloatRange
+import de.vanita5.twittnuker.library.twitter.model.DMResponse
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.UserKey
@@ -34,11 +35,21 @@ import de.vanita5.twittnuker.util.InternalTwitterContentUtils
  *
  */
 object ParcelableMessageUtils {
-    fun incomingMessage(
-            accountKey: UserKey,
-            message: DirectMessage,
-            @FloatRange(from = 0.0, to = 1.0) sortIdAdj: Double = 0.0
-    ): ParcelableMessage {
+
+    fun fromEntry(accountKey: UserKey, entry: DMResponse.Entry): ParcelableMessage? {
+        when {
+            entry.message != null -> {
+                return ParcelableMessage().apply { applyMessage(accountKey, entry.message) }
+            }
+            entry.conversationCreate != null -> {
+                return ParcelableMessage().apply { applyConversationCreate(accountKey, entry.conversationCreate) }
+            }
+        }
+        return null
+    }
+
+    fun incomingMessage(accountKey: UserKey, message: DirectMessage,
+            @FloatRange(from = 0.0, to = 1.0) sortIdAdj: Double = 0.0): ParcelableMessage {
         val result = message(accountKey, message, sortIdAdj)
         result.is_outgoing = false
         result.conversation_id = incomingConversationId(message.senderId, message.recipientId)
@@ -62,6 +73,35 @@ object ParcelableMessageUtils {
 
     fun outgoingConversationId(senderId: String, recipientId: String): String {
         return "$senderId-$recipientId"
+    }
+
+    private fun ParcelableMessage.applyMessage(accountKey: UserKey, message: DMResponse.Entry.Message) {
+        this.commonEntry(accountKey, message)
+
+        val data = message.messageData
+        this.sender_key = UserKey(data.senderId.toString(), accountKey.host)
+        this.recipient_key = UserKey(data.recipientId.toString(), accountKey.host)
+        val (text, spans) = InternalTwitterContentUtils.formatDirectMessageText(data)
+        this.text_unescaped = text
+        this.spans = spans
+
+        this.is_outgoing = this.sender_key == accountKey
+    }
+
+    private fun ParcelableMessage.applyConversationCreate(accountKey: UserKey, message: DMResponse.Entry.Message) {
+        this.commonEntry(accountKey, message)
+        this.message_type = ParcelableMessage.MessageType.CONVERSATION_CREATE
+        this.is_outgoing = false
+    }
+
+    private fun ParcelableMessage.commonEntry(accountKey: UserKey, message: DMResponse.Entry.Message) {
+        this.message_type = ParcelableMessage.MessageType.TEXT
+        this.account_key = accountKey
+        this.id = message.id.toString()
+        this.conversation_id = message.conversationId
+        this.message_timestamp = message.time
+        this.local_timestamp = this.message_timestamp
+        this.sort_id = this.message_timestamp
     }
 
     private fun message(

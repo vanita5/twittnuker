@@ -32,6 +32,8 @@ import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
 import org.apache.commons.lang3.text.translate.EntityArrays;
 import org.apache.commons.lang3.text.translate.LookupTranslator;
 import org.mariotaku.commons.text.CodePointArray;
+
+import de.vanita5.twittnuker.library.twitter.model.DMResponse;
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage;
 import de.vanita5.twittnuker.library.twitter.model.EntitySupport;
 import de.vanita5.twittnuker.library.twitter.model.ExtendedEntitySupport;
@@ -43,11 +45,12 @@ import de.vanita5.twittnuker.model.ParcelableStatus;
 import de.vanita5.twittnuker.model.SpanItem;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters;
-import kotlin.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import kotlin.Pair;
 
 public class InternalTwitterContentUtils {
 
@@ -236,6 +239,13 @@ public class InternalTwitterContentUtils {
 
     @NonNull
     public static Pair<String, SpanItem[]> formatDirectMessageText(@NonNull final DirectMessage message) {
+        final HtmlBuilder builder = new HtmlBuilder(message.getText(), false, true, false);
+        parseEntities(builder, message);
+        return builder.buildWithIndices();
+    }
+
+    @NonNull
+    public static Pair<String, SpanItem[]> formatDirectMessageText(@NonNull final DMResponse.Entry.Message.Data message) {
         final HtmlBuilder builder = new HtmlBuilder(message.getText(), false, true, false);
         parseEntities(builder, message);
         return builder.buildWithIndices();

@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
 import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.view.holder.message.AbsMessageViewHolder
+import de.vanita5.twittnuker.view.holder.message.ConversationCreateMessageViewHolder
 import de.vanita5.twittnuker.view.holder.message.MessageViewHolder
 import de.vanita5.twittnuker.view.holder.message.StickerMessageViewHolder
 import java.util.*
@@ -69,13 +70,17 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
                 val view = inflater.inflate(StickerMessageViewHolder.layoutResource, parent, false)
                 return StickerMessageViewHolder(view, this)
             }
+            ITEM_TYPE_CONVERSATION_CREATE -> {
+                val view = inflater.inflate(ConversationCreateMessageViewHolder.layoutResource, parent, false)
+                return ConversationCreateMessageViewHolder(view, this)
+            }
         }
         throw UnsupportedOperationException()
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder.itemViewType) {
-            ITEM_TYPE_TEXT_MESSAGE, ITEM_TYPE_STICKER_MESSAGE -> {
+            ITEM_TYPE_TEXT_MESSAGE, ITEM_TYPE_STICKER_MESSAGE, ITEM_TYPE_CONVERSATION_CREATE -> {
                 val message = getMessage(position)!!
                 // Display date for oldest item
                 var showDate = true
@@ -108,6 +113,9 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
                     MessageType.STICKER -> {
                         return ITEM_TYPE_STICKER_MESSAGE
                     }
+                    MessageType.CONVERSATION_CREATE -> {
+                        return ITEM_TYPE_CONVERSATION_CREATE
+                    }
                     else -> return ITEM_TYPE_TEXT_MESSAGE
                 }
             }
@@ -120,6 +128,7 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
 
         const val ITEM_TYPE_TEXT_MESSAGE = 1
         const val ITEM_TYPE_STICKER_MESSAGE = 2
+        const val ITEM_TYPE_CONVERSATION_CREATE = 3
     }
 
 }

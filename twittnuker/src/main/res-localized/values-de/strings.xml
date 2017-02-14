@@ -457,6 +457,7 @@
     <string name="message_api_url_format_help">[DOMAIN]: Twitter API Domäne.\nBeispiel: https://[DOMAIN].twitter.com/ wird ersetzt durch https://api.twitter.com/.</string>
     <string name="message_auto_refresh_confirm">Soll die Timeline im Hintergrund automatisch aktualisiert werden?</string>
     <string name="message_blocked_user"><xliff:g id="user">%s</xliff:g> blockiert.</string>
+    <string name="message_conversation_created">Unterhaltung begonnen.</string>
     <string name="message_direct_message_deleted">Direktnachricht gelöscht.</string>
     <string name="message_direct_message_sent">Direktnachricht gesendet.</string>
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>

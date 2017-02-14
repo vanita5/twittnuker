@@ -91,6 +91,32 @@ class GetMessagesTask(
         return getDefaultMessages(microBlog, details, param, index)
     }
 
+    private fun getTwitterOfficialMessages(microBlog: MicroBlog, details: AccountDetails, param: RefreshMessagesTaskParam, index: Int): GetMessagesData {
+        val accountKey = details.key
+        val cursor = param.cursors?.get(index)
+        val page = cursor?.substringAfter("page:").toInt(-1)
+        val inbox = microBlog.getUserInbox(Paging().apply {
+            count(60)
+            if (page >= 0) {
+                page(page)
+            }
+        }).userInbox
+        val conversations = hashMapOf<String, ParcelableMessageConversation>()
+
+        val conversationIds = inbox.conversations.keys
+        conversations.addLocalConversations(accountKey, conversationIds)
+        val messages = inbox.entries.mapNotNull { ParcelableMessageUtils.fromEntry(accountKey, it) }
+        val messagesMap = messages.groupBy(ParcelableMessage::conversation_id)
+        for ((k, v) in inbox.conversations) {
+            val message = messagesMap[k]?.maxBy(ParcelableMessage::message_timestamp) ?: continue
+            val participants = inbox.users.filterKeys { userId ->
+                v.participants.any { it.userId.toString() == userId }
+            }.values
+            conversations.addConversation(k, details, message, participants)
+        }
+        return GetMessagesData(conversations.values, messages)
+    }
+
     private fun getFanfouMessages(microBlog: MicroBlog, details: AccountDetails, param: RefreshMessagesTaskParam, index: Int): GetMessagesData {
         val conversationId = param.conversationId
         if (conversationId == null) {
@@ -98,10 +124,6 @@ class GetMessagesTask(
         } else {
             return GetMessagesData(emptyList(), emptyList())
         }
-    }
-
-    private fun getTwitterOfficialMessages(microBlog: MicroBlog, details: AccountDetails, param: RefreshMessagesTaskParam, index: Int): GetMessagesData {
-        return getDefaultMessages(microBlog, details, param, index)
     }
 
     private fun getDefaultMessages(microBlog: MicroBlog, details: AccountDetails, param: RefreshMessagesTaskParam, index: Int): GetMessagesData {
@@ -151,12 +173,12 @@ class GetMessagesTask(
         received.forEachIndexed { i, dm ->
             val message = ParcelableMessageUtils.incomingMessage(accountKey, dm, 1.0 - (i.toDouble() / received.size))
             insertMessages.add(message)
-            conversations.addConversation(details, message, dm.sender, dm.recipient)
+            conversations.addConversation(message.conversation_id, details, message, setOf(dm.sender, dm.recipient))
         }
         sent.forEachIndexed { i, dm ->
             val message = ParcelableMessageUtils.outgoingMessage(accountKey, dm, 1.0 - (i.toDouble() / sent.size))
             insertMessages.add(message)
-            conversations.addConversation(details, message, dm.sender, dm.recipient)
+            conversations.addConversation(message.conversation_id, details, message, setOf(dm.sender, dm.recipient))
         }
         return GetMessagesData(conversations.values, insertMessages)
     }
@@ -184,7 +206,8 @@ class GetMessagesTask(
             } else {
                 ParcelableMessageUtils.incomingMessage(accountKey, dm, 1.0 - (i.toDouble() / result.size))
             }
-            val mc = conversations.addConversation(details, message, dm.sender, dm.recipient)
+            val mc = conversations.addConversation(message.conversation_id, details, message,
+                    setOf(dm.sender, dm.recipient))
             mc.request_cursor = "page:$page"
         }
         return GetMessagesData(conversations.values, emptyList())
@@ -250,16 +273,21 @@ class GetMessagesTask(
         }
 
     private fun MutableMap<String, ParcelableMessageConversation>.addConversation(
+            conversationId: String,
             details: AccountDetails,
             message: ParcelableMessage,
-            vararg users: User
+            users: Collection<User>
     ): ParcelableMessageConversation {
-        val conversation = this[message.conversation_id] ?: run {
+        val conversation = this[conversationId] ?: run {
             val obj = ParcelableMessageConversation()
-            obj.id = message.conversation_id
-            obj.conversation_type = ConversationType.ONE_TO_ONE
+            obj.id = conversationId
+            if (users.size == 2) {
+                obj.conversation_type = ConversationType.ONE_TO_ONE
+            } else {
+                obj.conversation_type = ConversationType.GROUP
+            }
             obj.setFrom(message, details)
-            this[message.conversation_id] = obj
+            this[conversationId] = obj
             return@run obj
         }
         if (message.timestamp > conversation.timestamp) {

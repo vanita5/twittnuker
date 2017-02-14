@@ -150,7 +150,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
                     adapter.getData(), true, loadingMore)
             // Setting comparator to null lets statuses sort ascending
             loader.comparator = Comparator { l, r ->
-                (l.sort_id - r.sort_id).toInt()
+                (r.sort_id - l.sort_id).toInt()
             }
             return loader
         }
