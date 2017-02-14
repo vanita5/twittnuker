@@ -27,14 +27,16 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.model.ItemCounts
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
+import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.message.MessageEntryViewHolder
 
 
 class MessagesEntriesAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context),
         IItemCountsAdapter {
-    override val itemCounts: ItemCounts = ItemCounts(1)
+    override val itemCounts: ItemCounts = ItemCounts(2)
 
     var conversations: List<ParcelableMessageConversation>? = null
         set(value) {
@@ -52,6 +54,7 @@ class MessagesEntriesAdapter(context: Context) : LoadMoreSupportAdapter<Recycler
 
     override fun getItemCount(): Int {
         itemCounts[0] = conversations?.size ?: 0
+        itemCounts[1] = if (loadMoreIndicatorPosition and ILoadMoreSupportAdapter.END != 0L) 1 else 0
         return itemCounts.itemCount
     }
 
@@ -66,12 +69,26 @@ class MessagesEntriesAdapter(context: Context) : LoadMoreSupportAdapter<Recycler
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(MessageEntryViewHolder.layoutResource, parent, false)
-        return MessageEntryViewHolder(itemView, this)
+        when (viewType) {
+            ITEM_TYPE_MESSAGE_ENTRY -> {
+                val itemView = inflater.inflate(MessageEntryViewHolder.layoutResource, parent, false)
+                return MessageEntryViewHolder(itemView, this)
+            }
+            ITEM_VIEW_TYPE_LOAD_INDICATOR -> {
+                val itemView = inflater.inflate(LoadIndicatorViewHolder.layoutResource, parent, false)
+                return LoadIndicatorViewHolder(itemView)
+
+            }
+        }
+        throw UnsupportedOperationException()
     }
 
     override fun getItemViewType(position: Int): Int {
-        return ITEM_TYPE_MESSAGE_ENTRY
+        when (itemCounts.getItemCountIndex(position)) {
+            0 -> return ITEM_TYPE_MESSAGE_ENTRY
+            1 -> return ITEM_VIEW_TYPE_LOAD_INDICATOR
+        }
+        throw UnsupportedOperationException()
     }
 
     fun getConversation(position: Int): ParcelableMessageConversation? {
@@ -86,7 +103,7 @@ class MessagesEntriesAdapter(context: Context) : LoadMoreSupportAdapter<Recycler
 
     companion object {
         const val ITEM_TYPE_MESSAGE_ENTRY = 1
-
+        const val ITEM_VIEW_TYPE_LOAD_INDICATOR = 2
     }
 
 }

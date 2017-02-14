@@ -25,11 +25,15 @@ package de.vanita5.twittnuker.view.holder
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.list_item_load_indicator.view.*
+import de.vanita5.twittnuker.R
 
 class LoadIndicatorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val loadProgress by lazy { itemView.loadProgress }
 
     fun setLoadProgressVisible(visible: Boolean) {
         loadProgress.visibility = if (visible) View.VISIBLE else View.GONE
+    }
+    companion object {
+        const val layoutResource = R.layout.list_item_load_indicator
     }
 }

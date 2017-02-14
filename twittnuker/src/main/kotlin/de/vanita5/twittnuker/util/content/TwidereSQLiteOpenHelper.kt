@@ -28,18 +28,19 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
-import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import org.mariotaku.kpreferences.get
 import org.mariotaku.sqliteqb.library.*
 import org.mariotaku.sqliteqb.library.Columns.Column
 import org.mariotaku.sqliteqb.library.query.SQLCreateTriggerQuery.Event
 import org.mariotaku.sqliteqb.library.query.SQLCreateTriggerQuery.Type
+import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.annotation.CustomTabType
 import de.vanita5.twittnuker.constant.defaultAPIConfigKey
 import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.TabValuesCreator
 import de.vanita5.twittnuker.model.tab.TabConfiguration
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.util.content.DatabaseUpgradeHelper.safeUpgrade
 import de.vanita5.twittnuker.util.migrateAccounts
 import java.util.*
@@ -82,9 +83,10 @@ class TwidereSQLiteOpenHelper(
         db.endTransaction()
 
         db.beginTransaction()
-        db.execSQL(createTable(Messages.TABLE_NAME, Messages.COLUMNS, Messages.TYPES, true))
-        db.execSQL(createTable(Messages.Conversations.TABLE_NAME, Messages.Conversations.COLUMNS,
-                Messages.Conversations.TYPES, true))
+        db.execSQL(createTable(Messages.TABLE_NAME, Messages.COLUMNS, Messages.TYPES, true,
+                messagesConstraint()))
+        db.execSQL(createTable(Conversations.TABLE_NAME, Conversations.COLUMNS,
+                Conversations.TYPES, true, messageConversationsConstraint()))
         db.setTransactionSuccessful()
         db.endTransaction()
 
@@ -104,6 +106,7 @@ class TwidereSQLiteOpenHelper(
 
         setupDefaultTabs(db)
     }
+
 
     private fun setupDefaultTabs(db: SQLiteDatabase) {
         db.beginTransaction()
@@ -243,9 +246,10 @@ class TwidereSQLiteOpenHelper(
         safeUpgrade(db, SavedSearches.TABLE_NAME, SavedSearches.COLUMNS, SavedSearches.TYPES, true, null)
 
         // DM columns
-        safeUpgrade(db, Messages.TABLE_NAME, Messages.COLUMNS, Messages.TYPES, true, null)
-        safeUpgrade(db, Messages.Conversations.TABLE_NAME, Messages.Conversations.COLUMNS,
-                Messages.Conversations.TYPES, true, null)
+        safeUpgrade(db, Messages.TABLE_NAME, Messages.COLUMNS, Messages.TYPES, true, null,
+                messagesConstraint())
+        safeUpgrade(db, Conversations.TABLE_NAME, Conversations.COLUMNS,
+                Conversations.TYPES, true, null, messageConversationsConstraint())
 
         safeUpgrade(db, PushNotifications.TABLE_NAME, PushNotifications.COLUMNS,
                 PushNotifications.TYPES, false, null)
@@ -319,4 +323,13 @@ class TwidereSQLiteOpenHelper(
         return qb.buildSQL()
     }
 
+    private fun messagesConstraint(): Constraint {
+        return Constraint.unique("unique_message", Columns(Messages.ACCOUNT_KEY, Messages.CONVERSATION_ID,
+                Messages.MESSAGE_ID), OnConflict.REPLACE)
+    }
+
+    private fun messageConversationsConstraint(): Constraint {
+        return Constraint.unique("unique_message_conversations", Columns(Conversations.ACCOUNT_KEY,
+                Conversations.CONVERSATION_ID), OnConflict.REPLACE)
+    }
 }

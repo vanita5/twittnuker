@@ -28,6 +28,8 @@ import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
 import com.squareup.otto.Subscribe
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.toStringArray
+import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
@@ -49,8 +51,9 @@ import de.vanita5.twittnuker.util.Utils
 class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntriesAdapter>(),
         LoaderManager.LoaderCallbacks<List<ParcelableMessageConversation>?>, MessagesEntriesAdapter.MessageConversationClickListener {
 
-    private val accountKeys: Array<UserKey>
-        get() = Utils.getAccountKeys(context, arguments) ?: DataStoreUtils.getActivatedAccountKeys(context)
+    private val accountKeys: Array<UserKey> by lazy {
+        Utils.getAccountKeys(context, arguments) ?: DataStoreUtils.getActivatedAccountKeys(context)
+    }
 
     private val errorInfoKey: String = ErrorInfoStore.KEY_DIRECT_MESSAGES
 
@@ -74,6 +77,8 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<ParcelableMessageConversation>?> {
         val loader = ObjectCursorLoader(context, ParcelableMessageConversationCursorIndices::class.java)
         loader.uri = Conversations.CONTENT_URI
+        loader.selection = Expression.inArgs(Conversations.ACCOUNT_KEY, accountKeys.size).sql
+        loader.selectionArgs = accountKeys.toStringArray()
         loader.projection = Conversations.COLUMNS
         loader.sortOrder = OrderBy(Conversations.LOCAL_TIMESTAMP, false).sql
         return loader
@@ -86,6 +91,7 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
     override fun onLoadFinished(loader: Loader<List<ParcelableMessageConversation>?>?, data: List<ParcelableMessageConversation>?) {
         adapter.conversations = data
         adapter.drawAccountColors = accountKeys.size > 1
+        setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.NONE)
         showContentOrError()
     }
 
@@ -102,7 +108,13 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
     }
 
     override fun onLoadMoreContents(position: Long) {
-        super.onLoadMoreContents(position)
+        if (position != ILoadMoreSupportAdapter.END) {
+            return
+        }
+        setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.END)
+        twitterWrapper.getMessagesAsync(GetMessagesTask.LoadMoreTaskParam(context) {
+            this@MessagesEntriesFragment.accountKeys
+        })
     }
 
     override fun onConversationClick(position: Int) {
