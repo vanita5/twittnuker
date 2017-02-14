@@ -22,28 +22,25 @@
 
 package de.vanita5.twittnuker.fragment
 
-import android.accounts.AccountManager
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
+import com.squareup.otto.Subscribe
 import org.mariotaku.kpreferences.get
-import org.mariotaku.ktextension.toNulls
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
-import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.model.user
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageConversationCursorIndices
-import de.vanita5.twittnuker.model.SimpleRefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.util.AccountUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
+import de.vanita5.twittnuker.model.event.GetMessagesTaskEvent
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
+import de.vanita5.twittnuker.task.GetMessagesTask
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.ErrorInfoStore
 import de.vanita5.twittnuker.util.IntentUtils
@@ -62,6 +59,16 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
         adapter.listener = this
         adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.END
         loaderManager.initLoader(0, null, this)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        bus.register(this)
+    }
+
+    override fun onStop() {
+        bus.unregister(this)
+        super.onStop()
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<ParcelableMessageConversation>?> {
@@ -88,37 +95,8 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
 
     override fun triggerRefresh(): Boolean {
         super.triggerRefresh()
-        twitterWrapper.getMessagesAsync(object : SimpleRefreshTaskParam() {
-            private val accounts by lazy {
-                AccountUtils.getAllAccountDetails(AccountManager.get(context), accountKeys, false)
-            }
-
-            override val accountKeys: Array<UserKey> by lazy {
+        twitterWrapper.getMessagesAsync(GetMessagesTask.RefreshNewTaskParam(context) {
                 this@MessagesEntriesFragment.accountKeys
-            }
-
-            override val sinceIds: Array<String?>?
-                get() {
-                    val result = arrayOfNulls<String>(accountKeys.size)
-                    val hasSinceAccountKeys = accounts.mapNotNull { account ->
-                        when (account?.type) {
-                            AccountType.FANFOU -> {
-                                return@mapNotNull null
-                            }
-                        }
-                        return@mapNotNull account?.key
-                    }.toTypedArray()
-                    val incomingIds = DataStoreUtils.getMessageIds(context, Messages.CONTENT_URI,
-                            hasSinceAccountKeys.toNulls(), false)
-                    val outgoingIds = DataStoreUtils.getMessageIds(context, Messages.CONTENT_URI,
-                            hasSinceAccountKeys.toNulls(), true)
-                    loop@ for (idx in 0..accountKeys.lastIndex) {
-
-                    }
-                    return result
-                }
-            override val hasSinceIds: Boolean = true
-            override val hasMaxIds: Boolean = false
         })
         return true
     }
@@ -136,6 +114,13 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
         val conversation = adapter.getConversation(position) ?: return
         val user = conversation.user ?: return
         IntentUtils.openUserProfile(context, user, preferences[newDocumentApiKey])
+    }
+
+    @Subscribe
+    fun onGetMessagesTaskEvent(event: GetMessagesTaskEvent) {
+        if (!event.running) {
+            refreshing = false
+        }
     }
 
     private fun showContentOrError() {
