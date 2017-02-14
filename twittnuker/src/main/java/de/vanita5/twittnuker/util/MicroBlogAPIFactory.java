@@ -66,7 +66,6 @@ import de.vanita5.twittnuker.model.ConsumerKeyType;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.account.cred.Credentials;
 import de.vanita5.twittnuker.model.util.AccountUtils;
-import okhttp3.HttpUrl;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -74,6 +73,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import okhttp3.HttpUrl;
 
 public class MicroBlogAPIFactory implements TwittnukerConstants {
 
@@ -111,8 +112,7 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
     }
 
     @WorkerThread
-    public static MicroBlog getInstance(@NonNull final Context context,
-                                        @NonNull final UserKey accountKey) {
+    public static MicroBlog getInstance(@NonNull final Context context, @NonNull final UserKey accountKey) {
         final AccountManager am = AccountManager.get(context);
         final Account account = AccountUtils.findByAccountKey(am, accountKey);
         if (account == null) return null;
@@ -124,7 +124,8 @@ public class MicroBlogAPIFactory implements TwittnukerConstants {
     }
 
     @NonNull
-    public static HashMap<String, String> getExtraParams(@NonNull @AccountType String accountType, boolean includeEntities, boolean includeRetweets) {
+    public static HashMap<String, String> getExtraParams(@NonNull @AccountType String accountType,
+            boolean includeEntities, boolean includeRetweets) {
         final HashMap<String, String> extraParams = new HashMap<>();
         switch (accountType) {
             case AccountType.FANFOU: {

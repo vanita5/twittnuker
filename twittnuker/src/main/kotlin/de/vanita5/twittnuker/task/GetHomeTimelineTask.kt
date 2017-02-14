@@ -29,7 +29,7 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.ResponseList
 import de.vanita5.twittnuker.library.twitter.model.Status
-import de.vanita5.twittnuker.provider.TwidereDataStore
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.twitter.GetStatusesTask
 import de.vanita5.twittnuker.util.ErrorInfoStore
 
@@ -41,7 +41,7 @@ class GetHomeTimelineTask(context: Context) : GetStatusesTask(context) {
     }
 
     override val contentUri: Uri
-        get() = TwidereDataStore.Statuses.CONTENT_URI
+        get() = Statuses.CONTENT_URI
 
     override val errorInfoKey: String
         get() = ErrorInfoStore.KEY_HOME_TIMELINE

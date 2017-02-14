@@ -32,20 +32,19 @@ import de.vanita5.twittnuker.library.twitter.model.ResponseList;
 import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.annotation.method.POST;
 import org.mariotaku.restfu.annotation.param.Param;
+import org.mariotaku.restfu.annotation.param.Query;
 
 @SuppressWarnings("RedundantThrows")
 public interface DirectMessagesResources {
 
     @POST("/direct_messages/new.json")
     DirectMessage sendFanfouDirectMessage(@Param("user") String user, @Param("text") String text,
-                                          @Param("in_reply_to_id") String inReplyToId)
-            throws MicroBlogException;
+            @Param("in_reply_to_id") String inReplyToId) throws MicroBlogException;
 
     @POST("/direct_messages/new.json")
     DirectMessage sendFanfouDirectMessage(@Param("user") String user, @Param("text") String text)
             throws MicroBlogException;
 
     @GET("/direct_messages/conversation_list.json")
-    ResponseList<Conversation> getConversationList(@Param Paging paging)
-            throws MicroBlogException;
+    ResponseList<Conversation> getConversationList(@Query Paging paging) throws MicroBlogException;
 }
