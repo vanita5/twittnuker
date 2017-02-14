@@ -42,7 +42,6 @@ import de.vanita5.twittnuker.model.util.AccountUtils.getAccountDetails
 import de.vanita5.twittnuker.model.util.ParcelableMessageUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.model.util.UserKeyUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore.AccountSupportColumns
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
@@ -56,7 +55,7 @@ class GetMessagesTask(context: Context) : BaseAbstractTask<RefreshTaskParam, Uni
             val details = getAccountDetails(am, accountKey, true) ?: return@forEachIndexed
             val microBlog = details.newMicroBlogInstance(context, true, cls = MicroBlog::class.java)
             val messages = try {
-                getMessages(microBlog, details)
+                getMessages(microBlog, details, param, i)
             } catch (e: MicroBlogException) {
                 return@forEachIndexed
             }
@@ -68,7 +67,7 @@ class GetMessagesTask(context: Context) : BaseAbstractTask<RefreshTaskParam, Uni
         callback?.invoke(true)
     }
 
-    private fun getMessages(microBlog: MicroBlog, details: AccountDetails): GetMessagesData {
+    private fun getMessages(microBlog: MicroBlog, details: AccountDetails, param: RefreshTaskParam, index: Int): GetMessagesData {
         when (details.type) {
             AccountType.FANFOU -> {
                 // Use fanfou DM api
@@ -77,31 +76,36 @@ class GetMessagesTask(context: Context) : BaseAbstractTask<RefreshTaskParam, Uni
             AccountType.TWITTER -> {
                 // Use official DM api
                 if (details.isOfficial(context)) {
-                    return getTwitterOfficialMessages(microBlog, details)
+                    return getTwitterOfficialMessages(microBlog, details, param, index)
                 }
             }
         }
         // Use default method
-        return getDefaultMessages(microBlog, details)
+        return getDefaultMessages(microBlog, details, param, index)
     }
 
     private fun getFanfouMessages(microBlog: MicroBlog): GetMessagesData {
         return GetMessagesData(emptyList(), emptyList())
     }
 
-    private fun getTwitterOfficialMessages(microBlog: MicroBlog, details: AccountDetails): GetMessagesData {
-        return getDefaultMessages(microBlog, details)
+    private fun getTwitterOfficialMessages(microBlog: MicroBlog, details: AccountDetails, param: RefreshTaskParam, index: Int): GetMessagesData {
+        return getDefaultMessages(microBlog, details, param, index)
     }
 
-    private fun getDefaultMessages(microBlog: MicroBlog, details: AccountDetails): GetMessagesData {
+    private fun getDefaultMessages(microBlog: MicroBlog, details: AccountDetails, param: RefreshTaskParam, index: Int): GetMessagesData {
         val accountKey = details.key
-        val paging = Paging()
+
+
+        val received = microBlog.getDirectMessages(Paging().apply {
+            count(100)
+        })
+        val sent = microBlog.getSentDirectMessages(Paging().apply {
+            count(100)
+        })
+
+
         val insertMessages = arrayListOf<ParcelableMessage>()
         val conversations = hashMapOf<String, ParcelableMessageConversation>()
-
-
-        val received = microBlog.getDirectMessages(paging)
-        val sent = microBlog.getSentDirectMessages(paging)
 
         val conversationIds = hashSetOf<String>()
         received.forEach {
@@ -154,10 +158,6 @@ class GetMessagesTask(context: Context) : BaseAbstractTask<RefreshTaskParam, Uni
 
     private fun storeMessages(data: GetMessagesData, details: AccountDetails) {
         val resolver = context.contentResolver
-        val where = Expression.equalsArgs(AccountSupportColumns.ACCOUNT_KEY).sql
-        val whereArgs = arrayOf(details.key.toString())
-        resolver.delete(Messages.CONTENT_URI, where, whereArgs)
-        resolver.delete(Conversations.CONTENT_URI, where, whereArgs)
         val conversationsValues = data.conversations.map {
             val values = ParcelableMessageConversationValuesCreator.create(it)
             if (it._id > 0) {

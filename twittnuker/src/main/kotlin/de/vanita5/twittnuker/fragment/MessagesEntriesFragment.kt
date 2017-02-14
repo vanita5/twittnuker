@@ -30,6 +30,7 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.model.user
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
@@ -54,6 +55,7 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         adapter.listener = this
+        adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.END
         loaderManager.initLoader(0, null, this)
     }
 
@@ -87,6 +89,10 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
             }
         })
         return true
+    }
+
+    override fun onLoadMoreContents(position: Long) {
+        super.onLoadMoreContents(position)
     }
 
     override fun onConversationClick(position: Int) {
