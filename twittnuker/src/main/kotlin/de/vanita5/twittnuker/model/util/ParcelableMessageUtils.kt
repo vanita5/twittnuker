@@ -29,20 +29,30 @@ import de.vanita5.twittnuker.model.message.MessageExtras
 import de.vanita5.twittnuker.model.message.StickerExtras
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
 
-
+/**
+ *
+ */
 object ParcelableMessageUtils {
     fun incomingMessage(accountKey: UserKey, message: DirectMessage): ParcelableMessage {
         val result = message(accountKey, message)
         result.is_outgoing = false
-        result.conversation_id = "${message.recipientId}-${message.senderId}"
+        result.conversation_id = incomingConversationId(message.senderId, message.recipientId)
         return result
     }
 
     fun outgoingMessage(accountKey: UserKey, message: DirectMessage): ParcelableMessage {
         val result = message(accountKey, message)
         result.is_outgoing = true
-        result.conversation_id = "${message.senderId}-${message.recipientId}"
+        result.conversation_id = outgoingConversationId(message.senderId, message.recipientId)
         return result
+    }
+
+    fun incomingConversationId(senderId: String, recipientId: String): String {
+        return "$recipientId-$senderId"
+    }
+
+    fun outgoingConversationId(senderId: String, recipientId: String): String {
+        return "$senderId-$recipientId"
     }
 
     private fun message(accountKey: UserKey, message: DirectMessage): ParcelableMessage {
