@@ -22,15 +22,18 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.accounts.AccountManager
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.toNulls
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.model.user
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
@@ -38,6 +41,8 @@ import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageConversationCursorIndices
 import de.vanita5.twittnuker.model.SimpleRefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.ErrorInfoStore
@@ -84,9 +89,36 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
     override fun triggerRefresh(): Boolean {
         super.triggerRefresh()
         twitterWrapper.getMessagesAsync(object : SimpleRefreshTaskParam() {
-            override fun getAccountKeysWorker(): Array<UserKey> {
-                return this@MessagesEntriesFragment.accountKeys
+            private val accounts by lazy {
+                AccountUtils.getAllAccountDetails(AccountManager.get(context), accountKeys, false)
             }
+
+            override val accountKeys: Array<UserKey> by lazy {
+                this@MessagesEntriesFragment.accountKeys
+            }
+
+            override val sinceIds: Array<String?>?
+                get() {
+                    val result = arrayOfNulls<String>(accountKeys.size)
+                    val hasSinceAccountKeys = accounts.mapNotNull { account ->
+                        when (account?.type) {
+                            AccountType.FANFOU -> {
+                                return@mapNotNull null
+                            }
+                        }
+                        return@mapNotNull account?.key
+                    }.toTypedArray()
+                    val incomingIds = DataStoreUtils.getMessageIds(context, Messages.CONTENT_URI,
+                            hasSinceAccountKeys.toNulls(), false)
+                    val outgoingIds = DataStoreUtils.getMessageIds(context, Messages.CONTENT_URI,
+                            hasSinceAccountKeys.toNulls(), true)
+                    loop@ for (idx in 0..accountKeys.lastIndex) {
+
+                    }
+                    return result
+                }
+            override val hasSinceIds: Boolean = true
+            override val hasMaxIds: Boolean = false
         })
         return true
     }

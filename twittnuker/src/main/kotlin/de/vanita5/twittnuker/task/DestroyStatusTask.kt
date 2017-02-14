@@ -39,14 +39,15 @@ import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.deleteActivityStatus
 
 class DestroyStatusTask(
         context: Context,
         private val accountKey: UserKey,
         private val statusId: String
-) : ManagedAsyncTask<Any, Any, SingleResponse<ParcelableStatus>>(context) {
+) : BaseAbstractTask<Any?, SingleResponse<ParcelableStatus>, Any?>(context) {
 
-    override fun doInBackground(vararg params: Any): SingleResponse<ParcelableStatus> {
+    override fun doLongOperation(params: Any?): SingleResponse<ParcelableStatus> {
         val details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true)
                 ?: return SingleResponse()
         val microBlog = details.newMicroBlogInstance(context, cls = MicroBlog::class.java)
@@ -64,22 +65,22 @@ class DestroyStatusTask(
         } finally {
             if (deleteStatus) {
                 DataStoreUtils.deleteStatus(context.contentResolver, accountKey, statusId, status)
-                DataStoreUtils.deleteActivityStatus(context.contentResolver, accountKey, statusId, status)
+                deleteActivityStatus(context.contentResolver, accountKey, statusId, status)
             }
         }
     }
 
-    override fun onPreExecute() {
-        super.onPreExecute()
+    override fun beforeExecute() {
         val hashCode = AsyncTwitterWrapper.calculateHashCode(accountKey, statusId)
-        if (!asyncTwitterWrapper.destroyingStatusIds.contains(hashCode)) {
-            asyncTwitterWrapper.destroyingStatusIds.add(hashCode)
+        if (!microBlogWrapper.destroyingStatusIds.contains(hashCode)) {
+            microBlogWrapper.destroyingStatusIds.add(hashCode)
         }
         bus.post(StatusListChangedEvent())
     }
 
-    override fun onPostExecute(result: SingleResponse<ParcelableStatus>) {
-        asyncTwitterWrapper.destroyingStatusIds.removeElement(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
+    override fun afterExecute(callback: Any?, result: SingleResponse<ParcelableStatus>) {
+
+        microBlogWrapper.destroyingStatusIds.removeElement(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
         if (result.hasData()) {
             val status = result.data!!
             if (status.retweet_id != null) {
@@ -91,7 +92,6 @@ class DestroyStatusTask(
         } else {
             Utils.showErrorMessage(context, R.string.action_deleting, result.exception, true)
         }
-        super.onPostExecute(result)
     }
 
 }

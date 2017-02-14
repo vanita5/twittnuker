@@ -23,11 +23,9 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
-import android.util.Log
 import org.mariotaku.abstask.library.AbstractTask
 import de.vanita5.twittnuker.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
@@ -57,6 +55,6 @@ class GetSavedSearchesTask(
                 DebugLog.w(LOGTAG, tr = e)
             }
         }
-        return SingleResponse.getInstance(Unit)
+        return SingleResponse(Unit)
     }
 }

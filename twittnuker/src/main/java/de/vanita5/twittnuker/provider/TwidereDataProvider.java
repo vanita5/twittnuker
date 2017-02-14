@@ -67,9 +67,7 @@ import org.mariotaku.sqliteqb.library.SQLConstants;
 import org.mariotaku.sqliteqb.library.SQLFunctions;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.BuildConfig;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.TwittnukerConstants;
 import de.vanita5.twittnuker.activity.HomeActivity;
 import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.annotation.NotificationType;
@@ -144,7 +142,70 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-public final class TwidereDataProvider extends ContentProvider implements Constants,
+import static de.vanita5.twittnuker.TwittnukerConstants.AUTHORITY_DRAFTS;
+import static de.vanita5.twittnuker.TwittnukerConstants.AUTHORITY_INTERACTIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.BROADCAST_NOTIFICATION_DELETED;
+import static de.vanita5.twittnuker.TwittnukerConstants.INTENT_ACTION_DISCARD_DRAFT;
+import static de.vanita5.twittnuker.TwittnukerConstants.INTENT_ACTION_SEND_DRAFT;
+import static de.vanita5.twittnuker.TwittnukerConstants.KEY_COMBINED_NOTIFICATIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.KEY_I_WANT_MY_STARS_BACK;
+import static de.vanita5.twittnuker.TwittnukerConstants.KEY_NAME_FIRST;
+import static de.vanita5.twittnuker.TwittnukerConstants.LOGTAG;
+import static de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_DIRECT_MESSAGES;
+import static de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_DRAFTS;
+import static de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_HOME_TIMELINE;
+import static de.vanita5.twittnuker.TwittnukerConstants.NOTIFICATION_ID_INTERACTIONS_TIMELINE;
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_ACCOUNT_KEY;
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_FROM_NOTIFICATION;
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFICATION_TYPE;
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY;
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_QUERY;
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_READ_POSITION;
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_READ_POSITIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_TIMESTAMP;
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_TYPE;
+import static de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_URL;
+import static de.vanita5.twittnuker.TwittnukerConstants.SCHEME_TWITTNUKER;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_ACTIVITIES_ABOUT_ME;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_CACHED_HASHTAGS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_CACHED_RELATIONSHIPS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_CACHED_STATUSES;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_CACHED_USERS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_DRAFTS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_FILTERED_KEYWORDS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_FILTERED_LINKS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_FILTERED_SOURCES;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_FILTERED_USERS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_MENTIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_MESSAGES;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_MESSAGES_CONVERSATIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_SEARCH_HISTORY;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_STATUSES;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_TABS;
+import static de.vanita5.twittnuker.TwittnukerConstants.TABLE_ID_TRENDS_LOCAL;
+import static de.vanita5.twittnuker.TwittnukerConstants.USER_TYPE_TWITTER_COM;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_ALL_PREFERENCES;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_CACHED_IMAGES;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_CACHED_USERS_WITH_RELATIONSHIP;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_CACHE_FILES;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_DATABASE_PREPARE;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_DNS;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_DRAFTS_NOTIFICATIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_DRAFTS_UNSENT;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_EMPTY;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_NOTIFICATIONS;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_NULL;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_PREFERENCES;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_RAW_QUERY;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_SUGGESTIONS_AUTO_COMPLETE;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_SUGGESTIONS_SEARCH;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_UNREAD_COUNTS;
+import static de.vanita5.twittnuker.TwittnukerConstants.VIRTUAL_TABLE_ID_UNREAD_COUNTS_BY_TYPE;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.GCM_TOKEN_SENT;
+import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_ENABLE_PUSH_NOTIFICATIONS;
+
+public final class TwidereDataProvider extends ContentProvider implements
         OnSharedPreferenceChangeListener, LazyLoadCallback {
 
     public static final String TAG_OLDEST_MESSAGES = "oldest_messages";
@@ -332,8 +393,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
     private int bulkInsertInternal(@NonNull Uri uri, @NonNull ContentValues[] valuesArray) {
-        final int tableId = DataStoreUtils.getTableId(uri);
-        final String table = DataStoreUtils.getTableNameById(tableId);
+        final int tableId = DataStoreUtils.INSTANCE.getTableId(uri);
+        final String table = DataStoreUtils.INSTANCE.getTableNameById(tableId);
         int result = 0;
         final long[] newIds = new long[valuesArray.length];
         if (table != null && valuesArray.length > 0) {
@@ -395,8 +456,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
     private int deleteInternal(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        final int tableId = DataStoreUtils.getTableId(uri);
-        final String table = DataStoreUtils.getTableNameById(tableId);
+        final int tableId = DataStoreUtils.INSTANCE.getTableId(uri);
+        final String table = DataStoreUtils.INSTANCE.getTableNameById(tableId);
         switch (tableId) {
             case VIRTUAL_TABLE_ID_NOTIFICATIONS: {
                 final List<String> segments = uri.getPathSegments();
@@ -446,8 +507,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
     private Uri insertInternal(@NonNull Uri uri, ContentValues values) {
-        final int tableId = DataStoreUtils.getTableId(uri);
-        final String table = DataStoreUtils.getTableNameById(tableId);
+        final int tableId = DataStoreUtils.INSTANCE.getTableId(uri);
+        final String table = DataStoreUtils.INSTANCE.getTableNameById(tableId);
         final long rowId;
         switch (tableId) {
             case TABLE_ID_CACHED_USERS: {
@@ -596,7 +657,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
 
     @Override
     public ParcelFileDescriptor openFile(@NonNull final Uri uri, @NonNull final String mode) throws FileNotFoundException {
-        final int table_id = DataStoreUtils.getTableId(uri);
+        final int table_id = DataStoreUtils.INSTANCE.getTableId(uri);
         switch (table_id) {
             case VIRTUAL_TABLE_ID_CACHED_IMAGES: {
                 return getCachedImageFd(uri.getQueryParameter(QUERY_PARAM_URL));
@@ -612,8 +673,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     public Cursor query(@NonNull final Uri uri, final String[] projection, final String selection, final String[] selectionArgs,
                         final String sortOrder) {
         try {
-            final int tableId = DataStoreUtils.getTableId(uri);
-            final String table = DataStoreUtils.getTableNameById(tableId);
+            final int tableId = DataStoreUtils.INSTANCE.getTableId(uri);
+            final String table = DataStoreUtils.INSTANCE.getTableNameById(tableId);
             switch (tableId) {
                 case VIRTUAL_TABLE_ID_DATABASE_PREPARE: {
                     databaseWrapper.prepare();
@@ -856,8 +917,8 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
     }
 
     private int updateInternal(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        final int tableId = DataStoreUtils.getTableId(uri);
-        final String table = DataStoreUtils.getTableNameById(tableId);
+        final int tableId = DataStoreUtils.INSTANCE.getTableId(uri);
+        final String table = DataStoreUtils.INSTANCE.getTableNameById(tableId);
         int result = 0;
         if (table != null) {
             result = databaseWrapper.update(table, values, selection, selectionArgs);
@@ -907,7 +968,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             notification = new NotificationContent();
             notification.setAccountKey(dm.account_key);
             notification.setObjectId(String.valueOf(dm.id));
-            notification.setObjectUserKey(new UserKey(dm.sender_id, TwittnukerConstants.USER_TYPE_TWITTER_COM));
+            notification.setObjectUserKey(new UserKey(dm.sender_id, USER_TYPE_TWITTER_COM));
             notification.setFromUser(dm.sender_screen_name);
             notification.setType(type);
             notification.setMessage(dm.text_unescaped);
@@ -1031,11 +1092,11 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     @Override
                     public void run() {
 //                        final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(context,
-//                                DataStoreUtils.getAccountKeys(context));
+//                                DataStoreUtils.INSTANCE.getAccountKeys(context));
 //                        for (final AccountPreferences pref : prefs) {
 //                            if (!pref.isHomeTimelineNotificationEnabled()) continue;
 //                            final long positionTag = getPositionTag(CustomTabType.HOME_TIMELINE, pref.getAccountKey());
-//                            showTimelineNotification(pref, positionTag);
+//                            showTimelineNotification(preferences, pref, positionTag);
 //                        }
                         notifyUnreadCountChanged(NOTIFICATION_ID_HOME_TIMELINE);
                     }
@@ -1047,7 +1108,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                     @Override
                     public void run() {
                         final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(context,
-                                DataStoreUtils.getAccountKeys(context));
+                                DataStoreUtils.INSTANCE.getAccountKeys(context));
                         final boolean combined = preferences.getBoolean(KEY_COMBINED_NOTIFICATIONS);
                         for (final AccountPreferences pref : prefs) {
                             if (!pref.isInteractionsNotificationEnabled()) continue;
@@ -1061,7 +1122,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             }
             case TABLE_ID_MESSAGES: {
                 final AccountPreferences[] prefs = AccountPreferences.getNotificationEnabledPreferences(context,
-                        DataStoreUtils.getAccountKeys(context));
+                        DataStoreUtils.INSTANCE.getAccountKeys(context));
                 for (final AccountPreferences pref : prefs) {
                     if (!pref.isDirectMessagesNotificationEnabled()) continue;
                     final StringLongPair[] pairs = readStateManager.getPositionPairs(CustomTabType.DIRECT_MESSAGES);
@@ -1181,7 +1242,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
             applyNotificationPreferences(builder, pref, pref.getMentionsNotificationType());
 
             final Resources resources = context.getResources();
-            final String accountName = DataStoreUtils.getAccountDisplayName(context, accountKey, nameFirst);
+            final String accountName = DataStoreUtils.INSTANCE.getAccountDisplayName(context, accountKey, nameFirst);
             builder.setContentText(accountName);
             final InboxStyle style = new InboxStyle();
             builder.setStyle(style);
@@ -1211,7 +1272,7 @@ public final class TwidereDataProvider extends ContentProvider implements Consta
                         activity.status_quoted_user_key)) {
                     continue;
                 }
-                final UserKey[] filteredUserIds = DataStoreUtils.getFilteredUserIds(context);
+                final UserKey[] filteredUserIds = DataStoreUtils.INSTANCE.getFilteredUserIds(context);
                 if (timestamp == -1) {
                     timestamp = activity.timestamp;
                 }

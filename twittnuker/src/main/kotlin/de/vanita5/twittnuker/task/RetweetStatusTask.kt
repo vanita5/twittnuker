@@ -26,12 +26,12 @@ import android.accounts.AccountManager
 import android.content.ContentValues
 import android.content.Context
 import org.apache.commons.collections.primitives.ArrayIntList
+import de.vanita5.twittnuker.library.MicroBlog
+import de.vanita5.twittnuker.library.MicroBlogException
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.library.MicroBlog
-import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.model.SingleResponse
@@ -43,11 +43,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper.calculateHashCode
-import de.vanita5.twittnuker.util.DataStoreUtils
-import de.vanita5.twittnuker.util.DebugLog
-import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.*
 
 class RetweetStatusTask(
         context: Context,
@@ -88,7 +84,7 @@ class RetweetStatusTask(
             for (uri in DataStoreUtils.STATUSES_URIS) {
                 resolver.update(uri, values, where.sql, whereArgs)
             }
-            DataStoreUtils.updateActivityStatus(resolver, accountKey, statusId, DataStoreUtils.UpdateActivityAction { activity ->
+            updateActivityStatus(resolver, accountKey, statusId) { activity ->
                 val statusesMatrix = arrayOf(activity.target_statuses, activity.target_object_statuses)
                 activity.status_my_retweet_id = result.my_retweet_id
                 for (statusesArray in statusesMatrix) {
@@ -103,7 +99,7 @@ class RetweetStatusTask(
                         }
                     }
                 }
-            })
+            }
             UpdateStatusTask.deleteDraft(context, draftId)
             return SingleResponse(result)
         } catch (e: MicroBlogException) {
@@ -138,7 +134,7 @@ class RetweetStatusTask(
     companion object {
         private val creatingRetweetIds = ArrayIntList()
         fun isCreatingRetweet(accountKey: UserKey?, statusId: String?): Boolean {
-            return creatingRetweetIds.contains(calculateHashCode(accountKey, statusId))
+            return creatingRetweetIds.contains(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
         }
 
     }

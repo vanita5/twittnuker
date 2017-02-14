@@ -26,7 +26,9 @@ import android.content.Context
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.SingleResponse
 
-class SendMessageTask(context: Context) : BaseAbstractTask<Unit, SingleResponse<ParcelableMessage>, Unit>(context) {
+class SendMessageTask(
+        context: Context
+) : BaseAbstractTask<Unit, SingleResponse<ParcelableMessage>, Unit>(context) {
     override fun doLongOperation(params: Unit?): SingleResponse<ParcelableMessage> {
         return SingleResponse(UnsupportedOperationException())
     }

@@ -24,9 +24,6 @@ package de.vanita5.twittnuker.task
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
-import com.squareup.otto.Bus
-import org.mariotaku.abstask.library.AbstractTask
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.LOGTAG
@@ -35,13 +32,11 @@ import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.ProfileUpdatedEvent
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
+import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.TwitterWrapper
 import de.vanita5.twittnuker.util.Utils
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
-
 import java.io.IOException
-import javax.inject.Inject
 
 open class UpdateProfileBackgroundImageTask<ResultHandler>(
         context: Context,
@@ -72,7 +67,7 @@ open class UpdateProfileBackgroundImageTask<ResultHandler>(
             try {
                 Thread.sleep(5000L)
             } catch (e: InterruptedException) {
-                Log.w(LOGTAG, e)
+                DebugLog.w(LOGTAG, tr = e)
             }
             val user = twitter.verifyCredentials()
             return SingleResponse(ParcelableUserUtils.fromUser(user, accountKey))

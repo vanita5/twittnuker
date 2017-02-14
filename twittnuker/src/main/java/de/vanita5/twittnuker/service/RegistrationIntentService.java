@@ -86,7 +86,7 @@ public class RegistrationIntentService extends IntentService implements Constant
         //The backend server only accepts our reg id if at least one account
         //is configured server-side.
 
-        for (UserKey userKey : DataStoreUtils.getAccountKeys(this)) {
+        for (UserKey userKey : DataStoreUtils.INSTANCE.getAccountKeys(this)) {
             if (backend.register(userKey.getId(), token)) {
                 mPreferences.edit().putBoolean(SharedPreferenceConstants.GCM_TOKEN_SENT, true).apply();
                 break;

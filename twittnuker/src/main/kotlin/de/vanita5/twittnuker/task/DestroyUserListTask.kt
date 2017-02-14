@@ -23,32 +23,28 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
-import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NAME_FIRST
-import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.SingleResponse
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.model.event.UserListMembersChangedEvent
+import de.vanita5.twittnuker.model.event.UserListDestroyedEvent
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.util.MicroBlogAPIFactory
 import de.vanita5.twittnuker.util.Utils
 
-class AddUserListMembersTask(
+class DestroyUserListTask(
         context: Context,
         private val accountKey: UserKey,
-        private val listId: String,
-        private val users: Array<out ParcelableUser>
+        private val listId: String
 ) : BaseAbstractTask<Any?, SingleResponse<ParcelableUserList>, Any?>(context) {
 
     override fun doLongOperation(params: Any?): SingleResponse<ParcelableUserList> {
+        val microBlog = MicroBlogAPIFactory.getInstance(context, accountKey) ?:
+                return SingleResponse(MicroBlogException("No account"))
         try {
-            val microBlog = MicroBlogAPIFactory.getInstance(context, accountKey) ?:
-                    throw MicroBlogException("No account")
-            val userIds = users.map(ParcelableUser::key).toTypedArray()
-            val result = microBlog.addUserListMembers(listId, UserKey.getIds(userIds))
-            val list = ParcelableUserListUtils.from(result, accountKey)
+            val userList = microBlog.destroyUserList(listId)
+            val list = ParcelableUserListUtils.from(userList, accountKey)
             return SingleResponse(list)
         } catch (e: MicroBlogException) {
             return SingleResponse(e)
@@ -57,24 +53,13 @@ class AddUserListMembersTask(
     }
 
     override fun afterExecute(callback: Any?, result: SingleResponse<ParcelableUserList>) {
+        val context = context
         if (result.data != null) {
-            val message: String
-            if (users.size == 1) {
-                val user = users.first()
-                val nameFirst = preferences.getBoolean(KEY_NAME_FIRST)
-                val displayName = userColorNameManager.getDisplayName(user.key, user.name,
-                        user.screen_name, nameFirst)
-                message = context.getString(R.string.added_user_to_list, displayName, result.data.name)
-            } else {
-                val res = context.resources
-                message = res.getQuantityString(R.plurals.added_N_users_to_list, users.size, users.size,
-                        result.data.name)
-            }
-            Utils.showOkMessage(context, message, false)
-            bus.post(UserListMembersChangedEvent(UserListMembersChangedEvent.Action.ADDED, result.data,
-                    users))
+            val message = context.getString(R.string.deleted_list, result.data.name)
+            Utils.showInfoMessage(context, message, false)
+            bus.post(UserListDestroyedEvent(result.data))
         } else {
-            Utils.showErrorMessage(context, R.string.action_adding_member, result.exception, true)
+            Utils.showErrorMessage(context, R.string.action_deleting, result.exception, true)
         }
     }
 

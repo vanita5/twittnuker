@@ -39,9 +39,8 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.UserColorNameManager
-import de.vanita5.twittnuker.util.Utils.findStatus
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
-
+import de.vanita5.twittnuker.util.deleteActivityStatus
 import javax.inject.Inject
 
 class ParcelableStatusLoader(
@@ -76,7 +75,7 @@ class ParcelableStatusLoader(
         }
         if (details == null) return SingleResponse(MicroBlogException("No account"))
         try {
-            val status = findStatus(context, accountKey, statusId)
+            val status = DataStoreUtils.findStatus(context, accountKey, statusId)
             ParcelableStatusUtils.updateExtraInformation(status, details)
             val response = SingleResponse(status)
             response.extras[EXTRA_ACCOUNT] = details
@@ -86,7 +85,7 @@ class ParcelableStatusLoader(
                 // Delete all deleted status
                 val cr = context.contentResolver
                 DataStoreUtils.deleteStatus(cr, accountKey, statusId, null)
-                DataStoreUtils.deleteActivityStatus(cr, accountKey, statusId, null)
+                deleteActivityStatus(cr, accountKey, statusId, null)
             }
             return SingleResponse(e)
         }

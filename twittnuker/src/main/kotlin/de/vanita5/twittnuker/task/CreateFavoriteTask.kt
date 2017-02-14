@@ -44,16 +44,17 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper.calculateHashCode
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper.Companion.calculateHashCode
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.DebugLog
 import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.updateActivityStatus
 
 class CreateFavoriteTask(
         context: Context,
         private val accountKey: UserKey,
         private val status: ParcelableStatus
-) : BaseAbstractTask<Any, SingleResponse<ParcelableStatus>, Any>(context) {
+) : BaseAbstractTask<Any?, SingleResponse<ParcelableStatus>, Any?>(context) {
 
     private val statusId = status.id
 
@@ -98,7 +99,7 @@ class CreateFavoriteTask(
             for (uri in DataStoreUtils.STATUSES_URIS) {
                 resolver.update(uri, values, statusWhere, statusWhereArgs)
             }
-            DataStoreUtils.updateActivityStatus(resolver, accountKey, statusId) { activity ->
+            updateActivityStatus(resolver, accountKey, statusId) { activity ->
                 val statusesMatrix = arrayOf(activity.target_statuses, activity.target_object_statuses)
                 for (statusesArray in statusesMatrix) {
                     if (statusesArray == null) continue

@@ -41,18 +41,17 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.util.AsyncTwitterWrapper
-import de.vanita5.twittnuker.util.AsyncTwitterWrapper.calculateHashCode
+import de.vanita5.twittnuker.util.AsyncTwitterWrapper.Companion.calculateHashCode
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.Utils
+import de.vanita5.twittnuker.util.updateActivityStatus
 
 class DestroyFavoriteTask(
         context: Context,
         private val accountKey: UserKey,
         private val statusId: String
-) : ManagedAsyncTask<Any, Any, SingleResponse<ParcelableStatus>>(context) {
-
-
-    override fun doInBackground(vararg params: Any): SingleResponse<ParcelableStatus> {
+) : BaseAbstractTask<Any?, SingleResponse<ParcelableStatus>, Any?>(context) {
+    override fun doLongOperation(params: Any?): SingleResponse<ParcelableStatus> {
         val resolver = context.contentResolver
         val details = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true)
                 ?: return SingleResponse.getInstance<ParcelableStatus>()
@@ -83,7 +82,7 @@ class DestroyFavoriteTask(
                 resolver.update(uri, values, where.sql, whereArgs)
             }
 
-            DataStoreUtils.updateActivityStatus(resolver, accountKey, statusId, DataStoreUtils.UpdateActivityAction { activity ->
+            updateActivityStatus(resolver, accountKey, statusId) { activity ->
                 val statusesMatrix = arrayOf(activity.target_statuses, activity.target_object_statuses)
                 for (statusesArray in statusesMatrix) {
                     if (statusesArray == null) continue
@@ -95,7 +94,7 @@ class DestroyFavoriteTask(
                         status.favorite_count = result.favorite_count - 1
                     }
                 }
-            })
+            }
             return SingleResponse.getInstance(result)
         } catch (e: MicroBlogException) {
             return SingleResponse.getInstance<ParcelableStatus>(e)
@@ -103,8 +102,7 @@ class DestroyFavoriteTask(
 
     }
 
-    override fun onPreExecute() {
-        super.onPreExecute()
+    override fun beforeExecute() {
         val hashCode = AsyncTwitterWrapper.calculateHashCode(accountKey, statusId)
         if (!destroyingFavoriteIds.contains(hashCode)) {
             destroyingFavoriteIds.add(hashCode)
@@ -112,7 +110,7 @@ class DestroyFavoriteTask(
         bus.post(StatusListChangedEvent())
     }
 
-    override fun onPostExecute(result: SingleResponse<ParcelableStatus>) {
+    override fun afterExecute(callback: Any?, result: SingleResponse<ParcelableStatus>) {
         destroyingFavoriteIds.removeElement(AsyncTwitterWrapper.calculateHashCode(accountKey, statusId))
         val taskEvent = FavoriteTaskEvent(FavoriteTaskEvent.Action.DESTROY,
                 accountKey, statusId)
@@ -128,7 +126,6 @@ class DestroyFavoriteTask(
         }
         bus.post(taskEvent)
         bus.post(StatusListChangedEvent())
-        super.onPostExecute(result)
     }
 
     companion object {
@@ -140,4 +137,3 @@ class DestroyFavoriteTask(
 
     }
 }
-

@@ -28,13 +28,15 @@ import com.squareup.otto.Bus
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.KPreferences
+import org.mariotaku.ktextension.toNulls
 import de.vanita5.twittnuker.constant.IntentConstants.INTENT_PACKAGE_PREFIX
 import de.vanita5.twittnuker.constant.dataSyncProviderInfoKey
 import de.vanita5.twittnuker.constant.stopAutoRefreshWhenBatteryLowKey
 import de.vanita5.twittnuker.model.AccountPreferences
 import de.vanita5.twittnuker.model.SimpleRefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.task.GetActivitiesAboutMeTask
 import de.vanita5.twittnuker.task.GetHomeTimelineTask
 import de.vanita5.twittnuker.task.GetMessagesTask
@@ -73,21 +75,22 @@ class TaskServiceRunner(
             ACTION_REFRESH_HOME_TIMELINE -> {
                 val task = GetHomeTimelineTask(context)
                 task.params = AutoRefreshTaskParam(context, AccountPreferences::isAutoRefreshHomeTimelineEnabled) { accountKeys ->
-                    DataStoreUtils.getNewestStatusIds(context, Statuses.CONTENT_URI, accountKeys)
+                    DataStoreUtils.getNewestStatusIds(context, Statuses.CONTENT_URI, accountKeys.toNulls())
                 }
                 return task
             }
             ACTION_REFRESH_NOTIFICATIONS -> {
                 val task = GetActivitiesAboutMeTask(context)
                 task.params = AutoRefreshTaskParam(context, AccountPreferences::isAutoRefreshMentionsEnabled) { accountKeys ->
-                    DataStoreUtils.getNewestActivityMaxPositions(context, Activities.AboutMe.CONTENT_URI, accountKeys)
+                    DataStoreUtils.getNewestActivityMaxPositions(context, Activities.AboutMe.CONTENT_URI,
+                            accountKeys.toNulls())
                 }
                 return task
             }
             ACTION_REFRESH_DIRECT_MESSAGES -> {
                 val task = GetMessagesTask(context)
                 task.params = AutoRefreshTaskParam(context, AccountPreferences::isAutoRefreshDirectMessagesEnabled) { accountKeys ->
-                    DataStoreUtils.getNewestMessageIds(context, DirectMessages.Inbox.CONTENT_URI, accountKeys)
+                    arrayOfNulls(accountKeys.size)
                 }
                 return task
             }
@@ -109,11 +112,10 @@ class TaskServiceRunner(
             val refreshable: (AccountPreferences) -> Boolean,
             val getSinceIds: (Array<UserKey>) -> Array<String?>?
     ) : SimpleRefreshTaskParam() {
-        override fun getAccountKeysWorker(): Array<UserKey> {
-            val prefs = AccountPreferences.getAccountPreferences(context,
-                    DataStoreUtils.getAccountKeys(context)).filter(AccountPreferences::isAutoRefreshEnabled)
-            return prefs.filter(refreshable)
-                    .map(AccountPreferences::getAccountKey).toTypedArray()
+        override val accountKeys: Array<UserKey> by lazy {
+            return@lazy AccountPreferences.getAccountPreferences(context, DataStoreUtils.getAccountKeys(context)).filter {
+                it.isAutoRefreshEnabled && refreshable(it)
+            }.map(AccountPreferences::getAccountKey).toTypedArray()
         }
 
         override val sinceIds: Array<String?>?

@@ -20,30 +20,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model
+package de.vanita5.twittnuker.task;
 
-abstract class SimpleRefreshTaskParam : RefreshTaskParam {
+import android.content.Context;
+import android.os.AsyncTask;
+import android.support.v4.util.SimpleArrayMap;
 
-    internal var cached: Array<UserKey>? = null
+import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.util.TwitterWrapper;
 
-    override val maxIds: Array<String?>?
-        get() = null
+import java.util.Set;
 
-    override val sinceIds: Array<String?>?
-        get() = null
+public final class RemoveUnreadCountsTask extends AsyncTask<Object, Object, Integer> {
+    private final Context context;
+    private final int position;
+    private final SimpleArrayMap<UserKey, Set<String>> counts;
 
-    override val cursors: Array<String?>?
-        get() = null
+    public RemoveUnreadCountsTask(Context context, final int position, final SimpleArrayMap<UserKey, Set<String>> counts) {
+        this.context = context;
+        this.position = position;
+        this.counts = counts;
+    }
 
-    override val sinceSortIds: LongArray?
-        get() = null
+    @Override
+    protected Integer doInBackground(final Object... params) {
+        return TwitterWrapper.removeUnreadCounts(context, position, counts);
+    }
 
-    override val maxSortIds: LongArray?
-        get() = null
-
-    override val isLoadingMore: Boolean
-        get() = false
-
-    override val shouldAbort: Boolean
-        get() = false
 }
