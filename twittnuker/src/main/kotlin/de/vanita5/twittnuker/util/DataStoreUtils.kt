@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import java.io.IOException
 import java.util.*
@@ -65,7 +66,7 @@ object DataStoreUtils {
 
     val STATUSES_URIS = arrayOf(Statuses.CONTENT_URI, CachedStatuses.CONTENT_URI)
     val CACHE_URIS = arrayOf(CachedUsers.CONTENT_URI, CachedStatuses.CONTENT_URI, CachedHashtags.CONTENT_URI, CachedTrends.Local.CONTENT_URI)
-    val MESSAGES_URIS = arrayOf(Messages.CONTENT_URI, Messages.Conversations.CONTENT_URI)
+    val MESSAGES_URIS = arrayOf(Messages.CONTENT_URI, Conversations.CONTENT_URI)
     val ACTIVITIES_URIS = arrayOf(Activities.AboutMe.CONTENT_URI)
 
     private val CONTENT_PROVIDER_URI_MATCHER = UriMatcher(UriMatcher.NO_MATCH)
@@ -93,7 +94,7 @@ object DataStoreUtils {
                 TABLE_ID_FILTERS_SUBSCRIPTIONS)
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Messages.CONTENT_PATH,
                 TABLE_ID_MESSAGES)
-        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Messages.Conversations.CONTENT_PATH,
+        CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, Conversations.CONTENT_PATH,
                 TABLE_ID_MESSAGES_CONVERSATIONS)
         CONTENT_PROVIDER_URI_MATCHER.addURI(TwidereDataStore.AUTHORITY, CachedTrends.Local.CONTENT_PATH,
                 TABLE_ID_TRENDS_LOCAL)
@@ -403,7 +404,7 @@ object DataStoreUtils {
             TABLE_ID_FILTERED_LINKS -> return Filters.Links.TABLE_NAME
             TABLE_ID_FILTERS_SUBSCRIPTIONS -> return Filters.Subscriptions.TABLE_NAME
             TABLE_ID_MESSAGES -> return Messages.TABLE_NAME
-            TABLE_ID_MESSAGES_CONVERSATIONS -> return Messages.Conversations.TABLE_NAME
+            TABLE_ID_MESSAGES_CONVERSATIONS -> return Conversations.TABLE_NAME
             TABLE_ID_TRENDS_LOCAL -> return CachedTrends.Local.TABLE_NAME
             TABLE_ID_TABS -> return Tabs.TABLE_NAME
             TABLE_ID_PUSH_NOTIFICATIONS -> return PushNotifications.TABLE_NAME
@@ -854,8 +855,6 @@ object DataStoreUtils {
                 if (cur.count > 0 && cur.moveToFirst()) {
                     status = ParcelableStatusCursorIndices.fromCursor(cur)
                 }
-            } catch (e: IOException) {
-                // Ignore
             } finally {
                 cur.close()
             }
@@ -877,12 +876,25 @@ object DataStoreUtils {
         val resolver = context.contentResolver
         val status = ParcelableStatusUtils.fromStatus(result, accountKey, false)
         resolver.delete(CachedStatuses.CONTENT_URI, where, whereArgs)
-        try {
             resolver.insert(CachedStatuses.CONTENT_URI, ParcelableStatusValuesCreator.create(status))
-        } catch (e: IOException) {
-            // Ignore
-        }
-
         return status
     }
+
+    @WorkerThread
+    fun findMessageConversation(context: Context, accountKey: UserKey, conversationId: String): ParcelableMessageConversation? {
+        val resolver = context.contentResolver
+        val where = Expression.and(Expression.equalsArgs(Conversations.ACCOUNT_KEY),
+                Expression.equalsArgs(Conversations.CONVERSATION_ID)).sql
+        val whereArgs = arrayOf(accountKey.toString(), conversationId)
+        val cur = resolver.query(Conversations.CONTENT_URI, Conversations.COLUMNS, where, whereArgs, null) ?: return null
+        try {
+            if (cur.count > 0 && cur.moveToFirst()) {
+                return ParcelableMessageConversationCursorIndices.fromCursor(cur)
+            }
+        } finally {
+            cur.close()
+        }
+        return null
+    }
+
 }

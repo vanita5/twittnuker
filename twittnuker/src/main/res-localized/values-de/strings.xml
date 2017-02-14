@@ -461,6 +461,14 @@
     <string name="message_direct_message_deleted">Direktnachricht gelöscht.</string>
     <string name="message_direct_message_sent">Direktnachricht gesendet.</string>
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>
+    <string name="message_format_participants_join">
+         <xliff:g example="User" id="name">%1$s</xliff:g> ist beigetreten</string>
+    <string name="message_format_participants_join_added">
+     <xliff:g example="Sender" id="sender">%1$s</xliff:g> hat <xliff:g example="Recipient" id="recipient">%2$s</xliff:g> hinzugefügt
+    </string>
+    <string name="message_format_participants_leave">
+     <xliff:g example="User" id="name">%1$s</xliff:g> hat die Unterhaltung verlassen</string>
+    <string name="message_join_conversation">Unterhaltung beigetreten.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_extra_features_not_purchased">Erweiterte Funktionen nicht freigeschaltet</string>
     <string name="message_toast_filters_import_hint">Drücke \"+\" zum importieren</string>

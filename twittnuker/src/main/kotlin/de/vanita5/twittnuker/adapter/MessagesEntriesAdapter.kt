@@ -26,8 +26,10 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.model.ItemCounts
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
@@ -49,6 +51,8 @@ class MessagesEntriesAdapter(context: Context) : LoadMoreSupportAdapter<Recycler
             field = value
             notifyDataSetChanged()
         }
+
+    val nameFirst: Boolean = preferences[nameFirstKey]
 
     var listener: MessageConversationClickListener? = null
 

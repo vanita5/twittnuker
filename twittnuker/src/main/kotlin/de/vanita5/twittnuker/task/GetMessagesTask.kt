@@ -29,13 +29,14 @@ import org.mariotaku.ktextension.toInt
 import org.mariotaku.ktextension.useCursor
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.twitter.model.DMResponse
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.applyFrom
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.extension.model.setFrom
 import de.vanita5.twittnuker.extension.model.timestamp
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
@@ -49,6 +50,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.content.ContentResolverUtils
+import java.util.*
 
 
 class GetMessagesTask(
@@ -105,14 +107,21 @@ class GetMessagesTask(
 
         val conversationIds = inbox.conversations.keys
         conversations.addLocalConversations(accountKey, conversationIds)
-        val messages = inbox.entries.mapNotNull { ParcelableMessageUtils.fromEntry(accountKey, it) }
+        val messages = inbox.entries.mapNotNull {
+            ParcelableMessageUtils.fromEntry(accountKey, it, inbox.users)
+        }
         val messagesMap = messages.groupBy(ParcelableMessage::conversation_id)
         for ((k, v) in inbox.conversations) {
             val message = messagesMap[k]?.maxBy(ParcelableMessage::message_timestamp) ?: continue
             val participants = inbox.users.filterKeys { userId ->
-                v.participants.any { it.userId.toString() == userId }
+                v.participants.any { it.userId == userId }
             }.values
-            conversations.addConversation(k, details, message, participants)
+            val conversationType = when (v.type?.toUpperCase(Locale.US)) {
+                DMResponse.Conversation.Type.ONE_TO_ONE -> ConversationType.ONE_TO_ONE
+                DMResponse.Conversation.Type.GROUP_DM -> ConversationType.GROUP
+                else -> ConversationType.ONE_TO_ONE
+            }
+            conversations.addConversation(k, details, message, participants, conversationType)
         }
         return GetMessagesData(conversations.values, messages)
     }
@@ -275,22 +284,19 @@ class GetMessagesTask(
             conversationId: String,
             details: AccountDetails,
             message: ParcelableMessage,
-            users: Collection<User>
+            users: Collection<User>,
+            conversationType: String = ConversationType.ONE_TO_ONE
     ): ParcelableMessageConversation {
         val conversation = this[conversationId] ?: run {
             val obj = ParcelableMessageConversation()
             obj.id = conversationId
-            if (users.size == 2) {
-                obj.conversation_type = ConversationType.ONE_TO_ONE
-            } else {
-                obj.conversation_type = ConversationType.GROUP
-            }
-            obj.setFrom(message, details)
+            obj.conversation_type = conversationType
+            obj.applyFrom(message, details)
             this[conversationId] = obj
             return@run obj
         }
         if (message.timestamp > conversation.timestamp) {
-            conversation.setFrom(message, details)
+            conversation.applyFrom(message, details)
         }
         users.forEach { user ->
             conversation.addParticipant(details.key, user)

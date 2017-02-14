@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
@@ -39,9 +40,12 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_CONVERSATION_ID
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
 import de.vanita5.twittnuker.model.ParcelableMessage
+import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageCursorIndices
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
+import de.vanita5.twittnuker.util.DataStoreUtils
+import java.util.concurrent.atomic.AtomicReference
 
 class MessagesConversationFragment : BaseFragment(), LoaderManager.LoaderCallbacks<List<ParcelableMessage>?> {
     private lateinit var adapter: MessagesConversationAdapter
@@ -62,22 +66,40 @@ class MessagesConversationFragment : BaseFragment(), LoaderManager.LoaderCallbac
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<ParcelableMessage>?> {
-        val loader = ObjectCursorLoader(context, ParcelableMessageCursorIndices::class.java)
-        loader.uri = Messages.CONTENT_URI
-        loader.projection = Messages.COLUMNS
-        loader.selection = Expression.and(Expression.equalsArgs(Messages.ACCOUNT_KEY),
-                Expression.equalsArgs(Messages.CONVERSATION_ID)).sql
-        loader.selectionArgs = arrayOf(accountKey.toString(), conversationId)
-        loader.sortOrder = OrderBy(Messages.SORT_ID, false).sql
-        return loader
+        return ConversationLoader(context, accountKey, conversationId)
     }
 
     override fun onLoaderReset(loader: Loader<List<ParcelableMessage>?>) {
-        adapter.messages = null
+        adapter.setData(null, null)
     }
 
     override fun onLoadFinished(loader: Loader<List<ParcelableMessage>?>, data: List<ParcelableMessage>?) {
-        adapter.messages = data
+        val conversation = (loader as? ConversationLoader)?.conversation
+        adapter.setData(conversation, data)
+    }
+
+    internal class ConversationLoader(
+            context: Context,
+            val accountKey: UserKey,
+            val conversationId: String
+    ) : ObjectCursorLoader<ParcelableMessage>(context, ParcelableMessageCursorIndices::class.java) {
+
+        private val atomicConversation = AtomicReference<ParcelableMessageConversation?>()
+        val conversation: ParcelableMessageConversation? get() = atomicConversation.get()
+
+        init {
+            uri = Messages.CONTENT_URI
+            projection = Messages.COLUMNS
+            selection = Expression.and(Expression.equalsArgs(Messages.ACCOUNT_KEY),
+                    Expression.equalsArgs(Messages.CONVERSATION_ID)).sql
+            selectionArgs = arrayOf(accountKey.toString(), conversationId)
+            sortOrder = OrderBy(Messages.SORT_ID, false).sql
+        }
+
+        override fun onLoadInBackground(): MutableList<ParcelableMessage> {
+            atomicConversation.set(DataStoreUtils.findMessageConversation(context, accountKey, conversationId))
+            return super.onLoadInBackground()
+        }
     }
 
 }
