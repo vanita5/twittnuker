@@ -25,7 +25,9 @@ package de.vanita5.twittnuker.model.util
 import android.support.annotation.FloatRange
 import de.vanita5.twittnuker.library.twitter.model.DMResponse
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
+import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableMessage
+import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.MessageExtras
 import de.vanita5.twittnuker.model.message.StickerExtras
@@ -35,6 +37,18 @@ import de.vanita5.twittnuker.util.InternalTwitterContentUtils
  *
  */
 object ParcelableMessageUtils {
+
+    fun fromMessage(accountKey: UserKey, message: DirectMessage, outgoing: Boolean,
+            @FloatRange(from = 0.0, to = 1.0) sortIdAdj: Double = 0.0): ParcelableMessage {
+        val result = message(accountKey, message, sortIdAdj)
+        result.is_outgoing = outgoing
+        if (outgoing) {
+            result.conversation_id = outgoingConversationId(message.senderId, message.recipientId)
+        } else {
+            result.conversation_id = incomingConversationId(message.senderId, message.recipientId)
+        }
+        return result
+    }
 
     fun fromEntry(accountKey: UserKey, entry: DMResponse.Entry): ParcelableMessage? {
         when {
@@ -46,25 +60,6 @@ object ParcelableMessageUtils {
             }
         }
         return null
-    }
-
-    fun incomingMessage(accountKey: UserKey, message: DirectMessage,
-            @FloatRange(from = 0.0, to = 1.0) sortIdAdj: Double = 0.0): ParcelableMessage {
-        val result = message(accountKey, message, sortIdAdj)
-        result.is_outgoing = false
-        result.conversation_id = incomingConversationId(message.senderId, message.recipientId)
-        return result
-    }
-
-    fun outgoingMessage(
-            accountKey: UserKey,
-            message: DirectMessage,
-            @FloatRange(from = 0.0, to = 1.0) sortIdAdj: Double = 0.0
-    ): ParcelableMessage {
-        val result = message(accountKey, message, sortIdAdj)
-        result.is_outgoing = true
-        result.conversation_id = outgoingConversationId(message.senderId, message.recipientId)
-        return result
     }
 
     fun incomingConversationId(senderId: String, recipientId: String): String {
@@ -79,23 +74,27 @@ object ParcelableMessageUtils {
         this.commonEntry(accountKey, message)
 
         val data = message.messageData
+
         this.sender_key = UserKey(data.senderId.toString(), accountKey.host)
         this.recipient_key = UserKey(data.recipientId.toString(), accountKey.host)
-        val (text, spans) = InternalTwitterContentUtils.formatDirectMessageText(data)
-        this.text_unescaped = text
-        this.spans = spans
-
         this.is_outgoing = this.sender_key == accountKey
+
+        val (type, extras, media) = typeAndExtras(data)
+        val (text, spans) = InternalTwitterContentUtils.formatDirectMessageText(data)
+        this.message_type = type
+        this.text_unescaped = text
+        this.extras = extras
+        this.spans = spans
+        this.media = media
     }
 
     private fun ParcelableMessage.applyConversationCreate(accountKey: UserKey, message: DMResponse.Entry.Message) {
         this.commonEntry(accountKey, message)
-        this.message_type = ParcelableMessage.MessageType.CONVERSATION_CREATE
+        this.message_type = MessageType.CONVERSATION_CREATE
         this.is_outgoing = false
     }
 
     private fun ParcelableMessage.commonEntry(accountKey: UserKey, message: DMResponse.Entry.Message) {
-        this.message_type = ParcelableMessage.MessageType.TEXT
         this.account_key = accountKey
         this.id = message.id.toString()
         this.conversation_id = message.conversationId
@@ -118,7 +117,7 @@ object ParcelableMessageUtils {
         result.local_timestamp = result.message_timestamp
         result.sort_id = result.message_timestamp + (499 * sortIdAdj).toLong()
 
-        val (type, extras) = typeAndExtras(accountKey, message)
+        val (type, extras) = typeAndExtras(message)
         val (text, spans) = InternalTwitterContentUtils.formatDirectMessageText(message)
         result.message_type = type
         result.extras = extras
@@ -128,13 +127,33 @@ object ParcelableMessageUtils {
         return result
     }
 
-    private fun typeAndExtras(accountKey: UserKey, message: DirectMessage): Pair<String, MessageExtras?> {
+    private fun typeAndExtras(message: DirectMessage): Pair<String, MessageExtras?> {
         val singleUrl = message.urlEntities?.singleOrNull()
         if (singleUrl != null) {
             if (singleUrl.expandedUrl.startsWith("https://twitter.com/i/stickers/image/")) {
-                return Pair(ParcelableMessage.MessageType.STICKER, StickerExtras(singleUrl.expandedUrl))
+                return Pair(MessageType.STICKER, StickerExtras(singleUrl.expandedUrl))
             }
         }
-        return Pair(ParcelableMessage.MessageType.TEXT, null)
+        return Pair(MessageType.TEXT, null)
+    }
+
+    private fun typeAndExtras(data: DMResponse.Entry.Message.Data): Triple<String, MessageExtras?, Array<ParcelableMedia>?> {
+        val attachment = data.attachment ?: return Triple(MessageType.TEXT, null, null)
+        when {
+            attachment.photo != null -> {
+                val photo = attachment.photo
+                val media = arrayOf(ParcelableMediaUtils.fromMediaEntity(photo))
+                return Triple(MessageType.TEXT, null, media)
+            }
+            attachment.sticker != null -> {
+                val sticker = attachment.sticker
+                val image = sticker.images["size_2x"] ?: sticker.images.values.firstOrNull() ?:
+                        return Triple(MessageType.TEXT, null, null)
+                val extras = StickerExtras(image.url)
+                extras.displayName = sticker.displayName
+                return Triple(MessageType.STICKER, extras, null)
+            }
+        }
+        return Triple(MessageType.TEXT, null, null)
     }
 }
