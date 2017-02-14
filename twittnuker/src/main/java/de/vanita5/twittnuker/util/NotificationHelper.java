@@ -69,7 +69,6 @@ import de.vanita5.twittnuker.receiver.NotificationActionReceiver;
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper;
 
 import static de.vanita5.twittnuker.util.Utils.getAccountNotificationId;
-import static de.vanita5.twittnuker.util.DataStoreUtils.getAccountScreenName;
 
 public class NotificationHelper implements Constants {
 
@@ -494,7 +493,7 @@ public class NotificationHelper implements Constants {
                 Spanned line = getInboxLineByType(pendingNotification);
                 if (line != null) inboxStyle.addLine(line);
             }
-            inboxStyle.setSummaryText("@" + INSTANCE.getAccountScreenName(mContext, notification.getAccountKey()));
+            inboxStyle.setSummaryText("@" + DataStoreUtils.INSTANCE.getAccountScreenName(mContext, notification.getAccountKey()));
             builder.setNumber(notificationCount);
             builder.setStyle(inboxStyle);
         } else if (notificationCount == 1) {
