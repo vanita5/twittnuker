@@ -49,6 +49,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Messages;
 
 import java.util.Arrays;
 
+@ParcelablePlease
 @JsonObject
 @CursorObject(tableInfo = true, valuesCreator = true)
 public class ParcelableMessage implements Parcelable {
