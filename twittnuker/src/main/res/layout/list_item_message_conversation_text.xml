@@ -66,11 +66,10 @@
             app:caretWidth="@dimen/element_spacing_normal"
             app:cornerRadius="2dp">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/mediaPreview"
-                android:orientation="vertical"
                 android:padding="@dimen/element_spacing_normal">
 
                 <de.vanita5.twittnuker.view.CardMediaContainer
@@ -84,16 +83,16 @@
 
                 </de.vanita5.twittnuker.view.CardMediaContainer>
 
-
                 <de.vanita5.twittnuker.view.TimelineContentTextView
                     android:id="@+id/text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/mediaPreview"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="?android:attr/textColorPrimary"
                     tools:text="@string/sample_status_text"/>
 
-            </LinearLayout>
+            </RelativeLayout>
         </org.mariotaku.messagebubbleview.library.MessageBubbleView>
 
         <de.vanita5.twittnuker.view.FixedTextView

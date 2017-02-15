@@ -26,6 +26,7 @@ package de.vanita5.twittnuker.library.twitter.api;
 
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.ConversationTimeline;
+import de.vanita5.twittnuker.library.twitter.model.DMResponse;
 import de.vanita5.twittnuker.library.twitter.model.NewDm;
 import de.vanita5.twittnuker.library.twitter.model.Paging;
 import de.vanita5.twittnuker.library.twitter.model.ResponseCode;
@@ -49,11 +50,7 @@ public interface PrivateDirectMessagesResources extends PrivateResources {
     ResponseCode destroyDirectMessagesConversation(@Path("conversation_id") String conversationId) throws MicroBlogException;
 
     @POST("/dm/new.json")
-    ResponseCode sendDm(@Param NewDm newDm) throws MicroBlogException;
-
-    @POST("/dm/conversation/{account_id}-{user_id}/delete.json")
-    @BodyType(BodyType.FORM)
-    ResponseCode destroyDirectMessagesConversation(@Path("account_id") String accountId, @Path("user_id") String userId) throws MicroBlogException;
+    DMResponse sendDm(@Param NewDm newDm) throws MicroBlogException;
 
     @GET("/dm/user_inbox.json")
     UserInbox getUserInbox(@Query Paging paging) throws MicroBlogException;

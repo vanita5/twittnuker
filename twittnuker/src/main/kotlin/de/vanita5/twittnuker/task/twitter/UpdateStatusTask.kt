@@ -79,14 +79,14 @@ import java.util.concurrent.TimeUnit
 class UpdateStatusTask(
         context: Context,
         internal val stateCallback: UpdateStatusTask.StateCallback
-) : BaseAbstractTask<Pair<String, ParcelableStatusUpdate>, UpdateStatusTask.UpdateStatusResult, Any?>(context) {
+) : BaseAbstractTask<ParcelableStatusUpdate, UpdateStatusTask.UpdateStatusResult, Any?>(context) {
 
-    override fun doLongOperation(params: Pair<String, ParcelableStatusUpdate>): UpdateStatusResult {
-        val draftId = saveDraft(params.first, params.second)
+    override fun doLongOperation(params: ParcelableStatusUpdate): UpdateStatusResult {
+        val draftId = saveDraft(params)
         microBlogWrapper.addSendingDraftId(draftId)
         try {
-            val result = doUpdateStatus(params.second, draftId)
-            deleteOrUpdateDraft(params.second, result, draftId)
+            val result = doUpdateStatus(params, draftId)
+            deleteOrUpdateDraft(params, result, draftId)
             return result
         } catch (e: UpdateStatusException) {
             return UpdateStatusResult(e, draftId)
@@ -102,16 +102,17 @@ class UpdateStatusTask(
     override fun afterExecute(handler: Any?, result: UpdateStatusResult) {
         stateCallback.afterExecute(result)
         if (params != null) {
-            logUpdateStatus(params.first, params.second, result)
+            logUpdateStatus(params, result)
         }
     }
 
-    private fun logUpdateStatus(actionType: String, statusUpdate: ParcelableStatusUpdate, result: UpdateStatusResult) {
+    private fun logUpdateStatus(statusUpdate: ParcelableStatusUpdate, result: UpdateStatusResult) {
         val mediaType = statusUpdate.media?.firstOrNull()?.type ?: ParcelableMedia.Type.UNKNOWN
         val hasLocation = statusUpdate.location != null
         val preciseLocation = statusUpdate.display_coordinates
-        Analyzer.log(UpdateStatus(result.accountTypes.firstOrNull(), actionType, mediaType,
-                hasLocation, preciseLocation, result.succeed, result.exceptions.firstOrNull() ?: result.exception))
+        Analyzer.log(UpdateStatus(result.accountTypes.firstOrNull(), statusUpdate.draft_action,
+                mediaType, hasLocation, preciseLocation, result.succeed,
+                result.exceptions.firstOrNull() ?: result.exception))
     }
 
     @Throws(UpdateStatusException::class)
@@ -563,11 +564,10 @@ class UpdateStatusTask(
         }
     }
 
-    private fun saveDraft(@Draft.Action draftAction: String?, statusUpdate: ParcelableStatusUpdate): Long {
-        return saveDraft(context, draftAction) {
+    private fun saveDraft(statusUpdate: ParcelableStatusUpdate): Long {
+        return saveDraft(context, statusUpdate.draft_action ?: Draft.Action.UPDATE_STATUS) {
             this.unique_id = statusUpdate.draft_unique_id ?: UUID.randomUUID().toString()
             this.account_keys = statusUpdate.accounts.map { it.key }.toTypedArray()
-            this.action_type = draftAction ?: Draft.Action.UPDATE_STATUS
             this.text = statusUpdate.text
             this.location = statusUpdate.location
             this.media = statusUpdate.media
@@ -920,7 +920,7 @@ class UpdateStatusTask(
                 val deleteAlways: List<MediaDeletionItem>?
         )
 
-        fun saveDraft(context: Context, @Draft.Action action: String?, config: Draft.() -> Unit): Long {
+        fun saveDraft(context: Context, @Draft.Action action: String, config: Draft.() -> Unit): Long {
             val draft = Draft()
             draft.action_type = action
             draft.timestamp = System.currentTimeMillis()

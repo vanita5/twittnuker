@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.model.timestamp
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
+import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler
 import de.vanita5.twittnuker.util.MediaLoadingHandler
 import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.view.holder.message.AbsMessageViewHolder
@@ -53,7 +54,7 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
     val mediaPreviewStyle: Int = preferences[mediaPreviewStyleKey]
     val linkHighlightingStyle: Int = preferences[linkHighlightOptionKey]
     val nameFirst: Boolean = preferences[nameFirstKey]
-    val linkify: TwidereLinkify = TwidereLinkify(null)
+    val linkify: TwidereLinkify = TwidereLinkify(DirectMessageOnLinkClickHandler(context, null, preferences))
     val mediaLoadingHandler: MediaLoadingHandler = MediaLoadingHandler()
 
     var messages: List<ParcelableMessage>? = null

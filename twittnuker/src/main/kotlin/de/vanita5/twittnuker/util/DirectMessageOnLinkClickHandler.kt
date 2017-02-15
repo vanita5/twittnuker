@@ -23,18 +23,19 @@
 package de.vanita5.twittnuker.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
-import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
+import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_URI
-import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_PHISHING_LINK_WARNING
+import de.vanita5.twittnuker.constant.phishingLinksWaringKey
 import de.vanita5.twittnuker.fragment.PhishingLinkWarningDialogFragment
 
 class DirectMessageOnLinkClickHandler(
         context: Context,
         manager: MultiSelectManager?,
-        preferences: SharedPreferencesWrapper
+        preferences: SharedPreferences
 ) : OnLinkClickHandler(context, manager, preferences) {
 
     override fun openLink(link: String) {
@@ -43,8 +44,7 @@ class DirectMessageOnLinkClickHandler(
             super.openLink(link)
             return
         }
-        val prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
-        if (context is FragmentActivity && prefs.getBoolean(KEY_PHISHING_LINK_WARNING, true)) {
+        if (context is FragmentActivity && preferences[phishingLinksWaringKey]) {
             val fm = context.supportFragmentManager
             val fragment = PhishingLinkWarningDialogFragment()
             val args = Bundle()
