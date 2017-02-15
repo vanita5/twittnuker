@@ -26,7 +26,7 @@ import android.text.Editable
 
 import de.vanita5.twittnuker.text.SafeSpannableStringBuilder
 
-open class SafeEditableFactory : Editable.Factory() {
+object SafeEditableFactory : Editable.Factory() {
     override fun newEditable(source: CharSequence): Editable {
         return SafeSpannableStringBuilder(source)
     }

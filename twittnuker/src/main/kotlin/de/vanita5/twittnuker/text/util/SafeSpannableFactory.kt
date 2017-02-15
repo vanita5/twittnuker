@@ -26,7 +26,7 @@ import android.text.Spannable
 
 import de.vanita5.twittnuker.text.SafeSpannableString
 
-open class SafeSpannableFactory : Spannable.Factory() {
+object SafeSpannableFactory : Spannable.Factory() {
     override fun newSpannable(source: CharSequence): Spannable {
         return SafeSpannableString(source)
     }

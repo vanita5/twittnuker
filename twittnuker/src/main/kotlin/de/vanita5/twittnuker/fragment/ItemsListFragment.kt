@@ -44,6 +44,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ITEMS
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_NEW_DOCUMENT_API
 import de.vanita5.twittnuker.constant.displaySensitiveContentsKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
+import de.vanita5.twittnuker.fragment.AbsStatusesFragment.Companion.handleActionClick
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.MenuUtils
@@ -78,8 +79,7 @@ class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter
 
             override fun onItemActionClick(holder: RecyclerView.ViewHolder, id: Int, position: Int) {
                 val status = dummyItemAdapter.getStatus(position) ?: return
-                AbsStatusesFragment.handleActionClick(context, fragmentManager,
-                        twitterWrapper, holder as StatusViewHolder, status, id)
+                handleActionClick(holder as StatusViewHolder, status, id)
             }
 
             override fun onItemActionLongClick(holder: RecyclerView.ViewHolder, id: Int, position: Int): Boolean {

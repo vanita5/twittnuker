@@ -92,6 +92,7 @@ import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.media_type
+import de.vanita5.twittnuker.fragment.AbsStatusesFragment.Companion.handleActionClick
 import de.vanita5.twittnuker.loader.ConversationLoader
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader
 import de.vanita5.twittnuker.menu.FavoriteItemProvider
@@ -305,8 +306,7 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
     override fun onItemActionClick(holder: ViewHolder, id: Int, position: Int) {
         val status = adapter.getStatus(position) ?: return
-        AbsStatusesFragment.handleActionClick(context, fragmentManager, twitterWrapper,
-                holder as StatusViewHolder, status, id)
+        handleActionClick(holder as StatusViewHolder, status, id)
     }
 
 

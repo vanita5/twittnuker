@@ -25,9 +25,16 @@ package de.vanita5.twittnuker.view
 import android.content.Context
 import android.util.AttributeSet
 import org.mariotaku.chameleon.view.ChameleonEditText
+import de.vanita5.twittnuker.text.util.SafeEditableFactory
+import de.vanita5.twittnuker.text.util.SafeSpannableFactory
 
 
 class FixedEditText(context: Context, attrs: AttributeSet? = null) : ChameleonEditText(context, attrs) {
+
+    init {
+        setSpannableFactory(SafeSpannableFactory)
+        setEditableFactory(SafeEditableFactory)
+    }
 
     override fun onTextContextMenuItem(id: Int): Boolean {
         try {

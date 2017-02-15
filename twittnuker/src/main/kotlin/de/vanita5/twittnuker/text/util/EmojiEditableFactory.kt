@@ -26,6 +26,7 @@ import android.text.Editable
 import android.text.Spanned
 import android.text.TextWatcher
 import android.widget.TextView
+import de.vanita5.twittnuker.text.SafeSpannableStringBuilder
 
 import de.vanita5.twittnuker.util.EmojiSupportUtils
 import de.vanita5.twittnuker.util.ExternalThemeManager
@@ -33,7 +34,7 @@ import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 
 import javax.inject.Inject
 
-class EmojiEditableFactory(textView: TextView) : SafeEditableFactory() {
+class EmojiEditableFactory(textView: TextView) : Editable.Factory() {
 
     @Inject
     lateinit internal var externalThemeManager: ExternalThemeManager
@@ -43,7 +44,7 @@ class EmojiEditableFactory(textView: TextView) : SafeEditableFactory() {
     }
 
     override fun newEditable(source: CharSequence): Editable {
-        val editable = super.newEditable(source)
+        val editable = SafeSpannableStringBuilder(source)
         EmojiSupportUtils.applyEmoji(externalThemeManager, editable)
         editable.setSpan(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -52,8 +53,7 @@ class EmojiEditableFactory(textView: TextView) : SafeEditableFactory() {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (count <= 0) return
-                EmojiSupportUtils.applyEmoji(externalThemeManager, editable,
-                        start, count)
+                EmojiSupportUtils.applyEmoji(externalThemeManager, editable, start, count)
             }
 
             override fun afterTextChanged(s: Editable) {

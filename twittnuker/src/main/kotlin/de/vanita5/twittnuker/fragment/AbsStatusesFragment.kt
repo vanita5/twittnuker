@@ -29,7 +29,6 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.Loader
 import android.support.v7.widget.LinearLayoutManager
@@ -367,7 +366,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
 
     override fun onItemActionClick(holder: RecyclerView.ViewHolder, id: Int, position: Int) {
         val status = adapter.getStatus(position) ?: return
-        handleActionClick(context, fragmentManager, twitterWrapper, holder as StatusViewHolder, status, id)
+        handleActionClick(holder as StatusViewHolder, status, id)
     }
 
     override fun onItemActionLongClick(holder: RecyclerView.ViewHolder, id: Int, position: Int): Boolean {
@@ -539,24 +538,24 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
         const val REQUEST_FAVORITE_SELECT_ACCOUNT = 101
         const val REQUEST_RETWEET_SELECT_ACCOUNT = 102
 
-        fun handleActionClick(context: Context, fm: FragmentManager, twitter: AsyncTwitterWrapper?,
-                              holder: StatusViewHolder, status: ParcelableStatus, id: Int) {
+        fun BaseFragment.handleActionClick(holder: StatusViewHolder, status: ParcelableStatus, id: Int) {
             when (id) {
                 R.id.reply -> {
                     val intent = Intent(INTENT_ACTION_REPLY)
                     intent.`package` = context.packageName
                     intent.putExtra(EXTRA_STATUS, status)
-                    context.startActivity(intent)
+                    startActivity(intent)
                 }
                 R.id.retweet -> {
-                    RetweetQuoteDialogFragment.show(fm, status)
+                    executeAfterFragmentResumed { fragment ->
+                        RetweetQuoteDialogFragment.show(fragment.childFragmentManager, status)
+                    }
                 }
                 R.id.favorite -> {
-                    if (twitter == null) return
                     if (status.is_favorite) {
-                        twitter.destroyFavoriteAsync(status.account_key, status.id)
+                        twitterWrapper.destroyFavoriteAsync(status.account_key, status.id)
                     } else {
-                        holder.playLikeAnimation(DefaultOnLikedListener(twitter, status))
+                        holder.playLikeAnimation(DefaultOnLikedListener(twitterWrapper, status))
                     }
                 }
             }

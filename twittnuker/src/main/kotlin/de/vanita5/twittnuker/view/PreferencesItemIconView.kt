@@ -20,30 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.text.util
+package de.vanita5.twittnuker.view
 
-import android.text.Spannable
-import android.widget.TextView
-import de.vanita5.twittnuker.text.SafeSpannableString
+import android.content.Context
+import android.util.AttributeSet
 
-import de.vanita5.twittnuker.util.EmojiSupportUtils
-import de.vanita5.twittnuker.util.ExternalThemeManager
-import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import org.mariotaku.chameleon.Chameleon
+import org.mariotaku.chameleon.ChameleonUtils
+import de.vanita5.twittnuker.view.iface.IIconActionButton
 
-import javax.inject.Inject
+class PreferencesItemIconView(context: Context, attrs: AttributeSet? = null) : IconActionView(context, attrs) {
 
-class EmojiSpannableFactory(textView: TextView) : Spannable.Factory() {
-
-    @Inject
-    lateinit internal var externalThemeManager: ExternalThemeManager
-
-    init {
-        GeneralComponentHelper.build(textView.context).inject(this)
-    }
-
-    override fun newSpannable(source: CharSequence): Spannable {
-        val spannable = SafeSpannableString(source)
-        EmojiSupportUtils.applyEmoji(externalThemeManager, spannable)
-        return spannable
+    override fun createAppearance(context: Context, attributeSet: AttributeSet, theme: Chameleon.Theme): IIconActionButton.Appearance? {
+        val appearance = IIconActionButton.Appearance()
+        appearance.activatedColor = ChameleonUtils.getColorDependent(theme.colorControlActivated)
+        appearance.defaultColor = theme.colorForeground
+        return appearance
     }
 }
