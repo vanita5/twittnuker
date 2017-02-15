@@ -570,6 +570,7 @@
     <string name="no_location">Kein Standort</string>
     <string name="no_rule">Keine Regel</string>
     <string name="no_status_content_text">Kein Inhalt</string>
+    <string name="hint_error_message_no_content">Kein Inhalt</string>
     <string name="no_tab">Kein Tab</string>
     <string name="no_tab_hint">Kein Tab</string>
     <string name="no_thanks">Nein, danke</string>

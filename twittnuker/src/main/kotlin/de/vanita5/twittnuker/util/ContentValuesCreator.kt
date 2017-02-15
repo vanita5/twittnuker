@@ -27,12 +27,11 @@ import de.vanita5.twittnuker.library.twitter.model.SavedSearch
 import de.vanita5.twittnuker.library.twitter.model.Status
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.model.*
-import de.vanita5.twittnuker.model.draft.SendDirectMessageActionExtras
 import de.vanita5.twittnuker.model.util.ParcelableStatusUtils
 import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.model.util.getActivityStatus
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
-import java.util.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
+import de.vanita5.twittnuker.provider.TwidereDataStore.SavedSearches
 
 object ContentValuesCreator {
 
@@ -63,23 +62,6 @@ object ContentValuesCreator {
         values.put(Filters.Users.USER_KEY, user.key.toString())
         values.put(Filters.Users.NAME, user.name)
         values.put(Filters.Users.SCREEN_NAME, user.screen_name)
-        return values
-    }
-
-    fun createMessageDraft(accountKey: UserKey, recipientId: String, text: String, imageUri: String?): ContentValues {
-        val values = ContentValues()
-        values.put(Drafts.ACTION_TYPE, Draft.Action.SEND_DIRECT_MESSAGE)
-        values.put(Drafts.TEXT, text)
-        values.put(Drafts.ACCOUNT_KEYS, accountKey.toString())
-        values.put(Drafts.TIMESTAMP, System.currentTimeMillis())
-        if (imageUri != null) {
-            val mediaArray = arrayOf(ParcelableMediaUpdate(imageUri, 0))
-            values.put(Drafts.MEDIA, JsonSerializer.serialize(Arrays.asList(*mediaArray),
-                    ParcelableMediaUpdate::class.java))
-        }
-        val extra = SendDirectMessageActionExtras()
-        extra.recipientId = recipientId
-        values.put(Drafts.ACTION_EXTRAS, JsonSerializer.serialize(extra))
         return values
     }
 

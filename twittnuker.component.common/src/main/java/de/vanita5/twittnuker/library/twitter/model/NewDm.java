@@ -24,6 +24,7 @@
 
 package de.vanita5.twittnuker.library.twitter.model;
 
+import de.vanita5.twittnuker.library.twitter.util.InternalArrayUtil;
 import org.mariotaku.restfu.http.SimpleValueMap;
 
 public class NewDm extends SimpleValueMap {
@@ -34,6 +35,10 @@ public class NewDm extends SimpleValueMap {
 
     public void setConversationId(String conversationId) {
         put("conversation_id", conversationId);
+    }
+
+    public void setRecipientIds(String[] recipientIds) {
+        put("conversation_ids", InternalArrayUtil.join(recipientIds, ","));
     }
 
     public void setMediaId(long mediaId) {
