@@ -651,6 +651,7 @@
     <string name="preference_title_portrait">Portrait</string>
     <string name="preference_title_storage">Speicher</string>
     <string name="preference_title_tablet_mode">Tablet Modus</string>
+    <string name="preference_title_text_size">Textgrösse</string>
     <string name="preference_title_translate">Übersetzen</string>
     <string name="preload_wifi_only">Vorladen nur mit WLAN</string>
     <string name="preview">Vorschau</string>

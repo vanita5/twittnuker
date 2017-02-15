@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<integer name="default_text_size">16</integer>
-	<integer name="unread_count_text_size">11</integer>
-	<integer name="max_action_buttons">4</integer>
+    <integer name="unread_count_text_size">11</integer>
+    <integer name="max_action_buttons">4</integer>
+    <integer name="default_live_wallpaper_scale">2</integer>
     <integer name="max_compose_menu_buttons_bottom">4</integer>
     <integer name="max_compose_menu_buttons_top">2</integer>
     <integer name="max_compose_menu_buttons_bottom_single_account">5</integer>
