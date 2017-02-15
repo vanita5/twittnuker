@@ -230,10 +230,9 @@ object IntentUtils {
         return resolveInfo?.filter
     }
 
-    fun openMediaDirectly(context: Context, accountKey: UserKey?,
-                          media: Array<ParcelableMedia>, current: ParcelableMedia? = null,
-                          options: Bundle? = null, newDocument: Boolean,
-                          status: ParcelableStatus?) {
+    fun openMediaDirectly(context: Context, accountKey: UserKey?, media: Array<ParcelableMedia>,
+            current: ParcelableMedia? = null, options: Bundle? = null, newDocument: Boolean,
+            status: ParcelableStatus? = null, message: ParcelableMessage? = null) {
         val intent = Intent(context, MediaViewerActivity::class.java)
         intent.putExtra(EXTRA_ACCOUNT_KEY, accountKey)
         intent.putExtra(EXTRA_CURRENT_MEDIA, current)
@@ -241,6 +240,10 @@ object IntentUtils {
         if (status != null) {
             intent.putExtra(EXTRA_STATUS, status)
             intent.data = getMediaViewerUri("status", status.id, accountKey)
+        }
+        if (message != null) {
+            intent.putExtra(EXTRA_MESSAGE, message)
+            intent.data = getMediaViewerUri("message", message.id, accountKey)
         }
         if (newDocument && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)

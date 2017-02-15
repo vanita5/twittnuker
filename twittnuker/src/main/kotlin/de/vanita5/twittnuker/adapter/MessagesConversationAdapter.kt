@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.adapter
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import org.apache.commons.lang3.time.DateUtils
 import org.mariotaku.kpreferences.get
@@ -39,6 +40,7 @@ import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
 import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler
 import de.vanita5.twittnuker.util.MediaLoadingHandler
 import de.vanita5.twittnuker.util.TwidereLinkify
+import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener
 import de.vanita5.twittnuker.view.holder.message.AbsMessageViewHolder
 import de.vanita5.twittnuker.view.holder.message.MessageViewHolder
 import de.vanita5.twittnuker.view.holder.message.NoticeSummaryEventViewHolder
@@ -56,11 +58,18 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
     val nameFirst: Boolean = preferences[nameFirstKey]
     val linkify: TwidereLinkify = TwidereLinkify(DirectMessageOnLinkClickHandler(context, null, preferences))
     val mediaLoadingHandler: MediaLoadingHandler = MediaLoadingHandler()
+    val mediaClickListener: OnMediaClickListener = object : OnMediaClickListener {
+        override fun onMediaClick(view: View, media: ParcelableMedia, accountKey: UserKey?, id: Long) {
+            listener?.onMediaClick(id.toInt(), media, accountKey)
+        }
+    }
 
     var messages: List<ParcelableMessage>? = null
         private set
     var conversation: ParcelableMessageConversation? = null
         private set
+    var listener: Listener? = null
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -142,6 +151,10 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
         this.conversation = conversation
         this.messages = messages
         notifyDataSetChanged()
+    }
+
+    interface Listener {
+        fun onMediaClick(position: Int, media: ParcelableMedia, accountKey: UserKey?)
     }
 
     companion object {

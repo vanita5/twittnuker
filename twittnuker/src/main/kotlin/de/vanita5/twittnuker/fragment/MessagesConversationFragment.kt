@@ -32,19 +32,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_messages_conversation.*
+import org.mariotaku.kpreferences.get
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_CONVERSATION_ID
+import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
-import de.vanita5.twittnuker.model.ParcelableMessage
-import de.vanita5.twittnuker.model.ParcelableMessageConversation
-import de.vanita5.twittnuker.model.ParcelableMessageCursorIndices
-import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
 import de.vanita5.twittnuker.util.DataStoreUtils
+import de.vanita5.twittnuker.util.IntentUtils
 import java.util.concurrent.atomic.AtomicReference
 
 class MessagesConversationFragment : BaseFragment(), LoaderManager.LoaderCallbacks<List<ParcelableMessage>?> {
@@ -56,6 +56,15 @@ class MessagesConversationFragment : BaseFragment(), LoaderManager.LoaderCallbac
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         adapter = MessagesConversationAdapter(context)
+        adapter.listener = object : MessagesConversationAdapter.Listener {
+            override fun onMediaClick(position: Int, media: ParcelableMedia, accountKey: UserKey?) {
+                val message = adapter.getMessage(position) ?: return
+                IntentUtils.openMediaDirectly(context = context, accountKey = accountKey,
+                        media = message.media, current = media,
+                        newDocument = preferences[newDocumentApiKey], message = message)
+            }
+
+        }
         recyclerView.adapter = adapter
         recyclerView.layoutManager = FixedLinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
         loaderManager.initLoader(0, null, this)
