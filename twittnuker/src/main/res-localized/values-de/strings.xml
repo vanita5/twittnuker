@@ -300,7 +300,9 @@
     <string name="error_info_oauth_timestamp_error">Bitte überprüfe dein Systemdatum und die Zeiteinstellungen.</string>
     <string name="error_message">Fehler <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_device_incompatible">Dein Gerät ist nicht kompatibel mit Twittnuker. Ein Update auf ein aktuelles Android OS wird empfohlen.\nDu kannst uns die Informationen unten zukommen lassen, damit wir das dem Gerätehersteller melden können.</string>
-    <string name="error_message_message_too_long">Nachricht zu lang.</string>
+    <string name="error_message_media_message_attachment_not_supported">Medien als Direktnachricht zu senden wird nicht unterstützt</string>
+    <string name="error_message_media_message_too_many">Zu viele Medien</string>
+    <string name="error_message_message_too_long">Nachricht zu lang</string>
     <string name="error_message_no_content">Kein Inhalt</string>
     <string name="error_message_rate_limit">Twitter-Limit überschritten, probiere es in <xliff:g id="time">%s</xliff:g> noch einmal</string>
     <string name="error_message_rate_limit_with_action">Twitter-Limit überschritten beim <xliff:g id="action">%1$s</xliff:g>, probiere es in <xliff:g id="time">%2$s</xliff:g> noch einmal</string>

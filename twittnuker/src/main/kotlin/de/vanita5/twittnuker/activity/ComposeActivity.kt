@@ -90,6 +90,7 @@ import de.vanita5.twittnuker.preference.ServicePickerPreference
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.task.compose.AbsAddMediaTask
+import de.vanita5.twittnuker.task.compose.AbsDeleteMediaTask
 import de.vanita5.twittnuker.text.MarkForDeleteSpan
 import de.vanita5.twittnuker.text.style.EmojiSpan
 import de.vanita5.twittnuker.util.*
@@ -158,7 +159,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             REQUEST_TAKE_PHOTO, REQUEST_PICK_MEDIA, Giphy.REQUEST_GIPHY -> {
                 if (resultCode == Activity.RESULT_OK && intent != null) {
                     val src = MediaPickerActivity.getMediaUris(intent)
-                    TaskStarter.execute(AddMediaTask(this, src, true))
+                    TaskStarter.execute(AddMediaTask(this, src, false, false))
                 }
             }
             REQUEST_EDIT_IMAGE -> {
@@ -330,7 +331,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 IntentUtils.openDrafts(this)
             }
             R.id.delete -> {
-                AsyncTaskUtils.executeTask(DeleteMediaTask(this, media))
+                TaskStarter.execute(DeleteMediaTask(this, media))
             }
             R.id.toggle_sensitive -> {
                 if (!hasMedia()) return false
@@ -763,21 +764,21 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             val stream = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
             if (stream != null) {
                 val src = arrayOf(stream)
-                TaskStarter.execute(AddMediaTask(this, src, false))
+                TaskStarter.execute(AddMediaTask(this, src, true, false))
             }
         } else if (Intent.ACTION_SEND_MULTIPLE == action) {
             shouldSaveAccounts = false
             val extraStream = intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)
             if (extraStream != null) {
                 val src = extraStream.toTypedArray()
-                TaskStarter.execute(AddMediaTask(this, src, false))
+                TaskStarter.execute(AddMediaTask(this, src, true, false))
             }
         } else {
             shouldSaveAccounts = !hasAccountIds
             val data = intent.data
             if (data != null) {
                 val src = arrayOf(data)
-                TaskStarter.execute(AddMediaTask(this, src, false))
+                TaskStarter.execute(AddMediaTask(this, src, true, false))
             }
         }
         val extraSubject = intent.getCharSequenceExtra(Intent.EXTRA_SUBJECT)
@@ -1480,8 +1481,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     internal class AddMediaTask(
             activity: ComposeActivity,
             sources: Array<Uri>,
+            copySrc: Boolean,
             deleteSrc: Boolean
-    ) : AbsAddMediaTask<ComposeActivity>(activity, sources, deleteSrc) {
+    ) : AbsAddMediaTask<ComposeActivity>(activity, sources, copySrc, deleteSrc) {
 
         init {
             callback = activity
@@ -1502,34 +1504,27 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
 
     }
 
-    internal class DeleteMediaTask(activity: ComposeActivity, val media: Array<ParcelableMediaUpdate>) : AsyncTask<Any, Any, Boolean>() {
-
-        val activity: WeakReference<ComposeActivity>
+    internal class DeleteMediaTask(
+            activity: ComposeActivity,
+            val media: Array<ParcelableMediaUpdate>
+    ) : AbsDeleteMediaTask<ComposeActivity>(activity, media.map { Uri.parse(it.uri) }.toTypedArray()) {
 
         init {
-            this.activity = WeakReference(activity)
+            this.callback = activity
         }
 
-        override fun doInBackground(vararg params: Any): Boolean {
-            media.forEach {
-                Utils.deleteMedia(activity.get(), Uri.parse(it.uri))
+        override fun beforeExecute() {
+            callback?.setProgressVisible(true)
+        }
+
+        override fun afterExecute(callback: ComposeActivity?, result: BooleanArray?) {
+            if (callback == null || result == null) return
+            callback.setProgressVisible(false)
+            callback.removeAllMedia(media.filterIndexed { i, media -> result[i] })
+            callback.setMenu()
+            if (result.any { false }) {
+                Toast.makeText(callback, R.string.message_toast_error_occurred, Toast.LENGTH_SHORT).show()
             }
-            return true
-        }
-
-        override fun onPostExecute(result: Boolean) {
-            val activity = activity.get() ?: return
-            activity.setProgressVisible(false)
-            activity.removeAllMedia(Arrays.asList(*media))
-            activity.setMenu()
-            if (!result) {
-                Toast.makeText(activity, R.string.message_toast_error_occurred, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        override fun onPreExecute() {
-            val activity = activity.get() ?: return
-            activity.setProgressVisible(true)
         }
     }
 

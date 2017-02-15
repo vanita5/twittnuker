@@ -28,6 +28,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.text.BidiFormatter
 import com.squareup.otto.Bus
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
+import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
@@ -62,6 +63,8 @@ open class BaseFragment : Fragment(), IBaseFragment<BaseFragment> {
     lateinit var validator: TwidereValidator
     @Inject
     lateinit var extraFeaturesService: ExtraFeaturesService
+    @Inject
+    lateinit var defaultFeatures: DefaultFeatures
 
     private val actionHelper = IBaseFragment.ActionHelper(this)
 

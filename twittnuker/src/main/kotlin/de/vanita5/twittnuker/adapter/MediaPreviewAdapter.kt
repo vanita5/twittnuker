@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.adapter
 
 import android.content.Context
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import de.vanita5.twittnuker.R
@@ -87,7 +88,8 @@ class MediaPreviewAdapter(
     }
 
     interface Listener : SimpleItemTouchHelperCallback.OnStartDragListener {
-        fun onRemoveClick(position: Int, holder: MediaPreviewViewHolder)
-        fun onEditClick(position: Int, holder: MediaPreviewViewHolder)
+        fun onRemoveClick(position: Int, holder: MediaPreviewViewHolder) {}
+        fun onEditClick(position: Int, holder: MediaPreviewViewHolder) {}
+        override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {}
     }
 }
