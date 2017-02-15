@@ -17,6 +17,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import kotlinx.android.synthetic.main.fragment_content_listview.*
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.ktextension.setItemAvailability
 import de.vanita5.twittnuker.R
@@ -25,6 +26,7 @@ import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.constant.nameFirstKey
+import de.vanita5.twittnuker.fragment.AddUserFilterDialogFragment
 import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
@@ -33,6 +35,7 @@ import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.provider.TwidereDataStore.Filters
 import de.vanita5.twittnuker.text.style.EmojiSpan
 import de.vanita5.twittnuker.util.*
+import de.vanita5.twittnuker.util.content.ContentResolverUtils
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import javax.inject.Inject
@@ -53,7 +56,9 @@ class FilteredUsersFragment : BaseFiltersFragment() {
             REQUEST_SELECT_USER -> {
                 if (resultCode != FragmentActivity.RESULT_OK || data == null) return
                 val user = data.getParcelableExtra<ParcelableUser>(EXTRA_USER)
-                DataStoreUtils.addToFilter(context, listOf(user), false)
+                executeAfterFragmentResumed { fragment ->
+                    AddUserFilterDialogFragment.show(fragment.childFragmentManager, user)
+                }
             }
             REQUEST_IMPORT_BLOCKS_SELECT_ACCOUNT -> {
                 if (resultCode != FragmentActivity.RESULT_OK || data == null) return
@@ -132,6 +137,19 @@ class FilteredUsersFragment : BaseFiltersFragment() {
         // No-op
     }
 
+    override fun performDeletion() {
+        val positions = listView.checkedItemPositions
+        val keys = (0 until positions.size()).mapNotNull {
+            if (!positions.valueAt(it)) return@mapNotNull null
+            return@mapNotNull (adapter as FilterUsersListAdapter).getUserKeyString(positions.keyAt(it))
+        }
+        super.performDeletion()
+        ContentResolverUtils.bulkDelete(context.contentResolver, Filters.Keywords.CONTENT_URI,
+                Filters.USER_KEY, false, keys, null, null)
+        ContentResolverUtils.bulkDelete(context.contentResolver, Filters.Links.CONTENT_URI,
+                Filters.USER_KEY, false, keys, null, null)
+    }
+
     class FilterUsersListAdapter(
             context: Context
     ) : SimpleCursorAdapter(context, R.layout.list_item_two_line, null,
@@ -195,6 +213,14 @@ class FilteredUsersFragment : BaseFiltersFragment() {
                 return cursor.getLong(indices!!.source) < 0
             }
             return false
+        }
+
+        fun getUserKeyString(position: Int): String? {
+            val cursor = this.cursor ?: return null
+            if (cursor.moveToPosition(position)) {
+                return cursor.getString(indices!!.userKey)
+            }
+            return null
         }
     }
 
