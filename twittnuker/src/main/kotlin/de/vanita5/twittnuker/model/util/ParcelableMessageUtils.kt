@@ -33,8 +33,8 @@ import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.message.ConversationInfoUpdatedExtras
 import de.vanita5.twittnuker.model.message.MessageExtras
-import de.vanita5.twittnuker.model.message.NameUpdatedExtras
 import de.vanita5.twittnuker.model.message.StickerExtras
 import de.vanita5.twittnuker.model.message.UserArrayExtras
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
@@ -82,7 +82,14 @@ object ParcelableMessageUtils {
             }
             entry.conversationNameUpdate != null -> {
                 return ParcelableMessage().apply {
-                    applyNameUpdatedEvent(accountKey, entry.conversationNameUpdate, users)
+                    applyInfoUpdatedEvent(accountKey, entry.conversationNameUpdate, users,
+                            MessageType.CONVERSATION_NAME_UPDATE)
+                }
+            }
+            entry.conversationAvatarUpdate != null -> {
+                return ParcelableMessage().apply {
+                    applyInfoUpdatedEvent(accountKey, entry.conversationAvatarUpdate, users,
+                            MessageType.CONVERSATION_AVATAR_UPDATE)
                 }
             }
         }
@@ -129,12 +136,13 @@ object ParcelableMessageUtils {
         this.is_outgoing = false
     }
 
-    private fun ParcelableMessage.applyNameUpdatedEvent(accountKey: UserKey, message: Message,
-            users: Map<String, User>) {
+    private fun ParcelableMessage.applyInfoUpdatedEvent(accountKey: UserKey, message: Message,
+            users: Map<String, User>, @MessageType type: String) {
         this.commonEntry(accountKey, message)
-        this.message_type = MessageType.CONVERSATION_NAME_UPDATE
-        this.extras = NameUpdatedExtras().apply {
+        this.message_type = type
+        this.extras = ConversationInfoUpdatedExtras().apply {
             this.name = message.conversationName
+            this.avatar = message.conversationAvatarImageHttps
             this.user = users[message.byUserId]?.convert { ParcelableUserUtils.fromUser(it, accountKey) }
         }
         this.is_outgoing = false

@@ -32,8 +32,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions.Builder
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.assist.ImageSize
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener
-import de.vanita5.twittnuker.R
 import org.mariotaku.kpreferences.get
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.constant.mediaPreloadKey
 import de.vanita5.twittnuker.constant.mediaPreloadOnWifiOnlyKey
 import de.vanita5.twittnuker.model.*
@@ -57,6 +57,11 @@ class MediaLoaderWrapper(val imageLoader: ImageLoader) {
             .cacheInMemory(true)
             .cacheOnDisk(true)
             .bitmapConfig(Bitmap.Config.RGB_565)
+            .build()
+
+    private val groupConversationAvatarDisplayOptions = DisplayImageOptions.Builder()
+            .cloneFrom(profileImageDisplayOptions)
+            .showImageForEmptyUri(R.drawable.ic_profile_image_default_group)
             .build()
 
     private val dashboardProfileImageDisplayOptions = DisplayImageOptions.Builder()
@@ -177,6 +182,10 @@ class MediaLoaderWrapper(val imageLoader: ImageLoader) {
 
     fun displayProfileImage(view: ImageView, url: String?) {
         imageLoader.displayImage(url, view, profileImageDisplayOptions)
+    }
+
+    fun displayGroupConversationAvatar(view: ImageView, url: String?) {
+        imageLoader.displayImage(url, view, groupConversationAvatarDisplayOptions)
     }
 
     fun loadImageSync(url: String, targetImageSize: ImageSize, options: DisplayImageOptions): Bitmap? {

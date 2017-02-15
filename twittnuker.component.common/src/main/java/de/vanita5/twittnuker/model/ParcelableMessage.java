@@ -36,7 +36,7 @@ import org.mariotaku.commons.objectcursor.LoganSquareCursorFieldConverter;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
 import de.vanita5.twittnuker.model.message.MessageExtras;
-import de.vanita5.twittnuker.model.message.NameUpdatedExtras;
+import de.vanita5.twittnuker.model.message.ConversationInfoUpdatedExtras;
 import de.vanita5.twittnuker.model.message.StickerExtras;
 import de.vanita5.twittnuker.model.message.UserArrayExtras;
 import de.vanita5.twittnuker.model.util.MessageExtrasConverter;
@@ -161,6 +161,7 @@ public class ParcelableMessage {
         String PARTICIPANTS_LEAVE = "participants_leave";
         String PARTICIPANTS_JOIN = "participants_join";
         String CONVERSATION_NAME_UPDATE = "conversation_name_update";
+        String CONVERSATION_AVATAR_UPDATE = "conversation_avatar_update";
         String TEXT = "text";
         String STICKER = "sticker";
     }
@@ -169,8 +170,8 @@ public class ParcelableMessage {
     static class InternalExtras {
         @JsonField(name = "sticker")
         StickerExtras sticker;
-        @JsonField(name = "name_updated")
-        NameUpdatedExtras nameUpdated;
+        @JsonField(name = "info_updated")
+        ConversationInfoUpdatedExtras infoUpdated;
         @JsonField(name = "user_array")
         UserArrayExtras userArray;
 
@@ -179,8 +180,8 @@ public class ParcelableMessage {
             InternalExtras result = new InternalExtras();
             if (extras instanceof StickerExtras) {
                 result.sticker = (StickerExtras) extras;
-            } else if (extras instanceof NameUpdatedExtras) {
-                result.nameUpdated = (NameUpdatedExtras) extras;
+            } else if (extras instanceof ConversationInfoUpdatedExtras) {
+                result.infoUpdated = (ConversationInfoUpdatedExtras) extras;
             } else if (extras instanceof UserArrayExtras) {
                 result.userArray = (UserArrayExtras) extras;
             } else {
@@ -192,8 +193,8 @@ public class ParcelableMessage {
         public MessageExtras getExtras() {
             if (sticker != null) {
                 return sticker;
-            } else if (nameUpdated != null) {
-                return nameUpdated;
+            } else if (infoUpdated != null) {
+                return infoUpdated;
             } else if (userArray != null) {
                 return userArray;
             }

@@ -461,6 +461,9 @@
     <string name="message_direct_message_deleted">Direktnachricht gelöscht.</string>
     <string name="message_direct_message_sent">Direktnachricht gesendet.</string>
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>
+    <string name="message_format_conversation_avatar_update">Gruppenbild aktualisiert</string>
+    <string name="message_format_conversation_avatar_update_by_user">
+        <xliff:g example="User" id="by_user">%1$s</xliff:g> hat das Gruppenbild aktualisiert</string>
     <string name="message_format_conversation_name_update">Gruppenname geändert: <xliff:g example="User" id="name">%1$s</xliff:g></string>
     <string name="message_format_conversation_name_update_by_user">
     <xliff:g example="User"

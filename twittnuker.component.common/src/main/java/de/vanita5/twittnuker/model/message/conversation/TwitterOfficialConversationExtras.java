@@ -37,6 +37,7 @@ import de.vanita5.twittnuker.library.twitter.model.DMResponse;
 @ParcelablePlease
 @JsonObject
 public class TwitterOfficialConversationExtras extends ConversationExtras implements Parcelable {
+
     @JsonField(name = "max_entry_id")
     String maxEntryId;
     @JsonField(name = "min_entry_id")
