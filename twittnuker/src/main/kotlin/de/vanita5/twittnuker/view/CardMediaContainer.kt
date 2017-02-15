@@ -23,13 +23,11 @@
 package de.vanita5.twittnuker.view
 
 import android.content.Context
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
-import org.apache.commons.lang3.ObjectUtils
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.extension.model.aspect_ratio
@@ -104,19 +102,23 @@ class CardMediaContainer(context: Context, attrs: AttributeSet? = null) : ViewGr
             }
             if (i < mediaSize) {
                 val item = media[i]
-                val url = if (TextUtils.isEmpty(item.preview_url)) item.media_url else item.preview_url
-                if (ObjectUtils.notEqual(url, imageView.tag) || imageView.drawable == null) {
+                val video = item.type == ParcelableMedia.Type.VIDEO
+                val url = item.preview_url ?: run {
+                    if (video) return@run null
+                    item.media_url
+                }
+                if (url != imageView.tag || imageView.drawable == null) {
                     if (withCredentials) {
-                        loader.displayPreviewImageWithCredentials(imageView, url, accountId, loadingHandler)
+                        loader.displayPreviewImageWithCredentials(imageView, url, accountId, loadingHandler, video)
                     } else {
-                        loader.displayPreviewImage(imageView, url, loadingHandler)
+                        loader.displayPreviewImage(imageView, url, loadingHandler, video)
                     }
                 }
                 imageView.tag = url
                 if (imageView is MediaPreviewImageView) {
                     imageView.setHasPlayIcon(ParcelableMediaUtils.hasPlayIcon(item.type))
                 }
-                if (TextUtils.isEmpty(item.alt_text)) {
+                if (item.alt_text.isNullOrEmpty()) {
                     child.contentDescription = context.getString(R.string.media)
                 } else {
                     child.contentDescription = item.alt_text

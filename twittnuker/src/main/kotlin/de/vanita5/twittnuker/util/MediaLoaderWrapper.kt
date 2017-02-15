@@ -32,6 +32,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions.Builder
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.nostra13.universalimageloader.core.assist.ImageSize
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener
+import de.vanita5.twittnuker.R
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.constant.mediaPreloadKey
 import de.vanita5.twittnuker.constant.mediaPreloadOnWifiOnlyKey
@@ -71,6 +72,15 @@ class MediaLoaderWrapper(val imageLoader: ImageLoader) {
             .bitmapConfig(Bitmap.Config.RGB_565)
             .build()
 
+    private val videoPreviewDisplayOptions = DisplayImageOptions.Builder()
+            .resetViewBeforeLoading(true)
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .showImageForEmptyUri(R.color.material_grey)
+            .showImageOnFail(R.color.material_grey)
+            .build()
+
     private val bannerDisplayOptions = DisplayImageOptions.Builder()
             .resetViewBeforeLoading(true)
             .showImageOnLoading(android.R.color.transparent)
@@ -88,21 +98,25 @@ class MediaLoaderWrapper(val imageLoader: ImageLoader) {
             .bitmapConfig(Bitmap.Config.ARGB_8888)
             .build()
 
-    fun displayPreviewImage(view: ImageView, url: String?) {
-        imageLoader.displayImage(url, view, previewDisplayOptions)
+    fun displayPreviewImage(view: ImageView, url: String?, video: Boolean = false) {
+        val options = if (video) videoPreviewDisplayOptions else previewDisplayOptions
+        imageLoader.displayImage(url, view, options)
     }
 
-    fun displayPreviewImage(view: ImageView, url: String?, loadingHandler: MediaLoadingHandler?) {
-        imageLoader.displayImage(url, view, previewDisplayOptions, loadingHandler, loadingHandler)
+    fun displayPreviewImage(view: ImageView, url: String?, loadingHandler: MediaLoadingHandler?,
+            video: Boolean = false) {
+        val options = if (video) videoPreviewDisplayOptions else previewDisplayOptions
+        imageLoader.displayImage(url, view, options, loadingHandler, loadingHandler)
     }
 
-    fun displayPreviewImageWithCredentials(view: ImageView, url: String?, accountKey: UserKey?, loadingHandler: MediaLoadingHandler?) {
+    fun displayPreviewImageWithCredentials(view: ImageView, url: String?, accountKey: UserKey?,
+            loadingHandler: MediaLoadingHandler?, video: Boolean = false) {
         if (accountKey == null) {
             displayPreviewImage(view, url, loadingHandler)
             return
         }
         val b = DisplayImageOptions.Builder()
-        b.cloneFrom(previewDisplayOptions)
+        b.cloneFrom(if (video) videoPreviewDisplayOptions else previewDisplayOptions)
         val extra = MediaExtra()
         extra.accountKey = accountKey
         b.extraForDownloader(extra)
