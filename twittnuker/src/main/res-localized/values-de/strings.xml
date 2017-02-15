@@ -28,6 +28,7 @@
     <string name="action_creating_list">Erstelle Liste</string>
     <!-- [verb] Action for deleting a file or a twitter object like tweet-->
     <string name="action_delete">Löschen</string>
+    <string name="action_delete_messages">Nachrichten löschen</string>
     <string name="action_deleting">Löschen</string>
     <string name="action_deleting_search">Lösche Suche</string>
     <string name="action_denying_follow_request">Lehne Follower-Anfrage ab</string>
@@ -52,6 +53,7 @@
     <string name="action_invert_selection">Invertieren</string>
     <!-- Used for decide something later, like permission request -->
     <string name="action_later">Später</string>
+    <string name="action_leave_conversation">Gespräch verlassen</string>
     <!-- [verb] e.g. An action label on a tweet to like this tweet. Formerly Twitter favorite. -->
     <string name="action_like">Like</string>
     <string name="action_liking">Liken</string>
@@ -372,6 +374,7 @@
     <string name="hint_accounts_dashboard_message">Am Rand ziehen um das Account Dashboard zu öffnen.</string>
     <string name="hint_accounts_dashboard_title">Account Dashboard</string>
     <string name="hint_empty_filters_subscriptions">Keine Abonnements</string>
+    <string name="hint_error_message_no_content">Kein Inhalt</string>
     <string name="hint_no_account">Kein Account</string>
     <string name="hints">Hinweise</string>
     <string name="home_refresh">Zu aktualisierende Timelines</string>
@@ -570,7 +573,6 @@
     <string name="no_location">Kein Standort</string>
     <string name="no_rule">Keine Regel</string>
     <string name="no_status_content_text">Kein Inhalt</string>
-    <string name="hint_error_message_no_content">Kein Inhalt</string>
     <string name="no_tab">Kein Tab</string>
     <string name="no_tab_hint">Kein Tab</string>
     <string name="no_thanks">Nein, danke</string>

@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.task
+package de.vanita5.twittnuker.task.message
 
 import android.content.Context
 import org.mariotaku.ktextension.isNotNullOrEmpty
@@ -36,6 +36,8 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableNewMessage
 import de.vanita5.twittnuker.model.util.ParcelableMessageUtils
+import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
+import de.vanita5.twittnuker.task.GetMessagesTask
 import de.vanita5.twittnuker.task.GetMessagesTask.Companion.addConversation
 import de.vanita5.twittnuker.task.GetMessagesTask.Companion.addLocalConversations
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask

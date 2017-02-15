@@ -101,8 +101,8 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
 
     override fun triggerRefresh(): Boolean {
         super.triggerRefresh()
-        twitterWrapper.getMessagesAsync(GetMessagesTask.RefreshNewTaskParam(context) {
-                this@MessagesEntriesFragment.accountKeys
+        twitterWrapper.getMessagesAsync(object : GetMessagesTask.RefreshNewTaskParam(context) {
+            override val accountKeys: Array<UserKey> = this@MessagesEntriesFragment.accountKeys
         })
         return true
     }
@@ -112,8 +112,8 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
             return
         }
         setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.END)
-        twitterWrapper.getMessagesAsync(GetMessagesTask.LoadMoreTaskParam(context) {
-            this@MessagesEntriesFragment.accountKeys
+        twitterWrapper.getMessagesAsync(object : GetMessagesTask.LoadMoreEntriesTaskParam(context) {
+            override val accountKeys: Array<UserKey> = this@MessagesEntriesFragment.accountKeys
         })
     }
 
@@ -151,4 +151,6 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
             showError(R.drawable.ic_info_accounts, getString(R.string.message_toast_no_account_selected))
         }
     }
+
+
 }

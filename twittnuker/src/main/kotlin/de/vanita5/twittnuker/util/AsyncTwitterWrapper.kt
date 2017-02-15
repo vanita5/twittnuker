@@ -47,8 +47,6 @@ import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.event.*
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox
 import de.vanita5.twittnuker.task.*
 import de.vanita5.twittnuker.util.collection.CompactHashSet
 import java.util.*
@@ -296,7 +294,9 @@ class AsyncTwitterWrapper(
             })
         }
         if (preferences.getBoolean(SharedPreferenceConstants.KEY_HOME_REFRESH_DIRECT_MESSAGES)) {
-            getMessagesAsync(GetMessagesTask.RefreshMessagesTaskParam(context, action))
+            getMessagesAsync(object : GetMessagesTask.RefreshMessagesTaskParam(context) {
+                override val accountKeys: Array<UserKey> by lazy { action() }
+            })
         }
         if (preferences.getBoolean(SharedPreferenceConstants.KEY_HOME_REFRESH_SAVED_SEARCHES)) {
             getSavedSearchesAsync(action())

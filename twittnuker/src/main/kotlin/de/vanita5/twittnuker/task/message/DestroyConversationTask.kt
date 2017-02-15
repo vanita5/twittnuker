@@ -1,10 +1,10 @@
 /*
  * Twittnuker - Twitter client for Android
  *
- * Copyright (C) 2013-2016 vanita5 <mail@vanit.as>
+ * Copyright (C) 2013-2017 vanita5 <mail@vanit.as>
  *
  * This program incorporates a modified version of Twidere.
- * Copyright (C) 2012-2016 Mariotaku Lee <mariotaku.lee@gmail.com>
+ * Copyright (C) 2012-2017 Mariotaku Lee <mariotaku.lee@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,25 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.model.event;
+package de.vanita5.twittnuker.task.message
 
-import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.content.Context
+import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
 
-public class GetMessagesTaskEvent {
 
-    @NonNull
-    public final Uri uri;
-    @Nullable
-    public final String taskTag;
-    public final boolean running;
-    public final Exception exception;
-
-    public GetMessagesTaskEvent(@NonNull Uri uri, @Nullable String taskTag, boolean running, Exception exception) {
-        this.uri = uri;
-        this.taskTag = taskTag;
-        this.running = running;
-        this.exception = exception;
+class DestroyConversationTask(
+        context: Context,
+        val accountKey: UserKey,
+        val conversationId: String
+) : ExceptionHandlingAbstractTask<Unit?, Unit, MicroBlogException, Unit?>(context) {
+    override fun onExecute(params: Unit?) {
+        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
 }

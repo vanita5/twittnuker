@@ -30,6 +30,7 @@ import android.view.ViewGroup
 import org.apache.commons.lang3.time.DateUtils
 import org.mariotaku.kpreferences.get
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.annotation.PreviewStyle
 import de.vanita5.twittnuker.constant.linkHighlightOptionKey
 import de.vanita5.twittnuker.constant.mediaPreviewStyleKey
@@ -41,6 +42,7 @@ import de.vanita5.twittnuker.util.DirectMessageOnLinkClickHandler
 import de.vanita5.twittnuker.util.MediaLoadingHandler
 import de.vanita5.twittnuker.util.TwidereLinkify
 import de.vanita5.twittnuker.view.CardMediaContainer.OnMediaClickListener
+import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
 import de.vanita5.twittnuker.view.holder.message.AbsMessageViewHolder
 import de.vanita5.twittnuker.view.holder.message.MessageViewHolder
 import de.vanita5.twittnuker.view.holder.message.NoticeSummaryEventViewHolder
@@ -50,7 +52,7 @@ import java.util.*
 class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<RecyclerView.ViewHolder>(context),
         IItemCountsAdapter {
     private val calendars = Pair(Calendar.getInstance(), Calendar.getInstance())
-    override val itemCounts: ItemCounts = ItemCounts(1)
+    override val itemCounts: ItemCounts = ItemCounts(2)
 
     @PreviewStyle
     val mediaPreviewStyle: Int = preferences[mediaPreviewStyleKey]
@@ -63,13 +65,17 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
             listener?.onMediaClick(id.toInt(), media, accountKey)
         }
     }
+    val messageRange: IntRange
+        get() {
+            return itemCounts.getItemStartPosition(ITEM_START_MESSAGE) until itemCounts[ITEM_START_MESSAGE]
+        }
 
     var messages: List<ParcelableMessage>? = null
         private set
     var conversation: ParcelableMessageConversation? = null
         private set
     var listener: Listener? = null
-
+    var displaySenderProfile: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -90,6 +96,11 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
                 val view = inflater.inflate(NoticeSummaryEventViewHolder.layoutResource, parent, false)
                 val holder = NoticeSummaryEventViewHolder(view, this)
                 holder.setup()
+                return holder
+            }
+            ITEM_LOAD_OLDER_INDICATOR -> {
+                val view = inflater.inflate(LoadIndicatorViewHolder.layoutResource, parent, false)
+                val holder = LoadIndicatorViewHolder(view)
                 return holder
             }
         }
@@ -117,6 +128,7 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
 
     override fun getItemCount(): Int {
         itemCounts[ITEM_START_MESSAGE] = messages?.size ?: 0
+        itemCounts[ITEM_START_LOAD_OLDER] = if (loadMoreIndicatorPosition and ILoadMoreSupportAdapter.START != 0L) 1 else 0
         return itemCounts.itemCount
     }
 
@@ -135,12 +147,13 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
                     else -> return ITEM_TYPE_TEXT_MESSAGE
                 }
             }
+            ITEM_START_LOAD_OLDER -> return ITEM_LOAD_OLDER_INDICATOR
         }
         throw UnsupportedOperationException()
     }
 
     fun getMessage(position: Int): ParcelableMessage? {
-        return messages?.get(position - itemCounts.getItemStartPosition(0))
+        return messages?.get(position - itemCounts.getItemStartPosition(ITEM_START_MESSAGE))
     }
 
     fun findUser(key: UserKey): ParcelableUser? {
@@ -159,10 +172,12 @@ class MessagesConversationAdapter(context: Context) : LoadMoreSupportAdapter<Rec
 
     companion object {
         private const val ITEM_START_MESSAGE = 0
+        private const val ITEM_START_LOAD_OLDER = 1
 
-        const val ITEM_TYPE_TEXT_MESSAGE = 1
-        const val ITEM_TYPE_STICKER_MESSAGE = 2
-        const val ITEM_TYPE_NOTICE_MESSAGE = 3
+        private const val ITEM_TYPE_TEXT_MESSAGE = 1
+        private const val ITEM_TYPE_STICKER_MESSAGE = 2
+        private const val ITEM_TYPE_NOTICE_MESSAGE = 3
+        private const val ITEM_LOAD_OLDER_INDICATOR = 4
     }
 
 

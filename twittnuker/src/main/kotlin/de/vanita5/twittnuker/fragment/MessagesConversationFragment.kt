@@ -32,9 +32,11 @@ import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
 import android.support.v7.widget.FixedLinearLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.otto.Subscribe
 import kotlinx.android.synthetic.main.fragment_messages_conversation.*
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
@@ -47,22 +49,26 @@ import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PICK_MEDIA
 import de.vanita5.twittnuker.activity.ThemedMediaPickerActivity
 import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
 import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
+import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_CONVERSATION_ID
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
 import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
+import de.vanita5.twittnuker.model.event.GetMessagesTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
 import de.vanita5.twittnuker.service.LengthyOperationsService
+import de.vanita5.twittnuker.task.GetMessagesTask
 import de.vanita5.twittnuker.task.compose.AbsAddMediaTask
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.PreviewGridItemDecoration
 import java.util.concurrent.atomic.AtomicReference
 
-class MessagesConversationFragment : BaseFragment(), LoaderManager.LoaderCallbacks<List<ParcelableMessage>?> {
-    private lateinit var conversationAdapter: MessagesConversationAdapter
+class MessagesConversationFragment : AbsContentListRecyclerViewFragment<MessagesConversationAdapter>(),
+        LoaderManager.LoaderCallbacks<List<ParcelableMessage>?> {
     private lateinit var mediaPreviewAdapter: MediaPreviewAdapter
 
     private val accountKey: UserKey get() = arguments.getParcelable(EXTRA_ACCOUNT_KEY)
@@ -73,21 +79,28 @@ class MessagesConversationFragment : BaseFragment(), LoaderManager.LoaderCallbac
         AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true)
     }
 
+    private val loadMoreTaskTag: String
+        get() = "loadMore:$accountKey:$conversationId"
+
+    // Layout manager reversed, so treat start as end
+    override val reachingEnd: Boolean
+        get() = super.reachingStart
+
+    // Layout manager reversed, so treat end as start
+    override val reachingStart: Boolean
+        get() = super.reachingEnd
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        conversationAdapter = MessagesConversationAdapter(context)
-        conversationAdapter.listener = object : MessagesConversationAdapter.Listener {
+        adapter.listener = object : MessagesConversationAdapter.Listener {
             override fun onMediaClick(position: Int, media: ParcelableMedia, accountKey: UserKey?) {
-                val message = conversationAdapter.getMessage(position) ?: return
+                val message = adapter.getMessage(position) ?: return
                 IntentUtils.openMediaDirectly(context = context, accountKey = accountKey,
                         media = message.media, current = media,
                         newDocument = preferences[newDocumentApiKey], message = message)
             }
         }
         mediaPreviewAdapter = MediaPreviewAdapter(context)
-
-        recyclerView.adapter = conversationAdapter
-        recyclerView.layoutManager = FixedLinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
 
         attachedMediaPreview.layoutManager = FixedLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         attachedMediaPreview.adapter = mediaPreviewAdapter
@@ -100,9 +113,24 @@ class MessagesConversationFragment : BaseFragment(), LoaderManager.LoaderCallbac
             openMediaPicker()
         }
 
+        // No refresh for this fragment
+        refreshEnabled = false
+        adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.NONE
+
         updateMediaPreview()
 
         loaderManager.initLoader(0, null, this)
+        showProgress()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        bus.register(this)
+    }
+
+    override fun onStop() {
+        bus.unregister(this)
+        super.onStop()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -125,18 +153,55 @@ class MessagesConversationFragment : BaseFragment(), LoaderManager.LoaderCallbac
     }
 
     override fun onLoaderReset(loader: Loader<List<ParcelableMessage>?>) {
-        conversationAdapter.setData(null, null)
+        adapter.setData(null, null)
     }
 
     override fun onLoadFinished(loader: Loader<List<ParcelableMessage>?>, data: List<ParcelableMessage>?) {
         val conversationLoader = loader as? ConversationLoader
         val conversation = conversationLoader?.conversation
-        conversationAdapter.setData(conversation, data)
+        adapter.setData(conversation, data)
+        adapter.displaySenderProfile = conversation?.conversation_type == ConversationType.GROUP
+        if (conversation?.conversation_extras_type == ParcelableMessageConversation.ExtrasType.TWITTER_OFFICIAL) {
+            adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.START
+        } else {
+            adapter.loadMoreSupportedPosition = ILoadMoreSupportAdapter.NONE
+        }
+        showContent()
+    }
+
+    override fun onCreateAdapter(context: Context): MessagesConversationAdapter {
+        return MessagesConversationAdapter(context)
+    }
+
+    override fun onCreateLayoutManager(context: Context): LinearLayoutManager {
+        return FixedLinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
+    }
+
+    override fun createItemDecoration(context: Context, recyclerView: RecyclerView,
+            layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
+        return null
+    }
+
+    override fun onLoadMoreContents(position: Long) {
+        if (position and ILoadMoreSupportAdapter.START == 0L) return
+        val message = adapter.getMessage(adapter.messageRange.endInclusive) ?: return
+        setLoadMoreIndicatorPosition(position)
+        val param = GetMessagesTask.LoadMoreMessageTaskParam(context, accountKey, conversationId,
+                message.id)
+        param.taskTag = loadMoreTaskTag
+        twitterWrapper.getMessagesAsync(param)
+    }
+
+    @Subscribe
+    fun onGetMessagesTaskEvent(event: GetMessagesTaskEvent) {
+        if (!event.running && event.taskTag == loadMoreTaskTag) {
+            setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.NONE)
+        }
     }
 
     private fun performSendMessage() {
-        val conversation = conversationAdapter.conversation ?: return
-        if (editText.empty && conversationAdapter.itemCount == 0) {
+        val conversation = adapter.conversation ?: return
+        if (editText.empty && adapter.itemCount == 0) {
             editText.error = getString(R.string.hint_error_message_no_content)
             return
         }
