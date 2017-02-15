@@ -44,14 +44,16 @@ public class ContentResolverUtils {
 
     public static <T> int bulkDelete(@NonNull final ContentResolver resolver, @NonNull final Uri uri,
                                      @NonNull final String matchColumn, final boolean notIn,
-                                     @Nullable final Collection<T> colValues, final String extraWhere) {
+            @Nullable final Collection<T> colValues, final String extraWhere,
+            final String[] extraWhereArgs) {
         if (colValues == null) return 0;
-        return bulkDelete(resolver, uri, matchColumn, notIn, colValues.toArray(), extraWhere);
+        return bulkDelete(resolver, uri, matchColumn, notIn, colValues.toArray(), extraWhere,
+                extraWhereArgs);
     }
 
     public static int bulkDelete(@NonNull final ContentResolver resolver, @NonNull final Uri uri,
                                  @NonNull final String matchColumn, final boolean notIn,
-                                 @Nullable final Object colValues, final String extraWhere) {
+            @Nullable final Object colValues, final String extraWhere, final String[] extraWhereArgs) {
         if (colValues == null) return 0;
         final int colValuesLength = Array.getLength(colValues), blocksCount = colValuesLength / MAX_BULK_COUNT + 1;
         int rowsDeleted = 0;
@@ -59,6 +61,13 @@ public class ContentResolverUtils {
             final int start = i * MAX_BULK_COUNT, end = Math.min(start + MAX_BULK_COUNT,
                     colValuesLength);
             final String[] block = TwidereArrayUtils.toStringArray(colValues, start, end);
+            final String[] whereArgs;
+            if (extraWhereArgs != null) {
+                whereArgs = new String[block.length + extraWhereArgs.length];
+                TwidereArrayUtils.mergeArray(whereArgs, block, extraWhereArgs);
+            } else {
+                whereArgs = block;
+            }
             final StringBuilder where;
             if (notIn) {
                 where = new StringBuilder(Expression.notInArgs(matchColumn, block.length).getSQL());
@@ -68,7 +77,7 @@ public class ContentResolverUtils {
             if (!TextUtils.isEmpty(extraWhere)) {
                 where.append("AND ").append(extraWhere);
             }
-            rowsDeleted += resolver.delete(uri, where.toString(), block);
+            rowsDeleted += resolver.delete(uri, where.toString(), whereArgs);
         }
         return rowsDeleted;
     }

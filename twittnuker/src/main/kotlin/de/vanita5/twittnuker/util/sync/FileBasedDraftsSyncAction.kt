@@ -27,7 +27,6 @@ import android.support.v4.util.LongSparseArray
 import org.mariotaku.ktextension.map
 import org.mariotaku.ktextension.set
 import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.extension.model.filename
 import de.vanita5.twittnuker.extension.model.unique_id_non_null
 import de.vanita5.twittnuker.model.Draft
@@ -162,7 +161,7 @@ abstract class FileBasedDraftsSyncAction<RemoteFileInfo>(val context: Context) :
             val fileList = removeLocalIdsList.joinToString(",") { "$it.eml" }
             DebugLog.d(LOGTAG_SYNC, "Removing local drafts $fileList")
             ContentResolverUtils.bulkDelete(context.contentResolver, Drafts.CONTENT_URI,
-                    Drafts.UNIQUE_ID, false, removeLocalIdsList, null)
+                    Drafts.UNIQUE_ID, false, removeLocalIdsList, null, null)
         }
 
         // Remove remote items

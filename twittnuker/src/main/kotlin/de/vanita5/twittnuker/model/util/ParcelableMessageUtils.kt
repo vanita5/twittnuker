@@ -25,6 +25,8 @@ package de.vanita5.twittnuker.model.util
 import android.support.annotation.FloatRange
 import org.mariotaku.ktextension.convert
 import de.vanita5.twittnuker.library.twitter.model.DMResponse
+import de.vanita5.twittnuker.library.twitter.model.DMResponse.Entry.Message
+import de.vanita5.twittnuker.library.twitter.model.DMResponse.Entry.Message.Data
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.User
 import de.vanita5.twittnuker.model.ParcelableMedia
@@ -95,7 +97,7 @@ object ParcelableMessageUtils {
         return "$senderId-$recipientId"
     }
 
-    private fun ParcelableMessage.applyMessage(accountKey: UserKey, message: DMResponse.Entry.Message) {
+    private fun ParcelableMessage.applyMessage(accountKey: UserKey, message: Message) {
         this.commonEntry(accountKey, message)
 
         val data = message.messageData
@@ -108,13 +110,13 @@ object ParcelableMessageUtils {
         this.media = media
     }
 
-    private fun ParcelableMessage.applyConversationCreate(accountKey: UserKey, message: DMResponse.Entry.Message) {
+    private fun ParcelableMessage.applyConversationCreate(accountKey: UserKey, message: Message) {
         this.commonEntry(accountKey, message)
         this.message_type = MessageType.CONVERSATION_CREATE
         this.is_outgoing = false
     }
 
-    private fun ParcelableMessage.applyUsersEvent(accountKey: UserKey, message: DMResponse.Entry.Message,
+    private fun ParcelableMessage.applyUsersEvent(accountKey: UserKey, message: Message,
             users: Map<String, User>, @MessageType type: String) {
         this.commonEntry(accountKey, message)
         this.message_type = type
@@ -127,7 +129,7 @@ object ParcelableMessageUtils {
         this.is_outgoing = false
     }
 
-    private fun ParcelableMessage.applyNameUpdatedEvent(accountKey: UserKey, message: DMResponse.Entry.Message,
+    private fun ParcelableMessage.applyNameUpdatedEvent(accountKey: UserKey, message: Message,
             users: Map<String, User>) {
         this.commonEntry(accountKey, message)
         this.message_type = MessageType.CONVERSATION_NAME_UPDATE
@@ -138,7 +140,7 @@ object ParcelableMessageUtils {
         this.is_outgoing = false
     }
 
-    private fun ParcelableMessage.commonEntry(accountKey: UserKey, message: DMResponse.Entry.Message) {
+    private fun ParcelableMessage.commonEntry(accountKey: UserKey, message: Message) {
         val data = message.messageData
         this.sender_key = run {
             val senderId = data?.senderId ?: message.senderId ?: return@run null
@@ -190,7 +192,7 @@ object ParcelableMessageUtils {
         return Pair(MessageType.TEXT, null)
     }
 
-    private fun typeAndExtras(data: DMResponse.Entry.Message.Data): Triple<String, MessageExtras?, Array<ParcelableMedia>?> {
+    private fun typeAndExtras(data: Data): Triple<String, MessageExtras?, Array<ParcelableMedia>?> {
         val attachment = data.attachment ?: return Triple(MessageType.TEXT, null, null)
         when {
             attachment.photo != null -> {
