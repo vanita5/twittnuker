@@ -30,12 +30,15 @@ import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.message.StickerExtras
 import de.vanita5.twittnuker.view.FixedTextView
+import de.vanita5.twittnuker.view.ProfileImageView
 
 
 class StickerMessageViewHolder(itemView: View, adapter: MessagesConversationAdapter) : AbsMessageViewHolder(itemView, adapter) {
 
     override val date: FixedTextView by lazy { itemView.date }
     override val messageContent: RelativeLayout by lazy { itemView.messageContent }
+    override val profileImage: ProfileImageView by lazy { itemView.profileImage }
+    override val nameTime: FixedTextView by lazy { itemView.nameTime }
 
     private val stickerIcon by lazy { itemView.stickerIcon }
 

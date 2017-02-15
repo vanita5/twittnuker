@@ -474,6 +474,10 @@
     </string>
     <string name="message_format_participants_leave">
      <xliff:g example="User" id="name">%1$s</xliff:g> hat das Gespräch verlassen</string>
+    <string name="message_format_sender_time">
+     <xliff:g example="User" id="sender">%1$s</xliff:g> · <xliff:g
+        example="12:00" id="time">%2$s</xliff:g>
+    </string>
     <string name="message_join_conversation">Gespräch beigetreten.</string>
     <!-- Toast message for enhanced (paid) features not purchased while trying to restore purchase -->
     <string name="message_toast_extra_features_not_purchased">Erweiterte Funktionen nicht freigeschaltet</string>

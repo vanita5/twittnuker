@@ -70,13 +70,13 @@
             android:layout_height="@dimen/element_size_normal"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:background="?selectableItemBackground"
+            android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
             android:color="?android:textColorSecondary"
             android:contentDescription="@string/add_image"
             android:scaleType="centerInside"
             android:src="@drawable/ic_action_gallery"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
 
         <de.vanita5.twittnuker.view.IconActionView
             android:id="@+id/sendMessage"
@@ -84,7 +84,7 @@
             android:layout_height="@dimen/element_size_normal"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:background="?selectableItemBackground"
+            android:background="?selectableItemBackgroundBorderless"
             android:clickable="true"
             android:color="?android:textColorSecondary"
             android:contentDescription="@string/action_send"

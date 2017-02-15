@@ -31,17 +31,31 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
 import de.vanita5.twittnuker.extension.model.timestamp
 import de.vanita5.twittnuker.model.ParcelableMessage
+import de.vanita5.twittnuker.view.ProfileImageView
 
 
 abstract class AbsMessageViewHolder(itemView: View, val adapter: MessagesConversationAdapter) : RecyclerView.ViewHolder(itemView) {
 
     protected abstract val date: TextView
     protected abstract val messageContent: View
+    protected open val profileImage: ProfileImageView? = null
+    protected open val nameTime: TextView? = null
+
+    open fun setup() {
+        val textSize = adapter.textSize
+        date.textSize = textSize * 0.9f
+        nameTime?.textSize = textSize * 0.8f
+        profileImage?.style = adapter.profileImageStyle
+    }
 
     open fun display(message: ParcelableMessage, showDate: Boolean) {
+        val context = adapter.context
+        val manager = adapter.userColorNameManager
+
         setMessageContentGravity(messageContent, message.is_outgoing)
         if (showDate) {
             date.visibility = View.VISIBLE
@@ -49,6 +63,29 @@ abstract class AbsMessageViewHolder(itemView: View, val adapter: MessagesConvers
                     DateUtils.DAY_IN_MILLIS, DateUtils.FORMAT_SHOW_DATE)
         } else {
             date.visibility = View.GONE
+        }
+        val sender = message.sender_key?.let { adapter.findUser(it) }
+
+        nameTime?.apply {
+            val time = DateUtils.formatDateTime(context, message.timestamp, DateUtils.FORMAT_SHOW_TIME)
+            if (message.is_outgoing) {
+                this.text = time
+            } else if (sender != null) {
+                val senderName = manager.getDisplayName(sender, adapter.nameFirst)
+                this.text = context.getString(R.string.message_format_sender_time, senderName, time)
+            } else {
+                this.text = time
+            }
+        }
+
+        profileImage?.apply {
+            if (adapter.profileImageEnabled && sender != null && !message.is_outgoing) {
+                this.visibility = View.VISIBLE
+                adapter.mediaLoader.displayProfileImage(this, sender)
+            } else {
+                this.visibility = View.GONE
+                adapter.mediaLoader.cancelDisplayTask(this)
+            }
         }
     }
 
