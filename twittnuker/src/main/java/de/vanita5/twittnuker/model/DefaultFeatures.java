@@ -36,10 +36,9 @@ import org.mariotaku.restfu.annotation.method.GET;
 import org.mariotaku.restfu.http.HttpRequest;
 import org.mariotaku.restfu.http.HttpResponse;
 import org.mariotaku.restfu.http.RestHttpClient;
+import de.vanita5.twittnuker.util.Utils;
 
 import java.io.IOException;
-
-import de.vanita5.twittnuker.util.Utils;
 
 import static de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_MEDIA_LINK_COUNTS_IN_STATUS;
 
@@ -55,8 +54,12 @@ public class DefaultFeatures {
 
     @JsonField(name = "default_twitter_consumer_key")
     String defaultTwitterConsumerKey;
+
     @JsonField(name = "default_twitter_consumer_secret")
     String defaultTwitterConsumerSecret;
+
+    @JsonField(name = "twitter_direct_message_media_limit")
+    long twitterDirectMessageMediaLimit = 1;
 
     public boolean isMediaLinkCountsInStatus() {
         return mediaLinkCountsInStatus;
@@ -68,6 +71,10 @@ public class DefaultFeatures {
 
     public String getDefaultTwitterConsumerSecret() {
         return defaultTwitterConsumerSecret;
+    }
+
+    public long getTwitterDirectMessageMediaLimit() {
+        return twitterDirectMessageMediaLimit;
     }
 
     @WorkerThread

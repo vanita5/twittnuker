@@ -93,5 +93,4 @@ open class BaseArrayAdapter<T>(
 
     override fun getItemCount(): Int = count
 
-
 }

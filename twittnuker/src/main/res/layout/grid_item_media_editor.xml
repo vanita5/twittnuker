@@ -27,7 +27,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     tools:layout_gravity="center"
-    tools:layout_height="128dp">
+    tools:showIn="@layout/activity_compose">
 
     <de.vanita5.twittnuker.view.HighlightImageView
         android:id="@+id/image"

@@ -23,8 +23,10 @@
 package de.vanita5.twittnuker.task
 
 import android.content.Context
+import org.mariotaku.ktextension.isNotNullOrEmpty
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.twitter.TwitterUpload
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.NewDm
 import de.vanita5.twittnuker.annotation.AccountType
@@ -36,6 +38,7 @@ import de.vanita5.twittnuker.model.ParcelableNewMessage
 import de.vanita5.twittnuker.model.util.ParcelableMessageUtils
 import de.vanita5.twittnuker.task.GetMessagesTask.Companion.addConversation
 import de.vanita5.twittnuker.task.GetMessagesTask.Companion.addLocalConversations
+import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 
 class SendMessageTask(
         context: Context
@@ -62,15 +65,31 @@ class SendMessageTask(
     }
 
     private fun sendTwitterOfficialDM(microBlog: MicroBlog, account: AccountDetails, message: ParcelableNewMessage): GetMessagesTask.DatabaseUpdateData {
-        val response = microBlog.sendDm(NewDm().apply {
+        var deleteOnSuccess: List<UpdateStatusTask.MediaDeletionItem>? = null
+        var deleteAlways: List<UpdateStatusTask.MediaDeletionItem>? = null
+        val response = try {
+            val newDm = NewDm()
             val conversationId = message.conversation_id
             if (conversationId != null) {
-                setConversationId(conversationId)
+                newDm.setConversationId(conversationId)
             } else {
-                setRecipientIds(message.recipient_ids)
+                newDm.setRecipientIds(message.recipient_ids)
             }
-            setText(message.text)
-        })
+            newDm.setText(message.text)
+
+            if (message.media.isNotNullOrEmpty()) {
+                val upload = account.newMicroBlogInstance(context, cls = TwitterUpload::class.java)
+                val uploadResult = UpdateStatusTask.uploadAllMediaShared(context,
+                        mediaLoader, upload, account, message.media, null, true, null)
+                newDm.setMediaId(uploadResult.ids[0])
+                deleteAlways = uploadResult.deleteAlways
+                deleteOnSuccess = uploadResult.deleteOnSuccess
+            }
+            microBlog.sendDm(newDm)
+        } finally {
+            deleteOnSuccess?.forEach { it.delete(context) }
+        }
+        deleteAlways?.forEach { it.delete(context) }
         return GetMessagesTask.createDatabaseUpdateData(context, account, response)
     }
 
