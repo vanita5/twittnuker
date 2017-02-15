@@ -36,7 +36,9 @@ import org.mariotaku.commons.objectcursor.LoganSquareCursorFieldConverter;
 import org.mariotaku.library.objectcursor.annotation.CursorField;
 import org.mariotaku.library.objectcursor.annotation.CursorObject;
 import de.vanita5.twittnuker.model.message.MessageExtras;
+import de.vanita5.twittnuker.model.message.NameUpdatedExtras;
 import de.vanita5.twittnuker.model.message.StickerExtras;
+import de.vanita5.twittnuker.model.message.UserArrayExtras;
 import de.vanita5.twittnuker.model.util.MessageExtrasConverter;
 import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
@@ -167,12 +169,20 @@ public class ParcelableMessage {
     static class InternalExtras {
         @JsonField(name = "sticker")
         StickerExtras sticker;
+        @JsonField(name = "name_updated")
+        NameUpdatedExtras nameUpdated;
+        @JsonField(name = "user_array")
+        UserArrayExtras userArray;
 
         public static InternalExtras from(final MessageExtras extras) {
             if (extras == null) return null;
             InternalExtras result = new InternalExtras();
             if (extras instanceof StickerExtras) {
                 result.sticker = (StickerExtras) extras;
+            } else if (extras instanceof NameUpdatedExtras) {
+                result.nameUpdated = (NameUpdatedExtras) extras;
+            } else if (extras instanceof UserArrayExtras) {
+                result.userArray = (UserArrayExtras) extras;
             } else {
                 return null;
             }
@@ -182,6 +192,10 @@ public class ParcelableMessage {
         public MessageExtras getExtras() {
             if (sticker != null) {
                 return sticker;
+            } else if (nameUpdated != null) {
+                return nameUpdated;
+            } else if (userArray != null) {
+                return userArray;
             }
             return null;
         }

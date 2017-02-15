@@ -22,34 +22,27 @@
  * under the License.
  */
 
-package de.vanita5.twittnuker.library.twitter.model;
+package de.vanita5.twittnuker.model.message.conversation;
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-@JsonObject
-public class UserEventsResponse extends TwitterResponseObject {
-    @JsonField(name = "user_events")
-    UserEvents userEvents;
+import com.bluelinelabs.logansquare.LoganSquare;
 
-    public UserEvents getUserEvents() {
-        return userEvents;
-    }
+import de.vanita5.twittnuker.model.ParcelableMessageConversation.ExtrasType;
 
-    @JsonObject
-    public static class UserEvents {
-        @JsonField(name = "cursor")
-        String cursor;
-        @JsonField(name = "last_seen_event_id")
-        long lastSeenEventId;
+import java.io.IOException;
 
-        public String getCursor() {
-            return cursor;
+
+public abstract class ConversationExtras implements Parcelable {
+    public static ConversationExtras parse(@NonNull final String extrasType, @Nullable final String json) throws IOException {
+        if (json == null) return null;
+        switch (extrasType) {
+            case ExtrasType.TWITTER_OFFICIAL: {
+                return LoganSquare.parse(json, TwitterOfficialConversationExtras.class);
+            }
         }
-
-        public long getLastSeenEventId() {
-            return lastSeenEventId;
-        }
+        return null;
     }
-
 }

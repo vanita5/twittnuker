@@ -25,6 +25,8 @@
 package de.vanita5.twittnuker.model.message;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -36,7 +38,8 @@ import java.io.IOException;
 
 @JsonObject
 public abstract class MessageExtras implements Parcelable {
-    public static MessageExtras parse(final String messageType, final String json) throws IOException {
+    public static MessageExtras parse(@NonNull final String messageType, @Nullable final String json) throws IOException {
+        if (json == null) return null;
         switch (messageType) {
             case MessageType.STICKER:
                 return LoganSquare.parse(json, StickerExtras.class);

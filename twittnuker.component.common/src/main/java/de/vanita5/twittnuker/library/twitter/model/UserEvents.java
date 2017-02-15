@@ -33,19 +33,19 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 @ParcelablePlease
 @JsonObject
-public class UserInbox extends TwitterResponseObject implements Parcelable {
+public class UserEvents extends TwitterResponseObject implements Parcelable {
 
-    @JsonField(name = "user_inbox")
-    DMResponse userInbox;
+    @JsonField(name = "user_events")
+    DMResponse userEvents;
 
-    public DMResponse getUserInbox() {
-        return userInbox;
+    public DMResponse getUserEvents() {
+        return userEvents;
     }
 
     @Override
     public String toString() {
-        return "UserInbox{" +
-                "userInbox=" + userInbox +
+        return "UserEvents{" +
+                "userEvents=" + userEvents +
                 "} " + super.toString();
     }
 
@@ -56,18 +56,18 @@ public class UserInbox extends TwitterResponseObject implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        UserInboxParcelablePlease.writeToParcel(this, dest, flags);
+        UserEventsParcelablePlease.writeToParcel(this, dest, flags);
     }
 
-    public static final Creator<UserInbox> CREATOR = new Creator<UserInbox>() {
-        public UserInbox createFromParcel(Parcel source) {
-            UserInbox target = new UserInbox();
-            UserInboxParcelablePlease.readFromParcel(target, source);
+    public static final Creator<UserEvents> CREATOR = new Creator<UserEvents>() {
+        public UserEvents createFromParcel(Parcel source) {
+            UserEvents target = new UserEvents();
+            UserEventsParcelablePlease.readFromParcel(target, source);
             return target;
         }
 
-        public UserInbox[] newArray(int size) {
-            return new UserInbox[size];
+        public UserEvents[] newArray(int size) {
+            return new UserEvents[size];
         }
     };
 }
