@@ -177,6 +177,9 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
     @JsonField(name = "statusnet_conversation_id")
     String statusnetConversationId;
 
+    @JsonField(name = "conversation_id")
+    String conversationId;
+
 
     /**
      * For GNU social
@@ -415,6 +418,10 @@ public class Status extends TwitterResponseObject implements Comparable<Status>,
 
     public Attention[] getAttentions() {
         return attentions;
+    }
+
+    public String getConversationId() {
+        return conversationId;
     }
 
     public String getLang() {
