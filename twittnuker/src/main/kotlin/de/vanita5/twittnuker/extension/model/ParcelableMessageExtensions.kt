@@ -29,6 +29,7 @@ import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.MessageExtras
+import de.vanita5.twittnuker.model.message.NameUpdatedExtras
 import de.vanita5.twittnuker.model.message.UserArrayExtras
 import de.vanita5.twittnuker.util.UserColorNameManager
 
@@ -80,6 +81,16 @@ internal fun getSummaryText(context: Context, manager: UserColorNameManager, nam
             } else {
                 val usersName = res.getQuantityString(R.plurals.N_users, users.size, users.size)
                 return res.getString(R.string.message_format_participants_leave, usersName)
+            }
+        }
+        MessageType.CONVERSATION_NAME_UPDATE -> {
+            extras as NameUpdatedExtras
+            val res = context.resources
+            if (extras.user != null) {
+                return res.getString(R.string.message_format_conversation_name_update_by_user,
+                        manager.getDisplayName(extras.user, nameFirst), extras.name)
+            } else {
+                return res.getString(R.string.message_format_conversation_name_update, extras.name)
             }
         }
     }

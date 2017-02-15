@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.model.util
 
 import android.support.annotation.FloatRange
+import org.mariotaku.ktextension.convert
 import de.vanita5.twittnuker.library.twitter.model.DMResponse
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.User
@@ -31,6 +32,7 @@ import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.ParcelableMessage.MessageType
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.message.MessageExtras
+import de.vanita5.twittnuker.model.message.NameUpdatedExtras
 import de.vanita5.twittnuker.model.message.StickerExtras
 import de.vanita5.twittnuker.model.message.UserArrayExtras
 import de.vanita5.twittnuker.util.InternalTwitterContentUtils
@@ -76,6 +78,11 @@ object ParcelableMessageUtils {
                     applyUsersEvent(accountKey, entry.participantsJoin, users, MessageType.PARTICIPANTS_JOIN)
                 }
             }
+            entry.conversationNameUpdate != null -> {
+                return ParcelableMessage().apply {
+                    applyNameUpdatedEvent(accountKey, entry.conversationNameUpdate, users)
+                }
+            }
         }
         return null
     }
@@ -116,6 +123,17 @@ object ParcelableMessageUtils {
                 val user = users[it.userId] ?: return@mapNotNull null
                 ParcelableUserUtils.fromUser(user, accountKey)
             }.toTypedArray()
+        }
+        this.is_outgoing = false
+    }
+
+    private fun ParcelableMessage.applyNameUpdatedEvent(accountKey: UserKey,
+            message: DMResponse.Entry.Message, users: Map<String, User>) {
+        this.commonEntry(accountKey, message)
+        this.message_type = MessageType.CONVERSATION_NAME_UPDATE
+        this.extras = NameUpdatedExtras().apply {
+            this.name = message.conversationName
+            this.user = users[message.byUserId]?.convert { ParcelableUserUtils.fromUser(it, accountKey) }
         }
         this.is_outgoing = false
     }
