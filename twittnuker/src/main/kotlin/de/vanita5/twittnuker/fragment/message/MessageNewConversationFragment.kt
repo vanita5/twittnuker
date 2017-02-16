@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.text.MarkForDeleteSpan
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.view.SimpleTextWatcher
+import java.lang.ref.WeakReference
 
 class MessageNewConversationFragment : BaseFragment(), LoaderCallbacks<List<ParcelableUser>?> {
 
@@ -72,6 +73,7 @@ class MessageNewConversationFragment : BaseFragment(), LoaderCallbacks<List<Parc
         }
 
     private var loaderInitialized: Boolean = false
+    private var performSearchRequestRunnable: Runnable? = null
 
     private lateinit var usersAdapter: SelectableUsersAdapter
 
@@ -246,14 +248,15 @@ class MessageNewConversationFragment : BaseFragment(), LoaderCallbacks<List<Parc
         activity?.supportInvalidateOptionsMenu()
     }
 
-    private fun searchUser(query: String, fromCache: Boolean) {
+
+    private fun searchUser(query: String, fromType: Boolean) {
         if (TextUtils.isEmpty(query)) {
             return
         }
         val args = Bundle {
             this[EXTRA_ACCOUNT_KEY] = accountKey
             this[EXTRA_QUERY] = query
-            this[EXTRA_FROM_CACHE] = fromCache
+            this[EXTRA_FROM_CACHE] = fromType
         }
         if (loaderInitialized) {
             loaderManager.initLoader(0, args, this)
@@ -261,8 +264,23 @@ class MessageNewConversationFragment : BaseFragment(), LoaderCallbacks<List<Parc
         } else {
             loaderManager.restartLoader(0, args, this)
         }
+        if (performSearchRequestRunnable != null) {
+            editParticipants.removeCallbacks(performSearchRequestRunnable)
+        }
+        if (fromType) {
+            performSearchRequestRunnable = PerformSearchRequestRunnable(query, this)
+            editParticipants.postDelayed(performSearchRequestRunnable, 1000L)
+        }
     }
 
+    internal class PerformSearchRequestRunnable(val query: String, fragment: MessageNewConversationFragment) : Runnable {
+        val fragmentRef = WeakReference(fragment)
+        override fun run() {
+            val fragment = fragmentRef.get() ?: return
+            fragment.searchUser(query, false)
+        }
+
+    }
 
     class PendingQuerySpan
 
