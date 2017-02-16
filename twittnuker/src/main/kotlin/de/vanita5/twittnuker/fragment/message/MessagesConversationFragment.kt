@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.message
 
 import android.accounts.AccountManager
 import android.app.Activity
@@ -53,6 +53,8 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_CONVERSATION_ID
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.model.isOfficial
+import de.vanita5.twittnuker.fragment.AbsContentListRecyclerViewFragment
+import de.vanita5.twittnuker.fragment.EditAltTextDialogFragment
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
@@ -203,7 +205,7 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
     }
 
     override fun createItemDecoration(context: Context, recyclerView: RecyclerView,
-            layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
+                                      layoutManager: LinearLayoutManager): RecyclerView.ItemDecoration? {
         return null
     }
 

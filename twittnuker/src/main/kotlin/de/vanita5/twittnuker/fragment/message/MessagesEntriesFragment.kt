@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.fragment
+package de.vanita5.twittnuker.fragment.message
 
 import android.content.Context
 import android.content.Intent
@@ -41,6 +41,7 @@ import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter.MessageConversationC
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.model.user
+import de.vanita5.twittnuker.fragment.AbsContentListRecyclerViewFragment
 import de.vanita5.twittnuker.fragment.iface.IFloatingActionButtonFragment
 import de.vanita5.twittnuker.fragment.iface.IFloatingActionButtonFragment.ActionInfo
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
@@ -140,14 +141,15 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
         return ActionInfo(R.drawable.ic_action_add, getString(R.string.new_direct_message))
     }
 
-    override fun onActionClick(tag: String) {
+    override fun onActionClick(tag: String): Boolean {
         val accountKey = accountKeys.singleOrNull() ?: run {
             val selectIntent = Intent(context, AccountSelectorActivity::class.java)
             selectIntent.putExtra(EXTRA_ACCOUNT_KEYS, accountKeys)
             startActivityForResult(selectIntent, REQUEST_SELECT_ACCOUNT)
-            return
+            return true
         }
         startActivity(IntentUtils.newMessageConversation(accountKey))
+        return true
     }
 
     @Subscribe

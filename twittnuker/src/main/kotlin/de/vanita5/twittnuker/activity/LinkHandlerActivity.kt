@@ -58,6 +58,10 @@ import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
 import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
+import de.vanita5.twittnuker.fragment.message.MessageConversationInfoFragment
+import de.vanita5.twittnuker.fragment.message.MessageNewConversationFragment
+import de.vanita5.twittnuker.fragment.message.MessagesConversationFragment
+import de.vanita5.twittnuker.fragment.message.MessagesEntriesFragment
 import de.vanita5.twittnuker.graphic.EmptyDrawable
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
@@ -625,13 +629,13 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                 args.putString(EXTRA_CONVERSATION_ID, conversationId)
             }
             LINK_ID_MESSAGES_CONVERSATION_NEW -> {
-                fragment = Fragment()
-                val conversationId = uri.getQueryParameter(QUERY_PARAM_CONVERSATION_ID) ?: return null
+                fragment = MessageNewConversationFragment()
                 accountRequired = true
             }
             LINK_ID_MESSAGES_CONVERSATION_INFO -> {
-                fragment = Fragment()
+                fragment = MessageConversationInfoFragment()
                 val conversationId = uri.getQueryParameter(QUERY_PARAM_CONVERSATION_ID) ?: return null
+                args.putString(EXTRA_CONVERSATION_ID, conversationId)
                 accountRequired = true
             }
             LINK_ID_INTERACTIONS -> {

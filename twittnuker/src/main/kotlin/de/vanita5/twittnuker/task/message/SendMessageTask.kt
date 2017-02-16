@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.library.twitter.model.NewDm
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.library.twitter.model.fixMedia
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableNewMessage
@@ -92,6 +93,7 @@ class SendMessageTask(
             deleteOnSuccess?.forEach { it.delete(context) }
         }
         deleteAlways?.forEach { it.delete(context) }
+        response.fixMedia(microBlog)
         return GetMessagesTask.createDatabaseUpdateData(context, account, response)
     }
 

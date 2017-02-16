@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import de.vanita5.twittnuker.R;
-import de.vanita5.twittnuker.fragment.MessagesEntriesFragment;
+import de.vanita5.twittnuker.fragment.message.MessagesEntriesFragment;
 import de.vanita5.twittnuker.model.tab.DrawableHolder;
 import de.vanita5.twittnuker.model.tab.StringHolder;
 import de.vanita5.twittnuker.model.tab.TabConfiguration;
