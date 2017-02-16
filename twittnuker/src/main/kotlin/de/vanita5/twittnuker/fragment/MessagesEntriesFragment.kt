@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.Loader
@@ -32,6 +33,9 @@ import org.mariotaku.ktextension.toStringArray
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.TwittnukerConstants.EXTRA_ACCOUNT_KEYS
+import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_SELECT_ACCOUNT
+import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter.MessageConversationClickListener
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
@@ -138,7 +142,9 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
 
     override fun onActionClick(tag: String) {
         val accountKey = accountKeys.singleOrNull() ?: run {
-
+            val selectIntent = Intent(context, AccountSelectorActivity::class.java)
+            selectIntent.putExtra(EXTRA_ACCOUNT_KEYS, accountKeys)
+            startActivityForResult(selectIntent, REQUEST_SELECT_ACCOUNT)
             return
         }
         startActivity(IntentUtils.newMessageConversation(accountKey))
