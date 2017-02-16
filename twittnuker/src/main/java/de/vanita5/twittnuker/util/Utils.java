@@ -605,7 +605,12 @@ public final class Utils implements Constants {
         if (context == null) return false;
         final Context app = context.getApplicationContext();
         final IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        final Intent intent = app.registerReceiver(null, filter);
+        final Intent intent;
+        try {
+            intent = app.registerReceiver(null, filter);
+        } catch (Exception e) {
+            return false;
+        }
         if (intent == null) return false;
         final boolean plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0;
         final float level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);

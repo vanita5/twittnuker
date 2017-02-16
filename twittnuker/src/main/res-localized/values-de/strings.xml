@@ -302,6 +302,7 @@
     <string name="error_message_device_incompatible">Dein Gerät ist nicht kompatibel mit Twittnuker. Ein Update auf ein aktuelles Android OS wird empfohlen.\nDu kannst uns die Informationen unten zukommen lassen, damit wir das dem Gerätehersteller melden können.</string>
     <string name="error_message_media_message_attachment_not_supported">Medien als Direktnachricht zu senden wird nicht unterstützt</string>
     <string name="error_message_media_message_too_many">Zu viele Medien</string>
+    <string name="error_message_media_upload_failed">Medien Upload fehlgeschlagen.</string>
     <string name="error_message_message_too_long">Nachricht zu lang</string>
     <string name="error_message_no_content">Kein Inhalt</string>
     <string name="error_message_rate_limit">Twitter-Limit überschritten, probiere es in <xliff:g id="time">%s</xliff:g> noch einmal</string>
@@ -342,7 +343,7 @@
     <string name="filter_type_links">Links</string>
     <string name="filter_type_sources">Quellen</string>
     <string name="filter_type_users">Benutzer</string>
-    <string name="filter_user_confirm_message"><xliff:g example="Username" id="name">%s</xliff:g> zum Filter hinzufügen?</string>
+    <string name="filter_user_confirm_message"><xliff:g example="Username" id="name">%1$s</xliff:g> zum Filter hinzufügen?</string>
     <string name="follow_request_sent">Folgen-Anfrage gesendet</string>
     <string name="followed_user">Folge <xliff:g id="user">%s</xliff:g>.</string>
     <string name="following_only">Nur von Followern</string>
@@ -377,6 +378,7 @@
     <string name="hint_accounts_dashboard_title">Account Dashboard</string>
     <string name="hint_empty_filters_subscriptions">Keine Abonnements</string>
     <string name="hint_error_message_no_content">Kein Inhalt</string>
+    <string name="hint_message_select_user">Benutzer suchen</string>
     <string name="hint_no_account">Kein Account</string>
     <string name="hints">Hinweise</string>
     <string name="home_refresh">Zu aktualisierende Timelines</string>
