@@ -40,11 +40,13 @@ import kotlinx.android.synthetic.main.fragment_messages_conversation.*
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.empty
+import org.mariotaku.ktextension.set
 import org.mariotaku.pickncrop.library.MediaPickerActivity
 import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PICK_MEDIA
+import de.vanita5.twittnuker.activity.LinkHandlerActivity
 import de.vanita5.twittnuker.activity.ThemedMediaPickerActivity
 import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
 import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
@@ -59,6 +61,7 @@ import de.vanita5.twittnuker.loader.ObjectCursorLoader
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 import de.vanita5.twittnuker.model.event.GetMessagesTaskEvent
+import de.vanita5.twittnuker.model.event.SendMessageTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
 import de.vanita5.twittnuker.service.LengthyOperationsService
@@ -253,6 +256,19 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
         if (!event.running && event.taskTag == loadMoreTaskTag) {
             setLoadMoreIndicatorPosition(ILoadMoreSupportAdapter.NONE)
         }
+    }
+
+    @Subscribe
+    fun onSendMessageTaskEvent(event: SendMessageTaskEvent) {
+        if (event.success || event.accountKey != accountKey || event.conversationId != conversationId) {
+            return
+        }
+        val newConversationId = event.newConversationId ?: return
+        arguments[EXTRA_CONVERSATION_ID] = newConversationId
+        if (activity is LinkHandlerActivity) {
+            activity.intent = IntentUtils.messageConversation(accountKey, newConversationId)
+        }
+        loaderManager.restartLoader(0, null, this)
     }
 
     private fun performSendMessage() {

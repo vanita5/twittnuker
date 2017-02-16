@@ -25,6 +25,7 @@
     <string name="action_center">Mitte</string>
     <string name="action_clear">Löschen</string>
     <string name="action_compose">Neuer Tweet</string>
+    <string name="action_create_conversation">Gruppe erstellen</string>
     <string name="action_creating_list">Erstelle Liste</string>
     <!-- [verb] Action for deleting a file or a twitter object like tweet-->
     <string name="action_delete">Löschen</string>
@@ -304,6 +305,7 @@
     <string name="error_message_media_message_too_many">Zu viele Medien</string>
     <string name="error_message_media_upload_failed">Medien Upload fehlgeschlagen.</string>
     <string name="error_message_message_too_long">Nachricht zu lang</string>
+    <string name="error_message_message_too_many_participants">Zu viele Teilnehmer*innen</string>
     <string name="error_message_no_content">Kein Inhalt</string>
     <string name="error_message_rate_limit">Twitter-Limit überschritten, probiere es in <xliff:g id="time">%s</xliff:g> noch einmal</string>
     <string name="error_message_rate_limit_with_action">Twitter-Limit überschritten beim <xliff:g id="action">%1$s</xliff:g>, probiere es in <xliff:g id="time">%2$s</xliff:g> noch einmal</string>
