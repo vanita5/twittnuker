@@ -269,7 +269,7 @@
     <string name="delete_users">Account entfernen</string>
     <string name="deleted_list">Liste \"<xliff:g id="list">%s</xliff:g>\" gelöscht.</string>
     <string name="deleted_user_from_list"><xliff:g id="user">%1$s</xliff:g> von Liste \"<xliff:g id="list">%2$s</xliff:g>\" entfernt.</string>
-    <string name="denied_users_follow_request"><xliff:g id="user">%s</xliff:g>'s Folgeanfrage abgelehnt.</string>
+    <string name="denied_users_follow_request"><xliff:g id="user">%s</xliff:g>\'s Folgeanfrage abgelehnt.</string>
     <string name="deny">Ablehnen</string>
     <string name="destroy_saved_search">Gespeicherte Suche \"<xliff:g id="name">%s</xliff:g>\" löschen?</string>
     <string name="destroy_saved_search_confirm_message">Gespeicherte Suche \"<xliff:g id="name">%s</xliff:g>\" wirklich löschen? Du kannst diese Suche später neu speichern.</string>
