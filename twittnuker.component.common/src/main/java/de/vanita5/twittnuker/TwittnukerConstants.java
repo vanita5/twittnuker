@@ -74,11 +74,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String SCHEME_TWITTNUKER = "twittnuker";
     String SCHEME_DATA = "data";
 
-    String SERVICE_SHORTENER_HOTOTIN = "hototin";
-    String SERVICE_SHORTENER_TWITLONGER = "twitlonger";
-
-    String SERVICE_UPLOADER_TWIPPLE = "twipple";
-
     String PROTOCOL_HTTP = SCHEME_HTTP + "://";
     String PROTOCOL_HTTPS = SCHEME_HTTPS + "://";
     String PROTOCOL_CONTENT = SCHEME_CONTENT + "://";
@@ -97,8 +92,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_USER_BLOCKS = "user_blocks";
     String AUTHORITY_STATUS = "status";
     String AUTHORITY_PUBLIC_TIMELINE = "public_timeline";
-    String AUTHORITY_DIRECT_MESSAGES_CONVERSATION = "direct_messages_conversation";
-    String AUTHORITY_DIRECT_MESSAGES = "direct_messages";
+    String AUTHORITY_MESSAGES = "direct_messages";
     String AUTHORITY_SEARCH = "search";
     String AUTHORITY_MAP = "map";
     String AUTHORITY_SCHEDULED_STATUSES = "scheduled_statuses";
@@ -127,12 +121,15 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_DRAFTS = "drafts";
     String AUTHORITY_FILTERS = "filters";
     String AUTHORITY_PROFILE_EDITOR = "profile_editor";
-    String AUTHORITY_QUOTE = "quote";
 
     String PATH_FILTERS_IMPORT_BLOCKS = "import/blocks";
     String PATH_FILTERS_IMPORT_MUTES = "import/mutes";
     String PATH_FILTERS_SUBSCRIPTIONS = "subscriptions";
     String PATH_FILTERS_SUBSCRIPTIONS_ADD = "subscriptions/add";
+
+    String PATH_MESSAGES_CONVERSATION = "conversation";
+    String PATH_MESSAGES_CONVERSATION_NEW = "conversation/new";
+    String PATH_MESSAGES_CONVERSATION_INFO = "conversation/info";
 
     String QUERY_PARAM_ACCOUNT_KEY = "account_key";
     String QUERY_PARAM_ACCOUNT_HOST = "account_host";
@@ -240,8 +237,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int NOTIFICATION_ID_STREAMING = 6;
     int NOTIFICATION_ID_UPDATE_STATUS = 101;
     int NOTIFICATION_ID_SEND_DIRECT_MESSAGE = 102;
-    int NOTIFICATION_ID_SHORTENING = 103;
-    int NOTIFICATION_ID_UPLOAD_MEDIA = 104;
     int NOTIFICATION_ID_PUSH_ERROR = 299;
     int NOTIFICATION_ID_PUSH = 301;
 
@@ -258,4 +253,5 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
 
     String USER_TYPE_TWITTER_COM = "twitter.com";
     String USER_TYPE_FANFOU_COM = "fanfou.com";
+
 }

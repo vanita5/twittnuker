@@ -48,7 +48,6 @@ import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.LoaderManager.LoaderCallbacks
-import android.support.v4.content.AsyncTaskLoader
 import android.support.v4.content.FixedAsyncTaskLoader
 import android.support.v4.content.Loader
 import android.support.v4.content.res.ResourcesCompat
@@ -871,7 +870,8 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             R.id.send_direct_message -> {
                 val builder = Uri.Builder()
                 builder.scheme(SCHEME_TWITTNUKER)
-                builder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION)
+                builder.authority(AUTHORITY_MESSAGES)
+                builder.path(PATH_MESSAGES_CONVERSATION_NEW)
                 builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, user.account_key.toString())
                 builder.appendQueryParameter(QUERY_PARAM_USER_KEY, user.key.toString())
                 val intent = Intent(Intent.ACTION_VIEW, builder.build())

@@ -24,7 +24,7 @@ package de.vanita5.twittnuker.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.LoaderManager
+import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.Loader
 import com.squareup.otto.Subscribe
 import org.mariotaku.kpreferences.get
@@ -33,9 +33,12 @@ import org.mariotaku.sqliteqb.library.Expression
 import org.mariotaku.sqliteqb.library.OrderBy
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
+import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter.MessageConversationClickListener
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.newDocumentApiKey
 import de.vanita5.twittnuker.extension.model.user
+import de.vanita5.twittnuker.fragment.iface.IFloatingActionButtonFragment
+import de.vanita5.twittnuker.fragment.iface.IFloatingActionButtonFragment.ActionInfo
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageConversationCursorIndices
@@ -49,7 +52,8 @@ import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.Utils
 
 class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntriesAdapter>(),
-        LoaderManager.LoaderCallbacks<List<ParcelableMessageConversation>?>, MessagesEntriesAdapter.MessageConversationClickListener {
+        LoaderCallbacks<List<ParcelableMessageConversation>?>, MessageConversationClickListener,
+        IFloatingActionButtonFragment {
 
     private val accountKeys: Array<UserKey> by lazy {
         Utils.getAccountKeys(context, arguments) ?: DataStoreUtils.getActivatedAccountKeys(context)
@@ -126,6 +130,18 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
         val conversation = adapter.getConversation(position) ?: return
         val user = conversation.user ?: return
         IntentUtils.openUserProfile(context, user, preferences[newDocumentApiKey])
+    }
+
+    override fun getActionInfo(tag: String): ActionInfo? {
+        return ActionInfo(R.drawable.ic_action_add, getString(R.string.new_direct_message))
+    }
+
+    override fun onActionClick(tag: String) {
+        val accountKey = accountKeys.singleOrNull() ?: run {
+
+            return
+        }
+        startActivity(IntentUtils.newMessageConversation(accountKey))
     }
 
     @Subscribe

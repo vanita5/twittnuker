@@ -45,13 +45,14 @@ public interface Constants extends TwittnukerConstants {
     int LINK_ID_USER_FRIENDS = 6;
     int LINK_ID_USER_BLOCKS = 7;
     int LINK_ID_USER_MEDIA_TIMELINE = 8;
-    int LINK_ID_DIRECT_MESSAGES_CONVERSATION = 9;
+
     int LINK_ID_USER_LIST = 10;
     int LINK_ID_USER_LISTS = 11;
     int LINK_ID_USER_LIST_TIMELINE = 12;
     int LINK_ID_USER_LIST_MEMBERS = 13;
     int LINK_ID_USER_LIST_SUBSCRIBERS = 14;
     int LINK_ID_USER_LIST_MEMBERSHIPS = 15;
+
     int LINK_ID_GROUP = 16;
     int LINK_ID_USER_GROUPS = 17;
     int LINK_ID_SAVED_SEARCHES = 19;
@@ -61,9 +62,14 @@ public interface Constants extends TwittnukerConstants {
     int LINK_ID_STATUS_RETWEETERS = 25;
     int LINK_ID_STATUS_FAVORITERS = 27;
     int LINK_ID_SEARCH = 28;
-    int LINK_ID_DIRECT_MESSAGES = 29;
-    int LINK_ID_INTERACTIONS = 30;
-    int LINK_ID_PUBLIC_TIMELINE = 31;
+
+    int LINK_ID_MESSAGES = 30;
+    int LINK_ID_MESSAGES_CONVERSATION = 31;
+    int LINK_ID_MESSAGES_CONVERSATION_NEW = 32;
+    int LINK_ID_MESSAGES_CONVERSATION_INFO = 33;
+
+    int LINK_ID_INTERACTIONS = 35;
+    int LINK_ID_PUBLIC_TIMELINE = 36;
     int LINK_ID_MUTES_USERS = 41;
     int LINK_ID_MAP = 51;
     int LINK_ID_SCHEDULED_STATUSES = 61;
@@ -83,17 +89,15 @@ public interface Constants extends TwittnukerConstants {
     String TWITTNUKER_PREVIEW_SOURCE = "Twittnuker";
     String TWITTNUKER_PREVIEW_LOCATION = "Freiburg, Germany";
 
-    String EXTRA_PRODUCT_TYPE = "product_type";
-
-    int MATERIAL_DARK = 0xff212121;
-    int MATERIAL_LIGHT = 0xffbdbdbd;
-
     int[] PRESET_COLORS = {R.color.material_dark, R.color.material_light, R.color.material_red, R.color.material_pink,
             R.color.material_purple, R.color.material_deep_purple, R.color.material_indigo,
             R.color.material_blue, R.color.material_light_blue, R.color.material_cyan,
             R.color.material_teal, R.color.material_green, R.color.material_light_green,
             R.color.material_lime, R.color.material_yellow, R.color.material_amber,
             R.color.material_orange, R.color.material_deep_orange};
+
+    // Intent constants
+    String EXTRA_PRODUCT_TYPE = "product_type";
 
     @SuppressWarnings("SpellCheckingInspection")
     String GOOGLE_PLAY_LICENCING_PUBKEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs2KZ58y8Z56KchEP2iQHvuznrZAyDf9ULm+L0C2PZKcZjHGxC3XbXH9VC9qVV1GUcPJEIXht0VanUGYPHbCQDVnRPQuNyrF4rOLB5qLEh71IxnlK0OjnKGXRolSTldsZUhC1ja8n5MI0bi3r1oRduM0fDC4E+piIrfRZBjPm6p9OLckwgzz+rulYFErmQAoPhmUr4AvV3WgYNm0Lof+eLpZVpGfxqxOpmt3fMe30/nEnvLVHdOU1wNix9hq94uLrzHVLBuXTT7v99QnX/HB5dztnI54lGK7GvmwCTfrjcgdyf63D4+r1eF/E3Bx2kp/ZtezE0vWGda6bXgecdlJ/LQIDAQAB";

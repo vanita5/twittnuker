@@ -267,12 +267,36 @@ object IntentUtils {
     fun openMessageConversation(context: Context, accountKey: UserKey, conversationId: String) {
         val builder = Uri.Builder()
             builder.scheme(SCHEME_TWITTNUKER)
-        builder.authority(AUTHORITY_DIRECT_MESSAGES_CONVERSATION)
+        builder.authority(AUTHORITY_MESSAGES)
+        builder.path(PATH_MESSAGES_CONVERSATION)
         builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString())
         builder.appendQueryParameter(QUERY_PARAM_CONVERSATION_ID, conversationId)
         val intent = Intent(Intent.ACTION_VIEW, builder.build())
         intent.`package` = BuildConfig.APPLICATION_ID
         context.startActivity(intent)
+    }
+
+    fun messageConversationInfo(accountKey: UserKey, conversationId: String): Intent {
+        val builder = Uri.Builder()
+        builder.scheme(SCHEME_TWITTNUKER)
+        builder.authority(AUTHORITY_MESSAGES)
+        builder.path(PATH_MESSAGES_CONVERSATION_INFO)
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString())
+        builder.appendQueryParameter(QUERY_PARAM_CONVERSATION_ID, conversationId)
+        val intent = Intent(Intent.ACTION_VIEW, builder.build())
+        intent.`package` = BuildConfig.APPLICATION_ID
+        return intent
+    }
+
+    fun newMessageConversation(accountKey: UserKey): Intent {
+        val builder = Uri.Builder()
+        builder.scheme(SCHEME_TWITTNUKER)
+        builder.authority(AUTHORITY_MESSAGES)
+        builder.path(PATH_MESSAGES_CONVERSATION_NEW)
+        builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString())
+        val intent = Intent(Intent.ACTION_VIEW, builder.build())
+        intent.`package` = BuildConfig.APPLICATION_ID
+        return intent
     }
 
     fun openIncomingFriendships(context: Context,
@@ -592,7 +616,7 @@ object IntentUtils {
     fun openDirectMessages(context: Context, accountKey: UserKey?) {
         val builder = Uri.Builder()
         builder.scheme(SCHEME_TWITTNUKER)
-        builder.authority(AUTHORITY_DIRECT_MESSAGES)
+        builder.authority(AUTHORITY_MESSAGES)
         if (accountKey != null) {
             builder.appendQueryParameter(QUERY_PARAM_ACCOUNT_KEY, accountKey.toString())
         }

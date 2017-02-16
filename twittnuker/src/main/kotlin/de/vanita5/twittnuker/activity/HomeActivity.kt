@@ -84,6 +84,7 @@ import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.fragment.*
+import de.vanita5.twittnuker.fragment.iface.IFloatingActionButtonFragment
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.graphic.EmptyDrawable
@@ -858,6 +859,8 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     private fun triggerActionsClick() {
         val position = mainPager.currentItem
         if (pagerAdapter.count == 0) return
+        val fragment = pagerAdapter.instantiateItem(mainPager, position) as? IFloatingActionButtonFragment ?: return
+        fragment.onActionClick("home")
         val tab = pagerAdapter.getTab(position)
         when (tab.cls) {
             MessagesEntriesFragment::class.java -> {
@@ -869,23 +872,17 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     }
 
     private fun updateActionsButton() {
-        val icon: Int
-        val title: Int
         val position = mainPager.currentItem
         if (pagerAdapter.count == 0) return
-        val tab = pagerAdapter.getTab(position)
-        if (MessagesEntriesFragment::class.java == tab.cls) {
-            icon = R.drawable.ic_action_add
-            title = R.string.new_direct_message
-        } else if (TrendsSuggestionsFragment::class.java == tab.cls) {
-            icon = R.drawable.ic_action_search
-            title = android.R.string.search_go
-        } else {
-            icon = R.drawable.ic_action_status_compose
-            title = R.string.action_compose
+        val fragment = pagerAdapter.instantiateItem(mainPager, position) as? IFloatingActionButtonFragment
+        val info = fragment?.getActionInfo("home") ?: run {
+            actionsButton.setImageResource(R.drawable.ic_action_status_compose)
+            actionsButton.contentDescription = getString(R.string.action_compose)
+            return
         }
-        actionsButton.setImageResource(icon)
-        actionsButton.contentDescription = getString(title)
+
+        actionsButton.setImageResource(info.icon)
+        actionsButton.contentDescription = info.title
     }
 
     private fun startStreamingService() {
