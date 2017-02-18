@@ -29,7 +29,10 @@ import de.vanita5.twittnuker.TwittnukerConstants.TIMELINE_POSITIONS_PREFERENCES_
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.DataStoreUtils
 
-class ClearDatabasesPreference(context: Context, attrs: AttributeSet? = null) : AsyncTaskPreference(context, attrs, R.attr.preferenceStyle) {
+class ClearDatabasesPreference(
+        context: Context,
+        attrs: AttributeSet? = null
+) : AsyncTaskPreference(context, attrs, R.attr.preferenceStyle) {
 
     override fun doInBackground() {
         val context = context ?: return
@@ -48,9 +51,9 @@ class ClearDatabasesPreference(context: Context, attrs: AttributeSet? = null) : 
         }
         resolver.delete(Activities.AboutMe.CONTENT_URI, null, null)
         resolver.delete(Activities.ByFriends.CONTENT_URI, null, null)
-        resolver.delete(Notifications.CONTENT_URI, null, null)
-        resolver.delete(UnreadCounts.CONTENT_URI, null, null)
         resolver.delete(SavedSearches.CONTENT_URI, null, null)
+        resolver.delete(PushNotifications.CONTENT_URI, null, null)
+        // TODO clear all notifications
 
         val prefs = context.getSharedPreferences(TIMELINE_POSITIONS_PREFERENCES_NAME, Context.MODE_PRIVATE)
         val editor = prefs.edit()

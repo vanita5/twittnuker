@@ -26,7 +26,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SimpleArrayMap;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
@@ -44,31 +43,13 @@ import de.vanita5.twittnuker.annotation.AccountType;
 import de.vanita5.twittnuker.model.ListResponse;
 import de.vanita5.twittnuker.model.SingleResponse;
 import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Notifications;
-import de.vanita5.twittnuker.provider.TwidereDataStore.UnreadCounts;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
 
 public class TwitterWrapper implements Constants {
-
-    public static int clearNotification(final Context context, final int notificationType, final UserKey accountId) {
-        final Uri.Builder builder = Notifications.CONTENT_URI.buildUpon();
-        builder.appendPath(String.valueOf(notificationType));
-        if (accountId != null) {
-            builder.appendPath(String.valueOf(accountId));
-        }
-        return context.getContentResolver().delete(builder.build(), null, null);
-    }
-
-    public static int clearUnreadCount(final Context context, final int position) {
-        if (context == null || position < 0) return 0;
-        final Uri uri = UnreadCounts.CONTENT_URI.buildUpon().appendPath(String.valueOf(position)).build();
-        return context.getContentResolver().delete(uri, null, null);
-    }
 
     public static SingleResponse<Boolean> deleteProfileBannerImage(final Context context,
                                                                    final UserKey accountKey) {
@@ -80,35 +61,6 @@ public class TwitterWrapper implements Constants {
         } catch (final MicroBlogException e) {
             return SingleResponse.Companion.getInstance(false, e);
         }
-    }
-
-    public static int removeUnreadCounts(final Context context, final int position, final long account_id,
-                                         final long... statusIds) {
-        if (context == null || position < 0 || statusIds == null || statusIds.length == 0)
-            return 0;
-        int result = 0;
-        final Uri.Builder builder = UnreadCounts.CONTENT_URI.buildUpon();
-        builder.appendPath(String.valueOf(position));
-        builder.appendPath(String.valueOf(account_id));
-        builder.appendPath(TwidereArrayUtils.toString(statusIds, ',', false));
-        result += context.getContentResolver().delete(builder.build(), null, null);
-        return result;
-    }
-
-    public static int removeUnreadCounts(final Context context, final int position,
-                                         final SimpleArrayMap<UserKey, Set<String>> counts) {
-        if (context == null || position < 0 || counts == null) return 0;
-        int result = 0;
-        for (int i = 0, j = counts.size(); i < j; i++) {
-            final UserKey key = counts.keyAt(i);
-            final Set<String> value = counts.valueAt(i);
-            final Uri.Builder builder = UnreadCounts.CONTENT_URI.buildUpon();
-            builder.appendPath(String.valueOf(position));
-            builder.appendPath(String.valueOf(key));
-            builder.appendPath(CollectionUtils.toString(value, ',', false));
-            result += context.getContentResolver().delete(builder.build(), null, null);
-        }
-        return result;
     }
 
     @NonNull

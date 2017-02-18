@@ -22,7 +22,6 @@
 
 package de.vanita5.twittnuker.util;
 
-import android.util.Pair;
 
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Columns.Column;
@@ -30,7 +29,6 @@ import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.Join;
 import org.mariotaku.sqliteqb.library.Join.Operation;
 import org.mariotaku.sqliteqb.library.OrderBy;
-import org.mariotaku.sqliteqb.library.SQLQueryBuilder;
 import org.mariotaku.sqliteqb.library.Selectable;
 import org.mariotaku.sqliteqb.library.Table;
 import org.mariotaku.sqliteqb.library.Tables;
@@ -39,13 +37,10 @@ import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Conversation;
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.ConversationEntries;
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Inbox;
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages.Outbox;
 
 import java.util.Locale;
+
+import kotlin.Pair;
 
 public class TwidereQueryBuilder {
 
@@ -103,7 +98,7 @@ public class TwidereQueryBuilder {
             }
             final String[] mergedArgs = new String[TwidereArrayUtils.arraysLength(accountKeyArgs, selectionArgs)];
             TwidereArrayUtils.mergeArray(mergedArgs, accountKeyArgs, selectionArgs);
-            return Pair.create(qb.build(), mergedArgs);
+            return new Pair<>(qb.build(), mergedArgs);
         }
 
         public static Pair<SQLSelectQuery, String[]> withScore(final String[] projection,
@@ -131,9 +126,9 @@ public class TwidereQueryBuilder {
             qb.select(select);
             final Pair<SQLSelectQuery, String[]> pair = withRelationship(new Columns(columns), null,
                     null, null, accountKey);
-            qb.from(pair.first);
-            final String[] mergedArgs = new String[TwidereArrayUtils.arraysLength(pair.second, selectionArgs)];
-            TwidereArrayUtils.mergeArray(mergedArgs, pair.second, selectionArgs);
+            qb.from(pair.getFirst());
+            final String[] mergedArgs = new String[TwidereArrayUtils.arraysLength(pair.getSecond(), selectionArgs)];
+            TwidereArrayUtils.mergeArray(mergedArgs, pair.getSecond(), selectionArgs);
             if (selection != null) {
                 qb.where(new Expression(selection));
             }
@@ -143,7 +138,7 @@ public class TwidereQueryBuilder {
             if (limit > 0) {
                 qb.limit(limit);
             }
-            return Pair.create(qb.build(), mergedArgs);
+            return new Pair<>(qb.build(), mergedArgs);
         }
 
         private static Object[] valueOrZero(String... columns) {

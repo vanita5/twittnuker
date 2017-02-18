@@ -51,7 +51,7 @@ public class NotificationContent {
 
     private User sourceUser;
     private ParcelableStatus originalStatus;
-    private ParcelableDirectMessage originalMessage;
+    private ParcelableMessage originalMessage;
 
     public UserKey getAccountKey() {
         return accountKey;
@@ -109,11 +109,11 @@ public class NotificationContent {
         this.originalStatus = originalStatus;
     }
 
-    public ParcelableDirectMessage getOriginalMessage() {
+    public ParcelableMessage getOriginalMessage() {
         return originalMessage;
     }
 
-    public void setOriginalMessage(ParcelableDirectMessage originalMessage) {
+    public void setOriginalMessage(ParcelableMessage originalMessage) {
         this.originalMessage = originalMessage;
     }
 

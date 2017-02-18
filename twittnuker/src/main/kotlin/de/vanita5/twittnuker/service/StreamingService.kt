@@ -114,9 +114,7 @@ class StreamingService : Service() {
         super.onCreate()
         preferences = SharedPreferencesWrapper.getInstance(this, TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (BuildConfig.DEBUG) {
-            Log.d(LOGTAG, "Stream service started.")
-        }
+        DebugLog.d(LOGTAG, "Stream service started.")
 
         //        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         //        NetworkInfo wifi = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -282,11 +280,9 @@ class StreamingService : Service() {
         }
 
         override fun onDirectMessageDeleted(event: DeletionEvent) {
-            val where = Expression.equalsArgs(DirectMessages.MESSAGE_ID).sql
+            val where = Expression.equalsArgs(Messages.MESSAGE_ID).sql
             val whereArgs = arrayOf(event.id)
-            for (uri in MESSAGES_URIS) {
-                context.contentResolver.delete(uri, where, whereArgs)
-            }
+            context.contentResolver.delete(Messages.CONTENT_URI, where, whereArgs)
         }
 
         override fun onStatusDeleted(event: DeletionEvent) {
@@ -300,15 +296,6 @@ class StreamingService : Service() {
         @Throws(IOException::class)
         override fun onDirectMessage(directMessage: DirectMessage) {
             if (directMessage.id == null) return
-
-            val resolver = context.contentResolver
-            val where = Expression.and(Expression.equalsArgs(DirectMessages.ACCOUNT_KEY),
-                    Expression.equalsArgs(DirectMessages.MESSAGE_ID)).sql
-            val whereArgs = arrayOf(account.key.toString(), directMessage.id)
-            for (uri in MESSAGES_URIS) {
-                resolver.delete(uri, where, whereArgs)
-            }
-
 
         }
 
@@ -484,8 +471,8 @@ class StreamingService : Service() {
 
     companion object {
 
-        private val STATUSES_URIS = arrayOf(Statuses.CONTENT_URI, Mentions.CONTENT_URI)
-        private val MESSAGES_URIS = arrayOf(DirectMessages.Inbox.CONTENT_URI, DirectMessages.Outbox.CONTENT_URI)
+        private val NOTIFICATION_SERVICE_STARTED = 1
+
     }
 
 }

@@ -36,6 +36,9 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelableNoThanks;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.hannesdorfmann.parcelableplease.annotation.ParcelableThisPlease;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 @JsonObject
 @ParcelablePlease
 public class SpanItem implements Parcelable {
@@ -102,6 +105,7 @@ public class SpanItem implements Parcelable {
     }
 
     @IntDef({SpanType.HIDE, SpanType.LINK})
+    @Retention(RetentionPolicy.SOURCE)
     public @interface SpanType {
         int HIDE = -1;
         int LINK = 0;

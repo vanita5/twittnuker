@@ -105,7 +105,7 @@ import de.vanita5.twittnuker.model.PebbleMessage;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TwidereDataStore.DirectMessages;
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 import java.io.Closeable;
@@ -454,7 +454,7 @@ public final class Utils implements Constants {
         switch (tableId) {
             case TABLE_ID_MESSAGES:
             case TABLE_ID_MESSAGES_CONVERSATIONS:
-                return DirectMessages.CONTENT_URI;
+                return Messages.CONTENT_URI;
         }
         return def;
     }

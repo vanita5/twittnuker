@@ -47,6 +47,8 @@ import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 
 @ParcelablePlease
@@ -212,6 +214,7 @@ public class ParcelableMessageConversation implements Parcelable {
     }
 
     @StringDef({ExtrasType.FANFOU, ExtrasType.TWITTER_OFFICIAL})
+    @Retention(RetentionPolicy.SOURCE)
     public @interface ExtrasType {
         String FANFOU = "fanfou";
         String TWITTER_OFFICIAL = "twitter_official";

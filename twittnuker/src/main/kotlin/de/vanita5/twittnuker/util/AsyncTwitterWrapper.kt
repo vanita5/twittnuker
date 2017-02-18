@@ -25,8 +25,6 @@ package de.vanita5.twittnuker.util
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
-import android.os.AsyncTask
-import android.support.v4.util.SimpleArrayMap
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import org.apache.commons.collections.primitives.ArrayIntList
@@ -36,7 +34,6 @@ import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.toNulls
 import de.vanita5.twittnuker.library.MicroBlogException
-import de.vanita5.twittnuker.library.twitter.http.HttpResponseCode
 import de.vanita5.twittnuker.library.twitter.model.*
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
@@ -60,7 +57,8 @@ class AsyncTwitterWrapper(
         val context: Context,
         private val bus: Bus,
         private val preferences: SharedPreferencesWrapper,
-        private val asyncTaskManager: AsyncTaskManager
+        private val asyncTaskManager: AsyncTaskManager,
+        private val notificationManager: NotificationManagerWrapper
 ) {
     private val resolver = context.contentResolver
 
@@ -126,13 +124,7 @@ class AsyncTwitterWrapper(
     }
 
     fun clearNotificationAsync(notificationId: Int, accountKey: UserKey?) {
-        val task = ClearNotificationTask(context, notificationId, accountKey)
-        AsyncTaskUtils.executeTask(task)
-    }
-
-    fun clearUnreadCountAsync(position: Int) {
-        val task = ClearUnreadCountTask(position)
-        AsyncTaskUtils.executeTask(task)
+        notificationManager.cancelById(Utils.getNotificationId(notificationId, accountKey))
     }
 
     fun createBlockAsync(accountKey: UserKey, userKey: UserKey, filterEverywhere: Boolean) {
@@ -316,11 +308,6 @@ class AsyncTwitterWrapper(
         }
     }
 
-    fun removeUnreadCountsAsync(position: Int, counts: SimpleArrayMap<UserKey, Set<String>>) {
-        val task = RemoveUnreadCountsTask(context, position, counts)
-        AsyncTaskUtils.executeTask(task)
-    }
-
     fun reportMultiSpam(accountKey: UserKey, userIds: Array<String>) {
         // TODO implementation
     }
@@ -399,26 +386,6 @@ class AsyncTwitterWrapper(
 
     fun isUpdatingRelationship(accountId: UserKey, userId: UserKey): Boolean {
         return updatingRelationshipIds.contains(ParcelableUser.calculateHashCode(accountId, userId))
-    }
-
-    internal inner class ClearNotificationTask(
-            private val context: Context,
-            private val notificationType: Int,
-            private val accountKey: UserKey?
-    ) : AsyncTask<Any, Any, Int>() {
-
-        override fun doInBackground(vararg params: Any): Int {
-            return TwitterWrapper.clearNotification(context, notificationType, accountKey)
-        }
-
-    }
-
-    internal inner class ClearUnreadCountTask(private val position: Int) : AsyncTask<Any, Any, Int>() {
-
-        override fun doInBackground(vararg params: Any): Int {
-            return TwitterWrapper.clearUnreadCount(context, position)
-        }
-
     }
 
     internal inner class CreateMultiBlockTask(
@@ -613,49 +580,6 @@ class AsyncTwitterWrapper(
 
     }
 
-
-    internal inner class DestroyDirectMessageTask(private val mAccountKey: UserKey, private val mMessageId: String) : ManagedAsyncTask<Any, Any, SingleResponse<DirectMessage>>(context) {
-
-        private fun deleteMessages() {
-            val where = Expression.and(Expression.equalsArgs(DirectMessages.ACCOUNT_KEY),
-                    Expression.equalsArgs(DirectMessages.MESSAGE_ID)).sql
-            val whereArgs = arrayOf(mAccountKey.toString(), mMessageId)
-            resolver.delete(DirectMessages.Inbox.CONTENT_URI, where, whereArgs)
-            resolver.delete(DirectMessages.Outbox.CONTENT_URI, where, whereArgs)
-        }
-
-        private fun isMessageNotFound(e: Exception?): Boolean {
-            if (e !is MicroBlogException) return false
-            return e.errorCode == ErrorInfo.PAGE_NOT_FOUND || e.statusCode == HttpResponseCode.NOT_FOUND
-        }
-
-        override fun doInBackground(vararg args: Any): SingleResponse<DirectMessage> {
-            val microBlog = MicroBlogAPIFactory.getInstance(context, mAccountKey) ?: return SingleResponse.getInstance<DirectMessage>()
-            try {
-                val message = microBlog.destroyDirectMessage(mMessageId)
-                deleteMessages()
-                return SingleResponse.getInstance(message)
-            } catch (e: MicroBlogException) {
-                if (isMessageNotFound(e)) {
-                    deleteMessages()
-                }
-                return SingleResponse.getInstance<DirectMessage>(e)
-            }
-
-        }
-
-
-        override fun onPostExecute(result: SingleResponse<DirectMessage>) {
-            super.onPostExecute(result)
-            if (result.hasData() || isMessageNotFound(result.exception)) {
-                Utils.showInfoMessage(context, R.string.message_direct_message_deleted, false)
-            } else {
-                Utils.showErrorMessage(context, R.string.action_deleting, result.exception, true)
-            }
-        }
-
-
-    }
 
     internal inner class DestroySavedSearchTask(
             context: Context,

@@ -20,31 +20,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.task;
+package de.vanita5.twittnuker.extension
 
-import android.content.Context;
-import android.os.AsyncTask;
-import android.support.v4.util.SimpleArrayMap;
+import android.annotation.SuppressLint
+import android.content.ContentResolver
+import android.database.Cursor
+import android.net.Uri
+import de.vanita5.twittnuker.provider.TwidereDataStore
 
-import de.vanita5.twittnuker.model.UserKey;
-import de.vanita5.twittnuker.util.TwitterWrapper;
-
-import java.util.Set;
-
-public final class RemoveUnreadCountsTask extends AsyncTask<Object, Object, Integer> {
-    private final Context context;
-    private final int position;
-    private final SimpleArrayMap<UserKey, Set<String>> counts;
-
-    public RemoveUnreadCountsTask(Context context, final int position, final SimpleArrayMap<UserKey, Set<String>> counts) {
-        this.context = context;
-        this.position = position;
-        this.counts = counts;
-    }
-
-    @Override
-    protected Integer doInBackground(final Object... params) {
-        return TwitterWrapper.removeUnreadCounts(context, position, counts);
-    }
-
+@SuppressLint("Recycle")
+fun ContentResolver.rawQuery(sql: String, selectionArgs: Array<String>?): Cursor {
+    val rawUri = Uri.withAppendedPath(TwidereDataStore.CONTENT_URI_RAW_QUERY, sql)
+    return query(rawUri, selectionArgs, null, null, null)
 }

@@ -47,6 +47,8 @@ import de.vanita5.twittnuker.model.util.UserKeyCursorFieldConverter;
 import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 
 @ParcelablePlease
@@ -159,6 +161,7 @@ public class ParcelableMessage implements Parcelable {
 
     @StringDef({MessageType.TEXT, MessageType.STICKER, MessageType.CONVERSATION_CREATE,
             MessageType.JOIN_CONVERSATION, MessageType.PARTICIPANTS_LEAVE})
+    @Retention(RetentionPolicy.SOURCE)
     public @interface MessageType {
         String CONVERSATION_CREATE = "conversation_create";
         String JOIN_CONVERSATION = "join_conversation";

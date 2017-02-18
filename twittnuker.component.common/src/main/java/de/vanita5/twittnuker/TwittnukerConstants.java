@@ -121,6 +121,7 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     String AUTHORITY_DRAFTS = "drafts";
     String AUTHORITY_FILTERS = "filters";
     String AUTHORITY_PROFILE_EDITOR = "profile_editor";
+    String AUTHORITY_QUOTE = "quote";
 
     String PATH_FILTERS_IMPORT_BLOCKS = "import/blocks";
     String PATH_FILTERS_IMPORT_MUTES = "import/mutes";
@@ -187,7 +188,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int REQUEST_REQUEST_PERMISSIONS = 30;
     int REQUEST_PURCHASE_EXTRA_FEATURES = 41;
 
-    int TABLE_ID_ACCOUNTS = 1;
     int TABLE_ID_STATUSES = 12;
     int TABLE_ID_MENTIONS = 13;
     int TABLE_ID_ACTIVITIES_ABOUT_ME = 14;
@@ -209,14 +209,6 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int TABLE_ID_CACHED_STATUSES = 62;
     int TABLE_ID_CACHED_HASHTAGS = 63;
     int TABLE_ID_CACHED_RELATIONSHIPS = 64;
-    int VIRTUAL_TABLE_ID_NOTIFICATIONS = 101;
-    int VIRTUAL_TABLE_ID_PREFERENCES = 102;
-    int VIRTUAL_TABLE_ID_ALL_PREFERENCES = 103;
-    int VIRTUAL_TABLE_ID_DNS = 105;
-    int VIRTUAL_TABLE_ID_CACHED_IMAGES = 106;
-    int VIRTUAL_TABLE_ID_CACHE_FILES = 107;
-    int VIRTUAL_TABLE_ID_UNREAD_COUNTS = 108;
-    int VIRTUAL_TABLE_ID_UNREAD_COUNTS_BY_TYPE = 109;
     int VIRTUAL_TABLE_ID_CACHED_USERS_WITH_RELATIONSHIP = 121;
     int VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE = 122;
     int VIRTUAL_TABLE_ID_DRAFTS_UNSENT = 131;
@@ -240,16 +232,10 @@ public interface TwittnukerConstants extends SharedPreferenceConstants,
     int NOTIFICATION_ID_PUSH_ERROR = 299;
     int NOTIFICATION_ID_PUSH = 301;
 
-    String ICON_SPECIAL_TYPE_CUSTOMIZE = "_customize";
-
 
     int TAB_CODE_HOME_TIMELINE = 1;
     int TAB_CODE_NOTIFICATIONS_TIMELINE = 2;
     int TAB_CODE_DIRECT_MESSAGES = 4;
-
-    int TWITTER_MAX_IMAGE_SIZE = 3145728;
-    int TWITTER_MAX_IMAGE_WIDTH = 1024;
-    int TWITTER_MAX_IMAGE_HEIGHT = 2048;
 
     String USER_TYPE_TWITTER_COM = "twitter.com";
     String USER_TYPE_FANFOU_COM = "fanfou.com";

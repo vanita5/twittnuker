@@ -109,7 +109,6 @@ fun deleteAccountData(resolver: ContentResolver, accountKey: UserKey) {
     // Also delete tweets related to the account we previously
     // deleted.
     resolver.delete(Statuses.CONTENT_URI, where, whereArgs)
-    resolver.delete(Mentions.CONTENT_URI, where, whereArgs)
     resolver.delete(Activities.AboutMe.CONTENT_URI, where, whereArgs)
     resolver.delete(Messages.CONTENT_URI, where, whereArgs)
     resolver.delete(Messages.Conversations.CONTENT_URI, where, whereArgs)
