@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.task.message
+package de.vanita5.twittnuker.task.twitter.message
 
 import android.content.Context
 import org.mariotaku.ktextension.isNotNullOrEmpty
@@ -41,9 +41,9 @@ import de.vanita5.twittnuker.model.event.SendMessageTaskEvent
 import de.vanita5.twittnuker.model.util.ParcelableMessageUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
-import de.vanita5.twittnuker.task.GetMessagesTask
-import de.vanita5.twittnuker.task.GetMessagesTask.Companion.addConversation
-import de.vanita5.twittnuker.task.GetMessagesTask.Companion.addLocalConversations
+import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
+import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask.Companion.addConversation
+import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask.Companion.addLocalConversations
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 
 class SendMessageTask(

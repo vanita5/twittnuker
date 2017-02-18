@@ -37,9 +37,9 @@ import de.vanita5.twittnuker.model.SimpleRefreshTaskParam
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
-import de.vanita5.twittnuker.task.GetActivitiesAboutMeTask
-import de.vanita5.twittnuker.task.GetHomeTimelineTask
-import de.vanita5.twittnuker.task.GetMessagesTask
+import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
+import de.vanita5.twittnuker.task.twitter.GetHomeTimelineTask
+import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
 import de.vanita5.twittnuker.task.filter.RefreshFiltersSubscriptionsTask
 
 

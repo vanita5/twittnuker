@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.task.message
+package de.vanita5.twittnuker.task.twitter.message
 
 import android.content.Context
 import de.vanita5.twittnuker.library.MicroBlogException

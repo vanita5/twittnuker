@@ -48,6 +48,11 @@ import de.vanita5.twittnuker.model.event.*
 import de.vanita5.twittnuker.model.util.ParcelableUserListUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.task.*
+import de.vanita5.twittnuker.task.twitter.GetActivitiesAboutMeTask
+import de.vanita5.twittnuker.task.twitter.GetHomeTimelineTask
+import de.vanita5.twittnuker.task.twitter.GetSavedSearchesTask
+import de.vanita5.twittnuker.task.twitter.GetTrendsTask
+import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
 import de.vanita5.twittnuker.util.collection.CompactHashSet
 import java.util.*
 

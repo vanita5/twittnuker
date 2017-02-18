@@ -20,7 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.task
+package de.vanita5.twittnuker.task.twitter
 
 import android.content.Context
 import android.net.Uri

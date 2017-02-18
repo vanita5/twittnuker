@@ -36,6 +36,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
 import com.squareup.otto.Subscribe
+import kotlinx.android.synthetic.main.activity_premium_dashboard.*
 import kotlinx.android.synthetic.main.fragment_messages_conversation.*
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
@@ -53,7 +54,9 @@ import de.vanita5.twittnuker.adapter.MessagesConversationAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_CONVERSATION_ID
+import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
+import de.vanita5.twittnuker.extension.model.getSummaryText
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.fragment.AbsContentListRecyclerViewFragment
 import de.vanita5.twittnuker.fragment.EditAltTextDialogFragment
@@ -65,9 +68,11 @@ import de.vanita5.twittnuker.model.event.SendMessageTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
 import de.vanita5.twittnuker.service.LengthyOperationsService
-import de.vanita5.twittnuker.task.GetMessagesTask
+import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
 import de.vanita5.twittnuker.task.compose.AbsAddMediaTask
 import de.vanita5.twittnuker.task.compose.AbsDeleteMediaTask
+import de.vanita5.twittnuker.task.twitter.message.DestroyMessageTask
+import de.vanita5.twittnuker.util.ClipboardUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.PreviewGridItemDecoration
@@ -111,6 +116,10 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
                         media = message.media, current = media,
                         newDocument = preferences[newDocumentApiKey], message = message)
             }
+
+            override fun onMessageLongClick(position: Int, holder: RecyclerView.ViewHolder): Boolean {
+                return recyclerView.showContextMenuForChild(holder.itemView)
+            }
         }
         mediaPreviewAdapter = MediaPreviewAdapter(context)
 
@@ -128,6 +137,8 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
         attachedMediaPreview.layoutManager = FixedLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         attachedMediaPreview.adapter = mediaPreviewAdapter
         attachedMediaPreview.addItemDecoration(PreviewGridItemDecoration(resources.getDimensionPixelSize(R.dimen.element_spacing_small)))
+
+        registerForContextMenu(recyclerView)
         registerForContextMenu(attachedMediaPreview)
 
         sendMessage.setOnClickListener {
@@ -223,25 +234,53 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
     }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo) {
-        if (v === attachedMediaPreview) {
-            menu.setHeaderTitle(R.string.edit_media)
-            activity.menuInflater.inflate(R.menu.menu_attached_media_edit, menu)
+        if (menuInfo !is ExtendedRecyclerView.ContextMenuInfo) return
+        when (menuInfo.recyclerViewId) {
+            R.id.recyclerView -> {
+                val message = adapter.getMessage(menuInfo.position) ?: return
+                val conversation = adapter.conversation
+                menu.setHeaderTitle(message.getSummaryText(context, userColorNameManager, conversation,
+                        preferences[nameFirstKey]))
+                activity.menuInflater.inflate(R.menu.menu_conversation_message_item, menu)
+            }
+            R.id.attachedMediaPreview -> {
+                menu.setHeaderTitle(R.string.edit_media)
+                activity.menuInflater.inflate(R.menu.menu_attached_media_edit, menu)
+            }
         }
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
-        val menuInfo = item.menuInfo
-        if (menuInfo is ExtendedRecyclerView.ContextMenuInfo) {
-            when (menuInfo.recyclerViewId) {
-                R.id.attachedMediaPreview -> {
-                    val position = menuInfo.position
-                    val altText = mediaPreviewAdapter.getItem(position).alt_text
-                    executeAfterFragmentResumed { fragment ->
-                        EditAltTextDialogFragment.show(fragment.childFragmentManager, position,
-                                altText)
+        val menuInfo = item.menuInfo as? ExtendedRecyclerView.ContextMenuInfo ?: run {
+            return super.onContextItemSelected(item)
+        }
+        when (menuInfo.recyclerViewId) {
+            R.id.recyclerView -> {
+                val message = adapter.getMessage(menuInfo.position) ?: return true
+                when (item.itemId) {
+                    R.id.copy -> {
+                        ClipboardUtils.setText(context, message.text_unescaped)
                     }
-                    return true
+                    R.id.delete -> {
+                        val task = DestroyMessageTask(context, message.account_key,
+                                message.conversation_id, message.id)
+                        TaskStarter.execute(task)
+                    }
                 }
+                return true
+            }
+            R.id.attachedMediaPreview -> {
+                when (item.itemId) {
+                    R.id.edit_description -> {
+                        val position = menuInfo.position
+                        val altText = mediaPreviewAdapter.getItem(position).alt_text
+                        executeAfterFragmentResumed { fragment ->
+                            EditAltTextDialogFragment.show(fragment.childFragmentManager, position,
+                                    altText)
+                        }
+                    }
+                }
+                return true
             }
         }
         return super.onContextItemSelected(item)

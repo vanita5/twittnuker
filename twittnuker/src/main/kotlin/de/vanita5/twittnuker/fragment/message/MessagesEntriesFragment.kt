@@ -50,7 +50,7 @@ import de.vanita5.twittnuker.model.ParcelableMessageConversationCursorIndices
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.GetMessagesTaskEvent
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
-import de.vanita5.twittnuker.task.GetMessagesTask
+import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.ErrorInfoStore
 import de.vanita5.twittnuker.util.IntentUtils
