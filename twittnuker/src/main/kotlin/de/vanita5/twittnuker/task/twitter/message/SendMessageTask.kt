@@ -41,10 +41,10 @@ import de.vanita5.twittnuker.model.event.SendMessageTaskEvent
 import de.vanita5.twittnuker.model.util.ParcelableMessageUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
+import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask.Companion.addConversation
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask.Companion.addLocalConversations
-import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 
 class SendMessageTask(
         context: Context
@@ -88,7 +88,8 @@ class SendMessageTask(
         return sendDefaultDM(microBlog, account, message)
     }
 
-    private fun sendTwitterOfficialDM(microBlog: MicroBlog, account: AccountDetails, message: ParcelableNewMessage): GetMessagesTask.DatabaseUpdateData {
+    private fun sendTwitterOfficialDM(microBlog: MicroBlog, account: AccountDetails,
+            message: ParcelableNewMessage): GetMessagesTask.DatabaseUpdateData {
         var deleteOnSuccess: List<UpdateStatusTask.MediaDeletionItem>? = null
         var deleteAlways: List<UpdateStatusTask.MediaDeletionItem>? = null
         val sendResponse = try {
