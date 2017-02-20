@@ -31,5 +31,5 @@ import de.vanita5.twittnuker.provider.TwidereDataStore
 @SuppressLint("Recycle")
 fun ContentResolver.rawQuery(sql: String, selectionArgs: Array<String>?): Cursor {
     val rawUri = Uri.withAppendedPath(TwidereDataStore.CONTENT_URI_RAW_QUERY, sql)
-    return query(rawUri, selectionArgs, null, null, null)
+    return query(rawUri, null, null, selectionArgs, null)
 }
