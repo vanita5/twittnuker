@@ -641,7 +641,7 @@
     <string name="preference_randomize_account_rename_accounts_confirm">Accounts umbenennen?</string>
     <string name="preference_summary_auto_refresh_compatibility_mode">Aktivieren für kleinere Aktualisierungsintervalle. Erhöht den Energieverbrauch unter Android 5.0+</string>
     <string name="preference_summary_auto_refresh_power_saving">Autorefresh anhalten, wenn der Akkustand niedrig ist</string>
-    <string name="preference_summary_chrome_custom_tab">Links in der App öffnen, ohne sie zu verlassen</string>
+    <string name="preference_summary_chrome_custom_tab">Links mit dem In-App Browser öffnen</string>
     <string name="preference_summary_database_item_limit">Anzahl der Objekte, die maximal pro Account gespeichert werden. Ein niedrigerer Wert spart Speicherplatz und erhöht die Ladegeschwindigkeit.</string>
     <string name="preference_summary_media_preload_non_metered_network">Medien nur in nicht beschränkten Netzwerken wie WLAN vorladen.</string>
     <string name="preference_title_accounts">Accounts</string>
@@ -656,6 +656,7 @@
     <string name="preference_title_landscape">Landscape</string>
     <string name="preference_title_light_font">Light Font</string>
     <string name="preference_title_media_preload_non_metered_network">Nur mit WLAN vorladen</string>
+    <string name="preference_title_multi_column_tab_width">Tab Breite</string>
     <string name="preference_title_multi_column_tabs">Mehrspaltige Tabs</string>
     <string name="preference_title_portrait">Portrait</string>
     <string name="preference_title_storage">Speicher</string>

@@ -33,7 +33,9 @@ import org.mariotaku.ktextension.toLong
 import de.vanita5.twittnuker.constant.autoRefreshCompatibilityModeKey
 import java.util.concurrent.TimeUnit
 
-class RefreshIntervalPreference(context: Context, attrs: AttributeSet? = null) : EntrySummaryListPreference(context, attrs) {
+class RefreshIntervalPreference(
+        context: Context, attrs: AttributeSet? = null
+) : EntrySummaryListPreference(context, attrs) {
 
     private val entriesBackup = entries
     private val valuesBackup = entryValues

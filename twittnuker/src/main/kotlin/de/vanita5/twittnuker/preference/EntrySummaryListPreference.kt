@@ -20,30 +20,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.preference;
+package de.vanita5.twittnuker.preference
 
-import android.content.Context;
-import android.util.AttributeSet;
+import android.content.Context
+import android.util.AttributeSet
 
-public class EntrySummaryListPreference extends ThemedListPreference {
-    public EntrySummaryListPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
+open class EntrySummaryListPreference(
+        context: Context, attrs: AttributeSet? = null
+) : ThemedListPreference(context, attrs) {
 
-    public EntrySummaryListPreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-    }
+    override fun getSummary(): CharSequence? = entry
 
-    public EntrySummaryListPreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public EntrySummaryListPreference(Context context) {
-        super(context);
-    }
-
-    @Override
-    public CharSequence getSummary() {
-        return getEntry();
-    }
 }
