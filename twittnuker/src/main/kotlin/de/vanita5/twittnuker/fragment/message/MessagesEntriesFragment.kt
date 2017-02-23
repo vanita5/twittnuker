@@ -30,8 +30,8 @@ import android.support.v4.content.Loader
 import com.squareup.otto.Subscribe
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.toStringArray
-import org.mariotaku.sqliteqb.library.Expression
-import org.mariotaku.sqliteqb.library.OrderBy
+import org.mariotaku.sqliteqb.library.*
+import org.mariotaku.sqliteqb.library.Columns.Column
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.EXTRA_ACCOUNT_KEYS
 import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_SELECT_ACCOUNT
@@ -49,11 +49,10 @@ import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageConversationCursorIndices
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.event.GetMessagesTaskEvent
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
-import de.vanita5.twittnuker.util.DataStoreUtils
-import de.vanita5.twittnuker.util.ErrorInfoStore
-import de.vanita5.twittnuker.util.IntentUtils
+import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.Utils
 
 class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntriesAdapter>(),
@@ -85,12 +84,22 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<List<ParcelableMessageConversation>?> {
         val loader = ObjectCursorLoader(context, ParcelableMessageConversationCursorIndices::class.java)
-        loader.uri = Conversations.CONTENT_URI
-        loader.selection = Expression.inArgs(Conversations.ACCOUNT_KEY, accountKeys.size).sql
+        val projection = (Conversations.COLUMNS + Conversations.UNREAD_COUNT).map {
+            mapProjection(it)
+        }.toTypedArray()
+        val qb = SQLQueryBuilder.select(Columns(*projection))
+        qb.from(Table(Conversations.TABLE_NAME))
+        qb.join(Join(false, Join.Operation.LEFT_OUTER, Table(Messages.TABLE_NAME),
+                Expression.equals(
+                        Column(Table(Conversations.TABLE_NAME), Conversations.CONVERSATION_ID),
+                        Column(Table(Messages.TABLE_NAME), Messages.CONVERSATION_ID)
+                )
+        ))
+        qb.where(Expression.inArgs(Column(Table(Conversations.TABLE_NAME), Conversations.ACCOUNT_KEY), accountKeys.size))
+        qb.groupBy(Column(Table(Messages.TABLE_NAME), Messages.CONVERSATION_ID))
+        qb.orderBy(OrderBy(arrayOf(Conversations.LOCAL_TIMESTAMP, Conversations.SORT_ID), booleanArrayOf(false, false)))
+        loader.uri = TwidereQueryBuilder.rawQuery(qb.buildSQL())
         loader.selectionArgs = accountKeys.toStringArray()
-        loader.projection = Conversations.COLUMNS
-        loader.sortOrder = OrderBy(arrayOf(Conversations.LOCAL_TIMESTAMP,
-                Conversations.SORT_ID), booleanArrayOf(false, false)).sql
         return loader
     }
 
@@ -177,5 +186,11 @@ class MessagesEntriesFragment : AbsContentListRecyclerViewFragment<MessagesEntri
         }
     }
 
+    private fun mapProjection(projection: String): Column = when (projection) {
+        Conversations.UNREAD_COUNT -> Column(SQLFunctions.COUNT(
+                "CASE WHEN ${Messages.TABLE_NAME}.${Messages.LOCAL_TIMESTAMP} > ${Conversations.TABLE_NAME}.${Conversations.LAST_READ_TIMESTAMP} THEN 1 ELSE NULL END"
+        ), projection)
+        else -> Column(Table(Conversations.TABLE_NAME), projection, projection)
+    }
 
 }

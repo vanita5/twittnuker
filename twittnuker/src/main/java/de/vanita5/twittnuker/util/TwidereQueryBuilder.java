@@ -23,6 +23,8 @@
 package de.vanita5.twittnuker.util;
 
 
+import android.net.Uri;
+
 import org.mariotaku.sqliteqb.library.Columns;
 import org.mariotaku.sqliteqb.library.Columns.Column;
 import org.mariotaku.sqliteqb.library.Expression;
@@ -33,8 +35,8 @@ import org.mariotaku.sqliteqb.library.Selectable;
 import org.mariotaku.sqliteqb.library.Table;
 import org.mariotaku.sqliteqb.library.Tables;
 import org.mariotaku.sqliteqb.library.query.SQLSelectQuery;
-
 import de.vanita5.twittnuker.model.UserKey;
+import de.vanita5.twittnuker.provider.TwidereDataStore;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedRelationships;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
 
@@ -43,6 +45,10 @@ import java.util.Locale;
 import kotlin.Pair;
 
 public class TwidereQueryBuilder {
+
+    public static Uri rawQuery(String rawQuery) {
+        return TwidereDataStore.CONTENT_URI_RAW_QUERY.buildUpon().appendPath(rawQuery).build();
+    }
 
     public static final class CachedUsersQueryBuilder {
 

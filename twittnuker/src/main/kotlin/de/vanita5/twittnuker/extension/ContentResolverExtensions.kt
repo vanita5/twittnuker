@@ -25,10 +25,10 @@ package de.vanita5.twittnuker.extension
 import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.database.Cursor
-import de.vanita5.twittnuker.provider.TwidereDataStore
+import de.vanita5.twittnuker.util.TwidereQueryBuilder
 
 @SuppressLint("Recycle")
 fun ContentResolver.rawQuery(sql: String, selectionArgs: Array<String>?): Cursor? {
-    val rawUri = TwidereDataStore.CONTENT_URI_RAW_QUERY.buildUpon().appendPath(sql).build()
+    val rawUri = TwidereQueryBuilder.rawQuery(sql)
     return query(rawUri, null, null, selectionArgs, null)
 }
