@@ -22,9 +22,19 @@
 
 package de.vanita5.twittnuker.task.twitter.message
 
+import android.accounts.AccountManager
 import android.content.Context
+import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
+import org.mariotaku.sqliteqb.library.Expression
+import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.isOfficial
+import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
+import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.model.util.AccountUtils
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
 
 
@@ -32,9 +42,35 @@ class DestroyConversationTask(
         context: Context,
         val accountKey: UserKey,
         val conversationId: String
-) : ExceptionHandlingAbstractTask<Unit?, Unit, MicroBlogException, Unit?>(context) {
-    override fun onExecute(params: Unit?) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+) : ExceptionHandlingAbstractTask<Unit?, Boolean, MicroBlogException, Unit?>(context) {
+    override fun onExecute(params: Unit?): Boolean {
+        val account = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true) ?:
+                throw MicroBlogException("No account")
+        val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
+        if (!performDestroyConversation(microBlog, account)) {
+            return false
+        }
+
+        val deleteMessageWhere = Expression.and(Expression.equalsArgs(Messages.ACCOUNT_KEY),
+                Expression.equalsArgs(Messages.CONVERSATION_ID)).sql
+        val deleteMessageWhereArgs = arrayOf(accountKey.toString(), conversationId)
+        context.contentResolver.delete(Messages.CONTENT_URI, deleteMessageWhere, deleteMessageWhereArgs)
+        val deleteConversationWhere = Expression.and(Expression.equalsArgs(Conversations.ACCOUNT_KEY),
+                Expression.equalsArgs(Conversations.CONVERSATION_ID)).sql
+        val deleteConversationWhereArgs = arrayOf(accountKey.toString(), conversationId)
+        context.contentResolver.delete(Conversations.CONTENT_URI, deleteConversationWhere, deleteConversationWhereArgs)
+        return true
+    }
+
+    private fun performDestroyConversation(microBlog: MicroBlog, account: AccountDetails): Boolean {
+        when (account.type) {
+            AccountType.TWITTER -> {
+                if (account.isOfficial(context)) {
+                    return microBlog.deleteDmConversation(conversationId).isSuccessful
+                }
+            }
+        }
+        return false
     }
 
 }

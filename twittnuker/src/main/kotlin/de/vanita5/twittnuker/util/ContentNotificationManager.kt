@@ -46,6 +46,7 @@ import de.vanita5.twittnuker.constant.iWantMyStarsBackKey
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.model.getConversationName
 import de.vanita5.twittnuker.extension.model.getSummaryText
+import de.vanita5.twittnuker.extension.model.notificationDisabled
 import de.vanita5.twittnuker.extension.rawQuery
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
@@ -294,6 +295,7 @@ class ContentNotificationManager(
             builder.setContentTitle(notificationTitle)
             val remaining = cur.forEachRow(5) { cur, pos ->
                 val conversation = indices.newObject(cur)
+                if (conversation.notificationDisabled) return@forEachRow false
                 val title = conversation.getConversationName(context, userColorNameManager, nameFirst)
                 val summary = conversation.getSummaryText(context, userColorNameManager, nameFirst)
                 val line = SpanFormatter.format(context.getString(R.string.title_summary_line_format),
@@ -304,6 +306,7 @@ class ContentNotificationManager(
                 style.addLine(line)
                 return@forEachRow true
             }
+            if (remaining < 0) return
             if (remaining > 0) {
                 style.addLine(context.getString(R.string.and_N_more, remaining))
             }
@@ -323,7 +326,7 @@ class ContentNotificationManager(
         var current = 0
         while (!isAfterLast) {
             if (limit >= 0 && current >= limit) break
-            if (action(this, position)) {
+            if (action(this, current)) {
                 current++
             }
             moveToNext()
