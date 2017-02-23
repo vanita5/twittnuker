@@ -81,6 +81,8 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     lateinit internal var extraFeaturesService: ExtraFeaturesService
     @Inject
     lateinit internal var mediaLoader: MediaLoaderWrapper
+    @Inject
+    lateinit internal var contentNotificationManager: ContentNotificationManager
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
@@ -202,6 +204,9 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
             }
             KEY_MEDIA_PRELOAD, KEY_PRELOAD_WIFI_ONLY -> {
                 mediaLoader.reloadOptions(preferences)
+            }
+            KEY_NAME_FIRST, KEY_I_WANT_MY_STARS_BACK -> {
+                contentNotificationManager.updatePreferences()
             }
         }
     }

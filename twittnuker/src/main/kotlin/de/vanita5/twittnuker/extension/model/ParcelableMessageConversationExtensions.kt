@@ -28,7 +28,9 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMessage
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
+import de.vanita5.twittnuker.model.ParcelableMessageConversation.ExtrasType
 import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.message.conversation.TwitterOfficialConversationExtras
 import de.vanita5.twittnuker.util.UserColorNameManager
 
 fun ParcelableMessageConversation.applyFrom(message: ParcelableMessage, details: AccountDetails) {
@@ -73,4 +75,14 @@ val ParcelableMessageConversation.user: ParcelableUser?
     get() {
         val userKey = if (is_outgoing) recipient_key else sender_key
         return participants.firstOrNull { it.key == userKey }
+    }
+
+val ParcelableMessageConversation.readOnly: Boolean
+    get() {
+        when (conversation_extras_type) {
+            ExtrasType.TWITTER_OFFICIAL -> {
+                return (conversation_extras as? TwitterOfficialConversationExtras)?.readOnly ?: false
+            }
+        }
+        return false
     }

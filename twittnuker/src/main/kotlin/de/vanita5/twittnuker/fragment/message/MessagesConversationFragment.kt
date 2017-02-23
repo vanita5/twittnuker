@@ -56,8 +56,10 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_CONVERSATION_ID
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.newDocumentApiKey
+import de.vanita5.twittnuker.extension.model.getConversationName
 import de.vanita5.twittnuker.extension.model.getSummaryText
 import de.vanita5.twittnuker.extension.model.isOfficial
+import de.vanita5.twittnuker.extension.model.readOnly
 import de.vanita5.twittnuker.fragment.AbsContentListRecyclerViewFragment
 import de.vanita5.twittnuker.fragment.EditAltTextDialogFragment
 import de.vanita5.twittnuker.loader.ObjectCursorLoader
@@ -213,6 +215,7 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
         if (conversation != null && !conversation.is_temp) {
             markRead()
         }
+        updateConversationStatus()
     }
 
     override fun onCreateAdapter(context: Context): MessagesConversationAdapter {
@@ -318,6 +321,7 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
     private fun performSendMessage() {
         val conversation = adapter.conversation ?: return
         val conversationAccount = this.account ?: return
+        if (conversation.readOnly) return
         if (editText.empty && mediaPreviewAdapter.itemCount == 0) {
             editText.error = getString(R.string.hint_error_message_no_content)
             return
@@ -391,6 +395,16 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
 
     private fun markRead() {
         TaskStarter.execute(MarkMessageReadTask(context, accountKey, conversationId))
+    }
+
+    private fun updateConversationStatus() {
+        val conversation = adapter.conversation ?: return
+        activity.title = conversation.getConversationName(context, userColorNameManager,
+                preferences[nameFirstKey]).first
+        val readOnly = conversation.readOnly
+        addMedia.isEnabled = readOnly
+        sendMessage.isEnabled = readOnly
+        editText.isEnabled = readOnly
     }
 
     internal class AddMediaTask(

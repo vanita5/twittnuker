@@ -49,7 +49,6 @@ import de.vanita5.twittnuker.extension.model.getSummaryText
 import de.vanita5.twittnuker.extension.rawQuery
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.receiver.NotificationReceiver
@@ -67,6 +66,10 @@ class ContentNotificationManager(
 
     private var nameFirst: Boolean = false
     private var useStarForLikes: Boolean = false
+
+    init {
+        updatePreferences()
+    }
 
     fun showTimeline(pref: AccountPreferences, minPositionKey: Long) {
         val accountKey = pref.accountKey
@@ -375,7 +378,7 @@ class ContentNotificationManager(
         return PendingIntent.getActivity(context, 0, homeIntent, 0)
     }
 
-    private fun updatePreferences() {
+    fun updatePreferences() {
         nameFirst = preferences[nameFirstKey]
         useStarForLikes = preferences[iWantMyStarsBackKey]
     }
