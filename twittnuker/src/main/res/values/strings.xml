@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="account">Account</string>
     <string name="account_delete_confirm_message">This account will be deleted from Twittnuker.</string>
@@ -61,9 +61,7 @@
     <string name="action_modifying_lists">modifying lists</string>
     <string name="action_mute">Mute</string>
     <string name="action_muting">muting</string>
-    <string name="action_name_saved_at_time">
-        <xliff:g id="action">%1$s</xliff:g>, saved at <xliff:g id="time">%2$s</xliff:g>
-    </string>
+    <string name="action_name_saved_at_time"><xliff:g id="action">%1$s</xliff:g>, saved at <xliff:g id="time">%2$s</xliff:g></string>
     <string name="action_open_in_browser">Open in browser</string>
     <string name="action_pick_color">Pick color</string>
     <string name="action_purchase">Purchase</string>
@@ -140,96 +138,51 @@
     <string name="activities_about_me">Activities about me</string>
     <string name="activities_by_friends">Activities by friends</string>
 
-    <string name="activity_about_me_favorite">
-        <xliff:g id="user">%s</xliff:g> favorited your tweet.</string>
-    <string name="activity_about_me_favorite_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited your tweet.</string>
-    <string name="activity_about_me_favorited_media_tagged">
-        <xliff:g id="user">%s</xliff:g> favorited a tweet you were tagged in.</string>
-    <string name="activity_about_me_favorited_media_tagged_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited a tweet you were tagged in.</string>
-    <string name="activity_about_me_favorited_mention">
-        <xliff:g id="user">%s</xliff:g> favorited a tweet you were mentioned in.</string>
-    <string name="activity_about_me_favorited_mention_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited a tweet you were mentioned in.</string>
-    <string name="activity_about_me_favorited_retweet">
-        <xliff:g id="user">%s</xliff:g> favorited your retweet.</string>
-    <string name="activity_about_me_favorited_retweet_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited your retweet.</string>
-    <string name="activity_about_me_follow">
-        <xliff:g id="user">%s</xliff:g> is following you.</string>
-    <string name="activity_about_me_follow_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> are following you.</string>
-    <string name="activity_about_me_like">
-        <xliff:g id="user">%s</xliff:g> liked your tweet.</string>
-    <string name="activity_about_me_like_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked your tweet.</string>
-    <string name="activity_about_me_liked_media_tagged">
-        <xliff:g id="user">%s</xliff:g> liked a tweet you were tagged in.</string>
-    <string name="activity_about_me_liked_media_tagged_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked a tweet you were tagged in.</string>
-    <string name="activity_about_me_liked_mention">
-        <xliff:g id="user">%s</xliff:g> liked a tweet you were mentioned in.</string>
-    <string name="activity_about_me_liked_mention_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked a tweet you were mentioned in.</string>
-    <string name="activity_about_me_liked_retweet">
-        <xliff:g id="user">%s</xliff:g> liked your retweet.</string>
-    <string name="activity_about_me_liked_retweet_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked your retweet.</string>
-    <string name="activity_about_me_list_member_added">
-        <xliff:g id="user">%s</xliff:g> added you to list.</string>
-    <string name="activity_about_me_list_member_added_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> added you to their lists.</string>
-    <string name="activity_about_me_list_member_added_with_name">
-        <xliff:g id="user">%1$s</xliff:g> added you to list <xliff:g id="list">%2$s</xliff:g>".</string>
-    <string name="activity_about_me_media_tagged">
-        <xliff:g id="user">%s</xliff:g> tagged you.</string>
-    <string name="activity_about_me_media_tagged_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> tagged you.</string>
-    <string name="activity_about_me_retweet">
-        <xliff:g id="user">%s</xliff:g> retweeted your tweet.</string>
-    <string name="activity_about_me_retweet_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> retweeted your tweet.</string>
-    <string name="activity_about_me_retweeted_media_tagged">
-        <xliff:g id="user">%s</xliff:g> retweeted a tweet you were tagged in.</string>
-    <string name="activity_about_me_retweeted_media_tagged_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> retweeted a tweet you were tagged in.</string>
-    <string name="activity_about_me_retweeted_mention">
-        <xliff:g id="user">%s</xliff:g> retweeted a tweet you were mentioned in.</string>
-    <string name="activity_about_me_retweeted_mention_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> retweeted a tweet you were mentioned in.</string>
-    <string name="activity_about_me_retweeted_retweet">
-        <xliff:g id="user">%s</xliff:g> retweeted your retweet.</string>
-    <string name="activity_about_me_retweeted_retweet_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> retweeted your retweet.</string>
-    <string name="activity_by_friends_favorite">
-        <xliff:g id="user">%1$s</xliff:g> favorited <xliff:g id="target">%2$s</xliff:g>\'s tweet.</string>
-    <string name="activity_by_friends_favorite_multi">
-        <xliff:g id="user">%1$s</xliff:g> favorited <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%3$s</xliff:g>\'s tweet.</string>
-    <string name="activity_by_friends_follow">
-        <xliff:g id="user">%1$s</xliff:g> is following <xliff:g id="target">%2$s</xliff:g>.</string>
-    <string name="activity_by_friends_follow_multi">
-        <xliff:g id="user">%1$s</xliff:g> is following <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%3$s</xliff:g>.</string>
-    <string name="activity_by_friends_like">
-        <xliff:g id="user">%1$s</xliff:g> liked <xliff:g id="target">%2$s</xliff:g>\'s tweet.</string>
-    <string name="activity_by_friends_like_multi">
-        <xliff:g id="user">%1$s</xliff:g> liked <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%3$s</xliff:g>\'s tweet.</string>
-    <string name="activity_by_friends_list_created">
-        <xliff:g id="user">%1$s</xliff:g> created list <xliff:g id="target">%2$s</xliff:g>.</string>
-    <string name="activity_by_friends_list_created_multi">
-        <xliff:g id="user">%1$s</xliff:g> created list <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%1$s</xliff:g>.</string>
-    <string name="activity_by_friends_list_member_added">
-        <xliff:g id="user">%1$s</xliff:g> added <xliff:g id="target">%2$s</xliff:g> to list.</string>
-    <string name="activity_by_friends_list_member_added_multi">
-        <xliff:g id="user">%1$s</xliff:g> added <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%1$s</xliff:g> to list.</string>
-    <string name="activity_by_friends_retweet">
-        <xliff:g id="user">%1$s</xliff:g> retweeted <xliff:g id="target">%2$s</xliff:g>\'s tweet.</string>
-    <string name="activity_by_friends_retweet_multi">
-        <xliff:g id="user">%1$s</xliff:g> retweeted <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%3$s</xliff:g>\'s tweet.</string>
-    <string name="activity_joined_twitter">
-        <xliff:g id="user">%s</xliff:g> joined Twitter.</string>
-    <string name="activity_joined_twitter_multi">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> joined Twitter.</string>
+    <string name="activity_about_me_favorite"><xliff:g id="user">%s</xliff:g> favorited your tweet.</string>
+    <string name="activity_about_me_favorite_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited your tweet.</string>
+    <string name="activity_about_me_favorited_media_tagged"><xliff:g id="user">%s</xliff:g> favorited a tweet you were tagged in.</string>
+    <string name="activity_about_me_favorited_media_tagged_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited a tweet you were tagged in.</string>
+    <string name="activity_about_me_favorited_mention"><xliff:g id="user">%s</xliff:g> favorited a tweet you were mentioned in.</string>
+    <string name="activity_about_me_favorited_mention_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited a tweet you were mentioned in.</string>
+    <string name="activity_about_me_favorited_retweet"><xliff:g id="user">%s</xliff:g> favorited your retweet.</string>
+    <string name="activity_about_me_favorited_retweet_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> favorited your retweet.</string>
+    <string name="activity_about_me_follow"><xliff:g id="user">%s</xliff:g> is following you.</string>
+    <string name="activity_about_me_follow_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> are following you.</string>
+    <string name="activity_about_me_like"><xliff:g id="user">%s</xliff:g> liked your tweet.</string>
+    <string name="activity_about_me_like_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked your tweet.</string>
+    <string name="activity_about_me_liked_media_tagged"><xliff:g id="user">%s</xliff:g> liked a tweet you were tagged in.</string>
+    <string name="activity_about_me_liked_media_tagged_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked a tweet you were tagged in.</string>
+    <string name="activity_about_me_liked_mention"><xliff:g id="user">%s</xliff:g> liked a tweet you were mentioned in.</string>
+    <string name="activity_about_me_liked_mention_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked a tweet you were mentioned in.</string>
+    <string name="activity_about_me_liked_retweet"><xliff:g id="user">%s</xliff:g> liked your retweet.</string>
+    <string name="activity_about_me_liked_retweet_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> liked your retweet.</string>
+    <string name="activity_about_me_list_member_added"><xliff:g id="user">%s</xliff:g> added you to list.</string>
+    <string name="activity_about_me_list_member_added_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> added you to their lists.</string>
+    <string name="activity_about_me_list_member_added_with_name"><xliff:g id="user">%1$s</xliff:g> added you to list <xliff:g id="list">%2$s</xliff:g>".</string>
+    <string name="activity_about_me_media_tagged"><xliff:g id="user">%s</xliff:g> tagged you.</string>
+    <string name="activity_about_me_media_tagged_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> tagged you.</string>
+    <string name="activity_about_me_retweet"><xliff:g id="user">%s</xliff:g> retweeted your tweet.</string>
+    <string name="activity_about_me_retweet_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> retweeted your tweet.</string>
+    <string name="activity_about_me_retweeted_media_tagged"><xliff:g id="user">%s</xliff:g> retweeted a tweet you were tagged in.</string>
+    <string name="activity_about_me_retweeted_media_tagged_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> retweeted a tweet you were tagged in.</string>
+    <string name="activity_about_me_retweeted_mention"><xliff:g id="user">%s</xliff:g> retweeted a tweet you were mentioned in.</string>
+    <string name="activity_about_me_retweeted_mention_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> retweeted a tweet you were mentioned in.</string>
+    <string name="activity_about_me_retweeted_retweet"><xliff:g id="user">%s</xliff:g> retweeted your retweet.</string>
+    <string name="activity_about_me_retweeted_retweet_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> retweeted your retweet.</string>
+    <string name="activity_by_friends_favorite"><xliff:g id="user">%1$s</xliff:g> favorited <xliff:g id="target">%2$s</xliff:g>\'s tweet.</string>
+    <string name="activity_by_friends_favorite_multi"><xliff:g id="user">%1$s</xliff:g> favorited <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%3$s</xliff:g>\'s tweet.</string>
+    <string name="activity_by_friends_follow"><xliff:g id="user">%1$s</xliff:g> is following <xliff:g id="target">%2$s</xliff:g>.</string>
+    <string name="activity_by_friends_follow_multi"><xliff:g id="user">%1$s</xliff:g> is following <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%3$s</xliff:g>.</string>
+    <string name="activity_by_friends_like"><xliff:g id="user">%1$s</xliff:g> liked <xliff:g id="target">%2$s</xliff:g>\'s tweet.</string>
+    <string name="activity_by_friends_like_multi"><xliff:g id="user">%1$s</xliff:g> liked <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%3$s</xliff:g>\'s tweet.</string>
+    <string name="activity_by_friends_list_created"><xliff:g id="user">%1$s</xliff:g> created list <xliff:g id="target">%2$s</xliff:g>.</string>
+    <string name="activity_by_friends_list_created_multi"><xliff:g id="user">%1$s</xliff:g> created list <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%1$s</xliff:g>.</string>
+    <string name="activity_by_friends_list_member_added"><xliff:g id="user">%1$s</xliff:g> added <xliff:g id="target">%2$s</xliff:g> to list.</string>
+    <string name="activity_by_friends_list_member_added_multi"><xliff:g id="user">%1$s</xliff:g> added <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%1$s</xliff:g> to list.</string>
+    <string name="activity_by_friends_retweet"><xliff:g id="user">%1$s</xliff:g> retweeted <xliff:g id="target">%2$s</xliff:g>\'s tweet.</string>
+    <string name="activity_by_friends_retweet_multi"><xliff:g id="user">%1$s</xliff:g> retweeted <xliff:g id="target">%2$s</xliff:g> and <xliff:g id="other">%3$s</xliff:g>\'s tweet.</string>
+    <string name="activity_joined_twitter"><xliff:g id="user">%s</xliff:g> joined Twitter.</string>
+    <string name="activity_joined_twitter_multi"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="other">%2$s</xliff:g> joined Twitter.</string>
 
     <string name="add_account">Add account</string>
     <string name="add_host_mapping">Add host mapping</string>
@@ -310,8 +263,7 @@
     <string name="compose_now_action">Compose Now action</string>
     <string name="compose_now_summary">Replaces Google Now shortcut for Compose screen</string>
 
-    <string name="conflicts_with_name">Conflicts with <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="conflicts_with_name">Conflicts with <xliff:g id="name">%s</xliff:g></string>
 
     <string name="connection_timeout">Connection timeout</string>
 
@@ -331,8 +283,7 @@
     <!-- [noun] Count label for retweets, e.g. (N retweets)-->
     <string name="count_label_retweets">Retweets</string>
 
-    <string name="created_by">Created by <xliff:g id="created_by">%s</xliff:g>
-    </string>
+    <string name="created_by">Created by <xliff:g id="created_by">%s</xliff:g></string>
     <string name="created_list">Created list \"<xliff:g id="list">%s</xliff:g>\".</string>
 
     <string name="crop_image">Crop image</string>
@@ -353,12 +304,10 @@
     <string name="delete_conversation_confirm_message">Delete all messages of this conversation?</string>
     <string name="delete_drafts_confirm">Delete selected drafts?</string>
     <string name="delete_message_confirm_message">Delete this message?</string>
-    <string name="delete_user">Delete user <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="delete_user">Delete user <xliff:g id="name">%s</xliff:g></string>
     <string name="delete_user_confirm_message">Delete <xliff:g id="name">%s</xliff:g>? This can\'t be undone.</string>
     <string name="delete_user_from_list_confirm">Delete <xliff:g id="user">%1$s</xliff:g> from list \"<xliff:g id="list">%2$s</xliff:g>\"?</string>
-    <string name="delete_user_list">Delete list <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="delete_user_list">Delete list <xliff:g id="name">%s</xliff:g></string>
     <string name="delete_user_list_confirm_message">Delete list <xliff:g id="name">%s</xliff:g>? This can\'t be undone.</string>
     <string name="delete_users">Delete users</string>
 
@@ -410,8 +359,7 @@
     <string name="enable_streaming">Enable streaming</string>
 
     <string name="error_info_oauth_timestamp_error">Please check your system date &amp; time settings.</string>
-    <string name="error_message">Error: <xliff:g id="message">%s</xliff:g>
-    </string>
+    <string name="error_message">Error: <xliff:g id="message">%s</xliff:g></string>
     <string name="error_message_device_incompatible">This device is not compatible with Twittnuker, upgrade to latest Android OS is recommended.\nYou can send information below to help me report this issue to device manufacturer.</string>
     <string name="error_message_media_message_attachment_not_supported">Attaching media to DMs is not supported</string>
     <string name="error_message_media_message_too_many">Too many media</string>
@@ -420,16 +368,13 @@
     <string name="error_message_message_too_long">Message too long</string>
     <string name="error_message_message_too_many_participants">Too many participants</string>
     <string name="error_message_no_content">No content</string>
-    <string name="error_message_rate_limit">Twitter\'s rate limit exceeded, please retry <xliff:g id="time">%s</xliff:g>
-    </string>
-    <string name="error_message_rate_limit_with_action">Twitter\'s rate limit exceeded while <xliff:g id="action">%1$s</xliff:g>, please retry <xliff:g id="time">%2$s</xliff:g>
-    </string>
+    <string name="error_message_rate_limit">Twitter\'s rate limit exceeded, please retry <xliff:g id="time">%s</xliff:g></string>
+    <string name="error_message_rate_limit_with_action">Twitter\'s rate limit exceeded while <xliff:g id="action">%1$s</xliff:g>, please retry <xliff:g id="time">%2$s</xliff:g></string>
     <string name="error_message_status_too_long">Tweet too long.</string>
     <string name="error_message_tweet_shorten_failed">Tweet shorten failed.</string>
     <string name="error_message_tweet_shortener_not_found">Tweet shortener not found, maybe it was uninstalled.</string>
-    <string name="error_message_with_action">Error while <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g>
-    </string>
-    <string name="error_no_access_for_credentials">Your application can\'t access this resource, have you enabled \'Force using private APIs\'?</string>
+    <string name="error_message_with_action">Error while <xliff:g id="action">%1$s</xliff:g>: <xliff:g id="message">%2$s</xliff:g></string>
+    <string name="error_no_access_for_credentials">Your application can\'t access this resource.</string>
     <string name="error_no_dm_permission">No direct message permission, check your Twitter application permission setting.</string>
     <string name="error_title_device_incompatible">Incompatible device</string>
     <string name="error_too_many_photos_fanfou">Too many photos</string>
@@ -444,10 +389,8 @@
 
     <string name="extensions">Extensions</string>
 
-    <string name="external_group_host_format">External group at <xliff:g id="host">%s</xliff:g>
-    </string>
-    <string name="external_user_host_format">External user at <xliff:g id="host">%s</xliff:g>
-    </string>
+    <string name="external_group_host_format">External group at <xliff:g id="host">%s</xliff:g></string>
+    <string name="external_user_host_format">External user at <xliff:g id="host">%s</xliff:g></string>
 
     <string name="extra_configurations">Extra configurations</string>
     <string name="extra_feature_description_filters_import">Import filter list from blocks/mutes</string>
@@ -491,11 +434,9 @@
 
     <string name="from_camera">From camera</string>
     <string name="from_gallery">From gallery</string>
-    <string name="from_name">From <xliff:g id="name">%1$s</xliff:g>
-    </string>
+    <string name="from_name">From <xliff:g id="name">%1$s</xliff:g></string>
     <string name="from_name_and_N_others">From <xliff:g id="name">%1$s</xliff:g> and <xliff:g id="name">%2$d</xliff:g> others</string>
-    <string name="from_name_and_name">From <xliff:g id="name">%1$s</xliff:g> and <xliff:g id="name">%2$s</xliff:g>
-    </string>
+    <string name="from_name_and_name">From <xliff:g id="name">%1$s</xliff:g> and <xliff:g id="name">%2$s</xliff:g></string>
 
     <string name="function">Function</string>
 
@@ -547,8 +488,7 @@
     <string name="import_settings">Import settings</string>
     <string name="import_settings_type_dialog_title">Import settings…</string>
 
-    <string name="in_reply_to_name">In reply to <xliff:g id="user_name">%s</xliff:g>
-    </string>
+    <string name="in_reply_to_name">In reply to <xliff:g id="user_name">%s</xliff:g></string>
 
     <string name="inbox">Inbox</string>
 
@@ -571,8 +511,7 @@
     <string name="keyboard_shortcut_hint">Press keys</string>
     <string name="keyboard_shortcuts">Keyboard shortcuts</string>
 
-    <string name="keyword_filter_name">Keyword: <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="keyword_filter_name">Keyword: <xliff:g id="name">%s</xliff:g></string>
 
     <string name="label_account_type">Account type</string>
     <string name="label_auth_type">Auth type</string>
@@ -587,8 +526,7 @@
     <string name="label_refresh_service">Refresh service</string>
     <string name="label_status_not_available">Tweet not available</string>
     <string name="label_streaming_service">Streaming service</string>
-    <string name="label_translate_from_language">Translate from <xliff:g id="language">%s</xliff:g>
-    </string>
+    <string name="label_translate_from_language">Translate from <xliff:g id="language">%s</xliff:g></string>
     <string name="label_translation">Translation</string>
     <string name="label_your_profile_image">Your profile image</string>
 
@@ -610,8 +548,7 @@
 
     <string name="lists">Lists</string>
     <string name="lists_following_user">Lists following this user</string>
-    <string name="lists_following_user_with_name">Lists following <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="lists_following_user_with_name">Lists following <xliff:g id="name">%s</xliff:g></string>
 
     <string name="load_defaults">Load defaults</string>
     <string name="load_item_limit">Load item limit</string>
@@ -643,10 +580,8 @@
     <string name="members">Members</string>
 
     <string name="mention_this_user">Mention this user</string>
-    <string name="mention_user">Mention <xliff:g id="user">%s</xliff:g>
-    </string>
-    <string name="mention_user_name">Mention <xliff:g id="name">%1$s</xliff:g>
-    </string>
+    <string name="mention_user">Mention <xliff:g id="user">%s</xliff:g></string>
+    <string name="mention_user_name">Mention <xliff:g id="name">%1$s</xliff:g></string>
 
     <string name="mentions_only">Mentions only</string>
 
@@ -659,29 +594,13 @@
     <string name="message_direct_message_sent">Direct message sent.</string>
     <string name="message_error_invalid_account">Some account data are corrupted, Twittnuker will remove those accounts to prevent crash.</string>
     <string name="message_format_conversation_avatar_update">Conversation avatar changed</string>
-    <string name="message_format_conversation_avatar_update_by_user">
-        <xliff:g example="User" id="by_user">%1$s</xliff:g> changed conversation avatar</string>
-    <string
-        name="message_format_conversation_name_update">Conversation name changed to
-        <xliff:g
-            example="User" id="name">%1$s</xliff:g>
-    </string>
-    <string name="message_format_conversation_name_update_by_user">
-    <xliff:g example="User"
-              id="by_user">%1$s</xliff:g> changed conversation name to <xliff:g
-        example="New name" id="name">%2$s</xliff:g>
-    </string>
-    <string name="message_format_participants_join">
-         <xliff:g example="User" id="name">%1$s</xliff:g> joined</string>
-    <string name="message_format_participants_join_added">
-    <xliff:g example="Sender" id="sender">%1$s</xliff:g> added <xliff:g example="Recipient" id="recipient">%2$s</xliff:g>
-    </string>
-    <string name="message_format_participants_leave">
-    <xliff:g example="User" id="name">%1$s</xliff:g> left</string>
-    <string name="message_format_sender_time">
-     <xliff:g example="User" id="sender">%1$s</xliff:g> · <xliff:g
-     example="12:00" id="time">%2$s</xliff:g>
-    </string>
+    <string name="message_format_conversation_avatar_update_by_user"><xliff:g example="User" id="by_user">%1$s</xliff:g> changed conversation avatar</string>
+    <string name="message_format_conversation_name_update">Conversation name changed to <xliff:g example="User" id="name">%1$s</xliff:g></string>
+    <string name="message_format_conversation_name_update_by_user"><xliff:g example="User" id="by_user">%1$s</xliff:g> changed conversation name to <xliff:g example="New name" id="name">%2$s</xliff:g></string>
+    <string name="message_format_participants_join"><xliff:g example="User" id="name">%1$s</xliff:g> joined</string>
+    <string name="message_format_participants_join_added"><xliff:g example="Sender" id="sender">%1$s</xliff:g> added <xliff:g example="Recipient" id="recipient">%2$s</xliff:g></string>
+    <string name="message_format_participants_leave"><xliff:g example="User" id="name">%1$s</xliff:g> left</string>
+    <string name="message_format_sender_time"><xliff:g example="User" id="sender">%1$s</xliff:g> · <xliff:g example="12:00" id="time">%2$s</xliff:g></string>
     <string name="message_join_conversation">Joined conversation.</string>
     <string name="message_permission_request_compose_location">Twittnuker needs location permission for adding location to tweets.</string>
     <string name="message_permission_request_save_media">Twittnuker needs storage permission for saving media.</string>
@@ -689,11 +608,9 @@
     <string name="message_please_wait">Please wait.</string>
     <string name="message_summary_type_sticker">[Sticker]</string>
     <string name="message_sync_data_connect_hint">Connect Twittnuker with network storage to sync data</string>
-    <string name="message_sync_data_synced_with_name">Twittnuker is now synced with <xliff:g example="ownCloud" id="name">%s</xliff:g>
-    </string>
+    <string name="message_sync_data_synced_with_name">Twittnuker is now synced with <xliff:g example="ownCloud" id="name">%s</xliff:g></string>
     <string name="message_sync_disconnect_from_name_confirm">Disconnect from <xliff:g example="ownCloud" id="name">%s</xliff:g>?</string>
-    <string name="message_sync_last_synced_time">Last synced: <xliff:g example="2017/1/1 12:00" id="time">%s</xliff:g>
-    </string>
+    <string name="message_sync_last_synced_time">Last synced: <xliff:g example="2017/1/1 12:00" id="time">%s</xliff:g></string>
     <string name="message_tab_field_is_required">Field \"<xliff:g example="Field" id="name">%s</xliff:g>\" is required</string>
     <!--
       ~ Toast messages, according to https://material.io/guidelines/style/writing.html#writing-capitalization-punctuation ,
@@ -748,26 +665,19 @@
 
     <string name="multi_select">Multi select</string>
 
-    <string name="mute_user">Mute <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="mute_user">Mute <xliff:g id="name">%s</xliff:g></string>
     <string name="mute_user_confirm_message">Mute <xliff:g id="name">%s</xliff:g>? You will no longer see tweets from this user while keep following this user.</string>
 
-    <string name="muted_user">Muted <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="muted_user">Muted <xliff:g id="name">%s</xliff:g></string>
 
-    <string name="name_and_another_retweeted">
-        <xliff:g id="user_name">%1$s</xliff:g> and another retweeted</string>
-    <string name="name_and_count_retweeted">
-        <xliff:g id="user_name">%1$s</xliff:g> and <xliff:g id="retweet_count">%2$d</xliff:g> others retweeted</string>
+    <string name="name_and_another_retweeted"><xliff:g id="user_name">%1$s</xliff:g> and another retweeted</string>
+    <string name="name_and_count_retweeted"><xliff:g id="user_name">%1$s</xliff:g> and <xliff:g id="retweet_count">%2$d</xliff:g> others retweeted</string>
     <string name="name_first">Display name first</string>
     <string name="name_first_summary_off">Display \@screenname first</string>
     <string name="name_first_summary_on">Display name first</string>
-    <string name="name_not_set">
-        <xliff:g id="name">%s</xliff:g> not set</string>
-    <string name="name_retweeted">
-        <xliff:g id="user_name">%s</xliff:g> retweeted</string>
-    <string name="name_with_nickname">
-        <xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
+    <string name="name_not_set"><xliff:g id="name">%s</xliff:g> not set</string>
+    <string name="name_retweeted"><xliff:g id="user_name">%s</xliff:g> retweeted</string>
+    <string name="name_with_nickname"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="nickname">%2$s</xliff:g>)</string>
 
     <string name="navigation">Navigation</string>
 
@@ -798,20 +708,14 @@
 
     <string name="none">None</string>
 
-    <string name="notification_direct_message">
-        <xliff:g id="user">%s</xliff:g> sent you a direct message.</string>
-    <string name="notification_direct_message_multiple_messages">
-        <xliff:g id="user">%1$s</xliff:g> sent you <xliff:g id="messages_count">%2$d</xliff:g> direct messages.</string>
-    <string name="notification_direct_message_multiple_users">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="users_count">%2$d</xliff:g> others sent you <xliff:g id="messages_count">%3$d</xliff:g> direct messages.</string>
+    <string name="notification_direct_message"><xliff:g id="user">%s</xliff:g> sent you a direct message.</string>
+    <string name="notification_direct_message_multiple_messages"><xliff:g id="user">%1$s</xliff:g> sent you <xliff:g id="messages_count">%2$d</xliff:g> direct messages.</string>
+    <string name="notification_direct_message_multiple_users"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="users_count">%2$d</xliff:g> others sent you <xliff:g id="messages_count">%3$d</xliff:g> direct messages.</string>
     <string name="notification_light_color">Light Color</string>
-    <string name="notification_mention">
-        <xliff:g id="user">%s</xliff:g> mentioned you.</string>
-    <string name="notification_mention_multiple">
-        <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="count">%2$d</xliff:g> others mentioned you.</string>
+    <string name="notification_mention"><xliff:g id="user">%s</xliff:g> mentioned you.</string>
+    <string name="notification_mention_multiple"><xliff:g id="user">%1$s</xliff:g> and <xliff:g id="count">%2$d</xliff:g> others mentioned you.</string>
     <string name="notification_ringtone">Ringtone</string>
-    <string name="notification_status">New tweet by <xliff:g id="user">%s</xliff:g>
-    </string>
+    <string name="notification_status">New tweet by <xliff:g id="user">%s</xliff:g></string>
     <string name="notification_status_multiple">New Tweet by <xliff:g id="user">%1$s</xliff:g> and <xliff:g id="count">%2$d</xliff:g> others</string>
 
     <string name="notifications">Notifications</string>
@@ -866,9 +770,7 @@
 
     <string name="play">Play</string>
 
-    <string name="poll_summary_format">
-        <xliff:g id="poll_count">%1$s</xliff:g> · <xliff:g id="poll_time_left">%2$s</xliff:g>
-    </string>
+    <string name="poll_summary_format"><xliff:g id="poll_count">%1$s</xliff:g> · <xliff:g id="poll_time_left">%2$s</xliff:g></string>
 
     <string name="preference_filter_possibility_sensitive_statuses">Filter sensitive tweets</string>
     <string name="preference_filter_unavailable_quote_statuses">Filter unavailable quotes</string>
@@ -960,12 +862,10 @@
 
     <string name="quote_format">Quote format</string>
     <string name="quote_format_summary">\"[TEXT]\" = Tweet text\n\"[NAME]\" = Twitter username</string>
-    <string name="quote_name_text">Quote <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g>
-    </string>
+    <string name="quote_name_text">Quote <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="quote_original_status">Quote original tweet</string>
     <string name="quote_protected_status_warning_message">This tweet is protected.\n\nProtected users usually don\'t want their tweets to be shared publicly.</string>
-    <string name="quote_user">Quote <xliff:g id="user_name">%s</xliff:g>
-    </string>
+    <string name="quote_user">Quote <xliff:g id="user_name">%s</xliff:g></string>
 
     <string name="rate_limit">Rate limit</string>
 
@@ -992,15 +892,12 @@
 
     <string name="replies">Replies</string>
 
-    <string name="reply_to">Reply to <xliff:g id="user_name">%s</xliff:g>
-    </string>
-    <string name="reply_to_name_text">Reply to <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g>
-    </string>
+    <string name="reply_to">Reply to <xliff:g id="user_name">%s</xliff:g></string>
+    <string name="reply_to_name_text">Reply to <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
 
     <string name="report_for_spam">Report spam</string>
     <string name="report_usage_statistics_now">Report usage statistics now</string>
-    <string name="report_user">Report <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="report_user">Report <xliff:g id="name">%s</xliff:g></string>
     <string name="report_user_confirm_message">Report <xliff:g id="name">%s</xliff:g> for spam? You\'ll also block this user.</string>
 
     <string name="reported_user_for_spam">Reported this user for spam.</string>
@@ -1019,8 +916,7 @@
     <string name="retweet_quote_confirm_title">Retweet to your followers?</string>
 
     <string name="retweeted_by_count">Retweeted by <xliff:g id="retweet_count">%d</xliff:g> users</string>
-    <string name="retweeted_by_name">Retweeted by <xliff:g id="user_name">%s</xliff:g>
-    </string>
+    <string name="retweeted_by_name">Retweeted by <xliff:g id="user_name">%s</xliff:g></string>
     <string name="retweeted_by_name_with_count">Retweeted by <xliff:g id="user_name">%1$s</xliff:g> and <xliff:g id="retweet_count">%2$d</xliff:g> others</string>
 
     <string name="retweets_of_me">Retweets of me</string>
@@ -1106,13 +1002,10 @@
 
     <string name="sound">Sound</string>
 
-    <string name="source">
-        <xliff:g id="source">%s</xliff:g>
-    </string>
+    <string name="source"><xliff:g id="source">%s</xliff:g></string>
     <string name="source_camera">Camera</string>
     <string name="source_clipboard">Clipboard</string>
-    <string name="source_filter_name">Source: <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="source_filter_name">Source: <xliff:g id="name">%s</xliff:g></string>
     <string name="source_gallery">Gallery</string>
 
     <string name="special_thanks_to">Special thanks to</string>
@@ -1123,24 +1016,15 @@
 
     <string name="state_blocking">Blocking</string>
 
-    <string name="status_format_source">
-        <xliff:g example="Twittnuker for Android" id="source">%s</xliff:g>
-    </string>
-    <string name="status_format_time_source">
-        <xliff:g example="0:00, Jan 1 2017" id="time">%1$s</xliff:g> · <xliff:g example="Twittnuker for Android" id="source">%2$s</xliff:g>
-    </string>
+    <string name="status_format_source"><xliff:g example="Twittnuker for Android" id="source">%s</xliff:g></string>
+    <string name="status_format_time_source"><xliff:g example="0:00, Jan 1 2017" id="time">%1$s</xliff:g> · <xliff:g example="Twittnuker for Android" id="source">%2$s</xliff:g></string>
     <string name="status_hint">What\'s happening?</string>
     <string name="status_is_duplicate">Your tweet is a duplicate.</string>
-    <string name="status_menu_title_format">
-        <xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g>
-    </string>
+    <string name="status_menu_title_format"><xliff:g id="name">%1$s</xliff:g>: <xliff:g id="text">%2$s</xliff:g></string>
     <string name="status_not_updated">Tweet not sent.</string>
     <string name="status_not_updated_summary">Tweet not sent, and saved to drafts.</string>
-    <string name="status_share_subject_format_with_time">Tweet from <xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), at <xliff:g id="time">%3$s</xliff:g>
-    </string>
-    <string name="status_share_text_format_with_link">
-        <xliff:g id="text">%1$s</xliff:g>\n\n<xliff:g id="link">%2$s</xliff:g>
-    </string>
+    <string name="status_share_subject_format_with_time">Tweet from <xliff:g id="name">%1$s</xliff:g> (@<xliff:g id="screen_name">%2$s</xliff:g>), at <xliff:g id="time">%3$s</xliff:g></string>
+    <string name="status_share_text_format_with_link"><xliff:g id="text">%1$s</xliff:g>\n\n<xliff:g id="link">%2$s</xliff:g></string>
     <string name="status_shortener">Tweet shortener</string>
     <string name="status_shortener_default">None (Abort sending)</string>
     <!-- [noun] Accessibility label for retweet icon -->
@@ -1191,17 +1075,14 @@
 
     <string name="thumbor_integration">Thumbor integration</string>
 
-    <string name="time_source">
-        <xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g>
-    </string>
+    <string name="time_source"><xliff:g id="time">%1$s</xliff:g> · <xliff:g id="source">%2$s</xliff:g></string>
 
     <string name="timeline_streaming_running">Timeline streaming running</string>
     <string name="timeline_sync_service">Timeline sync service</string>
 
     <string name="title_about">About</string>
     <string name="title_accounts">Accounts</string>
-    <string name="title_block_user">Block <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="title_block_user">Block <xliff:g id="name">%s</xliff:g></string>
     <string name="title_blocked_users">Blocked users</string>
     <string name="title_browser_sign_in">Browser sign in</string>
     <string name="title_compose">Compose</string>
@@ -1233,9 +1114,7 @@
     <string name="title_statuses">Tweets</string>
     <string name="title_subscription_name">Name</string>
     <string name="title_subscription_url">URL</string>
-    <string name="title_summary_line_format">
-        <xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g>
-    </string>
+    <string name="title_summary_line_format"><xliff:g id="title">%1$s</xliff:g>: <xliff:g id="summary">%2$s</xliff:g></string>
     <string name="title_sync">Data sync</string>
     <string name="title_sync_settings">Sync settings</string>
     <string name="title_user">User</string>
@@ -1256,10 +1135,8 @@
     <string name="trends_location_summary">Set location for local trends.</string>
 
     <!-- 'Tweet' here is a verb -->
-    <string name="tweet_from_name">Tweet from <xliff:g id="text">%1$s</xliff:g>
-    </string>
-    <string name="tweet_hashtag">Tweet #<xliff:g id="text">%1$s</xliff:g>
-    </string>
+    <string name="tweet_from_name">Tweet from <xliff:g id="text">%1$s</xliff:g></string>
+    <string name="tweet_hashtag">Tweet #<xliff:g id="text">%1$s</xliff:g></string>
 
     <string name="twidere_test">Twittnuker test</string>
 
@@ -1270,8 +1147,7 @@
 
     <string name="underline">Underline</string>
 
-    <string name="unfollow_user">Unfollow <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="unfollow_user">Unfollow <xliff:g id="name">%s</xliff:g></string>
     <string name="unfollow_user_confirm_message">Unfollow <xliff:g id="name">%s</xliff:g>? You will no longer see tweets from this user.</string>
 
     <string name="unfollowed_user">Unfollowed <xliff:g id="user">%s</xliff:g>.</string>
@@ -1281,16 +1157,13 @@
     <string name="unknown_language">Unknown language</string>
     <string name="unknown_location">Unknown location</string>
 
-    <string name="unmute_user">Unmute <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="unmute_user">Unmute <xliff:g id="name">%s</xliff:g></string>
 
-    <string name="unmuted_user">Unmuted <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="unmuted_user">Unmuted <xliff:g id="name">%s</xliff:g></string>
 
     <string name="unread_count">Unread count</string>
 
-    <string name="unsubscribe_from_user_list">Unsubscribe from list <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="unsubscribe_from_user_list">Unsubscribe from list <xliff:g id="name">%s</xliff:g></string>
     <string name="unsubscribe_from_user_list_confirm_message">Unsubscribe from list <xliff:g id="name">%s</xliff:g>? You can re-subscribe to this list later.</string>
 
     <string name="unsubscribed_from_list">Unsubscribed from list \"<xliff:g id="list">%s</xliff:g>\".</string>
@@ -1311,8 +1184,7 @@
     <string name="usage_statistics_notification_summary">Help us improve Twittnuker!</string>
 
     <string name="user_blocked">Blocked this user.</string>
-    <string name="user_filter_name">User: <xliff:g id="name">%s</xliff:g>
-    </string>
+    <string name="user_filter_name">User: <xliff:g id="name">%s</xliff:g></string>
     <string name="user_list">List</string>
     <string name="user_list_details">List details</string>
     <!-- User list description -->
@@ -1322,8 +1194,7 @@
     <!-- User list name -->
     <string name="user_list_details_name">Name</string>
     <string name="user_lists">Lists</string>
-    <string name="user_mentioned_you">
-        <xliff:g id="name">%s</xliff:g> mentioned you</string>
+    <string name="user_mentioned_you"><xliff:g id="name">%s</xliff:g> mentioned you</string>
     <string name="user_mentions">User mentions</string>
     <string name="user_profile_description">Description</string>
     <string name="user_profile_location">Location</string>
@@ -1337,8 +1208,7 @@
     <string name="username">Username</string>
 
     <string name="users_blocked">Blocked these users.</string>
-    <string name="users_lists_with_name">
-        <xliff:g id="name">%s</xliff:g>\'s lists</string>
+    <string name="users_lists_with_name"><xliff:g id="name">%s</xliff:g>\'s lists</string>
     <string name="users_statuses">User\'s tweets</string>
 
     <string name="vibration">Vibration</string>
