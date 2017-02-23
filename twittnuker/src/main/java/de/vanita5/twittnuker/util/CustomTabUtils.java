@@ -84,7 +84,7 @@ public class CustomTabUtils implements Constants {
         List<SupportTabSpec> specs = new ArrayList<>();
         for (Tab tab : getTabs(context)) {
             @CustomTabType
-            final String type = Tab.getTypeAlias(tab.getType());
+            final String type = tab.getType();
             final int position = tab.getPosition();
             final String iconType = tab.getIcon();
             final String name = tab.getName();
@@ -151,7 +151,7 @@ public class CustomTabUtils implements Constants {
         return icon.createDrawable(context);
     }
 
-    public static String getTabTypeName(final Context context, final String type) {
+    public static String getTabTypeName(final Context context, @CustomTabType final String type) {
         if (context == null) return null;
         final TabConfiguration conf = TabConfiguration.ofType(type);
         if (conf == null) return null;

@@ -122,7 +122,7 @@ public class Tab implements Parcelable {
 
     @CustomTabType
     public String getType() {
-        return type;
+        return getTypeAlias(type);
     }
 
     public void setType(@CustomTabType String type) {
