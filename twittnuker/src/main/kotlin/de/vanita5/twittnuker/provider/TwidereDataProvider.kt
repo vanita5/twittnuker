@@ -62,8 +62,8 @@ import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.SQLiteDatabaseWrapper.LazyLoadCallback
-import de.vanita5.twittnuker.util.TwidereQueryBuilder.CachedUsersQueryBuilder
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
+import de.vanita5.twittnuker.util.database.CachedUsersQueryBuilder
 import de.vanita5.twittnuker.util.database.SuggestionsCursorCreator
 import de.vanita5.twittnuker.util.net.TwidereDns
 import java.io.IOException
@@ -99,6 +99,42 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
     private var handler: Handler? = null
     private var backgroundExecutor: Executor? = null
 
+
+    override fun onCreate(): Boolean {
+        val context = context!!
+        GeneralComponentHelper.build(context).inject(this)
+        handler = Handler(Looper.getMainLooper())
+        databaseWrapper = SQLiteDatabaseWrapper(this)
+        backgroundExecutor = Executors.newSingleThreadExecutor()
+        // final GetWritableDatabaseTask task = new
+        // GetWritableDatabaseTask(context, helper, mDatabaseWrapper);
+        // task.executeTask();
+        return true
+    }
+
+    override fun onCreateSQLiteDatabase(): SQLiteDatabase {
+        val app = TwittnukerApplication.getInstance(context!!)
+        val helper = app.sqLiteOpenHelper
+        return helper.writableDatabase
+    }
+
+    override fun insert(uri: Uri, values: ContentValues?): Uri? {
+        try {
+            return insertInternal(uri, values)
+        } catch (e: SQLException) {
+            if (handleSQLException(e)) {
+                try {
+                    return insertInternal(uri, values)
+                } catch (e1: SQLException) {
+                    throw IllegalStateException(e1)
+                }
+
+            }
+            throw IllegalStateException(e)
+        }
+
+    }
+
     override fun bulkInsert(uri: Uri, valuesArray: Array<ContentValues>): Int {
         try {
             return bulkInsertInternal(uri, valuesArray)
@@ -114,6 +150,122 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
             throw IllegalStateException(e)
         }
 
+    }
+
+    override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?,
+            sortOrder: String?): Cursor? {
+        try {
+            val tableId = DataStoreUtils.getTableId(uri)
+            val table = DataStoreUtils.getTableNameById(tableId)
+            when (tableId) {
+                VIRTUAL_TABLE_ID_DATABASE_PREPARE -> {
+                    databaseWrapper.prepare()
+                    return MatrixCursor(projection ?: arrayOfNulls<String>(0))
+                }
+                VIRTUAL_TABLE_ID_CACHED_USERS_WITH_RELATIONSHIP -> {
+                    val accountKey = UserKey.valueOf(uri.lastPathSegment)
+                    val query = CachedUsersQueryBuilder.withRelationship(projection,
+                            selection, selectionArgs, sortOrder, accountKey)
+                    val c = databaseWrapper.rawQuery(query.first.sql, query.second)
+                    c?.setNotificationUri(context.contentResolver, CachedUsers.CONTENT_URI)
+                    return c
+                }
+                VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE -> {
+                    val accountKey = UserKey.valueOf(uri.lastPathSegment)
+                    val query = CachedUsersQueryBuilder.withScore(projection,
+                            selection, selectionArgs, sortOrder, accountKey, 0)
+                    val c = databaseWrapper.rawQuery(query.first.sql, query.second)
+                    c?.setNotificationUri(context.contentResolver, CachedUsers.CONTENT_URI)
+                    return c
+                }
+                VIRTUAL_TABLE_ID_DRAFTS_UNSENT -> {
+                    val twitter = twitterWrapper
+                    val sendingIds = RawItemArray(twitter.getSendingDraftIds())
+                    val where: Expression
+                    if (selection != null) {
+                        where = Expression.and(Expression(selection),
+                                Expression.notIn(Column(Drafts._ID), sendingIds))
+                    } else {
+                        where = Expression.and(Expression.notIn(Column(Drafts._ID), sendingIds))
+                    }
+                    val c = databaseWrapper.query(Drafts.TABLE_NAME, projection,
+                            where.sql, selectionArgs, null, null, sortOrder)
+                    c?.setNotificationUri(context.contentResolver, uri)
+                    return c
+                }
+                VIRTUAL_TABLE_ID_SUGGESTIONS_AUTO_COMPLETE -> {
+                    return SuggestionsCursorCreator.forAutoComplete(databaseWrapper,
+                            userColorNameManager, uri, projection)
+                }
+                VIRTUAL_TABLE_ID_SUGGESTIONS_SEARCH -> {
+                    return SuggestionsCursorCreator.forSearch(databaseWrapper,
+                            userColorNameManager, uri, projection)
+                }
+                VIRTUAL_TABLE_ID_NULL -> {
+                    return null
+                }
+                VIRTUAL_TABLE_ID_EMPTY -> {
+                    return MatrixCursor(projection ?: arrayOfNulls<String>(0))
+                }
+                VIRTUAL_TABLE_ID_RAW_QUERY -> {
+                    if (projection != null || selection != null || sortOrder != null) {
+                        throw IllegalArgumentException()
+                    }
+                    val c = databaseWrapper.rawQuery(uri.lastPathSegment, selectionArgs)
+                    val uri = uri.getQueryParameter(QUERY_PARAM_NOTIFY_URI)?.let(Uri::parse)
+                    if (uri != null) {
+                        c?.setNotificationUri(context.contentResolver, uri)
+                    }
+                    return c
+                }
+            }
+            if (table == null) return null
+            val c = databaseWrapper.query(table, projection, selection, selectionArgs,
+                    null, null, sortOrder)
+            c?.setNotificationUri(context.contentResolver, uri)
+            return c
+        } catch (e: SQLException) {
+            throw IllegalStateException(e)
+        }
+
+    }
+
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
+        try {
+            return updateInternal(uri, values, selection, selectionArgs)
+        } catch (e: SQLException) {
+            if (handleSQLException(e)) {
+                try {
+                    return updateInternal(uri, values, selection, selectionArgs)
+                } catch (e1: SQLException) {
+                    throw IllegalStateException(e1)
+                }
+
+            }
+            throw IllegalStateException(e)
+        }
+
+    }
+
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
+        try {
+            return deleteInternal(uri, selection, selectionArgs)
+        } catch (e: SQLException) {
+            if (handleSQLException(e)) {
+                try {
+                    return deleteInternal(uri, selection, selectionArgs)
+                } catch (e1: SQLException) {
+                    throw IllegalStateException(e1)
+                }
+
+            }
+            throw IllegalStateException(e)
+        }
+
+    }
+
+    override fun getType(uri: Uri): String? {
+        return null
     }
 
     private fun handleSQLException(e: SQLException): Boolean {
@@ -179,23 +331,6 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
         return result
     }
 
-    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
-        try {
-            return deleteInternal(uri, selection, selectionArgs)
-        } catch (e: SQLException) {
-            if (handleSQLException(e)) {
-                try {
-                    return deleteInternal(uri, selection, selectionArgs)
-                } catch (e1: SQLException) {
-                    throw IllegalStateException(e1)
-                }
-
-            }
-            throw IllegalStateException(e)
-        }
-
-    }
-
     private fun deleteInternal(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
         val tableId = DataStoreUtils.getTableId(uri)
         val table = DataStoreUtils.getTableNameById(tableId) ?: return 0
@@ -206,26 +341,56 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
         return result
     }
 
-    override fun getType(uri: Uri): String? {
-        return null
-    }
-
-    override fun insert(uri: Uri, values: ContentValues?): Uri? {
+    private fun showDraftNotification(values: ContentValues?): Long {
+        val context = context
+        if (values == null || context == null) return -1
+        val draftId = values.getAsLong(BaseColumns._ID) ?: return -1
+        val where = Expression.equals(Drafts._ID, draftId)
+        val c = context.contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql, null, null) ?: return -1
+        val i = DraftCursorIndices(c)
+        val item: Draft
         try {
-            return insertInternal(uri, values)
-        } catch (e: SQLException) {
-            if (handleSQLException(e)) {
-                try {
-                    return insertInternal(uri, values)
-                } catch (e1: SQLException) {
-                    throw IllegalStateException(e1)
-                }
-
-            }
-            throw IllegalStateException(e)
+            if (!c.moveToFirst()) return -1
+            item = i.newObject(c)
+        } catch (e: IOException) {
+            return -1
+        } finally {
+            c.close()
         }
+        val title = context.getString(R.string.status_not_updated)
+        val message = context.getString(R.string.status_not_updated_summary)
+        val intent = Intent()
+        intent.`package` = BuildConfig.APPLICATION_ID
+        val uriBuilder = Uri.Builder()
+        uriBuilder.scheme(SCHEME_TWITTNUKER)
+        uriBuilder.authority(AUTHORITY_DRAFTS)
+        intent.data = uriBuilder.build()
+        val nb = NotificationCompat.Builder(context)
+        nb.setTicker(message)
+        nb.setContentTitle(title)
+        nb.setContentText(item.text)
+        nb.setAutoCancel(true)
+        nb.setWhen(System.currentTimeMillis())
+        nb.setSmallIcon(R.drawable.ic_stat_draft)
+        val discardIntent = Intent(context, LengthyOperationsService::class.java)
+        discardIntent.action = INTENT_ACTION_DISCARD_DRAFT
+        val draftUri = Uri.withAppendedPath(Drafts.CONTENT_URI, draftId.toString())
+        discardIntent.data = draftUri
+        nb.addAction(R.drawable.ic_action_delete, context.getString(R.string.discard), PendingIntent.getService(context, 0,
+                discardIntent, PendingIntent.FLAG_ONE_SHOT))
 
+        val sendIntent = Intent(context, LengthyOperationsService::class.java)
+        sendIntent.action = INTENT_ACTION_SEND_DRAFT
+        sendIntent.data = draftUri
+        nb.addAction(R.drawable.ic_action_send, context.getString(R.string.action_send),
+                PendingIntent.getService(context, 0, sendIntent, PendingIntent.FLAG_ONE_SHOT))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+        nb.setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT))
+        notificationManager.notify(draftUri.toString(), NOTIFICATION_ID_DRAFTS,
+                nb.build())
+        return draftId
     }
+
 
     private fun insertInternal(uri: Uri, values: ContentValues?): Uri? {
         val tableId = DataStoreUtils.getTableId(uri)
@@ -294,167 +459,6 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
         return Uri.withAppendedPath(uri, rowId.toString())
     }
 
-    private fun showDraftNotification(values: ContentValues?): Long {
-        val context = context
-        if (values == null || context == null) return -1
-        val draftId = values.getAsLong(BaseColumns._ID) ?: return -1
-        val where = Expression.equals(Drafts._ID, draftId)
-        val c = context.contentResolver.query(Drafts.CONTENT_URI, Drafts.COLUMNS, where.sql, null, null) ?: return -1
-        val i = DraftCursorIndices(c)
-        val item: Draft
-        try {
-            if (!c.moveToFirst()) return -1
-            item = i.newObject(c)
-        } catch (e: IOException) {
-            return -1
-        } finally {
-            c.close()
-        }
-        val title = context.getString(R.string.status_not_updated)
-        val message = context.getString(R.string.status_not_updated_summary)
-        val intent = Intent()
-        intent.`package` = BuildConfig.APPLICATION_ID
-        val uriBuilder = Uri.Builder()
-        uriBuilder.scheme(SCHEME_TWITTNUKER)
-        uriBuilder.authority(AUTHORITY_DRAFTS)
-        intent.data = uriBuilder.build()
-        val nb = NotificationCompat.Builder(context)
-        nb.setTicker(message)
-        nb.setContentTitle(title)
-        nb.setContentText(item.text)
-        nb.setAutoCancel(true)
-        nb.setWhen(System.currentTimeMillis())
-        nb.setSmallIcon(R.drawable.ic_stat_draft)
-        val discardIntent = Intent(context, LengthyOperationsService::class.java)
-        discardIntent.action = INTENT_ACTION_DISCARD_DRAFT
-        val draftUri = Uri.withAppendedPath(Drafts.CONTENT_URI, draftId.toString())
-        discardIntent.data = draftUri
-        nb.addAction(R.drawable.ic_action_delete, context.getString(R.string.discard), PendingIntent.getService(context, 0,
-                discardIntent, PendingIntent.FLAG_ONE_SHOT))
-
-        val sendIntent = Intent(context, LengthyOperationsService::class.java)
-        sendIntent.action = INTENT_ACTION_SEND_DRAFT
-        sendIntent.data = draftUri
-        nb.addAction(R.drawable.ic_action_send, context.getString(R.string.action_send),
-                PendingIntent.getService(context, 0, sendIntent, PendingIntent.FLAG_ONE_SHOT))
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
-        nb.setContentIntent(PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_ONE_SHOT))
-        notificationManager.notify(draftUri.toString(), NOTIFICATION_ID_DRAFTS,
-                nb.build())
-        return draftId
-    }
-
-    override fun onCreate(): Boolean {
-        val context = context!!
-        GeneralComponentHelper.build(context).inject(this)
-        handler = Handler(Looper.getMainLooper())
-        databaseWrapper = SQLiteDatabaseWrapper(this)
-        notificationHelper = NotificationHelper(context)
-        backgroundExecutor = Executors.newSingleThreadExecutor()
-        // final GetWritableDatabaseTask task = new
-        // GetWritableDatabaseTask(context, helper, mDatabaseWrapper);
-        // task.executeTask();
-        return true
-    }
-
-    override fun onCreateSQLiteDatabase(): SQLiteDatabase {
-        val app = TwittnukerApplication.getInstance(context!!)
-        val helper = app.sqLiteOpenHelper
-        return helper.writableDatabase
-    }
-
-
-    override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?,
-                       sortOrder: String?): Cursor? {
-        try {
-            val tableId = DataStoreUtils.getTableId(uri)
-            val table = DataStoreUtils.getTableNameById(tableId)
-            when (tableId) {
-                VIRTUAL_TABLE_ID_DATABASE_PREPARE -> {
-                    databaseWrapper.prepare()
-                    return MatrixCursor(projection ?: arrayOfNulls<String>(0))
-                }
-                VIRTUAL_TABLE_ID_CACHED_USERS_WITH_RELATIONSHIP -> {
-                    val accountKey = UserKey.valueOf(uri.lastPathSegment)
-                    val query = CachedUsersQueryBuilder.withRelationship(projection,
-                            selection, selectionArgs, sortOrder, accountKey)
-                    val c = databaseWrapper.rawQuery(query.first.sql, query.second)
-                    contentNotificationManager.setNotificationUri(c, CachedUsers.CONTENT_URI)
-                    return c
-                }
-                VIRTUAL_TABLE_ID_CACHED_USERS_WITH_SCORE -> {
-                    val accountKey = UserKey.valueOf(uri.lastPathSegment)
-                    val query = CachedUsersQueryBuilder.withScore(projection,
-                            selection, selectionArgs, sortOrder, accountKey, 0)
-                    val c = databaseWrapper.rawQuery(query.first.sql, query.second)
-                    contentNotificationManager.setNotificationUri(c, CachedUsers.CONTENT_URI)
-                    return c
-                }
-                VIRTUAL_TABLE_ID_DRAFTS_UNSENT -> {
-                    val twitter = twitterWrapper
-                    val sendingIds = RawItemArray(twitter.getSendingDraftIds())
-                    val where: Expression
-                    if (selection != null) {
-                        where = Expression.and(Expression(selection),
-                                Expression.notIn(Column(Drafts._ID), sendingIds))
-                    } else {
-                        where = Expression.and(Expression.notIn(Column(Drafts._ID), sendingIds))
-                    }
-                    val c = databaseWrapper.query(Drafts.TABLE_NAME, projection,
-                            where.sql, selectionArgs, null, null, sortOrder)
-                    contentNotificationManager.setNotificationUri(c, Utils.getNotificationUri(tableId, uri))
-                    return c
-                }
-                VIRTUAL_TABLE_ID_SUGGESTIONS_AUTO_COMPLETE -> {
-                    return SuggestionsCursorCreator.forAutoComplete(databaseWrapper,
-                            userColorNameManager, uri, projection)
-                }
-                VIRTUAL_TABLE_ID_SUGGESTIONS_SEARCH -> {
-                    return SuggestionsCursorCreator.forSearch(databaseWrapper,
-                            userColorNameManager, uri, projection)
-                }
-                VIRTUAL_TABLE_ID_NULL -> {
-                    return null
-                }
-                VIRTUAL_TABLE_ID_EMPTY -> {
-                    return MatrixCursor(projection ?: arrayOfNulls<String>(0))
-                }
-                VIRTUAL_TABLE_ID_RAW_QUERY -> {
-                    if (projection != null || selection != null || sortOrder != null) {
-                        throw IllegalArgumentException()
-                    }
-                    return databaseWrapper.rawQuery(uri.lastPathSegment, selectionArgs)
-                }
-            }
-            if (table == null) return null
-            val c = databaseWrapper.query(table, projection, selection, selectionArgs,
-                    null, null, sortOrder)
-            contentNotificationManager.setNotificationUri(c, Utils.getNotificationUri(tableId, uri))
-            return c
-        } catch (e: SQLException) {
-            throw IllegalStateException(e)
-        }
-
-    }
-
-
-    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
-        try {
-            return updateInternal(uri, values, selection, selectionArgs)
-        } catch (e: SQLException) {
-            if (handleSQLException(e)) {
-                try {
-                    return updateInternal(uri, values, selection, selectionArgs)
-                } catch (e1: SQLException) {
-                    throw IllegalStateException(e1)
-                }
-
-            }
-            throw IllegalStateException(e)
-        }
-
-    }
-
     private fun updateInternal(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
         val tableId = DataStoreUtils.getTableId(uri)
         val table = DataStoreUtils.getTableNameById(tableId)
@@ -468,20 +472,10 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
         return result
     }
 
-    private fun clearNotification() {
-        notificationManager.cancelAll()
-    }
-
-    private fun clearNotification(notificationType: Int, accountId: UserKey) {
-        notificationManager.cancelById(Utils.getNotificationId(notificationType, accountId))
-    }
-
-
     private fun notifyContentObserver(uri: Uri) {
         if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return
         handler!!.post(Runnable {
-            val cr = context.contentResolver ?: return@Runnable
-            cr.notifyChange(uri, null)
+            context?.contentResolver?.notifyChange(uri, null)
         })
     }
 
@@ -491,7 +485,7 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
 
     private fun onDatabaseUpdated(tableId: Int, uri: Uri?) {
         if (uri == null) return
-        notifyContentObserver(Utils.getNotificationUri(tableId, uri))
+        notifyContentObserver(uri)
     }
 
     private fun onNewItemsInserted(uri: Uri, tableId: Int, valuesArray: Array<ContentValues?>?) {

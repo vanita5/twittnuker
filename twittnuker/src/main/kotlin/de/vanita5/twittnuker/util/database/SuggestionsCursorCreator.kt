@@ -27,7 +27,6 @@ import android.database.MatrixCursor
 import android.database.MergeCursor
 import android.net.Uri
 import android.text.TextUtils
-import org.mariotaku.ktextension.convert
 import org.mariotaku.sqliteqb.library.*
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.model.UserKey
@@ -98,7 +97,7 @@ object SuggestionsCursorCreator {
                   uri: Uri, projection: Array<String>?): Cursor? {
         val nonNullProjection = projection ?: Suggestions.COLUMNS
         val query = uri.getQueryParameter(QUERY_PARAM_QUERY) ?: return null
-        val accountKey = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY)?.convert(UserKey::valueOf) ?: return null
+        val accountKey = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY)?.let(UserKey::valueOf) ?: return null
         val emptyQuery = TextUtils.isEmpty(query)
         val cursors = mutableListOf(getHistoryCursor(db, nonNullProjection, query))
         if (emptyQuery) {
@@ -124,7 +123,7 @@ object SuggestionsCursorCreator {
         val nonNullProjection = projection ?: Suggestions.COLUMNS
         val query = uri.getQueryParameter(QUERY_PARAM_QUERY) ?: return null
         val type = uri.getQueryParameter(QUERY_PARAM_TYPE) ?: return null
-        val accountKey = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY)?.convert(UserKey::valueOf) ?: return null
+        val accountKey = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY)?.let(UserKey::valueOf) ?: return null
         val queryEscaped = query.replace("_", "^_")
         when (type) {
             Suggestions.AutoComplete.TYPE_USERS -> {
@@ -135,7 +134,7 @@ object SuggestionsCursorCreator {
                 val orderBy = arrayOf(CachedUsers.SCORE, CachedUsers.LAST_SEEN, CachedUsers.SCREEN_NAME, CachedUsers.NAME)
                 val ascending = booleanArrayOf(false, false, true, true)
                 val mappedProjection = nonNullProjection.map { autoCompleteUsersProjectionMap[it] }.toTypedArray()
-                val (sql, bindingArgs) = TwidereQueryBuilder.CachedUsersQueryBuilder.withScore(mappedProjection,
+                val (sql, bindingArgs) = CachedUsersQueryBuilder.withScore(mappedProjection,
                         where.sql, whereArgs, OrderBy(orderBy, ascending).sql, accountKey, 0)
                 return db.rawQuery(sql.sql, bindingArgs)
             }
@@ -161,7 +160,7 @@ object SuggestionsCursorCreator {
         val ascending = booleanArrayOf(false, false, true, true)
         val orderBy = OrderBy(order, ascending)
         val usersProjection = selection.map { suggestionUsersProjectionMap[it] }.toTypedArray()
-        val usersQuery = TwidereQueryBuilder.CachedUsersQueryBuilder.withScore(usersProjection,
+        val usersQuery = CachedUsersQueryBuilder.withScore(usersProjection,
                 usersSelection.sql, selectionArgs, orderBy.sql, accountKey, 0)
         return db.rawQuery(usersQuery.first.sql, usersQuery.second)
     }

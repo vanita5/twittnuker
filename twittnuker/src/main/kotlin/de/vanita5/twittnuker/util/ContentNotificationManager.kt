@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.util
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -32,11 +31,8 @@ import android.database.Cursor
 import android.media.AudioManager
 import android.net.Uri
 import android.support.v4.app.NotificationCompat
-import android.text.TextUtils
-import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.isEmpty
-import org.mariotaku.ktextension.useCursor
 import de.vanita5.twittnuker.library.twitter.model.Activity
 import org.mariotaku.sqliteqb.library.*
 import de.vanita5.twittnuker.R
@@ -52,9 +48,9 @@ import de.vanita5.twittnuker.extension.model.getSummaryText
 import de.vanita5.twittnuker.extension.rawQuery
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.ParcelableActivityUtils
-import de.vanita5.twittnuker.provider.TwidereDataStore
-import de.vanita5.twittnuker.provider.TwidereDataStore.*
+import de.vanita5.twittnuker.provider.TwidereDataStore.Activities
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
+import de.vanita5.twittnuker.provider.TwidereDataStore.Statuses
 import de.vanita5.twittnuker.receiver.NotificationReceiver
 import de.vanita5.twittnuker.util.database.FilterQueryBuilder
 import org.oshkimaadziig.george.androidutils.SpanFormatter
@@ -350,13 +346,6 @@ class ContentNotificationManager(
         homeIntent.data = homeLinkBuilder.build()
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         return PendingIntent.getActivity(context, 0, homeIntent, 0)
-    }
-
-
-    fun setNotificationUri(c: Cursor?, uri: Uri?) {
-        val cr = context.contentResolver
-        if (cr == null || c == null || uri == null) return
-        c.setNotificationUri(cr, uri)
     }
 
     private fun updatePreferences() {

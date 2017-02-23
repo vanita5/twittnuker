@@ -54,6 +54,7 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
+import de.vanita5.twittnuker.task.twitter.message.SendMessageTask
 import de.vanita5.twittnuker.text.MarkForDeleteSpan
 import de.vanita5.twittnuker.util.IntentUtils
 import de.vanita5.twittnuker.util.view.SimpleTextWatcher
@@ -226,7 +227,7 @@ class MessageNewConversationFragment : BaseFragment(), LoaderCallbacks<List<Parc
         val conversation = ParcelableMessageConversation()
         conversation.account_color = account.color
         conversation.account_key = account.key
-        conversation.id = "twidere:temp:${System.currentTimeMillis()}"
+        conversation.id = "${SendMessageTask.TEMP_CONVERSATION_ID_PREFIX}${System.currentTimeMillis()}"
         conversation.local_timestamp = System.currentTimeMillis()
         conversation.conversation_type = if (selected.size > 1) {
             ConversationType.ONE_TO_ONE

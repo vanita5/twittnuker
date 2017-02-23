@@ -24,7 +24,6 @@ package de.vanita5.twittnuker.model.util
 
 import android.accounts.AccountManager
 import android.content.Context
-import org.mariotaku.ktextension.convert
 import de.vanita5.twittnuker.extension.model.unique_id_non_null
 import de.vanita5.twittnuker.model.Draft
 import de.vanita5.twittnuker.model.ParcelableStatusUpdate
@@ -34,7 +33,7 @@ object ParcelableStatusUpdateUtils {
 
     fun fromDraftItem(context: Context, draft: Draft): ParcelableStatusUpdate {
         val statusUpdate = ParcelableStatusUpdate()
-        statusUpdate.accounts = draft.account_keys?.convert {
+        statusUpdate.accounts = draft.account_keys?.let {
             AccountUtils.getAllAccountDetails(AccountManager.get(context), it, true)
         } ?: emptyArray()
         statusUpdate.text = draft.text

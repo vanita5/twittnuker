@@ -26,13 +26,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
-import org.mariotaku.ktextension.convert
 import org.mariotaku.ktextension.toLong
 import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.NotificationType
 import de.vanita5.twittnuker.annotation.ReadPositionTag
 import de.vanita5.twittnuker.constant.IntentConstants.BROADCAST_NOTIFICATION_DELETED
-import de.vanita5.twittnuker.model.StringLongPair
+import de.vanita5.twittnuker.model.Tab
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.UriExtraUtils
 import de.vanita5.twittnuker.util.Utils
@@ -48,11 +47,7 @@ class NotificationReceiver : BroadcastReceiver() {
                 val holder = DependencyHolder.get(context)
                 @NotificationType
                 val notificationType = uri.getQueryParameter(QUERY_PARAM_NOTIFICATION_TYPE)
-                val accountKey = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY)?.convert(UserKey::valueOf)
-                val itemId = UriExtraUtils.getExtra(uri, "item_id").toLong(-1)
-                val itemUserId = UriExtraUtils.getExtra(uri, "item_user_id").toLong(-1)
-                val itemUserFollowing = UriExtraUtils.getExtra(uri, "item_user_following")?.toBoolean() ?: false
-                val timestamp = uri.getQueryParameter(QUERY_PARAM_TIMESTAMP)?.toLong() ?: -1
+                val accountKey = uri.getQueryParameter(QUERY_PARAM_ACCOUNT_KEY)?.let(UserKey::valueOf)
                 val manager = holder.readStateManager
                 val paramReadPosition = uri.getQueryParameter(QUERY_PARAM_READ_POSITION)
                 @ReadPositionTag

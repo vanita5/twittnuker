@@ -32,7 +32,6 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import org.mariotaku.ktextension.convert
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.ComposeActivity
@@ -65,7 +64,7 @@ class SearchFragment : AbsToolbarTabPagesFragment(), RefreshScrollTopInterface, 
             values.put(SearchHistory.QUERY, query)
             context.contentResolver.insert(SearchHistory.CONTENT_URI, values)
             val am = AccountManager.get(context)
-            Analyzer.log(Search(query, accountKey.convert {
+            Analyzer.log(Search(query, accountKey.let {
                 AccountUtils.findByAccountKey(am, it)
             }?.getAccountType(am)))
         }

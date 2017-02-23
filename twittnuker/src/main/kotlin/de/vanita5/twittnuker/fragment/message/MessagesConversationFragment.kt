@@ -68,10 +68,11 @@ import de.vanita5.twittnuker.model.event.SendMessageTaskEvent
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
 import de.vanita5.twittnuker.service.LengthyOperationsService
-import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
 import de.vanita5.twittnuker.task.compose.AbsAddMediaTask
 import de.vanita5.twittnuker.task.compose.AbsDeleteMediaTask
 import de.vanita5.twittnuker.task.twitter.message.DestroyMessageTask
+import de.vanita5.twittnuker.task.twitter.message.GetMessagesTask
+import de.vanita5.twittnuker.task.twitter.message.MarkMessageReadTask
 import de.vanita5.twittnuker.util.ClipboardUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
 import de.vanita5.twittnuker.util.IntentUtils
@@ -162,6 +163,10 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
 
         loaderManager.initLoader(0, null, this)
         showProgress()
+
+        if (savedInstanceState == null) {
+            markRead()
+        }
     }
 
     override fun onStart() {
@@ -382,6 +387,10 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
 
     private fun setProgressVisible(visible: Boolean) {
 
+    }
+
+    private fun markRead() {
+        TaskStarter.execute(MarkMessageReadTask(context, accountKey, conversationId))
     }
 
     internal class AddMediaTask(

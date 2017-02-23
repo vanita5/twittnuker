@@ -23,7 +23,6 @@
 package de.vanita5.twittnuker.model.util
 
 import android.support.annotation.FloatRange
-import org.mariotaku.ktextension.convert
 import de.vanita5.twittnuker.library.twitter.model.DMResponse
 import de.vanita5.twittnuker.library.twitter.model.DMResponse.Entry.Message
 import de.vanita5.twittnuker.library.twitter.model.DMResponse.Entry.Message.Data
@@ -143,7 +142,7 @@ object ParcelableMessageUtils {
         this.extras = ConversationInfoUpdatedExtras().apply {
             this.name = message.conversationName
             this.avatar = message.conversationAvatarImageHttps
-            this.user = users[message.byUserId]?.convert { ParcelableUserUtils.fromUser(it, accountKey) }
+            this.user = users[message.byUserId]?.let { ParcelableUserUtils.fromUser(it, accountKey) }
         }
         this.is_outgoing = false
     }

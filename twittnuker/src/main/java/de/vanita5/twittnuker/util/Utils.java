@@ -82,7 +82,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONException;
-import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.RateLimitStatus;
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment;
@@ -94,6 +93,7 @@ import org.mariotaku.sqliteqb.library.Expression;
 import org.mariotaku.sqliteqb.library.Selectable;
 import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.R;
+import de.vanita5.twittnuker.annotation.CustomTabType;
 import de.vanita5.twittnuker.extension.model.AccountDetailsExtensionsKt;
 import de.vanita5.twittnuker.library.twitter.model.UrlEntity;
 import de.vanita5.twittnuker.menu.FavoriteItemProvider;
@@ -105,7 +105,6 @@ import de.vanita5.twittnuker.model.PebbleMessage;
 import de.vanita5.twittnuker.model.UserKey;
 import de.vanita5.twittnuker.model.util.AccountUtils;
 import de.vanita5.twittnuker.provider.TwidereDataStore.CachedUsers;
-import de.vanita5.twittnuker.provider.TwidereDataStore.Messages;
 import de.vanita5.twittnuker.view.TabPagerIndicator;
 
 import java.io.Closeable;
@@ -451,11 +450,6 @@ public final class Utils implements Constants {
     }
 
     public static Uri getNotificationUri(final int tableId, final Uri def) {
-        switch (tableId) {
-            case TABLE_ID_MESSAGES:
-            case TABLE_ID_MESSAGES_CONVERSATIONS:
-                return Messages.CONTENT_URI;
-        }
         return def;
     }
 

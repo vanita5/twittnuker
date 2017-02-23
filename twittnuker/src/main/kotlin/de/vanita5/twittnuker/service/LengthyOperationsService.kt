@@ -43,7 +43,10 @@ import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.successUi
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.ManualTaskStarter
-import org.mariotaku.ktextension.*
+import org.mariotaku.ktextension.configure
+import org.mariotaku.ktextension.toLong
+import org.mariotaku.ktextension.toTypedArray
+import org.mariotaku.ktextension.useCursor
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterUpload
 import de.vanita5.twittnuker.library.twitter.model.MediaUploadResponse
@@ -62,8 +65,8 @@ import de.vanita5.twittnuker.model.util.ParcelableStatusUpdateUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Drafts
 import de.vanita5.twittnuker.task.CreateFavoriteTask
 import de.vanita5.twittnuker.task.RetweetStatusTask
-import de.vanita5.twittnuker.task.twitter.message.SendMessageTask
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
+import de.vanita5.twittnuker.task.twitter.message.SendMessageTask
 import de.vanita5.twittnuker.util.NotificationManagerWrapper
 import de.vanita5.twittnuker.util.Utils
 import de.vanita5.twittnuker.util.deleteDrafts
@@ -135,9 +138,9 @@ class LengthyOperationsService : BaseIntentService("lengthy_operations") {
             Draft.Action.SEND_DIRECT_MESSAGE_COMPAT, Draft.Action.SEND_DIRECT_MESSAGE -> {
                 val extras = draft.action_extras as? SendDirectMessageActionExtras ?: return
                 val message = ParcelableNewMessage().apply {
-                    this.account = draft.account_keys?.firstOrNull()?.convert { key ->
+                    this.account = draft.account_keys?.firstOrNull()?.let { key ->
                         val am = AccountManager.get(this@LengthyOperationsService)
-                        return@convert AccountUtils.getAccountDetails(am, key, true)
+                        return@let AccountUtils.getAccountDetails(am, key, true)
                     }
                     this.text = draft.text
                     this.media = draft.media
