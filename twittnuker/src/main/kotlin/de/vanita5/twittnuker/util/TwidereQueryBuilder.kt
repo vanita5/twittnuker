@@ -24,8 +24,13 @@ package de.vanita5.twittnuker.util
 
 
 import android.net.Uri
+import org.mariotaku.sqliteqb.library.Columns.Column
+import org.mariotaku.sqliteqb.library.SQLFunctions
+import org.mariotaku.sqliteqb.library.Table
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY_URI
 import de.vanita5.twittnuker.provider.TwidereDataStore
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages
+import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 
 object TwidereQueryBuilder {
 
@@ -37,5 +42,12 @@ object TwidereQueryBuilder {
         return builder.build()
     }
 
+
+    fun mapConversationsProjection(projection: String): Column = when (projection) {
+        Conversations.UNREAD_COUNT -> Column(SQLFunctions.COUNT(
+                "CASE WHEN ${Messages.TABLE_NAME}.${Messages.LOCAL_TIMESTAMP} > ${Conversations.TABLE_NAME}.${Conversations.LAST_READ_TIMESTAMP} THEN 1 ELSE NULL END"
+        ), projection)
+        else -> Column(Table(Conversations.TABLE_NAME), projection, projection)
+    }
 
 }
