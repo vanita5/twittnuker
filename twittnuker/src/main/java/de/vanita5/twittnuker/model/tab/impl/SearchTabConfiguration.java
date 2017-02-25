@@ -20,7 +20,7 @@ public class SearchTabConfiguration extends TabConfiguration {
     @NonNull
     @Override
     public StringHolder getName() {
-        return StringHolder.resource(R.string.search);
+        return StringHolder.resource(R.string.action_search);
     }
 
     @NonNull

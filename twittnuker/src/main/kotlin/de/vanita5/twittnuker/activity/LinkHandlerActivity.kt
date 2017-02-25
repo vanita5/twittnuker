@@ -31,6 +31,7 @@ import android.net.Uri
 import android.os.BadParcelableException
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks
 import android.support.v4.app.NavUtils
 import android.support.v4.view.WindowCompat
 import android.support.v7.widget.Toolbar
@@ -66,6 +67,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
+import de.vanita5.twittnuker.util.activity.LinkHandlerFragmentLifecycleCallbacks
 import de.vanita5.twittnuker.util.linkhandler.TwidereLinkMatcher
 import de.vanita5.twittnuker.util.theme.getCurrentThemeResource
 
@@ -78,6 +80,7 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
     private var actionBarHeight: Int = 0
     private var subtitle: CharSequence? = null
     private var hideOffsetNotSupported: Boolean = false
+    private lateinit var fragmentLifecycleCallbacks: FragmentLifecycleCallbacks
 
     override val currentVisibleFragment: Fragment?
         get() = supportFragmentManager.findFragmentByTag("content_fragment")
@@ -87,6 +90,9 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         multiSelectHandler = MultiSelectEventHandler(this)
         controlBarShowHideHelper = ControlBarShowHideHelper(this)
         multiSelectHandler.dispatchOnCreate()
+
+        fragmentLifecycleCallbacks = LinkHandlerFragmentLifecycleCallbacks.get(this)
+        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
         val uri = intent.data ?: run {
             finish()
@@ -146,6 +152,11 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         if (fragment is IToolBarSupportFragment) {
             ThemeUtils.setCompatContentViewOverlay(window, EmptyDrawable())
         }
+    }
+
+    override fun onDestroy() {
+        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks)
+        super.onDestroy()
     }
 
     override fun onStart() {

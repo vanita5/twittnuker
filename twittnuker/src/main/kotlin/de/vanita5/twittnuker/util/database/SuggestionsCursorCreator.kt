@@ -32,7 +32,6 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.provider.TwidereDataStore.*
 import de.vanita5.twittnuker.util.SQLiteDatabaseWrapper
-import de.vanita5.twittnuker.util.TwidereQueryBuilder
 import de.vanita5.twittnuker.util.UserColorNameManager
 import de.vanita5.twittnuker.util.Utils
 import java.util.regex.Pattern

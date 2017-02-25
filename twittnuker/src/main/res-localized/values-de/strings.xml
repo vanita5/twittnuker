@@ -85,6 +85,7 @@
     <!-- [verb] Save settings/files etc. -->
     <string name="action_save">Speichern</string>
     <string name="action_saving_search">Suche speichern</string>
+    <string name="action_search">Suchen</string>
     <string name="action_select_all">Alle</string>
     <string name="action_select_none">Nichts</string>
     <string name="action_select_user">Account auswählen</string>
@@ -760,7 +761,6 @@
     <string name="saved_searches_already_saved_hint">Du hast diese Suche schon gespeichert</string>
     <string name="scheduled_statuses">Geplante Tweets</string>
     <string name="scrapyard">Schrottplatz</string>
-    <string name="search">Suchen</string>
     <string name="search_hint">Tweets oder User suchen</string>
     <string name="search_hint_users">User suchen</string>
     <string name="search_statuses">Tweets suchen</string>
@@ -885,6 +885,7 @@
     <string name="title_message_conversation_info">Gruppeninfo</string>
     <string name="title_open_source_license">Open-Source-Lizenz</string>
     <string name="title_premium_features_name">Twittnuker</string>
+    <string name="title_search">Suche</string>
     <string name="title_select_users">Account auswählen</string>
     <string name="title_status">Tweet</string>
     <string name="title_statuses">Tweets</string>

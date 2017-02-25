@@ -29,7 +29,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.view.ViewPager.OnPageChangeListener
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -60,7 +59,6 @@ abstract class AbsToolbarTabPagesFragment : BaseFragment(), RefreshScrollTopInte
     private lateinit var pagerAdapter: SupportTabsAdapter
     override val toolbar: Toolbar
         get() = toolbarContainer.toolbar
-    private var mControlBarHeight: Int = 0
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -122,15 +120,6 @@ abstract class AbsToolbarTabPagesFragment : BaseFragment(), RefreshScrollTopInte
         return inflater!!.inflate(R.layout.fragment_toolbar_tab_pages, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val host = host
-        if (host is AppCompatActivity) {
-            host.setSupportActionBar(toolbar)
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val o = pagerAdapter.instantiateItem(viewPager, viewPager.currentItem)
         if (o is Fragment) {
@@ -169,7 +158,6 @@ abstract class AbsToolbarTabPagesFragment : BaseFragment(), RefreshScrollTopInte
     }
 
     override fun onControlBarOffsetChanged(activity: IControlBarActivity, offset: Float) {
-        mControlBarHeight = activity.controlBarHeight
     }
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {

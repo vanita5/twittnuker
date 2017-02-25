@@ -33,7 +33,7 @@
             android:title="@string/title_compose"/>
         <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
             android:action="search"
-            android:title="@string/search"/>
+            android:title="@string/title_search"/>
         <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
             android:action="message"
             android:title="@string/title_direct_messages"/>
