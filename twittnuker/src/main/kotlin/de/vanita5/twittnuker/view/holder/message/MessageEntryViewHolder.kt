@@ -27,10 +27,10 @@ import android.view.View
 import kotlinx.android.synthetic.main.list_item_message_entry.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
+import de.vanita5.twittnuker.extension.model.displayAvatarTo
 import de.vanita5.twittnuker.extension.model.getConversationName
 import de.vanita5.twittnuker.extension.model.getSummaryText
 import de.vanita5.twittnuker.extension.model.timestamp
-import de.vanita5.twittnuker.extension.model.user
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 
@@ -71,18 +71,11 @@ class MessageEntryViewHolder(itemView: View, val adapter: MessagesEntriesAdapter
             stateIndicator.visibility = View.GONE
         }
         if (conversation.conversation_type == ConversationType.ONE_TO_ONE) {
-            val user = conversation.user
-            if (user != null) {
-                adapter.mediaLoader.displayProfileImage(profileImage, user)
-            } else {
-                adapter.mediaLoader.displayProfileImage(profileImage, null)
-                // TODO display default profile image
-            }
             typeIndicator.visibility = View.GONE
         } else {
-            adapter.mediaLoader.displayGroupConversationAvatar(profileImage, conversation.conversation_avatar)
             typeIndicator.visibility = View.VISIBLE
         }
+        conversation.displayAvatarTo(adapter.mediaLoader, profileImage)
         if (conversation.unread_count > 0) {
             unreadCount.visibility = View.VISIBLE
             unreadCount.text = conversation.unread_count.toString()

@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.extension.model
 
 import android.content.Context
+import android.widget.ImageView
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.ParcelableMessage
@@ -31,6 +32,7 @@ import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationTyp
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ExtrasType
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.message.conversation.TwitterOfficialConversationExtras
+import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
 
 fun ParcelableMessageConversation.applyFrom(message: ParcelableMessage, details: AccountDetails) {
@@ -69,6 +71,19 @@ fun ParcelableMessageConversation.getSummaryText(context: Context, manager: User
                                                  nameFirst: Boolean): CharSequence? {
     return getSummaryText(context, manager, nameFirst, message_type, message_extras, sender_key,
             text_unescaped, this)
+}
+
+fun ParcelableMessageConversation.displayAvatarTo(mediaLoader: MediaLoaderWrapper, view: ImageView) {
+    if (conversation_type == ConversationType.ONE_TO_ONE) {
+        val user = this.user
+        if (user != null) {
+            mediaLoader.displayProfileImage(view, user)
+        } else {
+            mediaLoader.displayProfileImage(view, null)
+        }
+    } else {
+        mediaLoader.displayGroupConversationAvatar(view, conversation_avatar)
+    }
 }
 
 val ParcelableMessageConversation.user: ParcelableUser?
