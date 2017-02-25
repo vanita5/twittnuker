@@ -117,8 +117,9 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     private var isStreamingServiceRunning = false
 
     private lateinit var pagerAdapter: SupportTabsAdapter
-
     private lateinit var drawerToggle: ActionBarDrawerToggle
+
+    private var propertiesInitialized = false
 
     private var updateUnreadCountTask: UpdateUnreadCountTask? = null
     private val readStateChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, key -> updateUnreadCount() }
@@ -211,8 +212,12 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
         }
         supportRequestWindowFeature(AppCompatDelegate.FEATURE_ACTION_MODE_OVERLAY)
         setContentView(R.layout.activity_home)
-
         setSupportActionBar(toolbar)
+
+        drawerToggle = ActionBarDrawerToggle(this, homeMenu, R.string.open_accounts_dashboard,
+                R.string.close_accounts_dashboard)
+        pagerAdapter = SupportTabsAdapter(this, supportFragmentManager, mainTabs)
+        propertiesInitialized = true
 
         ThemeUtils.setCompatContentViewOverlay(window, EmptyDrawable())
 
@@ -229,10 +234,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
             }
         }
 
-        drawerToggle = ActionBarDrawerToggle(this, homeMenu, R.string.open_accounts_dashboard,
-                R.string.close_accounts_dashboard)
         homeContent.setOnFitSystemWindowsListener(this)
-        pagerAdapter = SupportTabsAdapter(this, supportFragmentManager, mainTabs)
         mainPager.adapter = pagerAdapter
         mainTabs.setViewPager(mainPager)
         mainTabs.setOnPageChangeListener(this)
@@ -369,10 +371,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
 
     override fun onAttachFragment(fragment: Fragment?) {
         super.onAttachFragment(fragment)
-        // Must exclude fragments not belongs tabs, otherwise it will crash
-        if (fragment !is AccountsDashboardFragment) {
-            updateActionsButton()
-        }
+        updateActionsButton()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -842,6 +841,11 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
             mainPager.pageMargin = resources.getDimensionPixelOffset(R.dimen.home_page_margin)
             mainPager.setPageMarginDrawable(ThemeUtils.getDrawableFromThemeAttribute(this, R.attr.dividerVertical))
             pagerAdapter.hasMultipleColumns = true
+            pagerAdapter.preferredColumnWidth = when (preferences[multiColumnWidthKey]) {
+                "narrow" -> resources.getDimension(R.dimen.preferred_tab_column_width_narrow)
+                "wide" -> resources.getDimension(R.dimen.preferred_tab_column_width_wide)
+                else -> resources.getDimension(R.dimen.preferred_tab_column_width_normal)
+            }
             mainTabs.columns = Math.floor(1.0 / pagerAdapter.getPageWidth(0)).toInt()
         } else {
             mainPager.pageMargin = 0
@@ -875,6 +879,7 @@ class HomeActivity : BaseActivity(), OnClickListener, OnPageChangeListener, Supp
     }
 
     private fun updateActionsButton() {
+        if (!propertiesInitialized) return
         val fragment = run {
             if (pagerAdapter.count == 0) return@run null
             val position = mainPager.currentItem

@@ -30,7 +30,6 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
-import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.fragment.iface.RefreshScrollTopInterface
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.model.SupportTabSpec
@@ -49,6 +48,7 @@ class SupportTabsAdapter @JvmOverloads constructor(
 ) : SupportFixedFragmentStatePagerAdapter(fm), TabProvider, TabListener {
 
     var hasMultipleColumns: Boolean = false
+    var preferredColumnWidth: Float = 0f
 
     private val tab = ArrayList<SupportTabSpec>()
 
@@ -99,10 +99,9 @@ class SupportTabsAdapter @JvmOverloads constructor(
     override fun getPageWidth(position: Int): Float {
         val columnCount = count
         if (columnCount == 0) return 1f
-        if (hasMultipleColumns) {
+        if (hasMultipleColumns && preferredColumnWidth > 0) {
             val resources = context.resources
             val screenWidth = resources.displayMetrics.widthPixels
-            val preferredColumnWidth = resources.getDimension(R.dimen.preferred_tab_column_width)
             val pageWidth = preferredColumnWidth / screenWidth
             if (columnCount * preferredColumnWidth < screenWidth) {
                 return 1f / columnCount
