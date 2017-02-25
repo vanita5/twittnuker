@@ -29,7 +29,7 @@ import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.model.ItemCounts
 import de.vanita5.twittnuker.model.ParcelableUserList
-import de.vanita5.twittnuker.util.view.display
+import de.vanita5.twittnuker.extension.view.holder.display
 import de.vanita5.twittnuker.view.holder.SimpleUserListViewHolder
 
 class SimpleParcelableUserListsAdapter(

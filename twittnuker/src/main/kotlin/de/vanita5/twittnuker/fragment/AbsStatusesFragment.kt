@@ -40,7 +40,6 @@ import kotlinx.android.synthetic.main.fragment_content_recyclerview.*
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.adapter.ParcelableStatusesAdapter
 import de.vanita5.twittnuker.adapter.decorator.DividerItemDecoration
@@ -349,7 +348,7 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
     override fun onGapClick(holder: GapViewHolder, position: Int) {
         val adapter = this.adapter
         val status = adapter.getStatus(position) ?: return
-        DebugLog.v(TwittnukerConstants.LOGTAG, "Load activity gap " + status)
+        DebugLog.v(msg = "Load activity gap $status")
         adapter.addGapLoadingId(ObjectId(status.account_key, status.id))
         val accountIds = arrayOf(status.account_key)
         val maxIds = arrayOf<String?>(status.id)

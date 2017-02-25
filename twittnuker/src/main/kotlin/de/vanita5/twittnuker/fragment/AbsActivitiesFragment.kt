@@ -41,7 +41,6 @@ import org.mariotaku.ktextension.coerceInOr
 import org.mariotaku.ktextension.isNullOrEmpty
 import org.mariotaku.ktextension.rangeOfSize
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_VIEW_TYPE_GAP
 import de.vanita5.twittnuker.adapter.ParcelableActivitiesAdapter.Companion.ITEM_VIEW_TYPE_STATUS
@@ -306,7 +305,7 @@ abstract class AbsActivitiesFragment protected constructor() :
 
     override fun onGapClick(holder: GapViewHolder, position: Int) {
         val activity = adapter.getActivity(position) ?: return
-        DebugLog.v(TwittnukerConstants.LOGTAG, "Load activity gap $activity")
+        DebugLog.v(msg = "Load activity gap $activity")
         val accountIds = arrayOf(activity.account_key)
         val maxIds = arrayOf(activity.min_position)
         val maxSortIds = longArrayOf(activity.min_sort_position)

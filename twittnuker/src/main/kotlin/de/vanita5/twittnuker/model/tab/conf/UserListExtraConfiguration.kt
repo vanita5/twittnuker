@@ -37,7 +37,7 @@ import de.vanita5.twittnuker.fragment.CustomTabsFragment.TabEditorDialogFragment
 import de.vanita5.twittnuker.model.ParcelableUserList
 import de.vanita5.twittnuker.model.tab.TabConfiguration
 import de.vanita5.twittnuker.util.dagger.DependencyHolder
-import de.vanita5.twittnuker.util.view.display
+import de.vanita5.twittnuker.extension.view.holder.display
 import de.vanita5.twittnuker.view.holder.SimpleUserListViewHolder
 
 class UserListExtraConfiguration(key: String) : TabConfiguration.ExtraConfiguration(key) {
