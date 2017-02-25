@@ -64,7 +64,7 @@
             app:notificationType="vibration|light" />
         <de.vanita5.twittnuker.preference.NotificationTypePreference
             android:key="notification_type_direct_messages"
-            android:title="@string/direct_messages"
+            android:title="@string/title_direct_messages"
             app:dependencyKey="direct_messages_notification"
             app:dependencyValueDefault="false"
             app:dependencyValues="@array/dependency_values_true"

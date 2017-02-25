@@ -31,20 +31,11 @@ import de.vanita5.twittnuker.TwittnukerConstants;
 import static android.text.TextUtils.isEmpty;
 
 public final class ParseUtils implements TwittnukerConstants {
-
     private ParseUtils() {
     }
 
     public static String parseString(final Object object) {
         return parseString(object, null);
-    }
-
-    public static String parseString(final int object) {
-        return String.valueOf(object);
-    }
-
-    public static String parseString(final long object) {
-        return String.valueOf(object);
     }
 
     public static String parseString(final Object object, final String def) {

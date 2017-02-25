@@ -29,12 +29,11 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
-import android.support.v4.util.ArrayMap
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.RecyclerView
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.CheckBox
-import android.widget.CompoundButton
 import android.widget.TextView
 import android.widget.Toast
 import nl.komponents.kovenant.task
@@ -42,9 +41,7 @@ import nl.komponents.kovenant.ui.alwaysUi
 import org.mariotaku.ktextension.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.activity.BaseActivity
-import de.vanita5.twittnuker.adapter.LoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.SelectableUsersAdapter
-import de.vanita5.twittnuker.adapter.iface.IContentAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter
 import de.vanita5.twittnuker.adapter.iface.ILoadMoreSupportAdapter.IndicatorPosition
 import de.vanita5.twittnuker.constant.IntentConstants
@@ -57,14 +54,8 @@ import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.loader.CursorSupportUsersLoader
 import de.vanita5.twittnuker.loader.iface.IExtendedLoader
 import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.util.DataStoreUtils
-import de.vanita5.twittnuker.util.ThemeUtils
-import de.vanita5.twittnuker.util.support.ViewSupport
-import de.vanita5.twittnuker.view.holder.LoadIndicatorViewHolder
-import de.vanita5.twittnuker.view.holder.SimpleUserViewHolder
 import java.lang.ref.WeakReference
-import kotlin.collections.set
 
 abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<SelectableUsersAdapter>(),
         LoaderManager.LoaderCallbacks<List<ParcelableUser>?> {
@@ -214,15 +205,15 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
                     return@mapNotNull user
                 }
         selectedUsers.forEach { it.is_filtered = true }
-        val weakDf = WeakReference(ProgressDialogFragment.show(childFragmentManager, "import_progress"))
+        ProgressDialogFragment.show(childFragmentManager, "import_progress")
         val weakThis = WeakReference(this)
         task {
             val context = weakThis.get()?.context ?: return@task
             DataStoreUtils.addToFilter(context, selectedUsers, filterEverywhere)
         }.alwaysUi {
-            executeAfterFragmentResumed(true) {
-                val fm = weakThis.get()?.fragmentManager ?: return@executeAfterFragmentResumed
-                val df = weakDf.get() ?: fm.findFragmentByTag("import_progress") as? DialogFragment
+            executeAfterFragmentResumed(true) { fragment ->
+                val fm = fragment.fragmentManager
+                val df = fm.findFragmentByTag("import_progress") as? DialogFragment
                 df?.dismiss()
             }
             weakThis.get()?.adapter?.notifyDataSetChanged()
@@ -242,7 +233,7 @@ abstract class BaseFiltersImportFragment : AbsContentListRecyclerViewFragment<Se
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             val builder = AlertDialog.Builder(context)
-            builder.setTitle(R.string.add_to_filter)
+            builder.setTitle(R.string.action_add_to_filter)
             builder.setView(R.layout.dialog_block_mute_filter_user_confirm)
             builder.setPositiveButton(android.R.string.ok, this)
             builder.setNegativeButton(android.R.string.cancel, null)

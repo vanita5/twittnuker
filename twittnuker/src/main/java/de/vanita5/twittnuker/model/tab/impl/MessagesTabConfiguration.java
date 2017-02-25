@@ -13,7 +13,7 @@ public class MessagesTabConfiguration extends TabConfiguration {
     @NonNull
     @Override
     public StringHolder getName() {
-        return StringHolder.resource(R.string.direct_messages);
+        return StringHolder.resource(R.string.title_direct_messages);
     }
 
     @NonNull

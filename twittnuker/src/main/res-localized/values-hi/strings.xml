@@ -44,7 +44,7 @@
     <string name="action_view_map">नक्शा</string>
     <string name="add_account">खाता जोड़ें</string>
     <string name="add_image">छवि जोड़ें</string>
-    <string name="add_member">सदस्य जोड़ें</string>
+    <string name="action_add_member">सदस्य जोड़ें</string>
     <string name="api_url_format">एपीआई यूआरएल प्रारूप</string>
     <string name="app_description">तुम्हारा अपना ट्विटर एप्प</string>
     <!-- App name, normally you don't need to translate this. -->

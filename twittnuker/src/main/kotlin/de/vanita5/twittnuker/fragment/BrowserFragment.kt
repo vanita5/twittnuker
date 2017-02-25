@@ -24,17 +24,15 @@ package de.vanita5.twittnuker.fragment
 
 import android.os.Bundle
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_URI
-import de.vanita5.twittnuker.util.ParseUtils
 
 open class BrowserFragment : BaseWebViewFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val args = arguments
-        val uri = args?.get(EXTRA_URI)
-        val view = webView!!
-        view.loadUrl(ParseUtils.parseString(uri, "about:blank"))
-        view.settings.displayZoomControls = false
+        webView?.loadUrl(arguments?.get(EXTRA_URI)?.toString() ?: "about:blank")
+        webView?.settings?.apply {
+            displayZoomControls = false
+        }
     }
 
 

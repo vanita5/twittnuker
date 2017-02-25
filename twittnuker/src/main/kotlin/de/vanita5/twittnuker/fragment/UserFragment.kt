@@ -1587,7 +1587,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
             val userKey = arguments.getParcelable<UserKey>(EXTRA_USER_KEY)
             val accountKey = arguments.getParcelable<UserKey>(EXTRA_ACCOUNT_KEY)
             val builder = AlertDialog.Builder(context)
-            builder.setTitle(R.string.add_or_remove_from_list)
+            builder.setTitle(R.string.title_add_or_remove_from_list)
             val entries = Array(lists.size) { idx ->
                 lists[idx].name
             }

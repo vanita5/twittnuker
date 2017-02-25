@@ -36,7 +36,7 @@
             android:title="@string/search"/>
         <de.vanita5.twittnuker.preference.KeyboardShortcutPreference
             android:action="message"
-            android:title="@string/direct_messages"/>
+            android:title="@string/title_direct_messages"/>
     </de.vanita5.twittnuker.preference.TintedPreferenceCategory>
 
     <de.vanita5.twittnuker.preference.TintedPreferenceCategory
