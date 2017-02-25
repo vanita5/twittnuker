@@ -30,7 +30,7 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.view.holder.SimpleUserViewHolder
 
-class SimpleParcelableUsersAdapter @JvmOverloads constructor(
+class SimpleParcelableUsersAdapter(
         context: Context,
         layoutRes: Int = R.layout.list_item_simple_user
 ) : BaseArrayAdapter<ParcelableUser>(context, layoutRes) {
@@ -57,7 +57,7 @@ class SimpleParcelableUsersAdapter @JvmOverloads constructor(
         return view
     }
 
-    @JvmOverloads fun setData(data: List<ParcelableUser>?, clearOld: Boolean = false) {
+    fun setData(data: List<ParcelableUser>?, clearOld: Boolean = false) {
         if (clearOld) {
             clear()
         }

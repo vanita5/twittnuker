@@ -24,6 +24,55 @@ package de.vanita5.twittnuker.extension
 
 import android.graphics.Point
 import android.graphics.Rect
+import android.support.v4.view.ViewCompat
 
 
 val Rect.origin: Point get() = Point(left, top)
+
+fun Rect.offsetTopTo(y: Int) {
+    offsetTo(left, y)
+}
+
+fun Rect.offsetBottomTo(y: Int) {
+    offsetTo(left, y - height())
+}
+
+fun Rect.offsetLeftTo(x: Int) {
+    offsetTo(x, top)
+}
+
+fun Rect.offsetRightTo(x: Int) {
+    offsetTo(x - width(), top)
+}
+
+fun Rect.offsetStartTo(x: Int, layoutDirection: Int) {
+    if (layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL) {
+        offsetRightTo(x)
+    } else {
+        offsetLeftTo(x)
+    }
+}
+
+fun Rect.offsetEndTo(x: Int, layoutDirection: Int) {
+    if (layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL) {
+        offsetLeftTo(x)
+    } else {
+        offsetRightTo(x)
+    }
+}
+
+fun Rect.getStart(layoutDirection: Int): Int {
+    if (layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL) {
+        return this.right
+    } else {
+        return this.left
+    }
+}
+
+fun Rect.getEnd(layoutDirection: Int): Int {
+    if (layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL) {
+        return this.left
+    } else {
+        return this.right
+    }
+}

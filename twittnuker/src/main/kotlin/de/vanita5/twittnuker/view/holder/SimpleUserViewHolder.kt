@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
 import kotlinx.android.synthetic.main.list_item_simple_user.view.*
+import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.iface.IContentAdapter
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.view.ProfileImageView
@@ -31,5 +32,9 @@ open class SimpleUserViewHolder(itemView: View, val adapter: IContentAdapter) : 
             adapter.mediaLoader.cancelDisplayTask(profileImageView)
             profileImageView.visibility = View.GONE
         }
+    }
+
+    companion object {
+        const val layoutResource = R.layout.list_item_simple_user
     }
 }

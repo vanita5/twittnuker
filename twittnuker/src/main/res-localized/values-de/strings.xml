@@ -60,6 +60,7 @@
     <string name="action_liking">Liken</string>
     <string name="action_modifying_lists">Listen bearbeiten</string>
     <string name="action_mute">Stummschalten</string>
+    <string name="action_mute_notifications">Benachrichtigungen stummschalten</string>
     <string name="action_muting">Stummschalten</string>
     <string name="action_name_saved_at_time"><xliff:g id="action">%1$s</xliff:g>, gespeichert um <xliff:g id="time">%2$s</xliff:g></string>
     <string name="action_open_in_browser">Im Browser öffnen</string>
