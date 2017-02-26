@@ -31,6 +31,7 @@ import android.net.Uri
 import android.os.BadParcelableException
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks
 import android.support.v4.app.NavUtils
 import android.support.v4.view.WindowCompat
@@ -67,7 +68,7 @@ import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.analyzer.PurchaseFinished
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.KeyboardShortcutsHandler.KeyboardShortcutCallback
-import de.vanita5.twittnuker.util.activity.LinkHandlerFragmentLifecycleCallbacks
+import de.vanita5.twittnuker.util.Utils.LINK_ID_FILTERS_IMPORT_BLOCKS
 import de.vanita5.twittnuker.util.linkhandler.TwidereLinkMatcher
 import de.vanita5.twittnuker.util.theme.getCurrentThemeResource
 
@@ -91,7 +92,13 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         controlBarShowHideHelper = ControlBarShowHideHelper(this)
         multiSelectHandler.dispatchOnCreate()
 
-        fragmentLifecycleCallbacks = LinkHandlerFragmentLifecycleCallbacks.get(this)
+        fragmentLifecycleCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
+                if (f is IToolBarSupportFragment) {
+                    setSupportActionBar(f.toolbar)
+                }
+            }
+        }
         supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, false)
 
         val uri = intent.data ?: run {
