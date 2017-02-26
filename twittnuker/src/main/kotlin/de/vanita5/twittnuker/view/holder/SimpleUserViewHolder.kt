@@ -11,7 +11,10 @@ import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.view.ProfileImageView
 
 
-open class SimpleUserViewHolder(itemView: View, val adapter: IContentAdapter) : RecyclerView.ViewHolder(itemView) {
+open class SimpleUserViewHolder<out A : IContentAdapter>(
+        itemView: View,
+        val adapter: A
+) : RecyclerView.ViewHolder(itemView) {
 
     val nameView: TextView = itemView.name
     val secondaryNameView: TextView = itemView.screenName
