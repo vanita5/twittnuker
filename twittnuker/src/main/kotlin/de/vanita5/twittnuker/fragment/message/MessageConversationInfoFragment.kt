@@ -22,12 +22,15 @@
 
 package de.vanita5.twittnuker.fragment.message
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.AsyncTaskLoader
 import android.support.v4.content.Loader
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.FixedLinearLayoutManager
 import android.support.v7.widget.LinearLayoutManager
@@ -38,6 +41,7 @@ import kotlinx.android.synthetic.main.activity_home_content.view.*
 import kotlinx.android.synthetic.main.fragment_messages_conversation_info.*
 import kotlinx.android.synthetic.main.header_message_conversation_info.view.*
 import kotlinx.android.synthetic.main.layout_toolbar_message_conversation_title.*
+import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
@@ -51,17 +55,23 @@ import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_ACCOUNT_KEY
 import de.vanita5.twittnuker.constant.IntentConstants.EXTRA_CONVERSATION_ID
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
+import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.displayAvatarTo
-import de.vanita5.twittnuker.extension.model.getConversationName
+import de.vanita5.twittnuker.extension.model.getSubtitle
+import de.vanita5.twittnuker.extension.model.getTitle
 import de.vanita5.twittnuker.extension.model.notificationDisabled
 import de.vanita5.twittnuker.extension.view.calculateSpaceItemHeight
+import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BaseFragment
+import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment
 import de.vanita5.twittnuker.fragment.message.MessageConversationInfoFragment.ConversationInfoAdapter.Companion.VIEW_TYPE_HEADER
 import de.vanita5.twittnuker.fragment.message.MessageConversationInfoFragment.ConversationInfoAdapter.Companion.VIEW_TYPE_SPACE
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
+import de.vanita5.twittnuker.task.twitter.message.DestroyConversationTask
 import de.vanita5.twittnuker.view.holder.SimpleUserViewHolder
+import java.lang.ref.WeakReference
 
 
 class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
@@ -103,8 +113,8 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
         appBarSubtitle.setTextColor(ChameleonUtils.getColorDependent(theme.colorToolbar))
 
         conversationAvatar.setBackgroundColor(avatarBackground)
-        conversationName.setTextColor(ChameleonUtils.getColorDependent(theme.colorToolbar))
-        conversationSummary.setTextColor(ChameleonUtils.getColorDependent(theme.colorToolbar))
+        conversationTitle.setTextColor(ChameleonUtils.getColorDependent(theme.colorToolbar))
+        conversationSubtitle.setTextColor(ChameleonUtils.getColorDependent(theme.colorToolbar))
 
         loaderManager.initLoader(0, null, this)
 
@@ -117,6 +127,20 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_messages_conversation_info, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.leave_conversation -> {
+                val df = DestroyConversationConfirmDialogFragment()
+                df.show(childFragmentManager, "destroy_conversation_confirm")
+                return true
+            }
+            R.id.delete_messages -> {
+
+            }
+        }
+        return false
     }
 
     override fun setupWindow(activity: FragmentActivity): Boolean {
@@ -137,15 +161,33 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
         }
         adapter.conversation = data
 
-        val name = data.getConversationName(context, userColorNameManager, preferences[nameFirstKey]).first
-        val summary = resources.getQuantityString(R.plurals.N_message_participants, data.participants.size, data.participants.size)
+        val name = data.getTitle(context, userColorNameManager, preferences[nameFirstKey]).first
+        val summary = data.getSubtitle(context)
 
         data.displayAvatarTo(mediaLoader, conversationAvatar)
         data.displayAvatarTo(mediaLoader, appBarIcon)
         appBarTitle.text = name
         appBarSubtitle.text = summary
-        conversationName.text = name
-        conversationSummary.text = summary
+        conversationTitle.text = name
+        conversationSubtitle.text = summary
+    }
+
+    private fun performDestroyConversation() {
+        ProgressDialogFragment.show(childFragmentManager, "leave_conversation_progress")
+        val weakThis = WeakReference(this)
+        val task = DestroyConversationTask(context, accountKey, conversationId)
+        task.callback = callback@ { succeed ->
+            val f = weakThis.get() ?: return@callback
+            f.executeAfterFragmentResumed { fragment ->
+                val df = fragment.childFragmentManager.findFragmentByTag("leave_conversation_progress") as? DialogFragment
+                df?.dismiss()
+                if (succeed) {
+                    activity?.setResult(RESULT_CLOSE)
+                    activity?.finish()
+                }
+            }
+        }
+        TaskStarter.execute(task)
     }
 
     class ConversationInfoLoader(
@@ -284,5 +326,27 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
             return super.getDecoratedMeasuredHeight(child)
         }
 
+    }
+
+    class DestroyConversationConfirmDialogFragment : BaseDialogFragment() {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage(R.string.message_destroy_conversation_confirm)
+            builder.setPositiveButton(R.string.action_leave_conversation) { dialog, which ->
+                (parentFragment as MessageConversationInfoFragment).performDestroyConversation()
+            }
+            builder.setNegativeButton(android.R.string.cancel, null)
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
+        }
+
+    }
+
+    companion object {
+        const val RESULT_CLOSE = 101
     }
 }
