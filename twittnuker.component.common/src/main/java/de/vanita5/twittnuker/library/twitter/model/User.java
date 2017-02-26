@@ -28,6 +28,7 @@ package de.vanita5.twittnuker.library.twitter.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -497,7 +498,7 @@ public class User extends TwitterResponseObject implements Comparable<User>, Par
         return defaultProfileImage;
     }
 
-
+    @Nullable
     public Date getCreatedAt() {
         return createdAt;
     }

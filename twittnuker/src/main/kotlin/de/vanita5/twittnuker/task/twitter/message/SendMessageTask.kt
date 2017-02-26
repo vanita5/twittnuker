@@ -29,7 +29,6 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.TwitterUpload
 import de.vanita5.twittnuker.library.twitter.model.DirectMessage
 import de.vanita5.twittnuker.library.twitter.model.NewDm
-import de.vanita5.twittnuker.library.twitter.model.fixMedia
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.isOfficial
@@ -121,7 +120,6 @@ class SendMessageTask(
             it.message != null
         }?.message?.conversationId
         val response = microBlog.getDmConversation(conversationId, null).conversationTimeline
-        response.fixMedia(microBlog)
         return GetMessagesTask.createDatabaseUpdateData(context, account, response)
     }
 

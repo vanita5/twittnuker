@@ -33,7 +33,6 @@ import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.library.twitter.model.DMResponse
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.User
-import de.vanita5.twittnuker.library.twitter.model.fixMedia
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
 import de.vanita5.twittnuker.annotation.AccountType
@@ -185,7 +184,6 @@ class GetMessagesTask(
         }
 
         val response = microBlog.getDmConversation(conversationId, paging).conversationTimeline
-        response.fixMedia(microBlog)
         return Companion.createDatabaseUpdateData(context, details, response)
     }
 
@@ -202,7 +200,6 @@ class GetMessagesTask(
                 }
             }).userInbox
         }
-        response.fixMedia(microBlog)
         return Companion.createDatabaseUpdateData(context, details, response)
     }
 
