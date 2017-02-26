@@ -34,6 +34,7 @@ import de.vanita5.twittnuker.model.AccountDetails
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
+import de.vanita5.twittnuker.util.DataStoreUtils
 
 
 class SetConversationNotificationDisabledTask(
@@ -65,7 +66,7 @@ class SetConversationNotificationDisabledTask(
                     } else {
                         microBlog.enableDmConversations(conversationId)
                     }
-                    val conversation = MarkMessageReadTask.findConversation(context, accountKey,
+                    val conversation = DataStoreUtils.findMessageConversation(context, accountKey,
                             conversationId) ?: return GetMessagesTask.DatabaseUpdateData(emptyList(), emptyList())
                     if (response.isSuccessful) {
                         conversation.notificationDisabled = notificationDisabled
@@ -75,7 +76,7 @@ class SetConversationNotificationDisabledTask(
             }
         }
 
-        val conversation = MarkMessageReadTask.findConversation(context, accountKey,
+        val conversation = DataStoreUtils.findMessageConversation(context, accountKey,
                 conversationId) ?: return GetMessagesTask.DatabaseUpdateData(emptyList(), emptyList())
         conversation.notificationDisabled = notificationDisabled
         // Don't finish too fast

@@ -450,6 +450,7 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
         val conversation = adapter.conversation ?: return
         val title = conversation.getTitle(context, userColorNameManager,
                 preferences[nameFirstKey]).first
+        val subtitle = conversation.getSubtitle(context)
         activity.title = title
         val readOnly = conversation.readOnly
         addMedia.isEnabled = !readOnly
@@ -457,7 +458,12 @@ class MessagesConversationFragment : AbsContentListRecyclerViewFragment<Messages
         editText.isEnabled = !readOnly
 
         conversationTitle.text = title
-        conversationSubtitle.text = conversation.getSubtitle(context)
+        if (subtitle != null) {
+            conversationSubtitle.visibility = View.VISIBLE
+            conversationSubtitle.text = subtitle
+        } else {
+            conversationSubtitle.visibility = View.GONE
+        }
         conversation.displayAvatarTo(mediaLoader, conversationAvatar)
     }
 

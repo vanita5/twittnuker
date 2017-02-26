@@ -95,8 +95,7 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
 
     private lateinit var databaseWrapper: SQLiteDatabaseWrapper
     private lateinit var backgroundExecutor: Executor
-
-    private var handler: Handler? = null
+    private lateinit var handler: Handler
 
 
     override fun onCreate(): Boolean {
@@ -211,9 +210,8 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
                         throw IllegalArgumentException()
                     }
                     val c = databaseWrapper.rawQuery(uri.lastPathSegment, selectionArgs)
-                    val uri = uri.getQueryParameter(QUERY_PARAM_NOTIFY_URI)?.let(Uri::parse)
-                    if (uri != null) {
-                        c?.setNotificationUri(context.contentResolver, uri)
+                    uri.getQueryParameter(QUERY_PARAM_NOTIFY_URI)?.let {
+                        c?.setNotificationUri(context.contentResolver, Uri.parse(it))
                     }
                     return c
                 }
@@ -472,14 +470,13 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
     }
 
     private fun notifyContentObserver(uri: Uri) {
-        if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return
-        handler!!.post(Runnable {
+        handler.post {
             context?.contentResolver?.notifyChange(uri, null)
-        })
+        }
     }
 
     private fun notifyUnreadCountChanged(position: Int) {
-        handler!!.post { bus.post(UnreadCountUpdatedEvent(position)) }
+        handler.post { bus.post(UnreadCountUpdatedEvent(position)) }
     }
 
     private fun onDatabaseUpdated(tableId: Int, uri: Uri?) {
@@ -492,7 +489,7 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
         if (valuesArray.isNullOrEmpty()) return
         when (tableId) {
             TABLE_ID_STATUSES -> {
-                if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return
+                if (!uri.getBooleanQueryParameter(QUERY_PARAM_SHOW_NOTIFICATION, true)) return
                 backgroundExecutor.execute {
 //                    val prefs = AccountPreferences.getNotificationEnabledPreferences(context,
 //                            DataStoreUtils.getAccountKeys(context))
@@ -504,7 +501,7 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
                 }
             }
             TABLE_ID_ACTIVITIES_ABOUT_ME -> {
-                if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return
+                if (!uri.getBooleanQueryParameter(QUERY_PARAM_SHOW_NOTIFICATION, true)) return
                 backgroundExecutor.execute {
                     val prefs = AccountPreferences.getNotificationEnabledPreferences(context,
                             DataStoreUtils.getAccountKeys(context))
@@ -516,7 +513,7 @@ class TwidereDataProvider : ContentProvider(), LazyLoadCallback {
                 }
             }
             TABLE_ID_MESSAGES_CONVERSATIONS -> {
-                if (!uri.getBooleanQueryParameter(QUERY_PARAM_NOTIFY, true)) return
+                if (!uri.getBooleanQueryParameter(QUERY_PARAM_SHOW_NOTIFICATION, true)) return
                 backgroundExecutor.execute {
                     val prefs = AccountPreferences.getNotificationEnabledPreferences(context,
                             DataStoreUtils.getAccountKeys(context))

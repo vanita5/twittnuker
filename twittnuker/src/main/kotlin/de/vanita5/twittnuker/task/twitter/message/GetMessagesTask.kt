@@ -34,7 +34,7 @@ import de.vanita5.twittnuker.library.twitter.model.DMResponse
 import de.vanita5.twittnuker.library.twitter.model.Paging
 import de.vanita5.twittnuker.library.twitter.model.User
 import org.mariotaku.sqliteqb.library.Expression
-import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_NOTIFY
+import de.vanita5.twittnuker.TwittnukerConstants.QUERY_PARAM_SHOW_NOTIFICATION
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.extension.model.applyFrom
 import de.vanita5.twittnuker.extension.model.isOfficial
@@ -470,7 +470,7 @@ class GetMessagesTask(
             ContentResolverUtils.bulkInsert(resolver, Messages.CONTENT_URI, messagesValues)
             // Notifications will show on conversations inserted
             ContentResolverUtils.bulkInsert(resolver, UriUtils.appendQueryParameters(Conversations.CONTENT_URI,
-                    QUERY_PARAM_NOTIFY, showNotification), conversationsValues)
+                    QUERY_PARAM_SHOW_NOTIFICATION, showNotification), conversationsValues)
 
             if (data.conversationRequestCursor != null) {
                 resolver.update(Conversations.CONTENT_URI, ContentValues().apply {
