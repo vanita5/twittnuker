@@ -862,6 +862,7 @@
     <string name="title_blocked_users">Blockierte Accounts</string>
     <string name="title_browser_sign_in">Browseranmeldung</string>
     <string name="title_compose">Neuer Tweet</string>
+    <string name="title_conversation">Unterhaltung</string>
     <string name="title_dialog_sync_connect_to">Verbinden…</string>
     <string name="title_direct_messages_conversation_info">Gruppeninfo</string>
     <string name="title_direct_messages_conversation_new">Neue Unterhaltung</string>

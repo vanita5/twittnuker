@@ -27,10 +27,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.list_item_message_entry.view.*
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.MessagesEntriesAdapter
-import de.vanita5.twittnuker.extension.model.displayAvatarTo
-import de.vanita5.twittnuker.extension.model.getConversationName
-import de.vanita5.twittnuker.extension.model.getSummaryText
-import de.vanita5.twittnuker.extension.model.timestamp
+import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 
@@ -44,6 +41,7 @@ class MessageEntryViewHolder(itemView: View, val adapter: MessagesEntriesAdapter
     private val profileImage by lazy { itemView.profileImage }
     private val typeIndicator by lazy { itemView.typeIndicator }
     private val stateIndicator by lazy { itemView.stateIndicator }
+    private val readIndicator by lazy { itemView.readIndicator }
     private val unreadCount by lazy { itemView.unreadCount }
 
     init {
@@ -65,15 +63,21 @@ class MessageEntryViewHolder(itemView: View, val adapter: MessagesEntriesAdapter
         this.text.text = conversation.getSummaryText(itemView.context, adapter.userColorNameManager,
                 adapter.nameFirst)
         if (conversation.is_outgoing) {
-            stateIndicator.visibility = View.VISIBLE
-            stateIndicator.setImageResource(R.drawable.ic_message_type_outgoing)
+            readIndicator.visibility = View.VISIBLE
+            readIndicator.setImageResource(R.drawable.ic_message_type_outgoing)
         } else {
-            stateIndicator.visibility = View.GONE
+            readIndicator.visibility = View.GONE
         }
         if (conversation.conversation_type == ConversationType.ONE_TO_ONE) {
             typeIndicator.visibility = View.GONE
         } else {
             typeIndicator.visibility = View.VISIBLE
+        }
+        if (conversation.notificationDisabled) {
+            stateIndicator.visibility = View.VISIBLE
+            stateIndicator.setImageResource(R.drawable.ic_message_type_speaker_muted)
+        } else {
+            stateIndicator.visibility = View.GONE
         }
         conversation.displayAvatarTo(adapter.mediaLoader, profileImage)
         if (conversation.unread_count > 0) {

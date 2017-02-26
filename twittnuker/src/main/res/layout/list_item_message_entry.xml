@@ -52,7 +52,6 @@
         android:contentDescription="@string/profile_image"
         tools:src="@drawable/ic_profile_image_default_group"/>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -101,12 +100,12 @@
                 android:id="@+id/stateIndicator"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_marginLeft="@dimen/element_spacing_small"
-                android:layout_marginStart="@dimen/element_spacing_small"
+                android:layout_marginEnd="@dimen/element_spacing_small"
+                android:layout_marginRight="@dimen/element_spacing_small"
                 android:layout_weight="0"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_message_type_outgoing"
+                android:src="@drawable/ic_message_type_speaker_muted"
                 tools:tint="?android:textColorSecondary"/>
 
             <de.vanita5.twittnuker.view.ShortTimeView
@@ -128,6 +127,18 @@
             android:gravity="center_vertical"
             android:minHeight="24dp"
             android:orientation="horizontal">
+
+            <de.vanita5.twittnuker.view.IconActionView
+                android:id="@+id/readIndicator"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="@dimen/element_spacing_small"
+                android:layout_marginRight="@dimen/element_spacing_small"
+                android:layout_weight="0"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_message_type_outgoing"
+                tools:tint="?android:textColorSecondary"/>
 
             <de.vanita5.twittnuker.view.TimelineContentTextView
                 android:id="@+id/text"
