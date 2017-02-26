@@ -1224,6 +1224,8 @@
 
     <string name="vibration">Vibration</string>
     <string name="message_destroy_conversation_confirm">Leave this conversation?</string>
+    <string name="action_edit_conversation_name">Edit name</string>
+    <string name="action_edit_conversation_avatar">Edit icon</string>
 
     <!-- Twittnuker -->
     <string name="unread_count_summary">Counter for unread tweets and messages in the tab</string>

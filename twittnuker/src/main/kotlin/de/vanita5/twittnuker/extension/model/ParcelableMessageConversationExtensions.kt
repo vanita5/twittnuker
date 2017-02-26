@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ExtrasType
 import de.vanita5.twittnuker.model.ParcelableUser
+import de.vanita5.twittnuker.model.message.conversation.DefaultConversationExtras
 import de.vanita5.twittnuker.model.message.conversation.TwitterOfficialConversationExtras
 import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
@@ -108,12 +109,34 @@ val ParcelableMessageConversation.readOnly: Boolean
         return false
     }
 
-val ParcelableMessageConversation.notificationDisabled: Boolean
+var ParcelableMessageConversation.notificationDisabled: Boolean
     get() {
         when (conversation_extras_type) {
             ExtrasType.TWITTER_OFFICIAL -> {
                 return (conversation_extras as? TwitterOfficialConversationExtras)?.notificationsDisabled ?: false
             }
+            else -> {
+                return (conversation_extras as? DefaultConversationExtras)?.notificationsDisabled ?: false
+            }
         }
-        return false
+    }
+    set(value) {
+        when (conversation_extras_type) {
+            ExtrasType.TWITTER_OFFICIAL -> {
+                val extras = conversation_extras as? TwitterOfficialConversationExtras ?: run {
+                    val obj = TwitterOfficialConversationExtras()
+                    conversation_extras = obj
+                    return@run obj
+                }
+                extras.notificationsDisabled = value
+            }
+            else -> {
+                val extras = conversation_extras as? DefaultConversationExtras ?: run {
+                    val obj = DefaultConversationExtras()
+                    conversation_extras = obj
+                    return@run obj
+                }
+                extras.notificationsDisabled = value
+            }
+        }
     }
