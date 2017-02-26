@@ -22,6 +22,7 @@
 
 package de.vanita5.twittnuker.view.holder;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,24 +30,24 @@ import de.vanita5.twittnuker.R;
 import de.vanita5.twittnuker.view.CardMediaContainer;
 import de.vanita5.twittnuker.view.iface.IColorLabelView;
 
-public class DraftViewHolder extends ViewListHolder {
+public class DraftViewHolder extends RecyclerView.ViewHolder {
 
-	public final IColorLabelView content;
-	public final TextView text;
-	public final TextView time;
-    public CardMediaContainer media_preview_container;
+    public final IColorLabelView content;
+    public final TextView text;
+    public final TextView time;
+    public CardMediaContainer mediaPreviewContainer;
 
-	public DraftViewHolder(final View view) {
-		super(view);
-		content = (IColorLabelView) findViewById(R.id.content);
-		text = (TextView) findViewById(R.id.text);
-		time = (TextView) findViewById(R.id.time);
-        media_preview_container = (CardMediaContainer) findViewById(R.id.media_preview_container);
-	}
+    public DraftViewHolder(final View itemView) {
+        super(itemView);
+        content = (IColorLabelView) itemView.findViewById(R.id.content);
+        text = (TextView) itemView.findViewById(R.id.text);
+        time = (TextView) itemView.findViewById(R.id.time);
+        mediaPreviewContainer = (CardMediaContainer) itemView.findViewById(R.id.media_preview_container);
+    }
 
-	public void setTextSize(final float textSize) {
-		text.setTextSize(textSize);
-		time.setTextSize(textSize * 0.75f);
-	}
+    public void setTextSize(final float textSize) {
+        text.setTextSize(textSize);
+        time.setTextSize(textSize * 0.75f);
+    }
 
 }

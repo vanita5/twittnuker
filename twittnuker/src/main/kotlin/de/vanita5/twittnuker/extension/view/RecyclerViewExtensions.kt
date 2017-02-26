@@ -20,21 +20,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.util.view
+package de.vanita5.twittnuker.extension.view
 
-import android.graphics.Rect
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.recyclerView
 import android.view.View
 
-
-class ConversationTitlesTransformation : AppBarChildBehavior.TextViewTransformation() {
-    override fun onTargetChanged(child: View, frame: Rect, target: View, targetFrame: Rect, percent: Float, offset: Int) {
-        super.onTargetChanged(child, frame, target, targetFrame, percent, offset)
-        if (percent < 1) {
-            child.visibility = View.VISIBLE
-            target.visibility = View.INVISIBLE
-        } else {
-            child.visibility = View.INVISIBLE
-            target.visibility = View.VISIBLE
+fun RecyclerView.LayoutManager.calculateSpaceItemHeight(child: View, spaceViewType: Int, typeStart: Int): Int {
+    val recyclerView = recyclerView ?: return 0
+    var heightBeforeSpace = 0
+    for (i in 0 until childCount) {
+        val childToMeasure = getChildAt(i)
+        val typeToMeasure = getItemViewType(childToMeasure)
+        if (typeToMeasure == spaceViewType) {
+            break
+        }
+        if (typeToMeasure == typeStart || heightBeforeSpace != 0) {
+            heightBeforeSpace += getDecoratedMeasuredHeight(childToMeasure)
         }
     }
+    if (heightBeforeSpace != 0) {
+        val spaceHeight = recyclerView.measuredHeight - heightBeforeSpace
+        return Math.max(0, spaceHeight)
+    }
+    return getDecoratedMeasuredHeight(child)
 }

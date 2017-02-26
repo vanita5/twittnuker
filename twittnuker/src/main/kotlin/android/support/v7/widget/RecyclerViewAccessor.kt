@@ -20,26 +20,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.vanita5.twittnuker.view.holder;
+package android.support.v7.widget
 
-import android.content.Context;
-import android.view.View;
-
-public class ViewListHolder {
-
-    public View view;
-
-    public ViewListHolder(final View view) {
-        if (view == null) throw new NullPointerException();
-        this.view = view;
-    }
-
-    public View findViewById(final int id) {
-        return view.findViewById(id);
-    }
-
-    public Context getContext() {
-        return view.getContext();
-    }
-
-}
+val RecyclerView.LayoutManager.recyclerView: RecyclerView? get() = mRecyclerView

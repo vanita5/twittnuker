@@ -46,7 +46,6 @@ import android.support.v7.widget.ActionMenuView
 import android.support.v7.widget.FixedLinearLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.LayoutParams
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -92,6 +91,7 @@ import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.applyTo
 import de.vanita5.twittnuker.extension.model.getAccountType
 import de.vanita5.twittnuker.extension.model.media_type
+import de.vanita5.twittnuker.extension.view.calculateSpaceItemHeight
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment.Companion.handleActionClick
 import de.vanita5.twittnuker.loader.ConversationLoader
 import de.vanita5.twittnuker.loader.ParcelableStatusLoader
@@ -117,6 +117,9 @@ import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder
 import de.vanita5.twittnuker.view.holder.iface.IStatusViewHolder.StatusClickListener
 import java.util.*
 
+/**
+ * Displays status details
+ */
 class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<ParcelableStatus>>,
         OnMediaClickListener, StatusClickListener, KeyboardShortcutCallback,
         ContentListSupport<StatusFragment.StatusAdapter> {
@@ -1923,25 +1926,9 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
         }
 
         override fun getDecoratedMeasuredHeight(child: View): Int {
-            var heightBeforeSpace = 0
             if (getItemViewType(child) == StatusAdapter.VIEW_TYPE_SPACE) {
-                for (i in 0 until childCount) {
-                    val childToMeasure = getChildAt(i)
-                    val paramsToMeasure = childToMeasure.layoutParams as LayoutParams
-                    val typeToMeasure = getItemViewType(childToMeasure)
-                    if (typeToMeasure == StatusAdapter.VIEW_TYPE_SPACE) {
-                        break
-                    }
-                    if (typeToMeasure == StatusAdapter.VIEW_TYPE_DETAIL_STATUS || heightBeforeSpace != 0) {
-                        heightBeforeSpace += super.getDecoratedMeasuredHeight(childToMeasure)
-                        +paramsToMeasure.topMargin + paramsToMeasure.bottomMargin
-                    }
-                }
-                if (heightBeforeSpace != 0) {
-                    val spaceHeight = recyclerView.measuredHeight - heightBeforeSpace
-                    this.spaceHeight = Math.max(0, spaceHeight)
-                    return this.spaceHeight
-                }
+                return calculateSpaceItemHeight(child, StatusAdapter.VIEW_TYPE_SPACE,
+                        StatusAdapter.VIEW_TYPE_DETAIL_STATUS)
             }
             return super.getDecoratedMeasuredHeight(child)
         }
@@ -2056,7 +2043,8 @@ class StatusFragment : BaseFragment(), LoaderCallbacks<SingleResponse<Parcelable
 
         private fun calculateSpaceHeight(): Int {
             val space = findViewByPosition(itemCount - 1) ?: return spaceHeight
-            return getDecoratedMeasuredHeight(space)
+            spaceHeight = getDecoratedMeasuredHeight(space)
+            return spaceHeight
         }
 
 
