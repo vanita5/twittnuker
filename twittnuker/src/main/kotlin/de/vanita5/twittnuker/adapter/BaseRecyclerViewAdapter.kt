@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.constant.displayProfileImageKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.constant.showAbsoluteTimeKey
 import de.vanita5.twittnuker.constant.textSizeKey
+import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 
@@ -46,13 +47,15 @@ abstract class BaseRecyclerViewAdapter<VH : RecyclerView.ViewHolder>(
     @Inject
     override final lateinit var userColorNameManager: UserColorNameManager
     @Inject
+    override final lateinit var bidiFormatter: BidiFormatter
+    @Inject
     lateinit var preferences: SharedPreferencesWrapper
     @Inject
     lateinit var readStateManager: ReadStateManager
     @Inject
     lateinit var multiSelectManager: MultiSelectManager
     @Inject
-    override final lateinit var bidiFormatter: BidiFormatter
+    lateinit var defaultFeatures: DefaultFeatures
 
     override final val profileImageStyle: Int
     override final val textSize: Float

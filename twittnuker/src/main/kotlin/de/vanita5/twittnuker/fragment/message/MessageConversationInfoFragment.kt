@@ -71,6 +71,8 @@ import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment
 import de.vanita5.twittnuker.fragment.message.MessageConversationInfoFragment.ConversationInfoAdapter.Companion.VIEW_TYPE_HEADER
 import de.vanita5.twittnuker.fragment.message.MessageConversationInfoFragment.ConversationInfoAdapter.Companion.VIEW_TYPE_SPACE
 import de.vanita5.twittnuker.model.*
+import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
+import de.vanita5.twittnuker.model.ParcelableMessageConversation.ExtrasType
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.twitter.message.AddParticipantsTask
 import de.vanita5.twittnuker.task.twitter.message.DestroyConversationTask
@@ -313,9 +315,22 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
 
         override fun getItemCount(): Int {
             val conversation = this.conversation ?: return 0
+            val participantsSize = conversation.participants.size
             itemCounts[ITEM_INDEX_HEADER] = 1
-            itemCounts[ITEM_INDEX_ITEM] = conversation.participants.size
-            itemCounts[ITEM_INDEX_ADD_USER] = 1
+            itemCounts[ITEM_INDEX_ITEM] = participantsSize
+            when (conversation.conversation_type) {
+                ConversationType.GROUP -> {
+                    if (participantsSize < defaultFeatures.getDirectMessageMaxParticipants(conversation.conversation_extras_type)) {
+                        itemCounts[ITEM_INDEX_ADD_USER] = 1
+                    } else {
+                        itemCounts[ITEM_INDEX_ADD_USER] = 0
+                    }
+                }
+                else -> {
+                    itemCounts[ITEM_INDEX_ADD_USER] = 0
+                }
+            }
+
             itemCounts[ITEM_INDEX_SPACE] = 1
             return itemCounts.itemCount
         }
@@ -507,4 +522,11 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
         const val RESULT_CLOSE = 101
         const val REQUEST_CONVERSATION_ADD_USER = 101
     }
+}
+
+private fun DefaultFeatures.getDirectMessageMaxParticipants(extrasType: String?): Long {
+    when (extrasType) {
+        ExtrasType.TWITTER_OFFICIAL -> return twitterDirectMessageMaxParticipants
+    }
+    return 2
 }
