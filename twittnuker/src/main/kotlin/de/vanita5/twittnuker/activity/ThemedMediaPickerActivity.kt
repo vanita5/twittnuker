@@ -24,26 +24,17 @@ package de.vanita5.twittnuker.activity
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.Toolbar
-import com.soundcloud.android.crop.CropImageActivity
 import org.mariotaku.kpreferences.get
-import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants
-import de.vanita5.twittnuker.activity.iface.IThemedActivity
+import org.mariotaku.pickncrop.library.MediaPickerActivity
+import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.constant.themeKey
-import de.vanita5.twittnuker.util.ThemeUtils
+import de.vanita5.twittnuker.util.RestFuNetworkStreamDownloader
 import de.vanita5.twittnuker.util.theme.getCurrentThemeResource
 
-class ImageCropperActivity : CropImageActivity(), IThemedActivity {
-
-    // Data fields
-    override val currentThemeBackgroundAlpha by lazy { themeBackgroundAlpha }
-    override val currentThemeBackgroundOption by lazy { themeBackgroundOption }
-
-    private var doneCancelBar: Toolbar? = null
+class ThemedMediaPickerActivity : MediaPickerActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val prefs = getSharedPreferences(TwittnukerConstants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
         val themeResource = getCurrentThemeResource(this, prefs[themeKey])
         if (themeResource != 0) {
             setTheme(themeResource)
@@ -51,19 +42,14 @@ class ImageCropperActivity : CropImageActivity(), IThemedActivity {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onContentChanged() {
-        super.onContentChanged()
-        doneCancelBar = findViewById(R.id.done_cancel_bar) as Toolbar
+    companion object {
+
+        fun withThemed(context: Context): MediaPickerActivity.IntentBuilder {
+            val builder = MediaPickerActivity.IntentBuilder(context, ThemedMediaPickerActivity::class.java)
+            builder.cropImageActivityClass(ImageCropperActivity::class.java)
+            builder.streamDownloaderClass(RestFuNetworkStreamDownloader::class.java)
+            return builder
+        }
     }
-
-    override fun setContentView(layoutResID: Int) {
-        super.setContentView(R.layout.activity_image_cropper)
-    }
-
-    override val themeBackgroundAlpha: Int
-        get() = ThemeUtils.getUserThemeBackgroundAlpha(this)
-
-    override val themeBackgroundOption: String
-        get() = ThemeUtils.getThemeBackgroundOption(this)
 
 }

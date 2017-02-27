@@ -24,6 +24,8 @@
 
 package de.vanita5.twittnuker.library.twitter.api;
 
+import android.support.annotation.Nullable;
+
 import de.vanita5.twittnuker.library.MicroBlogException;
 import de.vanita5.twittnuker.library.twitter.model.ConversationTimeline;
 import de.vanita5.twittnuker.library.twitter.model.DMResponse;
@@ -63,10 +65,17 @@ public interface PrivateDirectMessagesResources extends PrivateResources {
     ResponseCode updateDmConversationName(@Path("conversation_id") String conversationId,
             @Param("name") String name) throws MicroBlogException;
 
+    /**
+     * Update DM conversation avatar
+     *
+     * @param conversationId DM conversation ID
+     * @param avatarId       Avatar media ID, null for removing avatar
+     * @return HTTP response code
+     */
     @POST("/dm/conversation/{conversation_id}/update_avatar.json")
     @BodyType(BodyType.FORM)
     ResponseCode updateDmConversationAvatar(@Path("conversation_id") String conversationId,
-            @Param("avatar_id") String avatarId) throws MicroBlogException;
+            @Param(value = "avatar_id", ignoreOnNull = true) @Nullable String avatarId) throws MicroBlogException;
 
     @POST("/dm/conversation/{conversation_id}/disable_notifications.json")
     ResponseCode disableDmConversations(@Path("conversation_id") String conversationId)

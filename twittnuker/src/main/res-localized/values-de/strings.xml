@@ -38,6 +38,8 @@
     <string name="action_dont_terminate">Nicht beenden</string>
     <!-- [verb] Edit image/settings etc. -->
     <string name="action_edit">Bearbeiten</string>
+    <string name="action_edit_conversation_avatar">Bild bearbeiten</string>
+    <string name="action_edit_conversation_name">Name bearbeiten</string>
     <string name="action_edit_filter_rule">Regel bearbeiten</string>
     <string name="action_favorite">Favorisieren</string>
     <string name="action_favoriting">Favorisieren</string>
@@ -74,6 +76,7 @@
     <string name="action_refreshing_direct_messages">Aktualisiere Direktnachrichten</string>
     <string name="action_refreshing_home_timeline">Aktualisiere Timeline</string>
     <string name="action_refreshing_mentions">Aktualisiere Erwähnungen</string>
+    <string name="action_remove_conversation_avatar">Bild entfernen</string>
     <string name="action_removing_profile_banner_image">lösche Profilheaderbild</string>
     <string name="action_reply">Antworten</string>
     <string name="action_report_spam">Spam melden</string>
@@ -379,6 +382,7 @@
     <string name="highlight_and_underline">Hervorheben und unterstreichen</string>
     <string name="hint_accounts_dashboard_message">Am Rand ziehen um das Account Dashboard zu öffnen.</string>
     <string name="hint_accounts_dashboard_title">Account Dashboard</string>
+    <string name="hint_conversation_name">Gruppenname</string>
     <string name="hint_empty_filters_subscriptions">Keine Abonnements</string>
     <string name="hint_error_message_no_content">Kein Inhalt</string>
     <string name="hint_message_select_user">Account auswählen</string>
@@ -468,6 +472,7 @@
     <string name="message_auto_refresh_confirm">Soll die Timeline im Hintergrund automatisch aktualisiert werden?</string>
     <string name="message_blocked_user"><xliff:g id="user">%s</xliff:g> blockiert.</string>
     <string name="message_conversation_created">Unterhaltung begonnen.</string>
+    <string name="message_destroy_conversation_confirm">Diese Unterhaltung verlassen?</string>
     <string name="message_direct_message_deleted">Direktnachricht gelöscht.</string>
     <string name="message_direct_message_sent">Direktnachricht gesendet.</string>
     <string name="message_error_invalid_account">Beschädigte Accountdaten. Twittnuker entfernt entsprechende Acoounts. Füge diese bitte manuell erneut hinzu.</string>
@@ -962,10 +967,6 @@
         <xliff:g id="name">%s</xliff:g>\'s Listen</string>
     <string name="users_statuses">Tweets des Accounts</string>
     <string name="vibration">Vibration</string>
-    <string name="message_destroy_conversation_confirm">Diese Unterhaltung verlassen?</string>
-    <string name="action_edit_conversation_name">Name bearbeiten</string>
-    <string name="action_edit_conversation_avatar">Bild bearbeiten</string>
-    <string name="hint_conversation_name">Gruppenname</string>
 
 
     <!-- Twittnuker -->
