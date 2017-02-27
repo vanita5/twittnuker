@@ -31,6 +31,7 @@ import de.vanita5.twittnuker.extension.model.addParticipants
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
@@ -52,10 +53,12 @@ class AddParticipantsTask(
             val addData = GetMessagesTask.DatabaseUpdateData(listOf(conversation), emptyList())
             conversation.addParticipants(participants)
             GetMessagesTask.storeMessages(context, addData, account, showNotification = false)
+            // Don't finish too fast
+            Thread.sleep(300L)
             return true
         }
         val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
-        val addData = requestAddParticipants(microBlog, account)
+        val addData = requestAddParticipants(microBlog, account, conversation)
         GetMessagesTask.storeMessages(context, addData, account, showNotification = false)
         return true
     }
@@ -64,13 +67,17 @@ class AddParticipantsTask(
         callback?.invoke(result ?: false)
     }
 
-    private fun requestAddParticipants(microBlog: MicroBlog, account: AccountDetails):
+    private fun requestAddParticipants(microBlog: MicroBlog, account: AccountDetails, conversation: ParcelableMessageConversation?):
             GetMessagesTask.DatabaseUpdateData {
         when (account.type) {
             AccountType.TWITTER -> {
                 if (account.isOfficial(context)) {
                     val ids = participants.map { it.key.id }.toTypedArray()
                     val response = microBlog.addParticipants(conversationId, ids)
+                    if (conversation != null) {
+                        conversation.addParticipants(participants)
+                        return GetMessagesTask.DatabaseUpdateData(listOf(conversation), emptyList())
+                    }
                     return GetMessagesTask.createDatabaseUpdateData(context, account, response)
                 }
             }

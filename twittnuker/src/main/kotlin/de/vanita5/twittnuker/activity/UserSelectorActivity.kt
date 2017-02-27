@@ -43,6 +43,7 @@ import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.loader.CacheUserSearchLoader
 import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
+import de.vanita5.twittnuker.util.EditTextEnterHandler
 import de.vanita5.twittnuker.util.ParseUtils
 import de.vanita5.twittnuker.util.view.SimpleTextWatcher
 
@@ -63,11 +64,25 @@ class UserSelectorActivity : BaseActivity(), OnItemClickListener, LoaderManager.
         }
         setContentView(R.layout.activity_user_selector)
 
-        editScreenName.addTextChangedListener(object : SimpleTextWatcher {
+        val enterHandler = EditTextEnterHandler.attach(editScreenName, object : EditTextEnterHandler.EnterListener {
+            override fun onHitEnter(): Boolean {
+                val screenName = ParseUtils.parseString(editScreenName.text)
+                searchUser(accountKey, screenName, false)
+                return true
+            }
+
+            override fun shouldCallListener(): Boolean {
+                return true
+            }
+
+        }, true)
+
+        enterHandler.addTextChangedListener(object : SimpleTextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 searchUser(accountKey, s.toString(), true)
             }
         })
+
         screenNameConfirm.setOnClickListener {
             val screenName = ParseUtils.parseString(editScreenName.text)
             searchUser(accountKey, screenName, false)
