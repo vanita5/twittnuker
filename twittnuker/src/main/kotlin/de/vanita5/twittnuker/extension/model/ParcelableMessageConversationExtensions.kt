@@ -35,6 +35,7 @@ import de.vanita5.twittnuker.model.message.conversation.DefaultConversationExtra
 import de.vanita5.twittnuker.model.message.conversation.TwitterOfficialConversationExtras
 import de.vanita5.twittnuker.util.MediaLoaderWrapper
 import de.vanita5.twittnuker.util.UserColorNameManager
+import java.util.*
 
 fun ParcelableMessageConversation.applyFrom(message: ParcelableMessage, details: AccountDetails) {
     account_key = details.key
@@ -56,46 +57,6 @@ fun ParcelableMessageConversation.applyFrom(message: ParcelableMessage, details:
 val ParcelableMessageConversation.timestamp: Long
     get() = if (message_timestamp > 0) message_timestamp else local_timestamp
 
-fun ParcelableMessageConversation.getTitle(context: Context, manager: UserColorNameManager,
-        nameFirst: Boolean): Pair<String, String?> {
-    if (conversation_type == ConversationType.ONE_TO_ONE) {
-        val user = this.user ?: return Pair(context.getString(R.string.title_direct_messages), null)
-        return Pair(user.name, "@${user.screen_name}")
-    }
-    if (conversation_name != null) {
-        return Pair(conversation_name, null)
-    }
-    return Pair(participants.joinToString(separator = ", ") { manager.getDisplayName(it, nameFirst) }, null)
-}
-
-fun ParcelableMessageConversation.getSubtitle(context: Context): String? {
-    if (conversation_type == ConversationType.ONE_TO_ONE) {
-        val user = this.user ?: return null
-        return "@${user.screen_name}"
-    }
-    val resources = context.resources
-    return resources.getQuantityString(R.plurals.N_message_participants, participants.size,
-            participants.size)
-}
-
-fun ParcelableMessageConversation.getSummaryText(context: Context, manager: UserColorNameManager,
-                                                 nameFirst: Boolean): CharSequence? {
-    return getSummaryText(context, manager, nameFirst, message_type, message_extras, sender_key,
-            text_unescaped, this)
-}
-
-fun ParcelableMessageConversation.displayAvatarTo(mediaLoader: MediaLoaderWrapper, view: ImageView) {
-    if (conversation_type == ConversationType.ONE_TO_ONE) {
-        val user = this.user
-        if (user != null) {
-            mediaLoader.displayProfileImage(view, user)
-        } else {
-            mediaLoader.displayProfileImage(view, null)
-        }
-    } else {
-        mediaLoader.displayGroupConversationAvatar(view, conversation_avatar)
-    }
-}
 
 val ParcelableMessageConversation.user: ParcelableUser?
     get() {
@@ -144,3 +105,65 @@ var ParcelableMessageConversation.notificationDisabled: Boolean
             }
         }
     }
+
+fun ParcelableMessageConversation.getTitle(context: Context, manager: UserColorNameManager,
+        nameFirst: Boolean): Pair<String, String?> {
+    if (conversation_type == ConversationType.ONE_TO_ONE) {
+        val user = this.user ?: return Pair(context.getString(R.string.title_direct_messages), null)
+        return Pair(user.name, "@${user.screen_name}")
+    }
+    if (conversation_name != null) {
+        return Pair(conversation_name, null)
+    }
+    return Pair(participants.joinToString(separator = ", ") { manager.getDisplayName(it, nameFirst) }, null)
+}
+
+fun ParcelableMessageConversation.getSubtitle(context: Context): String? {
+    if (conversation_type == ConversationType.ONE_TO_ONE) {
+        val user = this.user ?: return null
+        return "@${user.screen_name}"
+    }
+    val resources = context.resources
+    return resources.getQuantityString(R.plurals.N_message_participants, participants.size,
+            participants.size)
+}
+
+fun ParcelableMessageConversation.getSummaryText(context: Context, manager: UserColorNameManager,
+        nameFirst: Boolean): CharSequence? {
+    return getSummaryText(context, manager, nameFirst, message_type, message_extras, sender_key,
+            text_unescaped, this)
+}
+
+fun ParcelableMessageConversation.displayAvatarTo(mediaLoader: MediaLoaderWrapper, view: ImageView) {
+    if (conversation_type == ConversationType.ONE_TO_ONE) {
+        val user = this.user
+        if (user != null) {
+            mediaLoader.displayProfileImage(view, user)
+        } else {
+            mediaLoader.displayProfileImage(view, null)
+        }
+    } else {
+        mediaLoader.displayGroupConversationAvatar(view, conversation_avatar)
+    }
+}
+
+
+fun ParcelableMessageConversation.addParticipants(users: Collection<ParcelableUser>) {
+    val participants = this.participants
+    if (participants == null) {
+        this.participants = arrayOf(user)
+    } else {
+        val addingUsers = ArrayList<ParcelableUser>()
+        users.forEach { user ->
+            val index = participants.indexOfFirst { it.key == user.key }
+            if (index >= 0) {
+                participants[index] = user
+            } else {
+                addingUsers += user
+            }
+        }
+        this.participants += addingUsers
+    }
+    this.participant_keys = this.participants.map(ParcelableUser::key).toTypedArray()
+    this.participants.sortBy(ParcelableUser::screen_name)
+}

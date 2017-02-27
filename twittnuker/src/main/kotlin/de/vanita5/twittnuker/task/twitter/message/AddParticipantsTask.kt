@@ -27,26 +27,36 @@ import android.content.Context
 import de.vanita5.twittnuker.library.MicroBlog
 import de.vanita5.twittnuker.library.MicroBlogException
 import de.vanita5.twittnuker.annotation.AccountType
+import de.vanita5.twittnuker.extension.model.addParticipants
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
 import de.vanita5.twittnuker.model.AccountDetails
+import de.vanita5.twittnuker.model.ParcelableUser
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
+import de.vanita5.twittnuker.util.DataStoreUtils
 
 
 class AddParticipantsTask(
         context: Context,
         val accountKey: UserKey,
         val conversationId: String,
-        val participantIds: Array<String>
+        val participants: Collection<ParcelableUser>
 ) : ExceptionHandlingAbstractTask<Unit?, Boolean, MicroBlogException, ((Boolean) -> Unit)?>(context) {
     override fun onExecute(params: Unit?): Boolean {
         val account = AccountUtils.getAccountDetails(AccountManager.get(context), accountKey, true) ?:
                 throw MicroBlogException("No account")
+        val conversation = DataStoreUtils.findMessageConversation(context, accountKey, conversationId)
+        if (conversation != null && conversation.is_temp) {
+            val addData = GetMessagesTask.DatabaseUpdateData(listOf(conversation), emptyList())
+            conversation.addParticipants(participants)
+            GetMessagesTask.storeMessages(context, addData, account, showNotification = false)
+            return true
+        }
         val microBlog = account.newMicroBlogInstance(context, cls = MicroBlog::class.java)
         val addData = requestAddParticipants(microBlog, account)
-        GetMessagesTask.storeMessages(context, addData, account)
+        GetMessagesTask.storeMessages(context, addData, account, showNotification = false)
         return true
     }
 
@@ -59,7 +69,8 @@ class AddParticipantsTask(
         when (account.type) {
             AccountType.TWITTER -> {
                 if (account.isOfficial(context)) {
-                    val response = microBlog.addParticipants(conversationId, participantIds);
+                    val ids = participants.map { it.key.id }.toTypedArray()
+                    val response = microBlog.addParticipants(conversationId, ids)
                     return GetMessagesTask.createDatabaseUpdateData(context, account, response)
                 }
             }

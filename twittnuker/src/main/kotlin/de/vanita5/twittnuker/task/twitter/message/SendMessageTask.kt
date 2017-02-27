@@ -38,6 +38,7 @@ import de.vanita5.twittnuker.model.ParcelableMessageConversation
 import de.vanita5.twittnuker.model.ParcelableNewMessage
 import de.vanita5.twittnuker.model.event.SendMessageTaskEvent
 import de.vanita5.twittnuker.model.util.ParcelableMessageUtils
+import de.vanita5.twittnuker.model.util.ParcelableUserUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.ExceptionHandlingAbstractTask
 import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
@@ -142,7 +143,9 @@ class SendMessageTask(
         val conversations = hashMapOf<String, ParcelableMessageConversation>()
         conversations.addLocalConversations(context, accountKey, conversationIds)
         val message = ParcelableMessageUtils.fromMessage(accountKey, dm, true)
-        conversations.addConversation(message.conversation_id, details, message, setOf(dm.sender, dm.recipient))
+        val sender = ParcelableUserUtils.fromUser(dm.sender, accountKey)
+        val recipient = ParcelableUserUtils.fromUser(dm.recipient, accountKey)
+        conversations.addConversation(message.conversation_id, details, message, setOf(sender, recipient), true)
         return GetMessagesTask.DatabaseUpdateData(conversations.values, listOf(message))
     }
 
