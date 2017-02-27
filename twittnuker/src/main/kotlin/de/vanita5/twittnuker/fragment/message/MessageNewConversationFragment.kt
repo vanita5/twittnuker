@@ -23,10 +23,12 @@
 package de.vanita5.twittnuker.fragment.message
 
 import android.accounts.AccountManager
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Bundle
+import android.support.annotation.WorkerThread
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.Loader
 import android.support.v7.widget.LinearLayoutManager
@@ -40,6 +42,7 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.Bundle
 import org.mariotaku.ktextension.set
 import org.mariotaku.ktextension.setItemAvailability
+import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.adapter.SelectableUsersAdapter
 import de.vanita5.twittnuker.constant.IntentConstants.*
@@ -47,11 +50,8 @@ import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.extension.model.isOfficial
 import de.vanita5.twittnuker.fragment.BaseFragment
 import de.vanita5.twittnuker.loader.CacheUserSearchLoader
-import de.vanita5.twittnuker.model.ParcelableMessageConversation
+import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
-import de.vanita5.twittnuker.model.ParcelableMessageConversationValuesCreator
-import de.vanita5.twittnuker.model.ParcelableUser
-import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
 import de.vanita5.twittnuker.task.twitter.message.SendMessageTask
@@ -235,6 +235,17 @@ class MessageNewConversationFragment : BaseFragment(), LoaderCallbacks<List<Parc
         }
         conversation.participants = (selected + account.user).toTypedArray()
         conversation.is_temp = true
+
+        if (conversation.conversation_type == ConversationType.ONE_TO_ONE) {
+            val participantKeys = conversation.participants.map(ParcelableUser::key)
+            val existingConversation = findMessageConversation(context, accountKey, participantKeys)
+            if (existingConversation != null) {
+                activity.startActivity(IntentUtils.messageConversation(accountKey, existingConversation.id))
+                activity.finish()
+                return
+            }
+        }
+
         val values = ParcelableMessageConversationValuesCreator.create(conversation)
         context.contentResolver.insert(Conversations.CONTENT_URI, values)
         activity.startActivity(IntentUtils.messageConversation(accountKey, conversation.id))
@@ -276,6 +287,25 @@ class MessageNewConversationFragment : BaseFragment(), LoaderCallbacks<List<Parc
             performSearchRequestRunnable = PerformSearchRequestRunnable(query, this)
             editParticipants.postDelayed(performSearchRequestRunnable, 1000L)
         }
+    }
+
+
+    @WorkerThread
+    fun findMessageConversation(context: Context, accountKey: UserKey,
+            participantKeys: Collection<UserKey>): ParcelableMessageConversation? {
+        val resolver = context.contentResolver
+        val where = Expression.and(Expression.equalsArgs(Conversations.ACCOUNT_KEY),
+                Expression.equalsArgs(Conversations.PARTICIPANT_KEYS)).sql
+        val whereArgs = arrayOf(accountKey.toString(), participantKeys.sorted().joinToString(","))
+        val cur = resolver.query(Conversations.CONTENT_URI, Conversations.COLUMNS, where, whereArgs, null) ?: return null
+        try {
+            if (cur.moveToFirst()) {
+                return ParcelableMessageConversationCursorIndices.fromCursor(cur)
+            }
+        } finally {
+            cur.close()
+        }
+        return null
     }
 
     internal class PerformSearchRequestRunnable(val query: String, fragment: MessageNewConversationFragment) : Runnable {
@@ -322,4 +352,5 @@ class MessageNewConversationFragment : BaseFragment(), LoaderCallbacks<List<Parc
         }
 
     }
+
 }
