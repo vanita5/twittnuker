@@ -965,6 +965,7 @@
     <string name="message_destroy_conversation_confirm">Diese Unterhaltung verlassen?</string>
     <string name="action_edit_conversation_name">Name bearbeiten</string>
     <string name="action_edit_conversation_avatar">Bild bearbeiten</string>
+    <string name="hint_conversation_name">Gruppenname</string>
 
 
     <!-- Twittnuker -->
