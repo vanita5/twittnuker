@@ -22,11 +22,14 @@
 
 package de.vanita5.twittnuker.fragment.message
 
+import android.accounts.AccountManager
 import android.app.Activity
 import android.app.Dialog
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentActivity
@@ -41,30 +44,37 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.CompoundButton
+import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_home_content.view.*
 import kotlinx.android.synthetic.main.fragment_messages_conversation_info.*
 import kotlinx.android.synthetic.main.header_message_conversation_info.view.*
 import kotlinx.android.synthetic.main.layout_toolbar_message_conversation_title.*
+import nl.komponents.kovenant.task
+import nl.komponents.kovenant.then
+import nl.komponents.kovenant.ui.alwaysUi
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.chameleon.Chameleon
 import org.mariotaku.chameleon.ChameleonUtils
 import org.mariotaku.kpreferences.get
 import org.mariotaku.ktextension.useCursor
+import de.vanita5.twittnuker.library.MicroBlog
+import de.vanita5.twittnuker.library.MicroBlogException
+import de.vanita5.twittnuker.library.twitter.TwitterUpload
+import org.mariotaku.pickncrop.library.MediaPickerActivity
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
+import de.vanita5.twittnuker.activity.ThemedMediaPickerActivity
 import de.vanita5.twittnuker.activity.UserSelectorActivity
 import de.vanita5.twittnuker.adapter.BaseRecyclerViewAdapter
 import de.vanita5.twittnuker.adapter.iface.IItemCountsAdapter
+import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.constant.profileImageStyleKey
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.getDirectMessageMaxParticipants
-import de.vanita5.twittnuker.extension.model.displayAvatarTo
-import de.vanita5.twittnuker.extension.model.getSubtitle
-import de.vanita5.twittnuker.extension.model.getTitle
-import de.vanita5.twittnuker.extension.model.notificationDisabled
+import de.vanita5.twittnuker.extension.model.*
 import de.vanita5.twittnuker.extension.view.calculateSpaceItemHeight
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.BaseFragment
@@ -75,7 +85,9 @@ import de.vanita5.twittnuker.fragment.message.MessageConversationInfoFragment.Co
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ConversationType
 import de.vanita5.twittnuker.model.ParcelableMessageConversation.ExtrasType
+import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.provider.TwidereDataStore.Messages.Conversations
+import de.vanita5.twittnuker.task.twitter.UpdateStatusTask
 import de.vanita5.twittnuker.task.twitter.message.AddParticipantsTask
 import de.vanita5.twittnuker.task.twitter.message.DestroyConversationTask
 import de.vanita5.twittnuker.task.twitter.message.SetConversationNotificationDisabledTask
@@ -169,6 +181,12 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
                     performAddParticipant(user)
                 }
             }
+            REQUEST_PICK_MEDIA -> {
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    val uri = MediaPickerActivity.getMediaUris(data).firstOrNull() ?: return
+                    performSetConversationAvatar(uri)
+                }
+            }
         }
     }
 
@@ -246,7 +264,7 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
         val task = DestroyConversationTask(context, accountKey, conversationId)
         task.callback = callback@ { succeed ->
             val f = weakThis.get() ?: return@callback
-            f.dismissAlertDialogThen("leave_conversation_progress") {
+            f.dismissDialogThen("leave_conversation_progress") {
                 if (succeed) {
                     activity?.setResult(RESULT_CLOSE)
                     activity?.finish()
@@ -262,8 +280,8 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
         val task = AddParticipantsTask(context, accountKey, conversationId, listOf(user))
         task.callback = callback@ { succeed ->
             val f = weakThis.get() ?: return@callback
-            f.dismissAlertDialogThen("add_participant_progress") {
-                loaderManager.restartLoader(0, null, this@MessageConversationInfoFragment)
+            f.dismissDialogThen("add_participant_progress") {
+                loaderManager.restartLoader(0, null, this)
             }
         }
         TaskStarter.execute(task)
@@ -275,8 +293,8 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
         val task = SetConversationNotificationDisabledTask(context, accountKey, conversationId, disabled)
         task.callback = callback@ { succeed ->
             val f = weakThis.get() ?: return@callback
-            f.dismissAlertDialogThen("set_notifications_disabled_progress") {
-                loaderManager.restartLoader(0, null, this@MessageConversationInfoFragment)
+            f.dismissDialogThen("set_notifications_disabled_progress") {
+                loaderManager.restartLoader(0, null, this)
             }
         }
         TaskStarter.execute(task)
@@ -292,20 +310,111 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
                 }
             }
             "avatar" -> {
-
+                val intent = ThemedMediaPickerActivity.withThemed(context)
+                        .allowMultiple(false)
+                        .aspectRatio(1, 1)
+                        .containsVideo(false)
+                        .build()
+                startActivityForResult(intent, REQUEST_PICK_MEDIA)
             }
         }
     }
 
-    private inline fun dismissAlertDialogThen(tag: String, crossinline action: BaseFragment.() -> Unit) {
-        executeAfterFragmentResumed { fragment ->
-            val df = fragment.childFragmentManager.findFragmentByTag(tag) as? DialogFragment
-            df?.dismiss()
-            action(fragment)
+    private fun performSetConversationName(name: String) {
+        val conversationId = this.conversationId
+        performUpdateInfo("set_name_progress", updateAction = updateAction@ { fragment, account, microBlog ->
+            val context = fragment.context
+            when (account.type) {
+                AccountType.TWITTER -> {
+                    if (account.isOfficial(context)) {
+                        return@updateAction microBlog.updateDmConversationName(conversationId, name).isSuccessful
+                    }
+                }
+            }
+            throw UnsupportedOperationException()
+        }, successAction = {
+            put(Conversations.CONVERSATION_NAME, name)
+        })
+    }
+
+    private fun performSetConversationAvatar(uri: Uri) {
+        val conversationId = this.conversationId
+        performUpdateInfo("set_avatar_progress", updateAction = updateAction@ { fragment, account, microBlog ->
+            val context = fragment.context
+            when (account.type) {
+                AccountType.TWITTER -> {
+                    if (account.isOfficial(context)) {
+                        val upload = account.newMicroBlogInstance(context, cls = TwitterUpload::class.java)
+                        val media = arrayOf(ParcelableMediaUpdate().apply {
+                            this.uri = uri.toString()
+                            this.delete_always = true
+                        })
+                        var deleteAlways: List<UpdateStatusTask.MediaDeletionItem>? = null
+                        try {
+                            val uploadResult = UpdateStatusTask.uploadAllMediaShared(context,
+                                    fragment.mediaLoader, upload, account, media, null, true, null)
+                            deleteAlways = uploadResult.deleteAlways
+                            val avatarId = uploadResult.ids.first()
+                            val result = microBlog.updateDmConversationAvatar(conversationId, avatarId).isSuccessful
+                            uploadResult.deleteOnSuccess.forEach { it.delete(context) }
+                            return@updateAction result
+                        } catch (e: UpdateStatusTask.UploadException) {
+                            e.deleteAlways?.forEach {
+                                it.delete(context)
+                            }
+                            throw e
+                        } finally {
+                            deleteAlways?.forEach { it.delete(context) }
+                        }
+                    }
+                }
+            }
+            throw UnsupportedOperationException()
+        }, successAction = {
+            putNull(Conversations.CONVERSATION_AVATAR)
+        })
+    }
+
+    private inline fun performUpdateInfo(
+            tag: String,
+            crossinline updateAction: (MessageConversationInfoFragment, AccountDetails, MicroBlog) -> Boolean,
+            crossinline successAction: ContentValues.() -> Unit
+    ) {
+        ProgressDialogFragment.show(childFragmentManager, tag)
+        val weakThis = WeakReference(this)
+        val accountKey = this.accountKey
+        val conversationId = this.conversationId
+        task {
+            val fragment = weakThis.get() ?: throw InterruptedException()
+            val account = AccountUtils.getAccountDetails(AccountManager.get(fragment.context),
+                    accountKey, true) ?: throw MicroBlogException("No account")
+            val microBlog = account.newMicroBlogInstance(fragment.context, cls = MicroBlog::class.java)
+            if (!updateAction(fragment, account, microBlog)) throw MicroBlogException("Update failed")
+        }.then {
+            val fragment = weakThis.get() ?: throw InterruptedException()
+            val values = ContentValues().apply(successAction)
+            val where = Expression.and(Expression.equalsArgs(Conversations.ACCOUNT_KEY),
+                    Expression.equalsArgs(Conversations.CONVERSATION_ID)).sql
+            val whereArgs = arrayOf(accountKey.toString(), conversationId)
+            fragment.context.contentResolver.update(Conversations.CONTENT_URI, values, where,
+                    whereArgs)
+        }.alwaysUi {
+            val fragment = weakThis.get() ?: return@alwaysUi
+            fragment.dismissDialogThen(tag) {
+                loaderManager.restartLoader(0, null, this)
+            }
         }
     }
 
-    class ConversationInfoLoader(
+    private inline fun dismissDialogThen(tag: String, crossinline action: MessageConversationInfoFragment.() -> Unit) {
+        executeAfterFragmentResumed { fragment ->
+            val df = fragment.childFragmentManager.findFragmentByTag(tag) as? DialogFragment
+            df?.dismiss()
+            action(fragment as MessageConversationInfoFragment)
+        }
+    }
+
+    internal class ConversationInfoLoader(
             context: Context,
             val accountKey: UserKey,
             val conversationId: String) : AsyncTaskLoader<ParcelableMessageConversation?>(context) {
@@ -563,7 +672,8 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
             builder.setView(R.layout.dialog_edit_conversation_name)
             builder.setNegativeButton(android.R.string.cancel, null)
             builder.setPositiveButton(android.R.string.ok) { dialog, which ->
-
+                val editName = (dialog as Dialog).findViewById(R.id.editName) as EditText
+                (parentFragment as MessageConversationInfoFragment).performSetConversationName(editName.text.toString())
             }
             val dialog = builder.create()
             dialog.setOnShowListener {
@@ -573,6 +683,7 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
             return dialog
         }
     }
+
 
     class DestroyConversationConfirmDialogFragment : BaseDialogFragment() {
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -626,6 +737,7 @@ class MessageConversationInfoFragment : BaseFragment(), IToolBarSupportFragment,
     companion object {
         const val RESULT_CLOSE = 101
         const val REQUEST_CONVERSATION_ADD_USER = 101
+        const val REQUEST_PICK_MEDIA = 102
     }
 
 }

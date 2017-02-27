@@ -135,6 +135,9 @@ class UpdateStatusTask(
 
             // Cleanup
             pendingUpdate.deleteOnSuccess.forEach { item -> item.delete(context) }
+        } catch (e: UploadException) {
+            e.deleteAlways?.forEach { it.delete(context) }
+            throw e
         } finally {
             // Cleanup
             pendingUpdate.deleteAlways.forEach { item -> item.delete(context) }
@@ -305,8 +308,8 @@ class UpdateStatusTask(
         }
         val media = statusUpdate.media.first()
         try {
-            return getBodyFromMedia(context, mediaLoader, Uri.parse(media.uri), sizeLimit, media.type,
-                    false, ContentLengthInputStream.ReadListener { length, position ->
+            return getBodyFromMedia(context, mediaLoader, media, sizeLimit, false,
+                    ContentLengthInputStream.ReadListener { length, position ->
                 stateCallback.onUploadingProgressChanged(-1, position, length)
             }).use { mediaBody ->
                 val photoUpdate = PhotoStatusUpdate(mediaBody.body, pendingUpdate.overrideTexts[updateIndex])
@@ -553,6 +556,8 @@ class UpdateStatusTask(
 
     class UploadException : UpdateStatusException {
 
+        var deleteAlways: List<MediaDeletionItem>? = null
+
         constructor() : super()
 
         constructor(detailMessage: String, throwable: Throwable) : super(detailMessage, throwable)
@@ -663,8 +668,8 @@ class UpdateStatusTask(
                 var body: MediaStreamBody? = null
                 try {
                     val sizeLimit = account.size_limit
-                    body = getBodyFromMedia(context, mediaLoader, Uri.parse(media.uri), sizeLimit,
-                            media.type, chucked, ContentLengthInputStream.ReadListener { length, position ->
+                    body = getBodyFromMedia(context, mediaLoader, media, sizeLimit,
+                            chucked, ContentLengthInputStream.ReadListener { length, position ->
                         callback?.onUploadingProgressChanged(index, position, length)
                     })
                     if (chucked) {
@@ -673,9 +678,13 @@ class UpdateStatusTask(
                         resp = upload.uploadMedia(body.body, ownerIds)
                     }
                 } catch (e: IOException) {
-                    throw UploadException(e)
+                    throw UploadException(e).apply {
+                        this.deleteAlways = deleteAlways
+                    }
                 } catch (e: MicroBlogException) {
-                    throw UploadException(e)
+                    throw UploadException(e).apply {
+                        this.deleteAlways = deleteAlways
+                    }
                 } finally {
                     Utils.closeSilently(body)
                 }
@@ -697,13 +706,14 @@ class UpdateStatusTask(
         fun getBodyFromMedia(
                 context: Context,
                 mediaLoader: MediaLoaderWrapper,
-                mediaUri: Uri,
+                media: ParcelableMediaUpdate,
                 sizeLimit: SizeLimit? = null,
-                @ParcelableMedia.Type type: Int,
                 chucked: Boolean,
                 readListener: ContentLengthInputStream.ReadListener
         ): MediaStreamBody {
             val resolver = context.contentResolver
+            val mediaUri = Uri.parse(media.uri)
+            val type = media.type
             val mediaType = resolver.getType(mediaUri) ?: run {
                 if (mediaUri.scheme == ContentResolver.SCHEME_FILE) {
                     mediaUri.lastPathSegment?.substringAfterLast(".")?.let { ext ->
@@ -729,8 +739,13 @@ class UpdateStatusTask(
             cis.setReadListener(readListener)
             val mimeType = data?.type ?: mediaType ?: "application/octet-stream"
             val body = FileBody(cis, "attachment", cis.length(), ContentType.parse(mimeType))
-            val deleteOnSuccess: MutableList<MediaDeletionItem> = mutableListOf(UriMediaDeletionItem(mediaUri))
+            val deleteOnSuccess: MutableList<MediaDeletionItem> = mutableListOf()
             val deleteAlways: MutableList<MediaDeletionItem> = mutableListOf()
+            if (media.delete_always) {
+                deleteAlways.add(UriMediaDeletionItem(mediaUri))
+            } else if (media.delete_on_success) {
+                deleteOnSuccess.add(UriMediaDeletionItem(mediaUri))
+            }
             data?.deleteOnSuccess?.addAllTo(deleteOnSuccess)
             data?.deleteAlways?.addAllTo(deleteAlways)
             return MediaStreamBody(body, data?.geometry, deleteOnSuccess, deleteAlways)
