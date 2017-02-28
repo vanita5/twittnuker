@@ -457,7 +457,8 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
                 quotedMediaLabel.visibility = View.GONE
 
                 quotedMediaPreview.displayMedia(loader = loader, media = status.quoted_media,
-                        accountId = status.account_key)
+                        accountId = status.account_key, mediaClickListener = this,
+                        loadingHandler = adapter.mediaLoadingHandler)
             }
         } else {
             // No media, hide all related views
@@ -467,7 +468,11 @@ class StatusViewHolder(private val adapter: IStatusesAdapter<*>, itemView: View)
     }
 
     override fun onMediaClick(view: View, media: ParcelableMedia, accountKey: UserKey?, id: Long) {
-        statusClickListener?.onMediaClick(this, view, media, layoutPosition)
+        if (view.parent == quotedMediaPreview) {
+            statusClickListener?.onQuotedMediaClick(this, view, media, layoutPosition)
+        } else {
+            statusClickListener?.onMediaClick(this, view, media, layoutPosition)
+        }
     }
 
     fun setOnClickListeners() {

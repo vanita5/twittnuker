@@ -357,10 +357,19 @@ abstract class AbsStatusesFragment : AbsContentListRecyclerViewFragment<Parcelab
                 maxSortIds = maxSortIds, sinceSortIds = null))
     }
 
-    override fun onMediaClick(holder: IStatusViewHolder, view: View, media: ParcelableMedia, statusPosition: Int) {
+    override fun onMediaClick(holder: IStatusViewHolder, view: View, current: ParcelableMedia,
+            statusPosition: Int) {
         val status = adapter.getStatus(statusPosition) ?: return
-        IntentUtils.openMedia(activity, status, media, preferences[newDocumentApiKey],
+        IntentUtils.openMedia(activity, status, current, preferences[newDocumentApiKey],
                 preferences[displaySensitiveContentsKey])
+    }
+
+    override fun onQuotedMediaClick(holder: IStatusViewHolder, view: View, current: ParcelableMedia,
+            statusPosition: Int) {
+        val status = adapter.getStatus(statusPosition) ?: return
+        val quotedMedia = status.quoted_media ?: return
+        IntentUtils.openMedia(activity, status.account_key, status.is_possibly_sensitive, status,
+                current, quotedMedia, preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey])
     }
 
     override fun onItemActionClick(holder: RecyclerView.ViewHolder, id: Int, position: Int) {

@@ -94,9 +94,9 @@ class ItemsListFragment : AbsContentListRecyclerViewFragment<VariousItemsAdapter
                 recyclerView.showContextMenuForChild(view)
             }
 
-            override fun onMediaClick(holder: IStatusViewHolder, view: View, media: ParcelableMedia, statusPosition: Int) {
+            override fun onMediaClick(holder: IStatusViewHolder, view: View, current: ParcelableMedia, statusPosition: Int) {
                 val status = dummyItemAdapter.getStatus(statusPosition) ?: return
-                IntentUtils.openMedia(activity, status, media, preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey],
+                IntentUtils.openMedia(activity, status, current, preferences[newDocumentApiKey], preferences[displaySensitiveContentsKey],
                         null)
             }
 

@@ -164,8 +164,7 @@ object IntentUtils {
     }
 
     fun openMedia(context: Context, accountKey: UserKey?, isPossiblySensitive: Boolean,
-                  status: ParcelableStatus?,
-                  current: ParcelableMedia? = null, media: Array<ParcelableMedia>,
+            status: ParcelableStatus?, current: ParcelableMedia? = null, media: Array<ParcelableMedia>,
                   newDocument: Boolean, displaySensitiveContents: Boolean,
                   options: Bundle? = null) {
         if (context is FragmentActivity && isPossiblySensitive && !displaySensitiveContents) {
@@ -178,7 +177,6 @@ object IntentUtils {
                 args.putParcelable(EXTRA_STATUS, status)
             }
             args.putParcelableArray(EXTRA_MEDIA, media)
-            args.putBundle(EXTRA_ACTIVITY_OPTIONS, options)
             args.putBundle(EXTRA_ACTIVITY_OPTIONS, options)
             args.putBoolean(EXTRA_NEW_DOCUMENT, newDocument)
             fragment.arguments = args
