@@ -63,10 +63,7 @@ import org.apache.commons.lang3.ObjectUtils
 import org.mariotaku.abstask.library.AbstractTask
 import org.mariotaku.abstask.library.TaskStarter
 import org.mariotaku.kpreferences.get
-import org.mariotaku.ktextension.checkAnySelfPermissionsGranted
-import org.mariotaku.ktextension.getTypedArray
-import org.mariotaku.ktextension.setItemChecked
-import org.mariotaku.ktextension.toTypedArray
+import org.mariotaku.ktextension.*
 import org.mariotaku.pickncrop.library.MediaPickerActivity
 import de.vanita5.twittnuker.Constants.*
 import de.vanita5.twittnuker.R
@@ -284,8 +281,17 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         }
 
     private fun confirmAndUpdateStatus() {
-        if (isQuotingProtectedStatus) {
-            RetweetProtectedStatusWarnFragment().show(supportFragmentManager,
+        val matchResult = Regex("[DM] +([a-z0-9_]{1,20}) +[^ ]+").matchEntire(editText.text)
+        if (matchResult != null) {
+            val screenName = matchResult.groupValues[1]
+            val df = DirectMessageConfirmFragment()
+            df.arguments = Bundle {
+                this[EXTRA_SCREEN_NAME] = screenName
+            }
+            df.show(supportFragmentManager, "send_direct_message_confirm")
+        } else if (isQuotingProtectedStatus) {
+            val df = RetweetProtectedStatusWarnFragment()
+            df.show(supportFragmentManager,
                     "retweet_protected_status_warning_message")
         } else {
             updateStatus()
@@ -349,6 +355,16 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                 editText.setSelection(selectionEnd)
             }
             else -> {
+                val intent = item.intent
+                if (intent != null) {
+                    try {
+                        startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Log.w(LOGTAG, e)
+                        return false
+                    }
+
+                }
             }
         }
         return true
@@ -1649,7 +1665,6 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
                     }
                 }
             }
-
         }
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -1657,6 +1672,45 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
             val builder = AlertDialog.Builder(context)
             builder.setMessage(R.string.quote_protected_status_warning_message)
             builder.setPositiveButton(R.string.send_anyway, this)
+            builder.setNegativeButton(android.R.string.cancel, null)
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                it as AlertDialog
+                it.applyTheme()
+            }
+            return dialog
+        }
+    }
+
+    class DirectMessageConfirmFragment : BaseDialogFragment(), DialogInterface.OnClickListener {
+
+        private val screenName: String get() = arguments.getString(EXTRA_SCREEN_NAME)
+
+        override fun onClick(dialog: DialogInterface, which: Int) {
+            val activity = activity
+            when (which) {
+                DialogInterface.BUTTON_POSITIVE -> {
+                    if (activity is ComposeActivity) {
+                        activity.updateStatus()
+                    }
+                }
+                DialogInterface.BUTTON_NEUTRAL -> {
+                    if (activity is ComposeActivity) {
+                        // Insert a ZWSP into status text
+                        activity.editText.text.insert(1, "\u200b")
+                        activity.updateStatus()
+                    }
+                }
+            }
+        }
+
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+            val context = activity
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage(getString(R.string.message_format_compose_message_convert_to_status,
+                    "@$screenName"))
+            builder.setPositiveButton(R.string.action_send, this)
+            builder.setNeutralButton(R.string.action_compose_message_convert_to_status, this)
             builder.setNegativeButton(android.R.string.cancel, null)
             val dialog = builder.create()
             dialog.setOnShowListener {
