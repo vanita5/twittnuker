@@ -147,6 +147,10 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
                     setSupportActionBar(toolbar)
                 }
             }
+            actionsButton?.setOnClickListener {
+                val f = currentVisibleFragment as? IFloatingActionButtonFragment
+                f?.onActionClick("link_handler")
+            }
             contentFragmentId = R.id.contentFragment
         }
 
