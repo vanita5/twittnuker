@@ -57,6 +57,7 @@ import de.vanita5.twittnuker.fragment.filter.FiltersImportMutesFragment
 import de.vanita5.twittnuker.fragment.filter.FiltersSubscriptionsFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment.SystemWindowsInsetsCallback
+import de.vanita5.twittnuker.fragment.iface.IFloatingActionButtonFragment
 import de.vanita5.twittnuker.fragment.iface.IToolBarSupportFragment
 import de.vanita5.twittnuker.fragment.iface.SupportFragmentCallback
 import de.vanita5.twittnuker.fragment.message.MessageConversationInfoFragment
@@ -203,10 +204,6 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         }
     }
 
-    override fun getSystemWindowsInsets(insets: Rect): Boolean {
-        return super.getSystemWindowsInsets(insets)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -219,6 +216,11 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onAttachFragment(fragment: Fragment?) {
+        super.onAttachFragment(fragment)
+        updateActionsButton()
     }
 
     override fun handleKeyboardShortcutSingle(handler: KeyboardShortcutsHandler, keyCode: Int, event: KeyEvent, metaState: Int): Boolean {
@@ -274,6 +276,15 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
 
     override fun setControlBarVisibleAnimate(visible: Boolean, listener: ControlBarShowHideHelper.ControlBarAnimationListener?) {
         // Currently only search page needs this pattern, so we only enable this feature for it.
+        actionsButton?.let { fab ->
+            if (fab.isEnabled) {
+                if (visible) {
+                    fab.show()
+                } else {
+                    fab.hide()
+                }
+            }
+        }
         if (currentVisibleFragment !is HideUiOnScroll) return
         controlBarShowHideHelper.setControlBarVisibleAnimate(visible, listener)
     }
@@ -493,11 +504,22 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         }
     }
 
-    interface HideUiOnScroll
-
+    private fun updateActionsButton() {
+        val fab = this.actionsButton ?: return
+        val fragment = currentVisibleFragment as? IFloatingActionButtonFragment
+        val info = fragment?.getActionInfo("link_handler") ?: run {
+            fab.visibility = View.GONE
+            fab.isEnabled = false
+            return
+        }
+        fab.visibility = View.VISIBLE
+        fab.isEnabled = true
+        fab.setImageResource(info.icon)
+        fab.contentDescription = info.title
+    }
 
     @Throws(Utils.NoAccountException::class)
-    fun createFragmentForIntent(context: Context, linkId: Int, intent: Intent): Fragment? {
+    private fun createFragmentForIntent(context: Context, linkId: Int, intent: Intent): Fragment? {
         intent.setExtrasClassLoader(context.classLoader)
         val extras = intent.extras
         val uri = intent.data
@@ -844,4 +866,6 @@ class LinkHandlerActivity : BaseActivity(), SystemWindowsInsetsCallback, IContro
         fragment.arguments = args
         return fragment
     }
+
+    interface HideUiOnScroll
 }

@@ -41,6 +41,8 @@ import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import org.mariotaku.kpreferences.get
+import org.mariotaku.ktextension.Bundle
+import org.mariotaku.ktextension.set
 import org.mariotaku.ktextension.setItemChecked
 import org.mariotaku.ktextension.setMenuItemIcon
 import org.mariotaku.sqliteqb.library.Expression
@@ -54,6 +56,8 @@ import de.vanita5.twittnuker.constant.nameFirstKey
 import de.vanita5.twittnuker.fragment.AbsStatusesFragment
 import de.vanita5.twittnuker.fragment.AddStatusFilterDialogFragment
 import de.vanita5.twittnuker.fragment.DestroyStatusDialogFragment
+import de.vanita5.twittnuker.fragment.status.BlockStatusUsersDialogFragment
+import de.vanita5.twittnuker.fragment.status.MuteStatusUsersDialogFragment
 import de.vanita5.twittnuker.graphic.ActionIconDrawable
 import de.vanita5.twittnuker.graphic.PaddingDrawable
 import de.vanita5.twittnuker.menu.FavoriteItemProvider
@@ -314,6 +318,20 @@ object MenuUtils {
                 val where = Expression.equalsArgs(Statuses._ID).sql
                 val whereArgs = arrayOf(status._id.toString())
                 resolver.update(Statuses.CONTENT_URI, values, where, whereArgs)
+            }
+            R.id.mute_users -> {
+                val df = MuteStatusUsersDialogFragment()
+                df.arguments = Bundle {
+                    this[EXTRA_STATUS] = status
+                }
+                df.show(fm, "mute_users_selector")
+            }
+            R.id.block_users -> {
+                val df = BlockStatusUsersDialogFragment()
+                df.arguments = Bundle {
+                    this[EXTRA_STATUS] = status
+                }
+                df.show(fm, "block_users_selector")
             }
             else -> {
                 if (item.intent != null) {
