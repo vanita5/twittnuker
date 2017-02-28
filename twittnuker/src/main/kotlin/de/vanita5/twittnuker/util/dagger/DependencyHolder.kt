@@ -23,6 +23,7 @@
 package de.vanita5.twittnuker.util.dagger
 
 import android.content.Context
+import com.twitter.Validator
 import com.nostra13.universalimageloader.core.ImageLoader
 import okhttp3.ConnectionPool
 import org.mariotaku.kpreferences.KPreferences
@@ -49,7 +50,7 @@ class DependencyHolder internal constructor(context: Context) {
     lateinit var dns: TwidereDns
         internal set
     @Inject
-    lateinit var validator: TwidereValidator
+    lateinit var validator: Validator
         internal set
     @Inject
     lateinit var preferences: SharedPreferencesWrapper

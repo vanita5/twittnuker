@@ -57,7 +57,8 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.extension.model.newMicroBlogInstance
-import de.vanita5.twittnuker.extension.model.size_limit
+import de.vanita5.twittnuker.extension.model.mediaSizeLimit
+import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.account.AccountExtras
 import de.vanita5.twittnuker.model.analyzer.UpdateStatus
@@ -230,7 +231,7 @@ class UpdateStatusTask(
         for (i in 0 until pending.length) {
             val account = update.accounts[i]
             val text = pending.overrideTexts[i]
-            val textLimit = TwidereValidator.getTextLimit(account)
+            val textLimit = account.textLimit
             if (textLimit >= 0 && text.length <= textLimit) {
                 continue
             }
@@ -279,7 +280,7 @@ class UpdateStatusTask(
                         if (statusUpdate.media.isNotNullOrEmpty()) {
                             // Fanfou only allow one photo
                             fanfouUpdateStatusWithPhoto(microBlog, statusUpdate, pendingUpdate,
-                                    pendingUpdate.overrideTexts[i], account.size_limit, i)
+                                    pendingUpdate.overrideTexts[i], account.mediaSizeLimit, i)
                         } else {
                             twitterUpdateStatus(microBlog, statusUpdate, pendingUpdate,
                                     pendingUpdate.overrideTexts[i], i)
@@ -667,7 +668,7 @@ class UpdateStatusTask(
                 //noinspection TryWithIdenticalCatches
                 var body: MediaStreamBody? = null
                 try {
-                    val sizeLimit = account.size_limit
+                    val sizeLimit = account.mediaSizeLimit
                     body = getBodyFromMedia(context, mediaLoader, media, sizeLimit,
                             chucked, ContentLengthInputStream.ReadListener { length, position ->
                         callback?.onUploadingProgressChanged(index, position, length)

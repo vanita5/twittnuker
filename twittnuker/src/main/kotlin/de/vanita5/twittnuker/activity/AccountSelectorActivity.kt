@@ -38,7 +38,7 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.adapter.AccountDetailsAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.app.TwittnukerApplication
-import de.vanita5.twittnuker.extension.model.is_oauth
+import de.vanita5.twittnuker.extension.model.isOAuth
 import de.vanita5.twittnuker.model.UserKey
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.util.DataStoreUtils
@@ -104,7 +104,7 @@ class AccountSelectorActivity : BaseActivity(), OnItemClickListener {
                 if (extraKeys != null) {
                     return@filter extraKeys.contains(it.key)
                 }
-                if (oauthOnly && !it.is_oauth) {
+                if (oauthOnly && !it.isOAuth) {
                     return@filter false
                 }
                 if (USER_TYPE_TWITTER_COM == accountHost) {

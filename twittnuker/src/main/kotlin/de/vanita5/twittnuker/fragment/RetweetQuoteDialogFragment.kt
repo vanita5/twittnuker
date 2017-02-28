@@ -47,13 +47,13 @@ import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.constant.IntentConstants.*
 import de.vanita5.twittnuker.constant.SharedPreferenceConstants.KEY_QUICK_SEND
 import de.vanita5.twittnuker.extension.applyTheme
+import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.model.*
 import de.vanita5.twittnuker.model.util.AccountUtils
 import de.vanita5.twittnuker.service.LengthyOperationsService
 import de.vanita5.twittnuker.util.Analyzer
 import de.vanita5.twittnuker.util.EditTextEnterHandler
 import de.vanita5.twittnuker.util.LinkCreator
-import de.vanita5.twittnuker.util.TwidereValidator
 import de.vanita5.twittnuker.util.Utils.isMyRetweet
 import de.vanita5.twittnuker.view.ComposeEditText
 import de.vanita5.twittnuker.view.StatusTextCountView
@@ -98,7 +98,7 @@ class RetweetQuoteDialogFragment : BaseDialogFragment() {
             val holder = StatusViewHolder(adapter, itemContent)
             holder.displayStatus(status = status, displayInReplyTo = false, displayExtraType = true)
 
-            textCountView.maxLength = TwidereValidator.getTextLimit(details)
+            textCountView.maxLength = details.textLimit
 
             itemMenu.visibility = View.GONE
             actionButtons.visibility = View.GONE

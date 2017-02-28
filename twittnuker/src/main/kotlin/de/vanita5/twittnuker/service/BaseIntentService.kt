@@ -24,6 +24,7 @@ package de.vanita5.twittnuker.service
 
 import android.app.IntentService
 import com.twitter.Extractor
+import com.twitter.Validator
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import javax.inject.Inject
@@ -37,7 +38,7 @@ abstract class BaseIntentService(tag: String) : IntentService(tag) {
     @Inject
     lateinit var notificationManager: NotificationManagerWrapper
     @Inject
-    lateinit var validator: TwidereValidator
+    lateinit var validator: Validator
     @Inject
     lateinit var extractor: Extractor
     @Inject

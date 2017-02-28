@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.fragment
 import android.content.Context
 import android.support.v4.app.DialogFragment
 import com.squareup.otto.Bus
+import com.twitter.Validator
 import org.mariotaku.kpreferences.KPreferences
 import de.vanita5.twittnuker.util.*
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
@@ -42,7 +43,7 @@ open class BaseDialogFragment : DialogFragment() {
     @Inject
     lateinit var kPreferences: KPreferences
     @Inject
-    lateinit var validator: TwidereValidator
+    lateinit var validator: Validator
     @Inject
     lateinit var keyboardShortcutsHandler: KeyboardShortcutsHandler
     @Inject

@@ -56,6 +56,7 @@ import android.view.View.OnLongClickListener
 import android.widget.TextView
 import android.widget.Toast
 import com.twitter.Extractor
+import com.twitter.Validator
 import kotlinx.android.synthetic.main.activity_compose.*
 import org.apache.commons.lang3.ArrayUtils
 import org.apache.commons.lang3.ObjectUtils
@@ -76,6 +77,7 @@ import de.vanita5.twittnuker.adapter.MediaPreviewAdapter
 import de.vanita5.twittnuker.constant.*
 import de.vanita5.twittnuker.extension.applyTheme
 import de.vanita5.twittnuker.extension.model.getAccountUser
+import de.vanita5.twittnuker.extension.model.textLimit
 import de.vanita5.twittnuker.extension.model.unique_id_non_null
 import de.vanita5.twittnuker.fragment.BaseDialogFragment
 import de.vanita5.twittnuker.fragment.EditAltTextDialogFragment
@@ -115,7 +117,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     @Inject
     lateinit var extractor: Extractor
     @Inject
-    lateinit var validator: TwidereValidator
+    lateinit var validator: Validator
     @Inject
     lateinit var locationManager: LocationManager
 
@@ -1064,7 +1066,7 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
         } else {
             editText.accountKey = accounts[0].key
         }
-        statusTextCount.maxLength = TwidereValidator.getTextLimit(accounts)
+        statusTextCount.maxLength = accounts.textLimit
         setMenu()
     }
 
@@ -1298,9 +1300,9 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     private fun updateStatus() {
-        if (isFinishing) return
+        if (isFinishing || editText == null) return
         val hasMedia = hasMedia()
-        val text = if (editText != null) ParseUtils.parseString(editText.text) else null
+        val text = editText.text.toString()
         val tweetLength = validator.getTweetLength(text)
         val maxLength = statusTextCount.maxLength
         if (accountsAdapter.isSelectionEmpty) {
@@ -1356,20 +1358,13 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     private fun updateTextCount() {
-        var text = editText.text?.toString() ?: return
-        if (defaultFeatures.isMediaLinkCountsInStatus && media.isNotEmpty()) {
-            text += " https://twitter.com/example/status/12345678901234567890/photos/1"
-        }
+        val text = editText.text?.toString() ?: return
         statusTextCount.textCount = validator.getTweetLength(text)
     }
 
     internal class ComposeLocationListener(activity: ComposeActivity) : LocationListener {
 
-        val activityRef: WeakReference<ComposeActivity>
-
-        init {
-            activityRef = WeakReference(activity)
-        }
+        private val activityRef = WeakReference(activity)
 
         override fun onLocationChanged(location: Location) {
             val activity = activityRef.get() ?: return
@@ -1389,12 +1384,10 @@ class ComposeActivity : BaseActivity(), OnMenuItemClickListener, OnClickListener
     }
 
     internal class AccountIconViewHolder(val adapter: AccountIconsAdapter, itemView: View) : ViewHolder(itemView), OnClickListener {
-        val iconView: ShapedImageView
-        val nameView: TextView
+        private val iconView = itemView.findViewById(android.R.id.icon) as ShapedImageView
+        private val nameView = itemView.findViewById(android.R.id.text1) as TextView
 
         init {
-            iconView = itemView.findViewById(android.R.id.icon) as ShapedImageView
-            nameView = itemView.findViewById(android.R.id.text1) as TextView
             itemView.setOnClickListener(this)
         }
 
