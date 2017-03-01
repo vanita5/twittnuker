@@ -49,8 +49,12 @@ import de.vanita5.twittnuker.TwittnukerConstants.*
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
 import de.vanita5.twittnuker.activity.iface.IExtendedActivity
 import de.vanita5.twittnuker.annotation.CacheFileType
-import de.vanita5.twittnuker.fragment.*
+import de.vanita5.twittnuker.fragment.media.ExternalBrowserPageFragment
+import de.vanita5.twittnuker.fragment.media.ImagePageFragment
+import de.vanita5.twittnuker.fragment.PermissionRequestDialog
+import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
+import de.vanita5.twittnuker.fragment.media.*
 import de.vanita5.twittnuker.model.ParcelableMedia
 import de.vanita5.twittnuker.model.ParcelableStatus
 import de.vanita5.twittnuker.provider.CacheProvider
@@ -316,11 +320,18 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
                 args.putBoolean(VideoPageFragment.EXTRA_LOOP, true)
                 args.putBoolean(VideoPageFragment.EXTRA_DISABLE_CONTROL, true)
                 args.putBoolean(VideoPageFragment.EXTRA_DEFAULT_MUTE, true)
-                return Fragment.instantiate(this, VideoPageFragment::class.java.name, args) as MediaViewerFragment
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    return Fragment.instantiate(this, VideoPageFragment::class.java.name, args) as MediaViewerFragment
+                } else {
+                    return Fragment.instantiate(this, ExoPlayerPageFragment::class.java.name, args) as MediaViewerFragment
+                }
             }
             ParcelableMedia.Type.VIDEO -> {
-                return Fragment.instantiate(this,
-                        VideoPageFragment::class.java.name, args) as MediaViewerFragment
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    return Fragment.instantiate(this, VideoPageFragment::class.java.name, args) as MediaViewerFragment
+                } else {
+                    return Fragment.instantiate(this, ExoPlayerPageFragment::class.java.name, args) as MediaViewerFragment
+                }
             }
             ParcelableMedia.Type.EXTERNAL_PLAYER -> {
                 return Fragment.instantiate(this, ExternalBrowserPageFragment::class.java.name, args) as MediaViewerFragment

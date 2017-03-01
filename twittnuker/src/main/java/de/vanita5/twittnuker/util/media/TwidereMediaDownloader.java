@@ -25,6 +25,7 @@ package de.vanita5.twittnuker.util.media;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -42,7 +43,6 @@ import org.mariotaku.restfu.http.RestHttpClient;
 import org.mariotaku.restfu.http.mime.Body;
 import org.mariotaku.restfu.oauth.OAuthAuthorization;
 import org.mariotaku.restfu.oauth.OAuthEndpoint;
-import de.vanita5.twittnuker.Constants;
 import de.vanita5.twittnuker.extension.model.CredentialsExtensionsKt;
 import de.vanita5.twittnuker.model.AccountDetails;
 import de.vanita5.twittnuker.model.CacheMetadata;
@@ -60,7 +60,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class TwidereMediaDownloader implements MediaDownloader, Constants {
+public class TwidereMediaDownloader implements MediaDownloader {
 
     private final Context context;
     private final RestHttpClient client;
