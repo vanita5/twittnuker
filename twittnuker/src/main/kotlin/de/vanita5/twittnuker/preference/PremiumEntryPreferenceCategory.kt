@@ -23,20 +23,15 @@
 package de.vanita5.twittnuker.preference
 
 import android.content.Context
-import android.support.v4.app.FragmentActivity
-import android.support.v7.preference.Preference
 import android.util.AttributeSet
-import org.mariotaku.chameleon.ChameleonUtils
 import de.vanita5.twittnuker.R
-import de.vanita5.twittnuker.TwittnukerConstants.REQUEST_PURCHASE_EXTRA_FEATURES
 import de.vanita5.twittnuker.extension.findParent
-import de.vanita5.twittnuker.fragment.ExtraFeaturesIntroductionDialogFragment
 import de.vanita5.twittnuker.util.dagger.GeneralComponentHelper
 import de.vanita5.twittnuker.util.premium.ExtraFeaturesService
 import javax.inject.Inject
 
 
-class PremiumEntryPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs) {
+class PremiumEntryPreferenceCategory(context: Context, attrs: AttributeSet) : TintedPreferenceCategory(context, attrs) {
 
     @Inject
     internal lateinit var extraFeaturesService: ExtraFeaturesService
@@ -44,21 +39,8 @@ class PremiumEntryPreference(context: Context, attrs: AttributeSet) : Preference
     init {
         GeneralComponentHelper.build(context).inject(this)
         val a = context.obtainStyledAttributes(attrs, R.styleable.PremiumEntryPreference)
-        val requiredFeature: String = a.getString(R.styleable.PremiumEntryPreference_requiredFeature)
         a.recycle()
         isEnabled = extraFeaturesService.isSupported()
-        setOnPreferenceClickListener {
-            if (!extraFeaturesService.isEnabled(requiredFeature)) {
-                val activity = ChameleonUtils.getActivity(context)
-                if (activity is FragmentActivity) {
-                    ExtraFeaturesIntroductionDialogFragment.show(fm = activity.supportFragmentManager,
-                            feature = requiredFeature, source = "preference:${key}",
-                            requestCode = REQUEST_PURCHASE_EXTRA_FEATURES)
-                }
-                return@setOnPreferenceClickListener true
-            }
-            return@setOnPreferenceClickListener false
-        }
     }
 
     override fun onAttached() {
@@ -69,4 +51,5 @@ class PremiumEntryPreference(context: Context, attrs: AttributeSet) : Preference
             }
         }
     }
+
 }

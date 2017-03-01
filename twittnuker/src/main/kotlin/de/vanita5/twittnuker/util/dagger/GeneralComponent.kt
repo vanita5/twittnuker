@@ -36,6 +36,7 @@ import de.vanita5.twittnuker.loader.*
 import de.vanita5.twittnuker.preference.AccountsListPreference
 import de.vanita5.twittnuker.preference.KeyboardShortcutPreference
 import de.vanita5.twittnuker.preference.PremiumEntryPreference
+import de.vanita5.twittnuker.preference.PremiumEntryPreferenceCategory
 import de.vanita5.twittnuker.preference.sync.SyncItemPreference
 import de.vanita5.twittnuker.provider.CacheProvider
 import de.vanita5.twittnuker.provider.TwidereDataProvider
@@ -132,6 +133,8 @@ interface GeneralComponent {
     fun inject(provider: UrlFiltersSubscriptionProvider)
 
     fun inject(preference: PremiumEntryPreference)
+
+    fun inject(preference: PremiumEntryPreferenceCategory)
 
     fun inject(loader: CacheUserSearchLoader)
 
