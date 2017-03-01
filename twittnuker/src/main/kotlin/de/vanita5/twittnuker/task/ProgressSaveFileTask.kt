@@ -25,7 +25,7 @@ package de.vanita5.twittnuker.task
 import android.content.Context
 import android.net.Uri
 import android.support.v4.app.DialogFragment
-import de.vanita5.twittnuker.activity.iface.IExtendedActivity
+import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 
 import java.io.File
@@ -38,7 +38,7 @@ abstract class ProgressSaveFileTask(
 ) : SaveFileTask(context, source, destination, getMimeType) {
 
     override fun showProgress() {
-        (context as IExtendedActivity<*>).executeAfterFragmentResumed { activity ->
+        (context as IBaseActivity<*>).executeAfterFragmentResumed { activity ->
             val fragment = ProgressDialogFragment()
             fragment.isCancelable = false
             fragment.show(activity.supportFragmentManager, PROGRESS_FRAGMENT_TAG)
@@ -46,7 +46,7 @@ abstract class ProgressSaveFileTask(
     }
 
     override fun dismissProgress() {
-        (context as IExtendedActivity<*>).executeAfterFragmentResumed { activity ->
+        (context as IBaseActivity<*>).executeAfterFragmentResumed { activity ->
             val fm = activity.supportFragmentManager
             val fragment = fm.findFragmentByTag(PROGRESS_FRAGMENT_TAG) as? DialogFragment
             fragment?.dismiss()

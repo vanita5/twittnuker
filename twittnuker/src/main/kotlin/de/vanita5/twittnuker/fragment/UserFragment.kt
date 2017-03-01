@@ -96,7 +96,7 @@ import de.vanita5.twittnuker.activity.AccountSelectorActivity
 import de.vanita5.twittnuker.activity.BaseActivity
 import de.vanita5.twittnuker.activity.ColorPickerDialogActivity
 import de.vanita5.twittnuker.activity.LinkHandlerActivity
-import de.vanita5.twittnuker.activity.iface.IExtendedActivity
+import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.adapter.SupportTabsAdapter
 import de.vanita5.twittnuker.annotation.AccountType
 import de.vanita5.twittnuker.annotation.Referral
@@ -1618,7 +1618,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                     val checkedPositions = dialog.listView.checkedItemPositions
                     val weakActivity = WeakReference(activity)
                     promiseOnUi {
-                        val activity = weakActivity.get() as? IExtendedActivity<*> ?: return@promiseOnUi
+                        val activity = weakActivity.get() as? IBaseActivity<*> ?: return@promiseOnUi
                         activity.executeAfterFragmentResumed { activity ->
                             ProgressDialogFragment.show(activity.supportFragmentManager, "update_lists_progress")
                         }
@@ -1643,7 +1643,7 @@ class UserFragment : BaseFragment(), OnClickListener, OnLinkClickListener,
                             throw UpdateListsException(successfulStates)
                         }
                     }.alwaysUi {
-                        val activity = weakActivity.get() as? IExtendedActivity<*> ?: return@alwaysUi
+                        val activity = weakActivity.get() as? IBaseActivity<*> ?: return@alwaysUi
                         activity.executeAfterFragmentResumed { activity ->
                             val manager = activity.supportFragmentManager
                             val df = manager.findFragmentByTag("update_lists_progress") as? DialogFragment

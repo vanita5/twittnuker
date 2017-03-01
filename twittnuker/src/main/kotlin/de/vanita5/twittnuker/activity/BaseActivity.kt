@@ -54,7 +54,7 @@ import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.BuildConfig
 import de.vanita5.twittnuker.TwittnukerConstants.SHARED_PREFERENCES_NAME
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity
-import de.vanita5.twittnuker.activity.iface.IExtendedActivity
+import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.activity.iface.IThemedActivity
 import de.vanita5.twittnuker.constant.themeColorKey
 import de.vanita5.twittnuker.constant.themeKey
@@ -75,7 +75,7 @@ import java.util.*
 import javax.inject.Inject
 
 @SuppressLint("Registered")
-open class BaseActivity : ChameleonActivity(), IExtendedActivity<BaseActivity>, IThemedActivity,
+open class BaseActivity : ChameleonActivity(), IBaseActivity<BaseActivity>, IThemedActivity,
         IControlBarActivity, OnFitSystemWindowsListener, SystemWindowsInsetsCallback,
         KeyboardShortcutCallback, OnPreferenceDisplayDialogCallback {
 
@@ -104,7 +104,7 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity<BaseActivity>, 
     @Inject
     lateinit var restHttpClient: RestHttpClient
 
-    private val actionHelper = IExtendedActivity.ActionHelper(this)
+    private val actionHelper = IBaseActivity.ActionHelper(this)
 
     // Registered listeners
     private val controlBarOffsetListeners = ArrayList<IControlBarActivity.ControlBarOffsetListener>()
@@ -262,8 +262,8 @@ open class BaseActivity : ChameleonActivity(), IExtendedActivity<BaseActivity>, 
         actionHelper.dispatchOnResumeFragments()
     }
 
-    override fun executeAfterFragmentResumed(action: (BaseActivity) -> Unit) {
-        actionHelper.executeAfterFragmentResumed(action)
+    override fun executeAfterFragmentResumed(useHandler: Boolean, action: (BaseActivity) -> Unit) {
+        actionHelper.executeAfterFragmentResumed(useHandler, action)
     }
 
     override final val currentThemeBackgroundAlpha by lazy {

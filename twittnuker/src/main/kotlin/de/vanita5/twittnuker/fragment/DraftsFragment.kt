@@ -49,7 +49,7 @@ import org.mariotaku.kpreferences.get
 import org.mariotaku.sqliteqb.library.Expression
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
-import de.vanita5.twittnuker.activity.iface.IExtendedActivity
+import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.adapter.DraftsAdapter
 import de.vanita5.twittnuker.constant.IntentConstants
 import de.vanita5.twittnuker.constant.textSizeKey
@@ -247,7 +247,7 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
 
         override fun onPreExecute() {
             val activity = activityRef.get() ?: return
-            (activity as IExtendedActivity<*>).executeAfterFragmentResumed { activity ->
+            (activity as IBaseActivity<*>).executeAfterFragmentResumed { activity ->
                 val f = ProgressDialogFragment.show(activity.supportFragmentManager, FRAGMENT_TAG_DELETING_DRAFTS)
                 f.isCancelable = false
             }
@@ -255,7 +255,7 @@ class DraftsFragment : BaseFragment(), LoaderCallbacks<Cursor?>, OnItemClickList
 
         override fun onPostExecute(result: Unit) {
             val activity = activityRef.get() ?: return
-            (activity as IExtendedActivity<*>).executeAfterFragmentResumed { activity ->
+            (activity as IBaseActivity<*>).executeAfterFragmentResumed { activity ->
                 val fm = activity.supportFragmentManager
                 val f = fm.findFragmentByTag(FRAGMENT_TAG_DELETING_DRAFTS)
                 if (f is DialogFragment) {
