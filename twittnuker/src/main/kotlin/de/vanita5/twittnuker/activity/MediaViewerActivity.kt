@@ -46,11 +46,9 @@ import org.mariotaku.mediaviewer.library.*
 import org.mariotaku.mediaviewer.library.subsampleimageview.SubsampleImageViewerFragment.EXTRA_MEDIA_URI
 import de.vanita5.twittnuker.R
 import de.vanita5.twittnuker.TwittnukerConstants.*
+import de.vanita5.twittnuker.activity.iface.IBaseActivity
 import de.vanita5.twittnuker.activity.iface.IControlBarActivity.ControlBarShowHideHelper
-import de.vanita5.twittnuker.activity.iface.IExtendedActivity
 import de.vanita5.twittnuker.annotation.CacheFileType
-import de.vanita5.twittnuker.fragment.media.ExternalBrowserPageFragment
-import de.vanita5.twittnuker.fragment.media.ImagePageFragment
 import de.vanita5.twittnuker.fragment.PermissionRequestDialog
 import de.vanita5.twittnuker.fragment.ProgressDialogFragment
 import de.vanita5.twittnuker.fragment.iface.IBaseFragment
@@ -454,7 +452,7 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
             private val PROGRESS_FRAGMENT_TAG = "progress"
 
             override fun dismissProgress() {
-                val activity = context as IExtendedActivity<*>
+                val activity = context as IBaseActivity<*>
                 activity.executeAfterFragmentResumed { activity ->
                     val fm = activity.supportFragmentManager
                     val fragment = fm.findFragmentByTag(PROGRESS_FRAGMENT_TAG) as? DialogFragment
@@ -463,7 +461,7 @@ class MediaViewerActivity : BaseActivity(), IMediaViewerActivity, MediaSwipeClos
             }
 
             override fun showProgress() {
-                val activity = context as IExtendedActivity<*>
+                val activity = context as IBaseActivity<*>
                 activity.executeAfterFragmentResumed { activity ->
                     val fragment = ProgressDialogFragment()
                     fragment.isCancelable = false
