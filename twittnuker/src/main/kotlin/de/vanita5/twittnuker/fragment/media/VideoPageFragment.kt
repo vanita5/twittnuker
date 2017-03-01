@@ -202,8 +202,7 @@ class VideoPageFragment : CacheDownloadMediaViewerFragment(), IBaseFragment<Vide
         activity.supportInvalidateOptionsMenu()
     }
 
-    override fun recycleMedia() {
-
+    override fun releaseMediaResources() {
     }
 
     override fun onCompletion(mp: MediaPlayer) {
