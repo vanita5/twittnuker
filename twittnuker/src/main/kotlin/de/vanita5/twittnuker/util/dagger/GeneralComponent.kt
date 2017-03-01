@@ -32,6 +32,7 @@ import de.vanita5.twittnuker.adapter.*
 import de.vanita5.twittnuker.app.TwittnukerApplication
 import de.vanita5.twittnuker.fragment.*
 import de.vanita5.twittnuker.fragment.filter.FilteredUsersFragment
+import de.vanita5.twittnuker.fragment.media.ExoPlayerPageFragment
 import de.vanita5.twittnuker.loader.*
 import de.vanita5.twittnuker.preference.AccountsListPreference
 import de.vanita5.twittnuker.preference.KeyboardShortcutPreference
@@ -141,4 +142,6 @@ interface GeneralComponent {
     fun inject(loader: BaseUserListsLoader)
 
     fun inject(controller: PremiumDashboardActivity.ExtraFeatureViewController)
+
+    fun inject(fragment: ExoPlayerPageFragment)
 }
