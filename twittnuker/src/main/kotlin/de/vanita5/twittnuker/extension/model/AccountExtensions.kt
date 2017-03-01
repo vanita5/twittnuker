@@ -191,7 +191,7 @@ internal object AccountDataQueue {
         } else handler.post {
             future.run()
         }
-        return future.get()
+        return future.get(1, TimeUnit.SECONDS)
     }
 
     fun peekAuthToken(manager: AccountManager, account: Account, authTokenType: String): String? {
@@ -201,7 +201,7 @@ internal object AccountDataQueue {
         } else handler.post {
             future.run()
         }
-        return future.get()
+        return future.get(1, TimeUnit.SECONDS)
     }
 }
 
