@@ -505,29 +505,6 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.sync.DropboxAuthStarterActivity"
-            android:theme="@style/Theme.Twidere.NoDisplay"/>
-        <activity
-            android:name=".activity.sync.GoogleDriveAuthActivity"
-            android:theme="@style/Theme.Twidere.NoDisplay"/>
-        <activity
-            android:name="com.dropbox.core.android.AuthActivity"
-            android:configChanges="orientation|keyboard"
-            android:launchMode="singleTask">
-            <intent-filter>
-                <data android:scheme="db-cm68n97voadq7b8"/>
-
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.GooglePlayInAppPurchaseActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Twidere.NoDisplay"/>
 
         <service
             android:name=".service.LegacyTaskService"
