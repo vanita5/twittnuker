@@ -33,6 +33,7 @@ import android.support.multidex.MultiDex
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 import nl.komponents.kovenant.task
+import okhttp3.Dns
 import org.apache.commons.lang3.ArrayUtils
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.kpreferences.get
@@ -64,7 +65,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     @Inject
     lateinit internal var restHttpClient: RestHttpClient
     @Inject
-    lateinit internal var dns: TwidereDns
+    lateinit internal var dns: Dns
     @Inject
     lateinit internal var mediaDownloader: MediaDownloader
     @Inject
@@ -217,7 +218,7 @@ class TwittnukerApplication : Application(), Constants, OnSharedPreferenceChange
     }
 
     private fun reloadDnsSettings() {
-        dns.reloadDnsSettings()
+        (dns as? TwidereDns)?.reloadDnsSettings()
     }
 
     private fun initializeAsyncTask() {

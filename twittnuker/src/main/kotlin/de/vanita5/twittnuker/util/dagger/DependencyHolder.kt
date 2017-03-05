@@ -23,14 +23,15 @@
 package de.vanita5.twittnuker.util.dagger
 
 import android.content.Context
-import com.twitter.Validator
 import com.nostra13.universalimageloader.core.ImageLoader
+import com.twitter.Validator
+import okhttp3.Cache
 import okhttp3.ConnectionPool
+import okhttp3.Dns
 import org.mariotaku.kpreferences.KPreferences
 import org.mariotaku.restfu.http.RestHttpClient
 import de.vanita5.twittnuker.model.DefaultFeatures
 import de.vanita5.twittnuker.util.*
-import de.vanita5.twittnuker.util.net.TwidereDns
 import javax.inject.Inject
 
 class DependencyHolder internal constructor(context: Context) {
@@ -47,7 +48,7 @@ class DependencyHolder internal constructor(context: Context) {
     lateinit var activityTracker: ActivityTracker
         internal set
     @Inject
-    lateinit var dns: TwidereDns
+    lateinit var dns: Dns
         internal set
     @Inject
     lateinit var validator: Validator
@@ -57,6 +58,9 @@ class DependencyHolder internal constructor(context: Context) {
         internal set
     @Inject
     lateinit var connectionPool: ConnectionPool
+        internal set
+    @Inject
+    lateinit var cache: Cache
         internal set
     @Inject
     lateinit var defaultFeatures: DefaultFeatures
